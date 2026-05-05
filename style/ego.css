@@ -1,0 +1,380 @@
+/* ego – MA Actor workstation
+ * Terminal aesthetic: Matrix green on black, HHGTTG screensaver
+ * Configurable via .config.colour.* keys
+ */
+
+/* ── CSS custom properties (overridden by .config.colour.*) ─────────── */
+:root {
+    --colour-bg:          #0d0d0d;
+    --colour-text:        #00ff41;
+    --colour-dimmed:      #008f11;
+    --colour-alias:       #ffd700;
+    --colour-error:       #ff3333;
+    --colour-system:      #888888;
+    --colour-input-bg:    #0a0a0a;
+    --colour-border:      #003300;
+    --colour-cursor:      #00ff41;
+    --colour-highlight:   #003300;
+    --font-family:        "Courier New", Courier, "Lucida Console", monospace;
+    --font-size:          14px;
+    --line-height:        1.5;
+}
+
+/* ── Reset & base ────────────────────────────────────────────────────── */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    background: var(--colour-bg);
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    overflow: hidden;
+}
+
+/* ── App root ────────────────────────────────────────────────────────── */
+#app {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ── Landing page ────────────────────────────────────────────────────── */
+.landing {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    gap: 1.5rem;
+    padding: 2rem;
+}
+
+.landing h1 {
+    font-size: 3rem;
+    letter-spacing: 0.3em;
+    color: var(--colour-text);
+    text-shadow: 0 0 20px var(--colour-text);
+    animation: flicker 4s infinite;
+}
+
+.landing .tagline {
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+    letter-spacing: 0.15em;
+}
+
+.landing-box {
+    border: 1px solid var(--colour-border);
+    padding: 2rem;
+    min-width: 400px;
+    max-width: 600px;
+    width: 100%;
+    background: var(--colour-input-bg);
+}
+
+.landing-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--colour-border);
+}
+
+.landing-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--colour-dimmed);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    padding: 0.4rem 1rem;
+    cursor: pointer;
+    margin-bottom: -1px;
+    letter-spacing: 0.05em;
+}
+
+.landing-tab:hover {
+    color: var(--colour-text);
+}
+
+.landing-tab.active {
+    color: var(--colour-text);
+    border-bottom-color: var(--colour-text);
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.form-row label {
+    color: var(--colour-dimmed);
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+.form-row input {
+    background: var(--colour-bg);
+    border: 1px solid var(--colour-border);
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    padding: 0.4rem 0.6rem;
+    outline: none;
+    width: 100%;
+}
+
+.form-row input:focus {
+    border-color: var(--colour-text);
+    box-shadow: 0 0 6px var(--colour-dimmed);
+}
+
+.form-row input::placeholder {
+    color: #333;
+}
+
+.btn {
+    background: none;
+    border: 1px solid var(--colour-text);
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    padding: 0.4rem 1.2rem;
+    cursor: pointer;
+    letter-spacing: 0.1em;
+    transition: background 0.1s, color 0.1s;
+}
+
+.btn:hover {
+    background: var(--colour-text);
+    color: var(--colour-bg);
+}
+
+.btn:disabled {
+    border-color: var(--colour-dimmed);
+    color: var(--colour-dimmed);
+    cursor: not-allowed;
+}
+
+.btn-row {
+    display: flex;
+    gap: 0.8rem;
+    margin-top: 1rem;
+    flex-wrap: wrap;
+}
+
+.btn-sm {
+    font-size: 0.8rem;
+    padding: 0.2rem 0.6rem;
+}
+
+.identity-list {
+    list-style: none;
+    margin-bottom: 1rem;
+}
+
+.identity-list li {
+    padding: 0.4rem 0;
+    border-bottom: 1px solid var(--colour-border);
+    color: var(--colour-dimmed);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.identity-list li:hover {
+    color: var(--colour-text);
+}
+
+.identity-list li.selected {
+    color: var(--colour-text);
+}
+
+.identity-list li::before {
+    content: "▸";
+    color: var(--colour-dimmed);
+}
+
+.identity-list li.selected::before {
+    content: "▸";
+    color: var(--colour-text);
+}
+
+.landing-error {
+    color: var(--colour-error);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+.landing-status {
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* ── Terminal (main view) ────────────────────────────────────────────── */
+.terminal {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    width: 100vw;
+}
+
+.terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem 1rem;
+    scroll-behavior: smooth;
+}
+
+.terminal-output::-webkit-scrollbar {
+    width: 6px;
+}
+
+.terminal-output::-webkit-scrollbar-track {
+    background: var(--colour-bg);
+}
+
+.terminal-output::-webkit-scrollbar-thumb {
+    background: var(--colour-border);
+}
+
+.terminal-line {
+    white-space: pre-wrap;
+    word-break: break-all;
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    line-height: var(--line-height);
+    padding: 0 0 0.05rem 0;
+}
+
+.line-output { color: var(--colour-text); }
+.line-input  { color: var(--colour-dimmed); }
+.line-error  { color: var(--colour-error); }
+.line-system { color: var(--colour-system); }
+
+.line-alias  { color: var(--colour-alias); }
+
+/* ── Input row ───────────────────────────────────────────────────────── */
+.input-row {
+    display: flex;
+    align-items: center;
+    padding: 0.4rem 1rem;
+    border-top: 1px solid var(--colour-border);
+    background: var(--colour-input-bg);
+    gap: 0.4rem;
+}
+
+.input-prompt {
+    color: var(--colour-dimmed);
+    white-space: nowrap;
+    user-select: none;
+    font-family: var(--font-family);
+}
+
+.input-prompt.focus-mode {
+    color: var(--colour-alias);
+}
+
+.input-field {
+    flex: 1;
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    caret-color: var(--colour-cursor);
+}
+
+.input-field::selection {
+    background: var(--colour-highlight);
+}
+
+/* ── Screensaver ─────────────────────────────────────────────────────── */
+.screensaver {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.screensaver canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.screensaver-overlay {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    pointer-events: none;
+}
+
+.dont-panic {
+    font-size: clamp(3rem, 12vw, 8rem);
+    font-weight: bold;
+    letter-spacing: 0.15em;
+    color: #fff;
+    text-shadow:
+        0 0 20px #fff,
+        0 0 40px #00ff41,
+        0 0 80px #00ff41;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.hhgttg-sub {
+    margin-top: 1rem;
+    color: #00ff41;
+    font-size: clamp(0.8rem, 2vw, 1rem);
+    letter-spacing: 0.2em;
+    opacity: 0.7;
+    animation: pulse 3s ease-in-out infinite reverse;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────── */
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
+
+@keyframes flicker {
+    0%, 95%, 100% { opacity: 1; }
+    96%           { opacity: 0.8; }
+    97%           { opacity: 1; }
+    98%           { opacity: 0.6; }
+    99%           { opacity: 1; }
+}
+
+@keyframes pulse {
+    0%, 100% { text-shadow: 0 0 20px #fff, 0 0 40px #00ff41, 0 0 80px #00ff41; }
+    50%       { text-shadow: 0 0 30px #fff, 0 0 60px #00ff41, 0 0 120px #00ff41; }
+}
+
+/* ── Utility ─────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+
+.dimmed { color: var(--colour-dimmed); }
+.green  { color: var(--colour-text); }
+.gold   { color: var(--colour-alias); }
+.red    { color: var(--colour-error); }
+.grey   { color: var(--colour-system); }
