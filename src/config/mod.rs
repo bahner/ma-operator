@@ -56,6 +56,57 @@ impl EgoConfig {
         self.tree.insert(key.into(), value.into());
     }
 
+    /// Read-only keys may not be written via `.key: value`. Currently only
+    /// `.my.identity.did`, which is injected from the active session.
+    pub fn is_read_only(key: &str) -> bool {
+        matches!(key, ".my.identity.did")
+    }
+
+    /// True if `key` is an exact leaf (a value is stored at that path).
+    pub fn is_leaf(&self, key: &str) -> bool {
+        self.tree.contains_key(key)
+    }
+
+    /// True if any stored key has `key` as a strict dot-prefix — i.e. `key`
+    /// is a subtree (e.g. `.my.aliases` when `.my.aliases.fjodor` exists).
+    pub fn has_children(&self, key: &str) -> bool {
+        let prefix = format!("{key}.");
+        self.tree.keys().any(|k| k.starts_with(&prefix))
+    }
+
+    /// True if a strict ancestor of `key` is itself a leaf — setting `key`
+    /// would shadow an existing value.
+    pub fn has_leaf_ancestor(&self, key: &str) -> bool {
+        let mut cur = key;
+        while let Some(idx) = cur.rfind('.') {
+            cur = &cur[..idx];
+            if cur.is_empty() {
+                break;
+            }
+            if self.tree.contains_key(cur) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Delete every key matching `key` exactly OR sharing it as a dot-prefix.
+    /// Returns the number of entries removed.
+    pub fn delete_subtree(&mut self, key: &str) -> usize {
+        let prefix = format!("{key}.");
+        let victims: Vec<String> = self
+            .tree
+            .keys()
+            .filter(|k| k.as_str() == key || k.starts_with(&prefix))
+            .cloned()
+            .collect();
+        let n = victims.len();
+        for k in victims {
+            self.tree.remove(&k);
+        }
+        n
+    }
+
     #[allow(dead_code)]
     pub fn delete(&mut self, key: &str) -> bool {
         self.tree.remove(key).is_some()
@@ -75,23 +126,9 @@ impl EgoConfig {
 
     // ── Aliases ────────────────────────────────────────────────────────────
 
-    pub fn add_alias(&mut self, name: &str, did: &str) {
-        let key = format!(".my.aliases.{name}");
-        self.tree.insert(key, did.to_string());
-    }
-
-    pub fn remove_alias(&mut self, name: &str) -> bool {
-        let key = format!(".my.aliases.{name}");
-        self.tree.remove(&key).is_some()
-    }
-
     pub fn resolve_alias(&self, name: &str) -> Option<&str> {
         let key = format!(".my.aliases.{name}");
         self.tree.get(&key).map(|s| s.as_str())
-    }
-
-    pub fn list_aliases(&self) -> Vec<(&str, &str)> {
-        self.list(".my.aliases.")
     }
 
     // ── Colour helpers ─────────────────────────────────────────────────────

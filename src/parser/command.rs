@@ -1,19 +1,38 @@
 /// Command parser for ego terminal input.
 ///
-/// Syntax summary:
-///   .dot.path [args…]         → DotCommand  (config, aliases, use, etc.)
-///   @target[:verb] [args…]    → ActorMessage
-///   \@literal text             → plain text (escaped @)
+/// Local dot-path grammar:
+///   .path                → DotOp::Get  (no args)
+///   .path value          → DotOp::Get  (args carry the match query)
+///   .path: value         → DotOp::Set  (space after `:` required)
+///   .path:               → DotOp::Delete
+///   .path:verb [args]    → DotOp::Verb
+///
+/// Actor grammar:
+///   @target[:verb] [body]    → ActorMessage
+///   \@literal text           → plain text (escaped @)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
 // ── Command enum ───────────────────────────────────────────────────────────
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum DotOp {
+    /// `.path` or `.path query…`  — get value (or match-filter subtree).
+    Get,
+    /// `.path: value`              — set leaf to value.
+    Set(String),
+    /// `.path:`                    — delete leaf or subtree.
+    Delete,
+    /// `.path:verb`                — invoke a registered verb on `path`.
+    Verb(String),
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub enum Command {
-    /// .foo.bar [args]  – dot-notation local command
+    /// `.foo.bar` with an op and any trailing args (whitespace-split).
     DotCommand {
         path: String,
+        op: DotOp,
         args: Vec<String>,
     },
     /// @target[:verb] [args]  – message to an actor
@@ -49,14 +68,44 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
     // Dot-command
     if input.starts_with('.') {
         let mut parts = input.splitn(2, ' ');
-        let path = parts.next().unwrap_or("").to_string();
+        let head = parts.next().unwrap_or("").to_string();
         let rest = parts.next().unwrap_or("").trim().to_string();
-        let args = if rest.is_empty() {
-            vec![]
-        } else {
-            shell_split(&rest)
+
+        // Split head at the first ':' (keys never contain ':').
+        let (path, op) = match head.split_once(':') {
+            None => (head.clone(), {
+                // No colon: Get (args may carry a match query).
+                DotOp::Get
+            }),
+            Some((p, suffix)) => {
+                let path = p.to_string();
+                if suffix.is_empty() {
+                    // `.path:` — Set if there is a value following, else Delete.
+                    if rest.is_empty() {
+                        (path, DotOp::Delete)
+                    } else {
+                        (path, DotOp::Set(rest.clone()))
+                    }
+                } else {
+                    // `.path:verb` — verb invocation.
+                    (path, DotOp::Verb(suffix.to_string()))
+                }
+            }
         };
-        return Ok(Command::DotCommand { path, args });
+
+        let args = match &op {
+            // Set carries the whole value in its String; no separate args.
+            DotOp::Set(_) => vec![],
+            _ => {
+                if rest.is_empty() {
+                    vec![]
+                } else {
+                    shell_split(&rest)
+                }
+            }
+        };
+
+        return Ok(Command::DotCommand { path, op, args });
     }
 
     // Actor message  @target[:verb] [body]
@@ -170,8 +219,8 @@ mod tests {
     #[test]
     fn parses_alias_target_with_verb() {
         let mut cfg = EgoConfig::new();
-        cfg.add_alias(
-            "fjodor",
+        cfg.set(
+            ".my.aliases.fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 

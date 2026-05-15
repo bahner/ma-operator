@@ -69,7 +69,7 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
 #[allow(dead_code)]
 pub fn display_did<'a>(did: &'a str, cfg: &EgoConfig) -> &'a str {
     // Walk aliases and find a reverse match
-    for (key, val) in cfg.list_aliases() {
+    for (key, val) in cfg.list(".my.aliases.") {
         if val == did {
             // strip the ".my.aliases." prefix from the key
             let name = key.trim_start_matches(".my.aliases.");
@@ -82,7 +82,7 @@ pub fn display_did<'a>(did: &'a str, cfg: &EgoConfig) -> &'a str {
 /// Reverse-lookup: DID → alias name (if one exists).
 #[allow(dead_code)]
 pub fn did_to_alias<'a>(did: &str, cfg: &'a EgoConfig) -> Option<&'a str> {
-    for (key, val) in cfg.list_aliases() {
+    for (key, val) in cfg.list(".my.aliases.") {
         if val == did {
             return Some(key.trim_start_matches(".my.aliases."));
         }

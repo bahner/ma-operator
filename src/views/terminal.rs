@@ -7,7 +7,8 @@ use crate::{
     config::{persist_config, restore_config, EgoConfig},
     core::{CommandStatus, Entry, SystemKind},
     identity::storage::{load_history, save_history},
-    parser::command::{parse, Command},
+    parser::command::{parse, Command, DotOp},
+    parser::verbs::dispatch_verb,
     state::{AppState, FocusMode},
     transport,
 };
@@ -26,9 +27,14 @@ pub fn Terminal() -> impl IntoView {
         let session = state.session.get_untracked();
         if let Some(sess) = session {
             let username = sess.username.clone();
+            let sender_did = sess.sender_did.clone();
             spawn_local(async move {
                 match restore_config(&username).await {
-                    Ok(cfg) => {
+                    Ok(mut cfg) => {
+                        // Read-only session-derived field; never persisted
+                        // intentionally, but harmless if it leaks: it is
+                        // re-injected on every login.
+                        cfg.set(".my.identity.did", sender_did);
                         apply_config_to_dom(&cfg);
                         config.set(cfg);
                     }
@@ -243,11 +249,18 @@ fn eval(cmd: Command, raw: &str, state: &AppState, config: RwSignal<EgoConfig>) 
     match cmd {
         Command::PlainText(_) => {}
 
-        Command::DotCommand { path, args } => {
-            eval_dot(&path, &args, state, config);
+        Command::DotCommand { path, op, args } => {
+            eval_dot(&path, op, &args, state, config);
         }
 
         Command::ActorMessage { target, verb, body } => {
+            // Bare `@alias` with no verb and empty body → just echo the
+            // resolved DID. No message dispatch.
+            if verb.is_none() && body.trim().is_empty() {
+                state.push_output(target);
+                return;
+            }
+
             // Capture the prompt-prefixed raw line as the visual record.
             let focus_prefix = state
                 .focus_actor
@@ -280,229 +293,190 @@ fn eval(cmd: Command, raw: &str, state: &AppState, config: RwSignal<EgoConfig>) 
     }
 }
 
-fn eval_dot(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+fn eval_dot(
+    path: &str,
+    op: DotOp,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
     let session = state.session.get_untracked();
     let username = session.map(|s| s.username).unwrap_or_default();
 
+    // ── Control commands (not config access) ─────────────────────────────
     match path {
         ".help" => {
             for line in HELP_TEXT {
                 state.push_system(*line);
             }
+            return;
         }
         ".logout" => {
             transport::disconnect();
             state.session.set(None);
+            return;
         }
         ".clear" => {
             state.entries.set(vec![]);
+            return;
         }
-
-        // ── .use ──────────────────────────────────────────────────────────
         ".use" => {
-            if args.is_empty() {
-                state.focus_actor.set(None);
-                state.push_system("focus cleared");
-            } else {
-                let target = args[0].trim_start_matches('@').to_string();
-                // Resolve alias if needed
+            eval_use(args, state, config);
+            return;
+        }
+        _ => {}
+    }
+
+    // ── Verb dispatch ────────────────────────────────────────────────────
+    if let DotOp::Verb(verb) = &op {
+        if let Err(e) = dispatch_verb(path, verb, args, state, config) {
+            state.push_error(e);
+        }
+        return;
+    }
+
+    // ── Generic CRUD on the dot tree ─────────────────────────────────────
+    match op {
+        DotOp::Set(value) => {
+            if EgoConfig::is_read_only(path) {
+                state.push_error(format!("{path} is read-only"));
+                return;
+            }
+            let (has_children, has_ancestor) = {
                 let cfg = config.get_untracked();
-                let resolved = if target.starts_with("did:") {
-                    target.clone()
-                } else {
-                    match cfg.resolve_alias(&target) {
-                        Some(did) => did.to_string(),
-                        None => {
-                            state.push_error(format!("unknown alias: @{target}"));
-                            return;
-                        }
-                    }
-                };
-
-                let prompt = if args.len() >= 3 && args[1] == "as" {
-                    let alias = args[2].trim().to_string();
-                    if alias.starts_with('@') {
-                        alias
-                    } else {
-                        format!("@{alias}")
-                    }
-                } else if args[0].starts_with('@') {
-                    args[0].clone()
-                } else {
-                    format!("@{target}")
-                };
-
-                state.focus_actor.set(Some(FocusMode {
-                    target: resolved.clone(),
-                    prompt: prompt.clone(),
-                }));
-                state.push_system(format!("focusing {resolved} as {prompt}"));
-            }
-        }
-
-        // ── .my.aliases ───────────────────────────────────────────────────
-        ".my.aliases" => {
-            match args.first().map(String::as_str) {
-                Some("add") => {
-                    if args.len() < 3 {
-                        state.push_error("usage: .my.aliases add <name> <did>");
-                        return;
-                    }
-                    let name = args[1].trim_start_matches('@').to_string();
-                    let did = args[2].clone();
-                    let uname = username.clone();
-                    let state2 = state.clone();
-                    config.update(|c| c.add_alias(&name, &did));
-                    let cfg = config.get_untracked();
-                    spawn_local(async move {
-                        if let Err(e) = persist_config(&uname, &cfg).await {
-                            state2.push_error(e);
-                        } else {
-                            state2.push_system(format!("alias @{name} → {did}"));
-                        }
-                    });
-                }
-                Some("remove") => {
-                    if args.len() < 2 {
-                        state.push_error("usage: .my.aliases remove <name>");
-                        return;
-                    }
-                    let name = args[1].trim_start_matches('@').to_string();
-                    let removed = {
-                        let mut cfg = config.get_untracked();
-                        cfg.remove_alias(&name)
-                    };
-                    if removed {
-                        config.update(|c| {
-                            c.remove_alias(&name);
-                        });
-                        let cfg = config.get_untracked();
-                        let uname = username.clone();
-                        let state2 = state.clone();
-                        spawn_local(async move {
-                            if let Err(e) = persist_config(&uname, &cfg).await {
-                                state2.push_error(e);
-                            } else {
-                                state2.push_system(format!("removed alias @{name}"));
-                            }
-                        });
-                    } else {
-                        state.push_error(format!("alias @{name} not found"));
-                    }
-                }
-                Some(other) => {
-                    state.push_error(format!("unknown .my.aliases subcommand: {other}"));
-                }
-                None => {
-                    let cfg = config.get_untracked();
-                    let aliases = cfg.list_aliases();
-                    if aliases.is_empty() {
-                        state.push_output("(no aliases)");
-                    } else {
-                        for (k, v) in aliases {
-                            let name = k.trim_start_matches(".my.aliases.");
-                            state.push_output(format!("  {name:<20} {v}"));
-                        }
-                    }
-                }
-            }
-        }
-
-        // ── .config ───────────────────────────────────────────────────────
-        ".config" => {
-            let cfg = config.get_untracked();
-            let entries = cfg.list(".config");
-            for (k, v) in entries {
-                state.push_output(format!("  {k}: {v}"));
-            }
-        }
-
-        // ── .my.identity ─────────────────────────────────────────────────
-        ".my.identity" => {
-            let sess = state.session.get_untracked();
-            if let Some(sess) = sess {
-                state.push_output(format!(".my.identity.did: {}", sess.sender_did));
-                let cfg = config.get_untracked();
-                for (k, v) in cfg.list(".my.identity") {
-                    state.push_output(format!("  {k}: {v}"));
-                }
-            }
-        }
-
-        ".my.identity.publish" => {
-            let cfg = config.get_untracked();
-            let publisher = match cfg.get(".my.identity.publisher") {
-                Some(p) => p.to_string(),
-                None => {
-                    state.push_error(".my.identity.publisher not set — use: .my.identity.publisher: did:ma:<publisher>");
-                    return;
-                }
+                (cfg.has_children(path), cfg.has_leaf_ancestor(path))
             };
-            let sess = state.session.get_untracked();
-            let did = sess.map(|s| s.sender_did).unwrap_or_default();
+            if has_children {
+                state.push_error(format!("{path} is a subtree; refusing to set"));
+                return;
+            }
+            if has_ancestor {
+                state.push_error(format!(
+                    "an ancestor of {path} is a leaf; refusing to shadow"
+                ));
+                return;
+            }
+            config.update(|c| c.set(path, &value));
+            let cfg = config.get_untracked();
+            let uname = username.clone();
             let state2 = state.clone();
+            let path_owned = path.to_string();
             spawn_local(async move {
-                match transport::send_rpc(&publisher, "publish", &[&did]).await {
-                    Ok(_msg_id) => state2.push_system(format!("published {did} to {publisher}")),
-                    Err(e) => state2.push_error(format!("publish failed: {e}")),
+                if let Err(e) = persist_config(&uname, &cfg).await {
+                    state2.push_error(e);
+                } else {
+                    apply_config_to_dom(&cfg);
+                    state2.push_system(format!("{path_owned}: {value}"));
                 }
             });
         }
 
-        // ── .my ───────────────────────────────────────────────────────────
-        ".my" => {
-            let cfg = config.get_untracked();
-            for (k, v) in cfg.list(".my") {
-                state.push_output(format!("  {k}: {v}"));
+        DotOp::Delete => {
+            if EgoConfig::is_read_only(path) {
+                state.push_error(format!("{path} is read-only"));
+                return;
             }
+            let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
+            if removed == 0 {
+                state.push_error(format!("key not found: {path}"));
+                return;
+            }
+            let cfg = config.get_untracked();
+            let uname = username.clone();
+            let state2 = state.clone();
+            let path_owned = path.to_string();
+            spawn_local(async move {
+                if let Err(e) = persist_config(&uname, &cfg).await {
+                    state2.push_error(e);
+                } else {
+                    state2.push_system(format!(
+                        "deleted {path_owned} ({removed} entries)"
+                    ));
+                }
+            });
         }
 
-        // ── Dot-get / dot-set ─────────────────────────────────────────────
-        key if key.starts_with('.') => {
-            if key.ends_with(':') {
-                // Setter: .config.colour.alias: #ff0
-                let key = key.trim_end_matches(':').to_string();
-                if args.is_empty() {
-                    state.push_error("usage: .key: value");
-                    return;
-                }
-                let value = args.join(" ");
-                config.update(|c| c.set(&key, &value));
-                let cfg = config.get_untracked();
-                let uname = username.clone();
-                let state2 = state.clone();
-                spawn_local(async move {
-                    if let Err(e) = persist_config(&uname, &cfg).await {
-                        state2.push_error(e);
-                    } else {
-                            apply_config_to_dom(&cfg);
-                        state2.push_system(format!("{key}: {value}"));
-                    }
-                });
+        DotOp::Get => {
+            let cfg = config.get_untracked();
+            let query = if args.is_empty() {
+                None
             } else {
-                // Getter: .config.colour.alias
-                let cfg = config.get_untracked();
-                match cfg.get(key) {
-                    Some(v) => state.push_output(format!("{key}: {v}")),
-                    None => {
-                        // Try listing as prefix
-                        let entries = cfg.list(key);
-                        if entries.is_empty() {
-                            state.push_error(format!("key not found: {key}"));
-                        } else {
-                            for (k, v) in entries {
-                                state.push_output(format!("  {k}: {v}"));
-                            }
+                Some(args.join(" "))
+            };
+
+            if cfg.is_leaf(path) {
+                let value = cfg.get(path).unwrap_or("");
+                match &query {
+                    None => state.push_output(format!("{path}: {value}")),
+                    Some(q) if value == q.as_str() => {
+                        state.push_output(format!("{path}: {value}"))
+                    }
+                    Some(_) => state.push_error("no match"),
+                }
+            } else if cfg.has_children(path) {
+                let prefix = format!("{path}.");
+                let mut shown = 0usize;
+                state.push_output(format!("{path}:"));
+                for (k, v) in cfg.list(&prefix) {
+                    if let Some(q) = &query {
+                        if v != q.as_str() {
+                            continue;
                         }
                     }
+                    let tail = k.trim_start_matches(&prefix[..]);
+                    state.push_output(format!("  {tail}: {v}"));
+                    shown += 1;
                 }
+                if shown == 0 && query.is_some() {
+                    state.push_error("no match");
+                }
+            } else {
+                state.push_error(format!("key not found: {path}"));
             }
         }
 
-        other => {
-            state.push_error(format!("unknown command: {other}"));
-        }
+        DotOp::Verb(_) => unreachable!("handled above"),
     }
+}
+
+fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    if args.is_empty() {
+        state.focus_actor.set(None);
+        state.push_system("focus cleared");
+        return;
+    }
+    let target = args[0].trim_start_matches('@').to_string();
+    let cfg = config.get_untracked();
+    let resolved = if target.starts_with("did:") {
+        target.clone()
+    } else {
+        match cfg.resolve_alias(&target) {
+            Some(did) => did.to_string(),
+            None => {
+                state.push_error(format!("unknown alias: @{target}"));
+                return;
+            }
+        }
+    };
+
+    let prompt = if args.len() >= 3 && args[1] == "as" {
+        let alias = args[2].trim().to_string();
+        if alias.starts_with('@') {
+            alias
+        } else {
+            format!("@{alias}")
+        }
+    } else if args[0].starts_with('@') {
+        args[0].clone()
+    } else {
+        format!("@{target}")
+    };
+
+    state.focus_actor.set(Some(FocusMode {
+        target: resolved.clone(),
+        prompt: prompt.clone(),
+    }));
+    state.push_system(format!("focusing {resolved} as {prompt}"));
 }
 
 fn apply_config_to_dom(cfg: &EgoConfig) {
@@ -536,27 +510,29 @@ const HELP_TEXT: &[&str] = &[
     "  .logout                      log out",
     "",
     "── messaging ────────────────────────────────────────────────────────────",
-    "  @alias[:verb] [body]         send message / RPC to actor",
+    "  @alias                       echo resolved DID (no message sent)",
+    "  @alias[:verb] body           send message / RPC to actor",
     "  \\@name                       literal @name (no alias lookup)",
     "",
     "── focus mode ───────────────────────────────────────────────────────────",
-    "  .use @alias                  focus on actor (changes prompt)",
-    "  .use @alias as @name         focus with local prompt alias",
+    "  .use @alias [as @name]       focus on actor (changes prompt)",
     "  .use                         clear focus",
     "",
-    "── aliases ──────────────────────────────────────────────────────────────",
+    "── local config grammar ─────────────────────────────────────────────────",
+    "  .path                        get leaf value or list subtree",
+    "  .path value                  match query (filter by value)",
+    "  .path: value                 set leaf",
+    "  .path:                       delete leaf or subtree",
+    "  .path:verb [args]            invoke local verb",
+    "",
+    "── common paths ─────────────────────────────────────────────────────────",
+    "  .my                          show all personal config",
     "  .my.aliases                  list aliases",
-    "  .my.aliases add @name <did>  add alias",
-    "  .my.aliases remove @name     remove alias",
-    "",
-    "── identity ─────────────────────────────────────────────────────────────",
-    "  .my.identity                 show DID and identity config",
-    "  .my.identity.publisher: did  set publisher service DID",
-    "  .my.identity.publish         publish DID to configured publisher",
-    "",
-    "── config ───────────────────────────────────────────────────────────────",
-    "  .config                      list all config",
-    "  .config.key                  get value",
-    "  .config.key: value           set value",
+    "  .my.aliases.<name>: <did>    add/update alias",
+    "  .my.aliases.<name>:          remove alias",
+    "  .my.identity                 show identity config",
+    "  .my.identity.did             show own DID (read-only)",
+    "  .my.identity:publish @pub    publish own DID via publisher service",
+    "  .config                      show all .config.* entries",
     "─────────────────────────────────────────────────────────────────────────",
 ];
