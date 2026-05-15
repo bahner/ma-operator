@@ -124,6 +124,7 @@ fn LoginPanel(
                                     iroh_key: id.iroh_key,
                                     ipns_secret_key: id.ipns_secret_key,
                                     did_signing_key: id.did_signing_key,
+                                    did_encryption_key: id.did_encryption_key,
                                     sender_did: id.sender_did,
                                 }));
                             }
@@ -257,6 +258,7 @@ fn CreatePanel(
                                 iroh_key: id.iroh_key,
                                 ipns_secret_key: id.ipns_secret_key,
                                 did_signing_key: id.did_signing_key,
+                                did_encryption_key: id.did_encryption_key,
                                 sender_did: id.sender_did,
                             }));
                         }

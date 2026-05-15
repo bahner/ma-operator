@@ -17,6 +17,7 @@ pub struct SessionState {
     pub iroh_key: [u8; 32],
     pub ipns_secret_key: [u8; 32],
     pub did_signing_key: [u8; 32],
+    pub did_encryption_key: [u8; 32],
     pub sender_did: String,
 }
 
@@ -214,6 +215,8 @@ thread_local! {
     pub static SESSION_IROH_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
+    pub static SESSION_RPC_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
     pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
+    pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);
 }

@@ -79,11 +79,12 @@ pub fn Terminal() -> impl IntoView {
             let iroh_key = sess.iroh_key;
             let ipns_secret_key = sess.ipns_secret_key;
             let did_signing_key = sess.did_signing_key;
+            let did_encryption_key = sess.did_encryption_key;
             let sender_did = sess.sender_did.clone();
             let username = sess.username.clone();
             spawn_local(async move {
                 state2.push_system("connecting to iroh...");
-                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, sender_did).await {
+                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, did_encryption_key, sender_did).await {
                     Ok(()) => state2.push_system("iroh endpoint ready"),
                     Err(e) => state2.push_error(format!("iroh: {e}")),
                 }
@@ -101,7 +102,7 @@ pub fn Terminal() -> impl IntoView {
                 if !transport::is_connected() {
                     continue;
                 }
-                for incoming in transport::drain_inbox() {
+                for incoming in transport::drain_inbox().into_iter().chain(transport::drain_rpc_inbox()) {
                     match &incoming.reply_to {
                         Some(msg_id) => {
                             let status = if incoming.is_error {
