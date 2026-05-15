@@ -19,6 +19,7 @@ pub struct SessionState {
     pub did_signing_key: [u8; 32],
     pub did_encryption_key: [u8; 32],
     pub sender_did: String,
+    pub created_at: String,
 }
 
 // ── Focus mode ─────────────────────────────────────────────────────────────
@@ -219,4 +220,5 @@ thread_local! {
     pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);
+    pub static SESSION_CREATED_AT: RefCell<Option<String>> = RefCell::new(None);
 }

@@ -7,8 +7,8 @@ use ma_core::{
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
-    ENDPOINT, SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY,
-    SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    ENDPOINT, SESSION_CREATED_AT, SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY,
+    SESSION_IROH_KEY, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use std::rc::Rc;
 
@@ -27,6 +27,7 @@ pub async fn connect(
     did_signing_key: [u8; 32],
     did_encryption_key: [u8; 32],
     sender_did: String,
+    created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {}", sender_did);
     let mut endpoint = new_ma_endpoint(iroh_key)
@@ -43,6 +44,7 @@ pub async fn connect(
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = Some(did_signing_key));
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
+    SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
     info!("Connection established.");
     Ok(())
 }
@@ -56,6 +58,7 @@ pub fn disconnect() {
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
+    SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
 }
 
 pub fn is_connected() -> bool {
@@ -154,11 +157,15 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
     // Reconstruct bundle from raw key bytes so we can call generate_identity().
     // SecretBundle::generate() fills random bytes; we immediately overwrite
     // all four public fields with the actual session keys.
+    let created_at = SESSION_CREATED_AT
+        .with(|c| c.borrow().clone())
+        .ok_or_else(|| "not logged in".to_string())?;
     let mut bundle = SecretBundle::generate();
     bundle.iroh_secret_key = [0u8; 32]; // unused for document building
     bundle.ipns_secret_key = ipns_key;
     bundle.did_signing_key = sign_key_bytes;
     bundle.did_encryption_key = enc_key;
+    bundle.created_at = created_at;
 
     // Build document with endpoint services so the DID doc advertises
     // INBOX_PROTOCOL_ID and RPC_PROTOCOL_ID for reply delivery.

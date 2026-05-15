@@ -85,10 +85,11 @@ pub fn Terminal() -> impl IntoView {
             let did_signing_key = sess.did_signing_key;
             let did_encryption_key = sess.did_encryption_key;
             let sender_did = sess.sender_did.clone();
+            let created_at = sess.created_at.clone();
             let username = sess.username.clone();
             spawn_local(async move {
                 state2.push_system("connecting to iroh...");
-                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, did_encryption_key, sender_did).await {
+                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, did_encryption_key, sender_did, created_at).await {
                     Ok(()) => state2.push_system("iroh endpoint ready"),
                     Err(e) => state2.push_error(format!("iroh: {e}")),
                 }
@@ -193,13 +194,15 @@ pub fn Terminal() -> impl IntoView {
 
     view! {
         <div class="terminal">
-            <EditorModal show=show_editor config=config on_eval=eval_lines/>
             <OutputPane state=state.clone()/>
-            <crate::views::input::InputBar
-                on_submit=handle_input
-                focus_actor=state.focus_actor
-                history=state.history
-            />
+            <EditorModal show=show_editor config=config on_eval=eval_lines/>
+            <div class:hidden=move || show_editor.get().is_some()>
+                <crate::views::input::InputBar
+                    on_submit=handle_input
+                    focus_actor=state.focus_actor
+                    history=state.history
+                />
+            </div>
         </div>
     }
 }

@@ -184,27 +184,27 @@ pub fn EditorModal(
 
     view! {
         <Show when=move || show.get().is_some()>
-            <div class="editor-overlay">
-                <div class="editor-modal">
-                    <div class="editor-toolbar">
-                        <span class="editor-doc-path">
-                            {move || show.get().map(|c| c.doc_path).unwrap_or_default()}
-                        </span>
-                        <select
-                            class="editor-lang-select"
-                            on:change=on_lang_change.clone()
-                            prop:value=move || language.get()
-                        >
-                            <option value="plain">"plain"</option>
-                            <option value="markdown">"markdown"</option>
-                            <option value="yaml">"yaml"</option>
-                        </select>
-                        <button class="editor-btn btn-save" on:click=on_save.clone()>"Save"</button>
-                        <button class="editor-btn btn-eval" on:click=on_eval_click.clone()>"Eval"</button>
-                        <button class="editor-btn btn-cancel" on:click=on_cancel.clone()>"Cancel"</button>
-                    </div>
-                    <div id=EDITOR_EL_ID class="editor-cm-host"></div>
+            // Inline panel — sits at the bottom of the terminal column,
+            // toolbar above the editor field, no backdrop.
+            <div class="editor-panel">
+                <div class="editor-toolbar">
+                    <span class="editor-doc-path">
+                        {move || show.get().map(|c| c.doc_path).unwrap_or_default()}
+                    </span>
+                    <select
+                        class="editor-lang-select"
+                        on:change=on_lang_change.clone()
+                        prop:value=move || language.get()
+                    >
+                        <option value="plain">"plain"</option>
+                        <option value="markdown">"markdown"</option>
+                        <option value="yaml">"yaml"</option>
+                    </select>
+                    <button class="editor-btn btn-save"   on:click=on_save.clone()>"Save"</button>
+                    <button class="editor-btn btn-eval"   on:click=on_eval_click.clone()>"Eval"</button>
+                    <button class="editor-btn btn-cancel" on:click=on_cancel.clone()>"Cancel"</button>
                 </div>
+                <div id=EDITOR_EL_ID class="editor-cm-host"></div>
             </div>
         </Show>
     }

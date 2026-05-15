@@ -13,6 +13,8 @@ pub struct UnlockedIdentity {
     pub did_encryption_key: [u8; 32],
     /// Full bare DID, e.g. `"did:ma:k51qzi5…"`
     pub sender_did: String,
+    /// ISO-8601 timestamp from when the bundle was first generated.
+    pub created_at: String,
 }
 
 /// Create a brand-new identity: generate keys, encrypt with passphrase,
@@ -56,6 +58,7 @@ fn bundle_to_unlocked(bundle: &SecretBundle) -> Result<UnlockedIdentity, String>
         ipns_secret_key: bundle.ipns_secret_key,
         did_signing_key: bundle.did_signing_key,
         did_encryption_key: bundle.did_encryption_key,
+        created_at: bundle.created_at.clone(),
         sender_did,
     })
 }

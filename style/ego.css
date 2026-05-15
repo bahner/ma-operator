@@ -384,35 +384,37 @@ html, body {
 .red    { color: var(--colour-error); }
 .grey   { color: var(--colour-system); }
 
-/* ── Editor modal ────────────────────────────────────────────────────── */
-.editor-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.75);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 100;
-}
+/* ── Editor panel (inline, replaces input bar when active) ───────────── */
 
-.editor-modal {
-    background: var(--colour-bg);
-    border: 1px solid var(--colour-dimmed);
+/*
+ * The editor panel grows from the bottom of the terminal column, directly
+ * replacing the input bar.  No overlay or backdrop — the output pane stays
+ * visible above it.
+ *
+ * Layout (flex column inside .terminal):
+ *   .terminal-output  — flex: 1, scrollable
+ *   .editor-panel     — flex-shrink: 0, ~40 vh
+ *     .editor-toolbar — buttons above the code area
+ *     .editor-cm-host — fills the rest
+ */
+
+.editor-panel {
     display: flex;
     flex-direction: column;
-    width: 90vw;
-    max-width: 900px;
-    height: 80vh;
-    overflow: hidden;
+    height: 40vh;
+    min-height: 200px;
+    border-top: 1px solid var(--colour-dimmed);
+    background: var(--colour-input-bg);
+    flex-shrink: 0;
 }
 
 .editor-toolbar {
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.4rem 0.6rem;
+    padding: 0.3rem 0.6rem;
     border-bottom: 1px solid var(--colour-dimmed);
-    background: var(--colour-bg);
+    background: var(--colour-input-bg);
     flex-shrink: 0;
 }
 
@@ -420,6 +422,7 @@ html, body {
     flex: 1;
     color: var(--colour-alias);
     font-size: 0.85em;
+    font-family: var(--font-family);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -430,6 +433,7 @@ html, body {
     color: var(--colour-text);
     border: 1px solid var(--colour-dimmed);
     padding: 0.15rem 0.3rem;
+    font-family: var(--font-family);
     font-size: 0.8em;
 }
 
@@ -453,6 +457,7 @@ html, body {
     flex: 1;
     overflow: auto;
     font-size: 0.9em;
+    background: var(--colour-bg);
 }
 
 /* CodeMirror dark theme overrides */

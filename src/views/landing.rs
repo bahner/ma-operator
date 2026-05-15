@@ -126,6 +126,7 @@ fn LoginPanel(
                                     did_signing_key: id.did_signing_key,
                                     did_encryption_key: id.did_encryption_key,
                                     sender_did: id.sender_did,
+                                    created_at: id.created_at,
                                 }));
                             }
                             Err(e) => {
@@ -260,6 +261,7 @@ fn CreatePanel(
                                 did_signing_key: id.did_signing_key,
                                 did_encryption_key: id.did_encryption_key,
                                 sender_did: id.sender_did,
+                                created_at: id.created_at,
                             }));
                         }
                         Err(e) => {

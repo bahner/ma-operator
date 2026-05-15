@@ -1,7 +1,10 @@
-.PHONY: build serve dev clean publish
+.PHONY: build serve dev clean publish static
 
 build:
 	trunk build --release
+
+static:
+	cp -r www/. dist/www/
 
 serve: build
 	python3 -m http.server 8000 -d dist
