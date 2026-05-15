@@ -6,6 +6,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
     core::{CommandStatus, Entry, SystemKind},
+    identity::storage::{load_history, save_history},
     parser::command::{parse, Command},
     state::{AppState, FocusMode},
     transport,
@@ -38,6 +39,28 @@ pub fn Terminal() -> impl IntoView {
                     env!("CARGO_PKG_VERSION")
                 ));
                 state2.push_system("Type .help for a list of commands.");
+            });
+        }
+    }
+
+    // Restore command history from IndexedDB
+    {
+        let state2 = state.clone();
+        let session = state.session.get_untracked();
+        if let Some(sess) = session {
+            let username = sess.username.clone();
+            spawn_local(async move {
+                match load_history(&username).await {
+                    Ok(Some(json)) => {
+                        match serde_json::from_str::<Vec<String>>(&json) {
+                            Ok(hist) => state2.history.set(hist),
+                            Err(e) => state2
+                                .push_error(format!("history parse error: {e}")),
+                        }
+                    }
+                    Ok(None) => {}
+                    Err(e) => state2.push_error(format!("history load error: {e}")),
+                }
             });
         }
     }
@@ -111,6 +134,17 @@ pub fn Terminal() -> impl IntoView {
                     h.drain(0..h.len() - 200);
                 }
             });
+
+            // Persist history (per-user) to IndexedDB.
+            if let Some(sess) = state.session.get_untracked() {
+                let username = sess.username;
+                let hist = state.history.get_untracked();
+                spawn_local(async move {
+                    if let Ok(json) = serde_json::to_string(&hist) {
+                        let _ = save_history(&username, &json).await;
+                    }
+                });
+            }
 
             let focus = state.focus_actor.get_untracked();
             let cfg = config.get_untracked();

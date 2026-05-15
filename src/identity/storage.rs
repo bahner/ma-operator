@@ -1,8 +1,9 @@
 /// IndexedDB storage for ego identities — implemented directly with web-sys.
 ///
-/// Schema: db="ego" version=1
+/// Schema: db="ego" version=2
 ///   store "identities": out-of-line key (username string) -> JSON string
 ///   store "configs":    out-of-line key (username string) -> JSON string
+///   store "histories":  out-of-line key (username string) -> JSON string
 use js_sys::{Array, Promise};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
@@ -14,9 +15,10 @@ use web_sys::{
 use crate::state::StoredIdentity;
 
 const DB_NAME: &str = "ego";
-const DB_VERSION: u32 = 1;
+const DB_VERSION: u32 = 2;
 const STORE_IDENTITIES: &str = "identities";
 const STORE_CONFIGS: &str = "configs";
+const STORE_HISTORIES: &str = "histories";
 
 async fn open_db() -> Result<IdbDatabase, String> {
     let window = web_sys::window().ok_or_else(|| "no window".to_string())?;
@@ -47,6 +49,9 @@ async fn open_db() -> Result<IdbDatabase, String> {
             }
             if !names.contains(STORE_CONFIGS) {
                 let _ = db.create_object_store(STORE_CONFIGS);
+            }
+            if !names.contains(STORE_HISTORIES) {
+                let _ = db.create_object_store(STORE_HISTORIES);
             }
         },
     );
@@ -193,6 +198,43 @@ pub async fn load_config(username: &str) -> Result<Option<String>, String> {
         .map_err(|e| format!("{e:?}"))?;
     let store = tx
         .object_store(STORE_CONFIGS)
+        .map_err(|e| format!("{e:?}"))?;
+    let req = store
+        .get(&JsValue::from_str(username))
+        .map_err(|e| format!("{e:?}"))?;
+    let val = req_to_future(req.as_ref()).await?;
+
+    if val.is_undefined() || val.is_null() {
+        return Ok(None);
+    }
+    Ok(val.as_string())
+}
+
+pub async fn save_history(username: &str, history_json: &str) -> Result<(), String> {
+    let db = open_db().await?;
+    let tx = db
+        .transaction_with_str_and_mode(STORE_HISTORIES, IdbTransactionMode::Readwrite)
+        .map_err(|e| format!("{e:?}"))?;
+    let store = tx
+        .object_store(STORE_HISTORIES)
+        .map_err(|e| format!("{e:?}"))?;
+    let req = store
+        .put_with_key(
+            &JsValue::from_str(history_json),
+            &JsValue::from_str(username),
+        )
+        .map_err(|e| format!("{e:?}"))?;
+    let _ = req_to_future(req.as_ref()).await?;
+    Ok(())
+}
+
+pub async fn load_history(username: &str) -> Result<Option<String>, String> {
+    let db = open_db().await?;
+    let tx = db
+        .transaction_with_str(STORE_HISTORIES)
+        .map_err(|e| format!("{e:?}"))?;
+    let store = tx
+        .object_store(STORE_HISTORIES)
         .map_err(|e| format!("{e:?}"))?;
     let req = store
         .get(&JsValue::from_str(username))
