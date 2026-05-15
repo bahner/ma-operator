@@ -1,10 +1,13 @@
-.PHONY: build serve clean publish
+.PHONY: build serve dev clean publish
 
 build:
 	trunk build --release
 
-serve:
-	trunk serve
+serve: build
+	python3 -m http.server 8000 -d dist
+
+dev:
+	trunk serve --port 8088
 
 clean:
 	cargo clean

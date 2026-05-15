@@ -108,12 +108,6 @@ pub fn Screensaver() -> impl IntoView {
             <canvas node_ref=canvas_ref/>
             <div class="screensaver-overlay">
                 <div class="dont-panic">"DON'T PANIC"</div>
-                <div class="hhgttg-sub">
-                    "The answer is 42. The question is everything else."
-                </div>
-                <div class="hhgttg-sub" style="margin-top:0.5rem;font-size:0.75rem">
-                    "Pan Galactic Gargle Blaster • Babel Fish • Marvin • ego"
-                </div>
             </div>
         </div>
     }
@@ -147,6 +141,30 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
     let chars: Vec<char> = MATRIX_CHARS.chars().collect();
     let chars = Rc::new(chars);
 
+    // Ghost babel fish swimming in the background
+    #[derive(Clone)]
+    struct BabelFish {
+        x: f64,
+        y: f64,
+        speed: f64,
+        dir: f64,   // 1.0 = right, -1.0 = left
+        opacity: f64,
+        size: f64,
+    }
+    let fish_count = 5usize;
+    let fish_init: Vec<BabelFish> = (0..fish_count)
+        .map(|i| BabelFish {
+            x: js_sys::Math::random() * w as f64,
+            y: (i as f64 + 1.0) * (h as f64 / (fish_count as f64 + 1.0)),
+            speed: 0.4 + js_sys::Math::random() * 0.6,
+            dir: if js_sys::Math::random() > 0.5 { 1.0 } else { -1.0 },
+            opacity: 0.10 + js_sys::Math::random() * 0.12,
+            size: 18.0 + js_sys::Math::random() * 14.0,
+        })
+        .collect();
+    // Give each fish a slightly different vertical drift
+    let fish: Rc<RefCell<Vec<BabelFish>>> = Rc::new(RefCell::new(fish_init));
+
     let f: Rc<RefCell<Option<Closure<dyn FnMut()>>>> = Rc::new(RefCell::new(None));
     let f_clone = f.clone();
 
@@ -179,6 +197,30 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
                 *drop = 0.0;
             }
             *drop += 0.5;
+        }
+
+        // Draw ghost babel fish
+        {
+            let mut fish_list = fish.borrow_mut();
+            for bfish in fish_list.iter_mut() {
+                ctx.save();
+                ctx.set_global_alpha(bfish.opacity);
+                ctx.set_font(&format!("{}px serif", bfish.size as u32));
+                ctx.set_fill_style_str("#aef");
+                let glyph = if bfish.dir > 0.0 { "🐟" } else { "🐡" };
+                let _ = ctx.fill_text(glyph, bfish.x, bfish.y);
+                ctx.restore();
+                // Move
+                bfish.x += bfish.dir * bfish.speed;
+                // Gentle vertical sine drift
+                bfish.y += (bfish.x * 0.01).sin() * 0.3;
+                // Wrap around edges
+                if bfish.x > w as f64 + 30.0 { bfish.x = -30.0; }
+                if bfish.x < -30.0 { bfish.x = w as f64 + 30.0; }
+                // Keep within vertical bounds
+                if bfish.y < 10.0 { bfish.y = 10.0; }
+                if bfish.y > h as f64 - 10.0 { bfish.y = h as f64 - 10.0; }
+            }
         }
 
         // Schedule next frame

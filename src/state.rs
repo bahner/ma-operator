@@ -2,6 +2,7 @@ use leptos::prelude::*;
 use ma_core::{Inbox, Message};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
+use std::rc::Rc;
 
 // ── Session ────────────────────────────────────────────────────────────────
 
@@ -10,6 +11,8 @@ pub struct SessionState {
     pub username: String,
     /// iroh QUIC transport secret key bytes
     pub iroh_key: [u8; 32],
+    /// IPNS signing key bytes
+    pub ipns_secret_key: [u8; 32],
     /// DID signing key (Ed25519) bytes
     pub did_signing_key: [u8; 32],
     /// Sender's bare DID, e.g. "did:ma:k51qzi5…"
@@ -112,13 +115,13 @@ pub struct StoredIdentity {
 
 thread_local! {
     /// The active iroh endpoint after login.
-    pub static ENDPOINT: RefCell<Option<Box<dyn ma_core::MaEndpoint>>> =
+    pub static ENDPOINT: RefCell<Option<Rc<dyn ma_core::MaEndpoint>>> =
         RefCell::new(None);
-    /// True while a send task has temporarily taken ownership of ENDPOINT.
-    pub static ENDPOINT_IN_FLIGHT: RefCell<bool> =
-        RefCell::new(false);
     /// iroh transport secret key bytes for active session (used for lazy reconnect).
     pub static SESSION_IROH_KEY: RefCell<Option<[u8; 32]>> =
+        RefCell::new(None);
+    /// IPNS signing key bytes for the active session (used for IPFS publishing).
+    pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> =
         RefCell::new(None);
     /// The inbox registered on the endpoint for the default inbox protocol.
     pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> =

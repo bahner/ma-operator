@@ -3,11 +3,12 @@ use ma_core::{BrowserIdentityExport, Config, SecretBundle};
 
 /// Key material extracted from a decrypted [`SecretBundle`].
 ///
-/// Contains everything the session needs: iroh transport key,
+/// Contains everything the session needs: iroh transport key, IPNS key,
 /// DID signing key, and the resolved DID string.
 #[derive(Clone)]
 pub struct UnlockedIdentity {
     pub iroh_key: [u8; 32],
+    pub ipns_secret_key: [u8; 32],
     pub did_signing_key: [u8; 32],
     /// Full bare DID, e.g. `"did:ma:k51qzi5…"`
     pub sender_did: String,
@@ -51,6 +52,7 @@ fn bundle_to_unlocked(bundle: &SecretBundle) -> Result<UnlockedIdentity, String>
     let sender_did = identity.subject_url.base_id();
     Ok(UnlockedIdentity {
         iroh_key: bundle.iroh_secret_key,
+        ipns_secret_key: bundle.ipns_secret_key,
         did_signing_key: bundle.did_signing_key,
         sender_did,
     })

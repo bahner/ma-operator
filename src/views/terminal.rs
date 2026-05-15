@@ -1,5 +1,6 @@
 /// Main terminal/dashboard view — shown after login.
 use leptos::prelude::*;
+use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
@@ -46,12 +47,13 @@ pub fn Terminal() -> impl IntoView {
         let session = state.session.get_untracked();
         if let Some(sess) = session {
             let iroh_key = sess.iroh_key;
+            let ipns_secret_key = sess.ipns_secret_key;
             let did_signing_key = sess.did_signing_key;
             let sender_did = sess.sender_did.clone();
             let username = sess.username.clone();
             spawn_local(async move {
                 state2.push_system("connecting to iroh...");
-                match transport::connect(iroh_key, did_signing_key, sender_did).await {
+                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, sender_did).await {
                     Ok(()) => state2.push_system("iroh endpoint ready"),
                     Err(e) => state2.push_error(format!("iroh: {e}")),
                 }
@@ -130,6 +132,28 @@ pub fn Terminal() -> impl IntoView {
 #[component]
 fn OutputPane(state: AppState) -> impl IntoView {
     let lines = state.lines;
+
+    // Auto-scroll to bottom whenever lines change
+    Effect::new(move |_| {
+        let _ = lines.get(); // track signal
+        // Schedule scroll after DOM update
+        if let Some(window) = web_sys::window() {
+            let closure = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(|| {
+                if let Some(win) = web_sys::window() {
+                    if let Some(doc) = win.document() {
+                        if let Some(el) = doc.get_element_by_id("terminal-output") {
+                            el.set_scroll_top(el.scroll_height());
+                        }
+                    }
+                }
+            });
+            let _ = window.request_animation_frame(
+                closure.as_ref().unchecked_ref()
+            );
+            closure.forget();
+        }
+    });
+
     view! {
         <div
             class="terminal-output"
@@ -332,6 +356,38 @@ fn eval_dot(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoC
             }
         }
 
+        // ── .my.identity ─────────────────────────────────────────────────
+        ".my.identity" => {
+            let sess = state.session.get_untracked();
+            if let Some(sess) = sess {
+                state.push_output(format!(".my.identity.did: {}", sess.sender_did));
+                let cfg = config.get_untracked();
+                for (k, v) in cfg.list(".my.identity") {
+                    state.push_output(format!("  {k}: {v}"));
+                }
+            }
+        }
+
+        ".my.identity.publish" => {
+            let cfg = config.get_untracked();
+            let publisher = match cfg.get(".my.identity.publisher") {
+                Some(p) => p.to_string(),
+                None => {
+                    state.push_error(".my.identity.publisher not set — use: .my.identity.publisher: did:ma:<publisher>");
+                    return;
+                }
+            };
+            let sess = state.session.get_untracked();
+            let did = sess.map(|s| s.sender_did).unwrap_or_default();
+            let state2 = state.clone();
+            spawn_local(async move {
+                match transport::send_rpc(&publisher, "publish", &[&did]).await {
+                    Ok(()) => state2.push_system(format!("published {did} to {publisher}")),
+                    Err(e) => state2.push_error(format!("publish failed: {e}")),
+                }
+            });
+        }
+
         // ── .my ───────────────────────────────────────────────────────────
         ".my" => {
             let cfg = config.get_untracked();
@@ -431,6 +487,11 @@ const HELP_TEXT: &[&str] = &[
     "  .my.aliases                  list aliases",
     "  .my.aliases add @name <did>  add alias",
     "  .my.aliases remove @name     remove alias",
+    "",
+    "── identity ─────────────────────────────────────────────────────────────",
+    "  .my.identity                 show DID and identity config",
+    "  .my.identity.publisher: did  set publisher service DID",
+    "  .my.identity.publish         publish DID to configured publisher",
     "",
     "── config ───────────────────────────────────────────────────────────────",
     "  .config                      list all config",

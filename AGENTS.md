@@ -118,6 +118,7 @@ Vi må mao parse og message, før vi kan sende vår melding.
 for kode struktur sørg for å dele godt opp i logiske filer, ikke lag wn stor en-fils app. Det gjelder både evnt. javascript kode i www og i rust koden i src.
 Ikke dupliserkode, som allerede er i ma-did eller ma-core. Bruke dem for alt hva de er verdt. Sett deg godt inn i ma-core crate. Unngå store rammeverk, hvis
 det ikke er nødvendig.
+Appen skal alltid bruke publisert `ma-core` fra crates.io. Den skal aldri peke til `~/src/rust-ma-core` eller andre lokale path dependencies for `ma-core`.
 
 Lag Makefile for alminnelie targets, bygg av app'en. Publisering til ipfs (eg. ipfs add www) og printing av resulterende cid eller dump til .cid slik at
 jeg lett kan åpne den via ipfs:// i min nettleser.

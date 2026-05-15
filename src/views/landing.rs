@@ -122,6 +122,7 @@ fn LoginPanel(
                                 state.session.set(Some(SessionState {
                                     username: uname,
                                     iroh_key: id.iroh_key,
+                                    ipns_secret_key: id.ipns_secret_key,
                                     did_signing_key: id.did_signing_key,
                                     sender_did: id.sender_did,
                                 }));
@@ -254,6 +255,7 @@ fn CreatePanel(
                             state.session.set(Some(SessionState {
                                 username: uname,
                                 iroh_key: id.iroh_key,
+                                ipns_secret_key: id.ipns_secret_key,
                                 did_signing_key: id.did_signing_key,
                                 sender_did: id.sender_did,
                             }));
