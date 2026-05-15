@@ -8,6 +8,8 @@
     --colour-bg:          #0d0d0d;
     --colour-text:        #00ff41;
     --colour-dimmed:      #008f11;
+    --colour-pending:     #004d00;
+    --colour-replied:     #00ff41;
     --colour-alias:       #ffd700;
     --colour-error:       #ff3333;
     --colour-system:      #888888;
@@ -261,6 +263,9 @@ html, body {
 
 .line-output { color: var(--colour-text); }
 .line-input  { color: var(--colour-dimmed); }
+.line-pending { color: var(--colour-pending); }
+.line-replied { color: var(--colour-replied); }
+.line-reply   { color: var(--colour-replied); }
 .line-error  { color: var(--colour-error); }
 .line-system { color: var(--colour-system); }
 

@@ -5,8 +5,9 @@ use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
+    core::{CommandStatus, Entry, SystemKind},
     parser::command::{parse, Command},
-    state::{AppState, FocusMode, LineKind},
+    state::{AppState, FocusMode},
     transport,
 };
 
@@ -71,8 +72,21 @@ pub fn Terminal() -> impl IntoView {
                 if !transport::is_connected() {
                     continue;
                 }
-                for line in transport::drain_inbox() {
-                    state2.push_output(line);
+                for incoming in transport::drain_inbox() {
+                    match &incoming.reply_to {
+                        Some(msg_id) => {
+                            let status = if incoming.is_error {
+                                CommandStatus::Error(incoming.display.clone())
+                            } else {
+                                CommandStatus::Replied(incoming.display.clone())
+                            };
+                            let cmd_id = state2.resolve_command(msg_id, status);
+                            state2.push_incoming(incoming.display, cmd_id);
+                        }
+                        None => {
+                            state2.push_incoming(incoming.display, None);
+                        }
+                    }
                 }
             }
         });
@@ -87,13 +101,6 @@ pub fn Terminal() -> impl IntoView {
             if line.is_empty() {
                 return;
             }
-            // Echo input
-            let prompt_prefix = state
-                .focus_actor
-                .get_untracked()
-                .map(|focus| format!("{} ", focus.prompt))
-                .unwrap_or_default();
-            state.push_input(format!("> {prompt_prefix}{line}"));
 
             // History
             state.history.update(|h| {
@@ -109,8 +116,8 @@ pub fn Terminal() -> impl IntoView {
             let cfg = config.get_untracked();
 
             match parse(&line, &cfg, focus.as_ref().map(|item| item.target.as_str())) {
-                Ok(cmd) => eval(cmd, &state, config.clone()),
-                Err(e) => state.push_error(e),
+                Ok(cmd) => eval(cmd, &line, &state, config.clone()),
+                Err(e) => state.push_error(format!("'{line}': {e}")),
             }
         }
     };
@@ -131,12 +138,11 @@ pub fn Terminal() -> impl IntoView {
 
 #[component]
 fn OutputPane(state: AppState) -> impl IntoView {
-    let lines = state.lines;
+    let entries = state.entries;
 
-    // Auto-scroll to bottom whenever lines change
+    // Auto-scroll to bottom whenever entries change
     Effect::new(move |_| {
-        let _ = lines.get(); // track signal
-        // Schedule scroll after DOM update
+        let _ = entries.get(); // track signal
         if let Some(window) = web_sys::window() {
             let closure = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(|| {
                 if let Some(win) = web_sys::window() {
@@ -160,29 +166,47 @@ fn OutputPane(state: AppState) -> impl IntoView {
             id="terminal-output"
         >
             <For
-                each=move || lines.get()
-                key=|l| l.id
-                children=|line| {
-                    let cls = match line.kind {
-                        LineKind::Output => "terminal-line line-output",
-                        LineKind::Input  => "terminal-line line-input",
-                        LineKind::Error  => "terminal-line line-error",
-                        LineKind::System => "terminal-line line-system",
-                    };
-                    view! { <div class=cls>{line.text.clone()}</div> }
-                }
+                each=move || entries.get()
+                key=|e| e.id()
+                children=|entry| render_entry(entry)
             />
         </div>
     }
 }
 
+fn render_entry(entry: Entry) -> impl IntoView {
+    match entry {
+        Entry::Command(c) => {
+            let cls = match c.status {
+                CommandStatus::Sent => "terminal-line line-pending",
+                CommandStatus::Replied(_) => "terminal-line line-replied",
+                CommandStatus::Error(_) => "terminal-line line-error",
+            };
+            let text = format!("→ {}", c.raw);
+            view! { <div class=cls>{text}</div> }.into_any()
+        }
+        Entry::Incoming(i) => {
+            let cls = if i.after_cmd_id.is_some() {
+                "terminal-line line-reply"
+            } else {
+                "terminal-line line-output"
+            };
+            view! { <div class=cls>{i.display}</div> }.into_any()
+        }
+        Entry::System(s) => {
+            let cls = match s.kind {
+                SystemKind::Info => "terminal-line line-system",
+                SystemKind::Error => "terminal-line line-error",
+            };
+            view! { <div class=cls>{s.text}</div> }.into_any()
+        }
+    }
+}
+
 // ── Command evaluator ──────────────────────────────────────────────────────
 
-fn eval(cmd: Command, state: &AppState, config: RwSignal<EgoConfig>) {
+fn eval(cmd: Command, raw: &str, state: &AppState, config: RwSignal<EgoConfig>) {
     match cmd {
-        Command::PlainText(t) if !t.is_empty() => {
-            state.push_output(t);
-        }
         Command::PlainText(_) => {}
 
         Command::DotCommand { path, args } => {
@@ -190,7 +214,16 @@ fn eval(cmd: Command, state: &AppState, config: RwSignal<EgoConfig>) {
         }
 
         Command::ActorMessage { target, verb, body } => {
-            let state = state.clone();
+            // Capture the prompt-prefixed raw line as the visual record.
+            let focus_prefix = state
+                .focus_actor
+                .get_untracked()
+                .map(|f| format!("{} ", f.prompt))
+                .unwrap_or_default();
+            let display = format!("{focus_prefix}{raw}");
+            let cmd_id = state.push_command(display);
+
+            let state_async = state.clone();
             spawn_local(async move {
                 let result = match &verb {
                     Some(v) => {
@@ -204,15 +237,9 @@ fn eval(cmd: Command, state: &AppState, config: RwSignal<EgoConfig>) {
                     None => transport::send_text(&target, &body).await,
                 };
                 match result {
-                    Ok(()) => {
-                        let msg = crate::messages::format_sent(
-                            &target,
-                            verb.as_deref(),
-                            &body,
-                        );
-                        state.push_output(msg);
-                    }
-                    Err(e) => state.push_error(e),
+                    Ok(msg_id) => state_async.bind_message_id(cmd_id, msg_id),
+                    Err(e) => state_async
+                        .resolve_command_by_id(cmd_id, CommandStatus::Error(e)),
                 }
             });
         }
@@ -234,7 +261,7 @@ fn eval_dot(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoC
             state.session.set(None);
         }
         ".clear" => {
-            state.lines.set(vec![]);
+            state.entries.set(vec![]);
         }
 
         // ── .use ──────────────────────────────────────────────────────────
@@ -382,7 +409,7 @@ fn eval_dot(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoC
             let state2 = state.clone();
             spawn_local(async move {
                 match transport::send_rpc(&publisher, "publish", &[&did]).await {
-                    Ok(()) => state2.push_system(format!("published {did} to {publisher}")),
+                    Ok(_msg_id) => state2.push_system(format!("published {did} to {publisher}")),
                     Err(e) => state2.push_error(format!("publish failed: {e}")),
                 }
             });

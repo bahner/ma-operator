@@ -17,8 +17,10 @@ pub fn InputBar(
     // Stash the current draft when navigating history
     let draft = RwSignal::new(String::new());
 
+    let on_submit = std::rc::Rc::new(on_submit);
+
     let on_keydown = {
-        let on_submit = std::rc::Rc::new(on_submit);
+        let on_submit = on_submit.clone();
         move |ev: web_sys::KeyboardEvent| {
             match ev.key().as_str() {
                 "Enter" => {
@@ -65,6 +67,34 @@ pub fn InputBar(
         }
     };
 
+    let on_paste = {
+        let on_submit = on_submit.clone();
+        move |ev: web_sys::ClipboardEvent| {
+            let Some(dt) = ev.clipboard_data() else { return };
+            let Ok(text) = dt.get_data("text/plain") else { return };
+            if !text.contains('\n') {
+                return; // single-line paste: let the browser handle it normally
+            }
+            ev.prevent_default();
+            // Prepend any text already in the input to the first pasted line.
+            let existing = value.get_untracked();
+            value.set(String::new());
+            hist_idx.set(None);
+            let mut lines = text.split('\n');
+            if let Some(first) = lines.next() {
+                let combined = format!("{existing}{first}");
+                if !combined.trim().is_empty() {
+                    on_submit(combined);
+                }
+            }
+            for line in lines {
+                if !line.trim().is_empty() {
+                    on_submit(line.to_string());
+                }
+            }
+        }
+    };
+
     let on_input = move |ev: web_sys::Event| {
         let target = ev.target().unwrap();
         let input = target.unchecked_into::<HtmlInputElement>();
@@ -96,6 +126,7 @@ pub fn InputBar(
                 prop:value=move || value.get()
                 on:keydown=on_keydown
                 on:input=on_input
+                on:paste=on_paste
             />
         </div>
     }

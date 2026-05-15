@@ -25,6 +25,8 @@ web-sys = { version = "0.3", features = [
     "HtmlCanvasElement",
     "CanvasRenderingContext2d",
     "KeyboardEvent",
+    "ClipboardEvent",
+    "DataTransfer",
     "Performance",
     "Blob",
     "BlobPropertyBag",
