@@ -1,7 +1,8 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
-    generate_ipfs_publish_request, new_ma_endpoint, Did, IpfsGatewayResolver, MaExtension,
-    Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, RPC_PROTOCOL_ID,
+    generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
+    IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID,
+    IPFS_PROTOCOL_ID, RPC_PROTOCOL_ID,
 };
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
@@ -180,6 +181,23 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(publisher_did, IPFS_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// Send arbitrary content to an IPFS publisher's `/ma/ipfs/0.0.1` endpoint for
+/// storage. Returns the dispatched `Message.id` on success; the CID arrives
+/// later via an RPC reply keyed on that id.
+pub async fn send_ipfs_store(
+    publisher_did: &str,
+    content: Vec<u8>,
+    content_type: &str,
+) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+    let msg =
+        generate_ipfs_store_request(&sender_did, publisher_did, content, content_type, &signing_key)
+            .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
     send_message_on(publisher_did, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)

@@ -383,3 +383,88 @@ html, body {
 .gold   { color: var(--colour-alias); }
 .red    { color: var(--colour-error); }
 .grey   { color: var(--colour-system); }
+
+/* ── Editor modal ────────────────────────────────────────────────────── */
+.editor-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.editor-modal {
+    background: var(--colour-bg);
+    border: 1px solid var(--colour-dimmed);
+    display: flex;
+    flex-direction: column;
+    width: 90vw;
+    max-width: 900px;
+    height: 80vh;
+    overflow: hidden;
+}
+
+.editor-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.4rem 0.6rem;
+    border-bottom: 1px solid var(--colour-dimmed);
+    background: var(--colour-bg);
+    flex-shrink: 0;
+}
+
+.editor-doc-path {
+    flex: 1;
+    color: var(--colour-alias);
+    font-size: 0.85em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.editor-lang-select {
+    background: var(--colour-bg);
+    color: var(--colour-text);
+    border: 1px solid var(--colour-dimmed);
+    padding: 0.15rem 0.3rem;
+    font-size: 0.8em;
+}
+
+.editor-btn {
+    background: transparent;
+    border: 1px solid var(--colour-dimmed);
+    color: var(--colour-text);
+    padding: 0.2rem 0.6rem;
+    cursor: pointer;
+    font-size: 0.8em;
+    font-family: inherit;
+}
+
+.editor-btn:hover { border-color: var(--colour-text); }
+.btn-eval  { color: var(--colour-alias); border-color: var(--colour-alias); }
+.btn-eval:hover  { background: rgba(255, 222, 173, 0.1); }
+.btn-cancel { color: var(--colour-error); }
+.btn-cancel:hover { background: rgba(255, 80, 80, 0.1); }
+
+.editor-cm-host {
+    flex: 1;
+    overflow: auto;
+    font-size: 0.9em;
+}
+
+/* CodeMirror dark theme overrides */
+.editor-cm-host .cm-editor {
+    height: 100%;
+    background: var(--colour-bg);
+    color: var(--colour-text);
+}
+.editor-cm-host .cm-gutters {
+    background: var(--colour-bg);
+    border-right: 1px solid var(--colour-dimmed);
+    color: var(--colour-dimmed);
+}
+.editor-cm-host .cm-activeLineGutter,
+.editor-cm-host .cm-activeLine { background: rgba(255,255,255,0.04); }

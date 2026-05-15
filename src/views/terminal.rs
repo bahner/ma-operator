@@ -11,6 +11,7 @@ use crate::{
     parser::verbs::dispatch_verb,
     state::{AppState, FocusMode},
     transport,
+    views::editor::{EditorContext, EditorModal},
 };
 
 #[component]
@@ -19,6 +20,9 @@ pub fn Terminal() -> impl IntoView {
 
     // Per-session reactive config
     let config: RwSignal<EgoConfig> = RwSignal::new(EgoConfig::new());
+
+    // Editor modal signal — Some(EditorContext) opens the overlay
+    let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
 
     // Load config from IndexedDB on mount
     {
@@ -122,10 +126,34 @@ pub fn Terminal() -> impl IntoView {
         });
     }
 
+    // Eval callback — runs multi-line text through the terminal evaluator.
+    // Nested :eval (eval inside eval) passes a no-op to avoid infinite recursion.
+    let eval_lines = {
+        let state = state.clone();
+        let config = config.clone();
+        let show_editor2 = show_editor.clone();
+        Callback::new(move |text: String| {
+            let no_op: Callback<String> = Callback::new(|_| {});
+            for line in text.lines() {
+                let line = line.trim().to_string();
+                if line.is_empty() || line.starts_with('#') {
+                    continue;
+                }
+                let cfg = config.get_untracked();
+                let focus = state.focus_actor.get_untracked();
+                match parse(&line, &cfg, focus.as_ref().map(|f| f.target.as_str())) {
+                    Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor2, no_op),
+                    Err(e) => state.push_error(format!("eval '{line}': {e}")),
+                }
+            }
+        })
+    };
+
     // Handler called by the input component with a submitted line
     let handle_input = {
         let state = state.clone();
         let config = config.clone();
+        let eval_lines = eval_lines.clone();
         move |line: String| {
             let line = line.trim().to_string();
             if line.is_empty() {
@@ -157,7 +185,7 @@ pub fn Terminal() -> impl IntoView {
             let cfg = config.get_untracked();
 
             match parse(&line, &cfg, focus.as_ref().map(|item| item.target.as_str())) {
-                Ok(cmd) => eval(cmd, &line, &state, config.clone()),
+                Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor, eval_lines),
                 Err(e) => state.push_error(format!("'{line}': {e}")),
             }
         }
@@ -165,6 +193,7 @@ pub fn Terminal() -> impl IntoView {
 
     view! {
         <div class="terminal">
+            <EditorModal show=show_editor config=config on_eval=eval_lines/>
             <OutputPane state=state.clone()/>
             <crate::views::input::InputBar
                 on_submit=handle_input
@@ -246,12 +275,19 @@ fn render_entry(entry: Entry) -> impl IntoView {
 
 // ── Command evaluator ──────────────────────────────────────────────────────
 
-fn eval(cmd: Command, raw: &str, state: &AppState, config: RwSignal<EgoConfig>) {
+fn eval(
+    cmd: Command,
+    raw: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
+) {
     match cmd {
         Command::PlainText(_) => {}
 
         Command::DotCommand { path, op, args } => {
-            eval_dot(&path, op, &args, state, config);
+            eval_dot(&path, op, &args, state, config, show_editor, on_eval);
         }
 
         Command::ActorMessage { target, verb, body } => {
@@ -300,6 +336,8 @@ fn eval_dot(
     args: &[String],
     state: &AppState,
     config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
 ) {
     let session = state.session.get_untracked();
     let username = session.map(|s| s.username).unwrap_or_default();
@@ -330,7 +368,7 @@ fn eval_dot(
 
     // ── Verb dispatch ────────────────────────────────────────────────────
     if let DotOp::Verb(verb) = &op {
-        if let Err(e) = dispatch_verb(path, verb, args, state, config) {
+        if let Err(e) = dispatch_verb(path, verb, args, state, config, show_editor, on_eval) {
             state.push_error(e);
         }
         return;

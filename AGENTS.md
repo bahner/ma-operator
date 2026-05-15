@@ -122,3 +122,94 @@ Appen skal alltid bruke publisert `ma-core` fra crates.io. Den skal aldri peke t
 
 Lag Makefile for alminnelie targets, bygg av app'en. Publisering til ipfs (eg. ipfs add www) og printing av resulterende cid eller dump til .cid slik at
 jeg lett kan åpne den via ipfs:// i min nettleser.
+
+---
+
+## Architectural decisions (accumulated)
+
+### Dot-command grammar
+
+- `.path` — get (shows value if leaf, subtree listing if node)
+- `.path value` — match/filter (get with query)
+- `.path: value` — set
+- `.path:` — delete (subtree if node, leaf if leaf)
+- `.path:verb [args]` — local verb dispatch (not RPC)
+
+Read-only keys (e.g. `.my.identity.did`) are enforced in `EgoConfig::is_read_only()`.
+A key cannot be both a leaf and a parent node simultaneously.
+
+### Alias rules
+
+- Only leaf aliases expand. Subtree-only paths are an error on `@name`.
+- `\@foo` escapes alias expansion — literal `@foo` text.
+- Aliases are stored at `.my.aliases.<name>` (flat leaves, bare DIDs only — no fragments).
+- CRUD via generic dot grammar (`.my.aliases.fjodor: did:ma:…` to set, `.my.aliases.fjodor:` to delete).
+
+### Identity / session keys
+
+Four 32-byte keys are held in thread-locals for the session:
+- `SESSION_IROH_KEY` — iroh QUIC transport
+- `SESSION_IPNS_KEY` — IPNS identity root
+- `SESSION_SIGNING_KEY` — Ed25519 signing (DID `#sign`)
+- `SESSION_ENCRYPTION_KEY` — X25519 encryption (DID `#enc`)
+
+`did_encryption_key` is part of the session because it will be needed for decrypting
+incoming messages. Always include it when constructing SessionState.
+
+### Transport / services
+
+- Register BOTH `INBOX_PROTOCOL_ID` and `RPC_PROTOCOL_ID` on the endpoint at connect time.
+- Store a separate `SESSION_RPC_INBOX` thread-local for RPC replies (`:pong`, CID replies, etc.).
+- Drain both inboxes in the polling loop (every 500 ms).
+- When publishing the DID document, use `bundle.build_document(ep.ma_extension())` — this
+  includes all registered services in the signed document so remote senders can resolve
+  reply endpoints.
+
+### .my.documents — document management
+
+Documents are stored in EgoConfig as a subtree:
+- `.my.documents.<name>.content` — the text body
+- `.my.documents.<name>.content_type` — text/plain | text/markdown | text/yaml
+- `.my.documents.<name>.cid` — IPFS CID (set after :publish)
+
+Verbs on `.my.documents.<name>`:
+- `:edit` — open CodeMirror 6 modal editor with stored content (or empty)
+- `:edit <cid>` — fetch CID from IPFS gateway, open in editor for review (NOT auto-executed)
+- `:eval` — execute SAVED `.content` line-by-line through the terminal evaluator
+- `:publish <@publisher-or-did>` — send `application/x-ma-ipfs-store` to publisher; CID reply stored in `.cid`
+- `:cid` — display `.my.documents.<name>.cid`
+- `:fetch <cid>` — import CID content into `.content` + `.cid`, no editor, no execution
+- `.my.documents.<name>:` — deletes entire document subtree
+
+Editor buttons: **Save** (persists `.content`, editor stays open), **Eval** (runs current buffer
+as commands, closes editor — does NOT require prior save), **Cancel** (close without saving).
+
+### SECURITY — CID execution
+
+**UNDER NO CIRCUMSTANCES may content fetched from a CID be executed automatically.**
+`:edit <cid>` MUST open the editor for human review first.
+Only `:eval` (on saved content) and the **Eval** button inside the editor (on the visible buffer)
+may trigger execution. This rule must never be bypassed.
+
+### application/x-ma-ipfs-store protocol
+
+New content type on `/ma/ipfs/0.0.1`:
+- Payload: CBOR `{content: bytes, content_type: string}`
+- Encryption: required
+- Reply: `application/x-ma-rpc-reply` with `[:ok, "<cid>"]` or `[:error, "msg"]`,
+  `reply_to` = request msg ID, delivered to sender's `/ma/rpc/0.0.1`
+
+### Editor
+
+CodeMirror 6 loaded from CDN (esm.sh) via `www/editor.js` shim.
+Exposed on `window.maEditor`: `create(el_id, value, language)`, `getValue(el_id)`,
+`setLanguage(el_id, lang)`, `destroy(el_id)`.
+Called from Rust via `js_sys` / `wasm_bindgen`.
+Language modes: plain, markdown, yaml.
+
+### ma-core patch
+
+During development, `[patch.crates-io] ma-core = { path = "../rust-ma-core" }` is active.
+New helpers added locally must be gated under the appropriate feature flag (e.g. `ipfs`)
+and exported from `lib.rs`. When a new published version is available, switch back to the
+crates.io version.
