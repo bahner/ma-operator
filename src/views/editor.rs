@@ -97,15 +97,14 @@ pub fn EditorModal(
                     // element is rendered.  A rAF is sufficient.
                     let initial = ctx.initial.clone();
                     let lang = ctx.language.clone();
-                    let _ = web_sys::window()
-                        .and_then(|w| {
-                            let cb = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(
-                                move || js_editor_create(EDITOR_EL_ID, &initial, &lang),
-                            );
-                            let r = w.request_animation_frame(cb.as_ref().unchecked_ref()).ok();
-                            cb.forget();
-                            r
+                    let _ = web_sys::window().and_then(|w| {
+                        let cb = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(move || {
+                            js_editor_create(EDITOR_EL_ID, &initial, &lang)
                         });
+                        let r = w.request_animation_frame(cb.as_ref().unchecked_ref()).ok();
+                        cb.forget();
+                        r
+                    });
                 }
                 None => {
                     js_editor_destroy(EDITOR_EL_ID);
@@ -142,7 +141,10 @@ pub fn EditorModal(
             let lang = language.get_untracked();
             config.update(|c| {
                 c.set(&format!("{}.content", ctx.doc_path), &text);
-                c.set(&format!("{}.content_type", ctx.doc_path), content_type_for(&lang));
+                c.set(
+                    &format!("{}.content_type", ctx.doc_path),
+                    content_type_for(&lang),
+                );
             });
             // Persist asynchronously.
             if let Some(sess) = use_context::<AppState>()
@@ -158,7 +160,7 @@ pub fn EditorModal(
                     }
                 });
             }
-            state.push_system(format!("saved {}", ctx.doc_path));
+            state.push_command_ok(format!("{}:save", ctx.doc_path));
             // Keep editor open after save (per spec).
         }
     };
@@ -215,7 +217,7 @@ pub fn EditorModal(
 fn content_type_for(lang: &str) -> &str {
     match lang {
         "markdown" => "text/markdown",
-        "yaml"     => "text/yaml",
-        _          => "text/plain",
+        "yaml" => "text/yaml",
+        _ => "text/plain",
     }
 }

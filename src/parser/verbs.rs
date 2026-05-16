@@ -55,8 +55,10 @@ pub fn dispatch_verb(
         leptos::task::spawn_local(async move {
             match transport::send_ipfs_publish(&publisher).await {
                 Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
-                Err(e) => state2
-                    .resolve_command_by_id(cmd_id, CommandStatus::Error(e)),
+                Err(e) => {
+                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                    state2.push_error(format!("publish failed: {e}"));
+                }
             }
         });
         return Ok(());
@@ -82,7 +84,8 @@ pub fn dispatch_verb(
                         .unwrap_or_default()
                         .to_string();
                     let lang = lang_for_content_type(
-                        cfg.get(&format!("{doc_path}.content_type")).unwrap_or("text/plain"),
+                        cfg.get(&format!("{doc_path}.content_type"))
+                            .unwrap_or("text/plain"),
                     );
                     show_editor.set(Some(
                         EditorContext::new(doc_path, content).with_language(lang),
@@ -96,12 +99,9 @@ pub fn dispatch_verb(
                     leptos::task::spawn_local(async move {
                         match fetch_from_gateway(&cid).await {
                             Ok(text) => {
-                                state2.push_system(format!(
-                                    "fetched {cid} — review before eval"
-                                ));
+                                state2.push_system(format!("fetched {cid} — review before eval"));
                                 show_editor2.set(Some(
-                                    EditorContext::new(doc_path2, text)
-                                        .with_language("plain"),
+                                    EditorContext::new(doc_path2, text).with_language("plain"),
                                 ));
                             }
                             Err(e) => {
@@ -123,7 +123,7 @@ pub fn dispatch_verb(
                 if content.is_empty() {
                     return Err(format!("{doc_path}.content is empty"));
                 }
-                state.push_system(format!("eval {doc_path}"));
+                state.push_command_done(format!("{doc_path}:eval"));
                 on_eval.run(content);
                 Ok(())
             }
@@ -152,12 +152,7 @@ pub fn dispatch_verb(
                 let doc_path2 = doc_path.clone();
                 let publisher_disp = publisher.clone();
                 leptos::task::spawn_local(async move {
-                    match transport::send_ipfs_store(
-                        &publisher,
-                        content_bytes,
-                        &content_type,
-                    )
-                    .await
+                    match transport::send_ipfs_store(&publisher, content_bytes, &content_type).await
                     {
                         Ok(msg_id) => {
                             state2.push_system(format!(
@@ -169,9 +164,7 @@ pub fn dispatch_verb(
                             // (Handled in the inbox polling loop via bind_message_id)
                         }
                         Err(e) => {
-                            state2.push_error(format!(
-                                "publish {doc_path2}: {e}"
-                            ));
+                            state2.push_error(format!("publish {doc_path2}: {e}"));
                         }
                     }
                 });
@@ -238,19 +231,23 @@ fn lang_for_content_type(ct: &str) -> &'static str {
 /// Fetch raw text bytes from an IPFS gateway.
 /// Uses the dweb.link gateway (same resolver as transport layer).
 async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
-    use wasm_bindgen_futures::JsFuture;
     use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
 
     let url = format!("https://dweb.link/ipfs/{cid}");
     let window = web_sys::window().ok_or("no window")?;
     let promise = window.fetch_with_str(&url);
-    let resp_val = JsFuture::from(promise).await.map_err(|e| format!("{e:?}"))?;
+    let resp_val = JsFuture::from(promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
     let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
     if !resp.ok() {
         return Err(format!("HTTP {}", resp.status()));
     }
     let text_promise = resp.text().map_err(|e| format!("{e:?}"))?;
-    let text_val = JsFuture::from(text_promise).await.map_err(|e| format!("{e:?}"))?;
+    let text_val = JsFuture::from(text_promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
     text_val
         .as_string()
         .ok_or_else(|| "response is not a string".to_string())

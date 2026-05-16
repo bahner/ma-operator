@@ -15,8 +15,7 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 use crate::state::AppState;
 
 // Matrix character set — katakana + digits
-const MATRIX_CHARS: &str =
-    "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ\
+const MATRIX_CHARS: &str = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ\
      0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
 
 #[component]
@@ -68,16 +67,10 @@ pub fn Screensaver() -> impl IntoView {
             *la.borrow_mut() = now_secs();
         });
         window
-            .add_event_listener_with_callback(
-                "keydown",
-                closure.as_ref().unchecked_ref(),
-            )
+            .add_event_listener_with_callback("keydown", closure.as_ref().unchecked_ref())
             .unwrap();
         window
-            .add_event_listener_with_callback(
-                "mousemove",
-                closure.as_ref().unchecked_ref(),
-            )
+            .add_event_listener_with_callback("mousemove", closure.as_ref().unchecked_ref())
             .unwrap();
         closure.forget();
     }
@@ -147,7 +140,7 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
         x: f64,
         y: f64,
         speed: f64,
-        dir: f64,   // 1.0 = right, -1.0 = left
+        dir: f64, // 1.0 = right, -1.0 = left
         opacity: f64,
         size: f64,
     }
@@ -157,7 +150,11 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
             x: js_sys::Math::random() * w as f64,
             y: (i as f64 + 1.0) * (h as f64 / (fish_count as f64 + 1.0)),
             speed: 0.4 + js_sys::Math::random() * 0.6,
-            dir: if js_sys::Math::random() > 0.5 { 1.0 } else { -1.0 },
+            dir: if js_sys::Math::random() > 0.5 {
+                1.0
+            } else {
+                -1.0
+            },
             opacity: 0.10 + js_sys::Math::random() * 0.12,
             size: 18.0 + js_sys::Math::random() * 14.0,
         })
@@ -215,25 +212,26 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
                 // Gentle vertical sine drift
                 bfish.y += (bfish.x * 0.01).sin() * 0.3;
                 // Wrap around edges
-                if bfish.x > w as f64 + 30.0 { bfish.x = -30.0; }
-                if bfish.x < -30.0 { bfish.x = w as f64 + 30.0; }
+                if bfish.x > w as f64 + 30.0 {
+                    bfish.x = -30.0;
+                }
+                if bfish.x < -30.0 {
+                    bfish.x = w as f64 + 30.0;
+                }
                 // Keep within vertical bounds
-                if bfish.y < 10.0 { bfish.y = 10.0; }
-                if bfish.y > h as f64 - 10.0 { bfish.y = h as f64 - 10.0; }
+                if bfish.y < 10.0 {
+                    bfish.y = 10.0;
+                }
+                if bfish.y > h as f64 - 10.0 {
+                    bfish.y = h as f64 - 10.0;
+                }
             }
         }
 
         // Schedule next frame
         web_sys::window()
             .unwrap()
-            .request_animation_frame(
-                f_clone
-                    .borrow()
-                    .as_ref()
-                    .unwrap()
-                    .as_ref()
-                    .unchecked_ref(),
-            )
+            .request_animation_frame(f_clone.borrow().as_ref().unwrap().as_ref().unchecked_ref())
             .unwrap();
     }));
 

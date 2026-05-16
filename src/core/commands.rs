@@ -22,6 +22,8 @@ pub struct CommandRecord {
 pub enum CommandStatus {
     /// Dispatched, awaiting a reply (or text send — no reply expected).
     Sent,
+    /// Local command completed; nothing further expected. Shown dimmed.
+    Done,
     /// A reply arrived. Holds a short display form of the reply body.
     Replied(String),
     /// Send failed locally, or an error reply was returned.

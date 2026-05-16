@@ -35,17 +35,12 @@ pub fn create_identity(
 }
 
 /// Unlock an existing identity: decrypt the bundle and return key material.
-pub fn unlock_identity(
-    export_json: &str,
-    passphrase: &str,
-) -> Result<UnlockedIdentity, String> {
-    let export =
-        BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
+pub fn unlock_identity(export_json: &str, passphrase: &str) -> Result<UnlockedIdentity, String> {
+    let export = BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
     let encrypted = export
         .encrypted_secret_bundle_bytes()
         .map_err(|e| e.to_string())?;
-    let bundle =
-        SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
+    let bundle = SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
     bundle_to_unlocked(&bundle)
 }
 
@@ -72,9 +67,7 @@ pub fn export_for_download(export_json: &str) -> String {
 /// Returns `(username, validated_json)`.
 pub fn import_from_bytes(bytes: &[u8]) -> Result<(String, String), String> {
     let json = std::str::from_utf8(bytes).map_err(|e| e.to_string())?;
-    let export =
-        BrowserIdentityExport::from_json_str(json).map_err(|e| e.to_string())?;
-    let config =
-        Config::from_yaml_str(&export.config_yaml).map_err(|e| e.to_string())?;
+    let export = BrowserIdentityExport::from_json_str(json).map_err(|e| e.to_string())?;
+    let config = Config::from_yaml_str(&export.config_yaml).map_err(|e| e.to_string())?;
     Ok((config.slug.clone(), json.to_string()))
 }

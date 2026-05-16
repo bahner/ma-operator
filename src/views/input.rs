@@ -38,57 +38,59 @@ pub fn InputBar(
 
     let on_keydown = {
         let on_submit = on_submit.clone();
-        move |ev: web_sys::KeyboardEvent| {
-            match ev.key().as_str() {
-                "Enter" => {
-                    let line = value.get_untracked();
-                    hist_idx.set(None);
-                    value.set(String::new());
-                    on_submit(line);
-                }
-                "ArrowUp" => {
-                    ev.prevent_default();
-                    let hist = history.get_untracked();
-                    if hist.is_empty() {
-                        return;
-                    }
-                    let idx = match hist_idx.get_untracked() {
-                        None => {
-                            draft.set(value.get_untracked());
-                            hist.len() - 1
-                        }
-                        Some(0) => 0,
-                        Some(i) => i - 1,
-                    };
-                    hist_idx.set(Some(idx));
-                    value.set(hist[idx].clone());
-                }
-                "ArrowDown" => {
-                    ev.prevent_default();
-                    let hist = history.get_untracked();
-                    match hist_idx.get_untracked() {
-                        None => {}
-                        Some(i) if i + 1 >= hist.len() => {
-                            hist_idx.set(None);
-                            value.set(draft.get_untracked());
-                        }
-                        Some(i) => {
-                            let next = i + 1;
-                            hist_idx.set(Some(next));
-                            value.set(hist[next].clone());
-                        }
-                    }
-                }
-                _ => {}
+        move |ev: web_sys::KeyboardEvent| match ev.key().as_str() {
+            "Enter" => {
+                let line = value.get_untracked();
+                hist_idx.set(None);
+                value.set(String::new());
+                on_submit(line);
             }
+            "ArrowUp" => {
+                ev.prevent_default();
+                let hist = history.get_untracked();
+                if hist.is_empty() {
+                    return;
+                }
+                let idx = match hist_idx.get_untracked() {
+                    None => {
+                        draft.set(value.get_untracked());
+                        hist.len() - 1
+                    }
+                    Some(0) => 0,
+                    Some(i) => i - 1,
+                };
+                hist_idx.set(Some(idx));
+                value.set(hist[idx].clone());
+            }
+            "ArrowDown" => {
+                ev.prevent_default();
+                let hist = history.get_untracked();
+                match hist_idx.get_untracked() {
+                    None => {}
+                    Some(i) if i + 1 >= hist.len() => {
+                        hist_idx.set(None);
+                        value.set(draft.get_untracked());
+                    }
+                    Some(i) => {
+                        let next = i + 1;
+                        hist_idx.set(Some(next));
+                        value.set(hist[next].clone());
+                    }
+                }
+            }
+            _ => {}
         }
     };
 
     let on_paste = {
         let on_submit = on_submit.clone();
         move |ev: web_sys::ClipboardEvent| {
-            let Some(dt) = ev.clipboard_data() else { return };
-            let Ok(text) = dt.get_data("text/plain") else { return };
+            let Some(dt) = ev.clipboard_data() else {
+                return;
+            };
+            let Ok(text) = dt.get_data("text/plain") else {
+                return;
+            };
             if !text.contains('\n') {
                 return; // single-line paste: let the browser handle it normally
             }

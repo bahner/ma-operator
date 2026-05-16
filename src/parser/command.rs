@@ -187,13 +187,18 @@ mod tests {
     #[test]
     fn parses_did_target_without_verb() {
         let cfg = EgoConfig::new();
-        let cmd = parse("@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3", &cfg, None)
-            .expect("command should parse");
+        let cmd = parse(
+            "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+            &cfg,
+            None,
+        )
+        .expect("command should parse");
 
         assert_eq!(
             cmd,
             Command::ActorMessage {
-                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3".to_string(),
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
                 verb: None,
                 body: String::new(),
             }
@@ -203,13 +208,18 @@ mod tests {
     #[test]
     fn parses_did_target_with_verb() {
         let cfg = EgoConfig::new();
-        let cmd = parse("@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3:ping", &cfg, None)
-            .expect("command should parse");
+        let cmd = parse(
+            "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3:ping",
+            &cfg,
+            None,
+        )
+        .expect("command should parse");
 
         assert_eq!(
             cmd,
             Command::ActorMessage {
-                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3".to_string(),
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
                 verb: Some("ping".to_string()),
                 body: String::new(),
             }
@@ -229,7 +239,8 @@ mod tests {
         assert_eq!(
             cmd,
             Command::ActorMessage {
-                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3".to_string(),
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
                 verb: Some("ping".to_string()),
                 body: String::new(),
             }

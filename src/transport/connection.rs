@@ -2,7 +2,8 @@
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
     IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, RPC_PROTOCOL_ID,
+    IPFS_PROTOCOL_ID, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
@@ -12,10 +13,7 @@ use crate::state::{
 };
 use std::rc::Rc;
 
-const CONTENT_TYPE_RPC: &str = "application/x-ma-rpc";
-const CONTENT_TYPE_RPC_REPLY: &str = "application/x-ma-rpc-reply";
 const CONTENT_TYPE_TEXT: &str = "text/plain";
-const CONTENT_TYPE_IPFS_REQUEST: &str = "application/x-ma-ipfs-request";
 
 use log::info;
 
@@ -30,9 +28,7 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {}", sender_did);
-    let mut endpoint = new_ma_endpoint(iroh_key)
-        .await
-        .map_err(|e| e.to_string())?;
+    let mut endpoint = new_ma_endpoint(iroh_key).await.map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
     let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
     let ep = Rc::from(endpoint);
@@ -81,8 +77,8 @@ fn get_session() -> Result<(String, SigningKey), String> {
         .with(|d| d.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
     let did = Did::try_from(sender_did_str.as_str()).map_err(|e| e.to_string())?;
-    let signing_key = SigningKey::from_private_key_bytes(did, signing_key_bytes)
-        .map_err(|e| e.to_string())?;
+    let signing_key =
+        SigningKey::from_private_key_bytes(did, signing_key_bytes).map_err(|e| e.to_string())?;
     Ok((sender_did_str, signing_key))
 }
 
@@ -94,6 +90,7 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
     let msg = Message::new(
         &sender_did,
         target_did,
+        MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TEXT,
         text.as_bytes().to_vec(),
         &signing_key,
@@ -131,7 +128,8 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
     let msg = Message::new(
         &sender_did,
         target_did,
-        CONTENT_TYPE_RPC,
+        MESSAGE_TYPE_RPC,
+        "application/cbor",
         body,
         &signing_key,
     )
@@ -182,14 +180,14 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
         .build_document(ma_ext)
         .map_err(|e| format!("build document failed: {e}"))?;
 
-    let payload =
-        generate_ipfs_publish_request(&document, &ipns_key)
-            .map_err(|e| format!("build ipfs request: {e}"))?;
+    let payload = generate_ipfs_publish_request(&document, &ipns_key)
+        .map_err(|e| format!("build ipfs request: {e}"))?;
 
     let msg = Message::new(
         &sender_did,
         publisher_did,
-        CONTENT_TYPE_IPFS_REQUEST,
+        MESSAGE_TYPE_IPFS_REQUEST,
+        "application/cbor",
         payload,
         &signing_key,
     )
@@ -208,9 +206,14 @@ pub async fn send_ipfs_store(
     content_type: &str,
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session()?;
-    let msg =
-        generate_ipfs_store_request(&sender_did, publisher_did, content, content_type, &signing_key)
-            .map_err(|e| e.to_string())?;
+    let msg = generate_ipfs_store_request(
+        &sender_did,
+        publisher_did,
+        content,
+        content_type,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
     send_message_on(publisher_did, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
@@ -222,22 +225,12 @@ pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
     SESSION_RPC_INBOX.with(|i| {
         i.borrow_mut()
             .as_mut()
-            .map(|inbox| {
-                inbox
-                    .drain(now)
-                    .into_iter()
-                    .map(decode_incoming)
-                    .collect()
-            })
+            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
             .unwrap_or_default()
     })
 }
 
-async fn send_message_on(
-    target_did: &str,
-    protocol: &str,
-    msg: Message,
-) -> Result<(), String> {
+async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Result<(), String> {
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
@@ -257,20 +250,14 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
     SESSION_INBOX.with(|i| {
         i.borrow_mut()
             .as_mut()
-            .map(|inbox| {
-                inbox
-                    .drain(now)
-                    .into_iter()
-                    .map(decode_incoming)
-                    .collect()
-            })
+            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
             .unwrap_or_default()
     })
 }
 
 fn decode_incoming(msg: Message) -> IncomingMessage {
-    let (display, is_error) = match msg.content_type.as_str() {
-        CONTENT_TYPE_RPC_REPLY | CONTENT_TYPE_RPC => {
+    let (display, is_error) = match msg.message_type.as_str() {
+        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC => {
             let (term, err) = format_rpc_reply(&msg.content);
             (format!("← [{}] {}", msg.from, term), err)
         }

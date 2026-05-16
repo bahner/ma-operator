@@ -8,9 +8,8 @@ use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 use crate::{
     config::restore_config,
     identity::{
-        create_identity, export_for_download, import_from_bytes, load_identity,
-        list_usernames, save_identity,
-        unlock_identity,
+        create_identity, export_for_download, import_from_bytes, list_usernames, load_identity,
+        save_identity, unlock_identity,
     },
     state::{AppState, SessionState},
 };
@@ -78,11 +77,7 @@ pub fn Landing() -> impl IntoView {
 // ── Login panel ────────────────────────────────────────────────────────────
 
 #[component]
-fn LoginPanel(
-    state: AppState,
-    status: RwSignal<String>,
-    error: RwSignal<String>,
-) -> impl IntoView {
+fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>) -> impl IntoView {
     let usernames: RwSignal<Vec<String>> = RwSignal::new(vec![]);
     let selected = RwSignal::new(String::new());
     let password = RwSignal::new(String::new());
@@ -155,7 +150,9 @@ fn LoginPanel(
     let on_login_key = {
         let do_login = Rc::clone(&do_login);
         move |ev: KeyboardEvent| {
-            if ev.key() == "Enter" { do_login(); }
+            if ev.key() == "Enter" {
+                do_login();
+            }
         }
     };
 
@@ -250,26 +247,24 @@ fn CreatePanel(
         let state = state.clone();
         spawn_local(async move {
             match create_identity(&uname, &pass) {
-                Ok((export_json, id)) => {
-                    match save_identity(&uname, &export_json).await {
-                        Ok(()) => {
-                            status.set(String::new());
-                            state.session.set(Some(SessionState {
-                                username: uname,
-                                iroh_key: id.iroh_key,
-                                ipns_secret_key: id.ipns_secret_key,
-                                did_signing_key: id.did_signing_key,
-                                did_encryption_key: id.did_encryption_key,
-                                sender_did: id.sender_did,
-                                created_at: id.created_at,
-                            }));
-                        }
-                        Err(e) => {
-                            status.set(String::new());
-                            error.set(e);
-                        }
+                Ok((export_json, id)) => match save_identity(&uname, &export_json).await {
+                    Ok(()) => {
+                        status.set(String::new());
+                        state.session.set(Some(SessionState {
+                            username: uname,
+                            iroh_key: id.iroh_key,
+                            ipns_secret_key: id.ipns_secret_key,
+                            did_signing_key: id.did_signing_key,
+                            did_encryption_key: id.did_encryption_key,
+                            sender_did: id.sender_did,
+                            created_at: id.created_at,
+                        }));
                     }
-                }
+                    Err(e) => {
+                        status.set(String::new());
+                        error.set(e);
+                    }
+                },
                 Err(e) => {
                     status.set(String::new());
                     error.set(e);
@@ -343,8 +338,8 @@ fn ImportPanel(
                 error.set(String::new());
                 let reader = FileReader::new().unwrap();
                 let reader2 = reader.clone();
-                let onload = wasm_bindgen::closure::Closure::wrap(Box::new(
-                    move |_: web_sys::Event| {
+                let onload =
+                    wasm_bindgen::closure::Closure::wrap(Box::new(move |_: web_sys::Event| {
                         let result = reader2.result().unwrap();
                         if let Some(text) = result.as_string() {
                             match import_from_bytes(text.as_bytes()) {
@@ -367,11 +362,9 @@ fn ImportPanel(
                                 }
                             }
                         }
-                    },
-                )
-                    as Box<dyn FnMut(_)>);
-                reader
-                    .set_onload(Some(onload.as_ref().unchecked_ref()));
+                    })
+                        as Box<dyn FnMut(_)>);
+                reader.set_onload(Some(onload.as_ref().unchecked_ref()));
                 onload.forget();
                 reader.read_as_text(&file).unwrap();
             }
@@ -411,10 +404,7 @@ fn trigger_download(filename: &str, content: &str) {
     )
     .unwrap();
     let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
-    let anchor: web_sys::HtmlAnchorElement = document
-        .create_element("a")
-        .unwrap()
-        .unchecked_into();
+    let anchor: web_sys::HtmlAnchorElement = document.create_element("a").unwrap().unchecked_into();
     anchor.set_href(&url);
     anchor.set_download(filename);
     anchor.click();

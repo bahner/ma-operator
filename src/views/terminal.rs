@@ -32,7 +32,8 @@ pub fn Terminal() -> impl IntoView {
             let is_persistent = config
                 .get()
                 .get(".config.editor.persistent")
-                .unwrap_or("false") == "true";
+                .unwrap_or("false")
+                == "true";
             if is_persistent && show_editor.get().is_none() {
                 let cfg = config.get_untracked();
                 let initial = cfg
@@ -81,13 +82,10 @@ pub fn Terminal() -> impl IntoView {
             let username = sess.username.clone();
             spawn_local(async move {
                 match load_history(&username).await {
-                    Ok(Some(json)) => {
-                        match serde_json::from_str::<Vec<String>>(&json) {
-                            Ok(hist) => state2.history.set(hist),
-                            Err(e) => state2
-                                .push_error(format!("history parse error: {e}")),
-                        }
-                    }
+                    Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
+                        Ok(hist) => state2.history.set(hist),
+                        Err(e) => state2.push_error(format!("history parse error: {e}")),
+                    },
                     Ok(None) => {}
                     Err(e) => state2.push_error(format!("history load error: {e}")),
                 }
@@ -109,7 +107,16 @@ pub fn Terminal() -> impl IntoView {
             let username = sess.username.clone();
             spawn_local(async move {
                 state2.push_system("connecting to iroh...");
-                match transport::connect(iroh_key, ipns_secret_key, did_signing_key, did_encryption_key, sender_did, created_at).await {
+                match transport::connect(
+                    iroh_key,
+                    ipns_secret_key,
+                    did_signing_key,
+                    did_encryption_key,
+                    sender_did,
+                    created_at,
+                )
+                .await
+                {
                     Ok(()) => state2.push_system("iroh endpoint ready"),
                     Err(e) => state2.push_error(format!("iroh: {e}")),
                 }
@@ -127,7 +134,10 @@ pub fn Terminal() -> impl IntoView {
                 if !transport::is_connected() {
                     continue;
                 }
-                for incoming in transport::drain_inbox().into_iter().chain(transport::drain_rpc_inbox()) {
+                for incoming in transport::drain_inbox()
+                    .into_iter()
+                    .chain(transport::drain_rpc_inbox())
+                {
                     match &incoming.reply_to {
                         Some(msg_id) => {
                             let status = if incoming.is_error {
@@ -192,7 +202,14 @@ pub fn Terminal() -> impl IntoView {
             let cfg = config.get_untracked();
 
             match parse(&line, &cfg, focus.as_ref().map(|item| item.target.as_str())) {
-                Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor, eval_lines.clone()),
+                Ok(cmd) => eval(
+                    cmd,
+                    &line,
+                    &state,
+                    config.clone(),
+                    show_editor,
+                    eval_lines.clone(),
+                ),
                 Err(e) => state.push_error(format!("'{line}': {e}")),
             }
         })
@@ -240,9 +257,7 @@ fn OutputPane(state: AppState) -> impl IntoView {
                     }
                 }
             });
-            let _ = window.request_animation_frame(
-                closure.as_ref().unchecked_ref()
-            );
+            let _ = window.request_animation_frame(closure.as_ref().unchecked_ref());
             closure.forget();
         }
     });
@@ -266,6 +281,7 @@ fn render_entry(entry: Entry) -> impl IntoView {
         Entry::Command(c) => {
             let cls = match c.status {
                 CommandStatus::Sent => "terminal-line line-pending",
+                CommandStatus::Done => "terminal-line line-dimmed",
                 CommandStatus::Replied(_) => "terminal-line line-replied",
                 CommandStatus::Error(_) => "terminal-line line-error",
             };
@@ -339,8 +355,10 @@ fn eval(
                 };
                 match result {
                     Ok(msg_id) => state_async.bind_message_id(cmd_id, msg_id),
-                    Err(e) => state_async
-                        .resolve_command_by_id(cmd_id, CommandStatus::Error(e)),
+                    Err(e) => {
+                        state_async.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                        state_async.push_error(format!("send failed: {e}"));
+                    }
                 }
             });
         }
@@ -460,9 +478,7 @@ fn eval_dot(
                 if let Err(e) = persist_config(&uname, &cfg).await {
                     state2.push_error(e);
                 } else {
-                    state2.push_system(format!(
-                        "deleted {path_owned} ({removed} entries)"
-                    ));
+                    state2.push_system(format!("deleted {path_owned} ({removed} entries)"));
                 }
             });
         }
@@ -479,9 +495,7 @@ fn eval_dot(
                 let value = cfg.get(path).unwrap_or("");
                 match &query {
                     None => state.push_output(format!("{path}: {value}")),
-                    Some(q) if value == q.as_str() => {
-                        state.push_output(format!("{path}: {value}"))
-                    }
+                    Some(q) if value == q.as_str() => state.push_output(format!("{path}: {value}")),
                     Some(_) => state.push_error("no match"),
                 }
             } else if cfg.has_children(path) {

@@ -8,9 +8,7 @@ use js_sys::{Array, Promise};
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
-use web_sys::{
-    IdbDatabase, IdbOpenDbRequest, IdbRequest, IdbTransactionMode,
-};
+use web_sys::{IdbDatabase, IdbOpenDbRequest, IdbRequest, IdbTransactionMode};
 
 use crate::state::StoredIdentity;
 
@@ -76,10 +74,7 @@ async fn req_to_future(req_target: &web_sys::EventTarget) -> Result<JsValue, Str
 
         let req_err = req.clone();
         let onerror = Closure::<dyn FnMut(_)>::new(move |_: web_sys::Event| {
-            let _ = reject2.call1(
-                &JsValue::UNDEFINED,
-                &req_result(&req_err),
-            );
+            let _ = reject2.call1(&JsValue::UNDEFINED, &req_result(&req_err));
         });
 
         req.set_onsuccess(Some(onsuccess.as_ref().unchecked_ref()));
@@ -88,9 +83,7 @@ async fn req_to_future(req_target: &web_sys::EventTarget) -> Result<JsValue, Str
         onerror.forget();
     });
 
-    JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))
+    JsFuture::from(promise).await.map_err(|e| format!("{e:?}"))
 }
 
 fn req_result(req: &IdbRequest) -> JsValue {

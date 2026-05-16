@@ -321,6 +321,7 @@ html, body {
 .line-output { color: var(--colour-text); }
 .line-input  { color: var(--colour-dimmed); }
 .line-pending { color: var(--colour-pending); }
+.line-dimmed  { color: var(--colour-dimmed); }
 .line-replied { color: var(--colour-replied); }
 .line-reply   { color: var(--colour-replied); }
 .line-error  { color: var(--colour-error); }

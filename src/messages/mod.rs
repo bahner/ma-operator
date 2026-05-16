@@ -39,11 +39,7 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
                     _ => None,
                 })
                 .unwrap_or_else(|| "<?>".to_string());
-            let rest: Vec<String> = items
-                .iter()
-                .skip(1)
-                .map(format_cbor_value_short)
-                .collect();
+            let rest: Vec<String> = items.iter().skip(1).map(format_cbor_value_short).collect();
             let is_err = head == ":error";
             let display = if rest.is_empty() {
                 head

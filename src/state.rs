@@ -5,9 +5,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
-use crate::core::{
-    CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord,
-};
+use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 
 // ── Session ────────────────────────────────────────────────────────────────
 
@@ -110,12 +108,37 @@ impl AppState {
         id
     }
 
+    /// Append a command already resolved as `Done` (dimmed; no reply expected).
+    pub fn push_command_done(&self, raw: impl Into<String>) {
+        let id = self.next_id();
+        self.entries.update(|v| {
+            v.push(Entry::Command(CommandRecord {
+                id,
+                raw: raw.into(),
+                message_id: None,
+                status: CommandStatus::Done,
+            }))
+        });
+    }
+
+    /// Append a command already resolved as `Replied` (bright green; success).
+    pub fn push_command_ok(&self, raw: impl Into<String>) {
+        let id = self.next_id();
+        self.entries.update(|v| {
+            v.push(Entry::Command(CommandRecord {
+                id,
+                raw: raw.into(),
+                message_id: None,
+                status: CommandStatus::Replied(String::new()),
+            }))
+        });
+    }
+
     /// Record the `Message.id` returned by a successful send.
     pub fn bind_message_id(&self, cmd_id: u64, msg_id: String) {
-        self.pending_by_msg_id
-            .update(|m| {
-                m.insert(msg_id.clone(), cmd_id);
-            });
+        self.pending_by_msg_id.update(|m| {
+            m.insert(msg_id.clone(), cmd_id);
+        });
         self.entries.update(|v| {
             if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cmd_id) {
                 c.message_id = Some(msg_id);
