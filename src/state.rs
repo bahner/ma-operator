@@ -1,5 +1,5 @@
 use leptos::prelude::*;
-use ma_core::{Inbox, Message};
+use ma_core::{Inbox, IpfsGatewayResolver, Message};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -221,4 +221,8 @@ thread_local! {
     pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);
     pub static SESSION_CREATED_AT: RefCell<Option<String>> = RefCell::new(None);
+    /// Shared DID resolver — created once at connect() so its cache is
+    /// reused across all concurrent sends instead of each call fetching
+    /// the same DID document from scratch.
+    pub static SESSION_RESOLVER: RefCell<Option<Rc<IpfsGatewayResolver>>> = RefCell::new(None);
 }

@@ -6,6 +6,8 @@
 ///   .my.did             → did:ma:<...>
 ///   .config.colour.alias     → #ffd700
 ///   .config.colour.text      → #00ff41
+///   .config.colour.pending   → #004d00
+///   .config.colour.replied   → #00ff41
 ///   .config.screensaver.timeout → 300
 ///
 /// The tree is stored as a flat HashMap<String, String> in IndexedDB
@@ -33,11 +35,19 @@ impl EgoConfig {
         let defaults = [
             (".config.colour.text", "#00ff41"),
             (".config.colour.dimmed", "#008f11"),
+            (".config.colour.pending", "#004d00"),
+            (".config.colour.replied", "#00ff41"),
             (".config.colour.alias", "#ffd700"),
             (".config.colour.error", "#ff3333"),
             (".config.colour.system", "#888888"),
             (".config.colour.bg", "#0d0d0d"),
+            (".config.colour.input_bg", "#0a0a0a"),
+            (".config.colour.border", "#003300"),
+            (".config.colour.cursor", "#00ff41"),
+            (".config.colour.highlight", "#003300"),
             (".config.screensaver.timeout", "300"),
+            (".config.editor.placement", "bottom"),
+            (".config.editor.persistent", "false"),
         ];
         for (k, v) in &defaults {
             self.tree

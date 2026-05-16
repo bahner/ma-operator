@@ -24,6 +24,26 @@ pub fn Terminal() -> impl IntoView {
     // Editor modal signal — Some(EditorContext) opens the overlay
     let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
 
+    // When .config.editor.persistent is "true", keep the editor panel open
+    // at all times using a scratch document.
+    {
+        let config = config.clone();
+        Effect::new(move |_| {
+            let is_persistent = config
+                .get()
+                .get(".config.editor.persistent")
+                .unwrap_or("false") == "true";
+            if is_persistent && show_editor.get().is_none() {
+                let cfg = config.get_untracked();
+                let initial = cfg
+                    .get(".my.documents.scratch.content")
+                    .unwrap_or_default()
+                    .to_string();
+                show_editor.set(Some(EditorContext::new(".my.documents.scratch", initial)));
+            }
+        });
+    }
+
     // Load config from IndexedDB on mount
     {
         let state2 = state.clone();
@@ -127,35 +147,21 @@ pub fn Terminal() -> impl IntoView {
         });
     }
 
-    // Eval callback — runs multi-line text through the terminal evaluator.
-    // Nested :eval (eval inside eval) passes a no-op to avoid infinite recursion.
-    let eval_lines = {
-        let state = state.clone();
-        let config = config.clone();
-        let show_editor2 = show_editor.clone();
-        Callback::new(move |text: String| {
-            let no_op: Callback<String> = Callback::new(|_| {});
-            for line in text.lines() {
-                let line = line.trim().to_string();
-                if line.is_empty() || line.starts_with('#') {
-                    continue;
-                }
-                let cfg = config.get_untracked();
-                let focus = state.focus_actor.get_untracked();
-                match parse(&line, &cfg, focus.as_ref().map(|f| f.target.as_str())) {
-                    Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor2, no_op),
-                    Err(e) => state.push_error(format!("eval '{line}': {e}")),
-                }
-            }
-        })
-    };
+    // Signal for programmatic eval — InputBar watches this and processes each
+    // line exactly like a paste, going through the same on_submit path.
+    let eval_input: RwSignal<Option<String>> = RwSignal::new(None);
 
-    // Handler called by the input component with a submitted line
-    let handle_input = {
+    // Eval callback — hands the document text to InputBar's paste mechanism.
+    let eval_lines = Callback::new(move |text: String| {
+        eval_input.set(Some(text));
+    });
+
+    // Core input handler.
+    let handle_input_fn: std::sync::Arc<dyn Fn(String) + Send + Sync> = {
         let state = state.clone();
         let config = config.clone();
         let eval_lines = eval_lines.clone();
-        move |line: String| {
+        std::sync::Arc::new(move |line: String| {
             let line = line.trim().to_string();
             if line.is_empty() {
                 return;
@@ -186,23 +192,31 @@ pub fn Terminal() -> impl IntoView {
             let cfg = config.get_untracked();
 
             match parse(&line, &cfg, focus.as_ref().map(|item| item.target.as_str())) {
-                Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor, eval_lines),
+                Ok(cmd) => eval(cmd, &line, &state, config.clone(), show_editor, eval_lines.clone()),
                 Err(e) => state.push_error(format!("'{line}': {e}")),
             }
-        }
+        })
+    };
+
+    // Thin wrapper satisfying InputBar's `impl Fn(String) + 'static` bound.
+    let handle_input = {
+        let f = handle_input_fn;
+        move |line: String| f(line)
     };
 
     view! {
-        <div class="terminal">
+        <div class="terminal"
+             class:placement-left=move || config.get().get(".config.editor.placement").unwrap_or("bottom") == "left"
+             class:placement-right=move || config.get().get(".config.editor.placement").unwrap_or("bottom") == "right"
+        >
             <OutputPane state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>
-            <div class:hidden=move || show_editor.get().is_some()>
-                <crate::views::input::InputBar
-                    on_submit=handle_input
-                    focus_actor=state.focus_actor
-                    history=state.history
-                />
-            </div>
+            <crate::views::input::InputBar
+                on_submit=handle_input
+                focus_actor=state.focus_actor
+                history=state.history
+                eval_input=eval_input
+            />
         </div>
     }
 }
@@ -366,6 +380,21 @@ fn eval_dot(
             eval_use(args, state, config);
             return;
         }
+        // Shorthand: `.edit [cid]` → `.my.documents.scratch:edit [cid]`
+        ".edit" => {
+            if let Err(e) = dispatch_verb(
+                ".my.documents.scratch",
+                "edit",
+                args,
+                state,
+                config,
+                show_editor,
+                on_eval,
+            ) {
+                state.push_error(e);
+            }
+            return;
+        }
         _ => {}
     }
 
@@ -457,17 +486,36 @@ fn eval_dot(
                 }
             } else if cfg.has_children(path) {
                 let prefix = format!("{path}.");
-                let mut shown = 0usize;
+                let prefix_len = prefix.len();
+                // Collect immediate child names (deduplicated, sorted).
+                let mut children: std::collections::BTreeSet<String> =
+                    std::collections::BTreeSet::new();
+                for (k, _) in cfg.list(&prefix) {
+                    let tail = &k[prefix_len..];
+                    let immediate = tail.split('.').next().unwrap_or(tail);
+                    children.insert(immediate.to_string());
+                }
                 state.push_output(format!("{path}:"));
-                for (k, v) in cfg.list(&prefix) {
-                    if let Some(q) = &query {
-                        if v != q.as_str() {
+                let mut shown = 0usize;
+                for child in &children {
+                    let child_path = format!("{path}.{child}");
+                    if let Some(v) = cfg.get(&child_path) {
+                        // Immediate leaf — show `name: value`.
+                        if let Some(q) = &query {
+                            if v != q.as_str() {
+                                continue;
+                            }
+                        }
+                        state.push_output(format!("  {child}: {v}"));
+                        shown += 1;
+                    } else {
+                        // Sub-subtree — show full path, skip when value-querying.
+                        if query.is_some() {
                             continue;
                         }
+                        state.push_output(format!("  {child_path}"));
+                        shown += 1;
                     }
-                    let tail = k.trim_start_matches(&prefix[..]);
-                    state.push_output(format!("  {tail}: {v}"));
-                    shown += 1;
                 }
                 if shown == 0 && query.is_some() {
                     state.push_error("no match");
@@ -533,13 +581,19 @@ fn apply_config_to_dom(cfg: &EgoConfig) {
     };
 
     let style = format!(
-        "--colour-text:{};--colour-dimmed:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};",
+        "--colour-text:{};--colour-dimmed:{};--colour-pending:{};--colour-replied:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};--colour-input-bg:{};--colour-border:{};--colour-cursor:{};--colour-highlight:{};",
         cfg.get(".config.colour.text").unwrap_or("#00ff41"),
         cfg.get(".config.colour.dimmed").unwrap_or("#008f11"),
+        cfg.get(".config.colour.pending").unwrap_or("#004d00"),
+        cfg.get(".config.colour.replied").unwrap_or("#00ff41"),
         cfg.get(".config.colour.alias").unwrap_or("#ffd700"),
         cfg.get(".config.colour.error").unwrap_or("#ff3333"),
         cfg.get(".config.colour.system").unwrap_or("#888888"),
         cfg.get(".config.colour.bg").unwrap_or("#0d0d0d"),
+        cfg.get(".config.colour.input_bg").unwrap_or("#0a0a0a"),
+        cfg.get(".config.colour.border").unwrap_or("#003300"),
+        cfg.get(".config.colour.cursor").unwrap_or("#00ff41"),
+        cfg.get(".config.colour.highlight").unwrap_or("#003300"),
     );
 
     let _ = root.set_attribute("style", &style);

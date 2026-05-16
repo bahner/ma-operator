@@ -1,12 +1,9 @@
-.PHONY: build serve dev clean publish static
+.PHONY: serve dev clean publish check dist
 
-build:
+dist:
 	trunk build --release
 
-static:
-	cp -r www/. dist/www/
-
-serve: build
+serve: dist
 	python3 -m http.server 8000 -d dist
 
 dev:
@@ -16,7 +13,7 @@ clean:
 	cargo clean
 	rm -rf dist
 
-publish: build
+publish: dist
 	@echo "Adding to IPFS..."
 	@ipfs add -r dist 2>&1 | tee /tmp/ego-ipfs-add.txt
 	@tail -1 /tmp/ego-ipfs-add.txt | awk '{print $$2}' > .cid

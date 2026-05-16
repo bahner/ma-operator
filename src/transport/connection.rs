@@ -8,7 +8,7 @@ use ma_core::{
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_CREATED_AT, SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY,
-    SESSION_IROH_KEY, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    SESSION_IROH_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use std::rc::Rc;
 
@@ -45,6 +45,11 @@ pub async fn connect(
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
+    // Create a single shared resolver so its positive-cache is reused across
+    // all concurrent sends — the DID document is fetched from the gateway
+    // exactly once and then served from cache for subsequent sends.
+    let resolver = Rc::new(IpfsGatewayResolver::new("https://dweb.link/"));
+    SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())
 }
@@ -59,6 +64,7 @@ pub fn disconnect() {
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
+    SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
 }
 
 pub fn is_connected() -> bool {
@@ -235,9 +241,11 @@ async fn send_message_on(
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
-    let resolver = IpfsGatewayResolver::new("https://dweb.link/");
+    let resolver = SESSION_RESOLVER
+        .with(|r| r.borrow().clone())
+        .ok_or_else(|| "not logged in".to_string())?;
     let mut outbox = ep
-        .outbox(&resolver, target_did, protocol)
+        .outbox(resolver.as_ref(), target_did, protocol)
         .await
         .map_err(|e| e.to_string())?;
     outbox.send(&msg).await.map_err(|e| e.to_string())

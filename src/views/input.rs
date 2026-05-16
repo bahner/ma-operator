@@ -11,6 +11,7 @@ pub fn InputBar(
     on_submit: impl Fn(String) + 'static,
     focus_actor: RwSignal<Option<FocusMode>>,
     history: RwSignal<Vec<String>>,
+    eval_input: RwSignal<Option<String>>,
 ) -> impl IntoView {
     let value = RwSignal::new(String::new());
     let hist_idx: RwSignal<Option<usize>> = RwSignal::new(None);
@@ -18,6 +19,22 @@ pub fn InputBar(
     let draft = RwSignal::new(String::new());
 
     let on_submit = std::rc::Rc::new(on_submit);
+
+    // Process programmatic eval input exactly like a multi-line paste.
+    {
+        let on_submit = on_submit.clone();
+        Effect::new(move |_| {
+            if let Some(text) = eval_input.get() {
+                eval_input.set(None);
+                for line in text.lines() {
+                    let line = line.trim().to_string();
+                    if !line.is_empty() && !line.starts_with('#') {
+                        on_submit(line);
+                    }
+                }
+            }
+        });
+    }
 
     let on_keydown = {
         let on_submit = on_submit.clone();

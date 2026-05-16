@@ -6,6 +6,7 @@
 use leptos::prelude::*;
 
 use crate::config::EgoConfig;
+use crate::core::CommandStatus;
 use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
@@ -48,13 +49,14 @@ pub fn dispatch_verb(
         }
         let cfg = config.get_untracked();
         let publisher = resolve_bare_did(&args[0], &cfg)?;
+        let publisher_disp = args[0].to_string();
+        let cmd_id = state.push_command(format!(".my.identity:publish {publisher_disp}"));
         let state2 = state.clone();
-        let publisher_disp = publisher.clone();
         leptos::task::spawn_local(async move {
             match transport::send_ipfs_publish(&publisher).await {
-                Ok(_msg_id) => state2
-                    .push_system(format!("published DID → {publisher_disp}")),
-                Err(e) => state2.push_error(format!("publish failed: {e}")),
+                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                Err(e) => state2
+                    .resolve_command_by_id(cmd_id, CommandStatus::Error(e)),
             }
         });
         return Ok(());
