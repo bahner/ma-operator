@@ -92,6 +92,7 @@ Makefile
 - [x] Send reply (`.my.inbox.N:reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
+- [x] `.my.間:discover` — probes localhost:5003, creates `@間` alias, persists config
 
 ## Pending / not yet implemented
 
@@ -146,6 +147,34 @@ Four 32-byte keys per identity, stored in `SecretBundle`:
 
 `did_encryption_key` must always be included in `SessionState` —
 it is needed to decrypt incoming messages.
+
+---
+
+## `.my.間` — local ma runtime
+
+`.my.間` is the config subtree for the user's local 間 runtime (`ma` daemon).
+It is set once via `:discover` and then used as the publish target.
+
+Leaves written by `:discover`:
+```
+.my.間.did          DID of the local ma runtime
+.my.間.endpoint_id  iroh endpoint ID (from status.json)
+```
+The alias `.my.aliases.間` is also created, pointing to `.my.間.did`.
+
+Verb:
+- `.my.間:discover` — hits `http://localhost:5003/status.json`, reads `did`
+  and `endpoint_id`, writes the above leaves, creates alias `@間`, persists config.
+  Reports an actionable error if `ma` is not running.
+
+After discovery:
+```
+.my.identity:publish @間
+```
+
+Prerequisites for publish to work:
+1. [IPFS Desktop](https://docs.ipfs.tech/install/ipfs-desktop/) — provides Kubo
+2. `ma` runtime running — bridges ego → Kubo
 
 ---
 

@@ -153,6 +153,82 @@ pub fn dispatch_verb(
         }
     }
 
+    // ── .my.間 ────────────────────────────────────────────────────────────
+    // .my.間:discover — probe http://localhost:5003/status.json, configure
+    // the local ma runtime, and create the @間 alias automatically.
+    if path == ".my.間" {
+        match verb {
+            "discover" => {
+                const STATUS_URL: &str = "http://localhost:5003/status.json";
+                let state2 = state.clone();
+                leptos::task::spawn_local(async move {
+                    let json_str = match fetch_url_text(STATUS_URL).await {
+                        Ok(s) => s,
+                        Err(e) => {
+                            state2.push_error(format!(
+                                "discover: could not reach ma at {STATUS_URL} — {e}\n\
+                                 Is `ma` running? Is IPFS Desktop running?"
+                            ));
+                            return;
+                        }
+                    };
+                    let json: serde_json::Value = match serde_json::from_str(&json_str) {
+                        Ok(v) => v,
+                        Err(e) => {
+                            state2.push_error(format!(
+                                "discover: bad JSON from {STATUS_URL}: {e}"
+                            ));
+                            return;
+                        }
+                    };
+                    let did = match json.get("did").and_then(|v| v.as_str()) {
+                        Some(d) => d.to_string(),
+                        None => {
+                            state2.push_error(
+                                "discover: no 'did' field in status.json".to_string(),
+                            );
+                            return;
+                        }
+                    };
+                    let endpoint_id = json
+                        .get("endpoint_id")
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("")
+                        .to_string();
+
+                    // Write config, then persist.
+                    config.update(|cfg| {
+                        cfg.set(".my.間.did", &did);
+                        if !endpoint_id.is_empty() {
+                            cfg.set(".my.間.endpoint_id", &endpoint_id);
+                        }
+                        cfg.set(".my.aliases.間", &did);
+                    });
+
+                    if let Some(sess) = state2.session.get_untracked() {
+                        let username = sess.username.clone();
+                        let cfg = config.get_untracked();
+                        leptos::task::spawn_local(async move {
+                            if let Err(e) =
+                                crate::config::persist_config(&username, &cfg).await
+                            {
+                                web_sys::console::error_1(
+                                    &format!("persist error: {e}").into(),
+                                );
+                            }
+                        });
+                    }
+
+                    state2.push_system(format!(
+                        "ma discovered at {STATUS_URL}\n  DID: {did}\n  alias @間 created — publish with: .my.identity:publish @間"
+                    ));
+                });
+                return Ok(());
+            }
+            other => return Err(format!("no verb `{other}` for .my.間")),
+        }
+    }
+
     // ── .my.identity ──────────────────────────────────────────────────────
     if path == ".my.identity" && verb == "publish" {
         if args.len() != 1 {
@@ -339,15 +415,13 @@ fn lang_for_content_type(ct: &str) -> &'static str {
     }
 }
 
-/// Fetch raw text bytes from an IPFS gateway.
-/// Uses the dweb.link gateway (same resolver as transport layer).
-async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
+/// Fetch raw text from any URL.
+async fn fetch_url_text(url: &str) -> Result<String, String> {
     use wasm_bindgen::JsCast;
     use wasm_bindgen_futures::JsFuture;
 
-    let url = format!("https://dweb.link/ipfs/{cid}");
     let window = web_sys::window().ok_or("no window")?;
-    let promise = window.fetch_with_str(&url);
+    let promise = window.fetch_with_str(url);
     let resp_val = JsFuture::from(promise)
         .await
         .map_err(|e| format!("{e:?}"))?;
@@ -362,4 +436,10 @@ async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
     text_val
         .as_string()
         .ok_or_else(|| "response is not a string".to_string())
+}
+
+/// Fetch raw text bytes from an IPFS gateway.
+/// Uses the dweb.link gateway (same resolver as transport layer).
+async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
+    fetch_url_text(&format!("https://dweb.link/ipfs/{cid}")).await
 }
