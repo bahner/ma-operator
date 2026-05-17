@@ -12,9 +12,25 @@ pub fn format_incoming(sender: &str, content_type: &str, body: &str) -> String {
 /// Decoded incoming message returned by the transport layer.
 #[derive(Clone, Debug, PartialEq)]
 pub struct IncomingMessage {
+    /// `Message.id` of the incoming message.
+    pub message_id: String,
+    /// `Message.type` of the incoming message.
+    pub message_type: String,
+    /// Sender DID/DID URL.
+    pub from: String,
+    /// Recipient DID/DID URL.
+    pub to: String,
     /// `Message.reply_to`, when present. Used to match against a previously
     /// dispatched command.
     pub reply_to: Option<String>,
+    /// Semantic content type of payload.
+    pub content_type: String,
+    /// Raw payload bytes (multicodec-prefixed; peel varint to get codec + data).
+    pub content: Vec<u8>,
+    /// Creation timestamp (seconds).
+    pub created_at: f64,
+    /// Expiry as nanosecond epoch (0 = never).
+    pub exp: u64,
     /// Pre-formatted display text suitable for direct rendering.
     pub display: String,
     /// `true` if the reply represents an error (`:error` atom or

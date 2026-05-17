@@ -141,6 +141,15 @@ impl EgoConfig {
         self.tree.get(&key).map(|s| s.as_str())
     }
 
+    /// Reverse-lookup: given a DID, return the alias name (without `@`), if any.
+    pub fn reverse_alias<'a>(&'a self, did: &str) -> Option<&'a str> {
+        const PREFIX: &str = ".my.aliases.";
+        self.tree
+            .iter()
+            .find(|(k, v)| k.starts_with(PREFIX) && v.as_str() == did)
+            .map(|(k, _)| &k[PREFIX.len()..])
+    }
+
     // ── Colour helpers ─────────────────────────────────────────────────────
 
     #[allow(dead_code)]

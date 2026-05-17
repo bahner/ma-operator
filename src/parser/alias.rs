@@ -24,15 +24,14 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
         }
 
         if ch == '@' {
-            // Collect the alias/DID token (alphanumeric, :, -, _, #, .)
+            // Collect the alias/DID token — any non-whitespace char except \\ and @
             let mut token = String::new();
             while let Some(&nc) = chars.peek() {
-                if nc.is_alphanumeric() || matches!(nc, ':' | '-' | '_' | '#' | '.') {
-                    token.push(nc);
-                    chars.next();
-                } else {
+                if nc.is_whitespace() || nc == '\\' || nc == '@' {
                     break;
                 }
+                token.push(nc);
+                chars.next();
             }
 
             if token.is_empty() {

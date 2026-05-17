@@ -60,7 +60,15 @@ pub fn Terminal() -> impl IntoView {
                         // intentionally, but harmless if it leaks: it is
                         // re-injected on every login.
                         cfg.set(".my.identity.did", sender_did);
+                        // Prune inbox entries that expired since last session.
+                        let now = js_sys::Date::now() / 1000.0;
+                        let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
                         apply_config_to_dom(&cfg);
+                        if pruned > 0 {
+                            if let Err(e) = persist_config(&username, &cfg).await {
+                                state2.push_error(format!("inbox prune persist: {e}"));
+                            }
+                        }
                         config.set(cfg);
                     }
                     Err(e) => state2.push_error(format!("config load error: {e}")),
@@ -138,6 +146,43 @@ pub fn Terminal() -> impl IntoView {
                     .into_iter()
                     .chain(transport::drain_rpc_inbox())
                 {
+                    if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
+                        let from_display = {
+                            let cfg = config.get_untracked();
+                            cfg.reverse_alias(&incoming.from)
+                                .map(|a| format!("@{a}"))
+                                .unwrap_or_else(|| incoming.from.clone())
+                        };
+                        let count = state2.ingest_mailbox_message(&incoming, config);
+                        // Persist asynchronously.
+                        if let Some(sess) = state2.session.get_untracked() {
+                            let uname = sess.username.clone();
+                            let cfg_snap = config.get_untracked();
+                            spawn_local(async move {
+                                if let Err(e) = persist_config(&uname, &cfg_snap).await {
+                                    web_sys::console::error_1(
+                                        &format!("inbox persist: {e}").into(),
+                                    );
+                                }
+                            });
+                        }
+                        state2.push_incoming(
+                            format!(
+                                "\u{2190} [{}] new message \u{2014} {} in inbox",
+                                from_display, count
+                            ),
+                            None,
+                        );
+                        continue;
+                    }
+                    let display = {
+                        let cfg = config.get_untracked();
+                        if let Some(alias) = cfg.reverse_alias(&incoming.from) {
+                            incoming.display.replace(&incoming.from, &format!("@{alias}"))
+                        } else {
+                            incoming.display.clone()
+                        }
+                    };
                     match &incoming.reply_to {
                         Some(msg_id) => {
                             let status = if incoming.is_error {
@@ -146,10 +191,10 @@ pub fn Terminal() -> impl IntoView {
                                 CommandStatus::Replied(incoming.display.clone())
                             };
                             let cmd_id = state2.resolve_command(msg_id, status);
-                            state2.push_incoming(incoming.display, cmd_id);
+                            state2.push_incoming(display, cmd_id);
                         }
                         None => {
-                            state2.push_incoming(incoming.display, None);
+                            state2.push_incoming(display, None);
                         }
                     }
                 }
@@ -342,7 +387,9 @@ fn eval(
 
             let state_async = state.clone();
             spawn_local(async move {
-                let result = match &verb {
+                let result = match verb.as_deref() {
+                    Some("say") => transport::send_chat(&target, &body).await,
+                    Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
                         transport::send_rpc(
                             &target,
@@ -535,7 +582,35 @@ fn eval_dot(
                     state.push_error("no match");
                 }
             } else {
-                state.push_error(format!("key not found: {path}"));
+                // ── Lazy link traversal ───────────────────────────────────
+                // Check if any ancestor leaf holds a DID or CID link value.
+                // If so, resolve it and traverse the remaining sub-path.
+                let path_owned = path.to_string();
+                let mut found_link = false;
+                let mut split_pos = path_owned.len();
+                while let Some(dot) = path_owned[..split_pos].rfind('.') {
+                    split_pos = dot;
+                    let ancestor = &path_owned[..split_pos];
+                    if let Some(link_val) = cfg.get(ancestor) {
+                        if crate::mailbox::is_link_value(link_val) {
+                            let link = link_val.to_string();
+                            let subpath = path_owned[split_pos + 1..].to_string();
+                            let state2 = state.clone();
+                            let cache = state.doc_cache;
+                            spawn_local(async move {
+                                resolve_and_traverse(&link, &subpath, &state2, cache).await;
+                            });
+                            found_link = true;
+                            break;
+                        }
+                    }
+                    if split_pos == 0 {
+                        break;
+                    }
+                }
+                if !found_link {
+                    state.push_error(format!("key not found: {path}"));
+                }
             }
         }
 
@@ -613,6 +688,95 @@ fn apply_config_to_dom(cfg: &EgoConfig) {
     let _ = root.set_attribute("style", &style);
 }
 
+// ── Lazy DID / CID link traversal ─────────────────────────────────────────
+
+/// Resolve a link value (`did:ma:…` or CID) and traverse `subpath` within
+/// the fetched document, pushing the result to the terminal.
+///
+/// Documents are cached in `AppState::doc_cache` keyed by the link string.
+async fn resolve_and_traverse(
+    link: &str,
+    subpath: &str,
+    state: &AppState,
+    cache: RwSignal<std::collections::HashMap<String, serde_json::Value>>,
+) {
+    // Check cache first.
+    let cached = cache.with_untracked(|m| m.get(link).cloned());
+    let doc = match cached {
+        Some(v) => v,
+        None => {
+            // Fetch: DID → resolve via gateway; CID → fetch raw JSON.
+            let text = if link.starts_with("did:ma:") {
+                let url = format!(
+                    "https://dweb.link/ipns/{}",
+                    link.trim_start_matches("did:ma:")
+                );
+                fetch_url_text(&url).await
+            } else {
+                // Bare CID
+                fetch_url_text(&format!("https://dweb.link/ipfs/{link}")).await
+            };
+            match text {
+                Ok(t) => match serde_json::from_str::<serde_json::Value>(&t) {
+                    Ok(v) => {
+                        cache.update(|m| {
+                            m.insert(link.to_string(), v.clone());
+                        });
+                        v
+                    }
+                    Err(e) => {
+                        state.push_error(format!("link parse error: {e}"));
+                        return;
+                    }
+                },
+                Err(e) => {
+                    state.push_error(format!("link fetch error: {e}"));
+                    return;
+                }
+            }
+        }
+    };
+
+    // Traverse subpath keys into the JSON document.
+    let mut cur = &doc;
+    for key in subpath.split('.') {
+        match cur.get(key) {
+            Some(v) => cur = v,
+            None => {
+                state.push_error(format!("key `{key}` not found in linked document"));
+                return;
+            }
+        }
+    }
+    let display = match cur {
+        serde_json::Value::String(s) => s.clone(),
+        other => other.to_string(),
+    };
+    state.push_output(format!("{link}.{subpath}: {display}"));
+}
+
+/// Minimal HTTP GET → text, reusing the same gateway as the transport layer.
+async fn fetch_url_text(url: &str) -> Result<String, String> {
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
+    let window = web_sys::window().ok_or("no window")?;
+    let promise = window.fetch_with_str(url);
+    let resp_val = JsFuture::from(promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    if !resp.ok() {
+        return Err(format!("HTTP {}", resp.status()));
+    }
+    let text_promise = resp.text().map_err(|e| format!("{e:?}"))?;
+    let text_val = JsFuture::from(text_promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    text_val
+        .as_string()
+        .ok_or_else(|| "response is not a string".to_string())
+}
+
 const HELP_TEXT: &[&str] = &[
     "── ego commands ─────────────────────────────────────────────────────────",
     "  .help                        this text",
@@ -644,5 +808,16 @@ const HELP_TEXT: &[&str] = &[
     "  .my.identity.did             show own DID (read-only)",
     "  .my.identity:publish @pub    publish own DID via publisher service",
     "  .config                      show all .config.* entries",
+    "",
+    "── inbox ────────────────────────────────────────────────────────────────",
+    "  .my.inbox                    list inbox (subtree view)",
+    "  .my.inbox.N                  show entry N fields",
+    "  .my.inbox.N.from             sender DID of entry N",
+    "  .my.inbox.N:reply [body]     send reply (opens editor if no body)",
+    "  .my.inbox.N:open             open entry content read-only in editor",
+    "  .my.inbox.N:                 delete entry N",
+    "  .my.inbox:                   delete all inbox entries",
+    "  .my.inbox:flush              print all entries to terminal",
+    "  .my.inbox.N.sender.<field>   traverse sender DID document lazily",
     "─────────────────────────────────────────────────────────────────────────",
 ];

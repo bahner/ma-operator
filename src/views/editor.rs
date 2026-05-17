@@ -39,6 +39,22 @@ extern "C" {
 
 // ── Public types ───────────────────────────────────────────────────────────
 
+/// Controls which action buttons are shown in the editor toolbar.
+#[derive(Clone, Debug, PartialEq)]
+pub enum EditorMode {
+    /// Standard document editing: Save + Eval + Cancel.
+    Standard,
+    /// Read-only view of an inbox message: Close only, no lang selector.
+    View,
+    /// Compose a reply: Reply button only.
+    Reply {
+        /// Recipient DID.
+        to: String,
+        /// The `Message.id` being replied to.
+        reply_to_id: String,
+    },
+}
+
 /// All the state needed to open an editor session for a document.
 #[derive(Clone, Debug)]
 pub struct EditorContext {
@@ -48,6 +64,8 @@ pub struct EditorContext {
     pub initial: String,
     /// Language mode: `"plain"` | `"markdown"` | `"yaml"`.
     pub language: String,
+    /// Editor button / behaviour mode.
+    pub mode: EditorMode,
 }
 
 impl EditorContext {
@@ -58,11 +76,17 @@ impl EditorContext {
             doc_path: doc_path.into(),
             initial,
             language: "plain".into(),
+            mode: EditorMode::Standard,
         }
     }
 
     pub fn with_language(mut self, lang: impl Into<String>) -> Self {
         self.language = lang.into();
+        self
+    }
+
+    pub fn with_mode(mut self, mode: EditorMode) -> Self {
+        self.mode = mode;
         self
     }
 }
@@ -176,13 +200,43 @@ pub fn EditorModal(
         }
     };
 
-    // Cancel button.
+    // Cancel / Close button.
     let on_cancel = {
         let show = show.clone();
         move |_| {
             show.set(None);
         }
     };
+
+    // Reply button — send the buffer as a reply to the originating message.
+    let on_reply = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::Reply { to, reply_to_id } = ctx.mode else {
+                return;
+            };
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                match crate::transport::send_text_reply(&to, &text, &reply_to_id).await {
+                    Ok(_) => state2.push_system("reply sent"),
+                    Err(e) => state2.push_error(format!("reply failed: {e}")),
+                }
+            });
+        }
+    };
+
+    // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
+    // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
+    // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
+    let is_standard = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
+    let is_view     = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
+    let is_reply    = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -193,8 +247,10 @@ pub fn EditorModal(
                     <span class="editor-doc-path">
                         {move || show.get().map(|c| c.doc_path).unwrap_or_default()}
                     </span>
+                    // Language selector — hidden in View / Reply modes.
                     <select
                         class="editor-lang-select"
+                        style=move || if is_standard() { "" } else { "display:none" }
                         on:change=on_lang_change.clone()
                         prop:value=move || language.get()
                     >
@@ -202,9 +258,30 @@ pub fn EditorModal(
                         <option value="markdown">"markdown"</option>
                         <option value="yaml">"yaml"</option>
                     </select>
-                    <button class="editor-btn btn-save"   on:click=on_save.clone()>"Save"</button>
-                    <button class="editor-btn btn-eval"   on:click=on_eval_click.clone()>"Eval"</button>
-                    <button class="editor-btn btn-cancel" on:click=on_cancel.clone()>"Cancel"</button>
+                    // Save — Standard only
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_standard() { "" } else { "display:none" }
+                        on:click=on_save.clone()
+                    >"Save"</button>
+                    // Eval — Standard only
+                    <button
+                        class="editor-btn btn-eval"
+                        style=move || if is_standard() { "" } else { "display:none" }
+                        on:click=on_eval_click.clone()
+                    >"Eval"</button>
+                    // Cancel / Close — Standard + View; label adapts
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_standard() || is_view() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >{move || if is_view() { "Close" } else { "Cancel" }}</button>
+                    // Reply — Reply mode only
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_reply() { "" } else { "display:none" }
+                        on:click=on_reply.clone()
+                    >"Reply"</button>
                 </div>
                 <div id=EDITOR_EL_ID class="editor-cm-host"></div>
             </div>

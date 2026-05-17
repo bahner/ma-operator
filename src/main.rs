@@ -2,6 +2,7 @@ mod app;
 mod config;
 mod core;
 mod identity;
+mod mailbox;
 mod messages;
 mod parser;
 mod state;

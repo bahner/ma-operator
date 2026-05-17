@@ -5,6 +5,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use std::rc::Rc;
 
+use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 
 // ── Session ────────────────────────────────────────────────────────────────
@@ -41,6 +42,9 @@ pub struct AppState {
     /// Maps `ma_core::Message.id` of an in-flight command to the
     /// `CommandRecord.id` so replies can locate the originating entry.
     pub pending_by_msg_id: RwSignal<HashMap<String, u64>>,
+    /// Cache of resolved DID documents and fetched CID contents.
+    /// Key: DID string or CID string.  Value: parsed JSON document.
+    pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
     entry_counter: RwSignal<u64>,
 }
 
@@ -53,6 +57,7 @@ impl AppState {
             focus_actor: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_by_msg_id: RwSignal::new(HashMap::new()),
+            doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
         }
     }
@@ -214,6 +219,23 @@ impl AppState {
                 v.push(Entry::Incoming(rec));
             }
         });
+    }
+
+    // ── Mailbox ───────────────────────────────────────────────────────────
+
+    /// Ingest a message into the EgoConfig inbox tree and return the new
+    /// entry count.  The caller is responsible for persisting `config`.
+    ///
+    /// Only `application/x-ma-message` messages are stored; others are ignored.
+    pub fn ingest_mailbox_message(
+        &self,
+        incoming: &crate::messages::IncomingMessage,
+        config: RwSignal<EgoConfig>,
+    ) -> usize {
+        config.update(|cfg| {
+            crate::mailbox::ingest_to_config(incoming, cfg);
+        });
+        crate::mailbox::inbox_count(&config.get_untracked())
     }
 }
 

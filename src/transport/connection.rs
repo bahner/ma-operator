@@ -2,7 +2,8 @@
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
     IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST,
+    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
@@ -91,6 +92,42 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
         &sender_did,
         target_did,
         MESSAGE_TYPE_MESSAGE,
+        CONTENT_TYPE_TEXT,
+        text.as_bytes().to_vec(),
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// Send an ephemeral chat message (`application/x-ma-chat`).
+/// Returns the dispatched `Message.id` on success.
+pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CHAT,
+        CONTENT_TYPE_TEXT,
+        text.as_bytes().to_vec(),
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// Send an emote (`application/x-ma-emote`).
+/// Returns the dispatched `Message.id` on success.
+pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_EMOTE,
         CONTENT_TYPE_TEXT,
         text.as_bytes().to_vec(),
         &signing_key,
@@ -219,6 +256,30 @@ pub async fn send_ipfs_store(
     Ok(msg_id)
 }
 
+/// Send a plain-text reply to a message.
+/// `reply_to_id` is the `Message.id` of the message being replied to.
+/// Returns the dispatched `Message.id` on success.
+pub async fn send_text_reply(
+    target_did: &str,
+    body: &str,
+    reply_to_id: &str,
+) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+    let mut msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_MESSAGE,
+        CONTENT_TYPE_TEXT,
+        body.as_bytes().to_vec(),
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    msg.reply_to = Some(reply_to_id.to_string());
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
 /// Drain pending RPC-inbox messages (`:pong` replies etc.), same decoding as inbox.
 pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
     let now = (js_sys::Date::now() / 1000.0) as u64;
@@ -259,7 +320,15 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
     let (display, is_error) = match msg.message_type.as_str() {
         MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC => {
             let (term, err) = format_rpc_reply(&msg.content);
-            (format!("← [{}] {}", msg.from, term), err)
+            (format!("\u{2190} [{}] {}", msg.from, term), err)
+        }
+        MESSAGE_TYPE_CHAT => {
+            let body = String::from_utf8_lossy(&msg.content);
+            (format!("\u{2190} [{}] {}", msg.from, body), false)
+        }
+        MESSAGE_TYPE_EMOTE => {
+            let body = String::from_utf8_lossy(&msg.content);
+            (format!("* [{}] {}", msg.from, body), false)
         }
         _ => (
             format_incoming(
@@ -271,7 +340,15 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
         ),
     };
     IncomingMessage {
+        message_id: msg.id,
+        message_type: msg.message_type,
+        from: msg.from,
+        to: msg.to,
         reply_to: msg.reply_to,
+        content_type: msg.content_type,
+        content: msg.content,
+        created_at: msg.created_at,
+        exp: msg.exp,
         display,
         is_error,
     }
