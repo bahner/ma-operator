@@ -211,6 +211,33 @@ pub fn Terminal() -> impl IntoView {
                     };
                     match &incoming.reply_to {
                         Some(msg_id) => {
+                            // Check if this is a pending entity-edit reply (CID response).
+                            let entity_info = state2
+                                .pending_entity_edits
+                                .get_untracked()
+                                .get(msg_id)
+                                .cloned();
+                            if let Some((target_did, entity_name)) = entity_info {
+                                state2
+                                    .pending_entity_edits
+                                    .update(|m| { m.remove(msg_id); });
+                                // The runtime replied with a CID as a CBOR text atom.
+                                // Fetch DAG-JSON from gateway → convert to YAML → editor.
+                                let cid_str = incoming.display.trim().to_string();
+                                let show2 = show_editor;
+                                let state3 = state2.clone();
+                                spawn_local(async move {
+                                    open_entity_edit_editor(
+                                        &cid_str,
+                                        target_did,
+                                        entity_name,
+                                        show2,
+                                        state3,
+                                    )
+                                    .await;
+                                });
+                                continue;
+                            }
                             let status = if incoming.is_error {
                                 CommandStatus::Error(incoming.display.clone())
                             } else {
@@ -421,12 +448,27 @@ fn eval(
                     Some("say") => transport::send_chat(&target, &body).await,
                     Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
-                        transport::send_rpc(
+                        // Detect `:entities.<name>:edit` with no body args:
+                        // record in pending_entity_edits so the poll loop can
+                        // open the editor when the runtime replies with a CID.
+                        let entity_edit_key: Option<(String, String)> =
+                            if body.trim().is_empty() {
+                                parse_entity_edit_verb(v).map(|name| (target.clone(), name))
+                            } else {
+                                None
+                            };
+                        let res = transport::send_rpc(
                             &target,
                             v,
                             &body.split_whitespace().collect::<Vec<_>>(),
                         )
-                        .await
+                        .await;
+                        if let (Ok(ref msg_id), Some((tgt, name))) = (&res, entity_edit_key) {
+                            state_async
+                                .pending_entity_edits
+                                .update(|m| { m.insert(msg_id.clone(), (tgt, name)); });
+                        }
+                        res
                     }
                     None => transport::send_text(&target, &body).await,
                 };
@@ -809,6 +851,70 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
     text_val
         .as_string()
         .ok_or_else(|| "response is not a string".to_string())
+}
+
+// ── Entity-edit helpers ───────────────────────────────────────────────────
+
+/// If `verb` matches `entities.<name>:edit` (with no args), return `<name>`.
+fn parse_entity_edit_verb(verb: &str) -> Option<String> {
+    // verb arrives without leading ':', e.g. "entities.rms:edit"
+    let v = verb.strip_prefix(':').unwrap_or(verb);
+    let (path_part, verb_part) = v.split_once(':')?;
+    if verb_part != "edit" {
+        return None;
+    }
+    let mut parts = path_part.splitn(2, '.');
+    if parts.next() != Some("entities") {
+        return None;
+    }
+    let name = parts.next()?.to_string();
+    if name.is_empty() {
+        return None;
+    }
+    Some(name)
+}
+
+/// Fetch a DAG-CBOR node by CID from the IPFS gateway, convert the DAG-JSON
+/// response to YAML, and open the EntityEdit editor.
+async fn open_entity_edit_editor(
+    cid: &str,
+    target_did: String,
+    entity_name: String,
+    show_editor: leptos::prelude::RwSignal<Option<crate::views::editor::EditorContext>>,
+    state: AppState,
+) {
+    // The runtime may have replied with a raw display string; extract the bare CID.
+    let bare_cid = cid.split_whitespace().next().unwrap_or(cid);
+    let url = format!("https://dweb.link/ipfs/{bare_cid}");
+    let json_text = match fetch_url_text(&url).await {
+        Ok(t) => t,
+        Err(e) => {
+            state.push_error(format!("entity fetch failed: {e}"));
+            return;
+        }
+    };
+    let val: serde_json::Value = match serde_json::from_str(&json_text) {
+        Ok(v) => v,
+        Err(e) => {
+            state.push_error(format!("entity JSON parse failed: {e}"));
+            return;
+        }
+    };
+    let yaml = match crate::messages::json_value_to_yaml(&val) {
+        Ok(y) => y,
+        Err(e) => {
+            state.push_error(format!("entity YAML convert failed: {e}"));
+            return;
+        }
+    };
+    let doc_path = format!(".my.entities.{entity_name}");
+    let ctx = crate::views::editor::EditorContext {
+        doc_path,
+        initial: yaml,
+        language: "yaml".to_string(),
+        mode: crate::views::editor::EditorMode::EntityEdit { target: target_did, entity_name },
+    };
+    show_editor.set(Some(ctx));
 }
 
 const HELP_TEXT: &[&str] = &[

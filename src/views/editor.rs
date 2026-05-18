@@ -53,6 +53,14 @@ pub enum EditorMode {
         /// The `Message.id` being replied to.
         reply_to_id: String,
     },
+    /// Edit an entity definition: Publish button only.
+    /// YAML buffer → DAG-CBOR → sent to runtime for dag_put + registration.
+    EntityEdit {
+        /// DID of the runtime to send the updated entity to.
+        target: String,
+        /// Entity name (e.g. `"rms"`).
+        entity_name: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -231,12 +239,42 @@ pub fn EditorModal(
         }
     };
 
+    // EntityEdit — convert YAML buffer to DAG-CBOR and send to runtime.
+    let on_entity_publish = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::EntityEdit { target, entity_name } = ctx.mode else {
+                return;
+            };
+            let verb = format!("entities.{entity_name}:edit");
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(dag_cbor) => {
+                        match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
+                            Ok(_) => state2.push_system(format!("entity {entity_name}: publish sent")),
+                            Err(e) => state2.push_error(format!("entity publish failed: {e}")),
+                        }
+                    }
+                    Err(e) => state2.push_error(format!("YAML error: {e}")),
+                }
+            });
+        }
+    };
+
     // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
     // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
     // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
-    let is_standard = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
-    let is_view     = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
-    let is_reply    = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
+    let is_standard     = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
+    let is_view         = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
+    let is_reply        = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
+    let is_entity_edit  = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityEdit { .. }));
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -282,6 +320,18 @@ pub fn EditorModal(
                         style=move || if is_reply() { "" } else { "display:none" }
                         on:click=on_reply.clone()
                     >"Reply"</button>
+                    // Publish — EntityEdit mode only
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_entity_edit() { "" } else { "display:none" }
+                        on:click=on_entity_publish.clone()
+                    >"Publish"</button>
+                    // Cancel — EntityEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_entity_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >"Cancel"</button>
                 </div>
                 <div id=EDITOR_EL_ID class="editor-cm-host"></div>
             </div>

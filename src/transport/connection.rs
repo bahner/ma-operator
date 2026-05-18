@@ -181,6 +181,44 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
     Ok(msg_id)
 }
 
+/// Send an RPC message whose single argument is a raw byte blob (DAG-CBOR).
+/// The verb is sent as a CBOR text atom; the bytes are a CBOR bytes value.
+/// Returns the dispatched `Message.id` on success.
+pub async fn send_rpc_bytes(
+    target_did: &str,
+    verb: &str,
+    payload: Vec<u8>,
+) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+
+    let atom = if verb.starts_with(':') {
+        verb.to_string()
+    } else {
+        format!(":{verb}")
+    };
+
+    let cbor_val = ciborium::Value::Array(vec![
+        ciborium::Value::Text(atom),
+        ciborium::Value::Bytes(payload),
+    ]);
+
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
+
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_RPC,
+        "application/cbor",
+        body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
 /// Send our own signed DID document to a publisher's `/ma/ipfs/0.0.1` endpoint.
 ///
 /// Uses `SecretBundle::generate_identity()` (via `ma_core`) to rebuild the

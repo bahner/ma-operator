@@ -4,6 +4,24 @@
 
 use ciborium::Value as CborValue;
 
+/// Convert a YAML string into a DAG-CBOR byte vector.
+///
+/// Flow: YAML → `serde_json::Value` (via serde_yaml) → DAG-CBOR bytes
+/// (via serde_ipld_dagcbor).  The resulting bytes can be sent directly
+/// to the runtime's `:entities.<name>:edit` RPC verb, which will
+/// `dag_put` them and register the entity.
+pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
+    let val: serde_json::Value =
+        serde_yaml::from_str(yaml).map_err(|e| format!("YAML parse error: {e}"))?;
+    serde_ipld_dagcbor::to_vec(&val).map_err(|e| format!("DAG-CBOR encode error: {e}"))
+}
+
+/// Convert a `serde_json::Value` (e.g. from IPFS gateway DAG-JSON response)
+/// into a YAML string for display in the editor.
+pub fn json_value_to_yaml(val: &serde_json::Value) -> Result<String, String> {
+    serde_yaml::to_string(val).map_err(|e| format!("YAML serialise error: {e}"))
+}
+
 /// Format an unsolicited (non-reply) incoming message for display.
 pub fn format_incoming(sender: &str, content_type: &str, body: &str) -> String {
     format!("← [{sender}] ({content_type})\n  {body}")

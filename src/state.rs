@@ -42,6 +42,10 @@ pub struct AppState {
     /// Maps `ma_core::Message.id` of an in-flight command to the
     /// `CommandRecord.id` so replies can locate the originating entry.
     pub pending_by_msg_id: RwSignal<HashMap<String, u64>>,
+    /// Tracks in-flight `:entities.<name>:edit` RPC requests.
+    /// Key: `Message.id`, Value: (target_did, entity_name).
+    /// When the reply arrives the terminal opens the EntityEdit editor.
+    pub pending_entity_edits: RwSignal<HashMap<String, (String, String)>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -57,6 +61,7 @@ impl AppState {
             focus_actor: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_by_msg_id: RwSignal::new(HashMap::new()),
+            pending_entity_edits: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
         }
