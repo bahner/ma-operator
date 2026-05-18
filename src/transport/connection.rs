@@ -18,7 +18,7 @@ const CONTENT_TYPE_TEXT: &str = "text/plain";
 
 use log::info;
 
-const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
+pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
 const PUBLIC_GATEWAY_URL: &str = "https://dweb.link/";
 
 // ── Endpoint lifecycle ─────────────────────────────────────────────────────

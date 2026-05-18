@@ -1,5 +1,6 @@
 /// Main terminal/dashboard view — shown after login.
 use leptos::prelude::*;
+use ma_core::DidDocumentResolver;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 
@@ -221,9 +222,17 @@ pub fn Terminal() -> impl IntoView {
                                 state2
                                     .pending_entity_edits
                                     .update(|m| { m.remove(msg_id); });
-                                // The runtime replied with a CID as a CBOR text atom.
-                                // Fetch DAG-JSON from gateway → convert to YAML → editor.
-                                let cid_str = incoming.display.trim().to_string();
+                                // The runtime replied with [:ok, "bafy..."] — decode
+                                // the CID from raw CBOR, not from the display string
+                                // (which carries a "← [did:...]" prefix).
+                                let cid_str = extract_cid_from_rpc_reply(&incoming.content);
+                                let cid_str = match cid_str {
+                                    Some(c) => c,
+                                    None => {
+                                        state2.push_error("entity edit: runtime reply did not contain a CID");
+                                        continue;
+                                    }
+                                };
                                 let show2 = show_editor;
                                 let state3 = state2.clone();
                                 spawn_local(async move {
@@ -781,30 +790,31 @@ async fn resolve_and_traverse(
     let doc = match cached {
         Some(v) => v,
         None => {
-            // Fetch: DID → resolve via gateway; CID → fetch raw JSON.
-            let text = if link.starts_with("did:ma:") {
-                let url = format!(
-                    "https://dweb.link/ipns/{}",
-                    link.trim_start_matches("did:ma:")
-                );
-                fetch_url_text(&url).await
+            let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
+                // Use the session resolver — it owns the gateway URL, has a
+                // positive cache, and falls back to public gateways automatically.
+                let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone()) else {
+                    state.push_error("link fetch error: not connected");
+                    return;
+                };
+                resolver
+                    .resolve(link)
+                    .await
+                    .map_err(|e| e.to_string())
+                    .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
             } else {
-                // Bare CID
-                fetch_url_text(&format!("https://dweb.link/ipfs/{link}")).await
+                // Bare CID — fetch from local gateway.
+                let url = format!("{}ipfs/{link}", crate::transport::connection::LOCAL_GATEWAY_URL);
+                match fetch_url_text(&url).await {
+                    Ok(t) => serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string()),
+                    Err(e) => Err(e),
+                }
             };
-            match text {
-                Ok(t) => match serde_json::from_str::<serde_json::Value>(&t) {
-                    Ok(v) => {
-                        cache.update(|m| {
-                            m.insert(link.to_string(), v.clone());
-                        });
-                        v
-                    }
-                    Err(e) => {
-                        state.push_error(format!("link parse error: {e}"));
-                        return;
-                    }
-                },
+            match val {
+                Ok(v) => {
+                    cache.update(|m| { m.insert(link.to_string(), v.clone()); });
+                    v
+                }
                 Err(e) => {
                     state.push_error(format!("link fetch error: {e}"));
                     return;
@@ -874,8 +884,26 @@ fn parse_entity_edit_verb(verb: &str) -> Option<String> {
     Some(name)
 }
 
-/// Fetch a DAG-CBOR node by CID from the IPFS gateway, convert the DAG-JSON
-/// response to YAML, and open the EntityEdit editor.
+/// Decode the CID text from an `[:ok, "bafy..."]` RPC reply body (raw CBOR).
+fn extract_cid_from_rpc_reply(body: &[u8]) -> Option<String> {
+    match ciborium::de::from_reader::<ciborium::Value, _>(body).ok()? {
+        // Plain text atom — bare CID or ":ok"
+        ciborium::Value::Text(s) if !s.starts_with(':') => Some(s),
+        // [:ok, "bafy..."] tuple
+        ciborium::Value::Array(items) => {
+            if items.len() >= 2 {
+                if let ciborium::Value::Text(cid) = &items[1] {
+                    return Some(cid.clone());
+                }
+            }
+            None
+        }
+        _ => None,
+    }
+}
+
+/// Fetch a DAG-CBOR node by CID from the local IPFS gateway, convert the
+/// DAG-JSON response to YAML, and open the EntityEdit editor.
 async fn open_entity_edit_editor(
     cid: &str,
     target_did: String,
@@ -883,9 +911,7 @@ async fn open_entity_edit_editor(
     show_editor: leptos::prelude::RwSignal<Option<crate::views::editor::EditorContext>>,
     state: AppState,
 ) {
-    // The runtime may have replied with a raw display string; extract the bare CID.
-    let bare_cid = cid.split_whitespace().next().unwrap_or(cid);
-    let url = format!("https://dweb.link/ipfs/{bare_cid}");
+    let url = format!("{}ipfs/{cid}", crate::transport::connection::LOCAL_GATEWAY_URL);
     let json_text = match fetch_url_text(&url).await {
         Ok(t) => t,
         Err(e) => {
