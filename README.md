@@ -97,6 +97,8 @@ get theirs, and save it as an alias:
 .my.aliases.alice: did:ma:Qm...
 ```
 
+Aliases must store a bare DID only. Fragments are not allowed in alias values.
+
 Now sending is simple:
 
 ```
@@ -110,6 +112,12 @@ To send an RPC (a verb, not just text):
 
 ```
 @alice:ping
+```
+
+To target a specific entity fragment while still using an alias:
+
+```
+@alice#fortune:fortune
 ```
 
 ---

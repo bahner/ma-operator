@@ -14,6 +14,31 @@ use crate::{
     views::editor::{EditorContext, EditorModal},
 };
 
+fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
+    const PREFIX: &str = ".my.aliases.";
+    if !path.starts_with(PREFIX) {
+        return Ok(());
+    }
+
+    let name = &path[PREFIX.len()..];
+    if name.is_empty() {
+        return Err("alias name cannot be empty".to_string());
+    }
+    if name.contains('#') {
+        return Err("alias names cannot contain '#'".to_string());
+    }
+    if value.contains('#') {
+        return Err("alias value must be bare did:ma:<ipns> (no fragment)".to_string());
+    }
+    if value.contains('/') {
+        return Err("alias value must be bare did:ma:<ipns> (no path)".to_string());
+    }
+    if !value.starts_with("did:ma:") {
+        return Err("alias value must start with did:ma:".to_string());
+    }
+    Ok(())
+}
+
 #[component]
 pub fn Terminal() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
@@ -172,6 +197,7 @@ pub fn Terminal() -> impl IntoView {
                                 from_display, count
                             ),
                             None,
+                            false,
                         );
                         continue;
                     }
@@ -191,10 +217,10 @@ pub fn Terminal() -> impl IntoView {
                                 CommandStatus::Replied(incoming.display.clone())
                             };
                             let cmd_id = state2.resolve_command(msg_id, status);
-                            state2.push_incoming(display, cmd_id);
+                            state2.push_incoming(display, cmd_id, incoming.is_error);
                         }
                         None => {
-                            state2.push_incoming(display, None);
+                            state2.push_incoming(display, None, incoming.is_error);
                         }
                     }
                 }
@@ -334,19 +360,23 @@ fn render_entry(entry: Entry) -> impl IntoView {
             view! { <div class=cls>{text}</div> }.into_any()
         }
         Entry::Incoming(i) => {
-            let cls = if i.after_cmd_id.is_some() {
+            let cls = if i.is_error {
+                "terminal-line line-error"
+            } else if i.after_cmd_id.is_some() {
                 "terminal-line line-reply"
             } else {
                 "terminal-line line-output"
             };
-            view! { <div class=cls>{i.display}</div> }.into_any()
+            let text = i.display;
+            view! { <div class=cls>{text}</div> }.into_any()
         }
         Entry::System(s) => {
             let cls = match s.kind {
                 SystemKind::Info => "terminal-line line-system",
                 SystemKind::Error => "terminal-line line-error",
             };
-            view! { <div class=cls>{s.text}</div> }.into_any()
+            let text = s.text;
+            view! { <div class=cls>{text}</div> }.into_any()
         }
     }
 }
@@ -476,6 +506,10 @@ fn eval_dot(
         DotOp::Set(value) => {
             if EgoConfig::is_read_only(path) {
                 state.push_error(format!("{path} is read-only"));
+                return;
+            }
+            if let Err(e) = validate_alias_set(path, &value) {
+                state.push_error(e);
                 return;
             }
             let (has_children, has_ancestor) = {
@@ -786,6 +820,7 @@ const HELP_TEXT: &[&str] = &[
     "── messaging ────────────────────────────────────────────────────────────",
     "  @alias                       echo resolved DID (no message sent)",
     "  @alias[:verb] body           send message / RPC to actor",
+    "  @alias#fragment[:verb] body  send to alias with explicit DID fragment",
     "  \\@name                       literal @name (no alias lookup)",
     "",
     "── focus mode ───────────────────────────────────────────────────────────",
@@ -802,8 +837,10 @@ const HELP_TEXT: &[&str] = &[
     "── common paths ─────────────────────────────────────────────────────────",
     "  .my                          show all personal config",
     "  .my.aliases                  list aliases",
-    "  .my.aliases.<name>: <did>    add/update alias",
+    "  .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)",
     "  .my.aliases.<name>:          remove alias",
+    "  .my.間:discover              discover local runtime and create @間 alias",
+    "  .my.ma:discover             ASCII alias for discovery",
     "  .my.identity                 show identity config",
     "  .my.identity.did             show own DID (read-only)",
     "  .my.identity:publish @pub    publish own DID via publisher service",

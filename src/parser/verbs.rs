@@ -156,7 +156,7 @@ pub fn dispatch_verb(
     // ── .my.間 ────────────────────────────────────────────────────────────
     // .my.間:discover — probe http://localhost:5003/status.json, configure
     // the local ma runtime, and create the @間 alias automatically.
-    if path == ".my.間" {
+    if path == ".my.間" || path == ".my.ma" || path == ".my.runtime" {
         match verb {
             "discover" => {
                 const STATUS_URL: &str = "http://localhost:5003/status.json";
@@ -165,9 +165,9 @@ pub fn dispatch_verb(
                     let json_str = match fetch_url_text(STATUS_URL).await {
                         Ok(s) => s,
                         Err(e) => {
+                            let hint = discover_fetch_hint(&e);
                             state2.push_error(format!(
-                                "discover: could not reach ma at {STATUS_URL} — {e}\n\
-                                 Is `ma` running? Is IPFS Desktop running?"
+                                "discover failed at {STATUS_URL}: {e}\n{hint}"
                             ));
                             return;
                         }
@@ -176,7 +176,8 @@ pub fn dispatch_verb(
                         Ok(v) => v,
                         Err(e) => {
                             state2.push_error(format!(
-                                "discover: bad JSON from {STATUS_URL}: {e}"
+                                "discover failed: invalid JSON from {STATUS_URL}: {e}\n\
+                                 Ensure `ma` is running and the status endpoint is not proxied/cached by another service."
                             ));
                             return;
                         }
@@ -185,16 +186,28 @@ pub fn dispatch_verb(
                         Some(d) => d.to_string(),
                         None => {
                             state2.push_error(
-                                "discover: no 'did' field in status.json".to_string(),
+                                "discover failed: status.json missing required field `did`".to_string(),
                             );
                             return;
                         }
                     };
+                    if !did.starts_with("did:ma:") {
+                        state2.push_error(format!(
+                            "discover failed: expected `did` to start with did:ma:, got `{did}`"
+                        ));
+                        return;
+                    }
                     let endpoint_id = json
                         .get("endpoint_id")
                         .and_then(|v| v.as_str())
                         .unwrap_or("")
                         .to_string();
+                    if endpoint_id.is_empty() {
+                        state2.push_system(
+                            "discover warning: `endpoint_id` missing in status.json; stored DID only"
+                                .to_string(),
+                        );
+                    }
 
                     // Write config, then persist.
                     config.update(|cfg| {
@@ -225,7 +238,7 @@ pub fn dispatch_verb(
                 });
                 return Ok(());
             }
-            other => return Err(format!("no verb `{other}` for .my.間")),
+            other => return Err(format!("no verb `{other}` for {path}")),
         }
     }
 
@@ -243,8 +256,9 @@ pub fn dispatch_verb(
             match transport::send_ipfs_publish(&publisher).await {
                 Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
                 Err(e) => {
-                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                    state2.push_error(format!("publish failed: {e}"));
+                    let mapped = format_publish_error(&e);
+                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(mapped.clone()));
+                    state2.push_error(mapped);
                 }
             }
         });
@@ -351,7 +365,10 @@ pub fn dispatch_verb(
                             // (Handled in the inbox polling loop via bind_message_id)
                         }
                         Err(e) => {
-                            state2.push_error(format!("publish {doc_path2}: {e}"));
+                            state2.push_error(format!(
+                                "publish {doc_path2}: {}",
+                                format_publish_error(&e)
+                            ));
                         }
                     }
                 });
@@ -412,6 +429,69 @@ fn lang_for_content_type(ct: &str) -> &'static str {
         "yaml"
     } else {
         "plain"
+    }
+}
+
+fn discover_fetch_hint(err: &str) -> &'static str {
+    if err.contains("HTTP 404") {
+        "Hint: endpoint not found. Check that `ma` is running and exposes /status.json on port 5003."
+    } else if err.contains("HTTP 5") {
+        "Hint: runtime answered with server error. Check `ma` logs and retry."
+    } else if err.contains("TypeError") || err.contains("Failed to fetch") {
+        "Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser."
+    } else {
+        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.間:discover`."
+    }
+}
+
+fn format_publish_error(err: &str) -> String {
+    let (code, hint) = classify_publish_error(err);
+    format!("publish failed [{code}]: {err}\nHint: {hint}")
+}
+
+fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
+    let lower = err.to_ascii_lowercase();
+
+    if lower.contains("not logged in") {
+        (
+            "session",
+            "log in again so ego can access your identity keys",
+        )
+    } else if lower.contains("unknown alias") || lower.contains("expected bare did") {
+        (
+            "target",
+            "use a valid publisher DID or alias that resolves to bare did:ma:<ipns>",
+        )
+    } else if lower.contains("http") || lower.contains("fetch") || lower.contains("connect") {
+        (
+            "network",
+            "verify ma runtime and IPFS are reachable, then retry",
+        )
+    } else if lower.contains("outbox") || lower.contains("resolve") || lower.contains("did") {
+        (
+            "resolve",
+            "verify the publisher DID document is published and contains a reachable endpoint",
+        )
+    } else if lower.contains("acl") || lower.contains("denied") || lower.contains("forbidden") {
+        (
+            "acl",
+            "ask the publisher operator to allow your DID in ACL",
+        )
+    } else if lower.contains("plugin") || lower.contains("handle_cast") || lower.contains(":error") {
+        (
+            "runtime",
+            "runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime",
+        )
+    } else if lower.contains("ipfs") || lower.contains("kubo") || lower.contains("cid") {
+        (
+            "ipfs",
+            "check local Kubo/IPFS health and publisher runtime status",
+        )
+    } else {
+        (
+            "unknown",
+            "inspect runtime logs for detailed cause and retry",
+        )
     }
 }
 

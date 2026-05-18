@@ -35,8 +35,7 @@ pub fn Landing() -> impl IntoView {
 
     view! {
         <div class="landing">
-            <h1>"ego"</h1>
-            <p class="tagline">"don't panic."</p>
+            <h1>"DON'T PANIC"</h1>
             <div class="landing-box">
                 <div class="landing-tabs">
                     <button
@@ -64,7 +63,7 @@ pub fn Landing() -> impl IntoView {
                 </Show>
 
                 <Show when=move || !error.get().is_empty()>
-                    <p class="landing-error">{move || error.get()}</p>
+                    <p class="landing-error">"error"</p>
                 </Show>
                 <Show when=move || !status.get().is_empty()>
                     <p class="landing-status">{move || status.get()}</p>

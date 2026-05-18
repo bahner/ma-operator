@@ -45,7 +45,11 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
     match ciborium::de::from_reader::<CborValue, _>(body) {
         Ok(CborValue::Text(atom)) => {
             let is_err = atom == ":error";
-            (atom, is_err)
+            if is_err {
+                ("error".to_string(), true)
+            } else {
+                (atom, false)
+            }
         }
         Ok(CborValue::Array(items)) => {
             let head = items
@@ -56,16 +60,68 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
                 })
                 .unwrap_or_else(|| "<?>".to_string());
             let rest: Vec<String> = items.iter().skip(1).map(format_cbor_value_short).collect();
-            let is_err = head == ":error";
-            let display = if rest.is_empty() {
-                head
+            
+            // If head is :ok, strip it and display the payload
+            if head == ":ok" {
+                let display = if rest.is_empty() {
+                    "ok".to_string()
+                } else if rest.len() == 1 {
+                    rest[0].clone()
+                } else {
+                    rest.join(" ")
+                };
+                (display, false)
             } else {
-                format!("{head} {}", rest.join(" "))
-            };
-            (display, is_err)
+                let is_err = head == ":error";
+                let display = if is_err {
+                    if rest.is_empty() {
+                        "error".to_string()
+                    } else {
+                        format!("error: {}", rest.join(" "))
+                    }
+                } else if rest.is_empty() {
+                    head
+                } else {
+                    format!("{head} {}", rest.join(" "))
+                };
+                (display, is_err)
+            }
         }
         Ok(other) => (format_cbor_value_short(&other), false),
         Err(_) => (format!("<undecodable {} bytes>", body.len()), false),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn formats_error_tuple_compactly() {
+        let mut body = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Array(vec![
+                CborValue::Text(":error".to_string()),
+                CborValue::Text("unknown entity fragment: fortune".to_string()),
+            ]),
+            &mut body,
+        )
+        .expect("encode cbor");
+
+        let (display, is_error) = format_rpc_reply(&body);
+        assert!(is_error);
+        assert_eq!(display, "error: unknown entity fragment: fortune");
+    }
+
+    #[test]
+    fn formats_error_atom_compactly() {
+        let mut body = Vec::new();
+        ciborium::ser::into_writer(&CborValue::Text(":error".to_string()), &mut body)
+            .expect("encode cbor");
+
+        let (display, is_error) = format_rpc_reply(&body);
+        assert!(is_error);
+        assert_eq!(display, "error");
     }
 }
 

@@ -147,6 +147,17 @@ pub fn resolve_target(raw: &str, cfg: &EgoConfig) -> Result<String, String> {
     if raw.starts_with("did:") {
         return Ok(raw.to_string());
     }
+
+    if let Some((alias, fragment)) = raw.split_once('#') {
+        if alias.is_empty() || fragment.is_empty() {
+            return Err(format!("invalid target: @{raw}"));
+        }
+        let did = cfg
+            .resolve_alias(alias)
+            .ok_or_else(|| format!("unknown alias: @{alias}"))?;
+        return Ok(format!("{did}#{fragment}"));
+    }
+
     cfg.resolve_alias(raw)
         .map(|s| s.to_string())
         .ok_or_else(|| format!("unknown alias: @{raw}"))
@@ -240,6 +251,27 @@ mod tests {
             cmd,
             Command::ActorMessage {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
+                verb: Some("ping".to_string()),
+                body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_alias_target_with_fragment_and_verb() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.fjodor",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@fjodor#fortune:ping", &cfg, None).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#fortune"
                     .to_string(),
                 verb: Some("ping".to_string()),
                 body: String::new(),

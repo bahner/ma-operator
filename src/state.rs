@@ -188,11 +188,17 @@ impl AppState {
     /// Append an incoming message. If `after_cmd_id` is `Some(_)`, the new
     /// entry is spliced into the buffer immediately after the matching
     /// command entry (and any prior replies already attached to it).
-    pub fn push_incoming(&self, display: impl Into<String>, after_cmd_id: Option<u64>) {
+    pub fn push_incoming(
+        &self,
+        display: impl Into<String>,
+        after_cmd_id: Option<u64>,
+        is_error: bool,
+    ) {
         let id = self.next_id();
         let rec = IncomingRecord {
             id,
             display: display.into(),
+            is_error,
             after_cmd_id,
         };
         self.entries.update(|v| {

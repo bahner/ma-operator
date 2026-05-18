@@ -14,9 +14,11 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
 use crate::state::AppState;
 
-// Matrix character set — katakana + digits
-const MATRIX_CHARS: &str = "ｦｧｨｩｪｫｬｭｮｯｰｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ\
+// Festive character set — emojis and symbols for the drunk screensaver
+const MATRIX_CHARS: &str = "✨🎉🎊💫⭐🌟✨🎈🎁🎪🎨🎭🎬🎤🎧🎸🎹🎺🎷\
      0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
+    ☀️🌈🌸🌺🍀🎀💝💖💗💓💕💞💘🦋🐝🐞🦗🕷️🕸️\
+    ♥️♦️♣️♠️✿❀❁❆❇❈ ★✧✦♪♫♬♭♮♯⚡🔥💥💢💫";
 
 #[component]
 pub fn Screensaver() -> impl IntoView {
@@ -166,8 +168,8 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
     let f_clone = f.clone();
 
     *f.borrow_mut() = Some(Closure::new(move || {
-        // Semi-transparent black overlay → fade trail
-        ctx.set_fill_style_str("rgba(0,0,0,0.05)");
+        // Light festive background with pastel glow effect
+        ctx.set_fill_style_str("rgba(255,250,240,0.08)");
         ctx.fill_rect(0.0, 0.0, w as f64, h as f64);
 
         ctx.set_font(&format!("{font_size}px monospace"));
@@ -181,12 +183,14 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
             let x = i as f64 * font_size as f64;
             let y = *drop * font_size as f64;
 
-            // Head char: bright white
-            ctx.set_fill_style_str("rgba(255,255,255,0.9)");
+            // Head char: bright pastel neon colors
+            let colors = ["#FF1493", "#00FFFF", "#FFD700", "#FF69B4", "#00FF7F", "#FFA500"];
+            let color_idx = i % colors.len();
+            ctx.set_fill_style_str(colors[color_idx]);
             ctx.fill_text(&ch, x, y).unwrap_or(());
 
-            // Trail: matrix green
-            ctx.set_fill_style_str("#00ff41");
+            // Trail: lighter glow effect
+            ctx.set_fill_style_str("rgba(255,105,180,0.4)");
             let _ = ctx.fill_text(&ch, x, y); // already drawn white; next tick fades
 
             // Reset to top randomly or when past bottom

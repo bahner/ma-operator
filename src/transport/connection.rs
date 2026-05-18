@@ -18,6 +18,9 @@ const CONTENT_TYPE_TEXT: &str = "text/plain";
 
 use log::info;
 
+const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
+const PUBLIC_GATEWAY_URL: &str = "https://dweb.link/";
+
 // ── Endpoint lifecycle ─────────────────────────────────────────────────────
 
 pub async fn connect(
@@ -45,7 +48,9 @@ pub async fn connect(
     // Create a single shared resolver so its positive-cache is reused across
     // all concurrent sends — the DID document is fetched from the gateway
     // exactly once and then served from cache for subsequent sends.
-    let resolver = Rc::new(IpfsGatewayResolver::new("https://dweb.link/"));
+    // Prefer local Kubo gateway for fresh IPNS updates; fall back to dweb.link
+    // at send-time when local resolution is unavailable.
+    let resolver = Rc::new(IpfsGatewayResolver::new(LOCAL_GATEWAY_URL));
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())
@@ -298,11 +303,43 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
     let resolver = SESSION_RESOLVER
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
-    let mut outbox = ep
-        .outbox(resolver.as_ref(), target_did, protocol)
-        .await
-        .map_err(|e| e.to_string())?;
-    outbox.send(&msg).await.map_err(|e| e.to_string())
+
+    // First attempt: current session resolver (normally local gateway).
+    let primary_attempt = async {
+        let mut outbox = ep
+            .outbox(resolver.as_ref(), target_did, protocol)
+            .await
+            .map_err(|e| e.to_string())?;
+        outbox.send(&msg).await.map_err(|e| e.to_string())
+    }
+    .await;
+    if primary_attempt.is_ok() {
+        return Ok(());
+    }
+
+    // Fallback: public gateway for environments without local Kubo access.
+    let fallback = Rc::new(IpfsGatewayResolver::new(PUBLIC_GATEWAY_URL));
+    let fallback_attempt = async {
+        let mut outbox = ep
+            .outbox(fallback.as_ref(), target_did, protocol)
+            .await
+            .map_err(|e| e.to_string())?;
+        outbox.send(&msg).await.map_err(|e| e.to_string())
+    }
+    .await;
+
+    if fallback_attempt.is_ok() {
+        SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(fallback));
+        return Ok(());
+    }
+
+    Err(format!(
+        "send failed via local gateway ({LOCAL_GATEWAY_URL}) and public gateway ({PUBLIC_GATEWAY_URL}): {}; {}",
+        primary_attempt.err().unwrap_or_else(|| "unknown error".to_string()),
+        fallback_attempt
+            .err()
+            .unwrap_or_else(|| "unknown error".to_string())
+    ))
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.

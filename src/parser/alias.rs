@@ -46,6 +46,22 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
                 continue;
             }
 
+            // Alias with explicit fragment, e.g. @alice#chat
+            if let Some((alias, fragment)) = token.split_once('#') {
+                if alias.is_empty() || fragment.is_empty() {
+                    return Err(format!("invalid target: @{token}"));
+                }
+                match cfg.resolve_alias(alias) {
+                    Some(did) => {
+                        result.push_str(did);
+                        result.push('#');
+                        result.push_str(fragment);
+                    }
+                    None => return Err(format!("unknown alias: @{alias}")),
+                }
+                continue;
+            }
+
             // Lookup alias
             match cfg.resolve_alias(&token) {
                 Some(did) => result.push_str(did),

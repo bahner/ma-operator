@@ -11,6 +11,8 @@ pub struct IncomingRecord {
     pub id: u64,
     /// Pre-formatted display text.
     pub display: String,
+    /// True when payload is an error reply (e.g. `[:error, reason]`).
+    pub is_error: bool,
     /// If the incoming message is a reply, this is the id of the
     /// `CommandRecord` it replies to. Used to splice the reply directly
     /// after the originating command in the rendered list.

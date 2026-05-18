@@ -53,33 +53,36 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     height: 100vh;
-    gap: 1.5rem;
-    padding: 2rem;
+    padding: 0;
+    gap: 2rem;
 }
 
 .landing h1 {
-    font-size: 3rem;
-    letter-spacing: 0.3em;
+    font-size: clamp(2.75rem, 7.5vw, 5.25rem);
+    line-height: 0.95;
+    letter-spacing: 0.14em;
+    text-align: center;
     color: var(--colour-text);
-    text-shadow: 0 0 20px var(--colour-text);
-    animation: flicker 4s infinite;
-}
-
-.landing .tagline {
-    color: var(--colour-dimmed);
-    font-size: 0.85rem;
-    letter-spacing: 0.15em;
+    text-shadow: 0 0 22px var(--colour-text), 0 0 48px rgba(0, 255, 65, 0.22);
+    animation: flicker 5s infinite;
+    margin-bottom: 0.25rem;
+    width: 98%;
+    max-width: 900px;
+    padding: 2rem;
+    margin-top: 25vh;
+    flex-shrink: 0;
 }
 
 .landing-box {
     border: 1px solid var(--colour-border);
-    padding: 2rem;
+    padding: 1rem;
     min-width: 400px;
     max-width: 600px;
     width: 100%;
     background: var(--colour-input-bg);
+    margin: auto 0;
 }
 
 .landing-tabs {
@@ -370,7 +373,9 @@ html, body {
 .screensaver {
     position: fixed;
     inset: 0;
-    background: #000;
+    background: linear-gradient(135deg, #FFE5E5 0%, #FFF8DC 25%, #E5F5FF 50%, #F0E5FF 75%, #FFE5F5 100%);
+    background-size: 400% 400%;
+    animation: festive-gradient 15s ease infinite;
     z-index: 9999;
     display: flex;
     flex-direction: column;
@@ -398,12 +403,14 @@ html, body {
     font-size: clamp(3rem, 12vw, 8rem);
     font-weight: bold;
     letter-spacing: 0.15em;
-    color: #fff;
+    color: #FF1493;
     text-shadow:
-        0 0 20px #fff,
-        0 0 40px #00ff41,
-        0 0 80px #00ff41;
-    animation: pulse 3s ease-in-out infinite;
+        0 0 10px #FF1493,
+        0 0 20px #00FFFF,
+        0 0 30px #FFD700,
+        0 0 40px #FF69B4,
+        0 0 60px rgba(255,105,180,0.6);
+    animation: drunk-panic 4s ease-in-out infinite;
 }
 
 .hhgttg-sub {
