@@ -15,10 +15,7 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 use crate::state::AppState;
 
 // Festive character set — emojis and symbols for the drunk screensaver
-const MATRIX_CHARS: &str = "✨🎉🎊💫⭐🌟✨🎈🎁🎪🎨🎭🎬🎤🎧🎸🎹🎺🎷\
-     0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
-    ☀️🌈🌸🌺🍀🎀💝💖💗💓💕💞💘🦋🐝🐞🦗🕷️🕸️\
-    ♥️♦️♣️♠️✿❀❁❆❇❈ ★✧✦♪♫♬♭♮♯⚡🔥💥💢💫";
+const MATRIX_CHARS: &str = "✨🎉🎊💫⭐🌟🎈🎁🎪🎨🎭🎬🎤🎧🎸🎹🎺🎷☀️🌈🌸🌺🍀🎀💝💖💗💓💕💞💘🦋🐝🐞🦗0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
 
 #[component]
 pub fn Screensaver() -> impl IntoView {
