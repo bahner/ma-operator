@@ -10,16 +10,29 @@ use ciborium::Value as CborValue;
 /// (via serde_ipld_dagcbor).  The resulting bytes can be sent directly
 /// to the runtime's `:entities.<name>:edit` RPC verb, which will
 /// `dag_put` them and register the entity.
+///
+/// Returns an error if the YAML does not parse to an object/map — bare
+/// scalars (plain prose, numbers, booleans) are rejected because they
+/// produce structureless IPLD nodes with no traversable fields.
 pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
     let val: serde_json::Value =
         serde_yaml::from_str(yaml).map_err(|e| format!("YAML parse error: {e}"))?;
+    if !val.is_object() {
+        return Err(
+            "YAML must be a mapping (key: value pairs) to be stored as structured IPLD data; \
+             plain text or bare scalars cannot be published as DAG-CBOR"
+                .to_string(),
+        );
+    }
     serde_ipld_dagcbor::to_vec(&val).map_err(|e| format!("DAG-CBOR encode error: {e}"))
 }
 
-/// Convert a `serde_json::Value` (e.g. from IPFS gateway DAG-JSON response)
-/// into a YAML string for display in the editor.
-pub fn json_value_to_yaml(val: &serde_json::Value) -> Result<String, String> {
-    serde_yaml::to_string(val).map_err(|e| format!("YAML serialise error: {e}"))
+/// Decode plain CBOR bytes (e.g. from a runtime RPC reply) into a YAML string
+/// for display in the editor.
+pub fn cbor_to_yaml(bytes: &[u8]) -> Result<String, String> {
+    let val: serde_yaml::Value = ciborium::de::from_reader(bytes)
+        .map_err(|e| format!("CBOR decode error: {e}"))?;
+    serde_yaml::to_string(&val).map_err(|e| format!("YAML serialise error: {e}"))
 }
 
 /// Format an unsolicited (non-reply) incoming message for display.

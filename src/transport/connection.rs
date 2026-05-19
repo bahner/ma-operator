@@ -1,9 +1,9 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
-    generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST,
-    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint,
+    Did, IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
+    MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
@@ -394,26 +394,32 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
 fn decode_incoming(msg: Message) -> IncomingMessage {
     let (display, is_error) = match msg.message_type.as_str() {
         MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC => {
-            let (term, err) = format_rpc_reply(&msg.content);
+            let (term, err) = format_rpc_reply(&msg.payload());
             (format!("\u{2190} [{}] {}", msg.from, term), err)
         }
         MESSAGE_TYPE_CHAT => {
-            let body = String::from_utf8_lossy(&msg.content);
+            let bytes = msg.payload();
+            let body = String::from_utf8_lossy(&bytes);
             (format!("\u{2190} [{}] {}", msg.from, body), false)
         }
         MESSAGE_TYPE_EMOTE => {
-            let body = String::from_utf8_lossy(&msg.content);
+            let bytes = msg.payload();
+            let body = String::from_utf8_lossy(&bytes);
             (format!("* [{}] {}", msg.from, body), false)
         }
-        _ => (
-            format_incoming(
-                &msg.from,
-                &msg.content_type,
-                &String::from_utf8_lossy(&msg.content),
-            ),
-            false,
-        ),
+        _ => {
+            let bytes = msg.payload();
+            (
+                format_incoming(
+                    &msg.from,
+                    &msg.content_type,
+                    &String::from_utf8_lossy(&bytes),
+                ),
+                false,
+            )
+        }
     };
+    let payload = msg.payload();
     IncomingMessage {
         message_id: msg.id,
         message_type: msg.message_type,
@@ -421,7 +427,7 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
         to: msg.to,
         reply_to: msg.reply_to,
         content_type: msg.content_type,
-        content: msg.content,
+        content: payload,
         created_at: msg.created_at,
         exp: msg.exp,
         display,

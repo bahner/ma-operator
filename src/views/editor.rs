@@ -61,6 +61,16 @@ pub enum EditorMode {
         /// Entity name (e.g. `"rms"`).
         entity_name: String,
     },
+    /// Edit a single field of an entity (e.g. `acl`): Publish button only.
+    /// YAML buffer → DAG-CBOR → sent as `entities.<name>.<field>:edit`.
+    EntityFieldEdit {
+        /// DID of the runtime.
+        target: String,
+        /// Entity name.
+        entity_name: String,
+        /// Field name, e.g. `"acl"`.
+        field: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -268,13 +278,43 @@ pub fn EditorModal(
         }
     };
 
+    // EntityFieldEdit — convert YAML buffer to DAG-CBOR and send field bytes to runtime.
+    let on_entity_field_publish = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::EntityFieldEdit { target, entity_name, field } = ctx.mode else {
+                return;
+            };
+            let verb = format!("entities.{entity_name}.{field}:edit");
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(dag_cbor) => {
+                        match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
+                            Ok(_) => state2.push_system(format!("entity {entity_name}.{field}: publish sent")),
+                            Err(e) => state2.push_error(format!("entity field publish failed: {e}")),
+                        }
+                    }
+                    Err(e) => state2.push_error(format!("YAML error: {e}")),
+                }
+            });
+        }
+    };
+
     // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
     // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
     // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
-    let is_standard     = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
-    let is_view         = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
-    let is_reply        = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
-    let is_entity_edit  = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityEdit { .. }));
+    let is_standard          = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
+    let is_view              = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
+    let is_reply             = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
+    let is_entity_edit       = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityEdit { .. }));
+    let is_entity_field_edit = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityFieldEdit { .. }));
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -330,6 +370,18 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >"Cancel"</button>
+                    // Publish — EntityFieldEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_entity_field_edit() { "" } else { "display:none" }
+                        on:click=on_entity_field_publish.clone()
+                    >"Publish"</button>
+                    // Cancel — EntityFieldEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_entity_field_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >"Cancel"</button>
                 </div>

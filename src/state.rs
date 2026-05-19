@@ -7,6 +7,44 @@ use std::rc::Rc;
 
 use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
+use crate::views::editor::EditorMode;
+
+// ── Pending RPC edit ───────────────────────────────────────────────────────
+
+/// Tracks an in-flight `:edit` RPC whose reply should open the editor.
+#[derive(Clone, Debug)]
+pub enum PendingRpcEdit {
+    /// `:entities.<name>:edit` — opens `EntityEdit` mode.
+    Entity { target: String, entity_name: String },
+    /// `:entities.<name>.<field>:edit` — opens `EntityFieldEdit` mode.
+    Field  { target: String, entity_name: String, field: String },
+}
+
+impl PendingRpcEdit {
+    /// Return the `EditorMode` to use when the reply arrives.
+    pub fn into_editor_mode(self, doc_path: String) -> (String, EditorMode) {
+        match self {
+            Self::Entity { target, entity_name } => (
+                doc_path,
+                EditorMode::EntityEdit { target, entity_name },
+            ),
+            Self::Field { target, entity_name, field } => (
+                doc_path,
+                EditorMode::EntityFieldEdit { target, entity_name, field },
+            ),
+        }
+    }
+
+    /// Config sub-path used as the `doc_path` label in the editor.
+    pub fn doc_path(&self) -> String {
+        match self {
+            Self::Entity { entity_name, .. } =>
+                format!(".my.entities.{entity_name}"),
+            Self::Field { entity_name, field, .. } =>
+                format!(".my.entities.{entity_name}.{field}"),
+        }
+    }
+}
 
 // ── Session ────────────────────────────────────────────────────────────────
 
@@ -42,10 +80,9 @@ pub struct AppState {
     /// Maps `ma_core::Message.id` of an in-flight command to the
     /// `CommandRecord.id` so replies can locate the originating entry.
     pub pending_by_msg_id: RwSignal<HashMap<String, u64>>,
-    /// Tracks in-flight `:entities.<name>:edit` RPC requests.
-    /// Key: `Message.id`, Value: (target_did, entity_name).
-    /// When the reply arrives the terminal opens the EntityEdit editor.
-    pub pending_entity_edits: RwSignal<HashMap<String, (String, String)>>,
+    /// Tracks in-flight `:entities.<name>[.<field>]:edit` RPC requests.
+    /// Key: `Message.id`.  Value: everything needed to open the editor on reply.
+    pub pending_rpc_edits: RwSignal<HashMap<String, PendingRpcEdit>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -61,7 +98,7 @@ impl AppState {
             focus_actor: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_by_msg_id: RwSignal::new(HashMap::new()),
-            pending_entity_edits: RwSignal::new(HashMap::new()),
+            pending_rpc_edits: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
         }

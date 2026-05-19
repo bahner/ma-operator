@@ -15,7 +15,23 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 use crate::state::AppState;
 
 // Festive character set — emojis and symbols for the drunk screensaver
-const MATRIX_CHARS: &str = "✨🎉🎊💫⭐🌟🎈🎁🎪🎨🎭🎬🎤🎧🎸🎹🎺🎷☀️🌈🌸🌺🍀🎀💝💖💗💓💕💞💘🦋🐝🐞🦗0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%^&*";
+const MATRIX_CHARS: &str = "✨💫⭐🌟🌸🌺🍀🦋🐝間ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789@#$%&*";
+
+// Soft pastel palette — varied hues, low saturation
+const PASTEL_COLORS: &[&str] = &[
+    "#ffb3c6", // rose
+    "#a8d8ea", // sky
+    "#b5ead7", // mint
+    "#ffdac1", // peach
+    "#d4b8ff", // lavender
+    "#b5f7e8", // aqua
+    "#fef9a7", // lemon
+    "#ffc8dd", // pink
+    "#c7f2a4", // lime
+    "#ffd6a5", // apricot
+    "#caffbf", // pale green
+    "#9bf6ff", // pale cyan
+];
 
 #[component]
 pub fn Screensaver() -> impl IntoView {
@@ -148,12 +164,8 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
         .map(|i| BabelFish {
             x: js_sys::Math::random() * w as f64,
             y: (i as f64 + 1.0) * (h as f64 / (fish_count as f64 + 1.0)),
-            speed: 0.4 + js_sys::Math::random() * 0.6,
-            dir: if js_sys::Math::random() > 0.5 {
-                1.0
-            } else {
-                -1.0
-            },
+            speed: 0.25 + js_sys::Math::random() * 0.35,
+            dir: 1.0,
             opacity: 0.10 + js_sys::Math::random() * 0.12,
             size: 18.0 + js_sys::Math::random() * 14.0,
         })
@@ -165,8 +177,8 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
     let f_clone = f.clone();
 
     *f.borrow_mut() = Some(Closure::new(move || {
-        // Light festive background with pastel glow effect
-        ctx.set_fill_style_str("rgba(255,250,240,0.08)");
+        // Dark fade for the trail effect
+        ctx.set_fill_style_str("rgba(0,0,20,0.05)");
         ctx.fill_rect(0.0, 0.0, w as f64, h as f64);
 
         ctx.set_font(&format!("{font_size}px monospace"));
@@ -180,21 +192,16 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
             let x = i as f64 * font_size as f64;
             let y = *drop * font_size as f64;
 
-            // Head char: bright pastel neon colors
-            let colors = ["#FF1493", "#00FFFF", "#FFD700", "#FF69B4", "#00FF7F", "#FFA500"];
-            let color_idx = i % colors.len();
-            ctx.set_fill_style_str(colors[color_idx]);
+            // Each letter gets a random pastel colour
+            let color_idx = (js_sys::Math::random() * PASTEL_COLORS.len() as f64) as usize;
+            ctx.set_fill_style_str(PASTEL_COLORS[color_idx % PASTEL_COLORS.len()]);
             ctx.fill_text(&ch, x, y).unwrap_or(());
-
-            // Trail: lighter glow effect
-            ctx.set_fill_style_str("rgba(255,105,180,0.4)");
-            let _ = ctx.fill_text(&ch, x, y); // already drawn white; next tick fades
 
             // Reset to top randomly or when past bottom
             if y > h as f64 && js_sys::Math::random() > 0.975 {
                 *drop = 0.0;
             }
-            *drop += 0.5;
+            *drop += 0.07;
         }
 
         // Draw ghost babel fish
@@ -204,9 +211,13 @@ fn start_matrix_rain(canvas: &HtmlCanvasElement) {
                 ctx.save();
                 ctx.set_global_alpha(bfish.opacity);
                 ctx.set_font(&format!("{}px serif", bfish.size as u32));
-                ctx.set_fill_style_str("#aef");
-                let glyph = if bfish.dir > 0.0 { "🐟" } else { "🐡" };
-                let _ = ctx.fill_text(glyph, bfish.x, bfish.y);
+                // Mirror the glyph when swimming left using canvas transform
+                ctx.translate(bfish.x, bfish.y).unwrap_or(());
+                // 🐠 faces left by default — mirror so it swims in the direction of travel
+                ctx.scale(-1.0, 1.0).unwrap_or(());
+                ctx.set_filter("sepia(1) hue-rotate(10deg) saturate(8) brightness(1.3)");
+                let _ = ctx.fill_text("🐠", 0.0, 0.0);
+                ctx.set_filter("none");
                 ctx.restore();
                 // Move
                 bfish.x += bfish.dir * bfish.speed;

@@ -212,39 +212,32 @@ pub fn Terminal() -> impl IntoView {
                     };
                     match &incoming.reply_to {
                         Some(msg_id) => {
-                            // Check if this is a pending entity-edit reply (CID response).
-                            let entity_info = state2
-                                .pending_entity_edits
+                            // Check if this is a pending entity-edit reply.
+                            let pending = state2
+                                .pending_rpc_edits
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
-                            if let Some((target_did, entity_name)) = entity_info {
+                            if let Some(edit) = pending {
                                 state2
-                                    .pending_entity_edits
+                                    .pending_rpc_edits
                                     .update(|m| { m.remove(msg_id); });
-                                // The runtime replied with [:ok, "bafy..."] — decode
-                                // the CID from raw CBOR, not from the display string
-                                // (which carries a "← [did:...]" prefix).
-                                let cid_str = extract_cid_from_rpc_reply(&incoming.content);
-                                let cid_str = match cid_str {
-                                    Some(c) => c,
-                                    None => {
-                                        state2.push_error("entity edit: runtime reply did not contain a CID");
+                                let doc_path = edit.doc_path();
+                                let yaml = match crate::messages::cbor_to_yaml(&incoming.content) {
+                                    Ok(y) => y,
+                                    Err(e) => {
+                                        state2.push_error(format!("entity decode failed: {e}"));
                                         continue;
                                     }
                                 };
-                                let show2 = show_editor;
-                                let state3 = state2.clone();
-                                spawn_local(async move {
-                                    open_entity_edit_editor(
-                                        &cid_str,
-                                        target_did,
-                                        entity_name,
-                                        show2,
-                                        state3,
-                                    )
-                                    .await;
-                                });
+                                let (doc_path, mode) = edit.into_editor_mode(doc_path);
+                                let ctx = crate::views::editor::EditorContext {
+                                    doc_path,
+                                    initial: yaml,
+                                    language: "yaml".to_string(),
+                                    mode,
+                                };
+                                show_editor.set(Some(ctx));
                                 continue;
                             }
                             let status = if incoming.is_error {
@@ -457,25 +450,23 @@ fn eval(
                     Some("say") => transport::send_chat(&target, &body).await,
                     Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
-                        // Detect `:entities.<name>:edit` with no body args:
-                        // record in pending_entity_edits so the poll loop can
-                        // open the editor when the runtime replies with a CID.
-                        let entity_edit_key: Option<(String, String)> =
-                            if body.trim().is_empty() {
-                                parse_entity_edit_verb(v).map(|name| (target.clone(), name))
-                            } else {
-                                None
-                            };
+                        // Detect `:entities.<name>[.<field>]:edit` with no body — record
+                        // so the poll loop can open the editor when the reply arrives.
+                        let pending_edit = if body.trim().is_empty() {
+                            detect_entity_edit(&target, v)
+                        } else {
+                            None
+                        };
                         let res = transport::send_rpc(
                             &target,
                             v,
                             &body.split_whitespace().collect::<Vec<_>>(),
                         )
                         .await;
-                        if let (Ok(ref msg_id), Some((tgt, name))) = (&res, entity_edit_key) {
+                        if let (Ok(ref msg_id), Some(edit)) = (&res, pending_edit) {
                             state_async
-                                .pending_entity_edits
-                                .update(|m| { m.insert(msg_id.clone(), (tgt, name)); });
+                                .pending_rpc_edits
+                                .update(|m| { m.insert(msg_id.clone(), edit); });
                         }
                         res
                     }
@@ -520,6 +511,10 @@ fn eval_dot(
         }
         ".clear" => {
             state.entries.set(vec![]);
+            return;
+        }
+        ".ma" => {
+            state.push_output("間");
             return;
         }
         ".use" => {
@@ -865,82 +860,37 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
 
 // ── Entity-edit helpers ───────────────────────────────────────────────────
 
-/// If `verb` matches `entities.<name>:edit` (with no args), return `<name>`.
-fn parse_entity_edit_verb(verb: &str) -> Option<String> {
-    // verb arrives without leading ':', e.g. "entities.rms:edit"
+/// If `verb` matches `entities.<name>:edit` or `entities.<name>.<field>:edit`
+/// (with no body args), return the corresponding `PendingRpcEdit`.
+fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingRpcEdit> {
+    use crate::state::PendingRpcEdit;
     let v = verb.strip_prefix(':').unwrap_or(verb);
     let (path_part, verb_part) = v.split_once(':')?;
     if verb_part != "edit" {
         return None;
     }
-    let mut parts = path_part.splitn(2, '.');
+    let mut parts = path_part.splitn(3, '.');
     if parts.next() != Some("entities") {
         return None;
     }
-    let name = parts.next()?.to_string();
-    if name.is_empty() {
+    let entity_name = parts.next()?.to_string();
+    if entity_name.is_empty() {
         return None;
     }
-    Some(name)
-}
-
-/// Decode the CID text from an `[:ok, "bafy..."]` RPC reply body (raw CBOR).
-fn extract_cid_from_rpc_reply(body: &[u8]) -> Option<String> {
-    match ciborium::de::from_reader::<ciborium::Value, _>(body).ok()? {
-        // Plain text atom — bare CID or ":ok"
-        ciborium::Value::Text(s) if !s.starts_with(':') => Some(s),
-        // [:ok, "bafy..."] tuple
-        ciborium::Value::Array(items) => {
-            if items.len() >= 2 {
-                if let ciborium::Value::Text(cid) = &items[1] {
-                    return Some(cid.clone());
-                }
-            }
-            None
+    match parts.next() {
+        None => Some(PendingRpcEdit::Entity {
+            target: target.to_string(),
+            entity_name,
+        }),
+        Some(field) if !field.is_empty() => {
+            Some(PendingRpcEdit::Field {
+                target: target.to_string(),
+                entity_name,
+                field: field.to_string(),
+            })
         }
         _ => None,
     }
-}
-
-/// Fetch a DAG-CBOR node by CID from the local IPFS gateway, convert the
-/// DAG-JSON response to YAML, and open the EntityEdit editor.
-async fn open_entity_edit_editor(
-    cid: &str,
-    target_did: String,
-    entity_name: String,
-    show_editor: leptos::prelude::RwSignal<Option<crate::views::editor::EditorContext>>,
-    state: AppState,
-) {
-    let url = format!("{}ipfs/{cid}", crate::transport::connection::LOCAL_GATEWAY_URL);
-    let json_text = match fetch_url_text(&url).await {
-        Ok(t) => t,
-        Err(e) => {
-            state.push_error(format!("entity fetch failed: {e}"));
-            return;
-        }
-    };
-    let val: serde_json::Value = match serde_json::from_str(&json_text) {
-        Ok(v) => v,
-        Err(e) => {
-            state.push_error(format!("entity JSON parse failed: {e}"));
-            return;
-        }
-    };
-    let yaml = match crate::messages::json_value_to_yaml(&val) {
-        Ok(y) => y,
-        Err(e) => {
-            state.push_error(format!("entity YAML convert failed: {e}"));
-            return;
-        }
-    };
-    let doc_path = format!(".my.entities.{entity_name}");
-    let ctx = crate::views::editor::EditorContext {
-        doc_path,
-        initial: yaml,
-        language: "yaml".to_string(),
-        mode: crate::views::editor::EditorMode::EntityEdit { target: target_did, entity_name },
-    };
-    show_editor.set(Some(ctx));
 }
 
 const HELP_TEXT: &[&str] = &[
@@ -988,5 +938,15 @@ const HELP_TEXT: &[&str] = &[
     "  .my.inbox:                   delete all inbox entries",
     "  .my.inbox:flush              print all entries to terminal",
     "  .my.inbox.N.sender.<field>   traverse sender DID document lazily",
+    "",
+    "── documents ────────────────────────────────────────────────────────────",
+    "  .my.documents.<name>:edit           open editor with saved content",
+    "  .my.documents.<name>:edit <cid>     fetch CID, open for review only",
+    "  .my.documents.<name>:eval           execute saved content line-by-line",
+    "  .my.documents.<name>:publish @pub   store as raw blob (any type)",
+    "  .my.documents.<name>:publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node",
+    "  .my.documents.<name>:fetch <cid>    import CID content (no execution)",
+    "  .my.documents.<name>:cid            show stored CID",
+    "  .my.documents.<name>:              delete document",
     "─────────────────────────────────────────────────────────────────────────",
 ];

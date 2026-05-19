@@ -330,6 +330,8 @@ pub fn dispatch_verb(
             }
 
             // :publish <@publisher-or-did>
+            // Stores the raw content bytes as a plain IPFS blob (unixfs add).
+            // Use :publish-ipld for YAML→DAG-CBOR structured storage.
             "publish" => {
                 if args.len() != 1 {
                     return Err("usage: .my.documents.<name>:publish <publisher>".into());
@@ -360,13 +362,57 @@ pub fn dispatch_verb(
                                 "store request sent ({msg_id}) → {publisher_disp}; \
                                  CID will arrive via RPC reply"
                             ));
-                            // Record pending msg_id so the reply handler can
-                            // store the CID back into EgoConfig when it arrives.
-                            // (Handled in the inbox polling loop via bind_message_id)
                         }
                         Err(e) => {
                             state2.push_error(format!(
                                 "publish {doc_path2}: {}",
+                                format_publish_error(&e)
+                            ));
+                        }
+                    }
+                });
+                Ok(())
+            }
+
+            // :publish-ipld <@publisher-or-did>
+            // Requires a YAML mapping; converts to DAG-CBOR and stores as a
+            // structured IPLD node via dag_put — fields are traversable directly.
+            "publish-ipld" => {
+                if args.len() != 1 {
+                    return Err("usage: .my.documents.<name>:publish-ipld <publisher>".into());
+                }
+                let cfg = config.get_untracked();
+                let publisher = resolve_bare_did(&args[0], &cfg)?;
+                let content_str = cfg
+                    .get(&format!("{doc_path}.content"))
+                    .unwrap_or_default()
+                    .to_string();
+                if content_str.is_empty() {
+                    return Err(format!("{doc_path}.content is empty — save first"));
+                }
+                let dag_cbor = crate::messages::yaml_to_dag_cbor(&content_str)
+                    .map_err(|e| format!("cannot publish-ipld: {e}"))?;
+
+                let state2 = state.clone();
+                let doc_path2 = doc_path.clone();
+                let publisher_disp = publisher.clone();
+                leptos::task::spawn_local(async move {
+                    match transport::send_ipfs_store(
+                        &publisher,
+                        dag_cbor,
+                        "application/vnd.ipld.dag-cbor",
+                    )
+                    .await
+                    {
+                        Ok(msg_id) => {
+                            state2.push_system(format!(
+                                "IPLD store request sent ({msg_id}) → {publisher_disp}; \
+                                 CID will arrive via RPC reply"
+                            ));
+                        }
+                        Err(e) => {
+                            state2.push_error(format!(
+                                "publish-ipld {doc_path2}: {}",
                                 format_publish_error(&e)
                             ));
                         }
