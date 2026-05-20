@@ -249,6 +249,48 @@ make cid        # print the last published CID
 
 ---
 
+## Inbound ACL
+
+You can gate who is allowed to deliver messages to your ego session.
+The ACL lives at `.my.acl` and is a standard `AclMap` YAML string
+(same format used everywhere in the ma protocol — see
+[ma-runtime-v1 §15](../ma-spec/runtime/ma-runtime-v1.md)).
+
+Edit it in the built-in YAML editor:
+
+```
+.my.acl:edit
+```
+
+The ACL is evaluated for every incoming message before it is delivered
+to the terminal. Two capabilities apply:
+
+| Capability | Guards |
+|------------|--------|
+| `inbox` | Messages via `/ma/inbox/0.0.1` |
+| `rpc` | Unsolicited RPC calls via `/ma/rpc/0.0.1` |
+
+Replies to your own outgoing messages bypass the ACL — they are matched
+by `reply_to` message ID, not by sender.
+
+If `.my.acl` is absent, access is fully open (`"*": [inbox, rpc]`).
+
+Examples:
+
+```yaml
+# Block a specific sender, allow everyone else
+"*":           [inbox, rpc]
+"did:ma:spam": null
+```
+
+```yaml
+# Allow only known contacts
+"did:ma:alice": [inbox, rpc]
+"did:ma:bob":   [inbox]
+```
+
+---
+
 ## Philosophy
 
 ego is deliberately small. It does not try to be a platform.

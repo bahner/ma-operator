@@ -100,7 +100,7 @@ pub fn Terminal() -> impl IntoView {
                     Err(e) => state2.push_error(format!("config load error: {e}")),
                 }
                 state2.push_system(format!(
-                    "ego v{} — logged in as {username}",
+                    "zion v{} — logged in as {username}",
                     env!("CARGO_PKG_VERSION")
                 ));
                 state2.push_system("Type .help for a list of commands.");
@@ -172,6 +172,26 @@ pub fn Terminal() -> impl IntoView {
                     .into_iter()
                     .chain(transport::drain_rpc_inbox())
                 {
+                    // ACL gate — never filter replies (those are responses to
+                    // our own outgoing messages, matched by reply_to message ID).
+                    if incoming.reply_to.is_none() {
+                        let cap = if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
+                            crate::acl::CAP_INBOX
+                        } else {
+                            crate::acl::CAP_RPC
+                        };
+                        let cfg = config.get_untracked();
+                        if !crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
+                            let from_disp = cfg
+                                .reverse_alias(&incoming.from)
+                                .map(|a| format!("@{a}"))
+                                .unwrap_or_else(|| incoming.from.clone());
+                            state2.push_system(format!(
+                                "\u{2297} blocked [{cap}]: {from_disp}"
+                            ));
+                            continue;
+                        }
+                    }
                     if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
                         let from_display = {
                             let cfg = config.get_untracked();
@@ -511,6 +531,10 @@ fn eval_dot(
         }
         ".clear" => {
             state.entries.set(vec![]);
+            return;
+        }
+        ".lock" => {
+            state.screensaver.set(true);
             return;
         }
         ".ma" => {
@@ -894,9 +918,10 @@ fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingR
 }
 
 const HELP_TEXT: &[&str] = &[
-    "── ego commands ─────────────────────────────────────────────────────────",
+    "── zion commands ─────────────────────────────────────────────────────────",
     "  .help                        this text",
     "  .clear                       clear terminal",
+    "  .lock                        lock screen (start screensaver)",
     "  .logout                      log out",
     "",
     "── messaging ────────────────────────────────────────────────────────────",
@@ -921,8 +946,7 @@ const HELP_TEXT: &[&str] = &[
     "  .my.aliases                  list aliases",
     "  .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)",
     "  .my.aliases.<name>:          remove alias",
-    "  .my.間:discover              discover local runtime and create @間 alias",
-    "  .my.ma:discover             ASCII alias for discovery",
+    "  .my.runtime:discover          discover local runtime and create @間 alias",
     "  .my.identity                 show identity config",
     "  .my.identity.did             show own DID (read-only)",
     "  .my.identity:publish @pub    publish own DID via publisher service",

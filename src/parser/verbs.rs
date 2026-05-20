@@ -153,10 +153,10 @@ pub fn dispatch_verb(
         }
     }
 
-    // ── .my.間 ────────────────────────────────────────────────────────────
-    // .my.間:discover — probe http://localhost:5003/status.json, configure
+    // ── .my.runtime ───────────────────────────────────────────────────────
+    // .my.runtime:discover — probe http://localhost:5003/status.json, configure
     // the local ma runtime, and create the @間 alias automatically.
-    if path == ".my.間" || path == ".my.ma" || path == ".my.runtime" {
+    if path == ".my.runtime" {
         match verb {
             "discover" => {
                 const STATUS_URL: &str = "http://localhost:5003/status.json";
@@ -211,9 +211,9 @@ pub fn dispatch_verb(
 
                     // Write config, then persist.
                     config.update(|cfg| {
-                        cfg.set(".my.間.did", &did);
+                        cfg.set(".my.runtime.did", &did);
                         if !endpoint_id.is_empty() {
-                            cfg.set(".my.間.endpoint_id", &endpoint_id);
+                            cfg.set(".my.runtime.endpoint_id", &endpoint_id);
                         }
                         cfg.set(".my.aliases.間", &did);
                     });
@@ -239,6 +239,49 @@ pub fn dispatch_verb(
                 return Ok(());
             }
             other => return Err(format!("no verb `{other}` for {path}")),
+        }
+    }
+
+    // ── .my.acl ───────────────────────────────────────────────────────────
+    // .my.acl:edit  — open the ACL YAML in a config editor.
+    // .my.acl:      — (delete) reset ACL to default (fully open).
+    if path == ".my.acl" {
+        match verb {
+            "edit" => {
+                let cfg = config.get_untracked();
+                let current = cfg
+                    .get(crate::acl::ACL_KEY)
+                    .unwrap_or("\"*\": [inbox, rpc]\n")
+                    .to_string();
+                show_editor.set(Some(
+                    EditorContext::new(".my.acl", current)
+                        .with_language("yaml")
+                        .with_mode(crate::views::editor::EditorMode::ConfigEdit {
+                            key: crate::acl::ACL_KEY.to_string(),
+                        }),
+                ));
+                return Ok(());
+            }
+            "" => {
+                // Delete: revert to open ACL.
+                config.update(|c| { c.delete(crate::acl::ACL_KEY); });
+                let cfg = config.get_untracked();
+                let username = use_context::<AppState>()
+                    .unwrap_or_else(|| state.clone())
+                    .session
+                    .get_untracked()
+                    .map(|s| s.username.clone())
+                    .unwrap_or_default();
+                let state2 = state.clone();
+                leptos::task::spawn_local(async move {
+                    if let Err(e) = crate::config::persist_config(&username, &cfg).await {
+                        state2.push_error(format!("persist error: {e}"));
+                    }
+                });
+                state.push_command_ok(".my.acl reset (fully open)");
+                return Ok(());
+            }
+            other => return Err(format!("no verb `{other}` for .my.acl")),
         }
     }
 
@@ -486,7 +529,7 @@ fn discover_fetch_hint(err: &str) -> &'static str {
     } else if err.contains("TypeError") || err.contains("Failed to fetch") {
         "Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser."
     } else {
-        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.間:discover`."
+        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.runtime:discover`."
     }
 }
 

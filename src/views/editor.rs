@@ -71,6 +71,12 @@ pub enum EditorMode {
         /// Field name, e.g. `"acl"`.
         field: String,
     },
+    /// Edit a raw config key: Save + Cancel, no eval.
+    /// The editor content is written directly to `key` (not `<key>.content`).
+    ConfigEdit {
+        /// The EgoConfig key to write on save, e.g. `".my.acl"`.
+        key: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -181,6 +187,28 @@ pub fn EditorModal(
             };
             let text = js_editor_get_value(EDITOR_EL_ID);
             let lang = language.get_untracked();
+
+            // ConfigEdit: write directly to the config key, not <key>.content.
+            if let EditorMode::ConfigEdit { key } = &ctx.mode {
+                let key = key.clone();
+                config.update(|c| c.set(&key, &text));
+                if let Some(sess) = use_context::<AppState>()
+                    .unwrap_or_else(|| state.clone())
+                    .session
+                    .get_untracked()
+                {
+                    let username = sess.username.clone();
+                    let cfg = config.get_untracked();
+                    leptos::task::spawn_local(async move {
+                        if let Err(e) = crate::config::persist_config(&username, &cfg).await {
+                            web_sys::console::error_1(&format!("persist error: {e}").into());
+                        }
+                    });
+                }
+                state.push_command_ok(format!("{}:save", ctx.doc_path));
+                return;
+            }
+
             config.update(|c| {
                 c.set(&format!("{}.content", ctx.doc_path), &text);
                 c.set(
@@ -315,6 +343,7 @@ pub fn EditorModal(
     let is_reply             = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
     let is_entity_edit       = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityEdit { .. }));
     let is_entity_field_edit = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityFieldEdit { .. }));
+    let is_config_edit       = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::ConfigEdit { .. }));
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -382,6 +411,18 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_field_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >"Cancel"</button>
+                    // Save — ConfigEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_config_edit() { "" } else { "display:none" }
+                        on:click=on_save.clone()
+                    >"Save"</button>
+                    // Cancel — ConfigEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_config_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >"Cancel"</button>
                 </div>

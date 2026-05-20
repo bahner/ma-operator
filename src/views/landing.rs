@@ -163,7 +163,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             match load_identity(&uname).await {
                 Ok(Some(stored)) => {
                     let content = export_for_download(&stored.export_json);
-                    trigger_download(&format!("{uname}.ego.json"), &content);
+                    trigger_download(&format!("{uname}.zion.json"), &content);
                 }
                 Ok(None) => error.set(format!("identity '{uname}' not found")),
                 Err(e) => error.set(e),
@@ -372,11 +372,11 @@ fn ImportPanel(
 
     view! {
         <p class="dimmed" style="font-size:0.85rem;margin-bottom:1rem">
-            "Select an exported .ego.json file. The bundle stays encrypted."
+            "Select an exported .zion.json file. The bundle stays encrypted."
         </p>
         <input
             type="file"
-            accept=".json,.ego.json"
+            accept=".json,.zion.json"
             style="color:var(--colour-text);font-family:var(--font-family)"
             on:change=on_file_change
         />

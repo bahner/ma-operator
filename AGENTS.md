@@ -334,3 +334,61 @@ make check        # cargo check --target wasm32-unknown-unknown
 - Do not duplicate logic already in `ma-core` or `ma-did`.
 - Keep modules small and single-purpose. No giant files.
 
+---
+
+## Inbound ACL — `.my.acl`
+
+ego enforces a client-side inbound ACL stored at `.my.acl` in `EgoConfig`
+(a plain YAML string). It is evaluated on every poll tick before a message
+is delivered to the terminal.
+
+### ma-core integration
+
+```rust
+use ma_core::{check_cap, AclMap, CAP_INBOX, CAP_RPC};
+```
+
+Load and check:
+
+```rust
+// src/acl.rs
+pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
+    cfg.get(ACL_KEY)
+        .and_then(|s| serde_yaml::from_str(&s).ok())
+        .unwrap_or_else(open_acl)
+}
+
+pub fn check_ego_acl(cfg: &EgoConfig, from: &str, cap: &str) -> bool {
+    check_cap(&load_ego_acl(cfg), from, cap)
+}
+```
+
+`open_acl()` returns `{"*": [inbox, rpc]}` (fully open).
+
+### Poll-loop gate
+
+In `views/terminal.rs`, before delivering an incoming message:
+
+```rust
+if incoming.reply_to.is_none() {
+    let cap = if incoming.message_type == MESSAGE_TYPE_MESSAGE {
+        CAP_INBOX
+    } else {
+        CAP_RPC
+    };
+    if !check_ego_acl(&cfg, &incoming.from, cap) {
+        // push a "blocked" system entry and continue
+        continue;
+    }
+}
+```
+
+Replies (`reply_to.is_some()`) bypass the ACL entirely — they are matched
+by message ID, not filtered by sender.
+
+### Editing
+
+`.my.acl:edit` opens `EditorMode::ConfigEdit { key: ACL_KEY.to_string() }`
+in YAML mode. On save the value is written directly to `EgoConfig` (not via
+the document `.content` path). Takes effect on the next poll tick.
+

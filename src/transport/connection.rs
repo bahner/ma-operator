@@ -98,7 +98,7 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
         target_did,
         MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TEXT,
-        text.as_bytes().to_vec(),
+        text.as_bytes(),
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -116,7 +116,7 @@ pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
         target_did,
         MESSAGE_TYPE_CHAT,
         CONTENT_TYPE_TEXT,
-        text.as_bytes().to_vec(),
+        text.as_bytes(),
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -134,7 +134,7 @@ pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> 
         target_did,
         MESSAGE_TYPE_EMOTE,
         CONTENT_TYPE_TEXT,
-        text.as_bytes().to_vec(),
+        text.as_bytes(),
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -172,7 +172,7 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
         target_did,
         MESSAGE_TYPE_RPC,
         "application/cbor",
-        body,
+        &body,
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -210,7 +210,7 @@ pub async fn send_rpc_bytes(
         target_did,
         MESSAGE_TYPE_RPC,
         "application/cbor",
-        body,
+        &body,
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -268,7 +268,7 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
         publisher_did,
         MESSAGE_TYPE_IPFS_REQUEST,
         "application/cbor",
-        payload,
+        &payload,
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
@@ -313,7 +313,7 @@ pub async fn send_text_reply(
         target_did,
         MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TEXT,
-        body.as_bytes().to_vec(),
+        body.as_bytes(),
         &signing_key,
     )
     .map_err(|e| e.to_string())?;

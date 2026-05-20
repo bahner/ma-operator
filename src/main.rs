@@ -1,3 +1,4 @@
+mod acl;
 mod app;
 mod config;
 mod core;

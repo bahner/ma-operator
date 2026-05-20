@@ -15,8 +15,8 @@ clean:
 
 publish: dist
 	@echo "Adding to IPFS..."
-	@ipfs add -r dist 2>&1 | tee /tmp/ego-ipfs-add.txt
-	@tail -1 /tmp/ego-ipfs-add.txt | awk '{print $$2}' > .cid
+	@ipfs add -r dist 2>&1 | tee /tmp/zion-ipfs-add.txt
+	@tail -1 /tmp/zion-ipfs-add.txt | awk '{print $$2}' > .cid
 	@echo "CID: $$(cat .cid)"
 	@echo "Open: ipfs://$$(cat .cid)"
 

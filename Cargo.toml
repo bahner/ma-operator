@@ -1,9 +1,9 @@
 [package]
-name = "ego"
+name = "zion"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.95"
-description = "ego – MA Actor identity and messaging workstation"
+description = "zion – MA Actor identity and messaging workstation"
 license = "MIT OR Apache-2.0"
 
 [profile.release]
@@ -13,7 +13,7 @@ codegen-units = 1
 
 [dependencies]
 leptos = { version = "0.8", features = ["csr"] }
-ma-core = { version = "0.10.13", default-features = false, features = ["config", "iroh", "gossip"] }
+ma-core = { version = "0.10.17", default-features = false, features = ["config", "iroh", "gossip", "acl"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 web-sys = { version = "0.3", features = [
@@ -64,5 +64,4 @@ ciborium = "0.2"
 log = "0.4"
 env_logger = "0.11"
 console_log = "1"
-
 
