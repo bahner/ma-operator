@@ -7,6 +7,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
     core::{CommandStatus, Entry, SystemKind},
+    i18n::{t, tf},
     identity::storage::{load_history, save_history},
     parser::command::{parse, Command, DotOp},
     parser::verbs::dispatch_verb,
@@ -23,19 +24,19 @@ fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
 
     let name = &path[PREFIX.len()..];
     if name.is_empty() {
-        return Err("alias name cannot be empty".to_string());
+        return Err(t("err-alias-name-empty"));
     }
     if name.contains('#') {
-        return Err("alias names cannot contain '#'".to_string());
+        return Err(t("err-alias-has-fragment"));
     }
     if value.contains('#') {
-        return Err("alias value must be bare did:ma:<ipns> (no fragment)".to_string());
+        return Err(t("err-alias-value-fragment"));
     }
     if value.contains('/') {
-        return Err("alias value must be bare did:ma:<ipns> (no path)".to_string());
+        return Err(t("err-alias-value-path"));
     }
     if !value.starts_with("did:ma:") {
-        return Err("alias value must start with did:ma:".to_string());
+        return Err(t("err-alias-not-did"));
     }
     Ok(())
 }
@@ -99,11 +100,22 @@ pub fn Terminal() -> impl IntoView {
                     }
                     Err(e) => state2.push_error(format!("config load error: {e}")),
                 }
-                state2.push_system(format!(
-                    "zion v{} — logged in as {username}",
-                    env!("CARGO_PKG_VERSION")
+                // Re-apply language preference from config if set.
+                if let Some(lang) = config.get_untracked().get(".my.lang").map(|s| s.to_string()) {
+                    let first = lang.split(':').next().unwrap_or(&lang).to_string();
+                    crate::i18n::init(&first);
+                    crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
+                } else if let Some(lang) = config.get_untracked().get(".config.ui.language").map(|s| s.to_string()) {
+                    crate::i18n::init(&lang);
+                }
+                state2.push_system(tf(
+                    "msg-logged-in",
+                    &[
+                        ("version", env!("CARGO_PKG_VERSION")),
+                        ("username", &username),
+                    ],
                 ));
-                state2.push_system("Type .help for a list of commands.");
+                state2.push_system(t("msg-type-help"));
             });
         }
     }
@@ -140,7 +152,7 @@ pub fn Terminal() -> impl IntoView {
             let created_at = sess.created_at.clone();
             let username = sess.username.clone();
             spawn_local(async move {
-                state2.push_system("connecting to iroh...");
+                state2.push_system(t("msg-connecting"));
                 match transport::connect(
                     iroh_key,
                     ipns_secret_key,
@@ -151,8 +163,8 @@ pub fn Terminal() -> impl IntoView {
                 )
                 .await
                 {
-                    Ok(()) => state2.push_system("iroh endpoint ready"),
-                    Err(e) => state2.push_error(format!("iroh: {e}")),
+                    Ok(()) => state2.push_system(t("msg-iroh-ready")),
+                    Err(e) => state2.push_error(tf("msg-iroh-failed", &[("e", &e)])),
                 }
                 let _ = username;
             });
@@ -186,8 +198,9 @@ pub fn Terminal() -> impl IntoView {
                                 .reverse_alias(&incoming.from)
                                 .map(|a| format!("@{a}"))
                                 .unwrap_or_else(|| incoming.from.clone());
-                            state2.push_system(format!(
-                                "\u{2297} blocked [{cap}]: {from_disp}"
+                            state2.push_system(tf(
+                                "msg-blocked",
+                                &[("cap", cap), ("from", &from_disp)],
                             ));
                             continue;
                         }
@@ -519,8 +532,8 @@ fn eval_dot(
     // ── Control commands (not config access) ─────────────────────────────
     match path {
         ".help" => {
-            for line in HELP_TEXT {
-                state.push_system(*line);
+            for line in help_text() {
+                state.push_system(line);
             }
             return;
         }
@@ -533,7 +546,7 @@ fn eval_dot(
             state.entries.set(vec![]);
             return;
         }
-        ".lock" => {
+        ".panic" => {
             state.screensaver.set(true);
             return;
         }
@@ -575,7 +588,7 @@ fn eval_dot(
     match op {
         DotOp::Set(value) => {
             if EgoConfig::is_read_only(path) {
-                state.push_error(format!("{path} is read-only"));
+                state.push_error(tf("msg-read-only", &[("path", path)]));
                 return;
             }
             if let Err(e) = validate_alias_set(path, &value) {
@@ -587,13 +600,11 @@ fn eval_dot(
                 (cfg.has_children(path), cfg.has_leaf_ancestor(path))
             };
             if has_children {
-                state.push_error(format!("{path} is a subtree; refusing to set"));
+                state.push_error(tf("msg-subtree-set", &[("path", path)]));
                 return;
             }
             if has_ancestor {
-                state.push_error(format!(
-                    "an ancestor of {path} is a leaf; refusing to shadow"
-                ));
+                state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
                 return;
             }
             config.update(|c| c.set(path, &value));
@@ -606,19 +617,27 @@ fn eval_dot(
                     state2.push_error(e);
                 } else {
                     apply_config_to_dom(&cfg);
-                    state2.push_system(format!("{path_owned}: {value}"));
+                    if path_owned == ".config.ui.language" {
+                        crate::i18n::init(&value);
+                    }
+                    if path_owned == ".my.lang" {
+                        let first = value.split(':').next().unwrap_or(&value).to_string();
+                        crate::i18n::init(&first);
+                        crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
+                    }
+                    state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
                 }
             });
         }
 
         DotOp::Delete => {
             if EgoConfig::is_read_only(path) {
-                state.push_error(format!("{path} is read-only"));
+                state.push_error(tf("msg-read-only", &[("path", path)]));
                 return;
             }
             let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
             if removed == 0 {
-                state.push_error(format!("key not found: {path}"));
+                state.push_error(tf("msg-key-not-found", &[("path", path)]));
                 return;
             }
             let cfg = config.get_untracked();
@@ -629,7 +648,10 @@ fn eval_dot(
                 if let Err(e) = persist_config(&uname, &cfg).await {
                     state2.push_error(e);
                 } else {
-                    state2.push_system(format!("deleted {path_owned} ({removed} entries)"));
+                    state2.push_system(tf(
+                        "msg-deleted",
+                        &[("path", &path_owned), ("count", &removed.to_string())],
+                    ));
                 }
             });
         }
@@ -647,7 +669,7 @@ fn eval_dot(
                 match &query {
                     None => state.push_output(format!("{path}: {value}")),
                     Some(q) if value == q.as_str() => state.push_output(format!("{path}: {value}")),
-                    Some(_) => state.push_error("no match"),
+                    Some(_) => state.push_error(t("msg-no-match")),
                 }
             } else if cfg.has_children(path) {
                 let prefix = format!("{path}.");
@@ -683,7 +705,7 @@ fn eval_dot(
                     }
                 }
                 if shown == 0 && query.is_some() {
-                    state.push_error("no match");
+                    state.push_error(t("msg-no-match"));
                 }
             } else {
                 // ── Lazy link traversal ───────────────────────────────────
@@ -713,7 +735,7 @@ fn eval_dot(
                     }
                 }
                 if !found_link {
-                    state.push_error(format!("key not found: {path}"));
+                    state.push_error(tf("msg-key-not-found", &[("path", path)]));
                 }
             }
         }
@@ -725,7 +747,7 @@ fn eval_dot(
 fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     if args.is_empty() {
         state.focus_actor.set(None);
-        state.push_system("focus cleared");
+        state.push_system(t("msg-focus-cleared"));
         return;
     }
     let target = args[0].trim_start_matches('@').to_string();
@@ -736,7 +758,7 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         match cfg.resolve_alias(&target) {
             Some(did) => did.to_string(),
             None => {
-                state.push_error(format!("unknown alias: @{target}"));
+                state.push_error(tf("err-unknown-alias", &[("name", &target)]));
                 return;
             }
         }
@@ -759,7 +781,7 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         target: resolved.clone(),
         prompt: prompt.clone(),
     }));
-    state.push_system(format!("focusing {resolved} as {prompt}"));
+    state.push_system(tf("msg-focusing", &[("did", &resolved), ("prompt", &prompt)]));
 }
 
 fn apply_config_to_dom(cfg: &EgoConfig) {
@@ -813,7 +835,7 @@ async fn resolve_and_traverse(
                 // Use the session resolver — it owns the gateway URL, has a
                 // positive cache, and falls back to public gateways automatically.
                 let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone()) else {
-                    state.push_error("link fetch error: not connected");
+                    state.push_error(t("msg-link-not-connected"));
                     return;
                 };
                 resolver
@@ -835,7 +857,7 @@ async fn resolve_and_traverse(
                     v
                 }
                 Err(e) => {
-                    state.push_error(format!("link fetch error: {e}"));
+                    state.push_error(tf("msg-link-fetch-error", &[("e", &e)]));
                     return;
                 }
             }
@@ -848,7 +870,7 @@ async fn resolve_and_traverse(
         match cur.get(key) {
             Some(v) => cur = v,
             None => {
-                state.push_error(format!("key `{key}` not found in linked document"));
+                state.push_error(tf("msg-link-key-not-found", &[("key", key)]));
                 return;
             }
         }
@@ -917,60 +939,63 @@ fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingR
     }
 }
 
-const HELP_TEXT: &[&str] = &[
-    "── zion commands ─────────────────────────────────────────────────────────",
-    "  .help                        this text",
-    "  .clear                       clear terminal",
-    "  .lock                        lock screen (start screensaver)",
-    "  .logout                      log out",
-    "",
-    "── messaging ────────────────────────────────────────────────────────────",
-    "  @alias                       echo resolved DID (no message sent)",
-    "  @alias[:verb] body           send message / RPC to actor",
-    "  @alias#fragment[:verb] body  send to alias with explicit DID fragment",
-    "  \\@name                       literal @name (no alias lookup)",
-    "",
-    "── focus mode ───────────────────────────────────────────────────────────",
-    "  .use @alias [as @name]       focus on actor (changes prompt)",
-    "  .use                         clear focus",
-    "",
-    "── local config grammar ─────────────────────────────────────────────────",
-    "  .path                        get leaf value or list subtree",
-    "  .path value                  match query (filter by value)",
-    "  .path: value                 set leaf",
-    "  .path:                       delete leaf or subtree",
-    "  .path:verb [args]            invoke local verb",
-    "",
-    "── common paths ─────────────────────────────────────────────────────────",
-    "  .my                          show all personal config",
-    "  .my.aliases                  list aliases",
-    "  .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)",
-    "  .my.aliases.<name>:          remove alias",
-    "  .my.runtime:discover          discover local runtime and create @間 alias",
-    "  .my.identity                 show identity config",
-    "  .my.identity.did             show own DID (read-only)",
-    "  .my.identity:publish @pub    publish own DID via publisher service",
-    "  .config                      show all .config.* entries",
-    "",
-    "── inbox ────────────────────────────────────────────────────────────────",
-    "  .my.inbox                    list inbox (subtree view)",
-    "  .my.inbox.N                  show entry N fields",
-    "  .my.inbox.N.from             sender DID of entry N",
-    "  .my.inbox.N:reply [body]     send reply (opens editor if no body)",
-    "  .my.inbox.N:open             open entry content read-only in editor",
-    "  .my.inbox.N:                 delete entry N",
-    "  .my.inbox:                   delete all inbox entries",
-    "  .my.inbox:flush              print all entries to terminal",
-    "  .my.inbox.N.sender.<field>   traverse sender DID document lazily",
-    "",
-    "── documents ────────────────────────────────────────────────────────────",
-    "  .my.documents.<name>:edit           open editor with saved content",
-    "  .my.documents.<name>:edit <cid>     fetch CID, open for review only",
-    "  .my.documents.<name>:eval           execute saved content line-by-line",
-    "  .my.documents.<name>:publish @pub   store as raw blob (any type)",
-    "  .my.documents.<name>:publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node",
-    "  .my.documents.<name>:fetch <cid>    import CID content (no execution)",
-    "  .my.documents.<name>:cid            show stored CID",
-    "  .my.documents.<name>:              delete document",
-    "─────────────────────────────────────────────────────────────────────────",
-];
+fn help_text() -> Vec<String> {
+    vec![
+        t("help-header-zion"),
+        t("help-cmd-help"),
+        t("help-cmd-clear"),
+        t("help-cmd-panic"),
+        t("help-cmd-logout"),
+        String::new(),
+        t("help-header-messaging"),
+        t("help-msg-echo"),
+        t("help-msg-send"),
+        t("help-msg-fragment"),
+        t("help-msg-escape"),
+        String::new(),
+        t("help-header-focus"),
+        t("help-focus-set"),
+        t("help-focus-clear"),
+        String::new(),
+        t("help-header-config"),
+        t("help-config-get"),
+        t("help-config-filter"),
+        t("help-config-set"),
+        t("help-config-delete"),
+        t("help-config-verb"),
+        String::new(),
+        t("help-header-common"),
+        t("help-my"),
+        t("help-aliases"),
+        t("help-aliases-set"),
+        t("help-aliases-del"),
+        t("help-runtime-discover"),
+        t("help-runtime-claim"),
+        t("help-identity"),
+        t("help-identity-did"),
+        t("help-identity-publish"),
+        t("help-config-path"),
+        String::new(),
+        t("help-header-inbox"),
+        t("help-inbox"),
+        t("help-inbox-n"),
+        t("help-inbox-from"),
+        t("help-inbox-reply"),
+        t("help-inbox-open"),
+        t("help-inbox-del"),
+        t("help-inbox-delall"),
+        t("help-inbox-flush"),
+        t("help-inbox-traverse"),
+        String::new(),
+        t("help-header-documents"),
+        t("help-doc-edit"),
+        t("help-doc-edit-cid"),
+        t("help-doc-eval"),
+        t("help-doc-publish"),
+        t("help-doc-publish-ipld"),
+        t("help-doc-fetch"),
+        t("help-doc-cid"),
+        t("help-doc-del"),
+        t("help-footer"),
+    ]
+}

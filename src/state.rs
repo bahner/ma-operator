@@ -314,6 +314,9 @@ thread_local! {
     pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);
     pub static SESSION_CREATED_AT: RefCell<Option<String>> = RefCell::new(None);
+    /// Language preference chain for this session, e.g. `"nb_NO:en_GB:en"`.
+    /// Injected into the `ma["lang"]` field of the published DID document.
+    pub static SESSION_LANG: RefCell<Option<String>> = RefCell::new(None);
     /// Shared DID resolver — created once at connect() so its cache is
     /// reused across all concurrent sends instead of each call fetching
     /// the same DID document from scratch.

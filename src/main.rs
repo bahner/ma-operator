@@ -2,6 +2,7 @@ mod acl;
 mod app;
 mod config;
 mod core;
+mod i18n;
 mod identity;
 mod mailbox;
 mod messages;
@@ -25,5 +26,6 @@ fn init_logging() {
 fn main() {
     init_logging();
     console_error_panic_hook::set_once();
+    i18n::init_from_browser();
     leptos::mount::mount_to_body(app::App);
 }

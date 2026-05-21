@@ -18,6 +18,7 @@ use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
 use crate::config::EgoConfig;
+use crate::i18n::{t, tf};
 use crate::state::AppState;
 
 // ── JS bridge ─────────────────────────────────────────────────────────────
@@ -205,7 +206,7 @@ pub fn EditorModal(
                         }
                     });
                 }
-                state.push_command_ok(format!("{}:save", ctx.doc_path));
+                state.push_command_ok(tf("msg-editor-saved", &[("path", &ctx.doc_path)]));
                 return;
             }
 
@@ -230,7 +231,7 @@ pub fn EditorModal(
                     }
                 });
             }
-            state.push_command_ok(format!("{}:save", ctx.doc_path));
+            state.push_command_ok(tf("msg-editor-saved", &[("path", &ctx.doc_path)]));
             // Keep editor open after save (per spec).
         }
     };
@@ -270,8 +271,8 @@ pub fn EditorModal(
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
                 match crate::transport::send_text_reply(&to, &text, &reply_to_id).await {
-                    Ok(_) => state2.push_system("reply sent"),
-                    Err(e) => state2.push_error(format!("reply failed: {e}")),
+                    Ok(_) => state2.push_system(t("msg-reply-sent")),
+                    Err(e) => state2.push_error(tf("msg-reply-failed", &[("e", &e)])),
                 }
             });
         }
@@ -296,11 +297,11 @@ pub fn EditorModal(
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
                         match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
-                            Ok(_) => state2.push_system(format!("entity {entity_name}: publish sent")),
-                            Err(e) => state2.push_error(format!("entity publish failed: {e}")),
+                            Ok(_) => state2.push_system(tf("msg-entity-publish-sent", &[("name", &entity_name)])),
+                            Err(e) => state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)])),
                         }
                     }
-                    Err(e) => state2.push_error(format!("YAML error: {e}")),
+                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
                 }
             });
         }
@@ -325,11 +326,11 @@ pub fn EditorModal(
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
                         match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
-                            Ok(_) => state2.push_system(format!("entity {entity_name}.{field}: publish sent")),
-                            Err(e) => state2.push_error(format!("entity field publish failed: {e}")),
+                            Ok(_) => state2.push_system(tf("msg-field-publish-sent", &[("name", &entity_name), ("field", &field)])),
+                            Err(e) => state2.push_error(tf("msg-field-publish-failed", &[("e", &e)])),
                         }
                     }
-                    Err(e) => state2.push_error(format!("YAML error: {e}")),
+                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
                 }
             });
         }
@@ -370,61 +371,61 @@ pub fn EditorModal(
                         class="editor-btn btn-save"
                         style=move || if is_standard() { "" } else { "display:none" }
                         on:click=on_save.clone()
-                    >"Save"</button>
+                    >{t("btn-save")}</button>
                     // Eval — Standard only
                     <button
                         class="editor-btn btn-eval"
                         style=move || if is_standard() { "" } else { "display:none" }
                         on:click=on_eval_click.clone()
-                    >"Eval"</button>
+                    >{t("btn-eval")}</button>
                     // Cancel / Close — Standard + View; label adapts
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_standard() || is_view() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
-                    >{move || if is_view() { "Close" } else { "Cancel" }}</button>
+                    >{move || if is_view() { t("btn-close") } else { t("btn-cancel") }}</button>
                     // Reply — Reply mode only
                     <button
                         class="editor-btn btn-save"
                         style=move || if is_reply() { "" } else { "display:none" }
                         on:click=on_reply.clone()
-                    >"Reply"</button>
+                    >{t("btn-reply")}</button>
                     // Publish — EntityEdit mode only
                     <button
                         class="editor-btn btn-save"
                         style=move || if is_entity_edit() { "" } else { "display:none" }
                         on:click=on_entity_publish.clone()
-                    >"Publish"</button>
+                    >{t("btn-publish")}</button>
                     // Cancel — EntityEdit mode
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
-                    >"Cancel"</button>
+                    >{t("btn-cancel")}</button>
                     // Publish — EntityFieldEdit mode
                     <button
                         class="editor-btn btn-save"
                         style=move || if is_entity_field_edit() { "" } else { "display:none" }
                         on:click=on_entity_field_publish.clone()
-                    >"Publish"</button>
+                    >{t("btn-publish")}</button>
                     // Cancel — EntityFieldEdit mode
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_field_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
-                    >"Cancel"</button>
+                    >{t("btn-cancel")}</button>
                     // Save — ConfigEdit mode
                     <button
                         class="editor-btn btn-save"
                         style=move || if is_config_edit() { "" } else { "display:none" }
                         on:click=on_save.clone()
-                    >"Save"</button>
+                    >{t("btn-save")}</button>
                     // Cancel — ConfigEdit mode
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_config_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
-                    >"Cancel"</button>
+                    >{t("btn-cancel")}</button>
                 </div>
                 <div id=EDITOR_EL_ID class="editor-cm-host"></div>
             </div>

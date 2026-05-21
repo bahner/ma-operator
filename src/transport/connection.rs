@@ -1,7 +1,7 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint,
-    Did, IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey,
+    Did, Ipld, IpfsGatewayResolver, MaExtension, Message, SecretBundle, SigningKey,
     INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
     MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
@@ -10,7 +10,8 @@ use ma_core::{
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_CREATED_AT, SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY,
-    SESSION_IROH_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    SESSION_IROH_KEY, SESSION_LANG, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID,
+    SESSION_SIGNING_KEY,
 };
 use std::rc::Rc;
 
@@ -256,6 +257,11 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
     let ma_ext = ENDPOINT
         .with(|e| e.borrow().as_ref().map(|ep| ep.ma_extension()))
         .unwrap_or_else(MaExtension::new);
+    // Inject language preference hint if set.
+    let ma_ext = match SESSION_LANG.with(|l| l.borrow().clone()) {
+        Some(lang) if !lang.is_empty() => ma_ext.extra("lang", Ipld::String(lang)),
+        _ => ma_ext,
+    };
     let document = bundle
         .build_document(ma_ext)
         .map_err(|e| format!("build document failed: {e}"))?;

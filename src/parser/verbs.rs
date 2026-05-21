@@ -7,6 +7,7 @@ use leptos::prelude::*;
 
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
+use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
@@ -20,12 +21,10 @@ fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
     } else {
         cfg.resolve_alias(raw)
             .map(|s| s.to_string())
-            .ok_or_else(|| format!("unknown alias: @{raw}"))?
+            .ok_or_else(|| tf("err-unknown-alias", &[("name", raw)]))?
     };
     if resolved.contains('#') || resolved.contains('/') {
-        return Err(format!(
-            "expected bare did:ma:<ipns> (no fragment or path), got {resolved}"
-        ));
+        return Err(tf("err-bare-did", &[("did", &resolved)]));
     }
     Ok(resolved)
 }
@@ -58,7 +57,7 @@ pub fn dispatch_verb(
             }
         }
         if indices.is_empty() {
-            state.push_system("inbox is empty");
+            state.push_system(t("inbox-empty"));
         }
         for n in &indices {
             let base = format!(".my.inbox.{n}");
@@ -80,7 +79,7 @@ pub fn dispatch_verb(
     {
         let n: usize = n_str
             .parse()
-            .map_err(|_| format!("not a valid inbox index: {n_str}"))?;
+            .map_err(|_| tf("inbox-invalid-index", &[("n", n_str)]))?;
         let base = format!(".my.inbox.{n}");
 
         match verb {
@@ -88,11 +87,11 @@ pub fn dispatch_verb(
                 let cfg = config.get_untracked();
                 let from = cfg
                     .get(&format!("{base}.from"))
-                    .ok_or_else(|| format!("inbox entry {n} not found"))?
+                    .ok_or_else(|| tf("inbox-entry-not-found", &[("n", &n.to_string())]))?
                     .to_string();
                 let msg_id = cfg
                     .get(&format!("{base}.message_id"))
-                    .ok_or_else(|| format!("inbox entry {n} has no message_id"))?
+                    .ok_or_else(|| tf("inbox-no-message-id", &[("n", &n.to_string())]))?
                     .to_string();
                 // Use stored reply_to if present, else reply to the message id.
                 let reply_to_id = cfg
@@ -123,7 +122,7 @@ pub fn dispatch_verb(
                                     cmd_id,
                                     CommandStatus::Error(e.clone()),
                                 );
-                                state2.push_error(format!("reply failed: {e}"));
+                                state2.push_error(tf("msg-reply-failed", &[("e", &e)]));
                             }
                         }
                     });
@@ -149,7 +148,7 @@ pub fn dispatch_verb(
                 return Ok(());
             }
 
-            other => return Err(format!("no verb `{other}` for inbox entry {n}")),
+            other => return Err(tf("inbox-no-verb", &[("verb", other), ("n", &n.to_string())])),
         }
     }
 
@@ -166,18 +165,20 @@ pub fn dispatch_verb(
                         Ok(s) => s,
                         Err(e) => {
                             let hint = discover_fetch_hint(&e);
-                            state2.push_error(format!(
-                                "discover failed at {STATUS_URL}: {e}\n{hint}"
+                            state2.push_error(tf(
+                                "discover-fetch-failed",
+                                &[("url", STATUS_URL), ("e", &e)],
                             ));
+                            state2.push_error(hint);
                             return;
                         }
                     };
                     let json: serde_json::Value = match serde_json::from_str(&json_str) {
                         Ok(v) => v,
                         Err(e) => {
-                            state2.push_error(format!(
-                                "discover failed: invalid JSON from {STATUS_URL}: {e}\n\
-                                 Ensure `ma` is running and the status endpoint is not proxied/cached by another service."
+                            state2.push_error(tf(
+                                "discover-json-error",
+                                &[("url", STATUS_URL), ("e", &e.to_string())],
                             ));
                             return;
                         }
@@ -185,16 +186,12 @@ pub fn dispatch_verb(
                     let did = match json.get("did").and_then(|v| v.as_str()) {
                         Some(d) => d.to_string(),
                         None => {
-                            state2.push_error(
-                                "discover failed: status.json missing required field `did`".to_string(),
-                            );
+                            state2.push_error(t("discover-missing-did"));
                             return;
                         }
                     };
                     if !did.starts_with("did:ma:") {
-                        state2.push_error(format!(
-                            "discover failed: expected `did` to start with did:ma:, got `{did}`"
-                        ));
+                        state2.push_error(tf("discover-invalid-did", &[("did", &did)]));
                         return;
                     }
                     let endpoint_id = json
@@ -203,10 +200,7 @@ pub fn dispatch_verb(
                         .unwrap_or("")
                         .to_string();
                     if endpoint_id.is_empty() {
-                        state2.push_system(
-                            "discover warning: `endpoint_id` missing in status.json; stored DID only"
-                                .to_string(),
-                        );
+                        state2.push_system(t("discover-no-endpoint"));
                     }
 
                     // Write config, then persist.
@@ -238,7 +232,38 @@ pub fn dispatch_verb(
                 });
                 return Ok(());
             }
-            other => return Err(format!("no verb `{other}` for {path}")),
+            "claim" => {
+                const CLAIM_URL: &str = "http://localhost:5003/claim";
+                let our_did = match state.session.get_untracked() {
+                    Some(sess) => sess.sender_did.clone(),
+                    None => {
+                        return Err(t("claim-no-session"));
+                    }
+                };
+                let state2 = state.clone();
+                leptos::task::spawn_local(async move {
+                    let body = format!(r#"{{"owner":"{}"}}"#, our_did);
+                    match fetch_post_json(CLAIM_URL, &body).await {
+                        Ok(200) => {
+                            state2.push_system(tf("claim-success", &[("did", &our_did)]));
+                        }
+                        Ok(409) => {
+                            state2.push_error(t("claim-conflict"));
+                        }
+                        Ok(status) => {
+                            state2.push_error(tf(
+                                "claim-http-failed",
+                                &[("status", &status.to_string())],
+                            ));
+                        }
+                        Err(e) => {
+                            state2.push_error(tf("claim-error", &[("e", &e)]));
+                        }
+                    }
+                });
+                return Ok(());
+            }
+            other => return Err(tf("runtime-no-verb", &[("verb", other), ("path", path)])),
         }
     }
 
@@ -275,20 +300,20 @@ pub fn dispatch_verb(
                 let state2 = state.clone();
                 leptos::task::spawn_local(async move {
                     if let Err(e) = crate::config::persist_config(&username, &cfg).await {
-                        state2.push_error(format!("persist error: {e}"));
+                        state2.push_error(tf("acl-persist-error", &[("e", &e)]));
                     }
                 });
-                state.push_command_ok(".my.acl reset (fully open)");
+                state.push_command_ok(t("acl-reset"));
                 return Ok(());
             }
-            other => return Err(format!("no verb `{other}` for .my.acl")),
+            other => return Err(tf("acl-no-verb", &[("verb", other)])),
         }
     }
 
     // ── .my.identity ──────────────────────────────────────────────────────
     if path == ".my.identity" && verb == "publish" {
         if args.len() != 1 {
-            return Err("usage: .my.identity:publish <did-or-alias>".into());
+            return Err(t("publish-usage"));
         }
         let cfg = config.get_untracked();
         let publisher = resolve_bare_did(&args[0], &cfg)?;
@@ -343,13 +368,13 @@ pub fn dispatch_verb(
                     leptos::task::spawn_local(async move {
                         match fetch_from_gateway(&cid).await {
                             Ok(text) => {
-                                state2.push_system(format!("fetched {cid} — review before eval"));
+                                state2.push_system(tf("msg-fetch-review", &[("cid", &cid)]));
                                 show_editor2.set(Some(
                                     EditorContext::new(doc_path2, text).with_language("plain"),
                                 ));
                             }
                             Err(e) => {
-                                state2.push_error(format!("fetch {cid}: {e}"));
+                                state2.push_error(tf("msg-fetch-failed", &[("cid", &cid), ("e", &e)]));
                             }
                         }
                     });
@@ -365,7 +390,7 @@ pub fn dispatch_verb(
                     .unwrap_or_default()
                     .to_string();
                 if content.is_empty() {
-                    return Err(format!("{doc_path}.content is empty"));
+                    return Err(tf("doc-content-empty", &[("path", &doc_path)]));
                 }
                 state.push_command_done(format!("{doc_path}:eval"));
                 on_eval.run(content);
@@ -386,7 +411,7 @@ pub fn dispatch_verb(
                     .unwrap_or_default()
                     .to_string();
                 if content_str.is_empty() {
-                    return Err(format!("{doc_path}.content is empty — save first"));
+                    return Err(tf("doc-save-first", &[("path", &doc_path)]));
                 }
                 let content_type = cfg
                     .get(&format!("{doc_path}.content_type"))
@@ -401,15 +426,15 @@ pub fn dispatch_verb(
                     match transport::send_ipfs_store(&publisher, content_bytes, &content_type).await
                     {
                         Ok(msg_id) => {
-                            state2.push_system(format!(
-                                "store request sent ({msg_id}) → {publisher_disp}; \
-                                 CID will arrive via RPC reply"
+                            state2.push_system(tf(
+                                "doc-store-sent",
+                                &[("id", &msg_id), ("pub", &publisher_disp)],
                             ));
                         }
                         Err(e) => {
-                            state2.push_error(format!(
-                                "publish {doc_path2}: {}",
-                                format_publish_error(&e)
+                            state2.push_error(tf(
+                                "doc-publish-failed",
+                                &[("path", &doc_path2), ("e", &format_publish_error(&e))],
                             ));
                         }
                     }
@@ -431,7 +456,7 @@ pub fn dispatch_verb(
                     .unwrap_or_default()
                     .to_string();
                 if content_str.is_empty() {
-                    return Err(format!("{doc_path}.content is empty — save first"));
+                    return Err(tf("doc-save-first", &[("path", &doc_path)]));
                 }
                 let dag_cbor = crate::messages::yaml_to_dag_cbor(&content_str)
                     .map_err(|e| format!("cannot publish-ipld: {e}"))?;
@@ -448,15 +473,15 @@ pub fn dispatch_verb(
                     .await
                     {
                         Ok(msg_id) => {
-                            state2.push_system(format!(
-                                "IPLD store request sent ({msg_id}) → {publisher_disp}; \
-                                 CID will arrive via RPC reply"
+                            state2.push_system(tf(
+                                "doc-ipld-store-sent",
+                                &[("id", &msg_id), ("pub", &publisher_disp)],
                             ));
                         }
                         Err(e) => {
-                            state2.push_error(format!(
-                                "publish-ipld {doc_path2}: {}",
-                                format_publish_error(&e)
+                            state2.push_error(tf(
+                                "doc-ipld-store-failed",
+                                &[("path", &doc_path2), ("e", &format_publish_error(&e))],
                             ));
                         }
                     }
@@ -468,8 +493,8 @@ pub fn dispatch_verb(
             "cid" => {
                 let cfg = config.get_untracked();
                 match cfg.get(&format!("{doc_path}.cid")) {
-                    Some(cid) => state.push_output(format!("{doc_path}.cid = {cid}")),
-                    None => state.push_output(format!("{doc_path}.cid is not set")),
+                    Some(cid) => state.push_output(tf("doc-cid-value", &[("path", &doc_path), ("cid", cid)])),
+                    None => state.push_output(tf("doc-cid-not-set", &[("path", &doc_path)])),
                 }
                 Ok(())
             }
@@ -490,22 +515,26 @@ pub fn dispatch_verb(
                                 c.set(&format!("{doc_path2}.content"), &text);
                                 c.set(&format!("{doc_path2}.cid"), &cid);
                             });
-                            state2.push_system(format!(
-                                "fetched {cid} → {doc_path2}.content (not executed)"
+                            state2.push_system(tf(
+                                "doc-fetch-done",
+                                &[("cid", &cid), ("path", &doc_path2)],
                             ));
                         }
                         Err(e) => {
-                            state2.push_error(format!("fetch {cid}: {e}"));
+                            state2.push_error(tf(
+                                "doc-fetch-failed",
+                                &[("cid", &cid), ("e", &e)],
+                            ));
                         }
                     }
                 });
                 Ok(())
             }
 
-            other => Err(format!("no verb `{other}` for {path}")),
+            other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
         }
     } else {
-        Err(format!("no verb `{verb}` for {path}"))
+        Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
     }
 }
 
@@ -611,4 +640,28 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
 /// Uses the dweb.link gateway (same resolver as transport layer).
 async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
     fetch_url_text(&format!("https://dweb.link/ipfs/{cid}")).await
+}
+
+/// POST a JSON string body to `url` and return the HTTP status code.
+async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
+
+    let window = web_sys::window().ok_or("no window")?;
+    let headers = web_sys::Headers::new().map_err(|e| format!("{e:?}"))?;
+    headers
+        .set("Content-Type", "application/json")
+        .map_err(|e| format!("{e:?}"))?;
+    let opts = web_sys::RequestInit::new();
+    opts.set_method("POST");
+    opts.set_body(&wasm_bindgen::JsValue::from_str(body));
+    opts.set_headers(&headers);
+    let request = web_sys::Request::new_with_str_and_init(url, &opts)
+        .map_err(|e| format!("{e:?}"))?;
+    let promise = window.fetch_with_request(&request);
+    let resp_val = JsFuture::from(promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    Ok(resp.status())
 }

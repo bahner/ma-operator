@@ -7,6 +7,7 @@ use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 
 use crate::{
     config::restore_config,
+    i18n::{t, tf},
     identity::{
         create_identity, export_for_download, import_from_bytes, list_usernames, load_identity,
         save_identity, unlock_identity,
@@ -41,15 +42,15 @@ pub fn Landing() -> impl IntoView {
                     <button
                         class=move || if tab.get() == Tab::Login { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Login)
-                    >"login"</button>
+                    >{t("tab-login")}</button>
                     <button
                         class=move || if tab.get() == Tab::Create { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Create)
-                    >"new identity"</button>
+                    >{t("tab-new-identity")}</button>
                     <button
                         class=move || if tab.get() == Tab::Import { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Import)
-                    >"import"</button>
+                    >{t("tab-import")}</button>
                 </div>
 
                 <Show when=move || tab.get() == Tab::Login>
@@ -103,7 +104,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             let uname = selected.get_untracked();
             let pass = password.get_untracked();
             error.set(String::new());
-            status.set("unlocking...".into());
+            status.set(t("status-unlocking"));
             let state = state.clone();
             spawn_local(async move {
                 match load_identity(&uname).await {
@@ -123,15 +124,15 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                                     created_at: id.created_at,
                                 }));
                             }
-                            Err(e) => {
+                                Err(e) => {
                                 status.set(String::new());
-                                error.set(format!("wrong passphrase: {e}"));
+                                error.set(tf("error-wrong-passphrase", &[("e", &e)]));
                             }
                         }
                     }
                     Ok(None) => {
                         status.set(String::new());
-                        error.set(format!("identity '{uname}' not found"));
+                        error.set(tf("error-identity-not-found", &[("name", &uname)]));
                     }
                     Err(e) => {
                         status.set(String::new());
@@ -165,7 +166,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                     let content = export_for_download(&stored.export_json);
                     trigger_download(&format!("{uname}.zion.json"), &content);
                 }
-                Ok(None) => error.set(format!("identity '{uname}' not found")),
+                Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
                 Err(e) => error.set(e),
             }
         });
@@ -192,10 +193,10 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             />
         </ul>
         <div class="form-row">
-            <label>"passphrase"</label>
+            <label>{t("label-passphrase")}</label>
             <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
                 on:input=move |ev| {
                     let target = ev.target().unwrap();
                     let input = target.unchecked_into::<HtmlInputElement>();
@@ -205,8 +206,8 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             />
         </div>
         <div class="btn-row">
-            <button class="btn" on:click=on_login>"login"</button>
-            <button class="btn btn-sm" on:click=on_export>"export"</button>
+            <button class="btn" on:click=on_login>{t("btn-login")}</button>
+            <button class="btn btn-sm" on:click=on_export>{t("btn-export")}</button>
         </div>
     }
 }
@@ -230,19 +231,19 @@ fn CreatePanel(
         error.set(String::new());
 
         if uname.is_empty() {
-            error.set("username required".into());
+            error.set(t("error-username-required"));
             return;
         }
         if pass.is_empty() {
-            error.set("passphrase required".into());
+            error.set(t("error-passphrase-required"));
             return;
         }
         if pass != pass2 {
-            error.set("passphrases do not match".into());
+            error.set(t("error-passphrases-no-match"));
             return;
         }
 
-        status.set("generating identity...".into());
+        status.set(t("status-generating"));
         let state = state.clone();
         spawn_local(async move {
             match create_identity(&uname, &pass) {
@@ -274,7 +275,7 @@ fn CreatePanel(
 
     view! {
         <div class="form-row">
-            <label>"username"</label>
+            <label>{t("label-username")}</label>
             <input
                 type="text"
                 placeholder="alice"
@@ -286,10 +287,10 @@ fn CreatePanel(
             />
         </div>
         <div class="form-row">
-            <label>"passphrase"</label>
+            <label>{t("label-passphrase")}</label>
             <input
                 type="password"
-                placeholder="••••••••"
+                placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
                 on:input=move |ev| {
                     let target = ev.target().unwrap();
                     let input = target.unchecked_into::<HtmlInputElement>();
@@ -298,7 +299,7 @@ fn CreatePanel(
             />
         </div>
         <div class="form-row">
-            <label>"confirm passphrase"</label>
+            <label>{t("label-confirm-passphrase")}</label>
             <input
                 type="password"
                 placeholder="••••••••"
@@ -310,10 +311,10 @@ fn CreatePanel(
             />
         </div>
         <p class="dimmed" style="font-size:0.8rem">
-            "Lost passphrase = lost identity. There is no recovery."
+            {t("passphrase-warning")}
         </p>
         <div class="btn-row">
-            <button class="btn" on:click=on_create>"generate"</button>
+            <button class="btn" on:click=on_create>{t("btn-generate")}</button>
         </div>
     }
 }
@@ -333,7 +334,7 @@ fn ImportPanel(
         let input = target.unchecked_into::<HtmlInputElement>();
         if let Some(files) = input.files() {
             if let Some(file) = files.get(0) {
-                status.set("reading file...".into());
+                status.set(t("status-reading-file"));
                 error.set(String::new());
                 let reader = FileReader::new().unwrap();
                 let reader2 = reader.clone();
@@ -348,8 +349,9 @@ fn ImportPanel(
                                     status.set(String::new());
                                     spawn_local(async move {
                                         match save_identity(&un, &ej).await {
-                                            Ok(()) => status.set(format!(
-                                                "imported '{un}' — switch to Login tab"
+                                            Ok(()) => status.set(tf(
+                                                "status-imported",
+                                                &[("name", &un)],
                                             )),
                                             Err(e) => error.set(e),
                                         }
@@ -372,7 +374,7 @@ fn ImportPanel(
 
     view! {
         <p class="dimmed" style="font-size:0.85rem;margin-bottom:1rem">
-            "Select an exported .zion.json file. The bundle stays encrypted."
+            {t("import-help")}
         </p>
         <input
             type="file"
