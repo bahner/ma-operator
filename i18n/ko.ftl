@@ -1,0 +1,190 @@
+# zion — 한국어
+lang-name = 한국어
+
+# ── 로그인 페이지 ──────────────────────────────────────────────────────────
+tab-login = 로그인
+tab-new-identity = 새 신원
+tab-import = 가져오기
+label-passphrase = 암호문
+label-username = 사용자 이름
+label-confirm-passphrase = 암호문 확인
+btn-login = 로그인
+btn-export = 내보내기
+btn-generate = 생성
+passphrase-warning = 암호문을 잃으면 신원을 잃습니다. 복구할 수 없습니다.
+import-help = 내보낸 .zion.json 파일을 선택하세요. 번들은 암호화된 상태를 유지합니다.
+status-unlocking = 잠금 해제 중...
+status-generating = 신원 생성 중...
+status-reading-file = 파일 읽는 중...
+status-imported = '{ $name }' 가져오기 완료 — 로그인 탭으로 이동하세요
+error-wrong-passphrase = 잘못된 암호문: { $e }
+error-identity-not-found = 신원 '{ $name }'을(를) 찾을 수 없습니다
+error-username-required = 사용자 이름이 필요합니다
+error-passphrase-required = 암호문이 필요합니다
+error-passphrases-no-match = 암호문이 일치하지 않습니다
+
+# ── 터미널 시스템 메시지 ──────────────────────────────────────────────────
+msg-logged-in = zion v{ $version } — { $username }(으)로 로그인됨
+msg-type-help = 명령어 목록을 보려면 .help를 입력하세요.
+msg-connecting = iroh에 연결 중...
+msg-iroh-ready = iroh 엔드포인트 준비됨
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
+msg-focus-cleared = 포커스가 해제됨
+msg-focusing = { $did }을(를) { $prompt }(으)로 포커스 중
+msg-set = { $path }: { $value }
+msg-deleted = { $path } 삭제됨 ({ $count }개 항목)
+msg-read-only = { $path }은(는) 읽기 전용입니다
+msg-subtree-set = { $path }은(는) 서브트리입니다; 설정 거부됨
+msg-ancestor-leaf = { $path }의 한 조상이 리프입니다; 덮어쓰기 거부됨
+msg-key-not-found = 키를 찾을 수 없음: { $path }
+msg-no-match = 일치하는 항목 없음
+msg-link-not-connected = 링크 가져오기 오류: 연결되지 않음
+msg-link-fetch-error = 링크 가져오기 오류: { $e }
+msg-link-key-not-found = 연결된 문서에서 키 `{ $key }`를 찾을 수 없음
+
+# ── 별칭 유효성 검사 ──────────────────────────────────────────────────────
+err-alias-name-empty = 별칭 이름은 비어있을 수 없습니다
+err-alias-has-fragment = 별칭 이름에 '#'을 포함할 수 없습니다
+err-alias-value-fragment = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (프래그먼트 없음)
+err-alias-value-path = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (경로 없음)
+err-alias-not-did = 별칭 값은 did:ma:로 시작해야 합니다
+err-unknown-alias = 알 수 없는 별칭: @{ $name }
+err-bare-did = bare did:ma:<ipns> (프래그먼트나 경로 없음) 필요, 받은 값: { $did }
+
+# ── 편집기 ────────────────────────────────────────────────────────────────
+btn-save = 저장
+btn-eval = 실행
+btn-cancel = 취소
+btn-close = 닫기
+btn-reply = 답장
+btn-publish = 게시
+msg-reply-sent = 답장 전송됨
+msg-reply-failed = 답장 실패: { $e }
+msg-entity-publish-sent = 엔티티 { $name }: 게시 전송됨
+msg-entity-publish-failed = 엔티티 게시 실패: { $e }
+msg-field-publish-sent = 엔티티 { $name }.{ $field }: 게시 전송됨
+msg-field-publish-failed = 필드 게시 실패: { $e }
+msg-acl-publish-sent = 런타임 ACL: 게시 전송됨
+msg-acl-publish-failed = 런타임 ACL 게시 실패: { $e }
+msg-yaml-error = YAML 오류: { $e }
+msg-editor-saved = { $path }:save
+msg-fetch-review = { $cid } 가져옴 — 실행 전 검토하세요
+msg-fetch-failed = 가져오기 { $cid }: { $e }
+
+# ── 동사 — 받은 편지함 ────────────────────────────────────────────────────
+inbox-empty = 받은 편지함이 비어있습니다
+inbox-entry-not-found = 받은 편지함 항목 { $n }을(를) 찾을 수 없음
+inbox-no-message-id = 받은 편지함 항목 { $n }에 message_id가 없음
+inbox-no-verb = 받은 편지함 항목 { $n }에 `{ $verb }` 동사가 없음
+
+# ── 동사 — 런타임 ─────────────────────────────────────────────────────────
+discover-fetch-failed = { $url }에서 검색 실패: { $e }
+discover-json-error = 검색 실패: { $url }에서 잘못된 JSON: { $e }
+discover-missing-did = 검색 실패: status.json에 `did` 필드 없음
+discover-invalid-did = 검색 실패: `did`가 did:ma:로 시작해야 했으나 `{ $did }` 받음
+discover-no-endpoint = 검색 경고: status.json에 `endpoint_id` 없음; DID만 저장됨
+discover-success = { $url }에서 ma 발견됨
+discover-did-line = DID: { $did }
+discover-alias-hint =   별칭 @間 생성됨 — 게시: .my.identity:publish @間
+claim-success = { $did }에 대한 런타임 청구됨
+claim-conflict = 런타임이 이미 다른 신원에 의해 청구됨
+claim-http-failed = 청구 실패: HTTP { $status }
+claim-error = 청구 실패: { $e }
+claim-no-session = 로그인되지 않음; 런타임을 청구하려면 먼저 로그인하세요
+runtime-no-verb = { $path }에 `{ $verb }` 동사가 없음
+
+# ── 동사 — ACL ────────────────────────────────────────────────────────────
+acl-reset = .my.acl 초기화됨 (완전히 열림)
+acl-persist-error = 저장 오류: { $e }
+acl-no-verb = .my.acl에 `{ $verb }` 동사가 없음
+
+# ── 동사 — 신원 ───────────────────────────────────────────────────────────
+publish-usage = 사용법: .my.identity:publish <did-또는-별칭>
+
+# ── 동사 — 문서 ───────────────────────────────────────────────────────────
+doc-content-empty = { $path }.content이(가) 비어있음
+doc-save-first = { $path }.content이(가) 비어있음 — 먼저 저장하세요
+doc-missing-name = 문서 이름 없음
+doc-publish-usage = 사용법: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = 사용법: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = 게시 { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
+doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
+doc-fetch-done = { $cid } 가져옴 → { $path }.content (실행되지 않음)
+doc-fetch-failed = 가져오기 { $cid }: { $e }
+doc-fetch-usage = 사용법: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid가 설정되지 않음
+doc-no-verb = { $path }에 `{ $verb }` 동사가 없음
+path-no-verb = { $path }에 `{ $verb }` 동사가 없음
+
+# ── 도움말 — 헤더 ─────────────────────────────────────────────────────────
+help-header-zion = ── zion 명령어 ───────────────────────────────────────────────────────────
+help-header-messaging = ── 메시징 ────────────────────────────────────────────────────────────────
+help-header-focus = ── 포커스 모드 ──────────────────────────────────────────────────────────
+help-header-config = ── 로컬 설정 문법 ─────────────────────────────────────────────────────
+help-header-common = ── 공통 경로 ─────────────────────────────────────────────────────────────
+help-header-inbox = ── 받은 편지함 ────────────────────────────────────────────────────────────
+help-header-documents = ── 문서 ──────────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── 도움말 — zion 명령어 ──────────────────────────────────────────────────
+help-cmd-help =   .help                        이 텍스트
+help-cmd-clear =   .clear                       터미널 지우기
+help-cmd-panic =   .panic                       최후 수단 — 문제 발생 시 사용
+help-cmd-logout =   .logout                      로그아웃
+
+# ── 도움말 — 메시징 ───────────────────────────────────────────────────────
+help-msg-echo =   @alias                       해석된 DID 표시 (메시지 전송 없음)
+help-msg-send =   @alias[:verb] body           액터에게 메시지 / RPC 전송
+help-msg-fragment =   @alias#fragment[:verb] body  명시적 DID 프래그먼트로 전송
+help-msg-escape =   \@name                       리터럴 @name (별칭 조회 없음)
+
+# ── 도움말 — 포커스 모드 ──────────────────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       액터에 포커스 (프롬프트 변경)
+help-focus-clear =   .use                         포커스 해제
+
+# ── 도움말 — 설정 문법 ────────────────────────────────────────────────────
+help-config-get =   .path                        리프 값 가져오기 또는 서브트리 나열
+help-config-filter =   .path value                  값으로 필터링
+help-config-set =   .path: value                 리프 설정
+help-config-delete =   .path:                       리프 또는 서브트리 삭제
+help-config-verb =   .path:verb [args]            로컬 동사 호출
+
+# ── 도움말 — 공통 경로 ────────────────────────────────────────────────────
+help-my =   .my                          모든 개인 설정 표시
+help-aliases =   .my.aliases                  별칭 목록
+help-aliases-set =   .my.aliases.<name>: <did>    별칭 추가/업데이트
+help-aliases-del =   .my.aliases.<name>:          별칭 제거
+help-runtime-discover =   .my.runtime:discover          로컬 런타임 검색 및 @間 생성
+help-runtime-claim =   .my.runtime:claim             DID로 런타임 소유권 청구
+help-identity =   .my.identity                 신원 설정 표시
+help-identity-did =   .my.identity.did             자신의 DID 표시 (읽기 전용)
+help-identity-publish =   .my.identity:publish @pub    게시 서비스를 통해 DID 게시
+help-config-path =   .config                      모든 .config.* 항목 표시
+
+# ── 도움말 — 받은 편지함 ──────────────────────────────────────────────────
+help-inbox =   .my.inbox                    받은 편지함 목록 (서브트리 뷰)
+help-inbox-n =   .my.inbox.N                  항목 N의 필드 표시
+help-inbox-from =   .my.inbox.N.from             항목 N의 발신자 DID
+help-inbox-reply =   .my.inbox.N:reply [body]     답장 전송 (내용 없음 — 편집기 열림)
+help-inbox-open =   .my.inbox.N:open             편집기에서 읽기 전용으로 내용 열기
+help-inbox-del =   .my.inbox.N:                 항목 N 삭제
+help-inbox-delall =   .my.inbox:                   모든 받은 편지함 항목 삭제
+help-inbox-flush =   .my.inbox:flush              모든 항목을 터미널에 출력
+help-inbox-traverse =   .my.inbox.N.sender.<field>   발신자 DID 문서 지연 탐색
+
+# ── 도움말 — 문서 ─────────────────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           저장된 내용으로 편집기 열기
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     CID 가져오기, 검토 전용으로 열기
+help-doc-eval =   .my.doc.<name>:eval           저장된 내용을 줄 단위로 실행
+help-doc-publish =   .my.doc.<name>:publish @pub   원시 블롭으로 저장 (모든 유형)
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  YAML을 DAG-CBOR IPLD 노드로 저장
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    CID 내용 가져오기 (실행 없음)
+help-doc-cid =   .my.doc.<name>:cid            저장된 CID 표시
+help-doc-del =   .my.doc.<name>:              문서 삭제
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = 사용 가능한 언어 (.my.i18n: <code> 로 설정):

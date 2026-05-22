@@ -1,0 +1,190 @@
+# zion — मराठी
+lang-name = मराठी
+
+# ── लॉगिन पृष्ठ ───────────────────────────────────────────────────────────
+tab-login = लॉगिन
+tab-new-identity = नवीन ओळख
+tab-import = आयात
+label-passphrase = पासफ्रेज
+label-username = वापरकर्तानाव
+label-confirm-passphrase = पासफ्रेज पुष्टी करा
+btn-login = लॉगिन करा
+btn-export = निर्यात
+btn-generate = तयार करा
+passphrase-warning = पासफ्रेज गेले = ओळख गेली. कोणतीही पुनर्प्राप्ती नाही.
+import-help = निर्यात केलेली .zion.json फाइल निवडा. बंडल एन्क्रिप्टेड राहते.
+status-unlocking = अनलॉक होत आहे...
+status-generating = ओळख तयार होत आहे...
+status-reading-file = फाइल वाचली जात आहे...
+status-imported = '{ $name }' आयात केले — लॉगिन टॅबवर जा
+error-wrong-passphrase = चुकीचे पासफ्रेज: { $e }
+error-identity-not-found = ओळख '{ $name }' सापडली नाही
+error-username-required = वापरकर्तानाव आवश्यक आहे
+error-passphrase-required = पासफ्रेज आवश्यक आहे
+error-passphrases-no-match = पासफ्रेज जुळत नाहीत
+
+# ── टर्मिनल प्रणाली संदेश ────────────────────────────────────────────────
+msg-logged-in = zion v{ $version } — { $username } म्हणून लॉग इन केले
+msg-type-help = आदेश सूचीसाठी .help टाइप करा.
+msg-connecting = iroh ला जोडले जात आहे...
+msg-iroh-ready = iroh एंडपॉइंट तयार
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ अवरोधित [{ $cap }]: { $from }
+msg-focus-cleared = फोकस साफ केले
+msg-focusing = { $did } ला { $prompt } म्हणून फोकस केले जात आहे
+msg-set = { $path }: { $value }
+msg-deleted = { $path } हटवले ({ $count } नोंदी)
+msg-read-only = { $path } फक्त वाचनीय आहे
+msg-subtree-set = { $path } उपवृक्ष आहे; सेट करण्यास नकार
+msg-ancestor-leaf = { $path } चा एक पूर्वज पान आहे; छाया करण्यास नकार
+msg-key-not-found = की सापडली नाही: { $path }
+msg-no-match = कोणतेही जुळणे नाही
+msg-link-not-connected = दुवा आणण्यात त्रुटी: जोडलेले नाही
+msg-link-fetch-error = दुवा आणण्यात त्रुटी: { $e }
+msg-link-key-not-found = जोडलेल्या दस्तऐवजात की `{ $key }` सापडली नाही
+
+# ── टोपणनाव सत्यापन ───────────────────────────────────────────────────────
+err-alias-name-empty = टोपणनाव रिकामे असू शकत नाही
+err-alias-has-fragment = टोपणनावांमध्ये '#' असू शकत नाही
+err-alias-value-fragment = टोपणनावाचे मूल्य bare did:ma:<ipns> असणे आवश्यक आहे (कोणतेही तुकडे नाही)
+err-alias-value-path = टोपणनावाचे मूल्य bare did:ma:<ipns> असणे आवश्यक आहे (कोणताही मार्ग नाही)
+err-alias-not-did = टोपणनावाचे मूल्य did:ma: ने सुरू होणे आवश्यक आहे
+err-unknown-alias = अज्ञात टोपणनाव: @{ $name }
+err-bare-did = bare did:ma:<ipns> (कोणताही तुकडा किंवा मार्ग नाही) अपेक्षित, मिळाले { $did }
+
+# ── संपादक ────────────────────────────────────────────────────────────────
+btn-save = जतन करा
+btn-eval = चालवा
+btn-cancel = रद्द करा
+btn-close = बंद करा
+btn-reply = उत्तर द्या
+btn-publish = प्रकाशित करा
+msg-reply-sent = उत्तर पाठवले
+msg-reply-failed = उत्तर अयशस्वी: { $e }
+msg-entity-publish-sent = घटक { $name }: प्रकाशन पाठवले
+msg-entity-publish-failed = घटक प्रकाशन अयशस्वी: { $e }
+msg-field-publish-sent = घटक { $name }.{ $field }: प्रकाशन पाठवले
+msg-field-publish-failed = फील्ड प्रकाशन अयशस्वी: { $e }
+msg-acl-publish-sent = रनटाइम ACL: प्रकाशन पाठवले
+msg-acl-publish-failed = रनटाइम ACL प्रकाशन अयशस्वी: { $e }
+msg-yaml-error = YAML त्रुटी: { $e }
+msg-editor-saved = { $path }:save
+msg-fetch-review = { $cid } आणले — चालवण्यापूर्वी पुनरावलोकन करा
+msg-fetch-failed = आणा { $cid }: { $e }
+
+# ── क्रिया — इनबॉक्स ─────────────────────────────────────────────────────
+inbox-empty = इनबॉक्स रिकामा आहे
+inbox-entry-not-found = इनबॉक्स नोंद { $n } सापडली नाही
+inbox-no-message-id = इनबॉक्स नोंद { $n } मध्ये message_id नाही
+inbox-no-verb = इनबॉक्स नोंद { $n } साठी `{ $verb }` क्रिया नाही
+
+# ── क्रिया — रनटाइम ───────────────────────────────────────────────────────
+discover-fetch-failed = { $url } वर शोध अयशस्वी: { $e }
+discover-json-error = शोध अयशस्वी: { $url } कडून अवैध JSON: { $e }
+discover-missing-did = शोध अयशस्वी: status.json मध्ये `did` फील्ड नाही
+discover-invalid-did = शोध अयशस्वी: `did` did:ma: ने सुरू होणे अपेक्षित होते, मिळाले `{ $did }`
+discover-no-endpoint = शोध चेतावणी: status.json मध्ये `endpoint_id` नाही; फक्त DID संग्रहित
+discover-success = { $url } वर ma सापडला
+discover-did-line = DID: { $did }
+discover-alias-hint =   टोपणनाव @間 तयार केले — प्रकाशित करा: .my.identity:publish @間
+claim-success = { $did } साठी रनटाइम दाखल केला
+claim-conflict = रनटाइम आधीच दुसऱ्या ओळखीने दाखल केला आहे
+claim-http-failed = दाखल करणे अयशस्वी: HTTP { $status }
+claim-error = दाखल करणे अयशस्वी: { $e }
+claim-no-session = लॉग इन नाही; रनटाइम दाखल करण्यासाठी आधी लॉग इन करा
+runtime-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
+
+# ── क्रिया — ACL ───────────────────────────────────────────────────────────
+acl-reset = .my.acl रीसेट केला (पूर्णपणे खुला)
+acl-persist-error = जतन त्रुटी: { $e }
+acl-no-verb = .my.acl साठी `{ $verb }` क्रिया नाही
+
+# ── क्रिया — ओळख ──────────────────────────────────────────────────────────
+publish-usage = वापर: .my.identity:publish <did-किंवा-टोपणनाव>
+
+# ── क्रिया — दस्तऐवज ──────────────────────────────────────────────────────
+doc-content-empty = { $path }.content रिकामे आहे
+doc-save-first = { $path }.content रिकामे आहे — आधी जतन करा
+doc-missing-name = दस्तऐवजाचे नाव नाही
+doc-publish-usage = वापर: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = वापर: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = प्रकाशन { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
+doc-ipld-store-sent = IPLD संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
+doc-fetch-done = { $cid } आणले → { $path }.content (चालवले नाही)
+doc-fetch-failed = आणा { $cid }: { $e }
+doc-fetch-usage = वापर: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid सेट केलेले नाही
+doc-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
+path-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
+
+# ── मदत — शीर्षके ─────────────────────────────────────────────────────────
+help-header-zion = ── zion आदेश ────────────────────────────────────────────────────────────
+help-header-messaging = ── संदेशन ─────────────────────────────────────────────────────────────────
+help-header-focus = ── फोकस मोड ──────────────────────────────────────────────────────────────
+help-header-config = ── स्थानिक कॉन्फिग व्याकरण ──────────────────────────────────────────────
+help-header-common = ── सामान्य मार्ग ──────────────────────────────────────────────────────────
+help-header-inbox = ── इनबॉक्स ───────────────────────────────────────────────────────────────
+help-header-documents = ── दस्तऐवज ───────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── मदत — zion आदेश ───────────────────────────────────────────────────────
+help-cmd-help =   .help                        हा मजकूर
+help-cmd-clear =   .clear                       टर्मिनल साफ करा
+help-cmd-panic =   .panic                       शेवटचा उपाय — समस्या असल्यास वापरा
+help-cmd-logout =   .logout                      लॉग आउट
+
+# ── मदत — संदेशन ──────────────────────────────────────────────────────────
+help-msg-echo =   @alias                       निराकरण केलेले DID दाखवा (संदेश पाठवला नाही)
+help-msg-send =   @alias[:verb] body           अभिनेत्याला संदेश / RPC पाठवा
+help-msg-fragment =   @alias#fragment[:verb] body  स्पष्ट DID तुकड्यासह पाठवा
+help-msg-escape =   \@name                       शब्दशः @name (कोणता टोपणनाव शोध नाही)
+
+# ── मदत — फोकस मोड ────────────────────────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       अभिनेत्यावर फोकस करा (प्रॉम्प्ट बदलतो)
+help-focus-clear =   .use                         फोकस काढा
+
+# ── मदत — कॉन्फिग व्याकरण ────────────────────────────────────────────────
+help-config-get =   .path                        पानाचे मूल्य मिळवा किंवा उपवृक्ष सूची
+help-config-filter =   .path value                  मूल्याने फिल्टर करा
+help-config-set =   .path: value                 पान सेट करा
+help-config-delete =   .path:                       पान किंवा उपवृक्ष हटवा
+help-config-verb =   .path:verb [args]            स्थानिक क्रिया कॉल करा
+
+# ── मदत — सामान्य मार्ग ───────────────────────────────────────────────────
+help-my =   .my                          सर्व वैयक्तिक कॉन्फिग दाखवा
+help-aliases =   .my.aliases                  टोपणनावांची यादी
+help-aliases-set =   .my.aliases.<name>: <did>    टोपणनाव जोडा/अपडेट करा
+help-aliases-del =   .my.aliases.<name>:          टोपणनाव काढा
+help-runtime-discover =   .my.runtime:discover          स्थानिक रनटाइम शोधा आणि @間 तयार करा
+help-runtime-claim =   .my.runtime:claim             तुमच्या DID ने रनटाइम दाखल करा
+help-identity =   .my.identity                 ओळख कॉन्फिग दाखवा
+help-identity-did =   .my.identity.did             स्वतःचे DID दाखवा (फक्त वाचनीय)
+help-identity-publish =   .my.identity:publish @pub    प्रकाशन सेवेद्वारे DID प्रकाशित करा
+help-config-path =   .config                      सर्व .config.* नोंदी दाखवा
+
+# ── मदत — इनबॉक्स ────────────────────────────────────────────────────────
+help-inbox =   .my.inbox                    इनबॉक्स यादी (उपवृक्ष दृश्य)
+help-inbox-n =   .my.inbox.N                  नोंद N चे फील्ड दाखवा
+help-inbox-from =   .my.inbox.N.from             नोंद N चा प्रेषक DID
+help-inbox-reply =   .my.inbox.N:reply [body]     उत्तर पाठवा (मुख्य भाग नाही — संपादक उघडतो)
+help-inbox-open =   .my.inbox.N:open             फक्त वाचण्यासाठी संपादकात सामग्री उघडा
+help-inbox-del =   .my.inbox.N:                 नोंद N हटवा
+help-inbox-delall =   .my.inbox:                   सर्व इनबॉक्स नोंदी हटवा
+help-inbox-flush =   .my.inbox:flush              सर्व नोंदी टर्मिनलला प्रिंट करा
+help-inbox-traverse =   .my.inbox.N.sender.<field>   प्रेषक DID दस्तऐवज आळशीपणे शोधा
+
+# ── मदत — दस्तऐवज ────────────────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           जतन केलेल्या सामग्रीसह संपादक उघडा
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     CID आणा, फक्त पुनरावलोकनासाठी उघडा
+help-doc-eval =   .my.doc.<name>:eval           जतन केलेली सामग्री ओळीनुसार चालवा
+help-doc-publish =   .my.doc.<name>:publish @pub   कच्चा blob म्हणून संग्रहित करा
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  YAML ला DAG-CBOR IPLD नोड म्हणून संग्रहित करा
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    CID सामग्री आयात करा (चालवत नाही)
+help-doc-cid =   .my.doc.<name>:cid            संग्रहित CID दाखवा
+help-doc-del =   .my.doc.<name>:              दस्तऐवज हटवा
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = उपलब्ध भाषा (.my.i18n: <code> ने सेट करा):

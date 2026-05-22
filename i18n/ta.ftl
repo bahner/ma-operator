@@ -1,0 +1,190 @@
+# zion — தமிழ்
+lang-name = தமிழ்
+
+# ── உள்நுழைவு பக்கம் ─────────────────────────────────────────────────────
+tab-login = உள்நுழைவு
+tab-new-identity = புதிய அடையாளம்
+tab-import = இறக்குமதி
+label-passphrase = கடவுச்சொற்றொடர்
+label-username = பயனர்பெயர்
+label-confirm-passphrase = கடவுச்சொற்றொடரை உறுதிப்படுத்தவும்
+btn-login = உள்நுழையவும்
+btn-export = ஏற்றுமதி
+btn-generate = உருவாக்கவும்
+passphrase-warning = கடவுச்சொற்றொடர் தொலைந்தால் அடையாளம் தொலையும். மீட்பு இல்லை.
+import-help = ஏற்றுமதி செய்யப்பட்ட .zion.json கோப்பைத் தேர்ந்தெடுக்கவும். தொகுப்பு மறைகுறியாக்கப்பட்டு இருக்கும்.
+status-unlocking = திறக்கப்படுகிறது...
+status-generating = அடையாளம் உருவாக்கப்படுகிறது...
+status-reading-file = கோப்பு படிக்கப்படுகிறது...
+status-imported = '{ $name }' இறக்குமதி செய்யப்பட்டது — உள்நுழைவு தாவலுக்குச் செல்லவும்
+error-wrong-passphrase = தவறான கடவுச்சொற்றொடர்: { $e }
+error-identity-not-found = அடையாளம் '{ $name }' கிடைக்கவில்லை
+error-username-required = பயனர்பெயர் தேவை
+error-passphrase-required = கடவுச்சொற்றொடர் தேவை
+error-passphrases-no-match = கடவுச்சொற்றொடர்கள் பொருந்தவில்லை
+
+# ── முனையம் கணினி செய்திகள் ──────────────────────────────────────────────
+msg-logged-in = zion v{ $version } — { $username } ஆக உள்நுழைந்தீர்கள்
+msg-type-help = கட்டளைகளின் பட்டியலுக்கு .help தட்டச்சு செய்யவும்.
+msg-connecting = iroh உடன் இணைக்கப்படுகிறது...
+msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
+msg-focus-cleared = கவனம் அழிக்கப்பட்டது
+msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது
+msg-set = { $path }: { $value }
+msg-deleted = { $path } நீக்கப்பட்டது ({ $count } உள்ளீடுகள்)
+msg-read-only = { $path } படிக்க மட்டுமே
+msg-subtree-set = { $path } ஒரு துணைமரம்; அமைக்க மறுக்கப்பட்டது
+msg-ancestor-leaf = { $path } இன் ஒரு மூதாதையர் இலை; நிழலிட மறுக்கப்பட்டது
+msg-key-not-found = திறவுச்சொல் கிடைக்கவில்லை: { $path }
+msg-no-match = பொருத்தம் இல்லை
+msg-link-not-connected = இணைப்பு பெறுவதில் பிழை: இணைக்கப்படவில்லை
+msg-link-fetch-error = இணைப்பு பெறுவதில் பிழை: { $e }
+msg-link-key-not-found = இணைக்கப்பட்ட ஆவணத்தில் திறவுச்சொல் `{ $key }` கிடைக்கவில்லை
+
+# ── புனைப்பெயர் சரிபார்ப்பு ──────────────────────────────────────────────
+err-alias-name-empty = புனைப்பெயர் வெறுமையாக இருக்க முடியாது
+err-alias-has-fragment = புனைப்பெயர்களில் '#' இருக்க முடியாது
+err-alias-value-fragment = புனைப்பெயர் மதிப்பு bare did:ma:<ipns> ஆக இருக்க வேண்டும் (துண்டு இல்லை)
+err-alias-value-path = புனைப்பெயர் மதிப்பு bare did:ma:<ipns> ஆக இருக்க வேண்டும் (பாதை இல்லை)
+err-alias-not-did = புனைப்பெயர் மதிப்பு did:ma: உடன் தொடங்க வேண்டும்
+err-unknown-alias = அறியப்படாத புனைப்பெயர்: @{ $name }
+err-bare-did = bare did:ma:<ipns> (துண்டு அல்லது பாதை இல்லாமல்) எதிர்பார்க்கப்பட்டது, கிடைத்தது { $did }
+
+# ── திருத்தி ──────────────────────────────────────────────────────────────
+btn-save = சேமி
+btn-eval = இயக்கவும்
+btn-cancel = ரத்து செய்
+btn-close = மூடவும்
+btn-reply = பதிலளிக்கவும்
+btn-publish = வெளியிடவும்
+msg-reply-sent = பதில் அனுப்பப்பட்டது
+msg-reply-failed = பதில் தோல்வியடைந்தது: { $e }
+msg-entity-publish-sent = நிறுவனம் { $name }: வெளியீடு அனுப்பப்பட்டது
+msg-entity-publish-failed = நிறுவன வெளியீடு தோல்வியடைந்தது: { $e }
+msg-field-publish-sent = நிறுவனம் { $name }.{ $field }: வெளியீடு அனுப்பப்பட்டது
+msg-field-publish-failed = புலம் வெளியீடு தோல்வியடைந்தது: { $e }
+msg-acl-publish-sent = இயக்க நேர ACL: வெளியீடு அனுப்பப்பட்டது
+msg-acl-publish-failed = இயக்க நேர ACL வெளியீடு தோல்வியடைந்தது: { $e }
+msg-yaml-error = YAML பிழை: { $e }
+msg-editor-saved = { $path }:save
+msg-fetch-review = { $cid } பெறப்பட்டது — இயக்குவதற்கு முன் மதிப்பாய்வு செய்யவும்
+msg-fetch-failed = பெறு { $cid }: { $e }
+
+# ── வினைச்சொற்கள் — உள்வரவு ─────────────────────────────────────────────
+inbox-empty = உள்வரவு காலியாக உள்ளது
+inbox-entry-not-found = உள்வரவு உள்ளீடு { $n } கிடைக்கவில்லை
+inbox-no-message-id = உள்வரவு உள்ளீடு { $n } க்கு message_id இல்லை
+inbox-no-verb = உள்வரவு உள்ளீடு { $n } க்கு `{ $verb }` வினைச்சொல் இல்லை
+
+# ── வினைச்சொற்கள் — இயக்க நேரம் ─────────────────────────────────────────
+discover-fetch-failed = { $url } இல் கண்டுபிடித்தல் தோல்வியடைந்தது: { $e }
+discover-json-error = கண்டுபிடித்தல் தோல்வியடைந்தது: { $url } இலிருந்து தவறான JSON: { $e }
+discover-missing-did = கண்டுபிடித்தல் தோல்வியடைந்தது: status.json இல் `did` புலம் இல்லை
+discover-invalid-did = கண்டுபிடித்தல் தோல்வியடைந்தது: `did` did:ma: உடன் தொடங்க வேண்டும், கிடைத்தது `{ $did }`
+discover-no-endpoint = கண்டுபிடித்தல் எச்சரிக்கை: status.json இல் `endpoint_id` இல்லை; DID மட்டும் சேமிக்கப்பட்டது
+discover-success = { $url } இல் ma கண்டுபிடிக்கப்பட்டது
+discover-did-line = DID: { $did }
+discover-alias-hint =   புனைப்பெயர் @間 உருவாக்கப்பட்டது — வெளியிடவும்: .my.identity:publish @間
+claim-success = { $did } க்கு இயக்க நேரம் கோரப்பட்டது
+claim-conflict = இயக்க நேரம் ஏற்கனவே மற்றொரு அடையாளத்தால் கோரப்பட்டுள்ளது
+claim-http-failed = கோரிக்கை தோல்வியடைந்தது: HTTP { $status }
+claim-error = கோரிக்கை தோல்வியடைந்தது: { $e }
+claim-no-session = உள்நுழையவில்லை; இயக்க நேரம் கோர முதலில் உள்நுழையவும்
+runtime-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
+
+# ── வினைச்சொற்கள் — ACL ──────────────────────────────────────────────────
+acl-reset = .my.acl மீட்டமைக்கப்பட்டது (முழுமையாக திறந்தது)
+acl-persist-error = சேமிப்பு பிழை: { $e }
+acl-no-verb = .my.acl க்கு `{ $verb }` வினைச்சொல் இல்லை
+
+# ── வினைச்சொற்கள் — அடையாளம் ──────────────────────────────────────────
+publish-usage = பயன்பாடு: .my.identity:publish <did-அல்லது-புனைப்பெயர்>
+
+# ── வினைச்சொற்கள் — ஆவணங்கள் ───────────────────────────────────────────
+doc-content-empty = { $path }.content காலியாக உள்ளது
+doc-save-first = { $path }.content காலியாக உள்ளது — முதலில் சேமிக்கவும்
+doc-missing-name = ஆவணப் பெயர் இல்லை
+doc-publish-usage = பயன்பாடு: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = பயன்பாடு: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = வெளியீடு { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
+doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
+doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
+doc-fetch-failed = பெறு { $cid }: { $e }
+doc-fetch-usage = பயன்பாடு: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid அமைக்கப்படவில்லை
+doc-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
+path-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
+
+# ── உதவி — தலைப்புகள் ─────────────────────────────────────────────────────
+help-header-zion = ── zion கட்டளைகள் ───────────────────────────────────────────────────────
+help-header-messaging = ── செய்தியிடல் ──────────────────────────────────────────────────────────
+help-header-focus = ── கவன முறை ─────────────────────────────────────────────────────────────
+help-header-config = ── உள்ளூர் அமைவு இலக்கணம் ────────────────────────────────────────────────
+help-header-common = ── பொதுவான பாதைகள் ──────────────────────────────────────────────────────
+help-header-inbox = ── உள்வரவு ──────────────────────────────────────────────────────────────
+help-header-documents = ── ஆவணங்கள் ────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── உதவி — zion கட்டளைகள் ────────────────────────────────────────────────
+help-cmd-help =   .help                        இந்த உரை
+help-cmd-clear =   .clear                       முனையம் அழிக்கவும்
+help-cmd-panic =   .panic                       கடைசி வழி — சிக்கலில் பயன்படுத்தவும்
+help-cmd-logout =   .logout                      வெளியேறவும்
+
+# ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
+help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID காட்டு (செய்தி இல்லை)
+help-msg-send =   @alias[:verb] body           நடிகருக்கு செய்தி / RPC அனுப்பவும்
+help-msg-fragment =   @alias#fragment[:verb] body  வெளிப்படையான DID துண்டுடன் அனுப்பவும்
+help-msg-escape =   \@name                       நேரடி @name (புனைப்பெயர் தேடல் இல்லை)
+
+# ── உதவி — கவன முறை ──────────────────────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       நடிகரில் கவனம் செலுத்தவும் (வரியுரை மாறும்)
+help-focus-clear =   .use                         கவனம் அழிக்கவும்
+
+# ── உதவி — அமைவு இலக்கணம் ────────────────────────────────────────────────
+help-config-get =   .path                        இலை மதிப்பு பெறவும் அல்லது துணைமரம் பட்டியலிடவும்
+help-config-filter =   .path value                  மதிப்பால் வடிகட்டவும்
+help-config-set =   .path: value                 இலை அமைக்கவும்
+help-config-delete =   .path:                       இலை அல்லது துணைமரம் நீக்கவும்
+help-config-verb =   .path:verb [args]            உள்ளூர் வினைச்சொல் அழைக்கவும்
+
+# ── உதவி — பொதுவான பாதைகள் ──────────────────────────────────────────────
+help-my =   .my                          அனைத்து தனிப்பட்ட அமைவுகளை காட்டவும்
+help-aliases =   .my.aliases                  புனைப்பெயர்கள் பட்டியல்
+help-aliases-set =   .my.aliases.<name>: <did>    புனைப்பெயர் சேர்/புதுப்பிக்கவும்
+help-aliases-del =   .my.aliases.<name>:          புனைப்பெயர் நீக்கவும்
+help-runtime-discover =   .my.runtime:discover          உள்ளூர் இயக்க நேரம் கண்டுபிடிக்கவும் மற்றும் @間 உருவாக்கவும்
+help-runtime-claim =   .my.runtime:claim             உங்கள் DID உடன் இயக்க நேரம் கோரவும்
+help-identity =   .my.identity                 அடையாள அமைவு காட்டவும்
+help-identity-did =   .my.identity.did             உங்கள் DID காட்டவும் (படிக்க மட்டும்)
+help-identity-publish =   .my.identity:publish @pub    வெளியீட்டு சேவை மூலம் DID வெளியிடவும்
+help-config-path =   .config                      அனைத்து .config.* உள்ளீடுகளை காட்டவும்
+
+# ── உதவி — உள்வரவு ───────────────────────────────────────────────────────
+help-inbox =   .my.inbox                    உள்வரவு பட்டியல் (துணைமர காட்சி)
+help-inbox-n =   .my.inbox.N                  உள்ளீடு N இன் புலங்கள் காட்டவும்
+help-inbox-from =   .my.inbox.N.from             உள்ளீடு N இன் அனுப்புவோர் DID
+help-inbox-reply =   .my.inbox.N:reply [body]     பதில் அனுப்பவும் (உள்ளடக்கம் இல்லை — திருத்தி திறக்கும்)
+help-inbox-open =   .my.inbox.N:open             படிக்க மட்டும் திருத்தியில் உள்ளடக்கம் திறக்கவும்
+help-inbox-del =   .my.inbox.N:                 உள்ளீடு N நீக்கவும்
+help-inbox-delall =   .my.inbox:                   அனைத்து உள்வரவு உள்ளீடுகளை நீக்கவும்
+help-inbox-flush =   .my.inbox:flush              அனைத்து உள்ளீடுகளை முனையத்தில் அச்சிடவும்
+help-inbox-traverse =   .my.inbox.N.sender.<field>   அனுப்புவோர் DID ஆவணத்தை சோம்பலாக ஆராயவும்
+
+# ── உதவி — ஆவணங்கள் ─────────────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           சேமித்த உள்ளடக்கத்துடன் திருத்தி திறக்கவும்
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     CID பெற்று, மதிப்பாய்வுக்கு மட்டும் திறக்கவும்
+help-doc-eval =   .my.doc.<name>:eval           சேமித்த உள்ளடக்கத்தை வரிவரியாக இயக்கவும்
+help-doc-publish =   .my.doc.<name>:publish @pub   கச்சா blob ஆக சேமிக்கவும் (எந்த வகையும்)
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  YAML ஐ DAG-CBOR IPLD முனையாக சேமிக்கவும்
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
+help-doc-cid =   .my.doc.<name>:cid            சேமித்த CID காட்டவும்
+help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவும்
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = கிடைக்கும் மொழிகள் (.my.i18n: <code> உடன் அமைக்கவும்):

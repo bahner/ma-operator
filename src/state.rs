@@ -17,31 +17,53 @@ pub enum PendingRpcEdit {
     /// `:entities.<name>:edit` — opens `EntityEdit` mode.
     Entity { target: String, entity_name: String },
     /// `:entities.<name>.<field>:edit` — opens `EntityFieldEdit` mode.
-    Field  { target: String, entity_name: String, field: String },
+    Field {
+        target: String,
+        entity_name: String,
+        field: String,
+    },
+    /// `:acl:edit` — opens `RuntimeAclEdit` mode.
+    Acl { target: String },
 }
 
 impl PendingRpcEdit {
     /// Return the `EditorMode` to use when the reply arrives.
     pub fn into_editor_mode(self, doc_path: String) -> (String, EditorMode) {
         match self {
-            Self::Entity { target, entity_name } => (
+            Self::Entity {
+                target,
+                entity_name,
+            } => (
                 doc_path,
-                EditorMode::EntityEdit { target, entity_name },
+                EditorMode::EntityEdit {
+                    target,
+                    entity_name,
+                },
             ),
-            Self::Field { target, entity_name, field } => (
+            Self::Field {
+                target,
+                entity_name,
+                field,
+            } => (
                 doc_path,
-                EditorMode::EntityFieldEdit { target, entity_name, field },
+                EditorMode::EntityFieldEdit {
+                    target,
+                    entity_name,
+                    field,
+                },
             ),
+            Self::Acl { target } => (doc_path, EditorMode::RuntimeAclEdit { target }),
         }
     }
 
     /// Config sub-path used as the `doc_path` label in the editor.
     pub fn doc_path(&self) -> String {
         match self {
-            Self::Entity { entity_name, .. } =>
-                format!(".my.entities.{entity_name}"),
-            Self::Field { entity_name, field, .. } =>
-                format!(".my.entities.{entity_name}.{field}"),
+            Self::Entity { entity_name, .. } => format!(".my.entities.{entity_name}"),
+            Self::Field {
+                entity_name, field, ..
+            } => format!(".my.entities.{entity_name}.{field}"),
+            Self::Acl { .. } => ":acl".to_string(),
         }
     }
 }
@@ -87,6 +109,7 @@ pub struct AppState {
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
     entry_counter: RwSignal<u64>,
+    pub lang: RwSignal<String>,
 }
 
 impl AppState {
@@ -101,6 +124,7 @@ impl AppState {
             pending_rpc_edits: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
+            lang: RwSignal::new("en".to_string()),
         }
     }
 

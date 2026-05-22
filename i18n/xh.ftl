@@ -1,0 +1,190 @@
+# zion — isiXhosa
+lang-name = isiXhosa
+
+# ── Iphepha lokungena ─────────────────────────────────────────────────────
+tab-login = ngena
+tab-new-identity = ubunjani obutsha
+tab-import = ngenisa
+label-passphrase = igama elinzulazulu
+label-username = igama lomsebenzisi
+label-confirm-passphrase = qinisekisa igama elinzulazulu
+btn-login = ngena
+btn-export = khipha
+btn-generate = yila
+passphrase-warning = Ukulahlekelwa ligama elinzulazulu = ukulahlekelwa ubunjani. Akukho buyiselwa.
+import-help = Khetha ifayile .zion.json ekhishiweyo. Iphakheji igciniwe ngokhuselo.
+status-unlocking = ivulwa...
+status-generating = ubunjani buyilwa...
+status-reading-file = ifayile ifundwa...
+status-imported = '{ $name }' ingenisiwe — jika kwithebhu yokungena
+error-wrong-passphrase = igama elinzulazulu aliho: { $e }
+error-identity-not-found = ubunjani '{ $name }' bufumanekanga
+error-username-required = igama lomsebenzisi liyafuneka
+error-passphrase-required = igama elinzulazulu liyafuneka
+error-passphrases-no-match = amagama elinzulazulu awafani
+
+# ── Imiyalezo yenkqubo ye-terminal ────────────────────────────────────────
+msg-logged-in = zion v{ $version } — ungene njengo { $username }
+msg-type-help = Chwetheza .help ukufumana uluhlu lwemiyalelo.
+msg-connecting = iyaxhuma ku-iroh...
+msg-iroh-ready = i-endpoint ye-iroh ilungele
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ ivalelwe [{ $cap }]: { $from }
+msg-focus-cleared = ukugxila kucinyiwe
+msg-focusing = ukugxila ku-{ $did } njengo { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = { $path } icinyiwe ({ $count } iingeniso)
+msg-read-only = { $path } ifundwa kuphela
+msg-subtree-set = { $path } yisihlahla; ikhanyele ukusetha
+msg-ancestor-leaf = okhokho base-{ $path } ligqabi; ikhanyele ukugquma
+msg-key-not-found = isitshixo safumaneka: { $path }
+msg-no-match = akukho ofanayo
+msg-link-not-connected = impazamo yokulanda ixhuma: akuxhunyiwe
+msg-link-fetch-error = impazamo yokulanda ixhuma: { $e }
+msg-link-key-not-found = isitshixo `{ $key }` safumaneka kwimveliso yexhumaniso
+
+# ── Ukuqinisekiswa kwegama eligunyaziweyo ─────────────────────────────────
+err-alias-name-empty = igama legama elikhawulezayo alikwazi ukuba ngenaluto
+err-alias-has-fragment = amagama amafutshane awakwazi ukuba ne-'#'
+err-alias-value-fragment = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwe-fragment)
+err-alias-value-path = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwepath)
+err-alias-not-did = ixabiso legama elikhawulezayo kufuneka liqale nge-did:ma:
+err-unknown-alias = igama elikhawulezayo elingaziwa: @{ $name }
+err-bare-did = kulindele bare did:ma:<ipns> (ngaphandle kwe-fragment okanye path), ifumene { $did }
+
+# ── Umhleli ───────────────────────────────────────────────────────────────
+btn-save = gcina
+btn-eval = yenza
+btn-cancel = rhoxisa
+btn-close = vala
+btn-reply = phendula
+btn-publish = shicilela
+msg-reply-sent = impendulo ithunyelwe
+msg-reply-failed = impendulo yehlulekile: { $e }
+msg-entity-publish-sent = entity { $name }: ukushicilela kuthunyelwe
+msg-entity-publish-failed = ukushicilela i-entity kuhlulekile: { $e }
+msg-field-publish-sent = entity { $name }.{ $field }: ukushicilela kuthunyelwe
+msg-field-publish-failed = ukushicilela intsimi kuhlulekile: { $e }
+msg-acl-publish-sent = runtime ACL: ukushicilela kuthunyelwe
+msg-acl-publish-failed = ukushicilela runtime ACL kuhlulekile: { $e }
+msg-yaml-error = impazamo ye-YAML: { $e }
+msg-editor-saved = { $path }:gcina
+msg-fetch-review = { $cid } ilandwe — phinda ujolise ngaphambi kokuyenza
+msg-fetch-failed = ukupheka { $cid }: { $e }
+
+# ── Izenzo — isibhengezo sokufika ─────────────────────────────────────────
+inbox-empty = isibhengezo sokufika singenaluto
+inbox-entry-not-found = ingeniso yesibhengezo { $n } ayifumaneki
+inbox-no-message-id = ingeniso yesibhengezo { $n } ayinayo message_id
+inbox-no-verb = akukho senzo `{ $verb }` sengeniso yesibhengezo { $n }
+
+# ── Izenzo — ixesha lokusebenza ───────────────────────────────────────────
+discover-fetch-failed = ukubona kuhluleke ku-{ $url }: { $e }
+discover-json-error = ukubona kuhluleke: JSON engalunganga evela ku-{ $url }: { $e }
+discover-missing-did = ukubona kuhluleke: status.json inzahluko `did` ingekho
+discover-invalid-did = ukubona kuhluleke: `did` kufuneka iqale nge-did:ma:, ifumene `{ $did }`
+discover-no-endpoint = isexwayiso sokubona: `endpoint_id` ayikho ku-status.json; DID kuphela igciniwe
+discover-success = ma ifunyenwe ku-{ $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   igama elikhawulezayo @間 liyilwe — shicilela nge: .my.identity:publish @間
+claim-success = Runtime ibiselwe ku-{ $did }
+claim-conflict = Runtime isebiselwe ubunjani obuphela
+claim-http-failed = isicelo sihlulekile: HTTP { $status }
+claim-error = isicelo sihlulekile: { $e }
+claim-no-session = akungeniwe; ngena kuqala ukufumana i-runtime
+runtime-no-verb = akukho senzo `{ $verb }` saku-{ $path }
+
+# ── Izenzo — ACL ──────────────────────────────────────────────────────────
+acl-reset = i-.my.acl isetwe kabusha (ivuliwe ngokupheleleyo)
+acl-persist-error = impazamo yokugcina: { $e }
+acl-no-verb = akukho senzo `{ $verb }` se-.my.acl
+
+# ── Izenzo — ubunjani ─────────────────────────────────────────────────────
+publish-usage = ukusetyenziswa: .my.identity:publish <did-okanye-igama-elikhawulezayo>
+
+# ── Izenzo — imibhalo ─────────────────────────────────────────────────────
+doc-content-empty = { $path }.content ingenaluto
+doc-save-first = { $path }.content ingenaluto — gcina kuqala
+doc-missing-name = igama lemibhalo lilahlekile
+doc-publish-usage = ukusetyenziswa: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = ukusetyenziswa: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = ukushicilela { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
+doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
+doc-fetch-done = { $cid } ilandwe → { $path }.content (ayenziwanga)
+doc-fetch-failed = ukupheka { $cid }: { $e }
+doc-fetch-usage = ukusetyenziswa: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid ayisetiwe
+doc-no-verb = akukho senzo `{ $verb }` saku-{ $path }
+path-no-verb = akukho senzo `{ $verb }` saku-{ $path }
+
+# ── Uncedo — iintloko ─────────────────────────────────────────────────────
+help-header-zion = ── imiyalelo ye-zion ────────────────────────────────────────────────────────
+help-header-messaging = ── ukuthumela ───────────────────────────────────────────────────────────
+help-header-focus = ── imodi yokugxila ───────────────────────────────────────────────────────
+help-header-config = ── inkqubo yokuphatha indawo ─────────────────────────────────────────────
+help-header-common = ── iindlela ezisetshenziswa kakhulu ───────────────────────────────────────
+help-header-inbox = ── isibhengezo sokufika ──────────────────────────────────────────────────
+help-header-documents = ── imibhalo ─────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── Uncedo — imiyalelo ye-zion ────────────────────────────────────────────
+help-cmd-help =   .help                        lo mbhalo
+help-cmd-clear =   .clear                       coca i-terminal
+help-cmd-panic =   .panic                       indlela yokugqibela — sebenzisa xa uneengxaki
+help-cmd-logout =   .logout                      phuma
+
+# ── Uncedo — ukuthumela ───────────────────────────────────────────────────
+help-msg-echo =   @alias                       bonisa DID ephumliwe (akukho imiyalezo ithunyelwayo)
+help-msg-send =   @alias[:verb] body           thumela imiyalezo / RPC ku-actor
+help-msg-fragment =   @alias#fragment[:verb] body  thumela nge-DID fragment ecacileyo
+help-msg-escape =   \@name                       @name ngokunyaniseka (akukho uphendulo lwegama elikhawulezayo)
+
+# ── Uncedo — imodi yokugxila ─────────────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       gxila ku-actor (iguqula i-prompt)
+help-focus-clear =   .use                         susa ukugxila
+
+# ── Uncedo — inkqubo yokuphatha ──────────────────────────────────────────
+help-config-get =   .path                        fumana ixabiso legqabi okanye uluhlu lwesihlahla
+help-config-filter =   .path value                  cela impendulo (hlunga ngenanani)
+help-config-set =   .path: value                 setha igqabi
+help-config-delete =   .path:                       cima igqabi okanye isihlahla
+help-config-verb =   .path:verb [args]            biza isenzo sendawo
+
+# ── Uncedo — iindlela ezisetshenziswa kakhulu ────────────────────────────
+help-my =   .my                          bonisa zonke izikhokelo zobunjani
+help-aliases =   .my.aliases                  bala amagama amafutshane
+help-aliases-set =   .my.aliases.<name>: <did>    yongeza/buyekeza igama elikhawulezayo (bare DID, ngaphandle kwe-#fragment)
+help-aliases-del =   .my.aliases.<name>:          susa igama elikhawulezayo
+help-runtime-discover =   .my.runtime:discover          fumana i-runtime yendawo yile kwaye yila igama elikhawulezayo @間
+help-runtime-claim =   .my.runtime:claim             zimisele nge-runtime nge-DID yakho
+help-identity =   .my.identity                 bonisa izikhokelo zobunjani
+help-identity-did =   .my.identity.did             bonisa i-DID yakho (ukufunda kuphela)
+help-identity-publish =   .my.identity:publish @pub    shicilela i-DID ngosizo lweshishino loshicilelo
+help-config-path =   .config                      bonisa zonke iingeniso ze-.config.*
+
+# ── Uncedo — isibhengezo sokufika ────────────────────────────────────────
+help-inbox =   .my.inbox                    bala isibhengezo sokufika (ukujonga isihlahla)
+help-inbox-n =   .my.inbox.N                  bonisa iintsimi zengeniso N
+help-inbox-from =   .my.inbox.N.from             DID yomthumeli wengeniso N
+help-inbox-reply =   .my.inbox.N:reply [body]     thumela impendulo (vula umhleli xa kungekho mzimba)
+help-inbox-open =   .my.inbox.N:open             vula okuqukethweyo ukufunda kuphela kumhleli
+help-inbox-del =   .my.inbox.N:                 cima ingeniso N
+help-inbox-delall =   .my.inbox:                   cima zonke iingeniso zesibhengezo
+help-inbox-flush =   .my.inbox:flush              printa zonke iingeniso ku-terminal
+help-inbox-traverse =   .my.inbox.N.sender.<field>   hamba imveliso ye-DID yomthumeli ngobulumko
+
+# ── Uncedo — imibhalo ────────────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           vula umhleli nokuqukethweyo okugciniweyo
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     landa i-CID, vula ukujonga kuphela
+help-doc-eval =   .my.doc.<name>:eval           yenza okuqukethweyo okugciniweyo umgca ngomgca
+help-doc-publish =   .my.doc.<name>:publish @pub   gcina njenge-blob engashintshiwe (uhlobo oluluphi)
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  gcina i-YAML njenge-node ye-IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    ngenisa okuqukethweyo kwe-CID (ayenziwanga)
+help-doc-cid =   .my.doc.<name>:cid            bonisa i-CID egciniweyo
+help-doc-del =   .my.doc.<name>:              cima umbhalo
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Iilwimi ezikhona (seta nge .my.i18n: <code>):

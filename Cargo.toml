@@ -51,6 +51,7 @@ web-sys = { version = "0.3", features = [
     "IdbCursorWithValue",
     "IdbVersionChangeEvent",
     "Navigator",
+    "Response",
 ] }
 js-sys = "0.3"
 serde = { version = "1", features = ["derive"] }

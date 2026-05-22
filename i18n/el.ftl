@@ -1,0 +1,183 @@
+# zion — Ελληνικά
+lang-name = Ελληνικά
+
+# ── Σελίδα σύνδεσης ───────────────────────────────────────────────────────
+tab-login = σύνδεση
+tab-new-identity = νέα ταυτότητα
+tab-import = εισαγωγή
+label-passphrase = φράση πρόσβασης
+label-username = όνομα χρήστη
+label-confirm-passphrase = επιβεβαίωση φράσης πρόσβασης
+btn-login = σύνδεση
+btn-export = εξαγωγή
+btn-generate = δημιουργία
+passphrase-warning = Χαμένη φράση πρόσβασης = χαμένη ταυτότητα. Η ανάκτηση δεν είναι δυνατή.
+import-help = Επιλέξτε εξαγόμενο αρχείο .zion.json. Το πακέτο παραμένει κρυπτογραφημένο.
+status-unlocking = ξεκλείδωμα...
+status-generating = δημιουργία ταυτότητας...
+status-reading-file = ανάγνωση αρχείου...
+status-imported = το '{ $name }' εισήχθη — μεταβείτε στην καρτέλα Σύνδεση
+error-wrong-passphrase = λανθασμένη φράση πρόσβασης: { $e }
+error-identity-not-found = η ταυτότητα '{ $name }' δεν βρέθηκε
+error-username-required = το όνομα χρήστη είναι υποχρεωτικό
+error-passphrase-required = η φράση πρόσβασης είναι υποχρεωτική
+error-passphrases-no-match = οι φράσεις πρόσβασης δεν ταιριάζουν
+
+# ── Μηνύματα συστήματος τερματικού ───────────────────────────────────────
+msg-logged-in = zion v{ $version } — συνδεδεμένοι ως { $username }
+msg-type-help = Πληκτρολογήστε .help για λίστα εντολών.
+msg-connecting = σύνδεση στο iroh...
+msg-iroh-ready = τελικό σημείο iroh έτοιμο
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
+msg-focus-cleared = η εστίαση διαγράφηκε
+msg-focusing = εστίαση σε { $did } ως { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = διαγράφηκε { $path } ({ $count } καταχωρήσεις)
+msg-read-only = { $path } είναι μόνο για ανάγνωση
+msg-subtree-set = { $path } είναι υποδέντρο· η ρύθμιση απορρίφθηκε
+msg-ancestor-leaf = ένας πρόγονος του { $path } είναι φύλλο· η σκίαση απορρίφθηκε
+msg-key-not-found = το κλειδί δεν βρέθηκε: { $path }
+msg-no-match = δεν βρέθηκε αποτέλεσμα
+msg-link-not-connected = σφάλμα ανάκτησης συνδέσμου: δεν υπάρχει σύνδεση
+msg-link-fetch-error = σφάλμα ανάκτησης συνδέσμου: { $e }
+msg-link-key-not-found = το κλειδί `{ $key }` δεν βρέθηκε στο συνδεδεμένο έγγραφο
+
+# ── Επαλήθευση ψευδωνύμων ─────────────────────────────────────────────────
+err-alias-name-empty = το όνομα ψευδωνύμου δεν μπορεί να είναι κενό
+err-alias-has-fragment = το όνομα ψευδωνύμου δεν μπορεί να περιέχει '#'
+err-alias-value-fragment = η τιμή ψευδωνύμου πρέπει να είναι καθαρό did:ma:<ipns> (χωρίς τμήμα)
+err-alias-value-path = η τιμή ψευδωνύμου πρέπει να είναι καθαρό did:ma:<ipns> (χωρίς διαδρομή)
+err-alias-not-did = η τιμή ψευδωνύμου πρέπει να αρχίζει με did:ma:
+err-unknown-alias = άγνωστο ψευδώνυμο: @{ $name }
+err-bare-did = αναμένεται καθαρό did:ma:<ipns> (χωρίς τμήμα ή διαδρομή), ελήφθη { $did }
+
+# ── Επεξεργαστής ──────────────────────────────────────────────────────────
+btn-save = Αποθήκευση
+btn-eval = Εκτέλεση
+btn-cancel = Ακύρωση
+btn-close = Κλείσιμο
+btn-reply = Απάντηση
+btn-publish = Δημοσίευση
+msg-reply-sent = η απάντηση στάλθηκε
+msg-reply-failed = αποστολή απάντησης απέτυχε: { $e }
+msg-entity-publish-sent = οντότητα { $name }: δημοσίευση εστάλη
+msg-entity-publish-failed = δημοσίευση οντότητας απέτυχε: { $e }
+msg-field-publish-sent = οντότητα { $name }.{ $field }: δημοσίευση εστάλη
+msg-field-publish-failed = δημοσίευση πεδίου απέτυχε: { $e }
+msg-acl-publish-sent = ACL περιβάλλοντος εκτέλεσης: δημοσίευση εστάλη
+msg-acl-publish-failed = δημοσίευση ACL περιβάλλοντος εκτέλεσης απέτυχε: { $e }
+msg-yaml-error = σφάλμα YAML: { $e }
+msg-editor-saved = { $path }:αποθήκευση
+msg-fetch-review = { $cid } ανακτήθηκε — ελέγξτε πριν την εκτέλεση
+msg-fetch-failed = ανάκτηση { $cid }: { $e }
+
+# ── Ρήματα — εισερχόμενα ─────────────────────────────────────────────────
+inbox-empty = τα εισερχόμενα είναι κενά
+inbox-entry-not-found = η καταχώρηση { $n } των εισερχομένων δεν βρέθηκε
+inbox-no-message-id = η καταχώρηση { $n } των εισερχομένων δεν έχει message_id
+inbox-no-verb = δεν υπάρχει ρήμα `{ $verb }` για την καταχώρηση { $n } των εισερχομένων
+
+# ── Ρήματα — περιβάλλον εκτέλεσης ───────────────────────────────────────
+discover-fetch-failed = η ανακάλυψη απέτυχε στο { $url }: { $e }
+discover-json-error = η ανακάλυψη απέτυχε: μη έγκυρο JSON από { $url }: { $e }
+discover-missing-did = η ανακάλυψη απέτυχε: το status.json δεν έχει το υποχρεωτικό πεδίο `did`
+discover-invalid-did = η ανακάλυψη απέτυχε: αναμένεται `did` που αρχίζει με did:ma:, ελήφθη `{ $did }`
+discover-no-endpoint = προειδοποίηση ανακάλυψης: το `endpoint_id` απουσιάζει στο status.json· αποθηκεύτηκε μόνο το DID
+discover-success = το ma ανακαλύφθηκε στο { $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   ψευδώνυμο @間 δημιουργήθηκε — δημοσιεύστε με: .my.identity:publish @間
+claim-success = Το περιβάλλον εκτέλεσης διεκδικήθηκε για { $did }
+claim-conflict = Το περιβάλλον εκτέλεσης έχει ήδη διεκδικηθεί από άλλη ταυτότητα
+claim-http-failed = η διεκδίκηση απέτυχε: HTTP { $status }
+claim-error = η διεκδίκηση απέτυχε: { $e }
+claim-no-session = δεν έχετε συνδεθεί· συνδεθείτε πρώτα για να διεκδικήσετε το περιβάλλον εκτέλεσης
+runtime-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
+
+# ── Ρήματα — έλεγχος πρόσβασης ───────────────────────────────────────────
+acl-reset = .my.acl επαναφέρθηκε (πλήρως ανοικτό)
+acl-persist-error = σφάλμα αποθήκευσης: { $e }
+acl-no-verb = δεν υπάρχει ρήμα `{ $verb }` για .my.acl
+
+# ── Ρήματα — ταυτότητα ────────────────────────────────────────────────────
+publish-usage = χρήση: .my.identity:publish <did-ή-ψευδώνυμο>
+
+# ── Ρήματα — έγγραφα ─────────────────────────────────────────────────────
+doc-content-empty = { $path }.content είναι κενό
+doc-save-first = { $path }.content είναι κενό — αποθηκεύστε πρώτα
+doc-missing-name = λείπει το όνομα εγγράφου
+doc-publish-usage = χρήση: .my.doc.<όνομα>:publish <εκδότης>
+doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>:publish-ipld <εκδότης>
+doc-publish-failed = δημοσίευση { $path }: { $e }
+doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
+doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
+doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
+doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
+doc-fetch-failed = ανάκτηση { $cid }: { $e }
+doc-fetch-usage = χρήση: .my.doc.<όνομα>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid δεν έχει οριστεί
+doc-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
+path-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
+
+# ── Κείμενο βοήθειας — κεφαλίδες ─────────────────────────────────────────
+help-header-zion = ── εντολές zion ───────────────────────────────────────────────────────────
+help-header-messaging = ── ανταλλαγή μηνυμάτων ───────────────────────────────────────────────────
+help-header-focus = ── λειτουργία εστίασης ───────────────────────────────────────────────────
+help-header-config = ── τοπική γραμματική διαμόρφωσης ────────────────────────────────────
+help-header-common = ── συνήθεις διαδρομές ────────────────────────────────────────────────────
+help-header-inbox = ── εισερχόμενα ───────────────────────────────────────────────────────────
+help-header-documents = ── έγγραφα ──────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+help-cmd-help =   .help                        αυτό το κείμενο
+help-cmd-clear =   .clear                       εκκαθάριση τερματικού
+help-cmd-panic =   .panic                       τελευταία λύση — χρησιμοποιήστε αν αντιμετωπίζετε πρόβλημα
+help-cmd-logout =   .logout                      αποσύνδεση
+
+help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID (δεν αποστέλλεται μήνυμα)
+help-msg-send =   @alias[:verb] body           αποστολή μηνύματος / RPC σε ηθοποιό
+help-msg-fragment =   @alias#fragment[:verb] body  αποστολή σε ψευδώνυμο με ρητό τμήμα DID
+help-msg-escape =   \@name                       κυριολεκτικό @name (χωρίς αναζήτηση ψευδωνύμου)
+
+help-focus-set =   .use @alias [as @name]       εστίαση σε ηθοποιό (αλλάζει την προτροπή)
+help-focus-clear =   .use                         εκκαθάριση εστίασης
+
+help-config-get =   .path                        λήψη τιμής φύλλου ή καταγραφή υποδέντρου
+help-config-filter =   .path value                  φίλτρο αναζήτησης (φιλτράρισμα κατά τιμή)
+help-config-set =   .path: value                 ρύθμιση φύλλου
+help-config-delete =   .path:                       διαγραφή φύλλου ή υποδέντρου
+help-config-verb =   .path:verb [args]            εκτέλεση τοπικού ρήματος
+
+help-my =   .my                          εμφάνιση όλης της προσωπικής διαμόρφωσης
+help-aliases =   .my.aliases                  καταγραφή ψευδωνύμων
+help-aliases-set =   .my.aliases.<name>: <did>    προσθήκη/ενημέρωση ψευδωνύμου (καθαρό DID, χωρίς #τμήμα)
+help-aliases-del =   .my.aliases.<name>:          αφαίρεση ψευδωνύμου
+help-runtime-discover =   .my.runtime:discover          ανακάλυψη τοπικού περιβάλλοντος εκτέλεσης και δημιουργία ψευδωνύμου @間
+help-runtime-claim =   .my.runtime:claim             διεκδίκηση περιβάλλοντος εκτέλεσης με το DID σας
+help-identity =   .my.identity                 εμφάνιση διαμόρφωσης ταυτότητας
+help-identity-did =   .my.identity.did             εμφάνιση ιδίου DID (μόνο ανάγνωση)
+help-identity-publish =   .my.identity:publish @pub    δημοσίευση ιδίου DID μέσω υπηρεσίας εκδότη
+help-config-path =   .config                      εμφάνιση όλων των καταχωρήσεων .config.*
+
+help-inbox =   .my.inbox                    καταγραφή εισερχομένων (προβολή υποδέντρου)
+help-inbox-n =   .my.inbox.N                  εμφάνιση πεδίων καταχώρησης N
+help-inbox-from =   .my.inbox.N.from             DID αποστολέα για καταχώρηση N
+help-inbox-reply =   .my.inbox.N:reply [body]     αποστολή απάντησης (ανοίγει επεξεργαστή χωρίς σώμα)
+help-inbox-open =   .my.inbox.N:open             άνοιγμα περιεχομένου σε επεξεργαστή μόνο ανάγνωσης
+help-inbox-del =   .my.inbox.N:                 διαγραφή καταχώρησης N
+help-inbox-delall =   .my.inbox:                   διαγραφή όλων των καταχωρήσεων εισερχομένων
+help-inbox-flush =   .my.inbox:flush              εκτύπωση όλων των καταχωρήσεων στο τερματικό
+help-inbox-traverse =   .my.inbox.N.sender.<πεδίο>  τεμπέλικη διάσχιση εγγράφου DID αποστολέα
+
+help-doc-edit =   .my.doc.<όνομα>:edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο
+help-doc-edit-cid =   .my.doc.<όνομα>:edit <cid>     ανάκτηση CID, άνοιγμα για αναθεώρηση
+help-doc-eval =   .my.doc.<όνομα>:eval           εκτέλεση αποθηκευμένου περιεχομένου γραμμή-γραμμή
+help-doc-publish =   .my.doc.<όνομα>:publish @pub   αποθήκευση ως ακατέργαστο blob (όλοι οι τύποι)
+help-doc-publish-ipld =   .my.doc.<όνομα>:publish-ipld @pub  αποθήκευση YAML ως δομημένο κόμβο DAG-CBOR IPLD
+help-doc-fetch =   .my.doc.<όνομα>:fetch <cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
+help-doc-cid =   .my.doc.<όνομα>:cid            εμφάνιση αποθηκευμένου CID
+help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγράφου
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Διαθέσιμες γλώσσες (ορισμός με .my.i18n: <code>):

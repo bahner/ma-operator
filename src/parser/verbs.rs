@@ -62,8 +62,14 @@ pub fn dispatch_verb(
         for n in &indices {
             let base = format!(".my.inbox.{n}");
             let from = cfg.get(&format!("{base}.from")).unwrap_or("?").to_string();
-            let ct = cfg.get(&format!("{base}.content_type")).unwrap_or("").to_string();
-            let body = cfg.get(&format!("{base}.content")).unwrap_or("").to_string();
+            let ct = cfg
+                .get(&format!("{base}.content_type"))
+                .unwrap_or("")
+                .to_string();
+            let body = cfg
+                .get(&format!("{base}.content"))
+                .unwrap_or("")
+                .to_string();
             state.push_output(format!("[{n}] from: {from}  ({ct})"));
             for line in body.lines() {
                 state.push_output(format!("    {line}"));
@@ -101,13 +107,12 @@ pub fn dispatch_verb(
 
                 if args.is_empty() {
                     // No body — open editor with Reply mode.
-                    show_editor.set(Some(
-                        EditorContext::new(base, "")
-                            .with_mode(crate::views::editor::EditorMode::Reply {
-                                to: from,
-                                reply_to_id,
-                            }),
-                    ));
+                    show_editor.set(Some(EditorContext::new(base, "").with_mode(
+                        crate::views::editor::EditorMode::Reply {
+                            to: from,
+                            reply_to_id,
+                        },
+                    )));
                 } else {
                     // Immediate send.
                     let body = args.join(" ");
@@ -118,10 +123,8 @@ pub fn dispatch_verb(
                         match transport::send_text_reply(&to, &body, &reply_to_id).await {
                             Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
                             Err(e) => {
-                                state2.resolve_command_by_id(
-                                    cmd_id,
-                                    CommandStatus::Error(e.clone()),
-                                );
+                                state2
+                                    .resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                                 state2.push_error(tf("msg-reply-failed", &[("e", &e)]));
                             }
                         }
@@ -148,7 +151,12 @@ pub fn dispatch_verb(
                 return Ok(());
             }
 
-            other => return Err(tf("inbox-no-verb", &[("verb", other), ("n", &n.to_string())])),
+            other => {
+                return Err(tf(
+                    "inbox-no-verb",
+                    &[("verb", other), ("n", &n.to_string())],
+                ))
+            }
         }
     }
 
@@ -216,12 +224,8 @@ pub fn dispatch_verb(
                         let username = sess.username.clone();
                         let cfg = config.get_untracked();
                         leptos::task::spawn_local(async move {
-                            if let Err(e) =
-                                crate::config::persist_config(&username, &cfg).await
-                            {
-                                web_sys::console::error_1(
-                                    &format!("persist error: {e}").into(),
-                                );
+                            if let Err(e) = crate::config::persist_config(&username, &cfg).await {
+                                web_sys::console::error_1(&format!("persist error: {e}").into());
                             }
                         });
                     }
@@ -289,7 +293,9 @@ pub fn dispatch_verb(
             }
             "" => {
                 // Delete: revert to open ACL.
-                config.update(|c| { c.delete(crate::acl::ACL_KEY); });
+                config.update(|c| {
+                    c.delete(crate::acl::ACL_KEY);
+                });
                 let cfg = config.get_untracked();
                 let username = use_context::<AppState>()
                     .unwrap_or_else(|| state.clone())
@@ -338,7 +344,7 @@ pub fn dispatch_verb(
         if doc_name.is_empty() {
             return Err("missing document name".into());
         }
-        let doc_path = path.to_string(); // e.g. ".my.documents.readme"
+        let doc_path = path.to_string(); // e.g. ".my.doc.readme"
 
         match verb {
             // :edit           — open with stored content (or empty)
@@ -374,7 +380,10 @@ pub fn dispatch_verb(
                                 ));
                             }
                             Err(e) => {
-                                state2.push_error(tf("msg-fetch-failed", &[("cid", &cid), ("e", &e)]));
+                                state2.push_error(tf(
+                                    "msg-fetch-failed",
+                                    &[("cid", &cid), ("e", &e)],
+                                ));
                             }
                         }
                     });
@@ -402,7 +411,7 @@ pub fn dispatch_verb(
             // Use :publish-ipld for YAML→DAG-CBOR structured storage.
             "publish" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.documents.<name>:publish <publisher>".into());
+                    return Err("usage: .my.doc.<name>:publish <publisher>".into());
                 }
                 let cfg = config.get_untracked();
                 let publisher = resolve_bare_did(&args[0], &cfg)?;
@@ -447,7 +456,7 @@ pub fn dispatch_verb(
             // structured IPLD node via dag_put — fields are traversable directly.
             "publish-ipld" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.documents.<name>:publish-ipld <publisher>".into());
+                    return Err("usage: .my.doc.<name>:publish-ipld <publisher>".into());
                 }
                 let cfg = config.get_untracked();
                 let publisher = resolve_bare_did(&args[0], &cfg)?;
@@ -493,7 +502,9 @@ pub fn dispatch_verb(
             "cid" => {
                 let cfg = config.get_untracked();
                 match cfg.get(&format!("{doc_path}.cid")) {
-                    Some(cid) => state.push_output(tf("doc-cid-value", &[("path", &doc_path), ("cid", cid)])),
+                    Some(cid) => {
+                        state.push_output(tf("doc-cid-value", &[("path", &doc_path), ("cid", cid)]))
+                    }
                     None => state.push_output(tf("doc-cid-not-set", &[("path", &doc_path)])),
                 }
                 Ok(())
@@ -502,7 +513,7 @@ pub fn dispatch_verb(
             // :fetch <cid> — import content, no editor, no execution
             "fetch" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.documents.<name>:fetch <cid>".into());
+                    return Err("usage: .my.doc.<name>:fetch <cid>".into());
                 }
                 let cid = args[0].clone();
                 let state2 = state.clone();
@@ -521,10 +532,7 @@ pub fn dispatch_verb(
                             ));
                         }
                         Err(e) => {
-                            state2.push_error(tf(
-                                "doc-fetch-failed",
-                                &[("cid", &cid), ("e", &e)],
-                            ));
+                            state2.push_error(tf("doc-fetch-failed", &[("cid", &cid), ("e", &e)]));
                         }
                     }
                 });
@@ -533,6 +541,14 @@ pub fn dispatch_verb(
 
             other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
         }
+    // ── .my.i18n:list ─────────────────────────────────────────────────────
+    } else if path == ".my.i18n" && verb == "list" {
+        let mut lines = vec![t("lang-list-header")];
+        for (code, name) in crate::i18n::SUPPORTED_LANGS {
+            lines.push(format!("  {code:<20} {name}"));
+        }
+        state.push_system(lines.join("\n"));
+        Ok(())
     } else {
         Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
     }
@@ -591,11 +607,9 @@ fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
             "verify the publisher DID document is published and contains a reachable endpoint",
         )
     } else if lower.contains("acl") || lower.contains("denied") || lower.contains("forbidden") {
-        (
-            "acl",
-            "ask the publisher operator to allow your DID in ACL",
-        )
-    } else if lower.contains("plugin") || lower.contains("handle_cast") || lower.contains(":error") {
+        ("acl", "ask the publisher operator to allow your DID in ACL")
+    } else if lower.contains("plugin") || lower.contains("handle_cast") || lower.contains(":error")
+    {
         (
             "runtime",
             "runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime",
@@ -656,8 +670,8 @@ async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {
     opts.set_method("POST");
     opts.set_body(&wasm_bindgen::JsValue::from_str(body));
     opts.set_headers(&headers);
-    let request = web_sys::Request::new_with_str_and_init(url, &opts)
-        .map_err(|e| format!("{e:?}"))?;
+    let request =
+        web_sys::Request::new_with_str_and_init(url, &opts).map_err(|e| format!("{e:?}"))?;
     let promise = window.fetch_with_request(&request);
     let resp_val = JsFuture::from(promise)
         .await

@@ -26,6 +26,8 @@ fn init_logging() {
 fn main() {
     init_logging();
     console_error_panic_hook::set_once();
-    i18n::init_from_browser();
-    leptos::mount::mount_to_body(app::App);
+    wasm_bindgen_futures::spawn_local(async {
+        i18n::init_from_browser().await;
+        leptos::mount::mount_to_body(app::App);
+    });
 }

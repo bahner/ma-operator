@@ -1,4 +1,5 @@
 # zion — Norsk bokmål
+lang-name = Norsk bokmål
 
 # ── Landingsside ──────────────────────────────────────────────────────────
 tab-login = logg inn
@@ -64,6 +65,8 @@ msg-entity-publish-sent = entitet { $name }: publisering sendt
 msg-entity-publish-failed = entitetspublisering feilet: { $e }
 msg-field-publish-sent = entitet { $name }.{ $field }: publisering sendt
 msg-field-publish-failed = feltpublisering feilet: { $e }
+msg-acl-publish-sent = runtime ACL: publisering sendt
+msg-acl-publish-failed = runtime ACL-publisering feilet: { $e }
 msg-yaml-error = YAML-feil: { $e }
 msg-editor-saved = { $path }:lagre
 msg-fetch-review = hentet { $cid } — gjennomgå før kjøring
@@ -103,15 +106,15 @@ publish-usage = bruk: .my.identity:publish <did-eller-alias>
 doc-content-empty = { $path }.content er tom
 doc-save-first = { $path }.content er tom — lagre først
 doc-missing-name = manglende dokumentnavn
-doc-publish-usage = bruk: .my.documents.<navn>:publish <utgiver>
-doc-publish-ipld-usage = bruk: .my.documents.<navn>:publish-ipld <utgiver>
+doc-publish-usage = bruk: .my.doc.<navn>:publish <utgiver>
+doc-publish-ipld-usage = bruk: .my.doc.<navn>:publish-ipld <utgiver>
 doc-publish-failed = publisering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publisering { $path }: { $e }
 doc-store-sent = lagringsforespørsel sendt ({ $id }) → { $publisher }; CID ankommer via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsforespørsel sendt ({ $id }) → { $publisher }; CID ankommer via RPC-svar
 doc-fetch-done = hentet { $cid } → { $path }.content (ikke kjørt)
 doc-fetch-failed = henting { $cid }: { $e }
-doc-fetch-usage = bruk: .my.documents.<navn>:fetch <cid>
+doc-fetch-usage = bruk: .my.doc.<navn>:fetch <cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid er ikke satt
 doc-no-verb = intet verb `{ $verb }` for { $path }
@@ -124,7 +127,7 @@ help-header-focus = ── fokusmodus ──────────────
 help-header-config = ── lokal konfigurasjonsgrammatikk ──────────────────────────────────────
 help-header-common = ── vanlige stier ─────────────────────────────────────────────────────────
 help-header-inbox = ── innboks ──────────────────────────────────────────────────────────────
-help-header-documents = ── dokumenter ───────────────────────────────────────────────────────────
+help-header-documents = ── dokumenter (.my.doc.*) ───────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Hjelpetekst — zion-kommandoer ─────────────────────────────────────────
@@ -174,11 +177,14 @@ help-inbox-flush =   .my.inbox:flush              skriv alle oppføringer til te
 help-inbox-traverse =   .my.inbox.N.sender.<felt>   traverser avsenderens DID-dokument lat
 
 # ── Hjelpetekst — dokumenter ──────────────────────────────────────────────
-help-doc-edit =   .my.documents.<navn>:edit           åpne redaktør med lagret innhold
-help-doc-edit-cid =   .my.documents.<navn>:edit <cid>     hent CID, åpne for gjennomgang
-help-doc-eval =   .my.documents.<navn>:eval           kjør lagret innhold linje for linje
-help-doc-publish =   .my.documents.<navn>:publish @pub   lagre som rå blob (alle typer)
-help-doc-publish-ipld =   .my.documents.<navn>:publish-ipld @pub  lagre YAML som strukturert DAG-CBOR IPLD-node
-help-doc-fetch =   .my.documents.<navn>:fetch <cid>    importer CID-innhold (ingen kjøring)
-help-doc-cid =   .my.documents.<navn>:cid            vis lagret CID
-help-doc-del =   .my.documents.<navn>:              slett dokument
+help-doc-edit =   .my.doc.<navn>:edit           åpne redigator med lagret innhold
+help-doc-edit-cid =   .my.doc.<navn>:edit <cid>     hent CID, åpne for gjennomgang
+help-doc-eval =   .my.doc.<navn>:eval           kjør lagret innhold linje for linje
+help-doc-publish =   .my.doc.<navn>:publish @pub   lagre som rå blob (alle typer)
+help-doc-publish-ipld =   .my.doc.<navn>:publish-ipld @pub  lagre YAML som strukturert DAG-CBOR IPLD-node
+help-doc-fetch =   .my.doc.<navn>:fetch <cid>    importer CID-innhold (ingen kjøring)
+help-doc-cid =   .my.doc.<navn>:cid            vis lagret CID
+help-doc-del =   .my.doc.<navn>:              slett dokument
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Tilgjengelige språk (angi med .my.i18n: <code>):

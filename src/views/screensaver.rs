@@ -24,10 +24,8 @@ const HUD_COLORS: &[&str] = &[
 ];
 
 const ENTITY_FRAGMENTS: &[&str] = &[
-    "#fortune", "#ping",    "#root",   "#sign",   "#enc",
-    "#chat",    "#rpc",     "#ipfs",   "#store",  "#fetch",
-    "#publish", "#inbox",   "#key",    "#doc",    "#node",
-    "#emit",    "#recv",    "#auth",   "#hash",   "#seed",
+    "#fortune", "#ping", "#root", "#sign", "#enc", "#chat", "#rpc", "#ipfs", "#store", "#fetch",
+    "#publish", "#inbox", "#key", "#doc", "#node", "#emit", "#recv", "#auth", "#hash", "#seed",
 ];
 
 const ACTOR_DIDS: &[&str] = &[
@@ -38,7 +36,7 @@ const ACTOR_DIDS: &[&str] = &[
 ];
 
 const TRAIL_LEN: usize = 45;
-const ORBIT_SPEED: f64 = 0.022;    // radians/frame
+const ORBIT_SPEED: f64 = 0.022; // radians/frame
 const GROUP_DURATION: f64 = 160.0; // frames a group stays together
 const SPLIT_SPEED: f64 = 2.6;
 const ACTOR_SPEED: f64 = 0.65;
@@ -48,9 +46,20 @@ const FREE_SPEED: f64 = 0.35;
 enum EntityMode {
     Free,
     /// Orbiting actor_idx, with jitter — not a clean circle
-    Grouped { actor_idx: usize, angle: f64, orbit_r: f64 },
+    Grouped {
+        actor_idx: usize,
+        angle: f64,
+        orbit_r: f64,
+    },
     /// In transit from one actor to another along a bezier arc
-    Hopping { to_idx: usize, t: f64, sx: f64, sy: f64, cx: f64, cy: f64 },
+    Hopping {
+        to_idx: usize,
+        t: f64,
+        sx: f64,
+        sy: f64,
+        cx: f64,
+        cy: f64,
+    },
     /// Flying outward after group disbands
     Splitting,
 }
@@ -90,7 +99,6 @@ struct Actor {
     /// Frames until this actor tries to attract entities
     attract_timer: f64,
 }
-
 
 #[component]
 pub fn Screensaver() -> impl IntoView {
@@ -275,7 +283,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
             ctx.set_font(&format!("bold {}px sans-serif", font_px));
             ctx.set_text_align("center");
             ctx.set_text_baseline("middle");
-            ctx.fill_text("DON'T PANIC", wf / 2.0, hf / 2.0).unwrap_or(());
+            ctx.fill_text("DON'T PANIC", wf / 2.0, hf / 2.0)
+                .unwrap_or(());
             ctx.restore();
         }
 
@@ -286,9 +295,17 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
         ctx.begin_path();
         let grid = 50.0_f64;
         let mut gx = 0.0_f64;
-        while gx <= wf { ctx.move_to(gx, 0.0); ctx.line_to(gx, hf); gx += grid; }
+        while gx <= wf {
+            ctx.move_to(gx, 0.0);
+            ctx.line_to(gx, hf);
+            gx += grid;
+        }
         let mut gy = 0.0_f64;
-        while gy <= hf { ctx.move_to(0.0, gy); ctx.line_to(wf, gy); gy += grid; }
+        while gy <= hf {
+            ctx.move_to(0.0, gy);
+            ctx.line_to(wf, gy);
+            gy += grid;
+        }
         ctx.stroke();
         ctx.restore();
 
@@ -321,9 +338,13 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     actor.attract_timer = 120.0 + js_sys::Math::random() * 180.0;
                     let attract_r = wf.min(hf) * 0.45;
                     // Space fragments evenly around the actor
-                    let free_nearby: Vec<usize> = ev.iter().enumerate()
+                    let free_nearby: Vec<usize> = ev
+                        .iter()
+                        .enumerate()
                         .filter(|(_, e)| {
-                            if !e.is_free() { return false; }
+                            if !e.is_free() {
+                                return false;
+                            }
                             let dx = e.x - actor.x;
                             let dy = e.y - actor.y;
                             dx * dx + dy * dy < attract_r * attract_r
@@ -375,11 +396,21 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                         ent.x += ent.vx;
                         ent.y += ent.vy;
                         let m = 8.0;
-                        if ent.x < m || ent.x > wf - m { ent.vx = -ent.vx; ent.x = ent.x.clamp(m, wf-m); }
-                        if ent.y < m || ent.y > hf - m { ent.vy = -ent.vy; ent.y = ent.y.clamp(m, hf-m); }
+                        if ent.x < m || ent.x > wf - m {
+                            ent.vx = -ent.vx;
+                            ent.x = ent.x.clamp(m, wf - m);
+                        }
+                        if ent.y < m || ent.y > hf - m {
+                            ent.vy = -ent.vy;
+                            ent.y = ent.y.clamp(m, hf - m);
+                        }
                         transition = Transition::None;
                     }
-                    EntityMode::Grouped { actor_idx, angle, orbit_r } => {
+                    EntityMode::Grouped {
+                        actor_idx,
+                        angle,
+                        orbit_r,
+                    } => {
                         let ai = *actor_idx;
                         let a = *angle;
                         let r = *orbit_r;
@@ -396,38 +427,67 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                         if ent.timer <= 0.0 {
                             // 55% chance: hop to another actor; 45%: split free
                             if js_sys::Math::random() < 0.55 && av.len() > 1 {
-                                let nearest = av.iter().enumerate()
+                                let nearest = av
+                                    .iter()
+                                    .enumerate()
                                     .filter(|(i, _)| *i != ai)
                                     .map(|(i, a)| {
                                         let dx = a.x - ent.x;
                                         let dy = a.y - ent.y;
                                         (i, dx * dx + dy * dy)
                                     })
-                                    .min_by(|a, b| a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal));
+                                    .min_by(|a, b| {
+                                        a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal)
+                                    });
                                 if let Some((to_idx, _)) = nearest {
                                     let mx = (ent.x + av[to_idx].x) / 2.0;
                                     let my = (ent.y + av[to_idx].y) / 2.0;
                                     let perp = (js_sys::Math::random() - 0.5) * 140.0;
-                                    transition = Transition::Hop { to_idx, cx: mx + perp, cy: my + perp };
+                                    transition = Transition::Hop {
+                                        to_idx,
+                                        cx: mx + perp,
+                                        cy: my + perp,
+                                    };
                                 } else {
-                                    let (ox, oy) = av.get(ai).map(|a| (a.x, a.y)).unwrap_or((wf / 2.0, hf / 2.0));
-                                    let dx = ent.x - ox; let dy = ent.y - oy;
+                                    let (ox, oy) = av
+                                        .get(ai)
+                                        .map(|a| (a.x, a.y))
+                                        .unwrap_or((wf / 2.0, hf / 2.0));
+                                    let dx = ent.x - ox;
+                                    let dy = ent.y - oy;
                                     let len = (dx * dx + dy * dy).sqrt().max(1.0);
                                     ent.timer = 45.0 + js_sys::Math::random() * 30.0;
-                                    transition = Transition::StartSplitting { vx: (dx / len) * SPLIT_SPEED, vy: (dy / len) * SPLIT_SPEED };
+                                    transition = Transition::StartSplitting {
+                                        vx: (dx / len) * SPLIT_SPEED,
+                                        vy: (dy / len) * SPLIT_SPEED,
+                                    };
                                 }
                             } else {
-                                let (ox, oy) = av.get(ai).map(|a| (a.x, a.y)).unwrap_or((wf / 2.0, hf / 2.0));
-                                let dx = ent.x - ox; let dy = ent.y - oy;
+                                let (ox, oy) = av
+                                    .get(ai)
+                                    .map(|a| (a.x, a.y))
+                                    .unwrap_or((wf / 2.0, hf / 2.0));
+                                let dx = ent.x - ox;
+                                let dy = ent.y - oy;
                                 let len = (dx * dx + dy * dy).sqrt().max(1.0);
                                 ent.timer = 45.0 + js_sys::Math::random() * 30.0;
-                                transition = Transition::StartSplitting { vx: (dx / len) * SPLIT_SPEED, vy: (dy / len) * SPLIT_SPEED };
+                                transition = Transition::StartSplitting {
+                                    vx: (dx / len) * SPLIT_SPEED,
+                                    vy: (dy / len) * SPLIT_SPEED,
+                                };
                             }
                         } else {
                             transition = Transition::None;
                         }
                     }
-                    EntityMode::Hopping { to_idx, t, sx, sy, cx, cy } => {
+                    EntityMode::Hopping {
+                        to_idx,
+                        t,
+                        sx,
+                        sy,
+                        cx,
+                        cy,
+                    } => {
                         *t += 0.020 + js_sys::Math::random() * 0.012;
                         let prog = (*t).min(1.0);
                         let ti = *to_idx;
@@ -449,16 +509,27 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                         ent.vx *= 0.96;
                         ent.vy *= 0.96;
                         let m = 8.0;
-                        if ent.x < m || ent.x > wf - m { ent.vx = -ent.vx; ent.x = ent.x.clamp(m, wf-m); }
-                        if ent.y < m || ent.y > hf - m { ent.vy = -ent.vy; ent.y = ent.y.clamp(m, hf-m); }
+                        if ent.x < m || ent.x > wf - m {
+                            ent.vx = -ent.vx;
+                            ent.x = ent.x.clamp(m, wf - m);
+                        }
+                        if ent.y < m || ent.y > hf - m {
+                            ent.vy = -ent.vy;
+                            ent.y = ent.y.clamp(m, hf - m);
+                        }
                         ent.timer -= 1.0;
-                        transition = if ent.timer <= 0.0 { Transition::BackToFree } else { Transition::None };
+                        transition = if ent.timer <= 0.0 {
+                            Transition::BackToFree
+                        } else {
+                            Transition::None
+                        };
                     }
                 }
                 match transition {
                     Transition::None => {}
                     Transition::StartSplitting { vx, vy } => {
-                        ent.vx = vx; ent.vy = vy;
+                        ent.vx = vx;
+                        ent.vy = vy;
                         ent.mode = EntityMode::Splitting;
                     }
                     Transition::BackToFree => {
@@ -468,14 +539,28 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     }
                     Transition::Hop { to_idx, cx, cy } => {
                         let (sx, sy) = (ent.x, ent.y);
-                        ent.mode = EntityMode::Hopping { to_idx, t: 0.0, sx, sy, cx, cy };
+                        ent.mode = EntityMode::Hopping {
+                            to_idx,
+                            t: 0.0,
+                            sx,
+                            sy,
+                            cx,
+                            cy,
+                        };
                     }
                     Transition::ArriveAt { actor_idx } => {
                         let angle = js_sys::Math::random() * std::f64::consts::TAU;
                         let orbit_r = 45.0 + js_sys::Math::random() * 35.0;
-                        ent.color_idx = av.get(actor_idx).map(|a| a.color_idx).unwrap_or(ent.color_idx);
+                        ent.color_idx = av
+                            .get(actor_idx)
+                            .map(|a| a.color_idx)
+                            .unwrap_or(ent.color_idx);
                         ent.timer = GROUP_DURATION * (0.5 + js_sys::Math::random() * 0.6);
-                        ent.mode = EntityMode::Grouped { actor_idx, angle, orbit_r };
+                        ent.mode = EntityMode::Grouped {
+                            actor_idx,
+                            angle,
+                            orbit_r,
+                        };
                     }
                 }
             }
@@ -485,7 +570,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
             for ent in ev.iter() {
                 let (ex, ey) = (ent.x, ent.y);
                 for actor in av.iter() {
-                    let dx = actor.x - ex; let dy = actor.y - ey;
+                    let dx = actor.x - ex;
+                    let dy = actor.y - ey;
                     let dist = (dx * dx + dy * dy).sqrt();
                     let max_prox = 190.0_f64;
                     if dist < max_prox && dist > 22.0 {
@@ -553,13 +639,18 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     ctx.set_global_alpha(alpha);
                     ctx.set_fill_style_str(color);
                     ctx.begin_path();
-                    ctx.arc(*tx, *ty, 1.5, 0.0, std::f64::consts::TAU).unwrap_or(());
+                    ctx.arc(*tx, *ty, 1.5, 0.0, std::f64::consts::TAU)
+                        .unwrap_or(());
                     ctx.fill();
                     ctx.restore();
                 }
 
                 // Widget box: rounded rect containing the DID
-                let label = if actor.did.len() > 24 { &actor.did[..24] } else { actor.did };
+                let label = if actor.did.len() > 24 {
+                    &actor.did[..24]
+                } else {
+                    actor.did
+                };
                 let box_w = label.len() as f64 * did_font_size * 0.62 + 16.0;
                 let bx = actor.x - box_w / 2.0;
                 let by = actor.y - widget_h;
@@ -585,7 +676,14 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 ctx.set_fill_style_str("#ffffff");
                 ctx.set_global_alpha(0.9);
                 ctx.begin_path();
-                ctx.arc(actor.x, actor.y - widget_h + 3.0, 2.0, 0.0, std::f64::consts::TAU).unwrap_or(());
+                ctx.arc(
+                    actor.x,
+                    actor.y - widget_h + 3.0,
+                    2.0,
+                    0.0,
+                    std::f64::consts::TAU,
+                )
+                .unwrap_or(());
                 ctx.fill();
                 ctx.restore();
             }
@@ -596,21 +694,23 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 let (alpha, dot_r) = match &ent.mode {
                     EntityMode::Grouped { .. } => (0.90, 2.5),
                     EntityMode::Hopping { .. } => (0.75, 2.0),
-                    EntityMode::Splitting  => (0.65, 1.8),
-                    EntityMode::Free       => (0.35, 1.4),
+                    EntityMode::Splitting => (0.65, 1.8),
+                    EntityMode::Free => (0.35, 1.4),
                 };
                 ctx.save();
                 ctx.set_global_alpha(alpha);
                 ctx.set_fill_style_str(color);
                 // Anchor dot
                 ctx.begin_path();
-                ctx.arc(ent.x, ent.y, dot_r, 0.0, std::f64::consts::TAU).unwrap_or(());
+                ctx.arc(ent.x, ent.y, dot_r, 0.0, std::f64::consts::TAU)
+                    .unwrap_or(());
                 ctx.fill();
                 // Fragment text
                 ctx.set_font("10px monospace");
                 ctx.set_text_align("left");
                 ctx.set_text_baseline("middle");
-                ctx.fill_text(ent.fragment, ent.x + 6.0, ent.y).unwrap_or(());
+                ctx.fill_text(ent.fragment, ent.x + 6.0, ent.y)
+                    .unwrap_or(());
                 ctx.restore();
             }
         }
@@ -618,9 +718,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
         // Schedule next frame
         web_sys::window()
             .unwrap()
-            .request_animation_frame(
-                f_clone.borrow().as_ref().unwrap().as_ref().unchecked_ref(),
-            )
+            .request_animation_frame(f_clone.borrow().as_ref().unwrap().as_ref().unchecked_ref())
             .unwrap();
     }));
 
@@ -635,13 +733,29 @@ fn rounded_rect(ctx: &CanvasRenderingContext2d, x: f64, y: f64, w: f64, h: f64, 
     ctx.begin_path();
     ctx.move_to(x + r, y);
     ctx.line_to(x + w - r, y);
-    ctx.arc(x + w - r, y + r,     r, -std::f64::consts::FRAC_PI_2, 0.0).unwrap_or(());
+    ctx.arc(x + w - r, y + r, r, -std::f64::consts::FRAC_PI_2, 0.0)
+        .unwrap_or(());
     ctx.line_to(x + w, y + h - r);
-    ctx.arc(x + w - r, y + h - r, r, 0.0,  std::f64::consts::FRAC_PI_2).unwrap_or(());
+    ctx.arc(x + w - r, y + h - r, r, 0.0, std::f64::consts::FRAC_PI_2)
+        .unwrap_or(());
     ctx.line_to(x + r, y + h);
-    ctx.arc(x + r,     y + h - r, r, std::f64::consts::FRAC_PI_2, std::f64::consts::PI).unwrap_or(());
+    ctx.arc(
+        x + r,
+        y + h - r,
+        r,
+        std::f64::consts::FRAC_PI_2,
+        std::f64::consts::PI,
+    )
+    .unwrap_or(());
     ctx.line_to(x, y + r);
-    ctx.arc(x + r,     y + r,     r, std::f64::consts::PI, 3.0 * std::f64::consts::FRAC_PI_2).unwrap_or(());
+    ctx.arc(
+        x + r,
+        y + r,
+        r,
+        std::f64::consts::PI,
+        3.0 * std::f64::consts::FRAC_PI_2,
+    )
+    .unwrap_or(());
     ctx.close_path();
 }
 
@@ -651,5 +765,3 @@ fn now_secs() -> f64 {
         .map(|p| p.now() / 1000.0)
         .unwrap_or(0.0)
 }
-
-

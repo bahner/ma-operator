@@ -1,0 +1,190 @@
+# zion — Русский
+lang-name = Русский
+
+# ── Страница входа ────────────────────────────────────────────────────────
+tab-login = войти
+tab-new-identity = новая личность
+tab-import = импорт
+label-passphrase = парольная фраза
+label-username = имя пользователя
+label-confirm-passphrase = подтвердить парольную фразу
+btn-login = войти
+btn-export = экспорт
+btn-generate = создать
+passphrase-warning = Потеря парольной фразы = потеря личности. Восстановление невозможно.
+import-help = Выберите экспортированный файл .zion.json. Пакет остаётся зашифрованным.
+status-unlocking = разблокировка...
+status-generating = создание личности...
+status-reading-file = чтение файла...
+status-imported = импортирован '{ $name }' — перейдите на вкладку входа
+error-wrong-passphrase = неверная парольная фраза: { $e }
+error-identity-not-found = личность '{ $name }' не найдена
+error-username-required = требуется имя пользователя
+error-passphrase-required = требуется парольная фраза
+error-passphrases-no-match = парольные фразы не совпадают
+
+# ── Системные сообщения терминала ─────────────────────────────────────────
+msg-logged-in = zion v{ $version } — вошли как { $username }
+msg-type-help = Введите .help для списка команд.
+msg-connecting = подключение к iroh...
+msg-iroh-ready = iroh endpoint готов
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ заблокировано [{ $cap }]: { $from }
+msg-focus-cleared = фокус снят
+msg-focusing = фокус на { $did } как { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = удалено { $path } ({ $count } записей)
+msg-read-only = { $path } только для чтения
+msg-subtree-set = { $path } — поддерево; установка запрещена
+msg-ancestor-leaf = предок пути { $path } является листом; затенение запрещено
+msg-key-not-found = ключ не найден: { $path }
+msg-no-match = нет совпадений
+msg-link-not-connected = ошибка загрузки ссылки: нет подключения
+msg-link-fetch-error = ошибка загрузки ссылки: { $e }
+msg-link-key-not-found = ключ `{ $key }` не найден в связанном документе
+
+# ── Проверка псевдонимов ──────────────────────────────────────────────────
+err-alias-name-empty = имя псевдонима не может быть пустым
+err-alias-has-fragment = имена псевдонимов не могут содержать '#'
+err-alias-value-fragment = значение псевдонима должно быть bare did:ma:<ipns> (без фрагмента)
+err-alias-value-path = значение псевдонима должно быть bare did:ma:<ipns> (без пути)
+err-alias-not-did = значение псевдонима должно начинаться с did:ma:
+err-unknown-alias = неизвестный псевдоним: @{ $name }
+err-bare-did = ожидался bare did:ma:<ipns> (без фрагмента или пути), получено { $did }
+
+# ── Редактор ──────────────────────────────────────────────────────────────
+btn-save = Сохранить
+btn-eval = Выполнить
+btn-cancel = Отмена
+btn-close = Закрыть
+btn-reply = Ответить
+btn-publish = Опубликовать
+msg-reply-sent = ответ отправлен
+msg-reply-failed = ошибка отправки ответа: { $e }
+msg-entity-publish-sent = объект { $name }: публикация отправлена
+msg-entity-publish-failed = ошибка публикации объекта: { $e }
+msg-field-publish-sent = объект { $name }.{ $field }: публикация отправлена
+msg-field-publish-failed = ошибка публикации поля: { $e }
+msg-acl-publish-sent = ACL среды выполнения: публикация отправлена
+msg-acl-publish-failed = ошибка публикации ACL среды выполнения: { $e }
+msg-yaml-error = ошибка YAML: { $e }
+msg-editor-saved = { $path }:save
+msg-fetch-review = загружено { $cid } — проверьте перед выполнением
+msg-fetch-failed = загрузка { $cid }: { $e }
+
+# ── Глаголы — входящие ────────────────────────────────────────────────────
+inbox-empty = входящие пусты
+inbox-entry-not-found = запись входящих { $n } не найдена
+inbox-no-message-id = запись входящих { $n } не имеет message_id
+inbox-no-verb = нет команды `{ $verb }` для записи входящих { $n }
+
+# ── Глаголы — среда выполнения ────────────────────────────────────────────
+discover-fetch-failed = обнаружение не удалось по { $url }: { $e }
+discover-json-error = обнаружение не удалось: неверный JSON от { $url }: { $e }
+discover-missing-did = обнаружение не удалось: в status.json отсутствует поле `did`
+discover-invalid-did = обнаружение не удалось: ожидалось, что `did` начинается с did:ma:, получено `{ $did }`
+discover-no-endpoint = предупреждение: `endpoint_id` отсутствует в status.json; сохранён только DID
+discover-success = ma обнаружен по { $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   псевдоним @間 создан — опубликуйте: .my.identity:publish @間
+claim-success = среда выполнения заявлена для { $did }
+claim-conflict = среда выполнения уже заявлена другой личностью
+claim-http-failed = заявка не удалась: HTTP { $status }
+claim-error = заявка не удалась: { $e }
+claim-no-session = не вошли; войдите для заявки среды выполнения
+runtime-no-verb = нет команды `{ $verb }` для { $path }
+
+# ── Глаголы — ACL ─────────────────────────────────────────────────────────
+acl-reset = .my.acl сброшен (полностью открыт)
+acl-persist-error = ошибка сохранения: { $e }
+acl-no-verb = нет команды `{ $verb }` для .my.acl
+
+# ── Глаголы — личность ────────────────────────────────────────────────────
+publish-usage = использование: .my.identity:publish <did-или-псевдоним>
+
+# ── Глаголы — документы ───────────────────────────────────────────────────
+doc-content-empty = { $path }.content пуст
+doc-save-first = { $path }.content пуст — сначала сохраните
+doc-missing-name = отсутствует имя документа
+doc-publish-usage = использование: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = использование: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = публикация { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = запрос хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
+doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
+doc-fetch-done = загружено { $cid } → { $path }.content (не выполнено)
+doc-fetch-failed = загрузка { $cid }: { $e }
+doc-fetch-usage = использование: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid не установлен
+doc-no-verb = нет команды `{ $verb }` для { $path }
+path-no-verb = нет команды `{ $verb }` для { $path }
+
+# ── Справка — заголовки ───────────────────────────────────────────────────
+help-header-zion = ── команды zion ──────────────────────────────────────────────────────────
+help-header-messaging = ── сообщения ────────────────────────────────────────────────────────────
+help-header-focus = ── режим фокуса ─────────────────────────────────────────────────────────
+help-header-config = ── синтаксис конфигурации ───────────────────────────────────────────────
+help-header-common = ── общие пути ───────────────────────────────────────────────────────────
+help-header-inbox = ── входящие ─────────────────────────────────────────────────────────────
+help-header-documents = ── документы ────────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── Справка — команды zion ────────────────────────────────────────────────
+help-cmd-help =   .help                        этот текст
+help-cmd-clear =   .clear                       очистить терминал
+help-cmd-panic =   .panic                       последний resort — использовать при проблемах
+help-cmd-logout =   .logout                      выйти
+
+# ── Справка — сообщения ───────────────────────────────────────────────────
+help-msg-echo =   @alias                       вывести DID (без отправки)
+help-msg-send =   @alias[:verb] body           отправить сообщение / RPC актору
+help-msg-fragment =   @alias#fragment[:verb] body  отправить с явным фрагментом DID
+help-msg-escape =   \@name                       буквальный @name (без поиска псевдонима)
+
+# ── Справка — режим фокуса ────────────────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       сфокусироваться на акторе
+help-focus-clear =   .use                         снять фокус
+
+# ── Справка — синтаксис конфигурации ──────────────────────────────────────
+help-config-get =   .path                        получить значение или список
+help-config-filter =   .path value                  фильтр по значению
+help-config-set =   .path: value                 установить значение
+help-config-delete =   .path:                       удалить лист или поддерево
+help-config-verb =   .path:verb [args]            вызвать локальный глагол
+
+# ── Справка — общие пути ──────────────────────────────────────────────────
+help-my =   .my                          показать личную конфигурацию
+help-aliases =   .my.aliases                  список псевдонимов
+help-aliases-set =   .my.aliases.<name>: <did>    добавить/обновить псевдоним
+help-aliases-del =   .my.aliases.<name>:          удалить псевдоним
+help-runtime-discover =   .my.runtime:discover          обнаружить локальную среду и создать @間
+help-runtime-claim =   .my.runtime:claim             заявить права на среду выполнения
+help-identity =   .my.identity                 показать конфигурацию личности
+help-identity-did =   .my.identity.did             показать собственный DID (только чтение)
+help-identity-publish =   .my.identity:publish @pub    опубликовать DID через сервис публикации
+help-config-path =   .config                      показать все записи .config.*
+
+# ── Справка — входящие ────────────────────────────────────────────────────
+help-inbox =   .my.inbox                    список входящих (поддерево)
+help-inbox-n =   .my.inbox.N                  показать поля записи N
+help-inbox-from =   .my.inbox.N.from             DID отправителя записи N
+help-inbox-reply =   .my.inbox.N:reply [body]     отправить ответ (без текста — редактор)
+help-inbox-open =   .my.inbox.N:open             открыть содержимое в режиме чтения
+help-inbox-del =   .my.inbox.N:                 удалить запись N
+help-inbox-delall =   .my.inbox:                   удалить все входящие
+help-inbox-flush =   .my.inbox:flush              вывести все записи в терминал
+help-inbox-traverse =   .my.inbox.N.sender.<field>   обход документа отправителя
+
+# ── Справка — документы ───────────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           открыть редактор с сохранённым содержимым
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     загрузить CID для просмотра
+help-doc-eval =   .my.doc.<name>:eval           выполнить содержимое построчно
+help-doc-publish =   .my.doc.<name>:publish @pub   сохранить как сырые данные
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  сохранить YAML как DAG-CBOR IPLD узел
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    импортировать содержимое CID
+help-doc-cid =   .my.doc.<name>:cid            показать сохранённый CID
+help-doc-del =   .my.doc.<name>:              удалить документ
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Доступные языки (задать через .my.i18n: <code>):

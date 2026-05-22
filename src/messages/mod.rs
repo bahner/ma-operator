@@ -30,9 +30,32 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
 /// Decode plain CBOR bytes (e.g. from a runtime RPC reply) into a YAML string
 /// for display in the editor.
 pub fn cbor_to_yaml(bytes: &[u8]) -> Result<String, String> {
-    let val: serde_yaml::Value = ciborium::de::from_reader(bytes)
-        .map_err(|e| format!("CBOR decode error: {e}"))?;
+    let val: serde_yaml::Value =
+        ciborium::de::from_reader(bytes).map_err(|e| format!("CBOR decode error: {e}"))?;
     serde_yaml::to_string(&val).map_err(|e| format!("YAML serialise error: {e}"))
+}
+
+/// Extract the YAML string payload from a `[":ok", yaml_text]` CBOR reply tuple.
+///
+/// Used when the upper layer receives `application/x-ma-acl+yaml` (or similar)
+/// semantics from a standard RPC ok-reply: strip the `:ok` tag and return the
+/// inner YAML string. Returns an error if the structure does not match.
+pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
+    let val: CborValue =
+        ciborium::de::from_reader(bytes).map_err(|e| format!("CBOR decode error: {e}"))?;
+    match val {
+        CborValue::Array(mut items) if items.len() == 2 => {
+            let second = items.pop();
+            let first = items.pop();
+            match (first, second) {
+                (Some(CborValue::Text(tag)), Some(CborValue::Text(yaml))) if tag == ":ok" => {
+                    Ok(yaml)
+                }
+                _ => Err("expected [:ok, yaml_string] reply".to_string()),
+            }
+        }
+        _ => Err("expected [:ok, yaml_string] reply tuple".to_string()),
+    }
 }
 
 /// Format an unsolicited (non-reply) incoming message for display.
@@ -91,7 +114,7 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
                 })
                 .unwrap_or_else(|| "<?>".to_string());
             let rest: Vec<String> = items.iter().skip(1).map(format_cbor_value_short).collect();
-            
+
             // If head is :ok, strip it and display the payload
             if head == ":ok" {
                 let display = if rest.is_empty() {

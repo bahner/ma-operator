@@ -1,0 +1,190 @@
+# zion — Soomaaliga
+lang-name = Soomaali
+
+# ── Bogga gelitaanka ──────────────────────────────────────────────────────
+tab-login = gal
+tab-new-identity = aqoonsi cusub
+tab-import = keeni gudaha
+label-passphrase = ereyga sirta
+label-username = magaca isticmaalaha
+label-confirm-passphrase = xaqiiji ereyga sirta
+btn-login = gal
+btn-export = soo saar
+btn-generate = abuur
+passphrase-warning = Luminta ereyga sirta = luminta aqoonsigu. Soo noqosho ma jirto.
+import-help = Dooro faylka .zion.json ee la soo saaray. Xidhmadda way ku xidnaataa sirta.
+status-unlocking = la furayo...
+status-generating = aqoonsiga la abuurayo...
+status-reading-file = faylka la akhriyayo...
+status-imported = '{ $name }' ayaa la keenay — u beddel taabka gelitaanka
+error-wrong-passphrase = ereyga sirta waa khalad: { $e }
+error-identity-not-found = aqoonsiga '{ $name }' lama helin
+error-username-required = magaca isticmaalaha ayaa loo baahan yahay
+error-passphrase-required = ereyga sirta ayaa loo baahan yahay
+error-passphrases-no-match = ereyada sirta kuma habboona
+
+# ── Fariimaha nidaamka terminal ───────────────────────────────────────────
+msg-logged-in = zion v{ $version } — waad galeen ahaan { $username }
+msg-type-help = Qor .help si aad u hesho liiska amarka.
+msg-connecting = iroh lagula xidhanayo...
+msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
+msg-focus-cleared = xushmadda la tirtiray
+msg-focusing = xushmadda { $did } ahaan { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = { $path } la tirtirtay ({ $count } gelitaan)
+msg-read-only = { $path } waxaa loo akhrin karaa oo keliya
+msg-subtree-set = { $path } geed yar ah; diiday in la dhigo
+msg-ancestor-leaf = awoowayaasha { $path } caleenta ah; diiday in la dabooло
+msg-key-not-found = furaha lama helin: { $path }
+msg-no-match = wax la mid ah ma jiro
+msg-link-not-connected = khaladka qaadashada xidhmada: lama xidhin
+msg-link-fetch-error = khaladka qaadashada xidhmada: { $e }
+msg-link-key-not-found = furaha `{ $key }` dokumantigii la xidhay lama helin
+
+# ── Xaqiijinta magaca kale ────────────────────────────────────────────────
+err-alias-name-empty = magaca magaca kale ma noqon karo mid maran
+err-alias-has-fragment = magacyada kale kuma jiri karaan '#'
+err-alias-value-fragment = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (fragment la'aan)
+err-alias-value-path = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (path la'aan)
+err-alias-not-did = qiimaha magaca kale waa inuu ku billowdo did:ma:
+err-unknown-alias = magaca kale aan la garanin: @{ $name }
+err-bare-did = bare did:ma:<ipns> ayaa la filaayay (fragment ama path la'aan), { $did } ayaa la helay
+
+# ── Tifatiraha ────────────────────────────────────────────────────────────
+btn-save = keydi
+btn-eval = socodsii
+btn-cancel = jooji
+btn-close = xidh
+btn-reply = jawaab
+btn-publish = daabac
+msg-reply-sent = jawaabta la diray
+msg-reply-failed = jawaabtu ku guuldareysatay: { $e }
+msg-entity-publish-sent = entity { $name }: daabacaadda la diray
+msg-entity-publish-failed = daabacaadda entity ku guuldareysatay: { $e }
+msg-field-publish-sent = entity { $name }.{ $field }: daabacaadda la diray
+msg-field-publish-failed = daabacaadda goobta ku guuldareysatay: { $e }
+msg-acl-publish-sent = runtime ACL: daabacaadda la diray
+msg-acl-publish-failed = daabacaadda runtime ACL ku guuldareysatay: { $e }
+msg-yaml-error = khaladka YAML: { $e }
+msg-editor-saved = { $path }:keydi
+msg-fetch-review = { $cid } la soo qaatay — dib u eeg ka hor socodsiinta
+msg-fetch-failed = qaadashada { $cid }: { $e }
+
+# ── Ficilada — sanduuqa gelitaanka ────────────────────────────────────────
+inbox-empty = sanduuqa gelitaanku wuu maran yahay
+inbox-entry-not-found = gelitaanka sanduuqa { $n } lama helin
+inbox-no-message-id = gelitaanka sanduuqa { $n } message_id ma laha
+inbox-no-verb = ficil `{ $verb }` gelitaanka sanduuqa { $n } ma jiro
+
+# ── Ficilada — wakhtiga shaqada ───────────────────────────────────────────
+discover-fetch-failed = ogaanshaha ku guuldareystay { $url }: { $e }
+discover-json-error = ogaanshaha ku guuldareystay: JSON khalad ah oo ka timid { $url }: { $e }
+discover-missing-did = ogaanshaha ku guuldareystay: status.json goobta `did` waad ka maqan tahay
+discover-invalid-did = ogaanshaha ku guuldareystay: `did` waa inuu ku billowdo did:ma:, `{ $did }` la helay
+discover-no-endpoint = digniin ogaanshaha: `endpoint_id` ka maqan status.json; DID oo keliya la keydiay
+discover-success = ma laga ogaaday { $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   magaca kale @間 la abuuray — daabac khadkan: .my.identity:publish @間
+claim-success = Runtime waxaa loo hantiyay { $did }
+claim-conflict = Runtime aqoonsi kale ayaa hore u hantiyay
+claim-http-failed = codsigii ku guuldareystay: HTTP { $status }
+claim-error = codsigii ku guuldareystay: { $e }
+claim-no-session = lama gelin; gal horta si aad u hantido runtime
+runtime-no-verb = ficil `{ $verb }` { $path } ma jiro
+
+# ── Ficilada — ACL ────────────────────────────────────────────────────────
+acl-reset = .my.acl dib loo dejiyay (si buuxda u furan)
+acl-persist-error = khaladka keydinта: { $e }
+acl-no-verb = ficil `{ $verb }` .my.acl ma jiro
+
+# ── Ficilada — aqoonsiga ──────────────────────────────────────────────────
+publish-usage = isticmaalka: .my.identity:publish <did-ama-magaca-kale>
+
+# ── Ficilada — dokumantigyada ─────────────────────────────────────────────
+doc-content-empty = { $path }.content wuu maran yahay
+doc-save-first = { $path }.content wuu maran yahay — horta keydi
+doc-missing-name = magaca dokumantigga waa la waayay
+doc-publish-usage = isticmaalka: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = isticmaalka: .my.doc.<name>:publish-ipld <publisher>
+doc-publish-failed = daabacaadda { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
+doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
+doc-fetch-done = { $cid } la soo qaatay → { $path }.content (lama socodsiin)
+doc-fetch-failed = qaadashada { $cid }: { $e }
+doc-fetch-usage = isticmaalka: .my.doc.<name>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid lama dejin
+doc-no-verb = ficil `{ $verb }` { $path } ma jiro
+path-no-verb = ficil `{ $verb }` { $path } ma jiro
+
+# ── Gargaarku — cinwaanada ────────────────────────────────────────────────
+help-header-zion = ── amarka zion ────────────────────────────────────────────────────────────
+help-header-messaging = ── farriin diridda ───────────────────────────────────────────────────────
+help-header-focus = ── xaaladda xushmadda ────────────────────────────────────────────────────
+help-header-config = ── naxwaha dejinta deegaanka ─────────────────────────────────────────────
+help-header-common = ── wadooyinka caadiga ah ─────────────────────────────────────────────────
+help-header-inbox = ── sanduuqa gelitaanka ────────────────────────────────────────────────────
+help-header-documents = ── dokumantigyada ────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+# ── Gargaarku — amarka zion ───────────────────────────────────────────────
+help-cmd-help =   .help                        qoraalkan
+help-cmd-clear =   .clear                       nadiifi terminal
+help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticmaal haddaad dhibaato ku jirto
+help-cmd-logout =   .logout                      ka bax
+
+# ── Gargaarku — farriin diridda ───────────────────────────────────────────
+help-msg-echo =   @alias                       tus DID la xalliyay (farriin la dirin)
+help-msg-send =   @alias[:verb] body           dir farriin / RPC u sheegto actor
+help-msg-fragment =   @alias#fragment[:verb] body  dir xidhmad leh DID fragment cad
+help-msg-escape =   \@name                       @name dhab ah (raadinta magaca kale ma jirto)
+
+# ── Gargaarku — xaaladda xushmadda ───────────────────────────────────────
+help-focus-set =   .use @alias [as @name]       xushmad ku samee actor (prompt ayaa isbeddelaa)
+help-focus-clear =   .use                         xushmadda tirtir
+
+# ── Gargaarku — naxwaha dejinta ───────────────────────────────────────────
+help-config-get =   .path                        hel qiimaha caleenta ama liiska geedka yar
+help-config-filter =   .path value                  weydiimaha la xidhiidhiya (u habeynta qiimaha)
+help-config-set =   .path: value                 dejiso caleenta
+help-config-delete =   .path:                       tirtir caleenta ama geedka yar
+help-config-verb =   .path:verb [args]            wac ficilka deegaanka
+
+# ── Gargaarku — wadooyinka caadiga ah ────────────────────────────────────
+help-my =   .my                          tus dhammaan dejintada shakhsiga
+help-aliases =   .my.aliases                  liisko magacyada kale
+help-aliases-set =   .my.aliases.<name>: <did>    ku dar/cusbooneysii magaca kale (bare DID, #fragment la'aan)
+help-aliases-del =   .my.aliases.<name>:          ka saar magaca kale
+help-runtime-discover =   .my.runtime:discover          ogaw runtime deegaanka oo abuur magaca kale @間
+help-runtime-claim =   .my.runtime:claim             hantida runtime DID-kaagana
+help-identity =   .my.identity                 tus dejinta aqoonsiga
+help-identity-did =   .my.identity.did             tus DID-kaaga (akhrin oo keliya)
+help-identity-publish =   .my.identity:publish @pub    DID u daabac adeegga daabacaadda
+help-config-path =   .config                      tus dhammaan gelitaanada .config.*
+
+# ── Gargaarku — sanduuqa gelitaanka ──────────────────────────────────────
+help-inbox =   .my.inbox                    liisko sanduuqa gelitaanka (aragtida geedka yar)
+help-inbox-n =   .my.inbox.N                  tus goobaha gelitaanka N
+help-inbox-from =   .my.inbox.N.from             DID wariyaha gelitaanka N
+help-inbox-reply =   .my.inbox.N:reply [body]     dir jawaab (fur tifatiraha haddaan jiraan jirka)
+help-inbox-open =   .my.inbox.N:open             fur waxa ku jira si loo akhriyo oo keliya tifatiraha
+help-inbox-del =   .my.inbox.N:                 tirtir gelitaanka N
+help-inbox-delall =   .my.inbox:                   tirtir dhammaan gelitaanada sanduuqa
+help-inbox-flush =   .my.inbox:flush              daabac dhammaan gelitaanada terminal
+help-inbox-traverse =   .my.inbox.N.sender.<field>   orod dokumantigga DID wariyaha si tartiib ah
+
+# ── Gargaarku — dokumantigyada ────────────────────────────────────────────
+help-doc-edit =   .my.doc.<name>:edit           fur tifatiraha leh waxa la keydiay
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     qaado CID, fur dib-u-eegista oo keliya
+help-doc-eval =   .my.doc.<name>:eval           soccodsii waxa la keydiay sadar-sadar
+help-doc-publish =   .my.doc.<name>:publish @pub   keydi ahaan blob cuur ah (nooc kasta)
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  keydi YAML ahaan node IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    soo geliso waxa CID ka jira (lama socodsiin)
+help-doc-cid =   .my.doc.<name>:cid            tus CID la keydiay
+help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Luqadaha la heli karo (ku dejiso .my.i18n: <code>):

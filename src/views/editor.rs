@@ -78,6 +78,12 @@ pub enum EditorMode {
         /// The EgoConfig key to write on save, e.g. `".my.acl"`.
         key: String,
     },
+    /// Edit the root transport ACL of a remote runtime: Publish + Cancel.
+    /// YAML buffer → DAG-CBOR → sent as `[:acl:edit, bytes]` to the runtime.
+    RuntimeAclEdit {
+        /// DID of the runtime to send the updated ACL to.
+        target: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -287,7 +293,11 @@ pub fn EditorModal(
             let Some(ctx) = show.get_untracked() else {
                 return;
             };
-            let EditorMode::EntityEdit { target, entity_name } = ctx.mode else {
+            let EditorMode::EntityEdit {
+                target,
+                entity_name,
+            } = ctx.mode
+            else {
                 return;
             };
             let verb = format!("entities.{entity_name}:edit");
@@ -297,8 +307,13 @@ pub fn EditorModal(
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
                         match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
-                            Ok(_) => state2.push_system(tf("msg-entity-publish-sent", &[("name", &entity_name)])),
-                            Err(e) => state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)])),
+                            Ok(_) => state2.push_system(tf(
+                                "msg-entity-publish-sent",
+                                &[("name", &entity_name)],
+                            )),
+                            Err(e) => {
+                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+                            }
                         }
                     }
                     Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
@@ -316,7 +331,12 @@ pub fn EditorModal(
             let Some(ctx) = show.get_untracked() else {
                 return;
             };
-            let EditorMode::EntityFieldEdit { target, entity_name, field } = ctx.mode else {
+            let EditorMode::EntityFieldEdit {
+                target,
+                entity_name,
+                field,
+            } = ctx.mode
+            else {
                 return;
             };
             let verb = format!("entities.{entity_name}.{field}:edit");
@@ -326,8 +346,42 @@ pub fn EditorModal(
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
                         match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
-                            Ok(_) => state2.push_system(tf("msg-field-publish-sent", &[("name", &entity_name), ("field", &field)])),
-                            Err(e) => state2.push_error(tf("msg-field-publish-failed", &[("e", &e)])),
+                            Ok(_) => state2.push_system(tf(
+                                "msg-field-publish-sent",
+                                &[("name", &entity_name), ("field", &field)],
+                            )),
+                            Err(e) => {
+                                state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
+                            }
+                        }
+                    }
+                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
+                }
+            });
+        }
+    };
+
+    // RuntimeAclEdit — convert YAML buffer to DAG-CBOR, send as :acl:edit bytes to runtime.
+    let on_acl_publish = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::RuntimeAclEdit { target } = ctx.mode else {
+                return;
+            };
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(dag_cbor) => {
+                        match crate::transport::send_rpc_bytes(&target, "acl:edit", dag_cbor).await
+                        {
+                            Ok(_) => state2.push_system(t("msg-acl-publish-sent")),
+                            Err(e) => state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)])),
                         }
                     }
                     Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
@@ -339,12 +393,33 @@ pub fn EditorModal(
     // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
     // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
     // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
-    let is_standard          = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
-    let is_view              = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
-    let is_reply             = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
-    let is_entity_edit       = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityEdit { .. }));
-    let is_entity_field_edit = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::EntityFieldEdit { .. }));
-    let is_config_edit       = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::ConfigEdit { .. }));
+    let is_standard = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Standard));
+    let is_view = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::View));
+    let is_reply = move || matches!(show.get().map(|c| c.mode), Some(EditorMode::Reply { .. }));
+    let is_entity_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::EntityEdit { .. })
+        )
+    };
+    let is_entity_field_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::EntityFieldEdit { .. })
+        )
+    };
+    let is_config_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::ConfigEdit { .. })
+        )
+    };
+    let is_runtime_acl_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::RuntimeAclEdit { .. })
+        )
+    };
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -424,6 +499,18 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_config_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >{t("btn-cancel")}</button>
+                    // Publish — RuntimeAclEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_runtime_acl_edit() { "" } else { "display:none" }
+                        on:click=on_acl_publish.clone()
+                    >{t("btn-publish")}</button>
+                    // Cancel — RuntimeAclEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_runtime_acl_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >{t("btn-cancel")}</button>
                 </div>

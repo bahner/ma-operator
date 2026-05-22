@@ -1,4 +1,5 @@
 # zion — English
+lang-name = English
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = login
@@ -64,6 +65,8 @@ msg-entity-publish-sent = entity { $name }: publish sent
 msg-entity-publish-failed = entity publish failed: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: publish sent
 msg-field-publish-failed = field publish failed: { $e }
+msg-acl-publish-sent = runtime ACL: publish sent
+msg-acl-publish-failed = runtime ACL publish failed: { $e }
 msg-yaml-error = YAML error: { $e }
 msg-editor-saved = { $path }:save
 msg-fetch-review = fetched { $cid } — review before eval
@@ -96,6 +99,9 @@ acl-reset = .my.acl reset (fully open)
 acl-persist-error = persist error: { $e }
 acl-no-verb = no verb `{ $verb }` for .my.acl
 
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Available languages (set with .my.i18n: <code>):
+
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = usage: .my.identity:publish <did-or-alias>
 
@@ -103,15 +109,15 @@ publish-usage = usage: .my.identity:publish <did-or-alias>
 doc-content-empty = { $path }.content is empty
 doc-save-first = { $path }.content is empty — save first
 doc-missing-name = missing document name
-doc-publish-usage = usage: .my.documents.<name>:publish <publisher>
-doc-publish-ipld-usage = usage: .my.documents.<name>:publish-ipld <publisher>
+doc-publish-usage = usage: .my.doc.<name>:publish <publisher>
+doc-publish-ipld-usage = usage: .my.doc.<name>:publish-ipld <publisher>
 doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
 doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
 doc-fetch-done = fetched { $cid } → { $path }.content (not executed)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = usage: .my.documents.<name>:fetch <cid>
+doc-fetch-usage = usage: .my.doc.<name>:fetch <cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid is not set
 doc-no-verb = no verb `{ $verb }` for { $path }
@@ -124,7 +130,7 @@ help-header-focus = ── focus mode ──────────────
 help-header-config = ── local config grammar ─────────────────────────────────────────────────
 help-header-common = ── common paths ─────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ────────────────────────────────────────────────────────────────
-help-header-documents = ── documents ────────────────────────────────────────────────────────────
+help-header-documents = ── documents (.my.doc.*) ────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Help text — zion commands ─────────────────────────────────────────────
@@ -174,11 +180,11 @@ help-inbox-flush =   .my.inbox:flush              print all entries to terminal
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document lazily
 
 # ── Help text — documents ─────────────────────────────────────────────────
-help-doc-edit =   .my.documents.<name>:edit           open editor with saved content
-help-doc-edit-cid =   .my.documents.<name>:edit <cid>     fetch CID, open for review only
-help-doc-eval =   .my.documents.<name>:eval           execute saved content line-by-line
-help-doc-publish =   .my.documents.<name>:publish @pub   store as raw blob (any type)
-help-doc-publish-ipld =   .my.documents.<name>:publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
-help-doc-fetch =   .my.documents.<name>:fetch <cid>    import CID content (no execution)
-help-doc-cid =   .my.documents.<name>:cid            show stored CID
-help-doc-del =   .my.documents.<name>:              delete document
+help-doc-edit =   .my.doc.<name>:edit           open editor with saved content
+help-doc-edit-cid =   .my.doc.<name>:edit <cid>     fetch CID, open for review only
+help-doc-eval =   .my.doc.<name>:eval           execute saved content line-by-line
+help-doc-publish =   .my.doc.<name>:publish @pub   store as raw blob (any type)
+help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
+help-doc-fetch =   .my.doc.<name>:fetch <cid>    import CID content (no execution)
+help-doc-cid =   .my.doc.<name>:cid            show stored CID
+help-doc-del =   .my.doc.<name>:              delete document

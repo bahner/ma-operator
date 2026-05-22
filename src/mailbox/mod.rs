@@ -55,7 +55,10 @@ pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut EgoConfig) {
     cfg.set(format!("{base}.from"), incoming.from.as_str());
     // `.sender` is the link-leaf used for lazy DID traversal (Phase 4).
     cfg.set(format!("{base}.sender"), incoming.from.as_str());
-    cfg.set(format!("{base}.content_type"), incoming.content_type.as_str());
+    cfg.set(
+        format!("{base}.content_type"),
+        incoming.content_type.as_str(),
+    );
     cfg.set(
         format!("{base}.content"),
         String::from_utf8_lossy(&incoming.content).as_ref(),
@@ -139,4 +142,3 @@ pub fn open_target(target: &str) -> Result<(), String> {
         Err("popup blocked by browser".to_string())
     }
 }
-

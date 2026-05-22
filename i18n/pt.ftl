@@ -1,0 +1,183 @@
+# zion — Português
+lang-name = Português
+
+# ── Página de login ───────────────────────────────────────────────────────
+tab-login = entrar
+tab-new-identity = nova identidade
+tab-import = importar
+label-passphrase = frase de acesso
+label-username = nome de utilizador
+label-confirm-passphrase = confirmar frase de acesso
+btn-login = entrar
+btn-export = exportar
+btn-generate = gerar
+passphrase-warning = Frase de acesso perdida = identidade perdida. Não existe recuperação.
+import-help = Escolha um ficheiro .zion.json exportado. O pacote permanece cifrado.
+status-unlocking = a desbloquear...
+status-generating = a gerar identidade...
+status-reading-file = a ler ficheiro...
+status-imported = '{ $name }' importado — mude para o separador Entrar
+error-wrong-passphrase = frase de acesso incorreta: { $e }
+error-identity-not-found = identidade '{ $name }' não encontrada
+error-username-required = nome de utilizador é obrigatório
+error-passphrase-required = frase de acesso é obrigatória
+error-passphrases-no-match = as frases de acesso não correspondem
+
+# ── Mensagens do sistema do terminal ─────────────────────────────────────
+msg-logged-in = zion v{ $version } — sessão iniciada como { $username }
+msg-type-help = Escreva .help para obter uma lista de comandos.
+msg-connecting = a ligar ao iroh...
+msg-iroh-ready = ponto de extremidade iroh pronto
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ bloqueado [{ $cap }]: { $from }
+msg-focus-cleared = foco limpo
+msg-focusing = a focar { $did } como { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = eliminado { $path } ({ $count } entradas)
+msg-read-only = { $path } é só de leitura
+msg-subtree-set = { $path } é uma subárvore; configuração recusada
+msg-ancestor-leaf = um ancestral de { $path } é uma folha; sombreamento recusado
+msg-key-not-found = chave não encontrada: { $path }
+msg-no-match = sem correspondência
+msg-link-not-connected = erro ao obter ligação: não conectado
+msg-link-fetch-error = erro ao obter ligação: { $e }
+msg-link-key-not-found = chave `{ $key }` não encontrada no documento ligado
+
+# ── Validação de alias ────────────────────────────────────────────────────
+err-alias-name-empty = o nome do alias não pode estar vazio
+err-alias-has-fragment = o nome do alias não pode conter '#'
+err-alias-value-fragment = o valor do alias deve ser um did:ma:<ipns> puro (sem fragmento)
+err-alias-value-path = o valor do alias deve ser um did:ma:<ipns> puro (sem caminho)
+err-alias-not-did = o valor do alias deve começar com did:ma:
+err-unknown-alias = alias desconhecido: @{ $name }
+err-bare-did = esperado did:ma:<ipns> puro (sem fragmento ou caminho), recebido { $did }
+
+# ── Editor ────────────────────────────────────────────────────────────────
+btn-save = Guardar
+btn-eval = Executar
+btn-cancel = Cancelar
+btn-close = Fechar
+btn-reply = Responder
+btn-publish = Publicar
+msg-reply-sent = resposta enviada
+msg-reply-failed = falha ao enviar resposta: { $e }
+msg-entity-publish-sent = entidade { $name }: publicação enviada
+msg-entity-publish-failed = falha ao publicar entidade: { $e }
+msg-field-publish-sent = entidade { $name }.{ $field }: publicação enviada
+msg-field-publish-failed = falha ao publicar campo: { $e }
+msg-acl-publish-sent = ACL de tempo de execução: publicação enviada
+msg-acl-publish-failed = falha ao publicar ACL de tempo de execução: { $e }
+msg-yaml-error = erro YAML: { $e }
+msg-editor-saved = { $path }:guardar
+msg-fetch-review = { $cid } obtido — reveja antes de executar
+msg-fetch-failed = obtenção { $cid }: { $e }
+
+# ── Verbos — caixa de entrada ─────────────────────────────────────────────
+inbox-empty = a caixa de entrada está vazia
+inbox-entry-not-found = entrada { $n } da caixa de entrada não encontrada
+inbox-no-message-id = a entrada { $n } da caixa de entrada não tem message_id
+inbox-no-verb = nenhum verbo `{ $verb }` para a entrada { $n } da caixa de entrada
+
+# ── Verbos — tempo de execução ────────────────────────────────────────────
+discover-fetch-failed = descoberta falhou em { $url }: { $e }
+discover-json-error = descoberta falhou: JSON inválido de { $url }: { $e }
+discover-missing-did = descoberta falhou: status.json em falta o campo obrigatório `did`
+discover-invalid-did = descoberta falhou: esperava `did` começar com did:ma:, recebido `{ $did }`
+discover-no-endpoint = aviso de descoberta: `endpoint_id` ausente em status.json; apenas DID guardado
+discover-success = ma descoberto em { $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   alias @間 criado — publique com: .my.identity:publish @間
+claim-success = Tempo de execução reclamado para { $did }
+claim-conflict = Tempo de execução já reclamado por outra identidade
+claim-http-failed = reclamação falhou: HTTP { $status }
+claim-error = reclamação falhou: { $e }
+claim-no-session = não autenticado; inicie sessão primeiro para reclamar o tempo de execução
+runtime-no-verb = nenhum verbo `{ $verb }` para { $path }
+
+# ── Verbos — controlo de acesso ───────────────────────────────────────────
+acl-reset = .my.acl reposto (completamente aberto)
+acl-persist-error = erro ao guardar: { $e }
+acl-no-verb = nenhum verbo `{ $verb }` para .my.acl
+
+# ── Verbos — identidade ───────────────────────────────────────────────────
+publish-usage = utilização: .my.identity:publish <did-ou-alias>
+
+# ── Verbos — documentos ───────────────────────────────────────────────────
+doc-content-empty = { $path }.content está vazio
+doc-save-first = { $path }.content está vazio — guarde primeiro
+doc-missing-name = nome do documento em falta
+doc-publish-usage = utilização: .my.doc.<nome>:publish <editor>
+doc-publish-ipld-usage = utilização: .my.doc.<nome>:publish-ipld <editor>
+doc-publish-failed = publicação { $path }: { $e }
+doc-publish-ipld-failed = publicação IPLD { $path }: { $e }
+doc-store-sent = pedido de armazenamento enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
+doc-ipld-store-sent = pedido de armazenamento IPLD enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
+doc-fetch-done = { $cid } obtido → { $path }.content (não executado)
+doc-fetch-failed = obtenção { $cid }: { $e }
+doc-fetch-usage = utilização: .my.doc.<nome>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid não está definido
+doc-no-verb = nenhum verbo `{ $verb }` para { $path }
+path-no-verb = nenhum verbo `{ $verb }` para { $path }
+
+# ── Texto de ajuda — cabeçalhos ───────────────────────────────────────────
+help-header-zion = ── comandos zion ──────────────────────────────────────────────────────────
+help-header-messaging = ── mensagens ─────────────────────────────────────────────────────────────
+help-header-focus = ── modo de foco ──────────────────────────────────────────────────────────
+help-header-config = ── gramática de configuração local ──────────────────────────────────────
+help-header-common = ── caminhos comuns ───────────────────────────────────────────────────────
+help-header-inbox = ── caixa de entrada ─────────────────────────────────────────────────────
+help-header-documents = ── documentos ───────────────────────────────────────────────────────────
+help-footer = ─────────────────────────────────────────────────────────────────────────
+
+help-cmd-help =   .help                        este texto
+help-cmd-clear =   .clear                       limpar o terminal
+help-cmd-panic =   .panic                       último recurso — use se estiver em apuros
+help-cmd-logout =   .logout                      terminar sessão
+
+help-msg-echo =   @alias                       mostrar DID resolvido (nenhuma mensagem enviada)
+help-msg-send =   @alias[:verb] body           enviar mensagem / RPC para ator
+help-msg-fragment =   @alias#fragment[:verb] body  enviar para alias com fragmento DID explícito
+help-msg-escape =   \@name                       @name literal (sem pesquisa de alias)
+
+help-focus-set =   .use @alias [as @name]       focar em ator (altera o prompt)
+help-focus-clear =   .use                         limpar foco
+
+help-config-get =   .path                        obter valor de folha ou listar subárvore
+help-config-filter =   .path value                  filtro de pesquisa (filtrar por valor)
+help-config-set =   .path: value                 definir folha
+help-config-delete =   .path:                       eliminar folha ou subárvore
+help-config-verb =   .path:verb [args]            executar verbo local
+
+help-my =   .my                          mostrar toda a configuração pessoal
+help-aliases =   .my.aliases                  listar aliases
+help-aliases-set =   .my.aliases.<name>: <did>    adicionar/atualizar alias (DID puro, sem #fragmento)
+help-aliases-del =   .my.aliases.<name>:          remover alias
+help-runtime-discover =   .my.runtime:discover          descobrir tempo de execução local e criar alias @間
+help-runtime-claim =   .my.runtime:claim             reclamar tempo de execução com o seu DID
+help-identity =   .my.identity                 mostrar configuração de identidade
+help-identity-did =   .my.identity.did             mostrar DID próprio (só de leitura)
+help-identity-publish =   .my.identity:publish @pub    publicar DID próprio através do serviço editor
+help-config-path =   .config                      mostrar todas as entradas .config.*
+
+help-inbox =   .my.inbox                    listar caixa de entrada (vista de subárvore)
+help-inbox-n =   .my.inbox.N                  mostrar campos da entrada N
+help-inbox-from =   .my.inbox.N.from             DID do remetente para a entrada N
+help-inbox-reply =   .my.inbox.N:reply [body]     enviar resposta (abre editor sem corpo)
+help-inbox-open =   .my.inbox.N:open             abrir conteúdo em editor só de leitura
+help-inbox-del =   .my.inbox.N:                 eliminar entrada N
+help-inbox-delall =   .my.inbox:                   eliminar todas as entradas da caixa de entrada
+help-inbox-flush =   .my.inbox:flush              imprimir todas as entradas no terminal
+help-inbox-traverse =   .my.inbox.N.sender.<campo>  percorrer documento DID do remetente de forma diferida
+
+help-doc-edit =   .my.doc.<nome>:edit           abrir editor com conteúdo guardado
+help-doc-edit-cid =   .my.doc.<nome>:edit <cid>     obter CID, abrir para revisão
+help-doc-eval =   .my.doc.<nome>:eval           executar conteúdo guardado linha por linha
+help-doc-publish =   .my.doc.<nome>:publish @pub   guardar como blob bruto (todos os tipos)
+help-doc-publish-ipld =   .my.doc.<nome>:publish-ipld @pub  guardar YAML como nó IPLD DAG-CBOR estruturado
+help-doc-fetch =   .my.doc.<nome>:fetch <cid>    importar conteúdo CID (sem execução)
+help-doc-cid =   .my.doc.<nome>:cid            mostrar CID guardado
+help-doc-del =   .my.doc.<nome>:              eliminar documento
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Idiomas disponíveis (definir com .my.i18n: <code>):

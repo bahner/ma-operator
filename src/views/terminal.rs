@@ -64,10 +64,10 @@ pub fn Terminal() -> impl IntoView {
             if is_persistent && show_editor.get().is_none() {
                 let cfg = config.get_untracked();
                 let initial = cfg
-                    .get(".my.documents.scratch.content")
+                    .get(".my.doc.scratch.content")
                     .unwrap_or_default()
                     .to_string();
-                show_editor.set(Some(EditorContext::new(".my.documents.scratch", initial)));
+                show_editor.set(Some(EditorContext::new(".my.doc.scratch", initial)));
             }
         });
     }
@@ -101,12 +101,32 @@ pub fn Terminal() -> impl IntoView {
                     Err(e) => state2.push_error(format!("config load error: {e}")),
                 }
                 // Re-apply language preference from config if set.
-                if let Some(lang) = config.get_untracked().get(".my.lang").map(|s| s.to_string()) {
+                if let Some(lang) = config
+                    .get_untracked()
+                    .get(".my.i18n")
+                    .map(|s| s.to_string())
+                {
                     let first = lang.split(':').next().unwrap_or(&lang).to_string();
-                    crate::i18n::init(&first);
+                    crate::i18n::init(&first).await;
+                    state2.lang.set(crate::i18n::lang());
                     crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
-                } else if let Some(lang) = config.get_untracked().get(".config.ui.language").map(|s| s.to_string()) {
-                    crate::i18n::init(&lang);
+                } else if let Some(lang) = config
+                    .get_untracked()
+                    .get(".config.ui.language")
+                    .map(|s| s.to_string())
+                {
+                    crate::i18n::init(&lang).await;
+                    state2.lang.set(crate::i18n::lang());
+                } else {
+                    // No preference stored yet — seed .my.i18n from the browser-detected language.
+                    let browser_lang = crate::i18n::lang();
+                    state2.lang.set(browser_lang.clone());
+                    let mut cfg = config.get_untracked();
+                    cfg.set(".my.i18n", &browser_lang);
+                    if let Err(e) = persist_config(&username, &cfg).await {
+                        state2.push_error(format!("lang persist: {e}"));
+                    }
+                    config.set(cfg);
                 }
                 state2.push_system(tf(
                     "msg-logged-in",
@@ -238,7 +258,9 @@ pub fn Terminal() -> impl IntoView {
                     let display = {
                         let cfg = config.get_untracked();
                         if let Some(alias) = cfg.reverse_alias(&incoming.from) {
-                            incoming.display.replace(&incoming.from, &format!("@{alias}"))
+                            incoming
+                                .display
+                                .replace(&incoming.from, &format!("@{alias}"))
                         } else {
                             incoming.display.clone()
                         }
@@ -252,15 +274,49 @@ pub fn Terminal() -> impl IntoView {
                                 .get(msg_id)
                                 .cloned();
                             if let Some(edit) = pending {
-                                state2
-                                    .pending_rpc_edits
-                                    .update(|m| { m.remove(msg_id); });
+                                state2.pending_rpc_edits.update(|m| {
+                                    m.remove(msg_id);
+                                });
                                 let doc_path = edit.doc_path();
-                                let yaml = match crate::messages::cbor_to_yaml(&incoming.content) {
-                                    Ok(y) => y,
-                                    Err(e) => {
-                                        state2.push_error(format!("entity decode failed: {e}"));
-                                        continue;
+                                // For Acl edits: unwrap [:ok, yaml] CBOR; errors are already
+                                // handled as terminal errors by the normal reply path below.
+                                let yaml = match &edit {
+                                    crate::state::PendingRpcEdit::Acl { .. } => {
+                                        if incoming.is_error {
+                                            state2.push_error(incoming.display.clone());
+                                            continue;
+                                        }
+                                        match crate::messages::extract_ok_yaml(&incoming.content) {
+                                            Ok(y) => y,
+                                            Err(e) => {
+                                                state2
+                                                    .push_error(format!("ACL decode failed: {e}"));
+                                                continue;
+                                            }
+                                        }
+                                    }
+                                    _ => {
+                                        if incoming.content_type == "text/yaml" {
+                                            match String::from_utf8(incoming.content.clone()) {
+                                                Ok(s) => s,
+                                                Err(e) => {
+                                                    state2.push_error(format!(
+                                                        "entity decode failed: {e}"
+                                                    ));
+                                                    continue;
+                                                }
+                                            }
+                                        } else {
+                                            match crate::messages::cbor_to_yaml(&incoming.content) {
+                                                Ok(y) => y,
+                                                Err(e) => {
+                                                    state2.push_error(format!(
+                                                        "entity decode failed: {e}"
+                                                    ));
+                                                    continue;
+                                                }
+                                            }
+                                        }
                                     }
                                 };
                                 let (doc_path, mode) = edit.into_editor_mode(doc_path);
@@ -497,9 +553,9 @@ fn eval(
                         )
                         .await;
                         if let (Ok(ref msg_id), Some(edit)) = (&res, pending_edit) {
-                            state_async
-                                .pending_rpc_edits
-                                .update(|m| { m.insert(msg_id.clone(), edit); });
+                            state_async.pending_rpc_edits.update(|m| {
+                                m.insert(msg_id.clone(), edit);
+                            });
                         }
                         res
                     }
@@ -558,10 +614,10 @@ fn eval_dot(
             eval_use(args, state, config);
             return;
         }
-        // Shorthand: `.edit [cid]` → `.my.documents.scratch:edit [cid]`
+        // Shorthand: `.edit [cid]` → `.my.doc.scratch:edit [cid]`
         ".edit" => {
             if let Err(e) = dispatch_verb(
-                ".my.documents.scratch",
+                ".my.doc.scratch",
                 "edit",
                 args,
                 state,
@@ -618,11 +674,13 @@ fn eval_dot(
                 } else {
                     apply_config_to_dom(&cfg);
                     if path_owned == ".config.ui.language" {
-                        crate::i18n::init(&value);
+                        crate::i18n::init(&value).await;
+                        state2.lang.set(crate::i18n::lang());
                     }
-                    if path_owned == ".my.lang" {
+                    if path_owned == ".my.i18n" {
                         let first = value.split(':').next().unwrap_or(&value).to_string();
-                        crate::i18n::init(&first);
+                        crate::i18n::init(&first).await;
+                        state2.lang.set(crate::i18n::lang());
                         crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
                     }
                     state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
@@ -781,7 +839,10 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         target: resolved.clone(),
         prompt: prompt.clone(),
     }));
-    state.push_system(tf("msg-focusing", &[("did", &resolved), ("prompt", &prompt)]));
+    state.push_system(tf(
+        "msg-focusing",
+        &[("did", &resolved), ("prompt", &prompt)],
+    ));
 }
 
 fn apply_config_to_dom(cfg: &EgoConfig) {
@@ -834,7 +895,8 @@ async fn resolve_and_traverse(
             let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
                 // Use the session resolver — it owns the gateway URL, has a
                 // positive cache, and falls back to public gateways automatically.
-                let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone()) else {
+                let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+                else {
                     state.push_error(t("msg-link-not-connected"));
                     return;
                 };
@@ -845,15 +907,22 @@ async fn resolve_and_traverse(
                     .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
             } else {
                 // Bare CID — fetch from local gateway.
-                let url = format!("{}ipfs/{link}", crate::transport::connection::LOCAL_GATEWAY_URL);
+                let url = format!(
+                    "{}ipfs/{link}",
+                    crate::transport::connection::LOCAL_GATEWAY_URL
+                );
                 match fetch_url_text(&url).await {
-                    Ok(t) => serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string()),
+                    Ok(t) => {
+                        serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
+                    }
                     Err(e) => Err(e),
                 }
             };
             match val {
                 Ok(v) => {
-                    cache.update(|m| { m.insert(link.to_string(), v.clone()); });
+                    cache.update(|m| {
+                        m.insert(link.to_string(), v.clone());
+                    });
                     v
                 }
                 Err(e) => {
@@ -915,6 +984,12 @@ fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingR
     if verb_part != "edit" {
         return None;
     }
+    // Root ACL edit: `acl:edit`
+    if path_part == "acl" {
+        return Some(PendingRpcEdit::Acl {
+            target: target.to_string(),
+        });
+    }
     let mut parts = path_part.splitn(3, '.');
     if parts.next() != Some("entities") {
         return None;
@@ -928,13 +1003,11 @@ fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingR
             target: target.to_string(),
             entity_name,
         }),
-        Some(field) if !field.is_empty() => {
-            Some(PendingRpcEdit::Field {
-                target: target.to_string(),
-                entity_name,
-                field: field.to_string(),
-            })
-        }
+        Some(field) if !field.is_empty() => Some(PendingRpcEdit::Field {
+            target: target.to_string(),
+            entity_name,
+            field: field.to_string(),
+        }),
         _ => None,
     }
 }

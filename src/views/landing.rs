@@ -33,6 +33,7 @@ pub fn Landing() -> impl IntoView {
     let state_login = state.clone();
     let state_create = state.clone();
     let state_import = state.clone();
+    let lang = state.lang;
 
     view! {
         <div class="landing">
@@ -42,15 +43,15 @@ pub fn Landing() -> impl IntoView {
                     <button
                         class=move || if tab.get() == Tab::Login { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Login)
-                    >{t("tab-login")}</button>
+                    >{move || { let _ = lang.get(); t("tab-login") }}</button>
                     <button
                         class=move || if tab.get() == Tab::Create { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Create)
-                    >{t("tab-new-identity")}</button>
+                    >{move || { let _ = lang.get(); t("tab-new-identity") }}</button>
                     <button
                         class=move || if tab.get() == Tab::Import { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| tab.set(Tab::Import)
-                    >{t("tab-import")}</button>
+                    >{move || { let _ = lang.get(); t("tab-import") }}</button>
                 </div>
 
                 <Show when=move || tab.get() == Tab::Login>
@@ -124,7 +125,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                                     created_at: id.created_at,
                                 }));
                             }
-                                Err(e) => {
+                            Err(e) => {
                                 status.set(String::new());
                                 error.set(tf("error-wrong-passphrase", &[("e", &e)]));
                             }
@@ -157,6 +158,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
     };
 
     // Export selected identity
+    let lang = state.lang;
     let on_export = move |_| {
         let uname = selected.get_untracked();
         error.set(String::new());
@@ -184,8 +186,18 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                         <li
                             class=move || if selected.get() == u2 { "selected" } else { "" }
                             on:click={
-
-                                move |_| selected.set(u3.clone())
+                                move |_| {
+                                    let uname = u3.clone();
+                                    selected.set(uname.clone());
+                                    spawn_local(async move {
+                                        if let Ok(cfg) = restore_config(&uname).await {
+                                            if let Some(lang_code) = cfg.get(".my.i18n").map(|s| s.to_string()) {
+                                                crate::i18n::init(&lang_code).await;
+                                                lang.set(crate::i18n::lang());
+                                            }
+                                        }
+                                    });
+                                }
                             }
                         >{u.clone()}</li>
                     }
@@ -193,7 +205,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             />
         </ul>
         <div class="form-row">
-            <label>{t("label-passphrase")}</label>
+            <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
             <input
                 type="password"
                 placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
@@ -206,8 +218,8 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
             />
         </div>
         <div class="btn-row">
-            <button class="btn" on:click=on_login>{t("btn-login")}</button>
-            <button class="btn btn-sm" on:click=on_export>{t("btn-export")}</button>
+            <button class="btn" on:click=on_login>{move || { let _ = lang.get(); t("btn-login") }}</button>
+            <button class="btn btn-sm" on:click=on_export>{move || { let _ = lang.get(); t("btn-export") }}</button>
         </div>
     }
 }
@@ -223,6 +235,7 @@ fn CreatePanel(
     let username = RwSignal::new(String::new());
     let password = RwSignal::new(String::new());
     let password2 = RwSignal::new(String::new());
+    let lang = state.lang;
 
     let on_create = move |_| {
         let uname = username.get_untracked();
@@ -275,7 +288,7 @@ fn CreatePanel(
 
     view! {
         <div class="form-row">
-            <label>{t("label-username")}</label>
+            <label>{move || { let _ = lang.get(); t("label-username") }}</label>
             <input
                 type="text"
                 placeholder="alice"
@@ -287,7 +300,7 @@ fn CreatePanel(
             />
         </div>
         <div class="form-row">
-            <label>{t("label-passphrase")}</label>
+            <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
             <input
                 type="password"
                 placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
@@ -299,7 +312,7 @@ fn CreatePanel(
             />
         </div>
         <div class="form-row">
-            <label>{t("label-confirm-passphrase")}</label>
+            <label>{move || { let _ = lang.get(); t("label-confirm-passphrase") }}</label>
             <input
                 type="password"
                 placeholder="••••••••"
@@ -311,10 +324,10 @@ fn CreatePanel(
             />
         </div>
         <p class="dimmed" style="font-size:0.8rem">
-            {t("passphrase-warning")}
+            {move || { let _ = lang.get(); t("passphrase-warning") }}
         </p>
         <div class="btn-row">
-            <button class="btn" on:click=on_create>{t("btn-generate")}</button>
+            <button class="btn" on:click=on_create>{move || { let _ = lang.get(); t("btn-generate") }}</button>
         </div>
     }
 }
@@ -327,7 +340,7 @@ fn ImportPanel(
     status: RwSignal<String>,
     error: RwSignal<String>,
 ) -> impl IntoView {
-    let _ = state;
+    let lang = state.lang;
 
     let on_file_change = move |ev: web_sys::Event| {
         let target = ev.target().unwrap();
@@ -349,10 +362,9 @@ fn ImportPanel(
                                     status.set(String::new());
                                     spawn_local(async move {
                                         match save_identity(&un, &ej).await {
-                                            Ok(()) => status.set(tf(
-                                                "status-imported",
-                                                &[("name", &un)],
-                                            )),
+                                            Ok(()) => {
+                                                status.set(tf("status-imported", &[("name", &un)]))
+                                            }
                                             Err(e) => error.set(e),
                                         }
                                     });
@@ -374,7 +386,7 @@ fn ImportPanel(
 
     view! {
         <p class="dimmed" style="font-size:0.85rem;margin-bottom:1rem">
-            {t("import-help")}
+            {move || { let _ = lang.get(); t("import-help") }}
         </p>
         <input
             type="file"

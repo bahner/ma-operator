@@ -1,0 +1,124 @@
+# zion — Tok Pisin
+lang-name = Tok Pisin
+
+# ── Landing page ──────────────────────────────────────────────────────────
+tab-login = lagin
+tab-new-identity = nupela identiti
+tab-import = impotim
+label-passphrase = pasfreis
+label-username = nem bilong yuzah
+label-confirm-passphrase = konfomim pasfreis
+btn-login = lagin
+btn-export = ekspotim
+btn-generate = mekim
+passphrase-warning = Lusim pasfreis = lusim identiti. I no gat wei bilong kisim bek.
+import-help = Makim .zion.json fail i bin ekspotim. Banis i stap ensekrip.
+status-unlocking = i openim...
+status-generating = i mekim identiti...
+status-reading-file = i ritim fail...
+status-imported = impotim '{ $name }' — senisim go long Login tab
+error-wrong-passphrase = pasfreis i no stret: { $e }
+error-identity-not-found = identiti '{ $name }' i no painim
+error-username-required = yuzah nem i mas kamap
+error-passphrase-required = pasfreis i mas kamap
+error-passphrases-no-match = pasfreis i no mach
+
+# ── Terminal system messages ──────────────────────────────────────────────
+msg-logged-in = zion v{ $version } — lagin olsem { $username }
+msg-type-help = Raitim .help bilong lukim lis bilong komand.
+msg-connecting = i konek long iroh...
+msg-iroh-ready = iroh poin i redi
+msg-iroh-failed = iroh: { $e }
+msg-blocked = ⊗ blok [{ $cap }]: { $from }
+msg-focus-cleared = fokus i klia pinis
+msg-focusing = fokus { $did } olsem { $prompt }
+msg-set = { $path }: { $value }
+msg-deleted = rausim { $path } ({ $count } lain)
+msg-read-only = { $path } i ritim tasol
+msg-subtree-set = { $path } em i wan sabkri; i no orait long putim
+msg-ancestor-leaf = wan ansesta bilong { $path } em i wan lif; i no orait long karamapim
+msg-key-not-found = ki i no painim: { $path }
+msg-no-match = i no gat mach
+msg-link-not-connected = erò kisim link: i no konek
+msg-link-fetch-error = erò kisim link: { $e }
+msg-link-key-not-found = ki `{ $key }` i no painim insait long dokumen i bin linkimap
+
+# ── Alias validation ──────────────────────────────────────────────────────
+err-alias-name-empty = nem bilong alias i no ken i emptipela
+err-alias-has-fragment = nem bilong alias i no ken gat '#'
+err-alias-value-fragment = valiu bilong alias i mas i stap did:ma:<ipns> tasol (no gat fragmen)
+err-alias-value-path = valiu bilong alias i mas i stap did:ma:<ipns> tasol (no gat pat)
+err-alias-not-did = valiu bilong alias i mas stat long did:ma:
+err-unknown-alias = i no save alias: @{ $name }
+err-bare-did = i ekspektim did:ma:<ipns> tasol (no gat fragmen o pat), painim { $did }
+
+# ── Editor ────────────────────────────────────────────────────────────────
+btn-save = Seivim
+btn-eval = Evaluetim
+btn-cancel = Kanselim
+btn-close = Klosim
+btn-reply = Bekim
+btn-publish = Publishim
+msg-reply-sent = bekim i bin salim
+msg-reply-failed = bekim i no wok: { $e }
+msg-entity-publish-sent = entiti { $name }: publish i bin salim
+msg-entity-publish-failed = publish bilong entiti i no wok: { $e }
+msg-field-publish-sent = entiti { $name }.{ $field }: publish i bin salim
+msg-field-publish-failed = publish bilong fil i no wok: { $e }
+msg-acl-publish-sent = runtime ACL: publish i bin salim
+msg-acl-publish-failed = runtime ACL publish i no wok: { $e }
+msg-yaml-error = YAML erò: { $e }
+msg-editor-saved = { $path }:seivim
+msg-fetch-review = kisim { $cid } — lukim gut pastaim bipo evaluetim
+msg-fetch-failed = kisim { $cid }: { $e }
+
+# ── Verbs — inbox ─────────────────────────────────────────────────────────
+inbox-empty = inboks i emptipela
+inbox-entry-not-found = inboks entri { $n } i no painim
+inbox-no-message-id = inboks entri { $n } i no gat message_id
+inbox-no-verb = i no gat vèb `{ $verb }` bilong inboks entri { $n }
+
+# ── Verbs — runtime ───────────────────────────────────────────────────────
+discover-fetch-failed = discoveri i no wok long { $url }: { $e }
+discover-json-error = discoveri i no wok: JSON i no stret long { $url }: { $e }
+discover-missing-did = discoveri i no wok: status.json i no gat `did` fil
+discover-invalid-did = discoveri i no wok: i ekspektim `did` i stat long did:ma:, painim `{ $did }`
+discover-no-endpoint = woning discoveri: `endpoint_id` i no stap long status.json; seivim DID tasol
+discover-success = ma discoveri long { $url }
+discover-did-line = DID: { $did }
+discover-alias-hint =   alias @間 i mekim — publishim wantaim: .my.identity:publish @間
+claim-success = Runtime klemim bilong { $did }
+claim-conflict = Runtime i klemim pinis long narapela identiti
+claim-http-failed = klem i no wok: HTTP { $status }
+claim-error = klem i no wok: { $e }
+claim-no-session = i no lagin; lagin pastaim bilong klemim runtime
+runtime-no-verb = i no gat vèb `{ $verb }` bilong { $path }
+
+# ── Verbs — ACL ───────────────────────────────────────────────────────────
+acl-reset = .my.acl i resit (opim olgeta)
+acl-persist-error = seivim erò: { $e }
+acl-no-verb = i no gat vèb `{ $verb }` bilong .my.acl
+
+# ── Verbs — identity ─────────────────────────────────────────────────────
+publish-usage = yusim olsem: .my.identity:publish <did-o-alias>
+
+# ── Verbs — documents ────────────────────────────────────────────────────
+doc-content-empty = { $path }.content i emptipela
+doc-save-first = { $path }.content i emptipela — seivim pastaim
+doc-missing-name = nem bilong dokumen i no stap
+doc-publish-usage = yusim olsem: .my.doc.<nem>:publish <publishman>
+doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>:publish-ipld <publishman>
+doc-publish-failed = publishim { $path }: { $e }
+doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
+doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
+doc-fetch-done = kisim { $cid } → { $path }.content (i noران)
+doc-fetch-failed = kisim { $cid }: { $e }
+doc-fetch-usage = yusim olsem: .my.doc.<nem>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid i no putim
+doc-no-verb = i no gat vèb `{ $verb }` bilong { $path }
+path-no-verb = i no gat vèb `{ $verb }` bilong { $path }
+
+# ── Verbs — lang ─────────────────────────────────────────────────────────
+lang-list-header = Tok ples i gat (.my.i18n: <code> bilong putim):

@@ -57,6 +57,7 @@ src/
     input.rs            — readline input component
     editor.rs           — CodeMirror 6 modal (Standard / View / Reply modes)
     screensaver.rs      — idle screensaver
+  i18n.rs              — async FTL fetch, BCP-47 normalise, t()/tf() helpers
   core/
     commands.rs         — command constants
     entries.rs          — terminal entry types (System, Error, Sent, Received…)
@@ -65,6 +66,9 @@ www/
   editor.js             — CodeMirror 6 shim; exposes window.maEditor
 style/
   ego.css
+lang/                   — Fluent (FTL) translation files; one per BCP-47 tag
+  en.ftl                — canonical source; defines all keys
+  lang/*.ftl            — all other supported locales
 index.html
 Trunk.toml
 Makefile
@@ -93,6 +97,9 @@ Makefile
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
 - [x] `.my.間:discover` — probes localhost:5003, creates `@間` alias, persists config
+- [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.lang`
+- [x] Reactive UI language — landing page rerenders on profile switch / `.my.lang` change
+- [x] `ma.type = "agent"` and `ma.lang` in published DID documents
 
 ## Pending / not yet implemented
 
@@ -267,8 +274,114 @@ on nested reactive closures).
 - `send_rpc(target_did, verb, args)` — sends on `RPC_PROTOCOL_ID`.
 - `send_text_reply(target_did, body, reply_to_id)` — sends text reply with
   `reply_to` field set.
-- `publish_did_document(bundle, endpoint)` — uses
-  `bundle.build_document(ep.ma_extension())` to include all registered services.
+- `send_ipfs_publish(publisher_did)` — builds and signs the DID document via
+  `bundle.build_document(ma_ext)`, then sends it to the publisher.
+  The `ma:` extension always includes:
+  - `ma.type = "agent"` (via `MaExtension::kind("agent")`)
+  - `ma.lang = <lang>` — from `SESSION_LANG`, only if set
+  - `ma.services` — iroh transport strings for inbox + RPC
+
+---
+
+## Internationalisation — `src/i18n.rs` + `lang/`
+
+Translation strings use a lightweight subset of Fluent (FTL): `key = value`
+lines, `{ $var }` substitutions, `#`-prefixed comments. No attributes or
+selectors.
+
+### Runtime API
+
+```rust
+pub async fn init(lang: &str)          // fetch + parse FTL for a BCP-47 tag
+pub async fn init_from_browser()       // detect navigator.language and call init()
+pub fn t(key: &str) -> String          // look up key; returns key name on miss
+pub fn tf(key: &str, vars: &[(&str, &str)]) -> String  // look up with substitutions
+pub fn lang() -> String                // current active language code
+```
+
+### BCP-47 normalisation
+
+`normalize(lang)` splits on `-` / `_` and classifies each part by
+capitalisation:
+
+| Part form | Classification |
+|-----------|---------------|
+| all-lowercase | language subtag (e.g. `zh`, `nb`) |
+| Title-case 4 letters | script subtag (e.g. `Hans`, `Latn`) |
+| ALL-CAPS | region subtag (e.g. `TW`, `NO`) |
+
+Special case: `no` → `nb`.
+
+Returns a fallback candidate list from most- to least-specific, e.g.
+`zh-Hans-TW` → `["zh-Hans-TW", "zh-Hans", "zh"]`.
+The loader tries each candidate in order; falls back to `en` if none resolve.
+
+### Language preference
+
+- `SESSION_LANG` thread-local holds the active code for the current session.
+- `.my.lang` in `EgoConfig` persists the preference per profile.
+- On login: reads `.my.lang`; if absent, seeds it from `navigator.language`
+  and persists the config.
+- Profile click on landing page: reads `.my.lang` from the profile's config
+  and calls `i18n::init()` immediately, then updates `AppState.lang` signal.
+- Setting `.my.lang: <tag>` in the terminal takes effect immediately.
+
+### Reactivity in Leptos views
+
+`t()` returns a plain `String` evaluated once — it is **not** reactive by
+itself. To make UI text update when the language changes, read the
+`AppState.lang: RwSignal<String>` signal inside a closure:
+
+```rust
+let lang = state.lang;
+// In view!:
+{move || { let _ = lang.get(); t("some-key") }}
+```
+
+`AppState.lang` is updated after every `i18n::init()` call via
+`state.lang.set(crate::i18n::lang())`.
+
+### FTL file conventions
+
+- `lang/en.ftl` is the **canonical source** — it defines every key.
+- All other `lang/*.ftl` files mirror the same key set with translated values.
+- **When adding or changing any `t()` / `tf()` call**, update `en.ftl` first,
+  then add/update the same key in every other `lang/*.ftl` that exists.
+  Missing keys silently fall back to the key name string — never leave gaps.
+- Do not add attributes or selectors — the parser only handles `key = value`.
+- Variable placeholders use Fluent syntax: `{ $varname }`.
+
+### `lang-name` key
+
+Every `lang/*.ftl` file **must** contain a `lang-name` key whose value is the
+language's own name for itself (autonym), e.g. `lang-name = Norsk bokmål`.
+This is displayed by `.my.lang:list` and by `t("lang-name")` in the UI.
+
+### Adding a new language
+
+1. Create `lang/<code>.ftl` with all keys from `lang/en.ftl` translated,
+   including `lang-name = <autonym>` and `lang-list-header = <translated>`.
+2. Rebuild (`trunk build` / `cargo check`). `build.rs` scans `lang/*.ftl`,
+   reads the `lang-name` key from each file, and regenerates `SUPPORTED_LANGS`
+   automatically — no manual code change required.
+
+`SUPPORTED_LANGS` is written to `$OUT_DIR/supported_langs.rs` and
+`include!`-ed into `src/i18n.rs`. The list is kept sorted alphabetically
+by language code.
+
+### `.my.lang:list`
+
+Dispatch lives in `src/parser/verbs.rs` at path `.my.lang`, verb `list`.
+It iterates `crate::i18n::SUPPORTED_LANGS` (auto-generated at build time)
+and prints each entry as `  <code padded to 20>  <autonym>`.
+The header line comes from `t("lang-list-header")`.
+
+### BCP-47 private-use tags
+
+Tags containing `-x-` (e.g. `art-x-lyaric`) are passed through verbatim by
+`normalize()` in `src/i18n.rs` instead of being split part-by-part.
+When adding such a language, use the full tag as both the filename stem
+and the entry in `SUPPORTED_LANGS`.
 
 ---
 
@@ -309,6 +422,11 @@ never written out again.
 .config.poll_interval_ms    inbox poll interval (default 500)
 ```
 
+`.my.lang` — BCP-47 language tag for this profile (e.g. `nb`, `zh-Hans`).
+Auto-seeded from `navigator.language` on first login if absent.
+Changing it (`.my.lang: sv`) takes effect immediately and persists.
+Also included in the published DID document as `ma.lang`.
+
 ---
 
 ## Build & deploy
@@ -333,6 +451,11 @@ make check        # cargo check --target wasm32-unknown-unknown
 - No backend. Everything is static files + IndexedDB + iroh P2P.
 - Do not duplicate logic already in `ma-core` or `ma-did`.
 - Keep modules small and single-purpose. No giant files.
+- **When adding or changing any user-visible string** (any `t()` / `tf()` call),
+  update `lang/en.ftl` first (canonical source), then propagate the key with a
+  translated value to **every** `lang/*.ftl` file that exists at that time.
+  Never leave a key missing from any locale file — missing keys fall back to
+  the key name, not to English.
 
 ---
 
