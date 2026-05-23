@@ -250,6 +250,7 @@ pub fn dispatch_verb(
             }
             "claim" => {
                 let claim_url = format!("{ma_base}/claim");
+                let status_url = format!("{ma_base}/status.json");
                 let our_did = match state.session.get_untracked() {
                     Some(sess) => sess.sender_did.clone(),
                     None => {
@@ -262,6 +263,45 @@ pub fn dispatch_verb(
                     match fetch_post_json(&claim_url, &body).await {
                         Ok(200) => {
                             state2.push_system(tf("claim-success", &[("did", &our_did)]));
+                            // Also fetch status to set .my.ma.did / .my.aliases.ma
+                            if let Ok(json_str) = fetch_url_text(&status_url).await {
+                                if let Ok(json) =
+                                    serde_json::from_str::<serde_json::Value>(&json_str)
+                                {
+                                    if let Some(did) =
+                                        json.get("did").and_then(|v| v.as_str())
+                                    {
+                                        let did = did.to_string();
+                                        let endpoint_id = json
+                                            .get("endpoint_id")
+                                            .and_then(|v| v.as_str())
+                                            .unwrap_or("")
+                                            .to_string();
+                                        config.update(|cfg| {
+                                            cfg.set(".my.ma.did", &did);
+                                            if !endpoint_id.is_empty() {
+                                                cfg.set(".my.ma.endpoint_id", &endpoint_id);
+                                            }
+                                            cfg.set(".my.aliases.ma", &did);
+                                        });
+                                        if let Some(sess) = state2.session.get_untracked() {
+                                            let username = sess.username.clone();
+                                            let cfg = config.get_untracked();
+                                            leptos::task::spawn_local(async move {
+                                                if let Err(e) = crate::config::persist_config(
+                                                    &username, &cfg,
+                                                )
+                                                .await
+                                                {
+                                                    web_sys::console::error_1(
+                                                        &format!("persist error: {e}").into(),
+                                                    );
+                                                }
+                                            });
+                                        }
+                                    }
+                                }
+                            }
                         }
                         Ok(409) => {
                             state2.push_error(t("claim-conflict"));
