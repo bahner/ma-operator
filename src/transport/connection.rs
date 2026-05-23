@@ -5,7 +5,7 @@ use ma_core::{
     INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_DELETE_REPLY,
     MESSAGE_TYPE_CRUD_EDIT_REPLY, MESSAGE_TYPE_CRUD_GET_REPLY, MESSAGE_TYPE_CRUD_SET_REPLY,
     MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
-    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID, CONTENT_TYPE_TERM,
 };
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
@@ -175,7 +175,7 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
         &sender_did,
         target_did,
         MESSAGE_TYPE_RPC,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
@@ -213,7 +213,7 @@ pub async fn send_rpc_bytes(
         &sender_did,
         target_did,
         MESSAGE_TYPE_RPC,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
@@ -371,7 +371,7 @@ pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, Strin
         &sender_did,
         target_did,
         MESSAGE_TYPE_CRUD_GET,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
@@ -397,7 +397,7 @@ pub async fn send_crud_edit(target_did: &str, path: &str) -> Result<String, Stri
         &sender_did,
         target_did,
         MESSAGE_TYPE_CRUD_EDIT,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
@@ -426,7 +426,7 @@ pub async fn send_crud_set(target_did: &str, path: &str, value: &str) -> Result<
         &sender_did,
         target_did,
         MESSAGE_TYPE_CRUD_SET,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
@@ -452,7 +452,7 @@ pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, St
         &sender_did,
         target_did,
         MESSAGE_TYPE_CRUD_DELETE,
-        "application/cbor",
+        CONTENT_TYPE_TERM,
         &body,
         &signing_key,
     )
