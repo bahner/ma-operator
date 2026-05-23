@@ -1,8 +1,9 @@
 .PHONY: serve dev clean publish check dist
 
 dist:
-	trunk build --release
+	trunk build $(TRUNK_OPTS)
 
+server: TRUNK_OPTS=
 serve: dist
 	python3 -m http.server 8000 -d dist
 
@@ -13,6 +14,7 @@ clean:
 	cargo clean
 	rm -rf dist
 
+publish: TRUNK_OPTS=--release
 publish: dist
 	@echo "Adding to IPFS..."
 	@ipfs add -r dist 2>&1 | tee /tmp/zion-ipfs-add.txt

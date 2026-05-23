@@ -86,7 +86,7 @@ discover-invalid-did = khám phá thất bại: `did` phải bắt đầu bằng
 discover-no-endpoint = cảnh báo khám phá: `endpoint_id` thiếu trong status.json; chỉ lưu DID
 discover-success = đã khám phá ma tại { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   đã tạo bí danh @間 — xuất bản: .my.identity:publish @間
+discover-alias-hint =   đã tạo bí danh @ma — xuất bản: .my.identity:publish @ma
 claim-success = Runtime đã được yêu cầu cho { $did }
 claim-conflict = Runtime đã được yêu cầu bởi danh tính khác
 claim-http-failed = yêu cầu thất bại: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          hiển thị tất cả cấu hình cá
 help-aliases =   .my.aliases                  danh sách bí danh
 help-aliases-set =   .my.aliases.<name>: <did>    thêm/cập nhật bí danh
 help-aliases-del =   .my.aliases.<name>:          xóa bí danh
-help-runtime-discover =   .my.runtime:discover          khám phá runtime cục bộ và tạo @間
-help-runtime-claim =   .my.runtime:claim             yêu cầu quyền sở hữu runtime bằng DID
+help-runtime-discover =   .my.ma:discover          khám phá runtime cục bộ và tạo @ma
+help-runtime-claim =   .my.ma:claim             yêu cầu quyền sở hữu runtime bằng DID
 help-identity =   .my.identity                 hiển thị cấu hình danh tính
 help-identity-did =   .my.identity.did             hiển thị DID của mình (chỉ đọc)
 help-identity-publish =   .my.identity:publish @pub    xuất bản DID qua dịch vụ xuất bản
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Ngôn ngữ có sẵn (đặt bằng .my.i18n: <code>):
+err-lang-not-found = không tìm thấy ngôn ngữ: { $lang }

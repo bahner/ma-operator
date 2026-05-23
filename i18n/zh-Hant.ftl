@@ -86,7 +86,7 @@ discover-invalid-did = 探索失敗：期望 `did` 以 did:ma: 開頭，得到 `
 discover-no-endpoint = 探索警告：status.json 中缺少 `endpoint_id`；僅儲存了 DID
 discover-success = 已在 { $url } 探索到 ma
 discover-did-line = DID: { $did }
-discover-alias-hint =   別名 @間 已建立 — 發佈指令: .my.identity:publish @間
+discover-alias-hint =   別名 @ma 已建立 — 發佈指令: .my.identity:publish @ma
 claim-success = 執行階段已為 { $did } 宣告
 claim-conflict = 執行階段已被另一身分宣告
 claim-http-failed = 宣告失敗：HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          顯示所有個人設定
 help-aliases =   .my.aliases                  列出別名
 help-aliases-set =   .my.aliases.<name>: <did>    新增/更新別名（純 DID，無 #fragment）
 help-aliases-del =   .my.aliases.<name>:          移除別名
-help-runtime-discover =   .my.runtime:discover          探索本地執行階段並建立 @間 別名
-help-runtime-claim =   .my.runtime:claim             用您的 DID 宣告執行階段所有權
+help-runtime-discover =   .my.ma:discover          探索本地執行階段並建立 @ma 別名
+help-runtime-claim =   .my.ma:claim             用您的 DID 宣告執行階段所有權
 help-identity =   .my.identity                 顯示身分設定
 help-identity-did =   .my.identity.did             顯示自己的 DID（唯讀）
 help-identity-publish =   .my.identity:publish @pub    透過發佈服務發佈自己的 DID
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              刪除文件
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 可用語言（使用 .my.i18n: <code> 設定）：
+err-lang-not-found = 未找到語言: { $lang }

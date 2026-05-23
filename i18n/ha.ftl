@@ -86,7 +86,7 @@ discover-invalid-did = bincike ya kasa: `did` dole ne ya fara da did:ma:, an sam
 discover-no-endpoint = gargadin bincike: `endpoint_id` yana rasa a status.json; an ajiye DID kawai
 discover-success = an gano ma a { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   an ƙirƙiri laƙabi @間 — wallafa da: .my.identity:publish @間
+discover-alias-hint =   an ƙirƙiri laƙabi @ma — wallafa da: .my.identity:publish @ma
 claim-success = an ɗauki Runtime don { $did }
 claim-conflict = wani asali ya riga ya ɗauki Runtime
 claim-http-failed = ɗaukar ya kasa: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          nuna duk saitunan sirri
 help-aliases =   .my.aliases                  jera laƙabai
 help-aliases-set =   .my.aliases.<name>: <did>    ƙara/sabunta laƙabi (bare DID, babu #fragment)
 help-aliases-del =   .my.aliases.<name>:          cire laƙabi
-help-runtime-discover =   .my.runtime:discover          gano runtime na gida kuma samar da laƙabi @間
-help-runtime-claim =   .my.runtime:claim             ɗauki mallakar runtime da DID ɗinka
+help-runtime-discover =   .my.ma:discover          gano runtime na gida kuma samar da laƙabi @ma
+help-runtime-claim =   .my.ma:claim             ɗauki mallakar runtime da DID ɗinka
 help-identity =   .my.identity                 nuna saitunan asali
 help-identity-did =   .my.identity.did             nuna DID ɗinka (karatu kawai)
 help-identity-publish =   .my.identity:publish @pub    wallafa DID ta hanyar sabis na wallafa
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              goge takarda
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Yarukan da ake da su (saita ta .my.i18n: <code>):
+err-lang-not-found = harshe ba a sami ba: { $lang }

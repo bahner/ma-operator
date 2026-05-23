@@ -86,7 +86,7 @@ discover-invalid-did = 검색 실패: `did`가 did:ma:로 시작해야 했으나
 discover-no-endpoint = 검색 경고: status.json에 `endpoint_id` 없음; DID만 저장됨
 discover-success = { $url }에서 ma 발견됨
 discover-did-line = DID: { $did }
-discover-alias-hint =   별칭 @間 생성됨 — 게시: .my.identity:publish @間
+discover-alias-hint =   별칭 @ma 생성됨 — 게시: .my.identity:publish @ma
 claim-success = { $did }에 대한 런타임 청구됨
 claim-conflict = 런타임이 이미 다른 신원에 의해 청구됨
 claim-http-failed = 청구 실패: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          모든 개인 설정 표시
 help-aliases =   .my.aliases                  별칭 목록
 help-aliases-set =   .my.aliases.<name>: <did>    별칭 추가/업데이트
 help-aliases-del =   .my.aliases.<name>:          별칭 제거
-help-runtime-discover =   .my.runtime:discover          로컬 런타임 검색 및 @間 생성
-help-runtime-claim =   .my.runtime:claim             DID로 런타임 소유권 청구
+help-runtime-discover =   .my.ma:discover          로컬 런타임 검색 및 @ma 생성
+help-runtime-claim =   .my.ma:claim             DID로 런타임 소유권 청구
 help-identity =   .my.identity                 신원 설정 표시
 help-identity-did =   .my.identity.did             자신의 DID 표시 (읽기 전용)
 help-identity-publish =   .my.identity:publish @pub    게시 서비스를 통해 DID 게시
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              문서 삭제
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 사용 가능한 언어 (.my.i18n: <code> 로 설정):
+err-lang-not-found = 언어를 찾을 수 없습니다: { $lang }

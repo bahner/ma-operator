@@ -334,6 +334,7 @@ thread_local! {
     pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
     pub static SESSION_RPC_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
+    pub static SESSION_CRUD_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
     pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
     pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);

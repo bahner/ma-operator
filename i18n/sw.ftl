@@ -86,7 +86,7 @@ discover-invalid-did = ugunduzi umeshindwa: ilitarajiwa `did` kuanza na did:ma:,
 discover-no-endpoint = onyo la ugunduzi: `endpoint_id` haipo katika status.json; DID tu ilihifadhiwa
 discover-success = ma imegunduliwa katika { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   jina la kubadilisha @間 limeundwa — chapisha na: .my.identity:publish @間
+discover-alias-hint =   jina la kubadilisha @ma limeundwa — chapisha na: .my.identity:publish @ma
 claim-success = Wakati wa utekelezaji umedaiwa kwa { $did }
 claim-conflict = Wakati wa utekelezaji tayari umedaiwa na utambulisho mwingine
 claim-http-failed = kudai kumeshindwa: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          onyesha usanidi wote wa kibinafsi
 help-aliases =   .my.aliases                  orodhesha majina ya kubadilisha
 help-aliases-set =   .my.aliases.<name>: <did>    ongeza/sasisha jina la kubadilisha (DID safi, bila #kipande)
 help-aliases-del =   .my.aliases.<name>:          ondoa jina la kubadilisha
-help-runtime-discover =   .my.runtime:discover          gundua wakati wa utekelezaji wa ndani na unda jina la kubadilisha @間
-help-runtime-claim =   .my.runtime:claim             dai wakati wa utekelezaji na DID yako
+help-runtime-discover =   .my.ma:discover          gundua wakati wa utekelezaji wa ndani na unda jina la kubadilisha @ma
+help-runtime-claim =   .my.ma:claim             dai wakati wa utekelezaji na DID yako
 help-identity =   .my.identity                 onyesha usanidi wa utambulisho
 help-identity-did =   .my.identity.did             onyesha DID yako mwenyewe (kusoma tu)
 help-identity-publish =   .my.identity:publish @pub    chapisha DID yako kupitia huduma ya mchapishaji
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<jina>:              futa hati
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Lugha zinazopatikana (weka kwa .my.i18n: <code>):
+err-lang-not-found = lugha haikupatikana: { $lang }

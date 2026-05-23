@@ -86,7 +86,7 @@ discover-invalid-did = wykrywanie nie powiodło się: oczekiwano `did` zaczynaj�
 discover-no-endpoint = ostrzeżenie wykrywania: `endpoint_id` nieobecny w status.json; zapisano tylko DID
 discover-success = ma wykryto pod { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 utworzony — opublikuj przez: .my.identity:publish @間
+discover-alias-hint =   alias @ma utworzony — opublikuj przez: .my.identity:publish @ma
 claim-success = Środowisko uruchomieniowe przejęte dla { $did }
 claim-conflict = Środowisko uruchomieniowe już przejęte przez inną tożsamość
 claim-http-failed = przejęcie nie powiodło się: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          pokaż całą konfigurację osobistą
 help-aliases =   .my.aliases                  wylistuj aliasy
 help-aliases-set =   .my.aliases.<name>: <did>    dodaj/zaktualizuj alias (czysty DID, bez #fragmentu)
 help-aliases-del =   .my.aliases.<name>:          usuń alias
-help-runtime-discover =   .my.runtime:discover          wykryj lokalne środowisko uruchomieniowe i utwórz alias @間
-help-runtime-claim =   .my.runtime:claim             przejmij środowisko uruchomieniowe swoim DID
+help-runtime-discover =   .my.ma:discover          wykryj lokalne środowisko uruchomieniowe i utwórz alias @ma
+help-runtime-claim =   .my.ma:claim             przejmij środowisko uruchomieniowe swoim DID
 help-identity =   .my.identity                 pokaż konfigurację tożsamości
 help-identity-did =   .my.identity.did             pokaż własny DID (tylko do odczytu)
 help-identity-publish =   .my.identity:publish @pub    opublikuj własny DID przez usługę wydawcy
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nazwa>:              usuń dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostępne języki (ustaw przez .my.i18n: <code>):
+err-lang-not-found = język nie znaleziony: { $lang }

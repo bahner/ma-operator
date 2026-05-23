@@ -86,7 +86,7 @@ discover-invalid-did = zisťovanie zlyhalo: očakávané `did` začínajúce did
 discover-no-endpoint = varovanie zisťovania: `endpoint_id` chýba v status.json; uložené len DID
 discover-success = ma zistené na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 vytvorený — publikujte cez: .my.identity:publish @間
+discover-alias-hint =   alias @ma vytvorený — publikujte cez: .my.identity:publish @ma
 claim-success = Runtime prevzatý pre { $did }
 claim-conflict = Runtime už prevzatý inou identitou
 claim-http-failed = prevzatie zlyhalo: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          zobraziť celú osobnú konfiguráciu
 help-aliases =   .my.aliases                  vypísať aliasy
 help-aliases-set =   .my.aliases.<name>: <did>    pridať/aktualizovať alias (čisté DID, bez #fragmentu)
 help-aliases-del =   .my.aliases.<name>:          odstrániť alias
-help-runtime-discover =   .my.runtime:discover          zistiť lokálny runtime a vytvoriť alias @間
-help-runtime-claim =   .my.runtime:claim             prevziať runtime svojím DID
+help-runtime-discover =   .my.ma:discover          zistiť lokálny runtime a vytvoriť alias @ma
+help-runtime-claim =   .my.ma:claim             prevziať runtime svojím DID
 help-identity =   .my.identity                 zobraziť konfiguráciu identity
 help-identity-did =   .my.identity.did             zobraziť vlastný DID (len na čítanie)
 help-identity-publish =   .my.identity:publish @pub    publikovať vlastný DID cez vydavateľskú službu
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<názov>:              vymazať dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostupné jazyky (nastaviť pomocou .my.i18n: <code>):
+err-lang-not-found = jazyk nenájdený: { $lang }

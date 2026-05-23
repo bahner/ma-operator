@@ -86,7 +86,7 @@ discover-invalid-did = felderítés sikertelen: a `did` did:ma:-vel kell kezdőd
 discover-no-endpoint = felderítési figyelmeztetés: `endpoint_id` hiányzik a status.json-ból; csak DID mentve
 discover-success = ma felderítve a következő helyen: { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   @間 álnév létrehozva — tegye közzé: .my.identity:publish @間
+discover-alias-hint =   @ma álnév létrehozva — tegye közzé: .my.identity:publish @ma
 claim-success = Futtatókörnyezet igénybe véve: { $did }
 claim-conflict = A futtatókörnyezetet már egy másik identitás igénybe vette
 claim-http-failed = igénybevétel sikertelen: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          összes személyes konfiguráció megje
 help-aliases =   .my.aliases                  álnevek listázása
 help-aliases-set =   .my.aliases.<name>: <did>    álnév hozzáadása/frissítése (tiszta DID, #töredék nélkül)
 help-aliases-del =   .my.aliases.<name>:          álnév eltávolítása
-help-runtime-discover =   .my.runtime:discover          helyi futtatókörnyezet felderítése és @間 álnév létrehozása
-help-runtime-claim =   .my.runtime:claim             futtatókörnyezet igénybevétele a DID-del
+help-runtime-discover =   .my.ma:discover          helyi futtatókörnyezet felderítése és @ma álnév létrehozása
+help-runtime-claim =   .my.ma:claim             futtatókörnyezet igénybevétele a DID-del
 help-identity =   .my.identity                 identitáskonfiguráció megjelenítése
 help-identity-did =   .my.identity.did             saját DID megjelenítése (csak olvasható)
 help-identity-publish =   .my.identity:publish @pub    saját DID közzététele a kiadói szolgáltatáson keresztül
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<név>:              dokumentum törlése
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Elérhető nyelvek (beállítás: .my.i18n: <code>):
+err-lang-not-found = a nyelv nem található: { $lang }

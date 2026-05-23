@@ -86,7 +86,7 @@ discover-invalid-did = keşif başarısız: `did` did:ma: ile başlamalıydı, a
 discover-no-endpoint = keşif uyarısı: status.json'da `endpoint_id` eksik; yalnızca DID depolandı
 discover-success = ma { $url } adresinde keşfedildi
 discover-did-line = DID: { $did }
-discover-alias-hint =   @間 takma adı oluşturuldu — yayımla: .my.identity:publish @間
+discover-alias-hint =   @ma takma adı oluşturuldu — yayımla: .my.identity:publish @ma
 claim-success = Çalışma zamanı { $did } için talep edildi
 claim-conflict = Çalışma zamanı başka bir kimlik tarafından zaten talep edildi
 claim-http-failed = talep başarısız: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          tüm kişisel yapılandırmayı göster
 help-aliases =   .my.aliases                  takma adları listele
 help-aliases-set =   .my.aliases.<name>: <did>    takma ad ekle/güncelle (salt DID)
 help-aliases-del =   .my.aliases.<name>:          takma adı kaldır
-help-runtime-discover =   .my.runtime:discover          yerel çalışma zamanını keşfet ve @間 oluştur
-help-runtime-claim =   .my.runtime:claim             DID'inle çalışma zamanı sahipliği talep et
+help-runtime-discover =   .my.ma:discover          yerel çalışma zamanını keşfet ve @ma oluştur
+help-runtime-claim =   .my.ma:claim             DID'inle çalışma zamanı sahipliği talep et
 help-identity =   .my.identity                 kimlik yapılandırmasını göster
 help-identity-did =   .my.identity.did             kendi DID'ini göster (salt okunur)
 help-identity-publish =   .my.identity:publish @pub    yayım servisi aracılığıyla DID yayımla
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              belgeyi sil
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Kullanılabilir diller (.my.i18n: <code> ile ayarlayın):
+err-lang-not-found = dil bulunamadı: { $lang }

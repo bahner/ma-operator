@@ -86,7 +86,7 @@ discover-invalid-did = yiytaade haaɗaaka: `did` fotde fuɗɗoraade did:ma:, taw
 discover-no-endpoint = kaaɗto yiytaade: `endpoint_id` tawaaka e status.json; DID tan mooftaama
 discover-success = ma yiytaama e { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   hesbu @間 hobbinaama — yettin e: .my.identity:publish @間
+discover-alias-hint =   hesbu @ma hobbinaama — yettin e: .my.identity:publish @ma
 claim-success = Runtime ɗaɓɓaama ko { $did }
 claim-conflict = Runtime ɗaɓɓaa ko ɗemngal goɗngal
 claim-http-failed = gollal haaɗaaka: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          hollu poti fikaji neɗɗaagu
 help-aliases =   .my.aliases                  listal hesbu
 help-aliases-set =   .my.aliases.<name>: <did>    tottiri/hollintu hesbu (bare DID, alaa #fragment)
 help-aliases-del =   .my.aliases.<name>:          yaltina hesbu
-help-runtime-discover =   .my.runtime:discover          yiytude runtime tiiɗnde e hobbaade hesbu @間
-help-runtime-claim =   .my.runtime:claim             ɗaɓɓude runtime DID maa
+help-runtime-discover =   .my.ma:discover          yiytude runtime tiiɗnde e hobbaade hesbu @ma
+help-runtime-claim =   .my.ma:claim             ɗaɓɓude runtime DID maa
 help-identity =   .my.identity                 hollu fikaji neɗɗaagu
 help-identity-did =   .my.identity.did             hollu DID maa (jannde tan)
 help-identity-publish =   .my.identity:publish @pub    yettin DID e batu yettindengal
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              yaltina takka
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Haɓɓe ndiyam goɗɗi (sett na .my.i18n: <code>):
+err-lang-not-found = hakkunde yolaani: { $lang }

@@ -203,6 +203,7 @@ pub fn Terminal() -> impl IntoView {
                 for incoming in transport::drain_inbox()
                     .into_iter()
                     .chain(transport::drain_rpc_inbox())
+                    .chain(transport::drain_crud_inbox())
                 {
                     // ACL gate — never filter replies (those are responses to
                     // our own outgoing messages, matched by reply_to message ID).
@@ -539,25 +540,40 @@ fn eval(
                     Some("say") => transport::send_chat(&target, &body).await,
                     Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
-                        // Detect `:entities.<name>[.<field>]:edit` with no body — record
-                        // so the poll loop can open the editor when the reply arrives.
-                        let pending_edit = if body.trim().is_empty() {
-                            detect_entity_edit(&target, v)
-                        } else {
-                            None
-                        };
-                        let res = transport::send_rpc(
-                            &target,
-                            v,
-                            &body.split_whitespace().collect::<Vec<_>>(),
-                        )
-                        .await;
-                        if let (Ok(ref msg_id), Some(edit)) = (&res, pending_edit) {
-                            state_async.pending_rpc_edits.update(|m| {
-                                m.insert(msg_id.clone(), edit);
-                            });
+                        match parse_crud_op(v, &body) {
+                            Some(CrudOp::Get(path)) => {
+                                transport::send_crud_get(&target, &path).await
+                            }
+                            Some(CrudOp::Edit(path)) => {
+                                transport::send_crud_edit(&target, &path).await
+                            }
+                            Some(CrudOp::Set(path, value)) => {
+                                transport::send_crud_set(&target, &path, &value).await
+                            }
+                            Some(CrudOp::Delete(path)) => {
+                                transport::send_crud_delete(&target, &path).await
+                            }
+                            None => {
+                                // Not a CRUD namespace — dispatch as RPC.
+                                let pending_edit = if body.trim().is_empty() {
+                                    detect_entity_edit(&target, v)
+                                } else {
+                                    None
+                                };
+                                let res = transport::send_rpc(
+                                    &target,
+                                    v,
+                                    &body.split_whitespace().collect::<Vec<_>>(),
+                                )
+                                .await;
+                                if let (Ok(ref msg_id), Some(edit)) = (&res, pending_edit) {
+                                    state_async.pending_rpc_edits.update(|m| {
+                                        m.insert(msg_id.clone(), edit);
+                                    });
+                                }
+                                res
+                            }
                         }
-                        res
                     }
                     None => transport::send_text(&target, &body).await,
                 };
@@ -674,12 +690,14 @@ fn eval_dot(
                 } else {
                     apply_config_to_dom(&cfg);
                     if path_owned == ".config.ui.language" {
-                        crate::i18n::init(&value).await;
+                        let _ = crate::i18n::init(&value).await;
                         state2.lang.set(crate::i18n::lang());
                     }
                     if path_owned == ".my.i18n" {
                         let first = value.split(':').next().unwrap_or(&value).to_string();
-                        crate::i18n::init(&first).await;
+                        if !crate::i18n::init(&first).await {
+                            state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
+                        }
                         state2.lang.set(crate::i18n::lang());
                         crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
                     }
@@ -971,6 +989,49 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
     text_val
         .as_string()
         .ok_or_else(|| "response is not a string".to_string())
+}
+
+// ── CRUD routing ──────────────────────────────────────────────────────────
+
+const CRUD_NAMESPACES: &[&str] = &["config", "entities", "kinds", "acl", "acls", "namespaces"];
+
+enum CrudOp {
+    Get(String),
+    Edit(String),
+    Set(String, String),
+    Delete(String),
+}
+
+/// Return a `CrudOp` if `verb` targets a CRUD namespace, otherwise `None`.
+///
+/// Grammar (`:` prefix on `verb` is stripped before matching):
+/// - `:ns[.path]`          → Get
+/// - `:ns[.path]:`         → Delete (empty body) or Set (body present)
+/// - `:ns[.path]:edit`     → Edit
+fn parse_crud_op(verb: &str, body: &str) -> Option<CrudOp> {
+    let v = verb.strip_prefix(':').unwrap_or(verb);
+    let root = v.split(['.', ':']).next().unwrap_or("");
+    if !CRUD_NAMESPACES.contains(&root) {
+        return None;
+    }
+    // verb ends with `:` — set or delete
+    if let Some(path) = v.strip_suffix(':') {
+        let atom = format!(":{path}");
+        return Some(if body.trim().is_empty() {
+            CrudOp::Delete(atom)
+        } else {
+            CrudOp::Set(atom, body.trim().to_string())
+        });
+    }
+    // verb contains `:` — only :edit is supported here
+    if let Some((path, op)) = v.split_once(':') {
+        return if op == "edit" {
+            Some(CrudOp::Edit(format!(":{path}")))
+        } else {
+            None
+        };
+    }
+    Some(CrudOp::Get(format!(":{v}")))
 }
 
 // ── Entity-edit helpers ───────────────────────────────────────────────────

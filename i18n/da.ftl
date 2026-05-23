@@ -86,7 +86,7 @@ discover-invalid-did = opdagelse mislykkedes: forventede `did` starter med did:m
 discover-no-endpoint = opdagelsesadvarsel: `endpoint_id` mangler i status.json; gemte kun DID
 discover-success = ma opdaget ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 oprettet — publicér med: .my.identity:publish @間
+discover-alias-hint =   alias @ma oprettet — publicér med: .my.identity:publish @ma
 claim-success = Kørselstid gjort krav på for { $did }
 claim-conflict = Kørselstid allerede gjort krav på af en anden identitet
 claim-http-failed = krav mislykkedes: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          vis al personlig konfiguration
 help-aliases =   .my.aliases                  list aliaser
 help-aliases-set =   .my.aliases.<name>: <did>    tilføj/opdater alias (bart DID, intet #fragment)
 help-aliases-del =   .my.aliases.<name>:          fjern alias
-help-runtime-discover =   .my.runtime:discover          opdagé lokal kørselstid og opret @間-alias
-help-runtime-claim =   .my.runtime:claim             gør krav på kørselstid med din DID
+help-runtime-discover =   .my.ma:discover          opdagé lokal kørselstid og opret @ma-alias
+help-runtime-claim =   .my.ma:claim             gør krav på kørselstid med din DID
 help-identity =   .my.identity                 vis identitetskonfiguration
 help-identity-did =   .my.identity.did             vis eget DID (skrivebeskyttet)
 help-identity-publish =   .my.identity:publish @pub    publicér eget DID via udgiver-tjeneste
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<navn>:              slet dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tilgængelige sprog (indstil med .my.i18n: <code>):
+err-lang-not-found = sproget ikke fundet: { $lang }

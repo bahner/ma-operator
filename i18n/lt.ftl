@@ -86,7 +86,7 @@ discover-invalid-did = aptikimas nepavyko: tikėtasi, kad `did` prasideda did:ma
 discover-no-endpoint = aptikimo įspėjimas: `endpoint_id` trūksta status.json; išsaugota tik DID
 discover-success = ma aptikta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   pseudonimas @間 sukurtas — publikuokite su: .my.identity:publish @間
+discover-alias-hint =   pseudonimas @ma sukurtas — publikuokite su: .my.identity:publish @ma
 claim-success = Vykdymo laikas pareikštas { $did }
 claim-conflict = Vykdymo laikas jau pareikštas kitos tapatybės
 claim-http-failed = pareikšimas nepavyko: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          rodyti visą asmeninę konfigūraciją
 help-aliases =   .my.aliases                  išvardyti pseudonimus
 help-aliases-set =   .my.aliases.<name>: <did>    pridėti/atnaujinti pseudonimą (grynas DID, be #fragmento)
 help-aliases-del =   .my.aliases.<name>:          pašalinti pseudonimą
-help-runtime-discover =   .my.runtime:discover          aptikti vietinį vykdymo laiką ir sukurti @間 pseudonimą
-help-runtime-claim =   .my.runtime:claim             pareikšti vykdymo laiką savo DID
+help-runtime-discover =   .my.ma:discover          aptikti vietinį vykdymo laiką ir sukurti @ma pseudonimą
+help-runtime-claim =   .my.ma:claim             pareikšti vykdymo laiką savo DID
 help-identity =   .my.identity                 rodyti tapatybės konfigūraciją
 help-identity-did =   .my.identity.did             rodyti savo DID (tik skaitomas)
 help-identity-publish =   .my.identity:publish @pub    publikuoti savo DID per leidėjo paslaugą
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Galimos kalbos (nustatyti su .my.i18n: <code>):
+err-lang-not-found = kalba nerasta: { $lang }

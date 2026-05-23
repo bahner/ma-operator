@@ -86,7 +86,7 @@ discover-invalid-did = शोध अयशस्वी: `did` did:ma: ने स
 discover-no-endpoint = शोध चेतावणी: status.json मध्ये `endpoint_id` नाही; फक्त DID संग्रहित
 discover-success = { $url } वर ma सापडला
 discover-did-line = DID: { $did }
-discover-alias-hint =   टोपणनाव @間 तयार केले — प्रकाशित करा: .my.identity:publish @間
+discover-alias-hint =   टोपणनाव @ma तयार केले — प्रकाशित करा: .my.identity:publish @ma
 claim-success = { $did } साठी रनटाइम दाखल केला
 claim-conflict = रनटाइम आधीच दुसऱ्या ओळखीने दाखल केला आहे
 claim-http-failed = दाखल करणे अयशस्वी: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          सर्व वैयक्तिक �
 help-aliases =   .my.aliases                  टोपणनावांची यादी
 help-aliases-set =   .my.aliases.<name>: <did>    टोपणनाव जोडा/अपडेट करा
 help-aliases-del =   .my.aliases.<name>:          टोपणनाव काढा
-help-runtime-discover =   .my.runtime:discover          स्थानिक रनटाइम शोधा आणि @間 तयार करा
-help-runtime-claim =   .my.runtime:claim             तुमच्या DID ने रनटाइम दाखल करा
+help-runtime-discover =   .my.ma:discover          स्थानिक रनटाइम शोधा आणि @ma तयार करा
+help-runtime-claim =   .my.ma:claim             तुमच्या DID ने रनटाइम दाखल करा
 help-identity =   .my.identity                 ओळख कॉन्फिग दाखवा
 help-identity-did =   .my.identity.did             स्वतःचे DID दाखवा (फक्त वाचनीय)
 help-identity-publish =   .my.identity:publish @pub    प्रकाशन सेवेद्वारे DID प्रकाशित करा
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              दस्तऐवज हटवा
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = उपलब्ध भाषा (.my.i18n: <code> ने सेट करा):
+err-lang-not-found = भाषा आढळली नाही: { $lang }

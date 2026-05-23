@@ -86,7 +86,7 @@ discover-invalid-did = argannoon hin milkaa'ne: `did` did:ma: irraa eegaluu qaba
 discover-no-endpoint = gorsa argannoo: `endpoint_id` status.json keessa hin jiru; DID qofa kuufame
 discover-success = ma { $url } irratti argame
 discover-did-line = DID: { $did }
-discover-alias-hint =   moggaasi @間 uumame — maxxansi: .my.identity:publish @間
+discover-alias-hint =   moggaasi @ma uumame — maxxansi: .my.identity:publish @ma
 claim-success = Runtime { $did }f fudhatame
 claim-conflict = Runtime eenyummaa biroon duraan fudhatameera
 claim-http-failed = fudhachuu hin milkaa'ne: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          qindaa'ina dhuunfaa hunda agarsiisi
 help-aliases =   .my.aliases                  moggaasalee tarreessi
 help-aliases-set =   .my.aliases.<name>: <did>    moggaasa ida'i/haaromsi (bare DID, #fragment hin qabu)
 help-aliases-del =   .my.aliases.<name>:          moggaasa haaqami
-help-runtime-discover =   .my.runtime:discover          runtime naannoo argadhu kaanis moggaasa @間 uumi
-help-runtime-claim =   .my.runtime:claim             DID keetiin runtime fudhadhu
+help-runtime-discover =   .my.ma:discover          runtime naannoo argadhu kaanis moggaasa @ma uumi
+help-runtime-claim =   .my.ma:claim             DID keetiin runtime fudhadhu
 help-identity =   .my.identity                 qindaa'ina eenyummaa agarsiisi
 help-identity-did =   .my.identity.did             DID kee agarsiisi (dubbisuu qofa)
 help-identity-publish =   .my.identity:publish @pub    tajaajiila maxxansaa dhaan DID maxxansi
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              galmee haaqami
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Afaanota jiran (.my.i18n: <code> tiin qabi):
+err-lang-not-found = afaan hin argamne: { $lang }

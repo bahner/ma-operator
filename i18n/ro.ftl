@@ -86,7 +86,7 @@ discover-invalid-did = descoperire eșuată: așteptat `did` începând cu did:m
 discover-no-endpoint = avertisment descoperire: `endpoint_id` absent în status.json; salvat doar DID
 discover-success = ma descoperit la { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 creat — publicați prin: .my.identity:publish @間
+discover-alias-hint =   alias @ma creat — publicați prin: .my.identity:publish @ma
 claim-success = Runtime revendicat pentru { $did }
 claim-conflict = Runtime deja revendicat de o altă identitate
 claim-http-failed = revendicare eșuată: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          afișează toată configurația persona
 help-aliases =   .my.aliases                  listează aliasuri
 help-aliases-set =   .my.aliases.<name>: <did>    adaugă/actualizează alias (DID pur, fără #fragment)
 help-aliases-del =   .my.aliases.<name>:          elimină alias
-help-runtime-discover =   .my.runtime:discover          descoperă runtime local și creează alias @間
-help-runtime-claim =   .my.runtime:claim             revendică runtime cu DID-ul tău
+help-runtime-discover =   .my.ma:discover          descoperă runtime local și creează alias @ma
+help-runtime-claim =   .my.ma:claim             revendică runtime cu DID-ul tău
 help-identity =   .my.identity                 afișează configurația identității
 help-identity-did =   .my.identity.did             afișează DID propriu (doar citire)
 help-identity-publish =   .my.identity:publish @pub    publică DID propriu prin serviciul editor
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nume>:              șterge document
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Limbi disponibile (setați cu .my.i18n: <code>):
+err-lang-not-found = limba nu a fost găsită: { $lang }

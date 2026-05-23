@@ -191,7 +191,10 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                                     selected.set(uname.clone());
                                     spawn_local(async move {
                                         if let Ok(cfg) = restore_config(&uname).await {
-                                            if let Some(lang_code) = cfg.get(".my.i18n").map(|s| s.to_string()) {
+                                            let lang_code = cfg.get(".my.i18n")
+                                                .or_else(|| cfg.get(".my.lang"))
+                                                .map(|s| s.to_string());
+                                            if let Some(lang_code) = lang_code {
                                                 crate::i18n::init(&lang_code).await;
                                                 lang.set(crate::i18n::lang());
                                             }

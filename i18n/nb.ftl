@@ -51,6 +51,7 @@ err-alias-value-path = aliasverdi må være en enkel did:ma:<ipns> (ingen sti)
 err-alias-not-did = aliasverdi må starte med did:ma:
 err-unknown-alias = ukjent alias: @{ $name }
 err-bare-did = forventet enkel did:ma:<ipns> (ingen fragment eller sti), fikk { $did }
+err-lang-not-found = språk ikke funnet: { $lang }
 
 # ── Redaktør ──────────────────────────────────────────────────────────────
 btn-save = Lagre
@@ -86,7 +87,7 @@ discover-invalid-did = oppdagelse feilet: forventet `did` å starte med did:ma:,
 discover-no-endpoint = oppdagelsesadvarsel: `endpoint_id` mangler i status.json; lagret kun DID
 discover-success = ma oppdaget ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 opprettet — publiser med: .my.identity:publish @間
+discover-alias-hint =   alias @ma opprettet — publiser med: .my.identity:publish @ma
 claim-success = Kjøretid gjort krav på for { $did }
 claim-conflict = Kjøretid allerede gjort krav på av en annen identitet
 claim-http-failed = krav feilet: HTTP { $status }
@@ -158,8 +159,8 @@ help-my =   .my                          vis all personlig konfigurasjon
 help-aliases =   .my.aliases                  list aliaser
 help-aliases-set =   .my.aliases.<name>: <did>    legg til/oppdater alias (enkel DID, ingen #fragment)
 help-aliases-del =   .my.aliases.<name>:          fjern alias
-help-runtime-discover =   .my.runtime:discover          oppdag lokal kjøretid og opprett @間-alias
-help-runtime-claim =   .my.runtime:claim             gjør krav på kjøretid med din DID
+help-runtime-discover =   .my.ma:discover          oppdag lokal kjøretid og opprett @ma-alias
+help-runtime-claim =   .my.ma:claim             gjør krav på kjøretid med din DID
 help-identity =   .my.identity                 vis identitetskonfigurasjon
 help-identity-did =   .my.identity.did             vis egen DID (skrivebeskyttet)
 help-identity-publish =   .my.identity:publish @pub    publiser egen DID via utgiver-tjeneste

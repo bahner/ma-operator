@@ -86,7 +86,7 @@ discover-invalid-did = uppgötvun mistókst: bjóst við að `did` byrjaði á d
 discover-no-endpoint = viðvörun uppgötvunar: `endpoint_id` vantar í status.json; vistuðum aðeins DID
 discover-success = ma uppgötvað við { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   samnefni @間 búið til — birtið með: .my.identity:publish @間
+discover-alias-hint =   samnefni @ma búið til — birtið með: .my.identity:publish @ma
 claim-success = Keyrsluumhverfi gert tilkall til fyrir { $did }
 claim-conflict = Keyrsluumhverfi þegar gert tilkall til af annarri auðkenni
 claim-http-failed = tilkall mistókst: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          sýna alla persónulega stillingu
 help-aliases =   .my.aliases                  lista samnefni
 help-aliases-set =   .my.aliases.<name>: <did>    bæta við/uppfæra samnefni (hreint DID, ekkert #brot)
 help-aliases-del =   .my.aliases.<name>:          fjarlægja samnefni
-help-runtime-discover =   .my.runtime:discover          uppgötva staðbundið keyrsluumhverfi og búa til @間-samnefni
-help-runtime-claim =   .my.runtime:claim             gera tilkall til keyrsluumhverfis með þínu DID
+help-runtime-discover =   .my.ma:discover          uppgötva staðbundið keyrsluumhverfi og búa til @ma-samnefni
+help-runtime-claim =   .my.ma:claim             gera tilkall til keyrsluumhverfis með þínu DID
 help-identity =   .my.identity                 sýna stillingu auðkennis
 help-identity-did =   .my.identity.did             sýna eigið DID (læst fyrir skrift)
 help-identity-publish =   .my.identity:publish @pub    birta eigið DID í gegnum útgefendasþjónustu
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nafn>:              eyða skjali
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tiltæk tungumál (stilla með .my.i18n: <code>):
+err-lang-not-found = tungumál fannst ekki: { $lang }

@@ -86,7 +86,7 @@ discover-invalid-did = penemuan gagal: `did` diharapkan dimulai dengan did:ma:, 
 discover-no-endpoint = peringatan penemuan: `endpoint_id` tidak ada di status.json; hanya DID tersimpan
 discover-success = ma ditemukan di { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 dibuat — terbitkan dengan: .my.identity:publish @間
+discover-alias-hint =   alias @ma dibuat — terbitkan dengan: .my.identity:publish @ma
 claim-success = Runtime diklaim untuk { $did }
 claim-conflict = Runtime sudah diklaim oleh identitas lain
 claim-http-failed = klaim gagal: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          tampilkan semua konfigurasi pribadi
 help-aliases =   .my.aliases                  daftar alias
 help-aliases-set =   .my.aliases.<name>: <did>    tambah/perbarui alias (DID tanpa fragment)
 help-aliases-del =   .my.aliases.<name>:          hapus alias
-help-runtime-discover =   .my.runtime:discover          temukan runtime lokal dan buat alias @間
-help-runtime-claim =   .my.runtime:claim             klaim kepemilikan runtime dengan DID Anda
+help-runtime-discover =   .my.ma:discover          temukan runtime lokal dan buat alias @ma
+help-runtime-claim =   .my.ma:claim             klaim kepemilikan runtime dengan DID Anda
 help-identity =   .my.identity                 tampilkan konfigurasi identitas
 help-identity-did =   .my.identity.did             tampilkan DID sendiri (hanya baca)
 help-identity-publish =   .my.identity:publish @pub    terbitkan DID melalui layanan penerbitan
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              hapus dokumen
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Bahasa yang tersedia (atur dengan .my.i18n: <code>):
+err-lang-not-found = bahasa tidak ditemukan: { $lang }

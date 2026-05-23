@@ -86,7 +86,7 @@ discover-invalid-did = ፍለጋ አልተሰራም: `did` did:ma: ለ መጀም
 discover-no-endpoint = የፍለጋ ማስጠንቀቂያ: `endpoint_id` status.json ውስጥ ጎደለ; DID ብቻ ተቀምጧል
 discover-success = ma { $url } ላይ ተገኘ
 discover-did-line = DID: { $did }
-discover-alias-hint =   ቅፅል ስም @間 ተፈጠረ — ያትሙ: .my.identity:publish @間
+discover-alias-hint =   ቅፅል ስም @ma ተፈጠረ — ያትሙ: .my.identity:publish @ma
 claim-success = Runtime ለ{ $did } ተጠየቀ
 claim-conflict = Runtime ቀደም ሲል በሌላ ማንነት ተጠይቋል
 claim-http-failed = ጥያቄ አልተሰራም: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          ሁሉንም የግል ቅንብሮች 
 help-aliases =   .my.aliases                  ቅፅል ስሞችን ዘርዝር
 help-aliases-set =   .my.aliases.<name>: <did>    ቅፅል ስም ጨምር/አዘምን (bare DID, #fragment የለም)
 help-aliases-del =   .my.aliases.<name>:          ቅፅል ስም አስወግድ
-help-runtime-discover =   .my.runtime:discover          ሁናቴ runtime ፈልግ እና ቅፅል ስም @間 ፍጠር
-help-runtime-claim =   .my.runtime:claim             DIDዎ በ runtime ባለቤትነት ጠይቁ
+help-runtime-discover =   .my.ma:discover          ሁናቴ runtime ፈልግ እና ቅፅል ስም @ma ፍጠር
+help-runtime-claim =   .my.ma:claim             DIDዎ በ runtime ባለቤትነት ጠይቁ
 help-identity =   .my.identity                 የማንነት ቅንብሮችን አሳይ
 help-identity-did =   .my.identity.did             ራስዎ DID አሳይ (ለማንበብ ብቻ)
 help-identity-publish =   .my.identity:publish @pub    DID በ publishing service ያሳትሙ
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = ያሉ ቋንቋዎች (.my.i18n: <ኮድ> ለማዘጋጀት):
+err-lang-not-found = ቋንቋ አልተገኘም: { $lang }

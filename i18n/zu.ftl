@@ -86,7 +86,7 @@ discover-invalid-did = ukutholwa kuhlulekile: `did` kufanele iqale nge-did:ma:, 
 discover-no-endpoint = isexwayiso sokutholwa: `endpoint_id` ayekho ku-status.json; i-DID kuphela igcinwe
 discover-success = ma itholakale ku-{ $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   isidlaliso @間 sidalwe — shicilela ngo: .my.identity:publish @間
+discover-alias-hint =   isidlaliso @ma sidalwe — shicilela ngo: .my.identity:publish @ma
 claim-success = i-Runtime ibonelelwe ku-{ $did }
 claim-conflict = i-Runtime isicelwe obunikazi obunye
 claim-http-failed = isicelo sihlulekile: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          bonisa zonke izilungiselelo zobunikazi
 help-aliases =   .my.aliases                  bala izidlaliso
 help-aliases-set =   .my.aliases.<name>: <did>    engeza/buyekeza isidlaliso (bare DID, akuna #fragment)
 help-aliases-del =   .my.aliases.<name>:          susa isidlaliso
-help-runtime-discover =   .my.runtime:discover          thola i-runtime yendawo futhi dala isidlaliso @間
-help-runtime-claim =   .my.runtime:claim             cela ukuphatha i-runtime nge-DID yakho
+help-runtime-discover =   .my.ma:discover          thola i-runtime yendawo futhi dala isidlaliso @ma
+help-runtime-claim =   .my.ma:claim             cela ukuphatha i-runtime nge-DID yakho
 help-identity =   .my.identity                 bonisa izilungiselelo zobunikazi
 help-identity-did =   .my.identity.did             bonisa i-DID yakho (ukufunda kuphela)
 help-identity-publish =   .my.identity:publish @pub    shicilela i-DID ngosizo lokushicilela
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              susa umbhalo
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Izilimi ezikhona (setha nge .my.i18n: <code>):
+err-lang-not-found = ulimi alutholwanga: { $lang }

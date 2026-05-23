@@ -86,7 +86,7 @@ discover-invalid-did = การค้นหาล้มเหลว: `did` ต�
 discover-no-endpoint = คำเตือนการค้นหา: `endpoint_id` ขาดใน status.json; บันทึกเฉพาะ DID
 discover-success = พบ ma ที่ { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   สร้างนามแฝง @間 แล้ว — เผยแพร่: .my.identity:publish @間
+discover-alias-hint =   สร้างนามแฝง @ma แล้ว — เผยแพร่: .my.identity:publish @ma
 claim-success = Runtime ถูกอ้างสิทธิ์สำหรับ { $did }
 claim-conflict = Runtime ถูกอ้างสิทธิ์โดยตัวตนอื่นแล้ว
 claim-http-failed = คำขอล้มเหลว: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          แสดงการกำหนดค
 help-aliases =   .my.aliases                  แสดงรายการนามแฝง
 help-aliases-set =   .my.aliases.<name>: <did>    เพิ่ม/อัปเดตนามแฝง
 help-aliases-del =   .my.aliases.<name>:          ลบนามแฝง
-help-runtime-discover =   .my.runtime:discover          ค้นหา runtime ท้องถิ่นและสร้าง @間
-help-runtime-claim =   .my.runtime:claim             อ้างสิทธิ์ runtime ด้วย DID ของคุณ
+help-runtime-discover =   .my.ma:discover          ค้นหา runtime ท้องถิ่นและสร้าง @ma
+help-runtime-claim =   .my.ma:claim             อ้างสิทธิ์ runtime ด้วย DID ของคุณ
 help-identity =   .my.identity                 แสดงการกำหนดค่า identity
 help-identity-did =   .my.identity.did             แสดง DID ของคุณ (อ่านอย่างเดียว)
 help-identity-publish =   .my.identity:publish @pub    เผยแพร่ DID ผ่านบริการเผยแพร่
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = ภาษาที่ใช้ได้ (ตั้งค่าด้วย .my.i18n: <code>):
+err-lang-not-found = ไม่พบภาษา: { $lang }

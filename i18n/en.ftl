@@ -51,6 +51,7 @@ err-alias-value-path = alias value must be bare did:ma:<ipns> (no path)
 err-alias-not-did = alias value must start with did:ma:
 err-unknown-alias = unknown alias: @{ $name }
 err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
+err-lang-not-found = language not found: { $lang }
 
 # ── Editor ────────────────────────────────────────────────────────────────
 btn-save = Save
@@ -86,7 +87,7 @@ discover-invalid-did = discover failed: expected `did` to start with did:ma:, go
 discover-no-endpoint = discover warning: `endpoint_id` missing in status.json; stored DID only
 discover-success = ma discovered at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 created — publish with: .my.identity:publish @間
+discover-alias-hint =   alias @ma created — publish with: .my.identity:publish @ma
 claim-success = Runtime claimed for { $did }
 claim-conflict = Runtime already claimed by another identity
 claim-http-failed = claim failed: HTTP { $status }
@@ -161,8 +162,8 @@ help-my =   .my                          show all personal config
 help-aliases =   .my.aliases                  list aliases
 help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)
 help-aliases-del =   .my.aliases.<name>:          remove alias
-help-runtime-discover =   .my.runtime:discover          discover local runtime and create @間 alias
-help-runtime-claim =   .my.runtime:claim             claim runtime ownership with your DID
+help-runtime-discover =   .my.ma:discover          discover local runtime and create @ma alias
+help-runtime-claim =   .my.ma:claim             claim runtime ownership with your DID
 help-identity =   .my.identity                 show identity config
 help-identity-did =   .my.identity.did             show own DID (read-only)
 help-identity-publish =   .my.identity:publish @pub    publish own DID via publisher service

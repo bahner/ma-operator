@@ -88,7 +88,7 @@ discover-invalid-did = diskova hámfalla: `did` gonya showxa did:ma: diching, to
 discover-no-endpoint = diskova beleti: `endpoint_id` na finyish wit status.json; DID oyedeng hol
 discover-success = ma diskova at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 mek finyish — sendowt wit: .my.identity:publish @間
+discover-alias-hint =   alias @ma mek finyish — sendowt wit: .my.identity:publish @ma
 claim-success = Runtime klaim fo { $did }
 claim-conflict = Runtime ta klaim by bifo selfmang
 claim-http-failed = kolowda hámfalla: HTTP { $status }
@@ -160,8 +160,8 @@ help-my =   .my                          lit kowl selfmang konfig
 help-aliases =   .my.aliases                  lit alias kowl
 help-aliases-set =   .my.aliases.<name>: <did>    mek/update alias (bare DID, na wit #fragment)
 help-aliases-del =   .my.aliases.<name>:          na-du alias
-help-runtime-discover =   .my.runtime:discover          diskova lokal runtime unte mek @間 alias
-help-runtime-claim =   .my.runtime:claim             klaim runtime wit yu DID
+help-runtime-discover =   .my.ma:discover          diskova lokal runtime unte mek @ma alias
+help-runtime-claim =   .my.ma:claim             klaim runtime wit yu DID
 help-identity =   .my.identity                 lit selfmang konfig
 help-identity-did =   .my.identity.did             lit yu DID (lit-seng oyedeng)
 help-identity-publish =   .my.identity:publish @pub    sendowt DID wit publishe
@@ -190,3 +190,4 @@ help-doc-del =   .my.doc.<name>:              na-du dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Belter languages (.my.i18n: <code> fo set):
+err-lang-not-found = langue introuvable : { $lang }

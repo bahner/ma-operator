@@ -86,7 +86,7 @@ discover-invalid-did = avastamine ebaõnnestus: oodati `did` algust did:ma:-ga, 
 discover-no-endpoint = avastamise hoiatus: `endpoint_id` puudub status.json-ist; salvestati ainult DID
 discover-success = ma avastati aadressil { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 loodud — avalda käsuga: .my.identity:publish @間
+discover-alias-hint =   alias @ma loodud — avalda käsuga: .my.identity:publish @ma
 claim-success = Käitusaeg nõutud kasutajale { $did }
 claim-conflict = Käitusaeg on juba teise identiteedi poolt nõutud
 claim-http-failed = nõudmine ebaõnnestus: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          kuva kogu isiklik konfiguratsioon
 help-aliases =   .my.aliases                  loetle aliased
 help-aliases-set =   .my.aliases.<name>: <did>    lisa/uuenda alias (puhas DID, ilma #fragmendita)
 help-aliases-del =   .my.aliases.<name>:          eemalda alias
-help-runtime-discover =   .my.runtime:discover          avasta kohalik käitusaeg ja loo @間-alias
-help-runtime-claim =   .my.runtime:claim             nõua käitusaeg oma DID-iga
+help-runtime-discover =   .my.ma:discover          avasta kohalik käitusaeg ja loo @ma-alias
+help-runtime-claim =   .my.ma:claim             nõua käitusaeg oma DID-iga
 help-identity =   .my.identity                 kuva identiteedi konfiguratsioon
 help-identity-did =   .my.identity.did             kuva oma DID (kirjutuskaitstud)
 help-identity-publish =   .my.identity:publish @pub    avalda oma DID avaldajateenuse kaudu
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nimi>:              kustuta dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Saadaolevad keeled (määra .my.i18n: <code>):
+err-lang-not-found = keelt ei leitud: { $lang }

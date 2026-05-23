@@ -86,7 +86,7 @@ discover-invalid-did = فشل الاكتشاف: متوقع أن يبدأ `did` �
 discover-no-endpoint = تحذير الاكتشاف: `endpoint_id` مفقود في status.json؛ تم تخزين DID فقط
 discover-success = تم اكتشاف ma في { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   تم إنشاء الاسم المستعار @間 — انشر بـ: .my.identity:publish @間
+discover-alias-hint =   تم إنشاء الاسم المستعار @ma — انشر بـ: .my.identity:publish @ma
 claim-success = تم المطالبة بوقت التشغيل لـ { $did }
 claim-conflict = وقت التشغيل مطالب به بالفعل من قِبل هوية أخرى
 claim-http-failed = فشلت المطالبة: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          عرض جميع الضبط الشخصي
 help-aliases =   .my.aliases                  قائمة الأسماء المستعارة
 help-aliases-set =   .my.aliases.<name>: <did>    إضافة/تحديث اسم مستعار
 help-aliases-del =   .my.aliases.<name>:          إزالة اسم مستعار
-help-runtime-discover =   .my.runtime:discover          اكتشاف وقت التشغيل المحلي وإنشاء @間
-help-runtime-claim =   .my.runtime:claim             المطالبة بملكية وقت التشغيل
+help-runtime-discover =   .my.ma:discover          اكتشاف وقت التشغيل المحلي وإنشاء @ma
+help-runtime-claim =   .my.ma:claim             المطالبة بملكية وقت التشغيل
 help-identity =   .my.identity                 عرض ضبط الهوية
 help-identity-did =   .my.identity.did             عرض DID الخاص (للقراءة فقط)
 help-identity-publish =   .my.identity:publish @pub    نشر DID عبر خدمة النشر
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              حذف المستند
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = اللغات المتاحة (عيّن بـ .my.i18n: <code>):
+err-lang-not-found = اللغة غير موجودة: { $lang }

@@ -86,7 +86,7 @@ discover-invalid-did = আবিষ্কার ব্যর্থ: `did` did:ma
 discover-no-endpoint = আবিষ্কার সতর্কতা: status.json-এ `endpoint_id` নেই; শুধুমাত্র DID সংরক্ষিত
 discover-success = { $url }-এ ma আবিষ্কৃত হয়েছে
 discover-did-line = DID: { $did }
-discover-alias-hint =   উপনাম @間 তৈরি হয়েছে — প্রকাশ করুন: .my.identity:publish @間
+discover-alias-hint =   উপনাম @ma তৈরি হয়েছে — প্রকাশ করুন: .my.identity:publish @ma
 claim-success = { $did }-এর জন্য রানটাইম দাবি করা হয়েছে
 claim-conflict = রানটাইম ইতিমধ্যে অন্য পরিচয় দ্বারা দাবি করা হয়েছে
 claim-http-failed = দাবি ব্যর্থ: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          সমস্ত ব্যক্তি�
 help-aliases =   .my.aliases                  উপনামের তালিকা
 help-aliases-set =   .my.aliases.<name>: <did>    উপনাম যোগ/আপডেট করুন
 help-aliases-del =   .my.aliases.<name>:          উপনাম মুছুন
-help-runtime-discover =   .my.runtime:discover          স্থানীয় রানটাইম আবিষ্কার করুন এবং @間 তৈরি করুন
-help-runtime-claim =   .my.runtime:claim             আপনার DID দিয়ে রানটাইম দাবি করুন
+help-runtime-discover =   .my.ma:discover          স্থানীয় রানটাইম আবিষ্কার করুন এবং @ma তৈরি করুন
+help-runtime-claim =   .my.ma:claim             আপনার DID দিয়ে রানটাইম দাবি করুন
 help-identity =   .my.identity                 পরিচয় কনফিগ দেখান
 help-identity-did =   .my.identity.did             নিজের DID দেখান (শুধুমাত্র পঠনযোগ্য)
 help-identity-publish =   .my.identity:publish @pub    প্রকাশনা সেবার মাধ্যমে DID প্রকাশ করুন
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = উপলব্ধ ভাষা (.my.i18n: <code> দিয়ে সেট করুন):
+err-lang-not-found = ভাষা পাওয়া যায়নি: { $lang }

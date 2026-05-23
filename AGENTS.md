@@ -96,7 +96,7 @@ Makefile
 - [x] Send reply (`.my.inbox.N:reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
-- [x] `.my.間:discover` — probes localhost:5003, creates `@間` alias, persists config
+- [x] `.my.ma:discover` — probes localhost:5003, creates `@ma` alias, persists config
 - [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.lang`
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.lang` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
@@ -157,26 +157,32 @@ it is needed to decrypt incoming messages.
 
 ---
 
-## `.my.間` — local ma runtime
+## `.my.ma` — local ma runtime
 
-`.my.間` is the config subtree for the user's local 間 runtime (`ma` daemon).
+`.my.ma` is the config subtree for the user's local `ma` daemon.
 It is set once via `:discover` and then used as the publish target.
 
 Leaves written by `:discover`:
 ```
-.my.間.did          DID of the local ma runtime
-.my.間.endpoint_id  iroh endpoint ID (from status.json)
+.my.ma.did          DID of the local ma runtime
+.my.ma.endpoint_id  iroh endpoint ID (from status.json)
 ```
-The alias `.my.aliases.間` is also created, pointing to `.my.間.did`.
+The alias `.my.aliases.ma` is also created, pointing to `.my.ma.did`.
+
+Configurable leaf:
+```
+.my.ma.url          base URL of the ma daemon (default: http://localhost:5003)
+```
+Set this if `ma` runs on a non-default port: `.my.ma.url: http://localhost:1234`
 
 Verb:
-- `.my.間:discover` — hits `http://localhost:5003/status.json`, reads `did`
-  and `endpoint_id`, writes the above leaves, creates alias `@間`, persists config.
+- `.my.ma:discover` — fetches `<.my.ma.url>/status.json`, reads `did`
+  and `endpoint_id`, writes the above leaves, creates alias `@ma`, persists config.
   Reports an actionable error if `ma` is not running.
 
 After discovery:
 ```
-.my.identity:publish @間
+.my.identity:publish @ma
 ```
 
 Prerequisites for publish to work:

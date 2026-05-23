@@ -86,7 +86,7 @@ discover-invalid-did = oppdaging mislykkast: forventa `did` byrjar med did:ma:, 
 discover-no-endpoint = oppdagingsåtvaring: `endpoint_id` manglar i status.json; lagra berre DID
 discover-success = ma oppdaga ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 oppretta — publiser med: .my.identity:publish @間
+discover-alias-hint =   alias @ma oppretta — publiser med: .my.identity:publish @ma
 claim-success = Køyretid gjort krav på for { $did }
 claim-conflict = Køyretid allereie gjort krav på av ein annan identitet
 claim-http-failed = krav mislykkast: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          vis all personleg konfigurasjon
 help-aliases =   .my.aliases                  list alias
 help-aliases-set =   .my.aliases.<name>: <did>    legg til/oppdater alias (bart DID, inkje #fragment)
 help-aliases-del =   .my.aliases.<name>:          fjern alias
-help-runtime-discover =   .my.runtime:discover          oppdag lokal køyretid og opprett @間-alias
-help-runtime-claim =   .my.runtime:claim             gjer krav på køyretid med din DID
+help-runtime-discover =   .my.ma:discover          oppdag lokal køyretid og opprett @ma-alias
+help-runtime-claim =   .my.ma:claim             gjer krav på køyretid med din DID
 help-identity =   .my.identity                 vis identitetskonfigurasjon
 help-identity-did =   .my.identity.did             vis eige DID (skriveverna)
 help-identity-publish =   .my.identity:publish @pub    publiser eige DID via utgjevar-teneste
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<namn>:              slett dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tilgjengelege språk (set med .my.i18n: <code>):
+err-lang-not-found = språk ikkje funne: { $lang }

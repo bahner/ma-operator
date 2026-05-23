@@ -86,7 +86,7 @@ discover-invalid-did = uppgáva misluktist: ventaði `did` byrja við did:ma:, f
 discover-no-endpoint = uppgáva-ávirkan: `endpoint_id` manglar í status.json; vistað einans DID
 discover-success = ma funnist við { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   samnefni @間 stovnað — birta við: .my.identity:publish @間
+discover-alias-hint =   samnefni @ma stovnað — birta við: .my.identity:publish @ma
 claim-success = Keyrsluumhvørvi gjørt krav á fyri { $did }
 claim-conflict = Keyrsluumhvørvi longu gjørt krav á av annarri samleika
 claim-http-failed = krøv misluktist: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          vís allar persónligar stillingar
 help-aliases =   .my.aliases                  lista samnefni
 help-aliases-set =   .my.aliases.<name>: <did>    legg afturat/dagfør samnefni (einans DID, einki #brot)
 help-aliases-del =   .my.aliases.<name>:          strika samnefni
-help-runtime-discover =   .my.runtime:discover          finn lokalt keyrsluumhvørvi og stovn @間-samnefni
-help-runtime-claim =   .my.runtime:claim             ger krav á keyrsluumhvørvið við títt DID
+help-runtime-discover =   .my.ma:discover          finn lokalt keyrsluumhvørvi og stovn @ma-samnefni
+help-runtime-claim =   .my.ma:claim             ger krav á keyrsluumhvørvið við títt DID
 help-identity =   .my.identity                 vís stillingar fyri samleika
 help-identity-did =   .my.identity.did             vís egna DID (skrivavørn)
 help-identity-publish =   .my.identity:publish @pub    birta egna DID í gongum útgevaraaðgerð
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<navn>:              strika skjal
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tøkar mál (sett við .my.i18n: <code>):
+err-lang-not-found = mál ikki funnið: { $lang }

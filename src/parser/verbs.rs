@@ -12,6 +12,10 @@ use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
 
+/// Default base URL for the local `ma` daemon.
+/// Override per-profile with `.my.ma.url: http://host:port`.
+const MA_URL: &str = "http://localhost:5003";
+
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
 /// fragment, no path). Accepts either an alias name or a literal DID.
 fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
@@ -160,22 +164,30 @@ pub fn dispatch_verb(
         }
     }
 
-    // ── .my.runtime ───────────────────────────────────────────────────────
-    // .my.runtime:discover — probe http://localhost:5003/status.json, configure
-    // the local ma runtime, and create the @間 alias automatically.
-    if path == ".my.runtime" {
+    // ── .my.ma ───────────────────────────────────────────────────────
+    // .my.ma:discover — probe http://localhost:5003/status.json, configure
+    // the local ma runtime, and create the @ma alias automatically.
+    if path == ".my.ma" {
+        // Read base URL once — .my.ma.url config key overrides MA_URL default.
+        let ma_base = {
+            let cfg = config.get_untracked();
+            cfg.get(".my.ma.url")
+                .unwrap_or(MA_URL)
+                .trim_end_matches('/')
+                .to_string()
+        };
         match verb {
             "discover" => {
-                const STATUS_URL: &str = "http://localhost:5003/status.json";
+                let status_url = format!("{ma_base}/status.json");
                 let state2 = state.clone();
                 leptos::task::spawn_local(async move {
-                    let json_str = match fetch_url_text(STATUS_URL).await {
+                    let json_str = match fetch_url_text(&status_url).await {
                         Ok(s) => s,
                         Err(e) => {
                             let hint = discover_fetch_hint(&e);
                             state2.push_error(tf(
                                 "discover-fetch-failed",
-                                &[("url", STATUS_URL), ("e", &e)],
+                                &[("url", &status_url), ("e", &e)],
                             ));
                             state2.push_error(hint);
                             return;
@@ -186,7 +198,7 @@ pub fn dispatch_verb(
                         Err(e) => {
                             state2.push_error(tf(
                                 "discover-json-error",
-                                &[("url", STATUS_URL), ("e", &e.to_string())],
+                                &[("url", &status_url), ("e", &e.to_string())],
                             ));
                             return;
                         }
@@ -213,11 +225,11 @@ pub fn dispatch_verb(
 
                     // Write config, then persist.
                     config.update(|cfg| {
-                        cfg.set(".my.runtime.did", &did);
+                        cfg.set(".my.ma.did", &did);
                         if !endpoint_id.is_empty() {
-                            cfg.set(".my.runtime.endpoint_id", &endpoint_id);
+                            cfg.set(".my.ma.endpoint_id", &endpoint_id);
                         }
-                        cfg.set(".my.aliases.間", &did);
+                        cfg.set(".my.aliases.ma", &did);
                     });
 
                     if let Some(sess) = state2.session.get_untracked() {
@@ -231,13 +243,13 @@ pub fn dispatch_verb(
                     }
 
                     state2.push_system(format!(
-                        "ma discovered at {STATUS_URL}\n  DID: {did}\n  alias @間 created — publish with: .my.identity:publish @間"
+                        "ma discovered at {status_url}\n  DID: {did}\n  alias @ma created — publish with: .my.identity:publish @ma"
                     ));
                 });
                 return Ok(());
             }
             "claim" => {
-                const CLAIM_URL: &str = "http://localhost:5003/claim";
+                let claim_url = format!("{ma_base}/claim");
                 let our_did = match state.session.get_untracked() {
                     Some(sess) => sess.sender_did.clone(),
                     None => {
@@ -247,7 +259,7 @@ pub fn dispatch_verb(
                 let state2 = state.clone();
                 leptos::task::spawn_local(async move {
                     let body = format!(r#"{{"owner":"{}"}}"#, our_did);
-                    match fetch_post_json(CLAIM_URL, &body).await {
+                    match fetch_post_json(&claim_url, &body).await {
                         Ok(200) => {
                             state2.push_system(tf("claim-success", &[("did", &our_did)]));
                         }
@@ -574,7 +586,7 @@ fn discover_fetch_hint(err: &str) -> &'static str {
     } else if err.contains("TypeError") || err.contains("Failed to fetch") {
         "Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser."
     } else {
-        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.runtime:discover`."
+        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.ma:discover`."
     }
 }
 

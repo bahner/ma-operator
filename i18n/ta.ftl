@@ -86,7 +86,7 @@ discover-invalid-did = கண்டுபிடித்தல் தோல்�
 discover-no-endpoint = கண்டுபிடித்தல் எச்சரிக்கை: status.json இல் `endpoint_id` இல்லை; DID மட்டும் சேமிக்கப்பட்டது
 discover-success = { $url } இல் ma கண்டுபிடிக்கப்பட்டது
 discover-did-line = DID: { $did }
-discover-alias-hint =   புனைப்பெயர் @間 உருவாக்கப்பட்டது — வெளியிடவும்: .my.identity:publish @間
+discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — வெளியிடவும்: .my.identity:publish @ma
 claim-success = { $did } க்கு இயக்க நேரம் கோரப்பட்டது
 claim-conflict = இயக்க நேரம் ஏற்கனவே மற்றொரு அடையாளத்தால் கோரப்பட்டுள்ளது
 claim-http-failed = கோரிக்கை தோல்வியடைந்தது: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          அனைத்து தனிப்�
 help-aliases =   .my.aliases                  புனைப்பெயர்கள் பட்டியல்
 help-aliases-set =   .my.aliases.<name>: <did>    புனைப்பெயர் சேர்/புதுப்பிக்கவும்
 help-aliases-del =   .my.aliases.<name>:          புனைப்பெயர் நீக்கவும்
-help-runtime-discover =   .my.runtime:discover          உள்ளூர் இயக்க நேரம் கண்டுபிடிக்கவும் மற்றும் @間 உருவாக்கவும்
-help-runtime-claim =   .my.runtime:claim             உங்கள் DID உடன் இயக்க நேரம் கோரவும்
+help-runtime-discover =   .my.ma:discover          உள்ளூர் இயக்க நேரம் கண்டுபிடிக்கவும் மற்றும் @ma உருவாக்கவும்
+help-runtime-claim =   .my.ma:claim             உங்கள் DID உடன் இயக்க நேரம் கோரவும்
 help-identity =   .my.identity                 அடையாள அமைவு காட்டவும்
 help-identity-did =   .my.identity.did             உங்கள் DID காட்டவும் (படிக்க மட்டும்)
 help-identity-publish =   .my.identity:publish @pub    வெளியீட்டு சேவை மூலம் DID வெளியிடவும்
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = கிடைக்கும் மொழிகள் (.my.i18n: <code> உடன் அமைக்கவும்):
+err-lang-not-found = மொழி கண்டுபிடிக்கப்படவில்லை: { $lang }

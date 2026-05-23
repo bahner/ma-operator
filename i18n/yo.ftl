@@ -86,7 +86,7 @@ discover-invalid-did = ìwárí kùnà: `did` gbọdọ̀ bẹ̀rẹ̀ pẹ̀lú
 discover-no-endpoint = ìkìlọ̀ ìwárí: `endpoint_id` àánù nínú status.json; a tọ́jú DID nìkan
 discover-success = a rí ma ní { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   a ṣẹ̀dá àpèlé @間 — tẹ jáde pẹ̀lú: .my.identity:publish @間
+discover-alias-hint =   a ṣẹ̀dá àpèlé @ma — tẹ jáde pẹ̀lú: .my.identity:publish @ma
 claim-success = a gba Runtime fún { $did }
 claim-conflict = ìdánimọ̀ mìíràn ti gba Runtime
 claim-http-failed = gbígba kùnà: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          ṣàfihàn gbogbo ìtúpalẹ̀ ara �
 help-aliases =   .my.aliases                  ṣàkójọ àwọn àpèlé
 help-aliases-set =   .my.aliases.<name>: <did>    ṣàfikún/ṣàtúnṣe àpèlé (bare DID, kò sí #fragment)
 help-aliases-del =   .my.aliases.<name>:          yọ àpèlé kúrò
-help-runtime-discover =   .my.runtime:discover          ṣàwárí runtime ẹbí kí o sì ṣẹ̀dá àpèlé @間
-help-runtime-claim =   .my.runtime:claim             gba ẹ̀tọ́ runtime pẹ̀lú DID rẹ
+help-runtime-discover =   .my.ma:discover          ṣàwárí runtime ẹbí kí o sì ṣẹ̀dá àpèlé @ma
+help-runtime-claim =   .my.ma:claim             gba ẹ̀tọ́ runtime pẹ̀lú DID rẹ
 help-identity =   .my.identity                 ṣàfihàn ìtúpalẹ̀ ìdánimọ̀
 help-identity-did =   .my.identity.did             ṣàfihàn DID rẹ (kíkà nìkan)
 help-identity-publish =   .my.identity:publish @pub    tẹ DID jáde nípasẹ̀ iṣẹ́ àtẹjáde
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              pa ìwé rẹ̀
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Àwọn èdè tó wà (.my.i18n: <code> láti ṣètò):
+err-lang-not-found = ede ko ri: { $lang }

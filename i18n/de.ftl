@@ -86,7 +86,7 @@ discover-invalid-did = Erkennung fehlgeschlagen: `did` sollte mit did:ma: beginn
 discover-no-endpoint = Erkennungswarnung: `endpoint_id` fehlt in status.json; nur DID gespeichert
 discover-success = ma erkannt bei { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   Alias @間 erstellt — veröffentlichen mit: .my.identity:publish @間
+discover-alias-hint =   Alias @ma erstellt — veröffentlichen mit: .my.identity:publish @ma
 claim-success = Laufzeit für { $did } beansprucht
 claim-conflict = Laufzeit bereits von einer anderen Identität beansprucht
 claim-http-failed = Beanspruchung fehlgeschlagen: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          alle persönlichen Konfigurationen anze
 help-aliases =   .my.aliases                  Aliase auflisten
 help-aliases-set =   .my.aliases.<name>: <did>    Alias hinzufügen/aktualisieren (reines DID, kein #Fragment)
 help-aliases-del =   .my.aliases.<name>:          Alias entfernen
-help-runtime-discover =   .my.runtime:discover          lokale Laufzeit erkennen und @間-Alias erstellen
-help-runtime-claim =   .my.runtime:claim             Laufzeit mit Ihrer DID beanspruchen
+help-runtime-discover =   .my.ma:discover          lokale Laufzeit erkennen und @ma-Alias erstellen
+help-runtime-claim =   .my.ma:claim             Laufzeit mit Ihrer DID beanspruchen
 help-identity =   .my.identity                 Identitätskonfiguration anzeigen
 help-identity-did =   .my.identity.did             eigene DID anzeigen (schreibgeschützt)
 help-identity-publish =   .my.identity:publish @pub    eigene DID über Herausgeber-Dienst veröffentlichen
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<name>:              Dokument löschen
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Verfügbare Sprachen (setzen mit .my.i18n: <code>):
+err-lang-not-found = Sprache nicht gefunden: { $lang }

@@ -86,7 +86,7 @@ discover-invalid-did = tsy nahomby ny fikarohana: `did` dia tsy maintsy manombok
 discover-no-endpoint = fampitandremana fikarohana: `endpoint_id` tsy hita ao amin'ny status.json; DID ihany no voatahiry
 discover-success = ma hita tao amin'ny { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   anarana fanampiny @間 noforonina — havoaka amin'ny: .my.identity:publish @間
+discover-alias-hint =   anarana fanampiny @ma noforonina — havoaka amin'ny: .my.identity:publish @ma
 claim-success = Runtime nalainy ho an'ny { $did }
 claim-conflict = Runtime efa nalainy mombamomba hafa
 claim-http-failed = fangatahana tsy nahomby: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          asehoy ny fikajiana manokana rehetra
 help-aliases =   .my.aliases                  lisitra anarana fanampiny
 help-aliases-set =   .my.aliases.<name>: <did>    ampiana/havaozina anarana fanampiny (bare DID, tsy misy #fragment)
 help-aliases-del =   .my.aliases.<name>:          esorina ny anarana fanampiny
-help-runtime-discover =   .my.runtime:discover          ahitana runtime toerana ary mamorona anarana fanampiny @間
-help-runtime-claim =   .my.runtime:claim             alao runtime amin'ny DID anao
+help-runtime-discover =   .my.ma:discover          ahitana runtime toerana ary mamorona anarana fanampiny @ma
+help-runtime-claim =   .my.ma:claim             alao runtime amin'ny DID anao
 help-identity =   .my.identity                 asehoy fikajiana mombamomba
 help-identity-did =   .my.identity.did             asehoy ny DID anao (famakiana ihany)
 help-identity-publish =   .my.identity:publish @pub    avoaka DID amin'ny serivisy famoahana
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Fiteny azo ampiasaina (apetraho amin'ny .my.i18n: <code>):
+err-lang-not-found = tsy hita ny teny: { $lang }

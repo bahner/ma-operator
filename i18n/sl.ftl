@@ -86,7 +86,7 @@ discover-invalid-did = odkrivanje ni uspelo: pričakovan `did` ki se začne z di
 discover-no-endpoint = opozorilo odkrivanja: `endpoint_id` manjka v status.json; shranjen samo DID
 discover-success = ma odkrito na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   vzdevek @間 ustvarjen — objavite z: .my.identity:publish @間
+discover-alias-hint =   vzdevek @ma ustvarjen — objavite z: .my.identity:publish @ma
 claim-success = Izvajanje zahtevano za { $did }
 claim-conflict = Izvajanje že zahtevano od druge identitete
 claim-http-failed = zahteva ni uspela: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          prikaži vso osebno konfiguracijo
 help-aliases =   .my.aliases                  izpiši vzdevke
 help-aliases-set =   .my.aliases.<name>: <did>    dodaj/posodobi vzdevek (čisti DID, brez #fragmenta)
 help-aliases-del =   .my.aliases.<name>:          odstrani vzdevek
-help-runtime-discover =   .my.runtime:discover          odkrij lokalno izvajanje in ustvari vzdevek @間
-help-runtime-claim =   .my.runtime:claim             zahtevaj izvajanje s svojim DID-om
+help-runtime-discover =   .my.ma:discover          odkrij lokalno izvajanje in ustvari vzdevek @ma
+help-runtime-claim =   .my.ma:claim             zahtevaj izvajanje s svojim DID-om
 help-identity =   .my.identity                 prikaži konfiguracijo identitete
 help-identity-did =   .my.identity.did             prikaži lasten DID (samo za branje)
 help-identity-publish =   .my.identity:publish @pub    objavi lasten DID prek storitve založnika
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<ime>:              izbriši dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Razpoložljivi jeziki (nastavi z .my.i18n: <code>):
+err-lang-not-found = jezik ni najden: { $lang }

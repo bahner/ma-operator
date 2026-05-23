@@ -86,7 +86,7 @@ discover-invalid-did = nchọpụta erughị: `did` ga-amalite na did:ma:, nweta
 discover-no-endpoint = ọdịmara nchọpụta: `endpoint_id` dịghị na status.json; echekwara DID naanị
 discover-success = achọpụtara ma na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   emepụtara nchọkwa @間 — bipụta na: .my.identity:publish @間
+discover-alias-hint =   emepụtara nchọkwa @ma — bipụta na: .my.identity:publish @ma
 claim-success = akwụtara Runtime maka { $did }
 claim-conflict = njirimara ọzọ akwụtara Runtime otu oge
 claim-http-failed = ikwu akwụ erughị: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          gosi nhazi nke onwe gị niile
 help-aliases =   .my.aliases                  depụta nchọkwa
 help-aliases-set =   .my.aliases.<name>: <did>    tinye/mezigharị nchọkwa (bare DID, enweghị #fragment)
 help-aliases-del =   .my.aliases.<name>:          wepu nchọkwa
-help-runtime-discover =   .my.runtime:discover          chọpụta runtime obibi ma mepụtakwa nchọkwa @間
-help-runtime-claim =   .my.runtime:claim             kwụa akwụ runtime site na DID gị
+help-runtime-discover =   .my.ma:discover          chọpụta runtime obibi ma mepụtakwa nchọkwa @ma
+help-runtime-claim =   .my.ma:claim             kwụa akwụ runtime site na DID gị
 help-identity =   .my.identity                 gosi nhazi njirimara
 help-identity-did =   .my.identity.did             gosi DID gị (ịgụ naanị)
 help-identity-publish =   .my.identity:publish @pub    bipụta DID site na ọrụ ịbipụta
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Asụsụ ndị dị (.my.i18n: <code> were tọọ):
+err-lang-not-found = asụsụ ahụ achọtaghị: { $lang }

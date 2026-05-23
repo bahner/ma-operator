@@ -86,7 +86,7 @@ discover-invalid-did = 検出に失敗しました: `did` は did:ma: で始ま�
 discover-no-endpoint = 検出の警告: status.json に `endpoint_id` がありません。DID のみ保存しました
 discover-success = { $url } で ma を検出しました
 discover-did-line = DID: { $did }
-discover-alias-hint =   エイリアス @間 を作成しました — 次で公開してください: .my.identity:publish @間
+discover-alias-hint =   エイリアス @ma を作成しました — 次で公開してください: .my.identity:publish @ma
 claim-success = { $did } のランタイムを要求しました
 claim-conflict = ランタイムはすでに別のアイデンティティにより要求されています
 claim-http-failed = 要求に失敗しました: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          すべての個人設定を表示
 help-aliases =   .my.aliases                  エイリアスを一覧表示
 help-aliases-set =   .my.aliases.<name>: <did>    エイリアスを追加/更新 (純粋な DID、#フラグメントなし)
 help-aliases-del =   .my.aliases.<name>:          エイリアスを削除
-help-runtime-discover =   .my.runtime:discover          ローカルランタイムを検出し @間 エイリアスを作成
-help-runtime-claim =   .my.runtime:claim             自分の DID でランタイムを要求
+help-runtime-discover =   .my.ma:discover          ローカルランタイムを検出し @ma エイリアスを作成
+help-runtime-claim =   .my.ma:claim             自分の DID でランタイムを要求
 help-identity =   .my.identity                 アイデンティティ設定を表示
 help-identity-did =   .my.identity.did             自分の DID を表示 (読み取り専用)
 help-identity-publish =   .my.identity:publish @pub    発行サービスを通じて自分の DID を公開
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 利用可能な言語 (.my.i18n: <code> で設定):
+err-lang-not-found = 言語が見つかりません: { $lang }

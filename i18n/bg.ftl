@@ -86,7 +86,7 @@ discover-invalid-did = откриването е неуспешно: очакв�
 discover-no-endpoint = предупреждение при откриване: `endpoint_id` липсва в status.json; запазен само DID
 discover-success = ma е открито на { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдоним @間 създаден — публикувайте с: .my.identity:publish @間
+discover-alias-hint =   псевдоним @ma създаден — публикувайте с: .my.identity:publish @ma
 claim-success = Средата за изпълнение е заявена за { $did }
 claim-conflict = Средата за изпълнение вече е заявена от друга идентичност
 claim-http-failed = заявяването е неуспешно: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          показва цялата лична 
 help-aliases =   .my.aliases                  изброява псевдоними
 help-aliases-set =   .my.aliases.<name>: <did>    добавя/актуализира псевдоним (чисто DID, без #фрагмент)
 help-aliases-del =   .my.aliases.<name>:          премахва псевдоним
-help-runtime-discover =   .my.runtime:discover          открива локална среда за изпълнение и създава псевдоним @間
-help-runtime-claim =   .my.runtime:claim             заявява средата за изпълнение с вашия DID
+help-runtime-discover =   .my.ma:discover          открива локална среда за изпълнение и създава псевдоним @ma
+help-runtime-claim =   .my.ma:claim             заявява средата за изпълнение с вашия DID
 help-identity =   .my.identity                 показва конфигурацията на идентичността
 help-identity-did =   .my.identity.did             показва собствения DID (само за четене)
 help-identity-publish =   .my.identity:publish @pub    публикува собствения DID чрез услугата на издателя
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<ime>:              изтрива документ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Налични езици (задайте с .my.i18n: <code>):
+err-lang-not-found = езикът не е намерен: { $lang }

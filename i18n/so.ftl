@@ -86,7 +86,7 @@ discover-invalid-did = ogaanshaha ku guuldareystay: `did` waa inuu ku billowdo d
 discover-no-endpoint = digniin ogaanshaha: `endpoint_id` ka maqan status.json; DID oo keliya la keydiay
 discover-success = ma laga ogaaday { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   magaca kale @間 la abuuray — daabac khadkan: .my.identity:publish @間
+discover-alias-hint =   magaca kale @ma la abuuray — daabac khadkan: .my.identity:publish @ma
 claim-success = Runtime waxaa loo hantiyay { $did }
 claim-conflict = Runtime aqoonsi kale ayaa hore u hantiyay
 claim-http-failed = codsigii ku guuldareystay: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          tus dhammaan dejintada shakhsiga
 help-aliases =   .my.aliases                  liisko magacyada kale
 help-aliases-set =   .my.aliases.<name>: <did>    ku dar/cusbooneysii magaca kale (bare DID, #fragment la'aan)
 help-aliases-del =   .my.aliases.<name>:          ka saar magaca kale
-help-runtime-discover =   .my.runtime:discover          ogaw runtime deegaanka oo abuur magaca kale @間
-help-runtime-claim =   .my.runtime:claim             hantida runtime DID-kaagana
+help-runtime-discover =   .my.ma:discover          ogaw runtime deegaanka oo abuur magaca kale @ma
+help-runtime-claim =   .my.ma:claim             hantida runtime DID-kaagana
 help-identity =   .my.identity                 tus dejinta aqoonsiga
 help-identity-did =   .my.identity.did             tus DID-kaaga (akhrin oo keliya)
 help-identity-publish =   .my.identity:publish @pub    DID u daabac adeegga daabacaadda
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Luqadaha la heli karo (ku dejiso .my.i18n: <code>):
+err-lang-not-found = luqadda lama helin: { $lang }

@@ -86,7 +86,7 @@ discover-invalid-did = découverte échouée : `did` devrait commencer par did:m
 discover-no-endpoint = avertissement découverte : `endpoint_id` absent de status.json ; seul le DID enregistré
 discover-success = ma découvert à { $url }
 discover-did-line = DID : { $did }
-discover-alias-hint =   alias @間 créé — publiez avec : .my.identity:publish @間
+discover-alias-hint =   alias @ma créé — publiez avec : .my.identity:publish @ma
 claim-success = Exécution revendiquée pour { $did }
 claim-conflict = Exécution déjà revendiquée par une autre identité
 claim-http-failed = revendication échouée : HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          afficher toute la configuration personn
 help-aliases =   .my.aliases                  lister les alias
 help-aliases-set =   .my.aliases.<name>: <did>    ajouter/mettre à jour un alias (DID pur, sans #fragment)
 help-aliases-del =   .my.aliases.<name>:          supprimer un alias
-help-runtime-discover =   .my.runtime:discover          découvrir l'exécution locale et créer l'alias @間
-help-runtime-claim =   .my.runtime:claim             revendiquer l'exécution avec votre DID
+help-runtime-discover =   .my.ma:discover          découvrir l'exécution locale et créer l'alias @ma
+help-runtime-claim =   .my.ma:claim             revendiquer l'exécution avec votre DID
 help-identity =   .my.identity                 afficher la configuration de l'identité
 help-identity-did =   .my.identity.did             afficher son DID (lecture seule)
 help-identity-publish =   .my.identity:publish @pub    publier son DID via le service d'édition
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nom>:              supprimer le document
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Langues disponibles (définir avec .my.i18n: <code>):
+err-lang-not-found = langue introuvable : { $lang }

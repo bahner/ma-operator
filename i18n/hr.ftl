@@ -86,7 +86,7 @@ discover-invalid-did = otkrivanje nije uspjelo: očekivano `did` koje počinje s
 discover-no-endpoint = upozorenje otkrivanja: `endpoint_id` odsutan u status.json; pohranjen samo DID
 discover-success = ma otkriveno na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   pseudonim @間 stvoren — objavite s: .my.identity:publish @間
+discover-alias-hint =   pseudonim @ma stvoren — objavite s: .my.identity:publish @ma
 claim-success = Izvođenje zatraženo za { $did }
 claim-conflict = Izvođenje već zatraženo od drugog identiteta
 claim-http-failed = zahtjev nije uspio: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          prikaži cjelokupnu osobnu konfiguracij
 help-aliases =   .my.aliases                  izlistaj pseudonime
 help-aliases-set =   .my.aliases.<name>: <did>    dodaj/ažuriraj pseudonim (čist DID, bez #fragmenta)
 help-aliases-del =   .my.aliases.<name>:          ukloni pseudonim
-help-runtime-discover =   .my.runtime:discover          otkrij lokalno izvođenje i stvori pseudonim @間
-help-runtime-claim =   .my.runtime:claim             zahtijevaj izvođenje svojim DID-om
+help-runtime-discover =   .my.ma:discover          otkrij lokalno izvođenje i stvori pseudonim @ma
+help-runtime-claim =   .my.ma:claim             zahtijevaj izvođenje svojim DID-om
 help-identity =   .my.identity                 prikaži konfiguraciju identiteta
 help-identity-did =   .my.identity.did             prikaži vlastiti DID (samo za čitanje)
 help-identity-publish =   .my.identity:publish @pub    objavi vlastiti DID putem usluge izdavača
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<naziv>:              obriši dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostupni jezici (postavi s .my.i18n: <code>):
+err-lang-not-found = jezik nije pronađen: { $lang }

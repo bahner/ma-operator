@@ -39,18 +39,23 @@ pub async fn init_from_browser() {
     let lang = web_sys::window()
         .map(|w| w.navigator().language().unwrap_or_default())
         .unwrap_or_default();
-    init(&lang).await;
+    let _ = init(&lang).await;
 }
 
 /// (Re-)initialise i18n for the given BCP-47 language tag.
 ///
 /// Fetches `/i18n/<code>.ftl` via the browser Fetch API.  Tries candidates
 /// in order (`lang-Script`, `lang`, then `en`) until one succeeds.
-pub async fn init(lang: &str) {
+///
+/// Returns `true` if the requested language (or a normalised variant) was
+/// found, `false` if the runtime fell back to English.
+pub async fn init(lang: &str) -> bool {
     let candidates = normalize(lang);
     let (code, ftl) = load_ftl(&candidates).await;
+    let found = candidates.contains(&code);
     CURRENT_LANG.with(|l| *l.borrow_mut() = code);
     MESSAGES.with(|m| *m.borrow_mut() = parse(&ftl));
+    found
 }
 
 /// Return the active language code (`"en"`, `"nb"`, …).

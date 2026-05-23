@@ -86,7 +86,7 @@ discover-invalid-did = खोज विफल: `did` did:ma: से शुरू
 discover-no-endpoint = खोज चेतावनी: status.json में `endpoint_id` नहीं; केवल DID संग्रहीत
 discover-success = { $url } पर ma मिला
 discover-did-line = DID: { $did }
-discover-alias-hint =   उपनाम @間 बनाया गया — प्रकाशित करें: .my.identity:publish @間
+discover-alias-hint =   उपनाम @ma बनाया गया — प्रकाशित करें: .my.identity:publish @ma
 claim-success = { $did } के लिए रनटाइम का दावा किया गया
 claim-conflict = रनटाइम पहले से किसी अन्य पहचान द्वारा दावा किया गया है
 claim-http-failed = दावा विफल: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          सभी व्यक्तिगत �
 help-aliases =   .my.aliases                  उपनाम सूची
 help-aliases-set =   .my.aliases.<name>: <did>    उपनाम जोड़ें/अपडेट करें
 help-aliases-del =   .my.aliases.<name>:          उपनाम हटाएं
-help-runtime-discover =   .my.runtime:discover          स्थानीय रनटाइम खोजें और @間 बनाएं
-help-runtime-claim =   .my.runtime:claim             अपने DID से रनटाइम का दावा करें
+help-runtime-discover =   .my.ma:discover          स्थानीय रनटाइम खोजें और @ma बनाएं
+help-runtime-claim =   .my.ma:claim             अपने DID से रनटाइम का दावा करें
 help-identity =   .my.identity                 पहचान कॉन्फ़िग दिखाएं
 help-identity-did =   .my.identity.did             अपना DID दिखाएं (केवल पढ़ने योग्य)
 help-identity-publish =   .my.identity:publish @pub    प्रकाशन सेवा द्वारा DID प्रकाशित करें
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              दस्तावेज़ हट
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = उपलब्ध भाषाएँ (.my.i18n: <code> से सेट करें):
+err-lang-not-found = भाषा नहीं मिली: { $lang }

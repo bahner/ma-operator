@@ -1,16 +1,18 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle, SigningKey, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST,
-    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle, SigningKey, CRUD_PROTOCOL_ID,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_DELETE_REPLY,
+    MESSAGE_TYPE_CRUD_EDIT_REPLY, MESSAGE_TYPE_CRUD_GET_REPLY, MESSAGE_TYPE_CRUD_SET_REPLY,
+    MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
-    ENDPOINT, SESSION_CREATED_AT, SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY,
-    SESSION_IROH_KEY, SESSION_LANG, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID,
-    SESSION_SIGNING_KEY,
+    ENDPOINT, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY, SESSION_INBOX,
+    SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_RESOLVER, SESSION_RPC_INBOX,
+    SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use std::rc::Rc;
 
@@ -19,7 +21,6 @@ const CONTENT_TYPE_TEXT: &str = "text/plain";
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
-const PUBLIC_GATEWAY_URL: &str = "https://dweb.link/";
 
 // ── Endpoint lifecycle ─────────────────────────────────────────────────────
 
@@ -35,12 +36,14 @@ pub async fn connect(
     let mut endpoint = new_ma_endpoint(iroh_key).await.map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
     let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
+    let crud_inbox = endpoint.service(CRUD_PROTOCOL_ID);
     let ep = Rc::from(endpoint);
     ENDPOINT.with(|e| *e.borrow_mut() = Some(ep));
     SESSION_IROH_KEY.with(|k| *k.borrow_mut() = Some(iroh_key));
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = Some(ipns_secret_key));
     SESSION_INBOX.with(|i| *i.borrow_mut() = Some(inbox));
     SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = Some(rpc_inbox));
+    SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = Some(crud_inbox));
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = Some(did_signing_key));
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
@@ -50,7 +53,7 @@ pub async fn connect(
     // exactly once and then served from cache for subsequent sends.
     // Prefer local Kubo gateway for fresh IPNS updates; fall back to dweb.link
     // at send-time when local resolution is unavailable.
-    let resolver = Rc::new(IpfsGatewayResolver::new(LOCAL_GATEWAY_URL));
+    let resolver = Rc::new(IpfsGatewayResolver::default());
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())
@@ -62,6 +65,7 @@ pub fn disconnect() {
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = None);
+    SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
@@ -340,6 +344,124 @@ pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
     })
 }
 
+/// Drain pending CRUD-inbox reply messages.
+pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
+    let now = (js_sys::Date::now() / 1000.0) as u64;
+    SESSION_CRUD_INBOX.with(|i| {
+        i.borrow_mut()
+            .as_mut()
+            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
+            .unwrap_or_default()
+    })
+}
+
+/// CRUD get — read a value at `path` (e.g. `:config.i18n`).
+pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
+    use ma_core::MESSAGE_TYPE_CRUD_GET;
+    let (sender_did, signing_key) = get_session()?;
+    let atom = if path.starts_with(':') {
+        path.to_string()
+    } else {
+        format!(":{path}")
+    };
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
+        .map_err(|e| e.to_string())?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CRUD_GET,
+        "application/cbor",
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// CRUD edit — request a human-editable form of `path`.
+pub async fn send_crud_edit(target_did: &str, path: &str) -> Result<String, String> {
+    use ma_core::MESSAGE_TYPE_CRUD_EDIT;
+    let (sender_did, signing_key) = get_session()?;
+    let atom = if path.starts_with(':') {
+        path.to_string()
+    } else {
+        format!(":{path}")
+    };
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
+        .map_err(|e| e.to_string())?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CRUD_EDIT,
+        "application/cbor",
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// CRUD set — write `value` at `path`. Payload is CBOR array `[path-atom, value-text]`.
+pub async fn send_crud_set(target_did: &str, path: &str, value: &str) -> Result<String, String> {
+    use ma_core::MESSAGE_TYPE_CRUD_SET;
+    let (sender_did, signing_key) = get_session()?;
+    let atom = if path.starts_with(':') {
+        path.to_string()
+    } else {
+        format!(":{path}")
+    };
+    let cbor_val = ciborium::Value::Array(vec![
+        ciborium::Value::Text(atom),
+        ciborium::Value::Text(value.to_string()),
+    ]);
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CRUD_SET,
+        "application/cbor",
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// CRUD delete — remove the subtree at `path`.
+pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
+    use ma_core::MESSAGE_TYPE_CRUD_DELETE;
+    let (sender_did, signing_key) = get_session()?;
+    let atom = if path.starts_with(':') {
+        path.to_string()
+    } else {
+        format!(":{path}")
+    };
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
+        .map_err(|e| e.to_string())?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CRUD_DELETE,
+        "application/cbor",
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
 async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Result<(), String> {
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
@@ -348,42 +470,13 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
 
-    // First attempt: current session resolver (normally local gateway).
-    let primary_attempt = async {
-        let mut outbox = ep
-            .outbox(resolver.as_ref(), target_did, protocol)
-            .await
-            .map_err(|e| e.to_string())?;
-        outbox.send(&msg).await.map_err(|e| e.to_string())
-    }
-    .await;
-    if primary_attempt.is_ok() {
-        return Ok(());
-    }
-
-    // Fallback: public gateway for environments without local Kubo access.
-    let fallback = Rc::new(IpfsGatewayResolver::new(PUBLIC_GATEWAY_URL));
-    let fallback_attempt = async {
-        let mut outbox = ep
-            .outbox(fallback.as_ref(), target_did, protocol)
-            .await
-            .map_err(|e| e.to_string())?;
-        outbox.send(&msg).await.map_err(|e| e.to_string())
-    }
-    .await;
-
-    if fallback_attempt.is_ok() {
-        SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(fallback));
-        return Ok(());
-    }
-
-    Err(format!(
-        "send failed via local gateway ({LOCAL_GATEWAY_URL}) and public gateway ({PUBLIC_GATEWAY_URL}): {}; {}",
-        primary_attempt.err().unwrap_or_else(|| "unknown error".to_string()),
-        fallback_attempt
-            .err()
-            .unwrap_or_else(|| "unknown error".to_string())
-    ))
+    // IpfsGatewayResolver::default() tries localhost:8080 first, then
+    // falls back to public gateways (dweb.link, w3s.link) automatically.
+    let mut outbox = ep
+        .outbox(resolver.as_ref(), target_did, protocol)
+        .await
+        .map_err(|e| e.to_string())?;
+    outbox.send(&msg).await.map_err(|e| e.to_string())
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.
@@ -399,7 +492,12 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
 
 fn decode_incoming(msg: Message) -> IncomingMessage {
     let (display, is_error) = match msg.message_type.as_str() {
-        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC => {
+        MESSAGE_TYPE_RPC_REPLY
+        | MESSAGE_TYPE_RPC
+        | MESSAGE_TYPE_CRUD_GET_REPLY
+        | MESSAGE_TYPE_CRUD_EDIT_REPLY
+        | MESSAGE_TYPE_CRUD_SET_REPLY
+        | MESSAGE_TYPE_CRUD_DELETE_REPLY => {
             let (term, err) = format_rpc_reply(&msg.payload());
             (format!("\u{2190} [{}] {}", msg.from, term), err)
         }

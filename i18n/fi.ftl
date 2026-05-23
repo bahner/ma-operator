@@ -86,7 +86,7 @@ discover-invalid-did = löytäminen epäonnistui: odotettiin `did`:n alkavan did
 discover-no-endpoint = löytämisvaroitus: `endpoint_id` puuttuu status.json:sta; tallennettiin vain DID
 discover-success = ma löydettiin osoitteesta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 luotu — julkaise komennolla: .my.identity:publish @間
+discover-alias-hint =   alias @ma luotu — julkaise komennolla: .my.identity:publish @ma
 claim-success = Ajonaikainen varattu kohteelle { $did }
 claim-conflict = Ajonaikainen on jo varattu toiselle identiteetille
 claim-http-failed = varaus epäonnistui: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          näytä kaikki henkilökohtainen kokoon
 help-aliases =   .my.aliases                  listaa aliakset
 help-aliases-set =   .my.aliases.<name>: <did>    lisää/päivitä alias (pelkkä DID, ei #fragmenttia)
 help-aliases-del =   .my.aliases.<name>:          poista alias
-help-runtime-discover =   .my.runtime:discover          löydä paikallinen ajonaikainen ja luo @間-alias
-help-runtime-claim =   .my.runtime:claim             varaa ajonaikainen DID:lläsi
+help-runtime-discover =   .my.ma:discover          löydä paikallinen ajonaikainen ja luo @ma-alias
+help-runtime-claim =   .my.ma:claim             varaa ajonaikainen DID:lläsi
 help-identity =   .my.identity                 näytä identiteetin kokoonpano
 help-identity-did =   .my.identity.did             näytä oma DID (kirjoitussuojattu)
 help-identity-publish =   .my.identity:publish @pub    julkaise oma DID julkaisijan kautta
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Käytettävissä olevat kielet (aseta .my.i18n: <code>):
+err-lang-not-found = kieltä ei löydy: { $lang }

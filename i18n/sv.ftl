@@ -86,7 +86,7 @@ discover-invalid-did = identifiering misslyckades: förväntade `did` börja med
 discover-no-endpoint = identifieringsvarning: `endpoint_id` saknas i status.json; lagrade enbart DID
 discover-success = ma identifierat vid { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 skapat — publicera med: .my.identity:publish @間
+discover-alias-hint =   alias @ma skapat — publicera med: .my.identity:publish @ma
 claim-success = Körtid gjord anspråk på för { $did }
 claim-conflict = Körtid redan gjord anspråk på av annan identitet
 claim-http-failed = anspråk misslyckades: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          visa all personlig konfiguration
 help-aliases =   .my.aliases                  lista alias
 help-aliases-set =   .my.aliases.<name>: <did>    lägg till/uppdatera alias (bart DID, inget #fragment)
 help-aliases-del =   .my.aliases.<name>:          ta bort alias
-help-runtime-discover =   .my.runtime:discover          identifiera lokal körtid och skapa @間-alias
-help-runtime-claim =   .my.runtime:claim             gör anspråk på körtid med din DID
+help-runtime-discover =   .my.ma:discover          identifiera lokal körtid och skapa @ma-alias
+help-runtime-claim =   .my.ma:claim             gör anspråk på körtid med din DID
 help-identity =   .my.identity                 visa identitetskonfiguration
 help-identity-did =   .my.identity.did             visa eget DID (skrivskyddat)
 help-identity-publish =   .my.identity:publish @pub    publicera eget DID via utgivartjänst
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<namn>:              radera dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tillgängliga språk (ange med .my.i18n: <code>):
+err-lang-not-found = språket hittades inte: { $lang }

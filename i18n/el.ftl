@@ -86,7 +86,7 @@ discover-invalid-did = η ανακάλυψη απέτυχε: αναμένετα�
 discover-no-endpoint = προειδοποίηση ανακάλυψης: το `endpoint_id` απουσιάζει στο status.json· αποθηκεύτηκε μόνο το DID
 discover-success = το ma ανακαλύφθηκε στο { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   ψευδώνυμο @間 δημιουργήθηκε — δημοσιεύστε με: .my.identity:publish @間
+discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — δημοσιεύστε με: .my.identity:publish @ma
 claim-success = Το περιβάλλον εκτέλεσης διεκδικήθηκε για { $did }
 claim-conflict = Το περιβάλλον εκτέλεσης έχει ήδη διεκδικηθεί από άλλη ταυτότητα
 claim-http-failed = η διεκδίκηση απέτυχε: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          εμφάνιση όλης της προ
 help-aliases =   .my.aliases                  καταγραφή ψευδωνύμων
 help-aliases-set =   .my.aliases.<name>: <did>    προσθήκη/ενημέρωση ψευδωνύμου (καθαρό DID, χωρίς #τμήμα)
 help-aliases-del =   .my.aliases.<name>:          αφαίρεση ψευδωνύμου
-help-runtime-discover =   .my.runtime:discover          ανακάλυψη τοπικού περιβάλλοντος εκτέλεσης και δημιουργία ψευδωνύμου @間
-help-runtime-claim =   .my.runtime:claim             διεκδίκηση περιβάλλοντος εκτέλεσης με το DID σας
+help-runtime-discover =   .my.ma:discover          ανακάλυψη τοπικού περιβάλλοντος εκτέλεσης και δημιουργία ψευδωνύμου @ma
+help-runtime-claim =   .my.ma:claim             διεκδίκηση περιβάλλοντος εκτέλεσης με το DID σας
 help-identity =   .my.identity                 εμφάνιση διαμόρφωσης ταυτότητας
 help-identity-did =   .my.identity.did             εμφάνιση ιδίου DID (μόνο ανάγνωση)
 help-identity-publish =   .my.identity:publish @pub    δημοσίευση ιδίου DID μέσω υπηρεσίας εκδότη
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγρά�
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Διαθέσιμες γλώσσες (ορισμός με .my.i18n: <code>):
+err-lang-not-found = η γλώσσα δεν βρέθηκε: { $lang }

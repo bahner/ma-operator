@@ -86,7 +86,7 @@ discover-invalid-did = డిస్కవర్ విఫలమైంది: `di
 discover-no-endpoint = డిస్కవర్ హెచ్చరిక: status.json లో `endpoint_id` లేదు; DID మాత్రమే సేవ్ అయింది
 discover-success = { $url } వద్ద ma కనుగొనబడింది
 discover-did-line = DID: { $did }
-discover-alias-hint =   మారుపేరు @間 సృష్టించబడింది — ప్రచురించండి: .my.identity:publish @間
+discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — ప్రచురించండి: .my.identity:publish @ma
 claim-success = { $did } కోసం రన్‌టైమ్ క్లెయిమ్ చేయబడింది
 claim-conflict = రన్‌టైమ్ ఇప్పటికే మరొక గుర్తింపు ద్వారా క్లెయిమ్ చేయబడింది
 claim-http-failed = క్లెయిమ్ విఫలమైంది: HTTP { $status }
@@ -158,8 +158,8 @@ help-my =   .my                          అన్ని వ్యక్తి�
 help-aliases =   .my.aliases                  మారుపేర్ల జాబితా
 help-aliases-set =   .my.aliases.<name>: <did>    మారుపేరు జోడించు/అప్‌డేట్ చేయి
 help-aliases-del =   .my.aliases.<name>:          మారుపేరు తొలగించు
-help-runtime-discover =   .my.runtime:discover          స్థానిక రన్‌టైమ్ కనుగొనండి మరియు @間 సృష్టించండి
-help-runtime-claim =   .my.runtime:claim             మీ DID తో రన్‌టైమ్ క్లెయిమ్ చేయండి
+help-runtime-discover =   .my.ma:discover          స్థానిక రన్‌టైమ్ కనుగొనండి మరియు @ma సృష్టించండి
+help-runtime-claim =   .my.ma:claim             మీ DID తో రన్‌టైమ్ క్లెయిమ్ చేయండి
 help-identity =   .my.identity                 గుర్తింపు కాన్ఫిగ్ చూపించు
 help-identity-did =   .my.identity.did             మీ DID చూపించు (చదవడానికి మాత్రమే)
 help-identity-publish =   .my.identity:publish @pub    ప్రచురణ సేవ ద్వారా DID ప్రచురించండి
@@ -188,3 +188,4 @@ help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ 
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = అందుబాటులో ఉన్న భాషలు (.my.i18n: <code> తో సెట్ చేయండి):
+err-lang-not-found = భాష కనుగొనబడలేదు: { $lang }

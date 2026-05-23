@@ -86,7 +86,7 @@ discover-invalid-did = atklāšana neizdevās: gaidīja `did` sākumu ar did:ma:
 discover-no-endpoint = atklāšanas brīdinājums: `endpoint_id` trūkst status.json; saglabāja tikai DID
 discover-success = ma atklāts { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   aizstājvārds @間 izveidots — publicējiet ar: .my.identity:publish @間
+discover-alias-hint =   aizstājvārds @ma izveidots — publicējiet ar: .my.identity:publish @ma
 claim-success = Izpildlaiks pieprasīts { $did }
 claim-conflict = Izpildlaiks jau pieprasīts citas identitātes
 claim-http-failed = pieprasīšana neizdevās: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          parādīt visu personisko konfigurācij
 help-aliases =   .my.aliases                  uzskaitīt aizstājvārdus
 help-aliases-set =   .my.aliases.<name>: <did>    pievienot/atjaunināt aizstājvārdu (tīrs DID, bez #fragmenta)
 help-aliases-del =   .my.aliases.<name>:          noņemt aizstājvārdu
-help-runtime-discover =   .my.runtime:discover          atklāt lokālo izpildlaiku un izveidot @間 aizstājvārdu
-help-runtime-claim =   .my.runtime:claim             pieprasīt izpildlaiku ar savu DID
+help-runtime-discover =   .my.ma:discover          atklāt lokālo izpildlaiku un izveidot @ma aizstājvārdu
+help-runtime-claim =   .my.ma:claim             pieprasīt izpildlaiku ar savu DID
 help-identity =   .my.identity                 parādīt identitātes konfigurāciju
 help-identity-did =   .my.identity.did             parādīt savu DID (tikai lasāms)
 help-identity-publish =   .my.identity:publish @pub    publicēt savu DID caur izdevēja pakalpojumu
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Pieejamās valodas (iestatīt ar .my.i18n: <code>):
+err-lang-not-found = valoda nav atrasta: { $lang }

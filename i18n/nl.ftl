@@ -86,7 +86,7 @@ discover-invalid-did = detectie mislukt: `did` moest beginnen met did:ma:, ontva
 discover-no-endpoint = detectiewaarschuwing: `endpoint_id` ontbreekt in status.json; alleen DID opgeslagen
 discover-success = ma gedetecteerd bij { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @間 aangemaakt — publiceer met: .my.identity:publish @間
+discover-alias-hint =   alias @ma aangemaakt — publiceer met: .my.identity:publish @ma
 claim-success = Runtime geclaimd voor { $did }
 claim-conflict = Runtime al geclaimd door een andere identiteit
 claim-http-failed = claimen mislukt: HTTP { $status }
@@ -153,8 +153,8 @@ help-my =   .my                          alle persoonlijke configuratie weergeve
 help-aliases =   .my.aliases                  aliassen weergeven
 help-aliases-set =   .my.aliases.<name>: <did>    alias toevoegen/bijwerken (zuivere DID, geen #fragment)
 help-aliases-del =   .my.aliases.<name>:          alias verwijderen
-help-runtime-discover =   .my.runtime:discover          lokale runtime detecteren en @間-alias aanmaken
-help-runtime-claim =   .my.runtime:claim             runtime claimen met uw DID
+help-runtime-discover =   .my.ma:discover          lokale runtime detecteren en @ma-alias aanmaken
+help-runtime-claim =   .my.ma:claim             runtime claimen met uw DID
 help-identity =   .my.identity                 identiteitsconfiguratie weergeven
 help-identity-did =   .my.identity.did             eigen DID weergeven (alleen-lezen)
 help-identity-publish =   .my.identity:publish @pub    eigen DID publiceren via uitgeversdienst
@@ -181,3 +181,4 @@ help-doc-del =   .my.doc.<naam>:              document verwijderen
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Beschikbare talen (instellen met .my.i18n: <code>):
+err-lang-not-found = taal niet gevonden: { $lang }
