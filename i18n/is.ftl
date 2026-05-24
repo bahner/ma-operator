@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<nafn>:              eyða skjali
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tiltæk tungumál (stilla með .my.i18n: <code>):
 err-lang-not-found = tungumál fannst ekki: { $lang }
+
+msg-send-failed = sending mistókst: { $e }
+msg-not-logged-in = ekki innskráður

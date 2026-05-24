@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              문서 삭제
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 사용 가능한 언어 (.my.i18n: <code> 로 설정):
 err-lang-not-found = 언어를 찾을 수 없습니다: { $lang }
+
+msg-send-failed = 전송 실패: { $e }
+msg-not-logged-in = 로그인하지 않음

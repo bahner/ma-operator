@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              दस्तावेज़ हट
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = उपलब्ध भाषाएँ (.my.i18n: <code> से सेट करें):
 err-lang-not-found = भाषा नहीं मिली: { $lang }
+
+msg-send-failed = भेजना विफल: { $e }
+msg-not-logged-in = लॉग इन नहीं

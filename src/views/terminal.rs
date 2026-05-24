@@ -91,6 +91,10 @@ pub fn Terminal() -> impl IntoView {
                         let now = js_sys::Date::now() / 1000.0;
                         let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
                         apply_config_to_dom(&cfg);
+                        // Apply log level from config if set.
+                        if let Some(level) = cfg.get(".config.log.level") {
+                            crate::apply_log_level(level);
+                        }
                         if pruned > 0 {
                             if let Err(e) = persist_config(&username, &cfg).await {
                                 state2.push_error(format!("inbox prune persist: {e}"));
@@ -268,58 +272,29 @@ pub fn Terminal() -> impl IntoView {
                     };
                     match &incoming.reply_to {
                         Some(msg_id) => {
-                            // Check if this is a pending entity-edit reply.
+                            // Check if this is a pending CRUD edit reply.
                             let pending = state2
-                                .pending_rpc_edits
+                                .pending_edits
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
                             if let Some(edit) = pending {
-                                state2.pending_rpc_edits.update(|m| {
+                                state2.pending_edits.update(|m| {
                                     m.remove(msg_id);
                                 });
+                                if incoming.is_error {
+                                    state2.push_error(incoming.display.clone());
+                                    continue;
+                                }
                                 let doc_path = edit.doc_path();
-                                // For Acl edits: unwrap [:ok, yaml] CBOR; errors are already
-                                // handled as terminal errors by the normal reply path below.
-                                let yaml = match &edit {
-                                    crate::state::PendingRpcEdit::Acl { .. } => {
-                                        if incoming.is_error {
-                                            state2.push_error(incoming.display.clone());
+                                let yaml =
+                                    match crate::messages::extract_ok_yaml(&incoming.content) {
+                                        Ok(y) => y,
+                                        Err(e) => {
+                                            state2.push_error(format!("edit decode failed: {e}"));
                                             continue;
                                         }
-                                        match crate::messages::extract_ok_yaml(&incoming.content) {
-                                            Ok(y) => y,
-                                            Err(e) => {
-                                                state2
-                                                    .push_error(format!("ACL decode failed: {e}"));
-                                                continue;
-                                            }
-                                        }
-                                    }
-                                    _ => {
-                                        if incoming.content_type == "text/yaml" {
-                                            match String::from_utf8(incoming.content.clone()) {
-                                                Ok(s) => s,
-                                                Err(e) => {
-                                                    state2.push_error(format!(
-                                                        "entity decode failed: {e}"
-                                                    ));
-                                                    continue;
-                                                }
-                                            }
-                                        } else {
-                                            match crate::messages::cbor_to_yaml(&incoming.content) {
-                                                Ok(y) => y,
-                                                Err(e) => {
-                                                    state2.push_error(format!(
-                                                        "entity decode failed: {e}"
-                                                    ));
-                                                    continue;
-                                                }
-                                            }
-                                        }
-                                    }
-                                };
+                                    };
                                 let (doc_path, mode) = edit.into_editor_mode(doc_path);
                                 let ctx = crate::views::editor::EditorContext {
                                     doc_path,
@@ -540,38 +515,37 @@ fn eval(
                     Some("say") => transport::send_chat(&target, &body).await,
                     Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
-                        match parse_crud_op(v, &body) {
-                            Some(CrudOp::Get(path)) => {
-                                transport::send_crud_get(&target, &path).await
-                            }
-                            Some(CrudOp::Edit(path)) => {
-                                transport::send_crud_edit(&target, &path).await
-                            }
-                            Some(CrudOp::Set(path, value)) => {
-                                transport::send_crud_set(&target, &path, &value).await
-                            }
-                            Some(CrudOp::Delete(path)) => {
-                                transport::send_crud_delete(&target, &path).await
-                            }
-                            None => {
-                                // Not a CRUD namespace — dispatch as RPC.
-                                let pending_edit = if body.trim().is_empty() {
-                                    detect_entity_edit(&target, v)
-                                } else {
-                                    None
-                                };
-                                let res = transport::send_rpc(
-                                    &target,
-                                    v,
-                                    &body.split_whitespace().collect::<Vec<_>>(),
-                                )
-                                .await;
-                                if let (Ok(ref msg_id), Some(edit)) = (&res, pending_edit) {
-                                    state_async.pending_rpc_edits.update(|m| {
-                                        m.insert(msg_id.clone(), edit);
-                                    });
+                        // Fragment-addressed target → plugin RPC.
+                        // :ping on the bare runtime DID is the one RPC exception.
+                        // Everything else without a fragment goes to CRUD.
+                        if target.contains('#') || v == "ping" {
+                            transport::send_rpc(
+                                &target,
+                                v,
+                                &body.split_whitespace().collect::<Vec<_>>(),
+                            )
+                            .await
+                        } else {
+                            match parse_crud_op(v, &body) {
+                                CrudOp::Get(path) => {
+                                    transport::send_crud_get(&target, &path).await
                                 }
-                                res
+                                CrudOp::Edit(path) => {
+                                    let pending = detect_crud_edit(&target, &path);
+                                    let res = transport::send_crud_edit(&target, &path).await;
+                                    if let (Ok(ref msg_id), Some(edit)) = (&res, pending) {
+                                        state_async.pending_edits.update(|m| {
+                                            m.insert(msg_id.clone(), edit);
+                                        });
+                                    }
+                                    res
+                                }
+                                CrudOp::Set(path, value) => {
+                                    transport::send_crud_set(&target, &path, &value).await
+                                }
+                                CrudOp::Delete(path) => {
+                                    transport::send_crud_delete(&target, &path).await
+                                }
                             }
                         }
                     }
@@ -581,7 +555,8 @@ fn eval(
                     Ok(msg_id) => state_async.bind_message_id(cmd_id, msg_id),
                     Err(e) => {
                         state_async.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                        state_async.push_error(format!("send failed: {e}"));
+                        let display = e.replace("not logged in", &t("msg-not-logged-in"));
+                        state_async.push_error(tf("msg-send-failed", &[("e", &display)]));
                     }
                 }
             });
@@ -689,6 +664,9 @@ fn eval_dot(
                     state2.push_error(e);
                 } else {
                     apply_config_to_dom(&cfg);
+                    if path_owned == ".config.log.level" {
+                        crate::apply_log_level(&value);
+                    }
                     if path_owned == ".config.ui.language" {
                         let _ = crate::i18n::init(&value).await;
                         state2.lang.set(crate::i18n::lang());
@@ -993,8 +971,6 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
 
 // ── CRUD routing ──────────────────────────────────────────────────────────
 
-const CRUD_NAMESPACES: &[&str] = &["config", "entities", "kinds", "acl", "acls", "namespaces"];
-
 enum CrudOp {
     Get(String),
     Edit(String),
@@ -1002,56 +978,47 @@ enum CrudOp {
     Delete(String),
 }
 
-/// Return a `CrudOp` if `verb` targets a CRUD namespace, otherwise `None`.
+/// Map a verb+body to a `CrudOp`.
 ///
-/// Grammar (`:` prefix on `verb` is stripped before matching):
-/// - `:ns[.path]`          → Get
-/// - `:ns[.path]:`         → Delete (empty body) or Set (body present)
-/// - `:ns[.path]:edit`     → Edit
-fn parse_crud_op(verb: &str, body: &str) -> Option<CrudOp> {
+/// Called only when the target has no fragment and is not `:ping`.
+/// Every verb is a CRUD operation — the protocol (`/ma/crud/0.0.1`) is
+/// unambiguous; there is no need for a namespace whitelist.
+fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
     let v = verb.strip_prefix(':').unwrap_or(verb);
-    let root = v.split(['.', ':']).next().unwrap_or("");
-    if !CRUD_NAMESPACES.contains(&root) {
-        return None;
+
+    // :create <name> — set with name as body
+    if v == "create" {
+        return CrudOp::Set(":create".to_string(), body.trim().to_string());
     }
     // verb ends with `:` — set or delete
     if let Some(path) = v.strip_suffix(':') {
         let atom = format!(":{path}");
-        return Some(if body.trim().is_empty() {
+        return if body.trim().is_empty() {
             CrudOp::Delete(atom)
         } else {
             CrudOp::Set(atom, body.trim().to_string())
-        });
-    }
-    // verb contains `:` — only :edit is supported here
-    if let Some((path, op)) = v.split_once(':') {
-        return if op == "edit" {
-            Some(CrudOp::Edit(format!(":{path}")))
-        } else {
-            None
         };
     }
-    Some(CrudOp::Get(format!(":{v}")))
+    // verb contains `:edit` — edit
+    if let Some((path, "edit")) = v.split_once(':') {
+        return CrudOp::Edit(format!(":{path}"));
+    }
+    // everything else is a get
+    CrudOp::Get(format!(":{v}"))
 }
 
 // ── Entity-edit helpers ───────────────────────────────────────────────────
 
-/// If `verb` matches `entities.<name>:edit` or `entities.<name>.<field>:edit`
-/// (with no body args), return the corresponding `PendingRpcEdit`.
-fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingRpcEdit> {
-    use crate::state::PendingRpcEdit;
-    let v = verb.strip_prefix(':').unwrap_or(verb);
-    let (path_part, verb_part) = v.split_once(':')?;
-    if verb_part != "edit" {
-        return None;
-    }
-    // Root ACL edit: `acl:edit`
-    if path_part == "acl" {
-        return Some(PendingRpcEdit::Acl {
+/// Return the `PendingEdit` for a CRUD `:edit` path (e.g. `":acl"`, `":entities.fortune"`).
+fn detect_crud_edit(target: &str, path: &str) -> Option<crate::state::PendingEdit> {
+    use crate::state::PendingEdit;
+    let p = path.strip_prefix(':').unwrap_or(path);
+    if p == "acl" {
+        return Some(PendingEdit::Acl {
             target: target.to_string(),
         });
     }
-    let mut parts = path_part.splitn(3, '.');
+    let mut parts = p.splitn(3, '.');
     if parts.next() != Some("entities") {
         return None;
     }
@@ -1060,11 +1027,11 @@ fn detect_entity_edit(target: &str, verb: &str) -> Option<crate::state::PendingR
         return None;
     }
     match parts.next() {
-        None => Some(PendingRpcEdit::Entity {
+        None => Some(PendingEdit::Entity {
             target: target.to_string(),
             entity_name,
         }),
-        Some(field) if !field.is_empty() => Some(PendingRpcEdit::Field {
+        Some(field) if !field.is_empty() => Some(PendingEdit::Field {
             target: target.to_string(),
             entity_name,
             field: field.to_string(),

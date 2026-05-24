@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<jina>:              futa hati
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Lugha zinazopatikana (weka kwa .my.i18n: <code>):
 err-lang-not-found = lugha haikupatikana: { $lang }
+
+msg-send-failed = kutuma kulishindwa: { $e }
+msg-not-logged-in = haujaingia

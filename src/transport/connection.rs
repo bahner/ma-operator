@@ -188,6 +188,7 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
 /// Send an RPC message whose single argument is a raw byte blob (DAG-CBOR).
 /// The verb is sent as a CBOR text atom; the bytes are a CBOR bytes value.
 /// Returns the dispatched `Message.id` on success.
+#[allow(dead_code)]
 pub async fn send_rpc_bytes(
     target_did: &str,
     verb: &str,
@@ -407,6 +408,40 @@ pub async fn send_crud_edit(target_did: &str, path: &str) -> Result<String, Stri
     Ok(msg_id)
 }
 
+/// CRUD edit save — send DAG-CBOR bytes back after editing.
+/// Payload is CBOR array `[path-atom, bytes]` sent as a crud-set message.
+pub async fn send_crud_edit_save(
+    target_did: &str,
+    path: &str,
+    dag_cbor: Vec<u8>,
+) -> Result<String, String> {
+    use ma_core::MESSAGE_TYPE_CRUD_SET;
+    let (sender_did, signing_key) = get_session()?;
+    let atom = if path.starts_with(':') {
+        path.to_string()
+    } else {
+        format!(":{path}")
+    };
+    let cbor_val = ciborium::Value::Array(vec![
+        ciborium::Value::Text(atom),
+        ciborium::Value::Bytes(dag_cbor),
+    ]);
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_CRUD_SET,
+        CONTENT_TYPE_TERM,
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
 /// CRUD set — write `value` at `path`. Payload is CBOR array `[path-atom, value-text]`.
 pub async fn send_crud_set(target_did: &str, path: &str, value: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD_SET;
@@ -470,13 +505,21 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
 
+    log::debug!("send_message_on: resolving DID={target_did} protocol={protocol}");
     // IpfsGatewayResolver::default() tries localhost:8080 first, then
     // falls back to public gateways (dweb.link, w3s.link) automatically.
     let mut outbox = ep
         .outbox(resolver.as_ref(), target_did, protocol)
         .await
-        .map_err(|e| e.to_string())?;
-    outbox.send(&msg).await.map_err(|e| e.to_string())
+        .map_err(|e| {
+            log::warn!("send_message_on: outbox failed for {target_did}: {e}");
+            e.to_string()
+        })?;
+    log::debug!("send_message_on: outbox ready, sending msg id={}", msg.id);
+    outbox.send(&msg).await.map_err(|e| {
+        log::warn!("send_message_on: send failed for {target_did}: {e}");
+        e.to_string()
+    })
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.

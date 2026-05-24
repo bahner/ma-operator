@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<názov>:              vymazať dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostupné jazyky (nastaviť pomocou .my.i18n: <code>):
 err-lang-not-found = jazyk nenájdený: { $lang }
+
+msg-send-failed = odoslanie zlyhalo: { $e }
+msg-not-logged-in = neprihlásený

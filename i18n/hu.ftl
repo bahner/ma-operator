@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<név>:              dokumentum törlése
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Elérhető nyelvek (beállítás: .my.i18n: <code>):
 err-lang-not-found = a nyelv nem található: { $lang }
+
+msg-send-failed = küldés sikertelen: { $e }
+msg-not-logged-in = nincs bejelentkezve

@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<namn>:              radera dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tillgängliga språk (ange med .my.i18n: <code>):
 err-lang-not-found = språket hittades inte: { $lang }
+
+msg-send-failed = sändning misslyckades: { $e }
+msg-not-logged-in = inte inloggad

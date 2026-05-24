@@ -191,3 +191,6 @@ help-doc-del =   .my.doc.<name>:              na-du dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Belter languages (.my.i18n: <code> fo set):
 err-lang-not-found = langue introuvable : { $lang }
+
+msg-send-failed = sako nah bringin: { $e }
+msg-not-logged-in = inyalowda nah owkwa

@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              galmee haaqami
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Afaanota jiran (.my.i18n: <code> tiin qabi):
 err-lang-not-found = afaan hin argamne: { $lang }
+
+msg-send-failed = ergaa erguun hin milkoofne: { $e }
+msg-not-logged-in = seenee hin jiru

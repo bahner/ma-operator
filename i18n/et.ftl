@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<nimi>:              kustuta dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Saadaolevad keeled (määra .my.i18n: <code>):
 err-lang-not-found = keelt ei leitud: { $lang }
+
+msg-send-failed = saatmine ebaõnnestus: { $e }
+msg-not-logged-in = pole sisse logitud

@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<naziv>:              obriši dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostupni jezici (postavi s .my.i18n: <code>):
 err-lang-not-found = jezik nije pronađen: { $lang }
+
+msg-send-failed = slanje nije uspjelo: { $e }
+msg-not-logged-in = nije prijavljen

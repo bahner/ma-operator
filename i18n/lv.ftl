@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Pieejamās valodas (iestatīt ar .my.i18n: <code>):
 err-lang-not-found = valoda nav atrasta: { $lang }
+
+msg-send-failed = sūtīšana neizdevās: { $e }
+msg-not-logged-in = nav pieteicies

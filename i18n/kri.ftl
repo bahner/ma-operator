@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  stoh YAML as strakch
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    impot CID kontent (noh eksekushon)
 help-doc-cid =   .my.doc.<name>:cid            shoh stohd CID
 help-doc-del =   .my.doc.<name>:              dilet dokument
+
+msg-send-failed = sen no go: { $e }
+msg-not-logged-in = yu nɔ lɔg in

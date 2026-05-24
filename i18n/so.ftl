@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Luqadaha la heli karo (ku dejiso .my.i18n: <code>):
 err-lang-not-found = luqadda lama helin: { $lang }
+
+msg-send-failed = dirista way fashilaatay: { $e }
+msg-not-logged-in = lama gelin

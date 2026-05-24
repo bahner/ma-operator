@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              goge takarda
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Yarukan da ake da su (saita ta .my.i18n: <code>):
 err-lang-not-found = harshe ba a sami ba: { $lang }
+
+msg-send-failed = aika aika: { $e }
+msg-not-logged-in = ba a shiga ba

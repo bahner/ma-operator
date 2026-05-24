@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  garda YAML komu nód
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    impórta konteúdu CID (sin sita)
 help-doc-cid =   .my.doc.<name>:cid            mustra CID gardadu
 help-doc-del =   .my.doc.<name>:              apaga dokumentu
+
+msg-send-failed = falhadu pa manda: { $e }
+msg-not-logged-in = ka ta ligadu

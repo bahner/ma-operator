@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              दस्तऐवज हटवा
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = उपलब्ध भाषा (.my.i18n: <code> ने सेट करा):
 err-lang-not-found = भाषा आढळली नाही: { $lang }
+
+msg-send-failed = पाठवणे अयशस्वी: { $e }
+msg-not-logged-in = लॉग इन नाही

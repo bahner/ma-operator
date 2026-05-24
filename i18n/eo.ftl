@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  konservi YAML kiel s
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    importi CID-enhavon (neniu ekzekuto)
 help-doc-cid =   .my.doc.<name>:cid            montri konservitan CID
 help-doc-del =   .my.doc.<name>:              forigi dokumenton
+
+msg-send-failed = sendo malsukcesis: { $e }
+msg-not-logged-in = ne ensalutinta

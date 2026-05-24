@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Fiteny azo ampiasaina (apetraho amin'ny .my.i18n: <code>):
 err-lang-not-found = tsy hita ny teny: { $lang }
+
+msg-send-failed = tsy nahomby ny fandefasana: { $e }
+msg-not-logged-in = tsy niditra

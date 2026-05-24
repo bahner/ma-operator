@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              yaltina takka
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Haɓɓe ndiyam goɗɗi (sett na .my.i18n: <code>):
 err-lang-not-found = hakkunde yolaani: { $lang }
+
+msg-send-failed = neldungal walaa: { $e }
+msg-not-logged-in = naatnaaki

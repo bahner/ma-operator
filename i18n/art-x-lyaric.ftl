@@ -1,4 +1,6 @@
-# zion — Iyaric
+# art-x-lyaric — Dread Talk / Iyaric (Rasta)
+# Rastafarian Iyaric dialect, also known as Dread Talk or Lyaric.
+# BCP-47 private-use tag: art-x-lyaric
 lang-name = Iyaric
 
 # ── Landing page ──────────────────────────────────────────────────────────
@@ -175,3 +177,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as struct
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    bring in CID content (no execution)
 help-doc-cid =   .my.doc.<name>:cid            sight stored CID
 help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
+
+msg-send-failed = send nuh forward: { $e }
+msg-not-logged-in = I an I nuh log in, seen

@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              xóa tài liệu
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Ngôn ngữ có sẵn (đặt bằng .my.i18n: <code>):
 err-lang-not-found = không tìm thấy ngôn ngữ: { $lang }
+
+msg-send-failed = gửi thất bại: { $e }
+msg-not-logged-in = chưa đăng nhập

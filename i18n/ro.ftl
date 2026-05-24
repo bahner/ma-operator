@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<nume>:              șterge document
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Limbi disponibile (setați cu .my.i18n: <code>):
 err-lang-not-found = limba nu a fost găsită: { $lang }
+
+msg-send-failed = trimiterea a eşuat: { $e }
+msg-not-logged-in = neconectat

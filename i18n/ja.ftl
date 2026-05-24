@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 利用可能な言語 (.my.i18n: <code> で設定):
 err-lang-not-found = 言語が見つかりません: { $lang }
+
+msg-send-failed = 送信失敗: { $e }
+msg-not-logged-in = ログインしていません

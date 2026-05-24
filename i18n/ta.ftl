@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவ
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = கிடைக்கும் மொழிகள் (.my.i18n: <code> உடன் அமைக்கவும்):
 err-lang-not-found = மொழி கண்டுபிடிக்கப்படவில்லை: { $lang }
+
+msg-send-failed = அனுப்புதல் தோல்வி: { $e }
+msg-not-logged-in = உள்நுழைக்கவில்லை

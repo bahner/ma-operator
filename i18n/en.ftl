@@ -189,3 +189,7 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as struct
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    import CID content (no execution)
 help-doc-cid =   .my.doc.<name>:cid            show stored CID
 help-doc-del =   .my.doc.<name>:              delete document
+
+# ── Error messages ────────────────────────────────────────────────────────
+msg-send-failed = send failed: { $e }
+msg-not-logged-in = not logged in

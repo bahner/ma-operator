@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              belgeyi sil
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Kullanılabilir diller (.my.i18n: <code> ile ayarlayın):
 err-lang-not-found = dil bulunamadı: { $lang }
+
+msg-send-failed = gönderme başarısız: { $e }
+msg-not-logged-in = giriş yapılmamış

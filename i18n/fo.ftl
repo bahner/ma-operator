@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<navn>:              strika skjal
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tøkar mál (sett við .my.i18n: <code>):
 err-lang-not-found = mál ikki funnið: { $lang }
+
+msg-send-failed = sending mishavdi: { $e }
+msg-not-logged-in = ikki innrittur

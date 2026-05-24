@@ -391,8 +391,8 @@ pub fn dispatch_verb(
         return Ok(());
     }
 
-    // ── .my.documents.<name>:<verb> ───────────────────────────────────────
-    if let Some(doc_name) = path.strip_prefix(".my.documents.") {
+    // ── .my.doc.<name>:<verb> ──────────────────────────────────────────────
+    if let Some(doc_name) = path.strip_prefix(".my.doc.") {
         if doc_name.is_empty() {
             return Err("missing document name".into());
         }

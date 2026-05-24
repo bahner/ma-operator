@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = ภาษาที่ใช้ได้ (ตั้งค่าด้วย .my.i18n: <code>):
 err-lang-not-found = ไม่พบภาษา: { $lang }
+
+msg-send-failed = ส่งล้มเหลว: { $e }
+msg-not-logged-in = ยังไม่ได้เข้าสู่ระบบ

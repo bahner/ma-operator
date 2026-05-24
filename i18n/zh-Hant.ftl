@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              刪除文件
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 可用語言（使用 .my.i18n: <code> 設定）：
 err-lang-not-found = 未找到語言: { $lang }
+
+msg-send-failed = 傳送失敗：{ $e }
+msg-not-logged-in = 未登入

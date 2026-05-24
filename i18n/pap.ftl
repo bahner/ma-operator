@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  almacená YAML komo 
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    importá kontenidonan CID (ningun ehekushon)
 help-doc-cid =   .my.doc.<name>:cid            mustrá CID almacená
 help-doc-del =   .my.doc.<name>:              bòrá dokumento
+
+msg-send-failed = mandamentu a faya: { $e }
+msg-not-logged-in = no a log in

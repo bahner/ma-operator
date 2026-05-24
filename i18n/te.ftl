@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = అందుబాటులో ఉన్న భాషలు (.my.i18n: <code> తో సెట్ చేయండి):
 err-lang-not-found = భాష కనుగొనబడలేదు: { $lang }
+
+msg-send-failed = పంపడం విఫలమైంది: { $e }
+msg-not-logged-in = లాగిన్ అవ్వలేదు

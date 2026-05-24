@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<namn>:              slett dokument
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tilgjengelege språk (set med .my.i18n: <code>):
 err-lang-not-found = språk ikkje funne: { $lang }
+
+msg-send-failed = sending feila: { $e }
+msg-not-logged-in = ikkje innlogga

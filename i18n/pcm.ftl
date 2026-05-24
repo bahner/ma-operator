@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as strukt
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    import CID content (noh execution)
 help-doc-cid =   .my.doc.<name>:cid            shoh stored CID
 help-doc-del =   .my.doc.<name>:              dilit dokument
+
+msg-send-failed = send no work: { $e }
+msg-not-logged-in = you no log in

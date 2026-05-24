@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Asụsụ ndị dị (.my.i18n: <code> were tọọ):
 err-lang-not-found = asụsụ ahụ achọtaghị: { $lang }
+
+msg-send-failed = izipu dara ada: { $e }
+msg-not-logged-in = abanye ọ bụghị

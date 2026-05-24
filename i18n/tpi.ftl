@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  storim YAML olsem no
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    impotim content bilong CID (noh renim)
 help-doc-cid =   .my.doc.<name>:cid            soim CID i storim pinis
 help-doc-del =   .my.doc.<name>:              rausim pepa
+
+msg-send-failed = salim i no wok: { $e }
+msg-not-logged-in = yu no bin log in

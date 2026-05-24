@@ -389,6 +389,13 @@ Tags containing `-x-` (e.g. `art-x-lyaric`) are passed through verbatim by
 When adding such a language, use the full tag as both the filename stem
 and the entry in `SUPPORTED_LANGS`.
 
+### Notable constructed / special languages
+
+| Code | Language | Notes |
+|------|----------|---------|
+| `art-x-lyaric` | Dread Talk (Rasta) | BCP-47 private-use tag for Lyaric / Rastafarian Iyaric dialect |
+| `qbc` | Belter Creole | The conlang from *The Expanse* (Belter lang); ISO 639-3 code `qbc` |
+
 ---
 
 ## Lazy DID / CID traversal

@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<ime>:              изтрива документ
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Налични езици (задайте с .my.i18n: <code>):
 err-lang-not-found = езикът не е намерен: { $lang }
+
+msg-send-failed = изпращането не бе успешно: { $e }
+msg-not-logged-in = не е влязъл в профила

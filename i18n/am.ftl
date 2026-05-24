@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = ያሉ ቋንቋዎች (.my.i18n: <ኮድ> ለማዘጋጀት):
 err-lang-not-found = ቋንቋ አልተገኘም: { $lang }
+
+msg-send-failed = መላኩ አልተሳካም: { $e }
+msg-not-logged-in = አልገባም

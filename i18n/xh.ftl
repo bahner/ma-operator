@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              cima umbhalo
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Iilwimi ezikhona (seta nge .my.i18n: <code>):
 err-lang-not-found = ulwimi alufumanekanga: { $lang }
+
+msg-send-failed = ukuthumela kuhlulekile: { $e }
+msg-not-logged-in = ungangeni

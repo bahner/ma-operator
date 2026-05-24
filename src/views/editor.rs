@@ -89,7 +89,7 @@ pub enum EditorMode {
 /// All the state needed to open an editor session for a document.
 #[derive(Clone, Debug)]
 pub struct EditorContext {
-    /// Dot-path key for the document, e.g. `.my.documents.readme`.
+    /// Dot-path key for the document, e.g. `.my.doc.readme`.
     pub doc_path: String,
     /// Content to pre-fill the editor (may be empty for a new doc).
     pub initial: String,
@@ -300,13 +300,15 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let verb = format!("entities.{entity_name}:edit");
+            let path = format!(":entities.{entity_name}");
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
-                        match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
+                        match crate::transport::send_crud_edit_save(&target, &path, dag_cbor)
+                            .await
+                        {
                             Ok(_) => state2.push_system(tf(
                                 "msg-entity-publish-sent",
                                 &[("name", &entity_name)],
@@ -339,13 +341,15 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let verb = format!("entities.{entity_name}.{field}:edit");
+            let path = format!(":entities.{entity_name}.{field}");
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
-                        match crate::transport::send_rpc_bytes(&target, &verb, dag_cbor).await {
+                        match crate::transport::send_crud_edit_save(&target, &path, dag_cbor)
+                            .await
+                        {
                             Ok(_) => state2.push_system(tf(
                                 "msg-field-publish-sent",
                                 &[("name", &entity_name), ("field", &field)],
@@ -361,7 +365,7 @@ pub fn EditorModal(
         }
     };
 
-    // RuntimeAclEdit — convert YAML buffer to DAG-CBOR, send as :acl:edit bytes to runtime.
+    // RuntimeAclEdit — convert YAML buffer to DAG-CBOR, send as :acl edit-save to runtime.
     let on_acl_publish = {
         let show = show.clone();
         let state = state.clone();
@@ -378,7 +382,8 @@ pub fn EditorModal(
             leptos::task::spawn_local(async move {
                 match crate::messages::yaml_to_dag_cbor(&text) {
                     Ok(dag_cbor) => {
-                        match crate::transport::send_rpc_bytes(&target, "acl:edit", dag_cbor).await
+                        match crate::transport::send_crud_edit_save(&target, ":acl", dag_cbor)
+                            .await
                         {
                             Ok(_) => state2.push_system(t("msg-acl-publish-sent")),
                             Err(e) => state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)])),

@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<nome>:              eliminar documento
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Idiomas disponíveis (definir com .my.i18n: <code>):
 err-lang-not-found = idioma não encontrado: { $lang }
+
+msg-send-failed = falha no envio: { $e }
+msg-not-logged-in = não conectado

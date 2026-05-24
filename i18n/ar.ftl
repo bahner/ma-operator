@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              حذف المستند
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = اللغات المتاحة (عيّن بـ .my.i18n: <code>):
 err-lang-not-found = اللغة غير موجودة: { $lang }
+
+msg-send-failed = فشل الإرسال: { $e }
+msg-not-logged-in = غير مسجّل الدخول

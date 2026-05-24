@@ -182,3 +182,6 @@ help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Galimos kalbos (nustatyti su .my.i18n: <code>):
 err-lang-not-found = kalba nerasta: { $lang }
+
+msg-send-failed = siuntimas nepavyko: { $e }
+msg-not-logged-in = neprisijungęs

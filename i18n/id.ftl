@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              hapus dokumen
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Bahasa yang tersedia (atur dengan .my.i18n: <code>):
 err-lang-not-found = bahasa tidak ditemukan: { $lang }
+
+msg-send-failed = pengiriman gagal: { $e }
+msg-not-logged-in = belum masuk

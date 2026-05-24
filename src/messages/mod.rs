@@ -27,19 +27,11 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
     serde_ipld_dagcbor::to_vec(&val).map_err(|e| format!("DAG-CBOR encode error: {e}"))
 }
 
-/// Decode plain CBOR bytes (e.g. from a runtime RPC reply) into a YAML string
-/// for display in the editor.
-pub fn cbor_to_yaml(bytes: &[u8]) -> Result<String, String> {
-    let val: serde_yaml::Value =
-        ciborium::de::from_reader(bytes).map_err(|e| format!("CBOR decode error: {e}"))?;
-    serde_yaml::to_string(&val).map_err(|e| format!("YAML serialise error: {e}"))
-}
-
-/// Extract the YAML string payload from a `[":ok", yaml_text]` CBOR reply tuple.
+/// Extract the YAML string payload from a `[":ok", yaml_text]` CBOR reply.
 ///
-/// Used when the upper layer receives `application/x-ma-acl+yaml` (or similar)
-/// semantics from a standard RPC ok-reply: strip the `:ok` tag and return the
-/// inner YAML string. Returns an error if the structure does not match.
+/// All CRUD edit replies arrive as `application/x-ma-term` with a
+/// `[":ok", yaml_string]` CBOR array body. The YAML is already a plain
+/// string — no further conversion is needed.
 pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
     let val: CborValue =
         ciborium::de::from_reader(bytes).map_err(|e| format!("CBOR decode error: {e}"))?;
@@ -51,10 +43,10 @@ pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
                 (Some(CborValue::Text(tag)), Some(CborValue::Text(yaml))) if tag == ":ok" => {
                     Ok(yaml)
                 }
-                _ => Err("expected [:ok, yaml_string] reply".to_string()),
+                _ => Err("expected [:ok, yaml_string] edit reply".to_string()),
             }
         }
-        _ => Err("expected [:ok, yaml_string] reply tuple".to_string()),
+        _ => Err("expected [:ok, yaml_string] edit reply".to_string()),
     }
 }
 

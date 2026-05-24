@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  estoke YAML kòm nœ
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    enpòte kontni CID (pa egzekite)
 help-doc-cid =   .my.doc.<name>:cid            montre CID estoke
 help-doc-del =   .my.doc.<name>:              efase dokiman
+
+msg-send-failed = echèk voye: { $e }
+msg-not-logged-in = ou pa konekte

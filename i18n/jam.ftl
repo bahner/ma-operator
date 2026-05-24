@@ -175,3 +175,6 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as struct
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    import CID content (nuh execution)
 help-doc-cid =   .my.doc.<name>:cid            show stored CID
 help-doc-del =   .my.doc.<name>:              delete document
+
+msg-send-failed = send nuh work: { $e }
+msg-not-logged-in = nuh log in

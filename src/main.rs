@@ -23,6 +23,22 @@ fn init_logging() {
     }
 }
 
+/// Change the active log level at runtime.  Valid values (case-insensitive):
+/// `trace`, `debug`, `info`, `warn`, `error`, `off`.
+/// Unknown strings are silently ignored.
+pub(crate) fn apply_log_level(level: &str) {
+    let filter = match level.to_lowercase().as_str() {
+        "trace" => log::LevelFilter::Trace,
+        "debug" => log::LevelFilter::Debug,
+        "info" => log::LevelFilter::Info,
+        "warn" | "warning" => log::LevelFilter::Warn,
+        "error" => log::LevelFilter::Error,
+        "off" => log::LevelFilter::Off,
+        _ => return,
+    };
+    log::set_max_level(filter);
+}
+
 fn main() {
     init_logging();
     console_error_panic_hook::set_once();

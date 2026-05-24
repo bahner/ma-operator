@@ -189,3 +189,6 @@ help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছ
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = উপলব্ধ ভাষা (.my.i18n: <code> দিয়ে সেট করুন):
 err-lang-not-found = ভাষা পাওয়া যায়নি: { $lang }
+
+msg-send-failed = পাঠাতে ব্যর্থ: { $e }
+msg-not-logged-in = লগইন করা হয়নি
