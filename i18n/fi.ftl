@@ -59,6 +59,7 @@ btn-cancel = Peruuta
 btn-close = Sulje
 btn-reply = Vastaa
 btn-publish = Julkaise
+btn-publish-ipld = Julkaise IPLD
 msg-reply-sent = vastaus lähetetty
 msg-reply-failed = vastauksen lähettäminen epäonnistui: { $e }
 msg-entity-publish-sent = entiteetti { $name }: julkaisu lähetetty
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entiteetin julkaisu epäonnistui: { $e }
 msg-field-publish-sent = entiteetti { $name }.{ $field }: julkaisu lähetetty
 msg-field-publish-failed = kentän julkaisu epäonnistui: { $e }
 msg-acl-publish-sent = ajonaikainen ACL: julkaisu lähetetty
+msg-crud-edit-publish-sent = { $path }: julkaisu lähetetty
 msg-acl-publish-failed = ajonaikaisen ACL:n julkaisu epäonnistui: { $e }
 msg-yaml-error = YAML-virhe: { $e }
 msg-editor-saved = { $path }:tallenna
@@ -185,3 +187,36 @@ err-lang-not-found = kieltä ei löydy: { $lang }
 
 msg-send-failed = lähetys epäonnistui: { $e }
 msg-not-logged-in = ei kirjautunut sisään
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-jäsennysvirhe: { $e }
+yaml-not-mapping = YAML:n täytyy olla mapping (avain: arvo -parit); pelkkää tekstiä ja skalaareja ei voi tallentaa DAG-CBOR:na
+dagcbor-encode-error = DAG-CBOR-koodausvirhe: { $e }
+cbor-decode-error = CBOR-dekoodausvirhe: { $e }
+cbor-json-error = CBOR JSON-muunnosvirhe: { $e }
+yaml-serialize-error = YAML-sarjallistamisvirhe: { $e }
+edit-reply-invalid = Virheellinen muokkausvastaus
+doc-publish-ipld-error = IPLD-julkaiseminen epäonnistui: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Postilaatikon siivous tallennusvirhe: { $e }
+err-config-load = Konfiguraation latausvirhe: { $e }
+err-lang-persist = Kielitallennus virhe: { $e }
+err-history-parse = Historiaanalyysivirhe: { $e }
+err-history-load = Historian latausvirhe: { $e }
+err-ipfs-reply-decode = IPFS-vastauksen dekoodausvirhe: { $e }
+err-edit-cbor = CBOR-muokkausvirhe: { $e }
+err-popup-blocked = Ponnahdusikkuna estetty selaimelta
+status-publishing = julkaistaan
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = virhe
+rpc-error-detail = virhe: { $detail }
+msg-new-message = ← [{ $from }] uusi viesti — { $count } saapuneissa
+err-edit-decode-failed = muokkaus: purku epäonnistui: { $e }
+err-edit-fetch-failed = muokkaus: haku epäonnistui: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ei aktiivista istuntoa — profiilia ei voi poistaa
+profile-delete-error = profiilin poistaminen epäonnistui: { $e }
+profile-no-verb = .my.profile: tuntematon komento: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Odustani
 btn-close = Zatvori
 btn-reply = Odgovori
 btn-publish = Objavi
+btn-publish-ipld = Objavi IPLD
 msg-reply-sent = odgovor poslan
 msg-reply-failed = slanje odgovora nije uspjelo: { $e }
 msg-entity-publish-sent = entitet { $name }: objava poslana
@@ -66,6 +67,7 @@ msg-entity-publish-failed = objavljivanje entiteta nije uspjelo: { $e }
 msg-field-publish-sent = entitet { $name }.{ $field }: objava poslana
 msg-field-publish-failed = objavljivanje polja nije uspjelo: { $e }
 msg-acl-publish-sent = ACL izvođenja: objava poslana
+msg-crud-edit-publish-sent = { $path }: objava poslana
 msg-acl-publish-failed = objavljivanje ACL izvođenja nije uspjelo: { $e }
 msg-yaml-error = greška YAML: { $e }
 msg-editor-saved = { $path }:spremi
@@ -185,3 +187,36 @@ err-lang-not-found = jezik nije pronađen: { $lang }
 
 msg-send-failed = slanje nije uspjelo: { $e }
 msg-not-logged-in = nije prijavljen
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Greška pri parsiranju YAML-a: { $e }
+yaml-not-mapping = YAML mora biti mapping (parovi ključ: vrijednost); obični tekst i skalari ne mogu se pohraniti kao DAG-CBOR
+dagcbor-encode-error = Greška kodiranja DAG-CBOR: { $e }
+cbor-decode-error = Greška dekodiranja CBOR: { $e }
+cbor-json-error = Greška pretvorbe CBOR u JSON: { $e }
+yaml-serialize-error = Greška serijalizacije YAML-a: { $e }
+edit-reply-invalid = Nevažeći odgovor na uređivanje
+doc-publish-ipld-error = Objavljivanje IPLD-a nije uspjelo: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Greška pri pohrani čišćenja pristigle pošte: { $e }
+err-config-load = Greška pri učitavanju konfiguracije: { $e }
+err-lang-persist = Greška pri pohrani jezika: { $e }
+err-history-parse = Greška pri parsiranju povijesti: { $e }
+err-history-load = Greška pri učitavanju povijesti: { $e }
+err-ipfs-reply-decode = Greška dekodiranja IPFS odgovora: { $e }
+err-edit-cbor = Greška uređivanja CBOR-a: { $e }
+err-popup-blocked = Preglednik je blokirao skočni prozor
+status-publishing = objavljujem
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = greška
+rpc-error-detail = greška: { $detail }
+msg-new-message = ← [{ $from }] nova poruka — { $count } u pristigloj pošti
+err-edit-decode-failed = uređivanje: pogreška dekodiranja: { $e }
+err-edit-fetch-failed = uređivanje: pogreška dohvata: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nema aktivne sesije — profil nije moguće izbrisati
+profile-delete-error = brisanje profila nije uspjelo: { $e }
+profile-no-verb = .my.profile: nepoznata naredba: { $verb }

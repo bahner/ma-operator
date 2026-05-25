@@ -59,6 +59,7 @@ btn-cancel = İptal
 btn-close = Kapat
 btn-reply = Yanıtla
 btn-publish = Yayımla
+btn-publish-ipld = Yayımla IPLD
 msg-reply-sent = yanıt gönderildi
 msg-reply-failed = yanıt gönderilemedi: { $e }
 msg-entity-publish-sent = varlık { $name }: yayım gönderildi
@@ -66,6 +67,7 @@ msg-entity-publish-failed = varlık yayımı başarısız: { $e }
 msg-field-publish-sent = varlık { $name }.{ $field }: yayım gönderildi
 msg-field-publish-failed = alan yayımı başarısız: { $e }
 msg-acl-publish-sent = çalışma zamanı ACL: yayım gönderildi
+msg-crud-edit-publish-sent = { $path }: yayım gönderildi
 msg-acl-publish-failed = çalışma zamanı ACL yayımı başarısız: { $e }
 msg-yaml-error = YAML hatası: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = dil bulunamadı: { $lang }
 
 msg-send-failed = gönderme başarısız: { $e }
 msg-not-logged-in = giriş yapılmamış
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML ayrıştırma hatası: { $e }
+yaml-not-mapping = YAML bir mapping (anahtar: değer çiftleri) olmalıdır; düz metin ve skalalar DAG-CBOR olarak saklanamaz
+dagcbor-encode-error = DAG-CBOR kodlama hatası: { $e }
+cbor-decode-error = CBOR kod çözme hatası: { $e }
+cbor-json-error = CBOR'dan JSON'a hata: { $e }
+yaml-serialize-error = YAML serileştirme hatası: { $e }
+edit-reply-invalid = Geçersiz düzenleme yanıtı
+doc-publish-ipld-error = IPLD yayınlama başarısız oldu: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Gelen kutusu budama kaydetme hatası: { $e }
+err-config-load = Yapılandırma yükleme hatası: { $e }
+err-lang-persist = Dil kaydetme hatası: { $e }
+err-history-parse = Geçmiş ayrıştırma hatası: { $e }
+err-history-load = Geçmiş yükleme hatası: { $e }
+err-ipfs-reply-decode = IPFS yanıt kodu çözme hatası: { $e }
+err-edit-cbor = CBOR düzenleme hatası: { $e }
+err-popup-blocked = Tarayıcı açılır pencereyi engelledi
+status-publishing = yayınlanıyor
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = hata
+rpc-error-detail = hata: { $detail }
+msg-new-message = ← [{ $from }] yeni mesaj — { $count } gelen kutusunda
+err-edit-decode-failed = düzenleme: kod çözme hatası: { $e }
+err-edit-fetch-failed = düzenleme: getirme hatası: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = etkin oturum yok — profil silinemiyor
+profile-delete-error = profil silme başarısız: { $e }
+profile-no-verb = .my.profile: bilinmeyen komut: { $verb }

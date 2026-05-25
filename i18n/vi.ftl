@@ -59,6 +59,7 @@ btn-cancel = Hủy
 btn-close = Đóng
 btn-reply = Trả lời
 btn-publish = Xuất bản
+btn-publish-ipld = Xuất bản IPLD
 msg-reply-sent = đã gửi trả lời
 msg-reply-failed = trả lời thất bại: { $e }
 msg-entity-publish-sent = thực thể { $name }: đã gửi yêu cầu xuất bản
@@ -66,6 +67,7 @@ msg-entity-publish-failed = xuất bản thực thể thất bại: { $e }
 msg-field-publish-sent = thực thể { $name }.{ $field }: đã gửi yêu cầu xuất bản
 msg-field-publish-failed = xuất bản trường thất bại: { $e }
 msg-acl-publish-sent = ACL runtime: đã gửi yêu cầu xuất bản
+msg-crud-edit-publish-sent = { $path }: đã gửi yêu cầu xuất bản
 msg-acl-publish-failed = xuất bản ACL runtime thất bại: { $e }
 msg-yaml-error = lỗi YAML: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = không tìm thấy ngôn ngữ: { $lang }
 
 msg-send-failed = gửi thất bại: { $e }
 msg-not-logged-in = chưa đăng nhập
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Lỗi phân tích YAML: { $e }
+yaml-not-mapping = YAML phải là một mapping (cặp khóa: giá trị); văn bản thuần túy và vô hướng không thể lưu dưới dạng DAG-CBOR
+dagcbor-encode-error = Lỗi mã hóa DAG-CBOR: { $e }
+cbor-decode-error = Lỗi giải mã CBOR: { $e }
+cbor-json-error = Lỗi chuyển đổi CBOR sang JSON: { $e }
+yaml-serialize-error = Lỗi tuần tự hóa YAML: { $e }
+edit-reply-invalid = Phản hồi chỉnh sửa không hợp lệ
+doc-publish-ipld-error = Xuất bản IPLD thất bại: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Lỗi lưu dọn hộp thư đến: { $e }
+err-config-load = Lỗi tải cấu hình: { $e }
+err-lang-persist = Lỗi lưu ngôn ngữ: { $e }
+err-history-parse = Lỗi phân tích lịch sử: { $e }
+err-history-load = Lỗi tải lịch sử: { $e }
+err-ipfs-reply-decode = Giải mã phản hồi IPFS thất bại: { $e }
+err-edit-cbor = Lỗi chỉnh sửa CBOR: { $e }
+err-popup-blocked = Trình duyệt đã chặn cửa sổ bật lên
+status-publishing = đang xuất bản
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = lỗi
+rpc-error-detail = lỗi: { $detail }
+msg-new-message = ← [{ $from }] tin nhắn mới — { $count } trong hộp thư
+err-edit-decode-failed = chỉnh sửa: giải mã thất bại: { $e }
+err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = không có phiên hoạt động — không thể xóa hồ sơ
+profile-delete-error = xóa hồ sơ thất bại: { $e }
+profile-no-verb = .my.profile: lệnh không xác định: { $verb }

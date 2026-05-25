@@ -69,7 +69,7 @@ impl EgoConfig {
     /// Read-only keys may not be written via `.key: value`. Currently only
     /// `.my.identity.did`, which is injected from the active session.
     pub fn is_read_only(key: &str) -> bool {
-        matches!(key, ".my.identity.did")
+        matches!(key, ".my.identity.did" | ".my.profile.handle")
     }
 
     /// True if `key` is an exact leaf (a value is stored at that path).

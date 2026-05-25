@@ -59,6 +59,7 @@ btn-cancel = ሰርዝ
 btn-close = ዝጋ
 btn-reply = ምላሽ ስጥ
 btn-publish = አሳትም
+btn-publish-ipld = አሳትም IPLD
 msg-reply-sent = ምላሽ ተልኳል
 msg-reply-failed = ምላሽ አልተሰራም: { $e }
 msg-entity-publish-sent = entity { $name }: ማተም ተልኳል
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entity ማተም አልተሰራም: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: ማተም ተልኳል
 msg-field-publish-failed = ሜዳ ማተም አልተሰራም: { $e }
 msg-acl-publish-sent = runtime ACL: ማተም ተልኳል
+msg-crud-edit-publish-sent = { $path }: ማተም ተልኳል
 msg-acl-publish-failed = runtime ACL ማተም አልተሰራም: { $e }
 msg-yaml-error = YAML ስህተት: { $e }
 msg-editor-saved = { $path }:አስቀምጥ
@@ -192,3 +194,36 @@ err-lang-not-found = ቋንቋ አልተገኘም: { $lang }
 
 msg-send-failed = መላኩ አልተሳካም: { $e }
 msg-not-logged-in = አልገባም
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML ትንታኔ ስህተት፡ { $e }
+yaml-not-mapping = YAML mapping (ቁልፍ፡ እሴት ጥንዶች) መሆን አለበት፤ ሸክ ጽሑፍ እና ቀላል ስካሎች እንደ DAG-CBOR ሊቀመጡ አይችሉም
+dagcbor-encode-error = DAG-CBOR ምስጠራ ስህተት፡ { $e }
+cbor-decode-error = CBOR ፍቺ ስህተት፡ { $e }
+cbor-json-error = CBOR ወደ JSON ስህተት፡ { $e }
+yaml-serialize-error = YAML ተጨጭ ስህተት፡ { $e }
+edit-reply-invalid = ልክ ያልሆነ የማረሚያ ምላሽ
+doc-publish-ipld-error = IPLD መሰቀያ ያልተሳካ: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = የፖስታ ሳጥን ማጽጃ አስቀምጥ ስህተት፡ { $e }
+err-config-load = ውቅር ጫን ስህተት፡ { $e }
+err-lang-persist = ቋንቋ አስቀምጥ ስህተት፡ { $e }
+err-history-parse = ታሪክ ፍቺ ስህተት፡ { $e }
+err-history-load = ታሪክ ጫን ስህተት፡ { $e }
+err-ipfs-reply-decode = IPFS ምላሽ ፍቺ ስህተት፡ { $e }
+err-edit-cbor = CBOR ማረሚያ ስህተት፡ { $e }
+err-popup-blocked = ፖፕ-አፕ በአሳሽ ታግዷል
+status-publishing = እያሳተሙ
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ስህተት
+rpc-error-detail = ስህተት: { $detail }
+msg-new-message = ← [{ $from }] አዲስ መልዕክት — { $count } ወደ ሳጥን ደረሰ
+err-edit-decode-failed = ማርትዕ: ዲኮድ አልተሳካም: { $e }
+err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ንቁ ክፍለ ጊዜ የለም — ፕሮፋይልን መሰረዝ አይቻልም
+profile-delete-error = ፕሮፋይልን መሰረዝ አልተሳካም: { $e }
+profile-no-verb = .my.profile: ያልታወቀ ትዕዛዝ: { $verb }

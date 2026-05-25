@@ -59,6 +59,7 @@ btn-cancel = 취소
 btn-close = 닫기
 btn-reply = 답장
 btn-publish = 게시
+btn-publish-ipld = 게시 IPLD
 msg-reply-sent = 답장 전송됨
 msg-reply-failed = 답장 실패: { $e }
 msg-entity-publish-sent = 엔티티 { $name }: 게시 전송됨
@@ -66,6 +67,7 @@ msg-entity-publish-failed = 엔티티 게시 실패: { $e }
 msg-field-publish-sent = 엔티티 { $name }.{ $field }: 게시 전송됨
 msg-field-publish-failed = 필드 게시 실패: { $e }
 msg-acl-publish-sent = 런타임 ACL: 게시 전송됨
+msg-crud-edit-publish-sent = { $path }: 게시 전송됨
 msg-acl-publish-failed = 런타임 ACL 게시 실패: { $e }
 msg-yaml-error = YAML 오류: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = 언어를 찾을 수 없습니다: { $lang }
 
 msg-send-failed = 전송 실패: { $e }
 msg-not-logged-in = 로그인하지 않음
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML 파싱 오류: { $e }
+yaml-not-mapping = YAML은 매핑(키: 값 쌍)이어야 합니다; 일반 텍스트와 스칼라는 DAG-CBOR로 저장할 수 없습니다
+dagcbor-encode-error = DAG-CBOR 인코딩 오류: { $e }
+cbor-decode-error = CBOR 디코딩 오류: { $e }
+cbor-json-error = CBOR에서 JSON 오류: { $e }
+yaml-serialize-error = YAML 직렬화 오류: { $e }
+edit-reply-invalid = 잘못된 편집 응답
+doc-publish-ipld-error = IPLD 게시 실패: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = 받은 편지함 정리 저장 오류: { $e }
+err-config-load = 설정 불러오기 오류: { $e }
+err-lang-persist = 언어 저장 오류: { $e }
+err-history-parse = 기록 파싱 오류: { $e }
+err-history-load = 기록 불러오기 오류: { $e }
+err-ipfs-reply-decode = IPFS 응답 디코딩 실패: { $e }
+err-edit-cbor = CBOR 편집 오류: { $e }
+err-popup-blocked = 팝업이 브라우저에 의해 차단됨
+status-publishing = 게시 중
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = 오류
+rpc-error-detail = 오류: { $detail }
+msg-new-message = ← [{ $from }] 새 메시지 — 받은 편지함에 { $count } 개
+err-edit-decode-failed = 편집: 디코딩 실패: { $e }
+err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = 활성 세션이 없습니다 — 프로필을 삭제할 수 없습니다
+profile-delete-error = 프로필 삭제 실패: { $e }
+profile-no-verb = .my.profile: 알 수 없는 명령: { $verb }

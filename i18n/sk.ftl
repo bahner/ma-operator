@@ -59,6 +59,7 @@ btn-cancel = Zrušiť
 btn-close = Zatvoriť
 btn-reply = Odpovedať
 btn-publish = Publikovať
+btn-publish-ipld = Publikovať IPLD
 msg-reply-sent = odpoveď odoslaná
 msg-reply-failed = odoslanie odpovede zlyhalo: { $e }
 msg-entity-publish-sent = entita { $name }: publikácia odoslaná
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publikovanie entity zlyhalo: { $e }
 msg-field-publish-sent = entita { $name }.{ $field }: publikácia odoslaná
 msg-field-publish-failed = publikovanie poľa zlyhalo: { $e }
 msg-acl-publish-sent = ACL runtime: publikácia odoslaná
+msg-crud-edit-publish-sent = { $path }: publikácia odoslaná
 msg-acl-publish-failed = publikovanie ACL runtime zlyhalo: { $e }
 msg-yaml-error = chyba YAML: { $e }
 msg-editor-saved = { $path }:uložiť
@@ -185,3 +187,36 @@ err-lang-not-found = jazyk nenájdený: { $lang }
 
 msg-send-failed = odoslanie zlyhalo: { $e }
 msg-not-logged-in = neprihlásený
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Chyba analýzy YAML: { $e }
+yaml-not-mapping = YAML musí byť mapping (páry kľúč: hodnota); prostý text a skaláry nemožno uložiť ako DAG-CBOR
+dagcbor-encode-error = Chyba kódovania DAG-CBOR: { $e }
+cbor-decode-error = Chyba dekódovania CBOR: { $e }
+cbor-json-error = Chyba konverzie CBOR na JSON: { $e }
+yaml-serialize-error = Chyba serializácie YAML: { $e }
+edit-reply-invalid = Neplatná odpoveď na úpravu
+doc-publish-ipld-error = Publikovanie IPLD zlyhalo: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Chyba uloženia čistenia schránky: { $e }
+err-config-load = Chyba načítania konfigurácie: { $e }
+err-lang-persist = Chyba uloženia jazyka: { $e }
+err-history-parse = Chyba analýzy histórie: { $e }
+err-history-load = Chyba načítania histórie: { $e }
+err-ipfs-reply-decode = Zlyhanie dekódovania odpovede IPFS: { $e }
+err-edit-cbor = Chyba úpravy CBOR: { $e }
+err-popup-blocked = Prehliadač zablokoval vyskakovacie okno
+status-publishing = publikovanie
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = chyba
+rpc-error-detail = chyba: { $detail }
+msg-new-message = ← [{ $from }] nová správa — { $count } v doručenej pošte
+err-edit-decode-failed = úprava: chyba dekódovania: { $e }
+err-edit-fetch-failed = úprava: chyba načítania: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = žiadna aktívna relácia — profil nie je možné odstrániť
+profile-delete-error = odstránenie profilu zlyhalo: { $e }
+profile-no-verb = .my.profile: neznámy príkaz: { $verb }

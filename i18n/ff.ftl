@@ -59,6 +59,7 @@ btn-cancel = yooro
 btn-close = uddude
 btn-reply = jaabii
 btn-publish = yettin
+btn-publish-ipld = yettin IPLD
 msg-reply-sent = jaabiri nawnaaɗo
 msg-reply-failed = jaabiri haaɗaaka: { $e }
 msg-entity-publish-sent = entity { $name }: yettinde nawnaaɗo
@@ -66,6 +67,7 @@ msg-entity-publish-failed = yettinde entity haaɗaaka: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: yettinde nawnaaɗo
 msg-field-publish-failed = yettinde leehol haaɗaaka: { $e }
 msg-acl-publish-sent = runtime ACL: yettinde nawnaaɗo
+msg-crud-edit-publish-sent = { $path }: yettinde nawnaaɗo
 msg-acl-publish-failed = yettinde runtime ACL haaɗaaka: { $e }
 msg-yaml-error = juumre YAML: { $e }
 msg-editor-saved = { $path }:mooftu
@@ -192,3 +194,36 @@ err-lang-not-found = hakkunde yolaani: { $lang }
 
 msg-send-failed = neldungal walaa: { $e }
 msg-not-logged-in = naatnaaki
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Juulnde YAML: { $e }
+yaml-not-mapping = YAML waawi jeyeede mapping (keɓi: maanotooɓe); maango fof woo kulol DAG-CBOR
+dagcbor-encode-error = Juulnde DAG-CBOR: { $e }
+cbor-decode-error = Juulnde CBOR: { $e }
+cbor-json-error = Juulnde CBOR→JSON: { $e }
+yaml-serialize-error = Juulnde YAML: { $e }
+edit-reply-invalid = Jaabu winndi feewi
+doc-publish-ipld-error = Winndude IPLD ñaawonaaki: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Juulnde innde gooto: { $e }
+err-config-load = Juulnde heɓtude: { $e }
+err-lang-persist = Juulnde wolde: { $e }
+err-history-parse = Juulnde taariika: { $e }
+err-history-load = Juulnde heɓtude taariika: { $e }
+err-ipfs-reply-decode = Juulnde IPFS: { $e }
+err-edit-cbor = Juulnde CBOR: { $e }
+err-popup-blocked = Wannde ñalaaɗe jaabii
+status-publishing = fallude
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = juumre
+rpc-error-detail = juumre: { $detail }
+msg-new-message = ← [{ $from }] tinndi kesu — { $count } e ndema
+err-edit-decode-failed = taƴre: juumre waɗde welngo: { $e }
+err-edit-fetch-failed = taƴre: juumre heɓde: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = alaa setoore jeyaare — profil waawataa jooɓaade
+profile-delete-error = feccere profil walaa: { $e }
+profile-no-verb = .my.profile: konu faamaaki: { $verb }

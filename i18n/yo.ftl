@@ -59,6 +59,7 @@ btn-cancel = fagilé
 btn-close = pa
 btn-reply = dáhùn
 btn-publish = tẹ jáde
+btn-publish-ipld = tẹ jáde IPLD
 msg-reply-sent = a ránṣẹ́ ìdáhùn
 msg-reply-failed = ìdáhùn kùnà: { $e }
 msg-entity-publish-sent = entity { $name }: a ránṣẹ́ ìtẹ jáde
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ìtẹ jáde entity kùnà: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: a ránṣẹ́ ìtẹ jáde
 msg-field-publish-failed = ìtẹ jáde ààyè kùnà: { $e }
 msg-acl-publish-sent = runtime ACL: a ránṣẹ́ ìtẹ jáde
+msg-crud-edit-publish-sent = { $path }: a ránṣẹ́ ìtẹ jáde
 msg-acl-publish-failed = ìtẹ jáde runtime ACL kùnà: { $e }
 msg-yaml-error = àṣìṣe YAML: { $e }
 msg-editor-saved = { $path }:pamọ́
@@ -192,3 +194,36 @@ err-lang-not-found = ede ko ri: { $lang }
 
 msg-send-failed = fífiránṣẹ kuna: { $e }
 msg-not-logged-in = ko wọle
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Aṣiṣe itupalẹ YAML: { $e }
+yaml-not-mapping = YAML gbọdọ jẹ mapping (bata bọtini: iye); ọrọ ti o rọrun ati awọn isokọ ko le fipamọ bi DAG-CBOR
+dagcbor-encode-error = Aṣiṣe ifaminsi DAG-CBOR: { $e }
+cbor-decode-error = Aṣiṣe iṣipopada CBOR: { $e }
+cbor-json-error = Aṣiṣe CBOR si JSON: { $e }
+yaml-serialize-error = Aṣiṣe silẹ YAML: { $e }
+edit-reply-invalid = Idahun atunse ti ko wulo
+doc-publish-ipld-error = Atejade IPLD kuna: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Aṣiṣe fipamọ ifipabanilọ apoti apo: { $e }
+err-config-load = Aṣiṣe igba iwọle iṣeto: { $e }
+err-lang-persist = Aṣiṣe fipamọ ede: { $e }
+err-history-parse = Aṣiṣe itupalẹ itan: { $e }
+err-history-load = Aṣiṣe gbigba itan: { $e }
+err-ipfs-reply-decode = Iṣipopada idahun IPFS kuna: { $e }
+err-edit-cbor = Aṣiṣe ṣatunṣe CBOR: { $e }
+err-popup-blocked = Aṣàwákiri dina ferese afihan
+status-publishing = n gbejade
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = àṣìṣe
+rpc-error-detail = àṣìṣe: { $detail }
+msg-new-message = ← [{ $from }] ifiranṣẹ tuntun — { $count } ninu apo
+err-edit-decode-failed = ṣàtúnṣe: àṣìṣe ìtúpalẹ̀: { $e }
+err-edit-fetch-failed = ṣàtúnṣe: àṣìṣe gbígba: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ko si igbimọ ti nṣiṣẹ — ko le pa profaili rẹ
+profile-delete-error = piparẹ profaili kuna: { $e }
+profile-no-verb = .my.profile: aṣẹ aimọ: { $verb }

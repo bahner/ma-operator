@@ -59,6 +59,7 @@ btn-cancel = إلغاء
 btn-close = إغلاق
 btn-reply = رد
 btn-publish = نشر
+btn-publish-ipld = نشر IPLD
 msg-reply-sent = تم إرسال الرد
 msg-reply-failed = فشل الرد: { $e }
 msg-entity-publish-sent = الكيان { $name }: تم إرسال طلب النشر
@@ -66,6 +67,7 @@ msg-entity-publish-failed = فشل نشر الكيان: { $e }
 msg-field-publish-sent = الكيان { $name }.{ $field }: تم إرسال طلب النشر
 msg-field-publish-failed = فشل نشر الحقل: { $e }
 msg-acl-publish-sent = ACL وقت التشغيل: تم إرسال طلب النشر
+msg-crud-edit-publish-sent = { $path }: تم إرسال طلب النشر
 msg-acl-publish-failed = فشل نشر ACL وقت التشغيل: { $e }
 msg-yaml-error = خطأ YAML: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = اللغة غير موجودة: { $lang }
 
 msg-send-failed = فشل الإرسال: { $e }
 msg-not-logged-in = غير مسجّل الدخول
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = خطأ في تحليل YAML: { $e }
+yaml-not-mapping = يجب أن يكون YAML تعيينًا (أزواج مفتاح: قيمة)؛ لا يمكن تخزين النص العادي والقيم القياسية كـ DAG-CBOR
+dagcbor-encode-error = خطأ في ترميز DAG-CBOR: { $e }
+cbor-decode-error = خطأ في فك ترميز CBOR: { $e }
+cbor-json-error = خطأ في تحويل CBOR إلى JSON: { $e }
+yaml-serialize-error = خطأ في تسلسل YAML: { $e }
+edit-reply-invalid = رد تعديل غير صالح
+doc-publish-ipld-error = فشل نشر IPLD: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = خطأ في حفظ تنظيف البريد الوارد: { $e }
+err-config-load = خطأ في تحميل الإعداد: { $e }
+err-lang-persist = خطأ في حفظ اللغة: { $e }
+err-history-parse = خطأ في تحليل السجل: { $e }
+err-history-load = خطأ في تحميل السجل: { $e }
+err-ipfs-reply-decode = فشل فك ترميز استجابة IPFS: { $e }
+err-edit-cbor = خطأ تعديل CBOR: { $e }
+err-popup-blocked = النوافذ المنبثقة محجوبة من المتصفح
+status-publishing = يُنشر
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = خطأ
+rpc-error-detail = خطأ: { $detail }
+msg-new-message = ← [{ $from }] رسالة جديدة — { $count } في البريد الوارد
+err-edit-decode-failed = فشل فك ترميز التحرير: { $e }
+err-edit-fetch-failed = فشل جلب التحرير: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = لا توجد جلسة نشطة — لا يمكن حذف الملف الشخصي
+profile-delete-error = فشل حذف الملف الشخصي: { $e }
+profile-no-verb = .my.profile: أمر غير معروف: { $verb }

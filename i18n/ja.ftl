@@ -59,6 +59,7 @@ btn-cancel = キャンセル
 btn-close = 閉じる
 btn-reply = 返信
 btn-publish = 公開
+btn-publish-ipld = 公開 IPLD
 msg-reply-sent = 返信を送信しました
 msg-reply-failed = 返信の送信に失敗しました: { $e }
 msg-entity-publish-sent = エンティティ { $name }: 公開を送信しました
@@ -66,6 +67,7 @@ msg-entity-publish-failed = エンティティの公開に失敗しました: { 
 msg-field-publish-sent = エンティティ { $name }.{ $field }: 公開を送信しました
 msg-field-publish-failed = フィールドの公開に失敗しました: { $e }
 msg-acl-publish-sent = ランタイム ACL: 公開を送信しました
+msg-crud-edit-publish-sent = { $path }: 公開を送信しました
 msg-acl-publish-failed = ランタイム ACL の公開に失敗しました: { $e }
 msg-yaml-error = YAML エラー: { $e }
 msg-editor-saved = { $path }:保存
@@ -185,3 +187,36 @@ err-lang-not-found = 言語が見つかりません: { $lang }
 
 msg-send-failed = 送信失敗: { $e }
 msg-not-logged-in = ログインしていません
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML解析エラー: { $e }
+yaml-not-mapping = YAMLはマッピング（キー：値のペア）でなければなりません；プレーンテキストとスカラーはDAG-CBORとして保存できません
+dagcbor-encode-error = DAG-CBORエンコードエラー: { $e }
+cbor-decode-error = CBORデコードエラー: { $e }
+cbor-json-error = CBORからJSONへの変換エラー: { $e }
+yaml-serialize-error = YAMLシリアル化エラー: { $e }
+edit-reply-invalid = 無効な編集返信
+doc-publish-ipld-error = IPLD公開に失敗: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = 受信箱整理保存エラー: { $e }
+err-config-load = 設定読み込みエラー: { $e }
+err-lang-persist = 言語保存エラー: { $e }
+err-history-parse = 履歴解析エラー: { $e }
+err-history-load = 履歴読み込みエラー: { $e }
+err-ipfs-reply-decode = IPFS返信デコード失敗: { $e }
+err-edit-cbor = CBOR編集エラー: { $e }
+err-popup-blocked = ブラウザによりポップアップがブロックされました
+status-publishing = 公開中
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = エラー
+rpc-error-detail = エラー: { $detail }
+msg-new-message = ← [{ $from }] 新しいメッセージ — 受信トレイに { $count } 件
+err-edit-decode-failed = 編集: デコード失敗: { $e }
+err-edit-fetch-failed = 編集: 取得失敗: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = アクティブなセッションがありません — プロフィールを削除できません
+profile-delete-error = プロフィールの削除に失敗しました: { $e }
+profile-no-verb = .my.profile: 不明なコマンド: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Anuluj
 btn-close = Zamknij
 btn-reply = Odpowiedz
 btn-publish = Opublikuj
+btn-publish-ipld = Opublikuj IPLD
 msg-reply-sent = odpowiedź wysłana
 msg-reply-failed = wysyłanie odpowiedzi nie powiodło się: { $e }
 msg-entity-publish-sent = encja { $name }: publikacja wysłana
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publikowanie encji nie powiodło się: { $e }
 msg-field-publish-sent = encja { $name }.{ $field }: publikacja wysłana
 msg-field-publish-failed = publikowanie pola nie powiodło się: { $e }
 msg-acl-publish-sent = ACL środowiska uruchomieniowego: publikacja wysłana
+msg-crud-edit-publish-sent = { $path }: publikacja wysłana
 msg-acl-publish-failed = publikowanie ACL środowiska uruchomieniowego nie powiodło się: { $e }
 msg-yaml-error = błąd YAML: { $e }
 msg-editor-saved = { $path }:zapisz
@@ -185,3 +187,36 @@ err-lang-not-found = język nie znaleziony: { $lang }
 
 msg-send-failed = wysyłanie nie powiodło się: { $e }
 msg-not-logged-in = niezalogowany
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Błąd analizy YAML: { $e }
+yaml-not-mapping = YAML musi być mapowaniem (pary klucz: wartość); zwykły tekst i skalary nie mogą być zapisane jako DAG-CBOR
+dagcbor-encode-error = Błąd kodowania DAG-CBOR: { $e }
+cbor-decode-error = Błąd dekodowania CBOR: { $e }
+cbor-json-error = Błąd konwersji CBOR do JSON: { $e }
+yaml-serialize-error = Błąd serializacji YAML: { $e }
+edit-reply-invalid = Nieprawidłowa odpowiedź edycji
+doc-publish-ipld-error = Publikacja IPLD nie powiodła się: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Błąd zapisu czyszczenia skrzynki odbiorczej: { $e }
+err-config-load = Błąd wczytywania konfiguracji: { $e }
+err-lang-persist = Błąd zapisu języka: { $e }
+err-history-parse = Błąd analizy historii: { $e }
+err-history-load = Błąd wczytywania historii: { $e }
+err-ipfs-reply-decode = Błąd dekodowania odpowiedzi IPFS: { $e }
+err-edit-cbor = Błąd edycji CBOR: { $e }
+err-popup-blocked = Przeglądarka zablokowała wyskakujące okno
+status-publishing = publikowanie
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = błąd
+rpc-error-detail = błąd: { $detail }
+msg-new-message = ← [{ $from }] nowa wiadomość — { $count } w skrzynce odbiorczej
+err-edit-decode-failed = edycja: błąd dekodowania: { $e }
+err-edit-fetch-failed = edycja: błąd pobierania: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = brak aktywnej sesji — nie można usunąć profilu
+profile-delete-error = usunięcie profilu nie powiodło się: { $e }
+profile-no-verb = .my.profile: nieznana komenda: { $verb }

@@ -150,7 +150,6 @@ pub async fn list_usernames() -> Result<Vec<String>, String> {
     Ok(names)
 }
 
-#[allow(dead_code)]
 pub async fn delete_identity(username: &str) -> Result<(), String> {
     let db = open_db().await?;
     let tx = db
@@ -158,6 +157,36 @@ pub async fn delete_identity(username: &str) -> Result<(), String> {
         .map_err(|e| format!("{e:?}"))?;
     let store = tx
         .object_store(STORE_IDENTITIES)
+        .map_err(|e| format!("{e:?}"))?;
+    let req = store
+        .delete(&JsValue::from_str(username))
+        .map_err(|e| format!("{e:?}"))?;
+    let _ = req_to_future(req.as_ref()).await?;
+    Ok(())
+}
+
+pub async fn delete_config(username: &str) -> Result<(), String> {
+    let db = open_db().await?;
+    let tx = db
+        .transaction_with_str_and_mode(STORE_CONFIGS, IdbTransactionMode::Readwrite)
+        .map_err(|e| format!("{e:?}"))?;
+    let store = tx
+        .object_store(STORE_CONFIGS)
+        .map_err(|e| format!("{e:?}"))?;
+    let req = store
+        .delete(&JsValue::from_str(username))
+        .map_err(|e| format!("{e:?}"))?;
+    let _ = req_to_future(req.as_ref()).await?;
+    Ok(())
+}
+
+pub async fn delete_history(username: &str) -> Result<(), String> {
+    let db = open_db().await?;
+    let tx = db
+        .transaction_with_str_and_mode(STORE_HISTORIES, IdbTransactionMode::Readwrite)
+        .map_err(|e| format!("{e:?}"))?;
+    let store = tx
+        .object_store(STORE_HISTORIES)
         .map_err(|e| format!("{e:?}"))?;
     let req = store
         .delete(&JsValue::from_str(username))

@@ -65,7 +65,7 @@ pub fn Landing() -> impl IntoView {
                 </Show>
 
                 <Show when=move || !error.get().is_empty()>
-                    <p class="landing-error">"error"</p>
+                    <p class="landing-error">{move || error.get()}</p>
                 </Show>
                 <Show when=move || !status.get().is_empty()>
                     <p class="landing-status">{move || status.get()}</p>

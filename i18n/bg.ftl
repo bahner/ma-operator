@@ -59,6 +59,7 @@ btn-cancel = Отмяна
 btn-close = Затваряне
 btn-reply = Отговор
 btn-publish = Публикуване
+btn-publish-ipld = Публикуване IPLD
 msg-reply-sent = отговорът е изпратен
 msg-reply-failed = изпращането на отговора е неуспешно: { $e }
 msg-entity-publish-sent = обект { $name }: публикуването е изпратено
@@ -66,6 +67,7 @@ msg-entity-publish-failed = публикуването на обекта е не
 msg-field-publish-sent = обект { $name }.{ $field }: публикуването е изпратено
 msg-field-publish-failed = публикуването на полето е неуспешно: { $e }
 msg-acl-publish-sent = ACL на средата за изпълнение: публикуването е изпратено
+msg-crud-edit-publish-sent = { $path }: публикуването е изпратено
 msg-acl-publish-failed = публикуването на ACL на средата за изпълнение е неуспешно: { $e }
 msg-yaml-error = грешка в YAML: { $e }
 msg-editor-saved = { $path }:запазване
@@ -185,3 +187,36 @@ err-lang-not-found = езикът не е намерен: { $lang }
 
 msg-send-failed = изпращането не бе успешно: { $e }
 msg-not-logged-in = не е влязъл в профила
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Грешка при разбор на YAML: { $e }
+yaml-not-mapping = YAML трябва да бъде mapping (двойки ключ: стойност); обикновен текст и скалари не могат да се съхраняват като DAG-CBOR
+dagcbor-encode-error = Грешка при кодиране на DAG-CBOR: { $e }
+cbor-decode-error = Грешка при декодиране на CBOR: { $e }
+cbor-json-error = Грешка при конвертиране CBOR→JSON: { $e }
+yaml-serialize-error = Грешка при сериализиране на YAML: { $e }
+edit-reply-invalid = Невалиден отговор за редактиране
+doc-publish-ipld-error = Неуспешно публикуване на IPLD: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Грешка при запазване на почистването на входяща поща: { $e }
+err-config-load = Грешка при зареждане на конфигурацията: { $e }
+err-lang-persist = Грешка при запазване на езика: { $e }
+err-history-parse = Грешка при разбор на историята: { $e }
+err-history-load = Грешка при зареждане на историята: { $e }
+err-ipfs-reply-decode = Грешка при декодиране на IPFS отговор: { $e }
+err-edit-cbor = Грешка при редактиране на CBOR: { $e }
+err-popup-blocked = Изскачащият прозорец е блокиран от браузъра
+status-publishing = публикуване
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = грешка
+rpc-error-detail = грешка: { $detail }
+msg-new-message = ← [{ $from }] ново съобщение — { $count } в пощата
+err-edit-decode-failed = грешка при декодиране: { $e }
+err-edit-fetch-failed = грешка при зареждане: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = няма активна сесия — профилът не може да бъде изтрит
+profile-delete-error = изтриването на профила не бе успешно: { $e }
+profile-no-verb = .my.profile: непозната команда: { $verb }

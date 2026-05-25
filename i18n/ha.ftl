@@ -59,6 +59,7 @@ btn-cancel = soke
 btn-close = rufe
 btn-reply = amsa
 btn-publish = wallafa
+btn-publish-ipld = wallafa IPLD
 msg-reply-sent = an aika amsa
 msg-reply-failed = amsa ta kasa: { $e }
 msg-entity-publish-sent = entity { $name }: an aika wallafa
@@ -66,6 +67,7 @@ msg-entity-publish-failed = wallafar entity ta kasa: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: an aika wallafa
 msg-field-publish-failed = wallafar filin ta kasa: { $e }
 msg-acl-publish-sent = runtime ACL: an aika wallafa
+msg-crud-edit-publish-sent = { $path }: an aika wallafa
 msg-acl-publish-failed = wallafar runtime ACL ta kasa: { $e }
 msg-yaml-error = kuskuren YAML: { $e }
 msg-editor-saved = { $path }:ajiye
@@ -192,3 +194,36 @@ err-lang-not-found = harshe ba a sami ba: { $lang }
 
 msg-send-failed = aika aika: { $e }
 msg-not-logged-in = ba a shiga ba
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Kuskure na YAML: { $e }
+yaml-not-mapping = YAML dole ya kasance mapping (ma'aunin maɓalli: ƙima); rubutun talaka da sauƙaƙu ba za a iya adana su a matsayin DAG-CBOR ba
+dagcbor-encode-error = Kuskuren lissafin DAG-CBOR: { $e }
+cbor-decode-error = Kuskuren lalata CBOR: { $e }
+cbor-json-error = Kuskuren juyawa CBOR zuwa JSON: { $e }
+yaml-serialize-error = Kuskuren jerin YAML: { $e }
+edit-reply-invalid = Amsa gyara mara inganci
+doc-publish-ipld-error = Bugawa IPLD ta kasa: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Kuskuren adana tsabtace akwatin shiga: { $e }
+err-config-load = Kuskuren loda saita: { $e }
+err-lang-persist = Kuskuren adana yare: { $e }
+err-history-parse = Kuskuren binciken tarihi: { $e }
+err-history-load = Kuskuren loda tarihi: { $e }
+err-ipfs-reply-decode = Rashin lalata amsar IPFS: { $e }
+err-edit-cbor = Kuskuren gyara CBOR: { $e }
+err-popup-blocked = Popup ta toshe ta browser
+status-publishing = wallafawa
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = kuskure
+rpc-error-detail = kuskure: { $detail }
+msg-new-message = ← [{ $from }] saƙo sabon — { $count } a akwatin karɓa
+err-edit-decode-failed = gyara: kuskuren fassara: { $e }
+err-edit-fetch-failed = gyara: kuskuren nemo: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = babu takardar izni mai aiki — ba za a iya goge bayanan martaba ba
+profile-delete-error = gogewa bayanan martaba ta ci tura: { $e }
+profile-no-verb = .my.profile: umarni da ba a sani ba: { $verb }

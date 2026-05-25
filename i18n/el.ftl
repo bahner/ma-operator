@@ -59,6 +59,7 @@ btn-cancel = Ακύρωση
 btn-close = Κλείσιμο
 btn-reply = Απάντηση
 btn-publish = Δημοσίευση
+btn-publish-ipld = Δημοσίευση IPLD
 msg-reply-sent = η απάντηση στάλθηκε
 msg-reply-failed = αποστολή απάντησης απέτυχε: { $e }
 msg-entity-publish-sent = οντότητα { $name }: δημοσίευση εστάλη
@@ -66,6 +67,7 @@ msg-entity-publish-failed = δημοσίευση οντότητας απέτυχ
 msg-field-publish-sent = οντότητα { $name }.{ $field }: δημοσίευση εστάλη
 msg-field-publish-failed = δημοσίευση πεδίου απέτυχε: { $e }
 msg-acl-publish-sent = ACL περιβάλλοντος εκτέλεσης: δημοσίευση εστάλη
+msg-crud-edit-publish-sent = { $path }: δημοσίευση εστάλη
 msg-acl-publish-failed = δημοσίευση ACL περιβάλλοντος εκτέλεσης απέτυχε: { $e }
 msg-yaml-error = σφάλμα YAML: { $e }
 msg-editor-saved = { $path }:αποθήκευση
@@ -185,3 +187,36 @@ err-lang-not-found = η γλώσσα δεν βρέθηκε: { $lang }
 
 msg-send-failed = αποτυχία αποστολής: { $e }
 msg-not-logged-in = δεν έχετε συνδεθεί
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Σφάλμα ανάλυσης YAML: { $e }
+yaml-not-mapping = Το YAML πρέπει να είναι mapping (ζεύγη κλειδιού: τιμής); απλό κείμενο και βαθμωτά δεν μπορούν να αποθηκευτούν ως DAG-CBOR
+dagcbor-encode-error = Σφάλμα κωδικοποίησης DAG-CBOR: { $e }
+cbor-decode-error = Σφάλμα αποκωδικοποίησης CBOR: { $e }
+cbor-json-error = Σφάλμα CBOR σε JSON: { $e }
+yaml-serialize-error = Σφάλμα σειριοποίησης YAML: { $e }
+edit-reply-invalid = Μη έγκυρη απάντηση επεξεργασίας
+doc-publish-ipld-error = Αποτυχία δημοσίευσης IPLD: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Σφάλμα αποθήκευσης κλαδέματος εισερχόμενης: { $e }
+err-config-load = Σφάλμα φόρτωσης ρυθμίσεων: { $e }
+err-lang-persist = Σφάλμα αποθήκευσης γλώσσας: { $e }
+err-history-parse = Σφάλμα ανάλυσης ιστορικού: { $e }
+err-history-load = Σφάλμα φόρτωσης ιστορικού: { $e }
+err-ipfs-reply-decode = Αποτυχία αποκωδικοποίησης απόκρισης IPFS: { $e }
+err-edit-cbor = Σφάλμα επεξεργασίας CBOR: { $e }
+err-popup-blocked = Το αναδυόμενο παράθυρο αποκλείστηκε από τον περιηγητή
+status-publishing = δημοσίευση
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = σφάλμα
+rpc-error-detail = σφάλμα: { $detail }
+msg-new-message = ← [{ $from }] νέο μήνυμα — { $count } στα εισερχόμενα
+err-edit-decode-failed = αποτυχία αποκωδικοποίησης επεξεργασίας: { $e }
+err-edit-fetch-failed = αποτυχία ανάκτησης επεξεργασίας: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = δεν υπάρχει ενεργή συνεδρία — δεν είναι δυνατή η διαγραφή του προφίλ
+profile-delete-error = η διαγραφή του προφίλ απέτυχε: { $e }
+profile-no-verb = .my.profile: άγνωστη εντολή: { $verb }

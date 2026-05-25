@@ -59,6 +59,7 @@ btn-cancel = Anulare
 btn-close = Închidere
 btn-reply = Răspuns
 btn-publish = Publicare
+btn-publish-ipld = Publicare IPLD
 msg-reply-sent = răspuns trimis
 msg-reply-failed = trimiterea răspunsului a eșuat: { $e }
 msg-entity-publish-sent = entitatea { $name }: publicare trimisă
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publicarea entității a eșuat: { $e }
 msg-field-publish-sent = entitatea { $name }.{ $field }: publicare trimisă
 msg-field-publish-failed = publicarea câmpului a eșuat: { $e }
 msg-acl-publish-sent = ACL runtime: publicare trimisă
+msg-crud-edit-publish-sent = { $path }: publicare trimisă
 msg-acl-publish-failed = publicarea ACL runtime a eșuat: { $e }
 msg-yaml-error = eroare YAML: { $e }
 msg-editor-saved = { $path }:salvare
@@ -185,3 +187,36 @@ err-lang-not-found = limba nu a fost găsită: { $lang }
 
 msg-send-failed = trimiterea a eşuat: { $e }
 msg-not-logged-in = neconectat
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Eroare de analiză YAML: { $e }
+yaml-not-mapping = YAML trebuie să fie un mapping (perechi cheie: valoare); textul simplu și scalarii nu pot fi stocați ca DAG-CBOR
+dagcbor-encode-error = Eroare de codificare DAG-CBOR: { $e }
+cbor-decode-error = Eroare de decodificare CBOR: { $e }
+cbor-json-error = Eroare CBOR la JSON: { $e }
+yaml-serialize-error = Eroare de serializare YAML: { $e }
+edit-reply-invalid = Răspuns de editare invalid
+doc-publish-ipld-error = Publicarea IPLD a eșuat: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Eroare la salvarea curățării căsuței de intrare: { $e }
+err-config-load = Eroare la încărcarea configurației: { $e }
+err-lang-persist = Eroare la salvarea limbii: { $e }
+err-history-parse = Eroare de analiză a istoricului: { $e }
+err-history-load = Eroare la încărcarea istoricului: { $e }
+err-ipfs-reply-decode = Eșec la decodificarea răspunsului IPFS: { $e }
+err-edit-cbor = Eroare de editare CBOR: { $e }
+err-popup-blocked = Fereastra pop-up a fost blocată de browser
+status-publishing = publicare
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = eroare
+rpc-error-detail = eroare: { $detail }
+msg-new-message = ← [{ $from }] mesaj nou — { $count } în inbox
+err-edit-decode-failed = editare: eroare la decodare: { $e }
+err-edit-fetch-failed = editare: eroare la încărcare: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nicio sesiune activă — profilul nu poate fi șters
+profile-delete-error = ștergerea profilului a eșuat: { $e }
+profile-no-verb = .my.profile: comandă necunoscută: { $verb }

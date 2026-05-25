@@ -59,6 +59,7 @@ btn-cancel = Отмена
 btn-close = Закрыть
 btn-reply = Ответить
 btn-publish = Опубликовать
+btn-publish-ipld = Опубликовать IPLD
 msg-reply-sent = ответ отправлен
 msg-reply-failed = ошибка отправки ответа: { $e }
 msg-entity-publish-sent = объект { $name }: публикация отправлена
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ошибка публикации объекта: { 
 msg-field-publish-sent = объект { $name }.{ $field }: публикация отправлена
 msg-field-publish-failed = ошибка публикации поля: { $e }
 msg-acl-publish-sent = ACL среды выполнения: публикация отправлена
+msg-crud-edit-publish-sent = { $path }: публикация отправлена
 msg-acl-publish-failed = ошибка публикации ACL среды выполнения: { $e }
 msg-yaml-error = ошибка YAML: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = язык не найден: { $lang }
 
 msg-send-failed = ошибка отправки: { $e }
 msg-not-logged-in = не выполнен вход
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Ошибка разбора YAML: { $e }
+yaml-not-mapping = YAML должен быть mapping (пары ключ: значение); простой текст и скаляры не могут быть сохранены как DAG-CBOR
+dagcbor-encode-error = Ошибка кодирования DAG-CBOR: { $e }
+cbor-decode-error = Ошибка декодирования CBOR: { $e }
+cbor-json-error = Ошибка CBOR→JSON: { $e }
+yaml-serialize-error = Ошибка сериализации YAML: { $e }
+edit-reply-invalid = Некорректный ответ на редактирование
+doc-publish-ipld-error = Ошибка публикации IPLD: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Ошибка сохранения очистки входящих: { $e }
+err-config-load = Ошибка загрузки конфигурации: { $e }
+err-lang-persist = Ошибка сохранения языка: { $e }
+err-history-parse = Ошибка разбора истории: { $e }
+err-history-load = Ошибка загрузки истории: { $e }
+err-ipfs-reply-decode = Ошибка декодирования ответа IPFS: { $e }
+err-edit-cbor = Ошибка редактирования CBOR: { $e }
+err-popup-blocked = Всплывающее окно заблокировано браузером
+status-publishing = публикуется
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ошибка
+rpc-error-detail = ошибка: { $detail }
+msg-new-message = ← [{ $from }] новое сообщение — { $count } во входящих
+err-edit-decode-failed = редактирование: ошибка декодирования: { $e }
+err-edit-fetch-failed = редактирование: ошибка загрузки: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = нет активной сессии — профиль не может быть удалён
+profile-delete-error = удаление профиля не удалось: { $e }
+profile-no-verb = .my.profile: неизвестная команда: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Kansel
 btn-close = Kloz
 btn-reply = Rɛpli
 btn-publish = Pɔblish
+btn-publish-ipld = Pɔblish IPLD
 msg-reply-sent = rɛpli don sen
 msg-reply-failed = rɛpli fail: { $e }
 msg-entity-publish-sent = entity { $name }: pɔblish don sen
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entity pɔblish fail: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: pɔblish don sen
 msg-field-publish-failed = field pɔblish fail: { $e }
 msg-acl-publish-sent = runtime ACL: pɔblish don sen
+msg-crud-edit-publish-sent = { $path }: pɔblish don sen
 msg-acl-publish-failed = runtime ACL pɔblish fail: { $e }
 msg-yaml-error = YAML ɛrɔ: { $e }
 msg-editor-saved = { $path }:sev
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              dilet dokument
 
 msg-send-failed = sen no go: { $e }
 msg-not-logged-in = yu nɔ lɔg in
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse ɛrɔ: { $e }
+yaml-not-mapping = YAML mas bi mapping (ki: valyu pɛr); plen tɛks ɛn skɛlɛ no kɛn stor as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR enkod ɛrɔ: { $e }
+cbor-decode-error = CBOR dɛkod ɛrɔ: { $e }
+cbor-json-error = CBOR tu JSON ɛrɔ: { $e }
+yaml-serialize-error = YAML sɛrialajz ɛrɔ: { $e }
+edit-reply-invalid = invalid ɛdit rɛpli
+doc-publish-ipld-error = IPLD pɔblish fɛl: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbɔks prune persist ɛrɔ: { $e }
+err-config-load = config lod ɛrɔ: { $e }
+err-lang-persist = lang persist ɛrɔ: { $e }
+err-history-parse = history parse ɛrɔ: { $e }
+err-history-load = history lod ɛrɔ: { $e }
+err-ipfs-reply-decode = IPFS reply dɛkod fɛl: { $e }
+err-edit-cbor = ɛdit CBOR ɛrɔ: { $e }
+err-popup-blocked = popup bɔlɔk bai browser
+status-publishing = publishin
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ɛrɔ
+rpc-error-detail = ɛrɔ: { $detail }
+msg-new-message = ← [{ $from }] nyù mɛsej — { $count } de insay inbox
+err-edit-decode-failed = edit: dipkod fɛl: { $e }
+err-edit-fetch-failed = edit: fɛtʃ fɛl: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no aktiv sesin — no fit delet profail
+profile-delete-error = profail delet no wok: { $e }
+profile-no-verb = .my.profile: yu no sabi dis wod: { $verb }

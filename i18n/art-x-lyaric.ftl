@@ -61,6 +61,7 @@ btn-cancel = Cancel
 btn-close = Close
 btn-reply = Answer
 btn-publish = Manifest
+btn-publish-ipld = Manifest IPLD
 msg-reply-sent = answer forward
 msg-reply-failed = answer fall: { $e }
 msg-entity-publish-sent = entity { $name }: manifest forward
@@ -68,6 +69,7 @@ msg-entity-publish-failed = entity manifest fall: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: manifest forward
 msg-field-publish-failed = field manifest fall: { $e }
 msg-acl-publish-sent = runtime ACL: manifest forward
+msg-crud-edit-publish-sent = { $path }: manifest forward
 msg-acl-publish-failed = runtime ACL manifest fall: { $e }
 msg-yaml-error = YAML trouble: { $e }
 msg-editor-saved = { $path }:kept
@@ -180,3 +182,36 @@ help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
 
 msg-send-failed = send nuh forward: { $e }
 msg-not-logged-in = I an I nuh log in, seen
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse error: { $e }
+yaml-not-mapping = YAML must be a mapping (key: value pairs); plain text and bare scalars cannot be stored as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = IPLD publish failed: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
+err-popup-blocked = popup block by di browser
+status-publishing = publishin
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = iration failin
+rpc-error-detail = iration failin: { $detail }
+msg-new-message = ← [{ $from }] new word come — { $count } inna di box
+err-edit-decode-failed = edit decode fail: { $e }
+err-edit-fetch-failed = edit fetch fail: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no livity session — caan delete profile
+profile-delete-error = profile deletion fail up: { $e }
+profile-no-verb = .my.profile: unknown word: { $verb }

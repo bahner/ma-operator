@@ -59,6 +59,7 @@ btn-cancel = 取消
 btn-close = 关闭
 btn-reply = 回复
 btn-publish = 发布
+btn-publish-ipld = 发布 IPLD
 msg-reply-sent = 回复已发送
 msg-reply-failed = 回复失败: { $e }
 msg-entity-publish-sent = 实体 { $name }：发布请求已发送
@@ -66,6 +67,7 @@ msg-entity-publish-failed = 实体发布失败: { $e }
 msg-field-publish-sent = 实体 { $name }.{ $field }：发布请求已发送
 msg-field-publish-failed = 字段发布失败: { $e }
 msg-acl-publish-sent = 运行时 ACL：发布请求已发送
+msg-crud-edit-publish-sent = { $path }：发布请求已发送
 msg-acl-publish-failed = 运行时 ACL 发布失败: { $e }
 msg-yaml-error = YAML 错误: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = 未找到语言: { $lang }
 
 msg-send-failed = 发送失败：{ $e }
 msg-not-logged-in = 未登录
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML 解析错误：{ $e }
+yaml-not-mapping = YAML 必须是映射（键：值对）；纯文本和标量无法存储为 DAG-CBOR
+dagcbor-encode-error = DAG-CBOR 编码错误：{ $e }
+cbor-decode-error = CBOR 解码错误：{ $e }
+cbor-json-error = CBOR 转 JSON 错误：{ $e }
+yaml-serialize-error = YAML 序列化错误：{ $e }
+edit-reply-invalid = 无效的编辑回复
+doc-publish-ipld-error = IPLD 发布失败：{ $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = 收件箱整理保存错误：{ $e }
+err-config-load = 配置加载错误：{ $e }
+err-lang-persist = 语言保存错误：{ $e }
+err-history-parse = 历史记录解析错误：{ $e }
+err-history-load = 历史记录加载错误：{ $e }
+err-ipfs-reply-decode = IPFS 回复解码失败：{ $e }
+err-edit-cbor = CBOR 编辑错误：{ $e }
+err-popup-blocked = 浏览器屏蔽了弹窗
+status-publishing = 发布中
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = 错误
+rpc-error-detail = 错误: { $detail }
+msg-new-message = ← [{ $from }] 新消息 — 收件箱中 { $count } 条
+err-edit-decode-failed = 编辑: 解码失败: { $e }
+err-edit-fetch-failed = 编辑: 获取失败: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = 无活动会话 — 无法删除个人资料
+profile-delete-error = 个人资料删除失败: { $e }
+profile-no-verb = .my.profile: 未知命令: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Cancel
 btn-close = Close
 btn-reply = Reply
 btn-publish = Publish
+btn-publish-ipld = Publish IPLD
 msg-reply-sent = reply sent
 msg-reply-failed = reply failed: { $e }
 msg-entity-publish-sent = entity { $name }: publish sent
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entity publish failed: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: publish sent
 msg-field-publish-failed = field publish failed: { $e }
 msg-acl-publish-sent = runtime ACL: publish sent
+msg-crud-edit-publish-sent = { $path }: publish sent
 msg-acl-publish-failed = runtime ACL publish failed: { $e }
 msg-yaml-error = YAML error: { $e }
 msg-editor-saved = { $path }:save
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              delete document
 
 msg-send-failed = send nuh work: { $e }
 msg-not-logged-in = nuh log in
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse error: { $e }
+yaml-not-mapping = YAML mus bi a mapping (ki: value pair); plain text an scalar cyan store as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = IPLD publish failed: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
+err-popup-blocked = popup block by browser
+status-publishing = publishin
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = erra
+rpc-error-detail = erra: { $detail }
+msg-new-message = ← [{ $from }] new mesij — { $count } inna inbox
+err-edit-decode-failed = edit decode fail: { $e }
+err-edit-fetch-failed = edit fetch fail: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nuh active session — cyaan delete profile
+profile-delete-error = profile deletion fail: { $e }
+profile-no-verb = .my.profile: unknown word: { $verb }

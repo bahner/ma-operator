@@ -59,6 +59,7 @@ btn-cancel = foano
 btn-close = akatony
 btn-reply = valiana
 btn-publish = havoaka
+btn-publish-ipld = havoaka IPLD
 msg-reply-sent = valim-pitoriana nalefa
 msg-reply-failed = valim-pitoriana tsy nahomby: { $e }
 msg-entity-publish-sent = entity { $name }: nalefa ny famoahana
@@ -66,6 +67,7 @@ msg-entity-publish-failed = famoahana entity tsy nahomby: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: nalefa ny famoahana
 msg-field-publish-failed = famoahana sahan-kevitra tsy nahomby: { $e }
 msg-acl-publish-sent = runtime ACL: nalefa ny famoahana
+msg-crud-edit-publish-sent = { $path }: nalefa ny famoahana
 msg-acl-publish-failed = famoahana runtime ACL tsy nahomby: { $e }
 msg-yaml-error = hadisoana YAML: { $e }
 msg-editor-saved = { $path }:tehirizo
@@ -192,3 +194,36 @@ err-lang-not-found = tsy hita ny teny: { $lang }
 
 msg-send-failed = tsy nahomby ny fandefasana: { $e }
 msg-not-logged-in = tsy niditra
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Hadisoana YAML: { $e }
+yaml-not-mapping = YAML tsy maintsy mapping (sanda: valeur-pair); teny tsotra sy scalar tsy azo voatahiry ho DAG-CBOR
+dagcbor-encode-error = Hadisoana DAG-CBOR: { $e }
+cbor-decode-error = Hadisoana CBOR: { $e }
+cbor-json-error = Hadisoana CBOR→JSON: { $e }
+yaml-serialize-error = Hadisoana serialization YAML: { $e }
+edit-reply-invalid = Valiny fanavaozana tsy azo
+doc-publish-ipld-error = Tsy nisy fivoaran'ny IPLD: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Hadisoana fitehirizana fanadiovana mailaka: { $e }
+err-config-load = Hadisoana fampidirana: { $e }
+err-lang-persist = Hadisoana fitehirizana fiteny: { $e }
+err-history-parse = Hadisoana famakiana tantara: { $e }
+err-history-load = Hadisoana fampidirana tantara: { $e }
+err-ipfs-reply-decode = Tsy nisy fivoaran'ny valiny IPFS: { $e }
+err-edit-cbor = Hadisoana CBOR fanavaozana: { $e }
+err-popup-blocked = Voasakan'ny navigateur ny popup
+status-publishing = mamoaka
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = hadisoana
+rpc-error-detail = hadisoana: { $detail }
+msg-new-message = ← [{ $from }] hafatra vaovao — { $count } ao amin'ny boaty
+err-edit-decode-failed = fanandramana: tsy nahomby ny fanakambanana: { $e }
+err-edit-fetch-failed = fanandramana: tsy nahomby ny faka: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = tsy misy fotoana miasa — tsy azo fafana ny profily
+profile-delete-error = tsy nahomby ny famafana profily: { $e }
+profile-no-verb = .my.profile: baiko tsy fantatra: { $verb }

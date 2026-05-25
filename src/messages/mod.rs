@@ -3,6 +3,7 @@
 //! Pure functions over byte payloads / DID strings — no UI dependencies.
 
 use ciborium::Value as CborValue;
+use crate::i18n::{t, tf};
 
 /// Convert a YAML string into a DAG-CBOR byte vector.
 ///
@@ -16,15 +17,32 @@ use ciborium::Value as CborValue;
 /// produce structureless IPLD nodes with no traversable fields.
 pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
     let val: serde_json::Value =
-        serde_yaml::from_str(yaml).map_err(|e| format!("YAML parse error: {e}"))?;
+        serde_yaml::from_str(yaml).map_err(|e| tf("yaml-parse-error", &[("e", &e.to_string())]))?;
     if !val.is_object() {
-        return Err(
-            "YAML must be a mapping (key: value pairs) to be stored as structured IPLD data; \
-             plain text or bare scalars cannot be published as DAG-CBOR"
-                .to_string(),
-        );
+        return Err(t("yaml-not-mapping"));
     }
-    serde_ipld_dagcbor::to_vec(&val).map_err(|e| format!("DAG-CBOR encode error: {e}"))
+    serde_ipld_dagcbor::to_vec(&val).map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
+}
+
+/// Decode a CBOR byte slice and convert it to a YAML string.
+///
+/// Flow: raw CBOR bytes → `ciborium::Value` → `serde_json::Value` (via
+/// ciborium's `Serialize` impl) → YAML string.
+///
+/// Used to display CRUD GET replies (entity data, config values) in the
+/// editor before the user edits and re-publishes them.
+pub fn cbor_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
+    let cbor_val: CborValue =
+        ciborium::de::from_reader(bytes).map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
+    let json_val: serde_json::Value =
+        serde_json::to_value(&cbor_val).map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
+    serde_yaml::to_string(&json_val).map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
+}
+
+/// Extract the text payload from a `[":ok", text_string]` CBOR reply.
+/// Used to retrieve CIDs from IPFS store replies (`[":ok", "/ipfs/bafy..."]`).
+pub fn extract_ok_text(bytes: &[u8]) -> Result<String, String> {
+    extract_ok_yaml(bytes)
 }
 
 /// Extract the YAML string payload from a `[":ok", yaml_text]` CBOR reply.
@@ -34,7 +52,7 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
 /// string — no further conversion is needed.
 pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
     let val: CborValue =
-        ciborium::de::from_reader(bytes).map_err(|e| format!("CBOR decode error: {e}"))?;
+        ciborium::de::from_reader(bytes).map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
     match val {
         CborValue::Array(mut items) if items.len() == 2 => {
             let second = items.pop();
@@ -43,10 +61,10 @@ pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
                 (Some(CborValue::Text(tag)), Some(CborValue::Text(yaml))) if tag == ":ok" => {
                     Ok(yaml)
                 }
-                _ => Err("expected [:ok, yaml_string] edit reply".to_string()),
+                _ => Err(t("edit-reply-invalid")),
             }
         }
-        _ => Err("expected [:ok, yaml_string] edit reply".to_string()),
+        _ => Err(t("edit-reply-invalid")),
     }
 }
 
@@ -92,7 +110,7 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
         Ok(CborValue::Text(atom)) => {
             let is_err = atom == ":error";
             if is_err {
-                ("error".to_string(), true)
+                (t("rpc-error"), true)
             } else {
                 (atom, false)
             }
@@ -121,9 +139,9 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
                 let is_err = head == ":error";
                 let display = if is_err {
                     if rest.is_empty() {
-                        "error".to_string()
+                        t("rpc-error")
                     } else {
-                        format!("error: {}", rest.join(" "))
+                        tf("rpc-error-detail", &[("detail", &rest.join(" "))])
                     }
                 } else if rest.is_empty() {
                     head

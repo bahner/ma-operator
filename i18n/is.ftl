@@ -59,6 +59,7 @@ btn-cancel = Hætta við
 btn-close = Loka
 btn-reply = Svara
 btn-publish = Birta
+btn-publish-ipld = Birta IPLD
 msg-reply-sent = svar sent
 msg-reply-failed = svar mistókst: { $e }
 msg-entity-publish-sent = eining { $name }: birting send
@@ -66,6 +67,7 @@ msg-entity-publish-failed = birting einingar mistókst: { $e }
 msg-field-publish-sent = eining { $name }.{ $field }: birting send
 msg-field-publish-failed = birting reits mistókst: { $e }
 msg-acl-publish-sent = keyrsluumhverfi ACL: birting send
+msg-crud-edit-publish-sent = { $path }: birting send
 msg-acl-publish-failed = birting keyrsluumhverfis ACL mistókst: { $e }
 msg-yaml-error = YAML-villa: { $e }
 msg-editor-saved = { $path }:vista
@@ -185,3 +187,36 @@ err-lang-not-found = tungumál fannst ekki: { $lang }
 
 msg-send-failed = sending mistókst: { $e }
 msg-not-logged-in = ekki innskráður
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-þáttunarvilla: { $e }
+yaml-not-mapping = YAML verður að vera mapping (lykill: gildis-par); venjulegt texta og skalar geta ekki verið geymt sem DAG-CBOR
+dagcbor-encode-error = DAG-CBOR-kóðunarvilla: { $e }
+cbor-decode-error = CBOR-afkóðunarvilla: { $e }
+cbor-json-error = CBOR í JSON-villa: { $e }
+yaml-serialize-error = YAML-raðgreiningarvilla: { $e }
+edit-reply-invalid = Ógilt breytingarsvar
+doc-publish-ipld-error = IPLD-birting mistókst: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Innhólf-hreinsun geymingarvilla: { $e }
+err-config-load = Stillinga hleðsluvilla: { $e }
+err-lang-persist = Tungumáls geymingarvilla: { $e }
+err-history-parse = Söguþáttunarvilla: { $e }
+err-history-load = Sögu hleðsluvilla: { $e }
+err-ipfs-reply-decode = IPFS-svar afkóðunarvilla: { $e }
+err-edit-cbor = CBOR-breytingarvilla: { $e }
+err-popup-blocked = Vafrinn lokaði á sprettiglugga
+status-publishing = gefur út
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = villa
+rpc-error-detail = villa: { $detail }
+msg-new-message = ← [{ $from }] ný skilaboð — { $count } í pósthólfi
+err-edit-decode-failed = ritvinnsla: afkóðunarvilla: { $e }
+err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = engin virk lota — ekki hægt að eyða notandaprófíl
+profile-delete-error = eyðing notandaprófíls mistókst: { $e }
+profile-no-verb = .my.profile: óþekkt skipun: { $verb }

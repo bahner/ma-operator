@@ -59,6 +59,7 @@ btn-cancel = ரத்து செய்
 btn-close = மூடவும்
 btn-reply = பதிலளிக்கவும்
 btn-publish = வெளியிடவும்
+btn-publish-ipld = வெளியிடவும் IPLD
 msg-reply-sent = பதில் அனுப்பப்பட்டது
 msg-reply-failed = பதில் தோல்வியடைந்தது: { $e }
 msg-entity-publish-sent = நிறுவனம் { $name }: வெளியீடு அனுப்பப்பட்டது
@@ -66,6 +67,7 @@ msg-entity-publish-failed = நிறுவன வெளியீடு தோ�
 msg-field-publish-sent = நிறுவனம் { $name }.{ $field }: வெளியீடு அனுப்பப்பட்டது
 msg-field-publish-failed = புலம் வெளியீடு தோல்வியடைந்தது: { $e }
 msg-acl-publish-sent = இயக்க நேர ACL: வெளியீடு அனுப்பப்பட்டது
+msg-crud-edit-publish-sent = { $path }: வெளியீடு அனுப்பப்பட்டது
 msg-acl-publish-failed = இயக்க நேர ACL வெளியீடு தோல்வியடைந்தது: { $e }
 msg-yaml-error = YAML பிழை: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = மொழி கண்டுபிடிக்கப்ப�
 
 msg-send-failed = அனுப்புதல் தோல்வி: { $e }
 msg-not-logged-in = உள்நுழைக்கவில்லை
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML பாகுபடுத்தல் பிழை: { $e }
+yaml-not-mapping = YAML ஒரு மேப்பிங் (விசை: மதிப்பு ஜோடிகள்) ஆக இருக்க வேண்டும்; சாதாரண உரையும் ஸ்கேலர்களும் DAG-CBOR ஆக சேமிக்க முடியாது
+dagcbor-encode-error = DAG-CBOR குறியாக்கல் பிழை: { $e }
+cbor-decode-error = CBOR மறைகுறியாக்கல் பிழை: { $e }
+cbor-json-error = CBOR முதல் JSON பிழை: { $e }
+yaml-serialize-error = YAML தொடர்வரிசைப்படுத்தல் பிழை: { $e }
+edit-reply-invalid = செல்லாத திருத்த பதில்
+doc-publish-ipld-error = IPLD வெளியீடு தோல்வியடைந்தது: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = உள்வரும் பெட்டி வெட்டுதல் சேமிப்பு பிழை: { $e }
+err-config-load = கட்டமைப்பு ஏற்றல் பிழை: { $e }
+err-lang-persist = மொழி சேமிப்பு பிழை: { $e }
+err-history-parse = வரலாறு பாகுபடுத்தல் பிழை: { $e }
+err-history-load = வரலாறு ஏற்றல் பிழை: { $e }
+err-ipfs-reply-decode = IPFS பதில் மறைகுறியாக்கல் தோல்வி: { $e }
+err-edit-cbor = CBOR திருத்தல் பிழை: { $e }
+err-popup-blocked = உலாவி பாப்அப்பை தடுத்தது
+status-publishing = வெளியிடுகிறது
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = பிழை
+rpc-error-detail = பிழை: { $detail }
+msg-new-message = ← [{ $from }] புதிய செய்தி — { $count } இன்பாக்ஸில்
+err-edit-decode-failed = திருத்தம்: டிகோட் தோல்வி: { $e }
+err-edit-fetch-failed = திருத்தம்: பெறுவதில் தோல்வி: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = செயலில் உள்ள அமர்வு இல்லை — சுயவிவரத்தை நீக்க முடியாது
+profile-delete-error = சுயவிவர நீக்கம் தோல்வியடைந்தது: { $e }
+profile-no-verb = .my.profile: அறியப்படாத கட்டளை: { $verb }

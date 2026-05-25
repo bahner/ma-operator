@@ -59,6 +59,7 @@ btn-cancel = Annuleren
 btn-close = Sluiten
 btn-reply = Beantwoorden
 btn-publish = Publiceren
+btn-publish-ipld = Publiceren IPLD
 msg-reply-sent = antwoord verzonden
 msg-reply-failed = antwoord verzenden mislukt: { $e }
 msg-entity-publish-sent = entiteit { $name }: publicatie verzonden
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publiceren entiteit mislukt: { $e }
 msg-field-publish-sent = entiteit { $name }.{ $field }: publicatie verzonden
 msg-field-publish-failed = publiceren veld mislukt: { $e }
 msg-acl-publish-sent = runtime-ACL: publicatie verzonden
+msg-crud-edit-publish-sent = { $path }: publicatie verzonden
 msg-acl-publish-failed = publiceren runtime-ACL mislukt: { $e }
 msg-yaml-error = YAML-fout: { $e }
 msg-editor-saved = { $path }:opslaan
@@ -185,3 +187,36 @@ err-lang-not-found = taal niet gevonden: { $lang }
 
 msg-send-failed = verzenden mislukt: { $e }
 msg-not-logged-in = niet ingelogd
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-parsefout: { $e }
+yaml-not-mapping = YAML moet een mapping zijn (sleutel: waarde-paren); platte tekst en scalars kunnen niet als DAG-CBOR worden opgeslagen
+dagcbor-encode-error = DAG-CBOR-coderingsfout: { $e }
+cbor-decode-error = CBOR-decoderingsfout: { $e }
+cbor-json-error = CBOR naar JSON-fout: { $e }
+yaml-serialize-error = YAML-serialisatiefout: { $e }
+edit-reply-invalid = Ongeldige bewerkingreactie
+doc-publish-ipld-error = IPLD-publicatie mislukt: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Postvak-IN opruimen opslaan-fout: { $e }
+err-config-load = Configuratielaadfouten: { $e }
+err-lang-persist = Taalopslaan-fout: { $e }
+err-history-parse = Geschiedenisparserfout: { $e }
+err-history-load = Geschiedenislaad-fout: { $e }
+err-ipfs-reply-decode = IPFS-antwoord decoderen mislukt: { $e }
+err-edit-cbor = CBOR-bewerkingsfout: { $e }
+err-popup-blocked = Pop-up geblokkeerd door browser
+status-publishing = publiceert
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = fout
+rpc-error-detail = fout: { $detail }
+msg-new-message = ← [{ $from }] nieuw bericht — { $count } in inbox
+err-edit-decode-failed = bewerking: decodering mislukt: { $e }
+err-edit-fetch-failed = bewerking: ophalen mislukt: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = geen actieve sessie — profiel kan niet worden verwijderd
+profile-delete-error = verwijderen van profiel mislukt: { $e }
+profile-no-verb = .my.profile: onbekend commando: { $verb }

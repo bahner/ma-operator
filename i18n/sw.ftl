@@ -59,6 +59,7 @@ btn-cancel = Ghairi
 btn-close = Funga
 btn-reply = Jibu
 btn-publish = Chapisha
+btn-publish-ipld = Chapisha IPLD
 msg-reply-sent = jibu limetumwa
 msg-reply-failed = kutuma jibu kumeshindwa: { $e }
 msg-entity-publish-sent = kitu { $name }: uchapishaji umetumwa
@@ -66,6 +67,7 @@ msg-entity-publish-failed = kuchapisha kitu kumeshindwa: { $e }
 msg-field-publish-sent = kitu { $name }.{ $field }: uchapishaji umetumwa
 msg-field-publish-failed = kuchapisha uwanja kumeshindwa: { $e }
 msg-acl-publish-sent = ACL ya wakati wa utekelezaji: uchapishaji umetumwa
+msg-crud-edit-publish-sent = { $path }: uchapishaji umetumwa
 msg-acl-publish-failed = kuchapisha ACL ya wakati wa utekelezaji kumeshindwa: { $e }
 msg-yaml-error = hitilafu ya YAML: { $e }
 msg-editor-saved = { $path }:hifadhi
@@ -185,3 +187,36 @@ err-lang-not-found = lugha haikupatikana: { $lang }
 
 msg-send-failed = kutuma kulishindwa: { $e }
 msg-not-logged-in = haujaingia
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Kosa la kuchanganua YAML: { $e }
+yaml-not-mapping = YAML lazima iwe mapping (jozi la ufunguo: thamani); maandishi ya kawaida na skalari haziwezi kuhifadhiwa kama DAG-CBOR
+dagcbor-encode-error = Kosa la kusimba DAG-CBOR: { $e }
+cbor-decode-error = Kosa la kusimbua CBOR: { $e }
+cbor-json-error = Kosa la CBOR hadi JSON: { $e }
+yaml-serialize-error = Kosa la kusindika YAML: { $e }
+edit-reply-invalid = Jibu la uhariri lisilofaa
+doc-publish-ipld-error = Kuchapisha IPLD kulishindwa: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Kosa la kuhifadhi usafishaji wa kisanduku cha barua: { $e }
+err-config-load = Kosa la kupakia mipangilio: { $e }
+err-lang-persist = Kosa la kuhifadhi lugha: { $e }
+err-history-parse = Kosa la kuchanganua historia: { $e }
+err-history-load = Kosa la kupakia historia: { $e }
+err-ipfs-reply-decode = Kushindwa kusimbua jibu la IPFS: { $e }
+err-edit-cbor = Kosa la kuhariri CBOR: { $e }
+err-popup-blocked = Kivinjari kimezuia dirisha la popup
+status-publishing = inachapisha
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = hitilafu
+rpc-error-detail = hitilafu: { $detail }
+msg-new-message = ← [{ $from }] ujumbe mpya — { $count } kwenye kisanduku
+err-edit-decode-failed = kuhariri: hitilafu ya usimbaji: { $e }
+err-edit-fetch-failed = kuhariri: hitilafu ya kupata: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = hakuna kipindi cha kazi — profaili haiwezi kufutwa
+profile-delete-error = kufuta profaili kumeshindwa: { $e }
+profile-no-verb = .my.profile: amri isiyojulikana: { $verb }

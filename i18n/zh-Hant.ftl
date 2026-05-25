@@ -59,6 +59,7 @@ btn-cancel = 取消
 btn-close = 關閉
 btn-reply = 回覆
 btn-publish = 發佈
+btn-publish-ipld = 發佈 IPLD
 msg-reply-sent = 回覆已傳送
 msg-reply-failed = 回覆失敗: { $e }
 msg-entity-publish-sent = 實體 { $name }：發佈請求已傳送
@@ -66,6 +67,7 @@ msg-entity-publish-failed = 實體發佈失敗: { $e }
 msg-field-publish-sent = 實體 { $name }.{ $field }：發佈請求已傳送
 msg-field-publish-failed = 欄位發佈失敗: { $e }
 msg-acl-publish-sent = 執行階段 ACL：發佈請求已傳送
+msg-crud-edit-publish-sent = { $path }：發佈請求已傳送
 msg-acl-publish-failed = 執行階段 ACL 發佈失敗: { $e }
 msg-yaml-error = YAML 錯誤: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = 未找到語言: { $lang }
 
 msg-send-failed = 傳送失敗：{ $e }
 msg-not-logged-in = 未登入
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML 解析錯誤：{ $e }
+yaml-not-mapping = YAML 必須是映射（鍵：值對）；純文字和純量無法儲存為 DAG-CBOR
+dagcbor-encode-error = DAG-CBOR 編碼錯誤：{ $e }
+cbor-decode-error = CBOR 解碼錯誤：{ $e }
+cbor-json-error = CBOR 轉 JSON 錯誤：{ $e }
+yaml-serialize-error = YAML 序列化錯誤：{ $e }
+edit-reply-invalid = 無效的編輯回覆
+doc-publish-ipld-error = IPLD 發布失敗：{ $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = 收件箱整理儲存錯誤：{ $e }
+err-config-load = 設定載入錯誤：{ $e }
+err-lang-persist = 語言儲存錯誤：{ $e }
+err-history-parse = 歷史記錄解析錯誤：{ $e }
+err-history-load = 歷史記錄載入錯誤：{ $e }
+err-ipfs-reply-decode = IPFS 回覆解碼失敗：{ $e }
+err-edit-cbor = CBOR 編輯錯誤：{ $e }
+err-popup-blocked = 瀏覽器封鎖了彈出視窗
+status-publishing = 發布中
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = 錯誤
+rpc-error-detail = 錯誤: { $detail }
+msg-new-message = ← [{ $from }] 新訊息 — 收件匣中 { $count } 則
+err-edit-decode-failed = 編輯: 解碼失敗: { $e }
+err-edit-fetch-failed = 編輯: 取得失敗: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = 無活動工作階段 — 無法刪除個人資料
+profile-delete-error = 個人資料刪除失敗: { $e }
+profile-no-verb = .my.profile: 未知命令: { $verb }

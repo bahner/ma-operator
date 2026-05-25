@@ -60,6 +60,7 @@ btn-cancel = Avbryt
 btn-close = Lukk
 btn-reply = Svar
 btn-publish = Publiser
+btn-publish-ipld = Publiser IPLD
 msg-reply-sent = svar sendt
 msg-reply-failed = svaret feilet: { $e }
 msg-entity-publish-sent = entitet { $name }: publisering sendt
@@ -67,6 +68,7 @@ msg-entity-publish-failed = entitetspublisering feilet: { $e }
 msg-field-publish-sent = entitet { $name }.{ $field }: publisering sendt
 msg-field-publish-failed = feltpublisering feilet: { $e }
 msg-acl-publish-sent = runtime ACL: publisering sendt
+msg-crud-edit-publish-sent = { $path }: publisering sendt
 msg-acl-publish-failed = runtime ACL-publisering feilet: { $e }
 msg-yaml-error = YAML-feil: { $e }
 msg-editor-saved = { $path }:lagre
@@ -192,3 +194,38 @@ lang-list-header = Tilgjengelige språk (angi med .my.i18n: <code>):
 
 msg-send-failed = sending feilet: { $e }
 msg-not-logged-in = ikke innlogget
+msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
+
+# ── RPC-svardisplay ───────────────────────────────────────────────────────
+rpc-error = feil
+rpc-error-detail = feil: { $detail }
+
+# ── Redigeringsfeil ───────────────────────────────────────────────────────
+err-edit-decode-failed = redigering: dekodingsfeil: { $e }
+err-edit-fetch-failed = redigering: hentingsfeil: { $e }
+
+# ── CBOR / YAML-kodeingsfeil ──────────────────────────────────────────────
+yaml-parse-error = YAML-parsefeil: { $e }
+yaml-not-mapping = YAML må være en mapping (nøkkel: verdi-par); ren tekst og skalarer kan ikke lagres som DAG-CBOR
+dagcbor-encode-error = DAG-CBOR-kodeingsfeil: { $e }
+cbor-decode-error = CBOR-avkodingsfeil: { $e }
+cbor-json-error = CBOR til JSON-feil: { $e }
+yaml-serialize-error = YAML-serialiseringsfeil: { $e }
+edit-reply-invalid = ugyldig redigeringssvar
+doc-publish-ipld-error = kan ikke publisere-ipld: { $e }
+
+# ── Interne / sesjonsfeil ─────────────────────────────────────────────────
+err-inbox-prune-persist = innboksrensing lagringsfeil: { $e }
+err-config-load = konfigurasjonslastingsfeil: { $e }
+err-lang-persist = språklagringsfeil: { $e }
+err-history-parse = historikkparsefeil: { $e }
+err-history-load = historikklastingsfeil: { $e }
+err-ipfs-reply-decode = IPFS-svar-avkodingsfeil: { $e }
+err-edit-cbor = redigeringsfeil (CBOR): { $e }
+err-popup-blocked = popup blokkert av nettleseren
+status-publishing = publiserer
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ingen aktiv økt — profilen kan ikke slettes
+profile-delete-error = sletting av profil mislyktes: { $e }
+profile-no-verb = .my.profile: ukjent kommando: { $verb }

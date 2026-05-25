@@ -59,6 +59,7 @@ btn-cancel = Cancel
 btn-close = Close
 btn-reply = Reply
 btn-publish = Publish
+btn-publish-ipld = Publish IPLD
 msg-reply-sent = reply don send
 msg-reply-failed = reply fail: { $e }
 msg-entity-publish-sent = entity { $name }: publish don send
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entity publish fail: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: publish don send
 msg-field-publish-failed = field publish fail: { $e }
 msg-acl-publish-sent = runtime ACL: publish don send
+msg-crud-edit-publish-sent = { $path }: publish don send
 msg-acl-publish-failed = runtime ACL publish fail: { $e }
 msg-yaml-error = YAML error: { $e }
 msg-editor-saved = { $path }:save
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              dilit dokument
 
 msg-send-failed = send no work: { $e }
 msg-not-logged-in = you no log in
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse wahala: { $e }
+yaml-not-mapping = YAML must be mapping (key: value pair); plain text and scalar no fit store as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode wahala: { $e }
+cbor-decode-error = CBOR decode wahala: { $e }
+cbor-json-error = CBOR go JSON wahala: { $e }
+yaml-serialize-error = YAML serialize wahala: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = IPLD publish no work: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox clean up save wahala: { $e }
+err-config-load = config load wahala: { $e }
+err-lang-persist = language save wahala: { $e }
+err-history-parse = history parse wahala: { $e }
+err-history-load = history load wahala: { $e }
+err-ipfs-reply-decode = IPFS reply decode no work: { $e }
+err-edit-cbor = edit CBOR wahala: { $e }
+err-popup-blocked = browser block popup
+status-publishing = dey publish
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ɛrɔ
+rpc-error-detail = ɛrɔ: { $detail }
+msg-new-message = ← [{ $from }] new mesej — { $count } dey inbox
+err-edit-decode-failed = edit: decode fail: { $e }
+err-edit-fetch-failed = edit: fetch fail: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no active session — e no fit delete profile
+profile-delete-error = profile delete no work: { $e }
+profile-no-verb = .my.profile: dis word no dey: { $verb }

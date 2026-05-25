@@ -35,7 +35,7 @@ pub struct SystemRecord {
 }
 
 /// A single entry in the terminal buffer.
-#[derive(Clone, Debug, PartialEq)]
+#[derive(Clone, Debug)]
 pub enum Entry {
     Command(CommandRecord),
     Incoming(IncomingRecord),

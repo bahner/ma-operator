@@ -59,6 +59,7 @@ btn-cancel = Cancelar
 btn-close = Cerrar
 btn-reply = Responder
 btn-publish = Publicar
+btn-publish-ipld = Publicar IPLD
 msg-reply-sent = respuesta enviada
 msg-reply-failed = error al enviar respuesta: { $e }
 msg-entity-publish-sent = entidad { $name }: publicación enviada
@@ -66,6 +67,7 @@ msg-entity-publish-failed = error al publicar entidad: { $e }
 msg-field-publish-sent = entidad { $name }.{ $field }: publicación enviada
 msg-field-publish-failed = error al publicar campo: { $e }
 msg-acl-publish-sent = ACL de tiempo de ejecución: publicación enviada
+msg-crud-edit-publish-sent = { $path }: publicación enviada
 msg-acl-publish-failed = error al publicar ACL de tiempo de ejecución: { $e }
 msg-yaml-error = error YAML: { $e }
 msg-editor-saved = { $path }:guardar
@@ -185,3 +187,36 @@ err-lang-not-found = idioma no encontrado: { $lang }
 
 msg-send-failed = envío fallido: { $e }
 msg-not-logged-in = no ha iniciado sesión
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Error de análisis YAML: { $e }
+yaml-not-mapping = YAML debe ser un mapping (pares clave: valor); el texto plano y los escalares no pueden almacenarse como DAG-CBOR
+dagcbor-encode-error = Error de codificación DAG-CBOR: { $e }
+cbor-decode-error = Error de decodificación CBOR: { $e }
+cbor-json-error = Error CBOR a JSON: { $e }
+yaml-serialize-error = Error de serialización YAML: { $e }
+edit-reply-invalid = Respuesta de edición no válida
+doc-publish-ipld-error = Publicación IPLD fallida: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Error al guardar la limpieza del buzón: { $e }
+err-config-load = Error al cargar la configuración: { $e }
+err-lang-persist = Error al guardar el idioma: { $e }
+err-history-parse = Error de análisis del historial: { $e }
+err-history-load = Error al cargar el historial: { $e }
+err-ipfs-reply-decode = Fallo al decodificar respuesta IPFS: { $e }
+err-edit-cbor = Error de edición CBOR: { $e }
+err-popup-blocked = Ventana emergente bloqueada por el navegador
+status-publishing = publicando
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = error
+rpc-error-detail = error: { $detail }
+msg-new-message = ← [{ $from }] nuevo mensaje — { $count } en bandeja de entrada
+err-edit-decode-failed = edición: fallo de decodificación: { $e }
+err-edit-fetch-failed = edición: fallo de carga: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no hay sesión activa — no se puede eliminar el perfil
+profile-delete-error = error al eliminar el perfil: { $e }
+profile-no-verb = .my.profile: comando desconocido: { $verb }

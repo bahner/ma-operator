@@ -59,6 +59,7 @@ btn-cancel = Prekliči
 btn-close = Zapri
 btn-reply = Odgovori
 btn-publish = Objavi
+btn-publish-ipld = Objavi IPLD
 msg-reply-sent = odgovor poslan
 msg-reply-failed = pošiljanje odgovora ni uspelo: { $e }
 msg-entity-publish-sent = entiteta { $name }: objava poslana
@@ -66,6 +67,7 @@ msg-entity-publish-failed = objavljanje entitete ni uspelo: { $e }
 msg-field-publish-sent = entiteta { $name }.{ $field }: objava poslana
 msg-field-publish-failed = objavljanje polja ni uspelo: { $e }
 msg-acl-publish-sent = ACL izvajanja: objava poslana
+msg-crud-edit-publish-sent = { $path }: objava poslana
 msg-acl-publish-failed = objavljanje ACL izvajanja ni uspelo: { $e }
 msg-yaml-error = napaka YAML: { $e }
 msg-editor-saved = { $path }:shrani
@@ -185,3 +187,36 @@ err-lang-not-found = jezik ni najden: { $lang }
 
 msg-send-failed = pošiljanje ni uspelo: { $e }
 msg-not-logged-in = ni prijavljen
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Napaka pri razčlenjevanju YAML: { $e }
+yaml-not-mapping = YAML mora biti mapping (pari ključ: vrednost); navadno besedilo in skalari ne morejo biti shranjeni kot DAG-CBOR
+dagcbor-encode-error = Napaka pri kodiranju DAG-CBOR: { $e }
+cbor-decode-error = Napaka pri dekodiranju CBOR: { $e }
+cbor-json-error = Napaka CBOR v JSON: { $e }
+yaml-serialize-error = Napaka pri serializaciji YAML: { $e }
+edit-reply-invalid = Neveljavni odgovor urejanja
+doc-publish-ipld-error = Objava IPLD ni uspela: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Napaka pri shranjevanju čiščenja nabiralnika: { $e }
+err-config-load = Napaka pri nalaganju konfiguracije: { $e }
+err-lang-persist = Napaka pri shranjevanju jezika: { $e }
+err-history-parse = Napaka pri razčlenjevanju zgodovine: { $e }
+err-history-load = Napaka pri nalaganju zgodovine: { $e }
+err-ipfs-reply-decode = Napaka pri dekodiranju odgovora IPFS: { $e }
+err-edit-cbor = Napaka pri urejanju CBOR: { $e }
+err-popup-blocked = Brskalnik je blokiral pojavno okno
+status-publishing = objavljanje
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = napaka
+rpc-error-detail = napaka: { $detail }
+msg-new-message = ← [{ $from }] novo sporočilo — { $count } v dohodnem predalu
+err-edit-decode-failed = urejanje: napaka pri dekodiranju: { $e }
+err-edit-fetch-failed = urejanje: napaka pri nalaganju: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ni aktivne seje — profila ni mogoče izbrisati
+profile-delete-error = brisanje profila ni uspelo: { $e }
+profile-no-verb = .my.profile: neznano ukaz: { $verb }

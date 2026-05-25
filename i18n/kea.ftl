@@ -59,6 +59,7 @@ btn-cancel = Kansela
 btn-close = Fexá
 btn-reply = Respondê
 btn-publish = Publiká
+btn-publish-ipld = Publiká IPLD
 msg-reply-sent = risposta mandadu
 msg-reply-failed = risposta falhadu: { $e }
 msg-entity-publish-sent = entidadi { $name }: publikason mandadu
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publikason di entidadi falhadu: { $e }
 msg-field-publish-sent = entidadi { $name }.{ $field }: publikason mandadu
 msg-field-publish-failed = publikason di kampu falhadu: { $e }
 msg-acl-publish-sent = runtime ACL: publikason mandadu
+msg-crud-edit-publish-sent = { $path }: publikason mandadu
 msg-acl-publish-failed = publikason di runtime ACL falhadu: { $e }
 msg-yaml-error = érro YAML: { $e }
 msg-editor-saved = { $path }:gravá
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              apaga dokumentu
 
 msg-send-failed = falhadu pa manda: { $e }
 msg-not-logged-in = ka ta ligadu
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Erru di análizi YAML: { $e }
+yaml-not-mapping = YAML ta di ser un mapping (par xavi: valor); tèkstu simples i skalar ka podi ser armazenadu kumu DAG-CBOR
+dagcbor-encode-error = Erru di kodifikason DAG-CBOR: { $e }
+cbor-decode-error = Erru di dekodifikason CBOR: { $e }
+cbor-json-error = Erru CBOR pa JSON: { $e }
+yaml-serialize-error = Erru di serializason YAML: { $e }
+edit-reply-invalid = Risposta di edisom invalidu
+doc-publish-ipld-error = Pablikason IPLD faliu: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Erru di grava limpeza di kaixa di entrada: { $e }
+err-config-load = Erru di karrega konfigurasón: { $e }
+err-lang-persist = Erru di grava língua: { $e }
+err-history-parse = Erru di análizi istória: { $e }
+err-history-load = Erru di karrega istória: { $e }
+err-ipfs-reply-decode = Falha di dekodifikason di reposta IPFS: { $e }
+err-edit-cbor = Erru di edisom CBOR: { $e }
+err-popup-blocked = Popup blokedu pa navegador
+status-publishing = ta publika
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = érru
+rpc-error-detail = érru: { $detail }
+msg-new-message = ← [{ $from }] mensajen novu — { $count } na kaixa di entrada
+err-edit-decode-failed = edisaun: falta di decodifikasaun: { $e }
+err-edit-fetch-failed = edisaun: falta di karregamentu: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ka ten sesãu ativu — ka podi apagá profil
+profile-delete-error = apagamentu di profil falhadu: { $e }
+profile-no-verb = .my.profile: kumandu diskunhisidu: { $verb }

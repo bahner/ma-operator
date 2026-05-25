@@ -59,6 +59,7 @@ btn-cancel = Kanselá
 btn-close = Serrá
 btn-reply = Respondé
 btn-publish = Publiká
+btn-publish-ipld = Publiká IPLD
 msg-reply-sent = respuesta mandá
 msg-reply-failed = respuesta fayá: { $e }
 msg-entity-publish-sent = entidad { $name }: publikashon mandá
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publikashon di entidad fayá: { $e }
 msg-field-publish-sent = entidad { $name }.{ $field }: publikashon mandá
 msg-field-publish-failed = publikashon di kamp fayá: { $e }
 msg-acl-publish-sent = runtime ACL: publikashon mandá
+msg-crud-edit-publish-sent = { $path }: publikashon mandá
 msg-acl-publish-failed = publikashon di runtime ACL fayá: { $e }
 msg-yaml-error = fayo YAML: { $e }
 msg-editor-saved = { $path }:wardá
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              bòrá dokumento
 
 msg-send-failed = mandamentu a faya: { $e }
 msg-not-logged-in = no a log in
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Error di analisa YAML: { $e }
+yaml-not-mapping = YAML master ta un mapping (par di yabi: balor); tèks simpel i skalar no por ser almacena komo DAG-CBOR
+dagcbor-encode-error = Error di kodifikashon DAG-CBOR: { $e }
+cbor-decode-error = Error di dekodifikashon CBOR: { $e }
+cbor-json-error = Error CBOR pa JSON: { $e }
+yaml-serialize-error = Error di serializashon YAML: { $e }
+edit-reply-invalid = Respuesta di edishan inválido
+doc-publish-ipld-error = Pablikashon IPLD a faya: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Error di garda pruning di kaha di entrada: { $e }
+err-config-load = Error di karga konfigurasjon: { $e }
+err-lang-persist = Error di garda idioma: { $e }
+err-history-parse = Error di analisa historia: { $e }
+err-history-load = Error di karga historia: { $e }
+err-ipfs-reply-decode = Fayo di dekofikashon di respuesta IPFS: { $e }
+err-edit-cbor = Error di edishan CBOR: { $e }
+err-popup-blocked = Popup blokea pa browser
+status-publishing = ta publica
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = fout
+rpc-error-detail = fout: { $detail }
+msg-new-message = ← [{ $from }] mesashi nobo — { $count } den inbox
+err-edit-decode-failed = edishon: faya di dekoifikashon: { $e }
+err-edit-fetch-failed = edishon: faya di karga: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no tin sesjon aktivo — no por borra perfil
+profile-delete-error = borramentu di perfil a faya: { $e }
+profile-no-verb = .my.profile: kumando deskonosí: { $verb }

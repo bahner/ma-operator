@@ -59,6 +59,7 @@ btn-cancel = Atšaukti
 btn-close = Uždaryti
 btn-reply = Atsakyti
 btn-publish = Publikuoti
+btn-publish-ipld = Publikuoti IPLD
 msg-reply-sent = atsakymas išsiųstas
 msg-reply-failed = atsakymo siuntimas nepavyko: { $e }
 msg-entity-publish-sent = esybė { $name }: publikavimas išsiųstas
@@ -66,6 +67,7 @@ msg-entity-publish-failed = esybės publikavimas nepavyko: { $e }
 msg-field-publish-sent = esybė { $name }.{ $field }: publikavimas išsiųstas
 msg-field-publish-failed = lauko publikavimas nepavyko: { $e }
 msg-acl-publish-sent = vykdymo laiko ACL: publikavimas išsiųstas
+msg-crud-edit-publish-sent = { $path }: publikavimas išsiųstas
 msg-acl-publish-failed = vykdymo laiko ACL publikavimas nepavyko: { $e }
 msg-yaml-error = YAML klaida: { $e }
 msg-editor-saved = { $path }:išsaugoti
@@ -185,3 +187,36 @@ err-lang-not-found = kalba nerasta: { $lang }
 
 msg-send-failed = siuntimas nepavyko: { $e }
 msg-not-logged-in = neprisijungęs
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML analizės klaida: { $e }
+yaml-not-mapping = YAML turi būti mapping (raktas: reikšmių poros); paprastas tekstas ir skaliarai negali būti saugomi kaip DAG-CBOR
+dagcbor-encode-error = DAG-CBOR kodavimo klaida: { $e }
+cbor-decode-error = CBOR dekodavimo klaida: { $e }
+cbor-json-error = CBOR į JSON klaida: { $e }
+yaml-serialize-error = YAML serializavimo klaida: { $e }
+edit-reply-invalid = Netinkamas redagavimo atsakymas
+doc-publish-ipld-error = IPLD paskelbimas nepavyko: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Gaunamų laiškų valymo išsaugojimo klaida: { $e }
+err-config-load = Konfigūracijos įkėlimo klaida: { $e }
+err-lang-persist = Kalbos išsaugojimo klaida: { $e }
+err-history-parse = Istorijos analizės klaida: { $e }
+err-history-load = Istorijos įkėlimo klaida: { $e }
+err-ipfs-reply-decode = IPFS atsakymo dekodavimo klaida: { $e }
+err-edit-cbor = CBOR redagavimo klaida: { $e }
+err-popup-blocked = Iššokantysis langas užblokuotas naršyklės
+status-publishing = skelbiama
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = klaida
+rpc-error-detail = klaida: { $detail }
+msg-new-message = ← [{ $from }] naujas pranešimas — { $count } gautuosiuose
+err-edit-decode-failed = redagavimas: dekodaravimo klaida: { $e }
+err-edit-fetch-failed = redagavimas: gavimo klaida: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nėra aktyvios sesijos — profilio negalima ištrinti
+profile-delete-error = profilio ištrynimas nepavyko: { $e }
+profile-no-verb = .my.profile: nežinoma komanda: { $verb }

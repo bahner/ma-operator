@@ -59,6 +59,7 @@ btn-cancel = বাতিল
 btn-close = বন্ধ করুন
 btn-reply = উত্তর দিন
 btn-publish = প্রকাশ করুন
+btn-publish-ipld = প্রকাশ করুন IPLD
 msg-reply-sent = উত্তর পাঠানো হয়েছে
 msg-reply-failed = উত্তর ব্যর্থ: { $e }
 msg-entity-publish-sent = সত্তা { $name }: প্রকাশনা পাঠানো হয়েছে
@@ -66,6 +67,7 @@ msg-entity-publish-failed = সত্তা প্রকাশনা ব্য�
 msg-field-publish-sent = সত্তা { $name }.{ $field }: প্রকাশনা পাঠানো হয়েছে
 msg-field-publish-failed = ফিল্ড প্রকাশনা ব্যর্থ: { $e }
 msg-acl-publish-sent = রানটাইম ACL: প্রকাশনা পাঠানো হয়েছে
+msg-crud-edit-publish-sent = { $path }: প্রকাশনা পাঠানো হয়েছে
 msg-acl-publish-failed = রানটাইম ACL প্রকাশনা ব্যর্থ: { $e }
 msg-yaml-error = YAML ত্রুটি: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = ভাষা পাওয়া যায়নি: { $lang
 
 msg-send-failed = পাঠাতে ব্যর্থ: { $e }
 msg-not-logged-in = লগইন করা হয়নি
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML পার্স ত্রুটি: { $e }
+yaml-not-mapping = YAML একটি ম্যাপিং (কী: মান জোড়া) হতে হবে; সাদা টেক্সট এবং স্কেলার DAG-CBOR হিসাবে সংরক্ষণ করা যাবে না
+dagcbor-encode-error = DAG-CBOR এনকোড ত্রুটি: { $e }
+cbor-decode-error = CBOR ডিকোড ত্রুটি: { $e }
+cbor-json-error = CBOR থেকে JSON রূপান্তর ত্রুটি: { $e }
+yaml-serialize-error = YAML সিরিয়ালাইজ ত্রুটি: { $e }
+edit-reply-invalid = অবৈধ সম্পাদনা উত্তর
+doc-publish-ipld-error = IPLD প্রকাশ ব্যর্থ: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = ইনবক্স ছাঁটাই সংরক্ষণ ত্রুটি: { $e }
+err-config-load = কনফিগারেশন লোড ত্রুটি: { $e }
+err-lang-persist = ভাষা সংরক্ষণ ত্রুটি: { $e }
+err-history-parse = ইতিহাস পার্স ত্রুটি: { $e }
+err-history-load = ইতিহাস লোড ত্রুটি: { $e }
+err-ipfs-reply-decode = IPFS উত্তর ডিকোড ব্যর্থ: { $e }
+err-edit-cbor = CBOR সম্পাদনা ত্রুটি: { $e }
+err-popup-blocked = পপআপ ব্রাউজার দ্বারা অবরুদ্ধ
+status-publishing = প্রকাশিত হচ্ছে
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ত্রুটি
+rpc-error-detail = ত্রুটি: { $detail }
+msg-new-message = ← [{ $from }] নতুন বার্তা — { $count } ইনবক্সে
+err-edit-decode-failed = সম্পাদনা ডিকোড ব্যর্থ: { $e }
+err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্থ: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = কোনো সক্রিয় সেশন নেই — প্রোফাইল মুছে ফেলা সম্ভব নয়
+profile-delete-error = প্রোফাইল মুছতে ব্যর্থ হয়েছে: { $e }
+profile-no-verb = .my.profile: অজানা কমান্ড: { $verb }

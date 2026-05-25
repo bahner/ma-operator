@@ -59,6 +59,7 @@ btn-cancel = Anile
 btn-close = Fèmen
 btn-reply = Repon
 btn-publish = Pibliye
+btn-publish-ipld = Pibliye IPLD
 msg-reply-sent = repons voye
 msg-reply-failed = repons echwe: { $e }
 msg-entity-publish-sent = antite { $name }: pibliye voye
@@ -66,6 +67,7 @@ msg-entity-publish-failed = pibliye antite echwe: { $e }
 msg-field-publish-sent = antite { $name }.{ $field }: pibliye voye
 msg-field-publish-failed = pibliye chan echwe: { $e }
 msg-acl-publish-sent = ACL runtime: pibliye voye
+msg-crud-edit-publish-sent = { $path }: pibliye voye
 msg-acl-publish-failed = pibliye ACL runtime echwe: { $e }
 msg-yaml-error = erè YAML: { $e }
 msg-editor-saved = { $path }:sove
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              efase dokiman
 
 msg-send-failed = echèk voye: { $e }
 msg-not-logged-in = ou pa konekte
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Erè pars YAML: { $e }
+yaml-not-mapping = YAML dwe yon mapping (pè kle: valè); tèks senp ak skalè pa ka estoke kòm DAG-CBOR
+dagcbor-encode-error = Erè kodaj DAG-CBOR: { $e }
+cbor-decode-error = Erè dekodaj CBOR: { $e }
+cbor-json-error = Erè CBOR a JSON: { $e }
+yaml-serialize-error = Erè serializasyon YAML: { $e }
+edit-reply-invalid = Repons edisyon ki valid pa
+doc-publish-ipld-error = Piblikasyon IPLD echwe: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Erè sove netwayaj bwat resepsyon: { $e }
+err-config-load = Erè chajman konfigirasyon: { $e }
+err-lang-persist = Erè sove lang: { $e }
+err-history-parse = Erè pars istwa: { $e }
+err-history-load = Erè chajman istwa: { $e }
+err-ipfs-reply-decode = Echèk dekodaj repons IPFS: { $e }
+err-edit-cbor = Erè edisyon CBOR: { $e }
+err-popup-blocked = Popup bloke pa navigatè
+status-publishing = ap pibliye
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = erè
+rpc-error-detail = erè: { $detail }
+msg-new-message = ← [{ $from }] nouvo mesaj — { $count } nan bwat resepsyon
+err-edit-decode-failed = edisyon: echèk dekodaj: { $e }
+err-edit-fetch-failed = edisyon: echèk chajman: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = pa gen sesyon aktif — pa kapab efase pwofil la
+profile-delete-error = efaseman pwofil echwe: { $e }
+profile-no-verb = .my.profile: vèb enkoni: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Atcelt
 btn-close = Aizvērt
 btn-reply = Atbildēt
 btn-publish = Publicēt
+btn-publish-ipld = Publicēt IPLD
 msg-reply-sent = atbilde nosūtīta
 msg-reply-failed = atbildes nosūtīšana neizdevās: { $e }
 msg-entity-publish-sent = entītija { $name }: publicēšana nosūtīta
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entītijas publicēšana neizdevās: { $e }
 msg-field-publish-sent = entītija { $name }.{ $field }: publicēšana nosūtīta
 msg-field-publish-failed = lauka publicēšana neizdevās: { $e }
 msg-acl-publish-sent = izpildlaika ACL: publicēšana nosūtīta
+msg-crud-edit-publish-sent = { $path }: publicēšana nosūtīta
 msg-acl-publish-failed = izpildlaika ACL publicēšana neizdevās: { $e }
 msg-yaml-error = YAML kļūda: { $e }
 msg-editor-saved = { $path }:saglabāt
@@ -185,3 +187,36 @@ err-lang-not-found = valoda nav atrasta: { $lang }
 
 msg-send-failed = sūtīšana neizdevās: { $e }
 msg-not-logged-in = nav pieteicies
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parsēšanas kļūda: { $e }
+yaml-not-mapping = YAML jābūt mapping (atslēga: vērtību pāri); vienkāršs teksts un skalāri nevar tikt saglabāti kā DAG-CBOR
+dagcbor-encode-error = DAG-CBOR kodēšanas kļūda: { $e }
+cbor-decode-error = CBOR dekodēšanas kļūda: { $e }
+cbor-json-error = CBOR uz JSON kļūda: { $e }
+yaml-serialize-error = YAML serializācijas kļūda: { $e }
+edit-reply-invalid = Nepareiza rediģēšanas atbilde
+doc-publish-ipld-error = IPLD publicēšana neizdevās: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Iesūtnes tīrīšanas saglabāšanas kļūda: { $e }
+err-config-load = Konfigurācijas ielādes kļūda: { $e }
+err-lang-persist = Valodas saglabāšanas kļūda: { $e }
+err-history-parse = Vēstures parsēšanas kļūda: { $e }
+err-history-load = Vēstures ielādes kļūda: { $e }
+err-ipfs-reply-decode = IPFS atbildes dekodēšanas kļūda: { $e }
+err-edit-cbor = CBOR rediģēšanas kļūda: { $e }
+err-popup-blocked = Uznirstošais logs ir bloķēts pārlūkprogrammā
+status-publishing = publicēšana
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = kļūda
+rpc-error-detail = kļūda: { $detail }
+msg-new-message = ← [{ $from }] jauna ziņa — { $count } iesūtnē
+err-edit-decode-failed = rediģēšana: atšifrēšanas kļūda: { $e }
+err-edit-fetch-failed = rediģēšana: iegūšanas kļūda: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nav aktīvas sesijas — profilu nevar dzēst
+profile-delete-error = profila dzēšana neizdevās: { $e }
+profile-no-verb = .my.profile: nezināma komanda: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = Zrušit
 btn-close = Zavřít
 btn-reply = Odpovědět
 btn-publish = Publikovat
+btn-publish-ipld = Publikovat IPLD
 msg-reply-sent = odpověď odeslána
 msg-reply-failed = odeslání odpovědi selhalo: { $e }
 msg-entity-publish-sent = entita { $name }: publikace odeslána
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publikování entity selhalo: { $e }
 msg-field-publish-sent = entita { $name }.{ $field }: publikace odeslána
 msg-field-publish-failed = publikování pole selhalo: { $e }
 msg-acl-publish-sent = ACL runtime: publikace odeslána
+msg-crud-edit-publish-sent = { $path }: publikace odeslána
 msg-acl-publish-failed = publikování ACL runtime selhalo: { $e }
 msg-yaml-error = chyba YAML: { $e }
 msg-editor-saved = { $path }:uložit
@@ -185,3 +187,36 @@ err-lang-not-found = jazyk nenalezen: { $lang }
 
 msg-send-failed = odeslání se nezdařilo: { $e }
 msg-not-logged-in = nepřihlášen
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Chyba analýzy YAML: { $e }
+yaml-not-mapping = YAML musí být mapping (páry klíč: hodnota); prostý text a skaláry nelze uložit jako DAG-CBOR
+dagcbor-encode-error = Chyba kódování DAG-CBOR: { $e }
+cbor-decode-error = Chyba dekódování CBOR: { $e }
+cbor-json-error = Chyba převodu CBOR na JSON: { $e }
+yaml-serialize-error = Chyba serializace YAML: { $e }
+edit-reply-invalid = Neplatná odpověď na úpravu
+doc-publish-ipld-error = Publikování IPLD selhalo: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Chyba uložení prořezání schránky: { $e }
+err-config-load = Chyba načítání konfigurace: { $e }
+err-lang-persist = Chyba uložení jazyka: { $e }
+err-history-parse = Chyba analýzy historie: { $e }
+err-history-load = Chyba načítání historie: { $e }
+err-ipfs-reply-decode = Selhání dekódování IPFS odpovědi: { $e }
+err-edit-cbor = Chyba úpravy CBOR: { $e }
+err-popup-blocked = Vyskakovací okno zablokováno prohlížečem
+status-publishing = publikování
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = chyba
+rpc-error-detail = chyba: { $detail }
+msg-new-message = ← [{ $from }] nová zpráva — { $count } v doručené poště
+err-edit-decode-failed = chyba dekódování při úpravě: { $e }
+err-edit-fetch-failed = chyba načítání při úpravě: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = žádné aktivní sezení — profil nelze smazat
+profile-delete-error = mazání profilu selhalo: { $e }
+profile-no-verb = .my.profile: neznámý příkaz: { $verb }

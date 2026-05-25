@@ -59,6 +59,7 @@ btn-cancel = ยกเลิก
 btn-close = ปิด
 btn-reply = ตอบกลับ
 btn-publish = เผยแพร่
+btn-publish-ipld = เผยแพร่ IPLD
 msg-reply-sent = ส่งการตอบกลับแล้ว
 msg-reply-failed = การตอบกลับล้มเหลว: { $e }
 msg-entity-publish-sent = entity { $name }: ส่งคำขอเผยแพร่แล้ว
@@ -66,6 +67,7 @@ msg-entity-publish-failed = การเผยแพร่ entity ล้มเ�
 msg-field-publish-sent = entity { $name }.{ $field }: ส่งคำขอเผยแพร่แล้ว
 msg-field-publish-failed = การเผยแพร่ field ล้มเหลว: { $e }
 msg-acl-publish-sent = ACL runtime: ส่งคำขอเผยแพร่แล้ว
+msg-crud-edit-publish-sent = { $path }: ส่งคำขอเผยแพร่แล้ว
 msg-acl-publish-failed = การเผยแพร่ ACL runtime ล้มเหลว: { $e }
 msg-yaml-error = ข้อผิดพลาด YAML: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = ไม่พบภาษา: { $lang }
 
 msg-send-failed = ส่งล้มเหลว: { $e }
 msg-not-logged-in = ยังไม่ได้เข้าสู่ระบบ
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = ข้อผิดพลาดการแยกวิเคราะห์ YAML: { $e }
+yaml-not-mapping = YAML ต้องเป็น mapping (คู่คีย์: ค่า); ข้อความธรรมดาและสเกลาร์ไม่สามารถเก็บเป็น DAG-CBOR ได้
+dagcbor-encode-error = ข้อผิดพลาดการเข้ารหัส DAG-CBOR: { $e }
+cbor-decode-error = ข้อผิดพลาดการถอดรหัส CBOR: { $e }
+cbor-json-error = ข้อผิดพลาด CBOR เป็น JSON: { $e }
+yaml-serialize-error = ข้อผิดพลาดการเรียงลำดับ YAML: { $e }
+edit-reply-invalid = การตอบกลับการแก้ไขไม่ถูกต้อง
+doc-publish-ipld-error = การเผยแพร่ IPLD ล้มเหลว: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = ข้อผิดพลาดบันทึกการตัดแต่งกล่องจดหมาย: { $e }
+err-config-load = ข้อผิดพลาดในการโหลดการตั้งค่า: { $e }
+err-lang-persist = ข้อผิดพลาดการบันทึกภาษา: { $e }
+err-history-parse = ข้อผิดพลาดการแยกวิเคราะห์ประวัติ: { $e }
+err-history-load = ข้อผิดพลาดการโหลดประวัติ: { $e }
+err-ipfs-reply-decode = การถอดรหัสการตอบกลับ IPFS ล้มเหลว: { $e }
+err-edit-cbor = ข้อผิดพลาดการแก้ไข CBOR: { $e }
+err-popup-blocked = เบราว์เซอร์บล็อกป็อปอัป
+status-publishing = กำลังเผยแพร่
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = ข้อผิดพลาด
+rpc-error-detail = ข้อผิดพลาด: { $detail }
+msg-new-message = ← [{ $from }] ข้อความใหม่ — { $count } ในกล่องขาเข้า
+err-edit-decode-failed = แก้ไข: ถอดรหัสล้มเหลว: { $e }
+err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเหลว: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ไม่มีเซสชันที่ใช้งานอยู่ — ไม่สามารถลบโปรไฟล์ได้
+profile-delete-error = การลบโปรไฟล์ล้มเหลว: { $e }
+profile-no-verb = .my.profile: คำสั่งที่ไม่รู้จัก: { $verb }

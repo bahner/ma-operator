@@ -59,6 +59,7 @@ btn-cancel = Tühista
 btn-close = Sulge
 btn-reply = Vasta
 btn-publish = Avalda
+btn-publish-ipld = Avalda IPLD
 msg-reply-sent = vastus saadetud
 msg-reply-failed = vastuse saatmine ebaõnnestus: { $e }
 msg-entity-publish-sent = olem { $name }: avaldamine saadetud
@@ -66,6 +67,7 @@ msg-entity-publish-failed = olemi avaldamine ebaõnnestus: { $e }
 msg-field-publish-sent = olem { $name }.{ $field }: avaldamine saadetud
 msg-field-publish-failed = välja avaldamine ebaõnnestus: { $e }
 msg-acl-publish-sent = käitusaja ACL: avaldamine saadetud
+msg-crud-edit-publish-sent = { $path }: avaldamine saadetud
 msg-acl-publish-failed = käitusaja ACL avaldamine ebaõnnestus: { $e }
 msg-yaml-error = YAML-viga: { $e }
 msg-editor-saved = { $path }:salvesta
@@ -185,3 +187,36 @@ err-lang-not-found = keelt ei leitud: { $lang }
 
 msg-send-failed = saatmine ebaõnnestus: { $e }
 msg-not-logged-in = pole sisse logitud
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-parsimise viga: { $e }
+yaml-not-mapping = YAML peab olema mapping (võtme: väärtuse paarid); lihtteksti ja skalaarid ei saa salvestada DAG-CBOR-ina
+dagcbor-encode-error = DAG-CBOR-kodeerimise viga: { $e }
+cbor-decode-error = CBOR-dekodeerimise viga: { $e }
+cbor-json-error = CBOR JSONi teisendamise viga: { $e }
+yaml-serialize-error = YAML-serialiseerimise viga: { $e }
+edit-reply-invalid = Vigane redigeerimise vastus
+doc-publish-ipld-error = IPLD avaldamine ebaõnnestus: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Postkasti puhastamise salvestamise viga: { $e }
+err-config-load = Konfiguratsiooni laadimise viga: { $e }
+err-lang-persist = Keele salvestamise viga: { $e }
+err-history-parse = Ajaloo parsimise viga: { $e }
+err-history-load = Ajaloo laadimise viga: { $e }
+err-ipfs-reply-decode = IPFS vastuse dekodeerimine ebaõnnestus: { $e }
+err-edit-cbor = CBOR redigeerimise viga: { $e }
+err-popup-blocked = Brauser blokeeris hüpikakna
+status-publishing = avaldamine
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = viga
+rpc-error-detail = viga: { $detail }
+msg-new-message = ← [{ $from }] uus sõnum — { $count } postkastis
+err-edit-decode-failed = redigeerimine: dekodeerimistõrge: { $e }
+err-edit-fetch-failed = redigeerimine: laadimistõrge: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = aktiivne seanss puudub — profiili ei saa kustutada
+profile-delete-error = profiili kustutamine ebaõnnestus: { $e }
+profile-no-verb = .my.profile: tundmatu käsk: { $verb }

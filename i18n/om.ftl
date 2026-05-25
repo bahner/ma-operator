@@ -59,6 +59,7 @@ btn-cancel = dhiisi
 btn-close = cufii
 btn-reply = deebisi
 btn-publish = maxxansi
+btn-publish-ipld = maxxansi IPLD
 msg-reply-sent = deebiin ergameera
 msg-reply-failed = deebiin hin milkaa'ne: { $e }
 msg-entity-publish-sent = entity { $name }: maxxansiin ergameera
@@ -66,6 +67,7 @@ msg-entity-publish-failed = maxxansiin entity hin milkaa'ne: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: maxxansiin ergameera
 msg-field-publish-failed = maxxansiin dirree hin milkaa'ne: { $e }
 msg-acl-publish-sent = runtime ACL: maxxansiin ergameera
+msg-crud-edit-publish-sent = { $path }: maxxansiin ergameera
 msg-acl-publish-failed = maxxansiin runtime ACL hin milkaa'ne: { $e }
 msg-yaml-error = dogoggora YAML: { $e }
 msg-editor-saved = { $path }:olkaa'i
@@ -192,3 +194,36 @@ err-lang-not-found = afaan hin argamne: { $lang }
 
 msg-send-failed = ergaa erguun hin milkoofne: { $e }
 msg-not-logged-in = seenee hin jiru
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Dogoggora YAML: { $e }
+yaml-not-mapping = YAML mapping (pair furtuun: gatii) ta'uu qaba; barreeffama duwwaa fi scalar DAG-CBOR ta'ee kuusuu hin danda'u
+dagcbor-encode-error = Dogoggora DAG-CBOR: { $e }
+cbor-decode-error = Dogoggora CBOR: { $e }
+cbor-json-error = Dogoggora CBOR gara JSON: { $e }
+yaml-serialize-error = Dogoggora serialization YAML: { $e }
+edit-reply-invalid = Deebii gulaala dogoggoraa
+doc-publish-ipld-error = Maxxansuu IPLD kufe: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Dogoggora galmeessuu inbox: { $e }
+err-config-load = Dogoggora fe'umsaa: { $e }
+err-lang-persist = Dogoggora qusachuu afaan: { $e }
+err-history-parse = Dogoggora falanqaynta seenaa: { $e }
+err-history-load = Dogoggora fe'umsaa seenaa: { $e }
+err-ipfs-reply-decode = Deebii IPFS decode kufe: { $e }
+err-edit-cbor = Dogoggora gulaala CBOR: { $e }
+err-popup-blocked = Popup daldhaame birauzaraan
+status-publishing = maxxansuu
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = dogoggora
+rpc-error-detail = dogoggora: { $detail }
+msg-new-message = ← [{ $from }] ergaa haaraa — { $count } sanduuqa
+err-edit-decode-failed = gulaala: dogoggora hiikuu: { $e }
+err-edit-fetch-failed = gulaala: dogoggora fida: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = waltajjii hojii hin jiru — profaayilii haaquu hin danda'amu
+profile-delete-error = haaquun profaayilii hin milkoofne: { $e }
+profile-no-verb = .my.profile: ajaja hin beekamne: { $verb }

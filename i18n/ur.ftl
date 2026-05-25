@@ -59,6 +59,7 @@ btn-cancel = منسوخ کریں
 btn-close = بند کریں
 btn-reply = جواب دیں
 btn-publish = شائع کریں
+btn-publish-ipld = شائع کریں IPLD
 msg-reply-sent = جواب بھیجا گیا
 msg-reply-failed = جواب ناکام: { $e }
 msg-entity-publish-sent = ادارہ { $name }: اشاعت بھیجی گئی
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ادارہ اشاعت ناکام: { $e }
 msg-field-publish-sent = ادارہ { $name }.{ $field }: اشاعت بھیجی گئی
 msg-field-publish-failed = فیلڈ اشاعت ناکام: { $e }
 msg-acl-publish-sent = رن ٹائم ACL: اشاعت بھیجی گئی
+msg-crud-edit-publish-sent = { $path }: اشاعت بھیجی گئی
 msg-acl-publish-failed = رن ٹائم ACL اشاعت ناکام: { $e }
 msg-yaml-error = YAML خرابی: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = زبان نہیں ملی: { $lang }
 
 msg-send-failed = بھیجنا ناکام ہوا: { $e }
 msg-not-logged-in = لاگ ان نہیں ہوا
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML تجزیہ خرابی: { $e }
+yaml-not-mapping = YAML ایک mapping (جوڑے کلید: قدر) ہونا چاہیے؛ سادہ متن اور سکیلر DAG-CBOR کے طور پر محفوظ نہیں کیے جا سکتے
+dagcbor-encode-error = DAG-CBOR خفیہ کاری خرابی: { $e }
+cbor-decode-error = CBOR ڈی کوڈنگ خرابی: { $e }
+cbor-json-error = CBOR سے JSON خرابی: { $e }
+yaml-serialize-error = YAML سیریلائزیشن خرابی: { $e }
+edit-reply-invalid = غلط ترمیم جواب
+doc-publish-ipld-error = IPLD اشاعت ناکام: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = ان باکس چھانٹنا محفوظ کریں خرابی: { $e }
+err-config-load = کنفگریشن لوڈ خرابی: { $e }
+err-lang-persist = زبان محفوظ کریں خرابی: { $e }
+err-history-parse = تاریخ تجزیہ خرابی: { $e }
+err-history-load = تاریخ لوڈ خرابی: { $e }
+err-ipfs-reply-decode = IPFS جواب ڈی کوڈنگ ناکام: { $e }
+err-edit-cbor = CBOR ترمیم خرابی: { $e }
+err-popup-blocked = براؤزر نے پاپ اپ روک لیا
+status-publishing = شائع ہو رہا ہے
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = خطا
+rpc-error-detail = خطا: { $detail }
+msg-new-message = ← [{ $from }] نئی پیغام — { $count } ان باکس میں
+err-edit-decode-failed = ترمیم: ڈی کوڈ ناکام: { $e }
+err-edit-fetch-failed = ترمیم: حاصل کرنا ناکام: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = کوئی فعال سیشن نہیں — پروفائل حذف نہیں کی جا سکتی
+profile-delete-error = پروفائل حذف کرنا ناکام ہوا: { $e }
+profile-no-verb = .my.profile: نامعلوم حکم: { $verb }

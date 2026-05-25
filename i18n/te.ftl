@@ -59,6 +59,7 @@ btn-cancel = రద్దు చేయండి
 btn-close = మూసివేయండి
 btn-reply = జవాబివ్వండి
 btn-publish = ప్రచురించండి
+btn-publish-ipld = ప్రచురించండి IPLD
 msg-reply-sent = జవాబు పంపబడింది
 msg-reply-failed = జవాబు విఫలమైంది: { $e }
 msg-entity-publish-sent = ఎంటిటీ { $name }: ప్రచురణ పంపబడింది
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ఎంటిటీ ప్రచురణ విఫ�
 msg-field-publish-sent = ఎంటిటీ { $name }.{ $field }: ప్రచురణ పంపబడింది
 msg-field-publish-failed = ఫీల్డ్ ప్రచురణ విఫలమైంది: { $e }
 msg-acl-publish-sent = రన్‌టైమ్ ACL: ప్రచురణ పంపబడింది
+msg-crud-edit-publish-sent = { $path }: ప్రచురణ పంపబడింది
 msg-acl-publish-failed = రన్‌టైమ్ ACL ప్రచురణ విఫలమైంది: { $e }
 msg-yaml-error = YAML లోపం: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = భాష కనుగొనబడలేదు: { $lang }
 
 msg-send-failed = పంపడం విఫలమైంది: { $e }
 msg-not-logged-in = లాగిన్ అవ్వలేదు
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML పార్సింగ్ లోపం: { $e }
+yaml-not-mapping = YAML తప్పనిసరిగా mapping (కీ: విలువ జంటలు) అయి ఉండాలి; సాధారణ టెక్స్ట్ మరియు స్కేలర్లు DAG-CBOR గా నిల్వ చేయబడవు
+dagcbor-encode-error = DAG-CBOR ఎన్‌కోడ్ లోపం: { $e }
+cbor-decode-error = CBOR డీకోడ్ లోపం: { $e }
+cbor-json-error = CBOR నుండి JSON లోపం: { $e }
+yaml-serialize-error = YAML సీరియలైజేషన్ లోపం: { $e }
+edit-reply-invalid = చెల్లని సవరణ జవాబు
+doc-publish-ipld-error = IPLD ప్రచురణ విఫలమైంది: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = ఇన్‌బాక్స్ తగ్గింపు నిల్వ లోపం: { $e }
+err-config-load = కాన్ఫిగ్ లోడ్ లోపం: { $e }
+err-lang-persist = భాష నిల్వ లోపం: { $e }
+err-history-parse = చరిత్ర పార్సింగ్ లోపం: { $e }
+err-history-load = చరిత్ర లోడ్ లోపం: { $e }
+err-ipfs-reply-decode = IPFS జవాబు డీకోడ్ విఫలమైంది: { $e }
+err-edit-cbor = CBOR సవరణ లోపం: { $e }
+err-popup-blocked = బ్రౌజర్ పాప్‌అప్‌ను బ్లాక్ చేసింది
+status-publishing = ప్రచురిస్తోంది
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = లోపం
+rpc-error-detail = లోపం: { $detail }
+msg-new-message = ← [{ $from }] కొత్త సందేశం — { $count } ఇన్‌బాక్స్‌లో
+err-edit-decode-failed = సవరణ: డీకోడ్ విఫలమైంది: { $e }
+err-edit-fetch-failed = సవరణ: పొందడం విఫలమైంది: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = క్రియాశీల సెషన్ లేదు — ప్రొఫైల్ తొలగించడం సాధ్యం కాదు
+profile-delete-error = ప్రొఫైల్ తొలగింపు విఫలమైంది: { $e }
+profile-no-verb = .my.profile: తెలియని ఆదేశం: { $verb }

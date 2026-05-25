@@ -59,6 +59,7 @@ btn-cancel = jooji
 btn-close = xidh
 btn-reply = jawaab
 btn-publish = daabac
+btn-publish-ipld = daabac IPLD
 msg-reply-sent = jawaabta la diray
 msg-reply-failed = jawaabtu ku guuldareysatay: { $e }
 msg-entity-publish-sent = entity { $name }: daabacaadda la diray
@@ -66,6 +67,7 @@ msg-entity-publish-failed = daabacaadda entity ku guuldareysatay: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: daabacaadda la diray
 msg-field-publish-failed = daabacaadda goobta ku guuldareysatay: { $e }
 msg-acl-publish-sent = runtime ACL: daabacaadda la diray
+msg-crud-edit-publish-sent = { $path }: daabacaadda la diray
 msg-acl-publish-failed = daabacaadda runtime ACL ku guuldareysatay: { $e }
 msg-yaml-error = khaladka YAML: { $e }
 msg-editor-saved = { $path }:keydi
@@ -192,3 +194,36 @@ err-lang-not-found = luqadda lama helin: { $lang }
 
 msg-send-failed = dirista way fashilaatay: { $e }
 msg-not-logged-in = lama gelin
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Khalad falanqaynta YAML: { $e }
+yaml-not-mapping = YAML waa inay tahay mapping (labojibbaar furaha: qiimaha); qoraalka caadiga ah iyo qiimaynta kuma kaydi kartid DAG-CBOR
+dagcbor-encode-error = Khalad koodiyeynta DAG-CBOR: { $e }
+cbor-decode-error = Khalad koodka-goynta CBOR: { $e }
+cbor-json-error = Khalad CBOR→JSON: { $e }
+yaml-serialize-error = Khalad taxnada YAML: { $e }
+edit-reply-invalid = Jawaab tafatirka ah oo aan saxnayn
+doc-publish-ipld-error = Daabacaadda IPLD waxay ku guuldarreysatay: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Khalad kaydinta nadiifinta sanduuqa galitaanka: { $e }
+err-config-load = Khalad dejinta habaynta: { $e }
+err-lang-persist = Khalad kaydinta luqadda: { $e }
+err-history-parse = Khalad falanqaynta tariikhdda: { $e }
+err-history-load = Khalad dejinta tariikhdda: { $e }
+err-ipfs-reply-decode = Khalad koodka-goynta jawaabta IPFS: { $e }
+err-edit-cbor = Khalad tafatirka CBOR: { $e }
+err-popup-blocked = Daaqadda pop-up waxaa xidday daaweynaha
+status-publishing = daabacaad
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = khalad
+rpc-error-detail = khalad: { $detail }
+msg-new-message = ← [{ $from }] fariin cusub — { $count } sanduuqa
+err-edit-decode-failed = tafatirka: khalad sharraxaad: { $e }
+err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ma jirto fadhiga firfircoon — liiska ma la tirsan karo
+profile-delete-error = tirirka liiska wuu guul-dareystay: { $e }
+profile-no-verb = .my.profile: amarka lama garanayo: { $verb }

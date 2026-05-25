@@ -59,6 +59,7 @@ btn-cancel = Batal
 btn-close = Tutup
 btn-reply = Balas
 btn-publish = Terbitkan
+btn-publish-ipld = Terbitkan IPLD
 msg-reply-sent = balasan terkirim
 msg-reply-failed = balasan gagal: { $e }
 msg-entity-publish-sent = entitas { $name }: penerbitan terkirim
@@ -66,6 +67,7 @@ msg-entity-publish-failed = penerbitan entitas gagal: { $e }
 msg-field-publish-sent = entitas { $name }.{ $field }: penerbitan terkirim
 msg-field-publish-failed = penerbitan bidang gagal: { $e }
 msg-acl-publish-sent = ACL runtime: penerbitan terkirim
+msg-crud-edit-publish-sent = { $path }: penerbitan terkirim
 msg-acl-publish-failed = penerbitan ACL runtime gagal: { $e }
 msg-yaml-error = kesalahan YAML: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = bahasa tidak ditemukan: { $lang }
 
 msg-send-failed = pengiriman gagal: { $e }
 msg-not-logged-in = belum masuk
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Kesalahan penguraian YAML: { $e }
+yaml-not-mapping = YAML harus berupa mapping (pasangan kunci: nilai); teks biasa dan skalar tidak dapat disimpan sebagai DAG-CBOR
+dagcbor-encode-error = Kesalahan enkode DAG-CBOR: { $e }
+cbor-decode-error = Kesalahan dekode CBOR: { $e }
+cbor-json-error = Kesalahan CBOR ke JSON: { $e }
+yaml-serialize-error = Kesalahan serialisasi YAML: { $e }
+edit-reply-invalid = Balasan pengeditan tidak valid
+doc-publish-ipld-error = Penerbitan IPLD gagal: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Kesalahan simpan pemangkasan kotak masuk: { $e }
+err-config-load = Kesalahan memuat konfigurasi: { $e }
+err-lang-persist = Kesalahan simpan bahasa: { $e }
+err-history-parse = Kesalahan penguraian riwayat: { $e }
+err-history-load = Kesalahan memuat riwayat: { $e }
+err-ipfs-reply-decode = Gagal dekode balasan IPFS: { $e }
+err-edit-cbor = Kesalahan edit CBOR: { $e }
+err-popup-blocked = Popup diblokir oleh browser
+status-publishing = mempublikasikan
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = kesalahan
+rpc-error-detail = kesalahan: { $detail }
+msg-new-message = ← [{ $from }] pesan baru — { $count } di kotak masuk
+err-edit-decode-failed = pengeditan: gagal mendekode: { $e }
+err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = tidak ada sesi aktif — profil tidak dapat dihapus
+profile-delete-error = penghapusan profil gagal: { $e }
+profile-no-verb = .my.profile: perintah tidak dikenal: { $verb }

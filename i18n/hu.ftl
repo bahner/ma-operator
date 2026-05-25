@@ -59,6 +59,7 @@ btn-cancel = Mégse
 btn-close = Bezárás
 btn-reply = Válasz
 btn-publish = Közzététel
+btn-publish-ipld = Közzététel IPLD
 msg-reply-sent = válasz elküldve
 msg-reply-failed = a válasz küldése sikertelen: { $e }
 msg-entity-publish-sent = { $name } entitás: közzététel elküldve
@@ -66,6 +67,7 @@ msg-entity-publish-failed = az entitás közzététele sikertelen: { $e }
 msg-field-publish-sent = { $name }.{ $field } entitás: közzététel elküldve
 msg-field-publish-failed = a mező közzététele sikertelen: { $e }
 msg-acl-publish-sent = futtatókörnyezet ACL: közzététel elküldve
+msg-crud-edit-publish-sent = { $path }: közzététel elküldve
 msg-acl-publish-failed = a futtatókörnyezet ACL közzététele sikertelen: { $e }
 msg-yaml-error = YAML hiba: { $e }
 msg-editor-saved = { $path }:mentés
@@ -185,3 +187,36 @@ err-lang-not-found = a nyelv nem található: { $lang }
 
 msg-send-failed = küldés sikertelen: { $e }
 msg-not-logged-in = nincs bejelentkezve
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-elemzési hiba: { $e }
+yaml-not-mapping = A YAML-nak mappingnek (kulcs: érték pároknak) kell lennie; egyszerű szöveg és skalárok nem tárolhatók DAG-CBOR formátumban
+dagcbor-encode-error = DAG-CBOR-kódolási hiba: { $e }
+cbor-decode-error = CBOR-dekódolási hiba: { $e }
+cbor-json-error = CBOR→JSON konverziós hiba: { $e }
+yaml-serialize-error = YAML-sorosítási hiba: { $e }
+edit-reply-invalid = Érvénytelen szerkesztési válasz
+doc-publish-ipld-error = IPLD-közzététel sikertelen: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Beérkező levelek karbantartás mentési hiba: { $e }
+err-config-load = Konfiguráció betöltési hiba: { $e }
+err-lang-persist = Nyelv mentési hiba: { $e }
+err-history-parse = Előzmények elemzési hiba: { $e }
+err-history-load = Előzmények betöltési hiba: { $e }
+err-ipfs-reply-decode = IPFS válasz dekódolási hiba: { $e }
+err-edit-cbor = CBOR szerkesztési hiba: { $e }
+err-popup-blocked = A böngésző blokkolta a felugró ablakot
+status-publishing = közzététel
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = hiba
+rpc-error-detail = hiba: { $detail }
+msg-new-message = ← [{ $from }] új üzenet — { $count } a beérkező levelekben
+err-edit-decode-failed = szerkesztés: dekódolási hiba: { $e }
+err-edit-fetch-failed = szerkesztés: betöltési hiba: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = nincs aktív munkamenet — a profil nem törölhető
+profile-delete-error = a profil törlése sikertelen: { $e }
+profile-no-verb = .my.profile: ismeretlen parancs: { $verb }

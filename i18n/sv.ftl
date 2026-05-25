@@ -59,6 +59,7 @@ btn-cancel = Avbryt
 btn-close = Stäng
 btn-reply = Svara
 btn-publish = Publicera
+btn-publish-ipld = Publicera IPLD
 msg-reply-sent = svar skickat
 msg-reply-failed = svar misslyckades: { $e }
 msg-entity-publish-sent = entitet { $name }: publicering skickad
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entitetspublicering misslyckades: { $e }
 msg-field-publish-sent = entitet { $name }.{ $field }: publicering skickad
 msg-field-publish-failed = fältpublicering misslyckades: { $e }
 msg-acl-publish-sent = runtime ACL: publicering skickad
+msg-crud-edit-publish-sent = { $path }: publicering skickad
 msg-acl-publish-failed = runtime ACL-publicering misslyckades: { $e }
 msg-yaml-error = YAML-fel: { $e }
 msg-editor-saved = { $path }:spara
@@ -192,3 +194,36 @@ err-lang-not-found = språket hittades inte: { $lang }
 
 msg-send-failed = sändning misslyckades: { $e }
 msg-not-logged-in = inte inloggad
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-tolkningsfel: { $e }
+yaml-not-mapping = YAML måste vara ett mapping (nyckel: värde-par); ren text och skalärer kan inte lagras som DAG-CBOR
+dagcbor-encode-error = DAG-CBOR-kodningsfel: { $e }
+cbor-decode-error = CBOR-avkodningsfel: { $e }
+cbor-json-error = CBOR till JSON-fel: { $e }
+yaml-serialize-error = YAML-serialiseringsfel: { $e }
+edit-reply-invalid = Ogiltigt redigeringssvar
+doc-publish-ipld-error = IPLD-publicering misslyckades: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Inkorg rensning sparningsfel: { $e }
+err-config-load = Konfigurationsladdningsfel: { $e }
+err-lang-persist = Språklagringsfel: { $e }
+err-history-parse = Historieparsningsfel: { $e }
+err-history-load = Historieladdningsfel: { $e }
+err-ipfs-reply-decode = IPFS-svar avkodningsfel: { $e }
+err-edit-cbor = CBOR-redigeringsfel: { $e }
+err-popup-blocked = Webbläsaren blockerade popup-fönstret
+status-publishing = publicerar
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = fel
+rpc-error-detail = fel: { $detail }
+msg-new-message = ← [{ $from }] nytt meddelande — { $count } i inkorgen
+err-edit-decode-failed = redigering: avkodningsfel: { $e }
+err-edit-fetch-failed = redigering: hämtningsfel: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ingen aktiv session — profilen kan inte raderas
+profile-delete-error = radering av profil misslyckades: { $e }
+profile-no-verb = .my.profile: okänt kommando: { $verb }

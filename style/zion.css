@@ -9,6 +9,7 @@
     --colour-text:        #00ff41;
     --colour-dimmed:      #008f11;
     --colour-pending:     #004d00;
+    --colour-publishing:  #ff8c00;
     --colour-replied:     #00ff41;
     --colour-alias:       #ffd700;
     --colour-error:       #ff3333;
@@ -323,9 +324,10 @@ html, body {
 
 .line-output { color: var(--colour-text); }
 .line-input  { color: var(--colour-dimmed); }
-.line-pending { color: var(--colour-pending); }
-.line-dimmed  { color: var(--colour-dimmed); }
-.line-replied { color: var(--colour-replied); }
+.line-pending    { color: var(--colour-pending); }
+.line-publishing { color: var(--colour-publishing); }
+.line-dimmed     { color: var(--colour-dimmed); }
+.line-replied    { color: var(--colour-replied); }
 .line-reply   { color: var(--colour-replied); }
 .line-error  { color: var(--colour-error); }
 .line-system { color: var(--colour-system); }

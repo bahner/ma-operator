@@ -8,67 +8,6 @@ use std::rc::Rc;
 use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 use crate::views::editor::EditorMode;
-
-// ── Pending edit ─────────────────────────────────────────────────────────
-
-/// Tracks an in-flight `:edit` request (RPC or CRUD) whose reply should open
-/// the editor.  The variant already describes what kind of edit it is.
-#[derive(Clone, Debug)]
-pub enum PendingEdit {
-    /// `:entities.<name>:edit` — opens `EntityEdit` mode.
-    Entity { target: String, entity_name: String },
-    /// `:entities.<name>.<field>:edit` — opens `EntityFieldEdit` mode.
-    Field {
-        target: String,
-        entity_name: String,
-        field: String,
-    },
-    /// `:acl:edit` — opens `RuntimeAclEdit` mode.
-    Acl { target: String },
-}
-
-impl PendingEdit {
-    /// Return the `EditorMode` to use when the reply arrives.
-    pub fn into_editor_mode(self, doc_path: String) -> (String, EditorMode) {
-        match self {
-            Self::Entity {
-                target,
-                entity_name,
-            } => (
-                doc_path,
-                EditorMode::EntityEdit {
-                    target,
-                    entity_name,
-                },
-            ),
-            Self::Field {
-                target,
-                entity_name,
-                field,
-            } => (
-                doc_path,
-                EditorMode::EntityFieldEdit {
-                    target,
-                    entity_name,
-                    field,
-                },
-            ),
-            Self::Acl { target } => (doc_path, EditorMode::RuntimeAclEdit { target }),
-        }
-    }
-
-    /// Config sub-path used as the `doc_path` label in the editor.
-    pub fn doc_path(&self) -> String {
-        match self {
-            Self::Entity { entity_name, .. } => format!(".my.entities.{entity_name}"),
-            Self::Field {
-                entity_name, field, ..
-            } => format!(".my.entities.{entity_name}.{field}"),
-            Self::Acl { .. } => ":acl".to_string(),
-        }
-    }
-}
-
 // ── Session ────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, PartialEq)]
@@ -90,6 +29,24 @@ pub struct FocusMode {
     pub prompt: String,
 }
 
+// ── Pending remote edit opens ─────────────────────────────────────────────
+
+/// Tracks in-flight CRUD GET requests that should open the editor on reply.
+/// Key: the `Message.id` of the GET.  Value: enough context to open the
+/// correct editor mode and populate it with the received content.
+#[derive(Clone, Debug)]
+pub struct EditOpenCtx {
+    /// DID of the remote runtime the GET was sent to.
+    pub target: String,
+    /// CRUD path that was fetched, e.g. `":acl"` or `":entities.ping"`.
+    pub crud_path: String,
+    /// Which editor mode to open (determines available toolbar buttons).
+    pub editor_mode: EditorMode,
+    /// `CommandRecord.id` of the originating command entry so the poll loop
+    /// can resolve it (success or error) once the editor is opened.
+    pub cmd_id: u64,
+}
+
 // ── App state (reactive) ───────────────────────────────────────────────────
 
 #[derive(Clone)]
@@ -103,9 +60,19 @@ pub struct AppState {
     /// Maps `ma_core::Message.id` of an in-flight command to the
     /// `CommandRecord.id` so replies can locate the originating entry.
     pub pending_by_msg_id: RwSignal<HashMap<String, u64>>,
-    /// Tracks in-flight `:edit` requests (RPC or CRUD) by `Message.id`.
-    /// On reply, the value provides everything needed to open the editor.
-    pub pending_edits: RwSignal<HashMap<String, PendingEdit>>,
+    /// Tracks in-flight IPFS store requests that should trigger a CRUD set on
+    /// completion.  Key: ipfs_store `Message.id`.
+    /// Value: `(crud_target_did, crud_path, ipfs_prefix, cmd_id)` where
+    /// `ipfs_prefix` is `"/ipfs/"` for raw blobs or `"/ipld/"` for DAG-CBOR
+    /// nodes, and `cmd_id` is the originating command entry id (if any).
+    pub pending_ipfs_crud: RwSignal<HashMap<String, (String, String, Option<u64>)>>,
+    /// Tracks in-flight CRUD SET requests that are the second leg of a
+    /// publish flow.  Key: CRUD SET `Message.id`.  Value: the originating
+    /// command entry id whose status should be updated on reply.
+    pub pending_crud_confirms: RwSignal<HashMap<String, u64>>,
+    /// Tracks in-flight CRUD GET requests that should open the editor on reply.
+    /// Key: CRUD GET `Message.id`.  Value: editor open context.
+    pub pending_edit_opens: RwSignal<HashMap<String, EditOpenCtx>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -122,7 +89,9 @@ impl AppState {
             focus_actor: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_by_msg_id: RwSignal::new(HashMap::new()),
-            pending_edits: RwSignal::new(HashMap::new()),
+            pending_ipfs_crud: RwSignal::new(HashMap::new()),
+            pending_crud_confirms: RwSignal::new(HashMap::new()),
+            pending_edit_opens: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
@@ -174,7 +143,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: CommandStatus::Sent,
+                status: RwSignal::new(CommandStatus::Sent),
             }))
         });
         id
@@ -188,7 +157,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: CommandStatus::Done,
+                status: RwSignal::new(CommandStatus::Done),
             }))
         });
     }
@@ -201,7 +170,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: CommandStatus::Replied(String::new()),
+                status: RwSignal::new(CommandStatus::Replied(String::new())),
             }))
         });
     }
@@ -219,18 +188,26 @@ impl AppState {
     }
 
     /// Resolve a command directly by entry id (e.g. on send failure).
+    ///
+    /// Calls `status.set()` on the command's `RwSignal<CommandStatus>` so
+    /// that `render_entry`'s reactive closure picks up the change without
+    /// requiring Leptos `<For>` to re-render the item.
     pub fn resolve_command_by_id(&self, cmd_id: u64, status: CommandStatus) {
-        let mut msg_id: Option<String> = None;
-        self.entries.update(|v| {
-            if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cmd_id) {
-                msg_id = c.message_id.clone();
-                c.status = status;
-            }
+        let found = self.entries.with_untracked(|v| {
+            v.iter().find_map(|e| match e {
+                Entry::Command(c) if c.id == cmd_id => {
+                    Some((c.status, c.message_id.clone()))
+                }
+                _ => None,
+            })
         });
-        if let Some(mid) = msg_id {
-            self.pending_by_msg_id.update(|m| {
-                m.remove(&mid);
-            });
+        if let Some((status_sig, msg_id_opt)) = found {
+            status_sig.set(status);
+            if let Some(mid) = msg_id_opt {
+                self.pending_by_msg_id.update(|m| {
+                    m.remove(&mid);
+                });
+            }
         }
     }
 
@@ -241,11 +218,15 @@ impl AppState {
             .pending_by_msg_id
             .update_untracked(|m| m.remove(msg_id));
         if let Some(cid) = cmd_id {
-            self.entries.update(|v| {
-                if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cid) {
-                    c.status = status;
-                }
+            let status_sig = self.entries.with_untracked(|v| {
+                v.iter().find_map(|e| match e {
+                    Entry::Command(c) if c.id == cid => Some(c.status),
+                    _ => None,
+                })
             });
+            if let Some(sig) = status_sig {
+                sig.set(status);
+            }
         }
         cmd_id
     }

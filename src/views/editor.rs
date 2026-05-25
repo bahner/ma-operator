@@ -18,6 +18,7 @@ use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
 use crate::config::EgoConfig;
+use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 
@@ -55,7 +56,7 @@ pub enum EditorMode {
         reply_to_id: String,
     },
     /// Edit an entity definition: Publish button only.
-    /// YAML buffer → DAG-CBOR → sent to runtime for dag_put + registration.
+    /// Content uploaded to IPFS; CID registered via CRUD set.
     EntityEdit {
         /// DID of the runtime to send the updated entity to.
         target: String,
@@ -63,7 +64,6 @@ pub enum EditorMode {
         entity_name: String,
     },
     /// Edit a single field of an entity (e.g. `acl`): Publish button only.
-    /// YAML buffer → DAG-CBOR → sent as `entities.<name>.<field>:edit`.
     EntityFieldEdit {
         /// DID of the runtime.
         target: String,
@@ -79,10 +79,23 @@ pub enum EditorMode {
         key: String,
     },
     /// Edit the root transport ACL of a remote runtime: Publish + Cancel.
-    /// YAML buffer → DAG-CBOR → sent as `[:acl:edit, bytes]` to the runtime.
+    /// Content uploaded to IPFS; CID registered via CRUD set.
     RuntimeAclEdit {
         /// DID of the runtime to send the updated ACL to.
         target: String,
+    },
+    /// Edit an arbitrary CRUD path on a remote runtime: Publish + Cancel.
+    /// Content serialised to DAG-CBOR, uploaded to IPFS; CID registered via
+    /// CRUD set at `crud_path`.
+    CrudEdit {
+        /// DID of the runtime.
+        target: String,
+        /// Full CRUD path, e.g. `":alice.fil"` or `":config.foo"`.
+        crud_path: String,
+        /// Hint for which publish button to show.
+        /// `Some(true)` → blob (raw bytes), `Some(false)` → IPLD (DAG-CBOR),
+        /// `None` → unknown, show both.
+        is_blob: Option<bool>,
     },
 }
 
@@ -97,6 +110,9 @@ pub struct EditorContext {
     pub language: String,
     /// Editor button / behaviour mode.
     pub mode: EditorMode,
+    /// Command entry id of the originating `:edit` command, if any.
+    /// Used to transition the command through Publishing → Replied/Error.
+    pub cmd_id: Option<u64>,
 }
 
 impl EditorContext {
@@ -108,6 +124,7 @@ impl EditorContext {
             initial,
             language: "plain".into(),
             mode: EditorMode::Standard,
+            cmd_id: None,
         }
     }
 
@@ -118,6 +135,11 @@ impl EditorContext {
 
     pub fn with_mode(mut self, mode: EditorMode) -> Self {
         self.mode = mode;
+        self
+    }
+
+    pub fn with_cmd_id(mut self, cmd_id: u64) -> Self {
+        self.cmd_id = Some(cmd_id);
         self
     }
 }
@@ -301,30 +323,47 @@ pub fn EditorModal(
                 return;
             };
             let path = format!(":entities.{entity_name}");
+            let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(dag_cbor) => {
-                        match crate::transport::send_crud_edit_save(&target, &path, dag_cbor)
-                            .await
-                        {
-                            Ok(_) => state2.push_system(tf(
-                                "msg-entity-publish-sent",
-                                &[("name", &entity_name)],
-                            )),
-                            Err(e) => {
-                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
-                            }
+                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(b) => b,
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                         }
+                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                        return;
                     }
-                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
+                };
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    cbor_bytes,
+                    "application/vnd.ipld.dag-cbor",
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                        }
+                        state2.pending_ipfs_crud.update(|m| {
+                            m.insert(msg_id, (target.clone(), path.clone(), cmd_id));
+                        });
+                    }
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+                    }
                 }
             });
         }
     };
 
-    // EntityFieldEdit — convert YAML buffer to DAG-CBOR and send field bytes to runtime.
+    // EntityFieldEdit — convert YAML buffer to DAG-CBOR and send to runtime.
     let on_entity_field_publish = {
         let show = show.clone();
         let state = state.clone();
@@ -342,30 +381,47 @@ pub fn EditorModal(
                 return;
             };
             let path = format!(":entities.{entity_name}.{field}");
+            let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(dag_cbor) => {
-                        match crate::transport::send_crud_edit_save(&target, &path, dag_cbor)
-                            .await
-                        {
-                            Ok(_) => state2.push_system(tf(
-                                "msg-field-publish-sent",
-                                &[("name", &entity_name), ("field", &field)],
-                            )),
-                            Err(e) => {
-                                state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
-                            }
+                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(b) => b,
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                         }
+                        state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]));
+                        return;
                     }
-                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
+                };
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    cbor_bytes,
+                    "application/vnd.ipld.dag-cbor",
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                        }
+                        state2.pending_ipfs_crud.update(|m| {
+                            m.insert(msg_id, (target.clone(), path.clone(), cmd_id));
+                        });
+                    }
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
+                    }
                 }
             });
         }
     };
 
-    // RuntimeAclEdit — convert YAML buffer to DAG-CBOR, send as :acl edit-save to runtime.
+    // RuntimeAclEdit — upload ACL content to IPFS then send CRUD set.
     let on_acl_publish = {
         let show = show.clone();
         let state = state.clone();
@@ -377,19 +433,128 @@ pub fn EditorModal(
             let EditorMode::RuntimeAclEdit { target } = ctx.mode else {
                 return;
             };
+            let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(dag_cbor) => {
-                        match crate::transport::send_crud_edit_save(&target, ":acl", dag_cbor)
-                            .await
-                        {
-                            Ok(_) => state2.push_system(t("msg-acl-publish-sent")),
-                            Err(e) => state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)])),
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    text.into_bytes(),
+                    "text/yaml",
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
+                        state2.pending_ipfs_crud.update(|m| {
+                            m.insert(msg_id, (target.clone(), ":acl".to_string(), cmd_id));
+                        });
                     }
-                    Err(e) => state2.push_error(tf("msg-yaml-error", &[("e", &e)])),
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
+                    },
+                }
+            });
+        }
+    };
+
+    // CrudEdit — convert YAML to DAG-CBOR, upload to IPFS, CRUD set at path.
+    let on_crud_publish = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::CrudEdit { target, crud_path, .. } = ctx.mode else {
+                return;
+            };
+            let cmd_id = ctx.cmd_id;
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(b) => b,
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                        return;
+                    }
+                };
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    cbor_bytes,
+                    "application/vnd.ipld.dag-cbor",
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                        }
+                        state2.pending_ipfs_crud.update(|m| {
+                            m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
+                        });
+                    }
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+                    },
+                }
+            });
+        }
+    };
+
+    // CrudEdit — upload raw text bytes as a blob (any content type), CRUD set at path.
+    let on_crud_publish_blob = {
+        let show = show.clone();
+        let state = state.clone();
+        let language = language.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::CrudEdit { target, crud_path, .. } = ctx.mode else {
+                return;
+            };
+            let lang = language.get_untracked();
+            let content_type = content_type_for(&lang).to_string();
+            let cmd_id = ctx.cmd_id;
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    text.into_bytes(),
+                    &content_type,
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                        }
+                        state2.pending_ipfs_crud.update(|m| {
+                            m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
+                        });
+                    }
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+                    },
                 }
             });
         }
@@ -425,6 +590,16 @@ pub fn EditorModal(
             Some(EditorMode::RuntimeAclEdit { .. })
         )
     };
+    let is_crud_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::CrudEdit { .. })
+        )
+    };
+    // Both publish buttons are always visible in CrudEdit mode; the user
+    // chooses whether to publish as a raw blob or as IPLD DAG-CBOR.
+    let is_blob_publish = is_crud_edit;
+    let is_ipld_publish = is_crud_edit;
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -516,6 +691,24 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_runtime_acl_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >{t("btn-cancel")}</button>
+                    // Publish (blob) — CrudEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_blob_publish() { "" } else { "display:none" }
+                        on:click=on_crud_publish_blob.clone()
+                    >{t("btn-publish")}</button>
+                    // Publish IPLD — CrudEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_ipld_publish() { "" } else { "display:none" }
+                        on:click=on_crud_publish.clone()
+                    >{t("btn-publish-ipld")}</button>
+                    // Cancel — CrudEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_crud_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >{t("btn-cancel")}</button>
                 </div>

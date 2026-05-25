@@ -59,6 +59,7 @@ btn-cancel = रद्द करें
 btn-close = बंद करें
 btn-reply = उत्तर दें
 btn-publish = प्रकाशित करें
+btn-publish-ipld = प्रकाशित करें IPLD
 msg-reply-sent = उत्तर भेजा गया
 msg-reply-failed = उत्तर विफल: { $e }
 msg-entity-publish-sent = इकाई { $name }: प्रकाशन भेजा गया
@@ -66,6 +67,7 @@ msg-entity-publish-failed = इकाई प्रकाशन विफल: { $
 msg-field-publish-sent = इकाई { $name }.{ $field }: प्रकाशन भेजा गया
 msg-field-publish-failed = फ़ील्ड प्रकाशन विफल: { $e }
 msg-acl-publish-sent = रनटाइम ACL: प्रकाशन भेजा गया
+msg-crud-edit-publish-sent = { $path }: प्रकाशन भेजा गया
 msg-acl-publish-failed = रनटाइम ACL प्रकाशन विफल: { $e }
 msg-yaml-error = YAML त्रुटि: { $e }
 msg-editor-saved = { $path }:save
@@ -192,3 +194,36 @@ err-lang-not-found = भाषा नहीं मिली: { $lang }
 
 msg-send-failed = भेजना विफल: { $e }
 msg-not-logged-in = लॉग इन नहीं
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML पार्स त्रुटि: { $e }
+yaml-not-mapping = YAML एक mapping (कुंजी: मान युग्म) होना चाहिए; सादा पाठ और सरल स्केलर DAG-CBOR के रूप में संग्रहीत नहीं किए जा सकते
+dagcbor-encode-error = DAG-CBOR एन्कोड त्रुटि: { $e }
+cbor-decode-error = CBOR डिकोड त्रुटि: { $e }
+cbor-json-error = CBOR से JSON त्रुटि: { $e }
+yaml-serialize-error = YAML सीरियलाइज़ेशन त्रुटि: { $e }
+edit-reply-invalid = अमान्य संपादन उत्तर
+doc-publish-ipld-error = IPLD प्रकाशन विफल: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = इनबॉक्स छँटाई सहेज त्रुटि: { $e }
+err-config-load = कॉन्फ़िग लोड त्रुटि: { $e }
+err-lang-persist = भाषा सहेज त्रुटि: { $e }
+err-history-parse = इतिहास पार्स त्रुटि: { $e }
+err-history-load = इतिहास लोड त्रुटि: { $e }
+err-ipfs-reply-decode = IPFS उत्तर डिकोड विफल: { $e }
+err-edit-cbor = CBOR संपादन त्रुटि: { $e }
+err-popup-blocked = पॉपअप ब्राउज़र द्वारा अवरुद्ध
+status-publishing = प्रकाशित हो रहा
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = त्रुटि
+rpc-error-detail = त्रुटि: { $detail }
+msg-new-message = ← [{ $from }] नया संदेश — { $count } इनबॉक्स में
+err-edit-decode-failed = संपादन: डीकोड विफल: { $e }
+err-edit-fetch-failed = संपादन: लाना विफल: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = कोई सक्रिय सत्र नहीं — प्रोफ़ाइल हटाना संभव नहीं
+profile-delete-error = प्रोफ़ाइल हटाने में विफल: { $e }
+profile-no-verb = .my.profile: अज्ञात आदेश: { $verb }

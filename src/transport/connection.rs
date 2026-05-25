@@ -2,8 +2,7 @@
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
     IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle, SigningKey, CRUD_PROTOCOL_ID,
-    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_DELETE_REPLY,
-    MESSAGE_TYPE_CRUD_EDIT_REPLY, MESSAGE_TYPE_CRUD_GET_REPLY, MESSAGE_TYPE_CRUD_SET_REPLY,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY,
     MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID, CONTENT_TYPE_TERM,
 };
@@ -357,21 +356,25 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
 }
 
 /// CRUD get — read a value at `path` (e.g. `:config.i18n`).
+/// Payload: CBOR `[":get", ":path"]`
 pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
-    use ma_core::MESSAGE_TYPE_CRUD_GET;
+    use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
     let atom = if path.starts_with(':') {
         path.to_string()
     } else {
         format!(":{path}")
     };
+    let cbor_val = ciborium::Value::Array(vec![
+        ciborium::Value::Text(":get".to_string()),
+        ciborium::Value::Text(atom),
+    ]);
     let mut body = Vec::new();
-    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
-        .map_err(|e| e.to_string())?;
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
     let msg = Message::new(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_CRUD_GET,
+        MESSAGE_TYPE_CRUD,
         CONTENT_TYPE_TERM,
         &body,
         &signing_key,
@@ -382,85 +385,27 @@ pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, Strin
     Ok(msg_id)
 }
 
-/// CRUD edit — request a human-editable form of `path`.
-pub async fn send_crud_edit(target_did: &str, path: &str) -> Result<String, String> {
-    use ma_core::MESSAGE_TYPE_CRUD_EDIT;
-    let (sender_did, signing_key) = get_session()?;
-    let atom = if path.starts_with(':') {
-        path.to_string()
-    } else {
-        format!(":{path}")
-    };
-    let mut body = Vec::new();
-    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
-        .map_err(|e| e.to_string())?;
-    let msg = Message::new(
-        &sender_did,
-        target_did,
-        MESSAGE_TYPE_CRUD_EDIT,
-        CONTENT_TYPE_TERM,
-        &body,
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let msg_id = msg.id.clone();
-    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
-    Ok(msg_id)
-}
-
-/// CRUD edit save — send DAG-CBOR bytes back after editing.
-/// Payload is CBOR array `[path-atom, bytes]` sent as a crud-set message.
-pub async fn send_crud_edit_save(
+/// CRUD set — write `value` at `path`.
+/// Payload: CBOR `[":path", value]`
+pub async fn send_crud_set(
     target_did: &str,
     path: &str,
-    dag_cbor: Vec<u8>,
+    value: ciborium::Value,
 ) -> Result<String, String> {
-    use ma_core::MESSAGE_TYPE_CRUD_SET;
+    use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
     let atom = if path.starts_with(':') {
         path.to_string()
     } else {
         format!(":{path}")
     };
-    let cbor_val = ciborium::Value::Array(vec![
-        ciborium::Value::Text(atom),
-        ciborium::Value::Bytes(dag_cbor),
-    ]);
+    let cbor_val = ciborium::Value::Array(vec![ciborium::Value::Text(atom), value]);
     let mut body = Vec::new();
     ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
     let msg = Message::new(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_CRUD_SET,
-        CONTENT_TYPE_TERM,
-        &body,
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let msg_id = msg.id.clone();
-    send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
-    Ok(msg_id)
-}
-
-/// CRUD set — write `value` at `path`. Payload is CBOR array `[path-atom, value-text]`.
-pub async fn send_crud_set(target_did: &str, path: &str, value: &str) -> Result<String, String> {
-    use ma_core::MESSAGE_TYPE_CRUD_SET;
-    let (sender_did, signing_key) = get_session()?;
-    let atom = if path.starts_with(':') {
-        path.to_string()
-    } else {
-        format!(":{path}")
-    };
-    let cbor_val = ciborium::Value::Array(vec![
-        ciborium::Value::Text(atom),
-        ciborium::Value::Text(value.to_string()),
-    ]);
-    let mut body = Vec::new();
-    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
-    let msg = Message::new(
-        &sender_did,
-        target_did,
-        MESSAGE_TYPE_CRUD_SET,
+        MESSAGE_TYPE_CRUD,
         CONTENT_TYPE_TERM,
         &body,
         &signing_key,
@@ -472,21 +417,25 @@ pub async fn send_crud_set(target_did: &str, path: &str, value: &str) -> Result<
 }
 
 /// CRUD delete — remove the subtree at `path`.
+/// Payload: CBOR `[":delete", ":path"]`
 pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
-    use ma_core::MESSAGE_TYPE_CRUD_DELETE;
+    use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
     let atom = if path.starts_with(':') {
         path.to_string()
     } else {
         format!(":{path}")
     };
+    let cbor_val = ciborium::Value::Array(vec![
+        ciborium::Value::Text(":delete".to_string()),
+        ciborium::Value::Text(atom),
+    ]);
     let mut body = Vec::new();
-    ciborium::ser::into_writer(&ciborium::Value::Text(atom), &mut body)
-        .map_err(|e| e.to_string())?;
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
     let msg = Message::new(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_CRUD_DELETE,
+        MESSAGE_TYPE_CRUD,
         CONTENT_TYPE_TERM,
         &body,
         &signing_key,
@@ -537,10 +486,7 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
     let (display, is_error) = match msg.message_type.as_str() {
         MESSAGE_TYPE_RPC_REPLY
         | MESSAGE_TYPE_RPC
-        | MESSAGE_TYPE_CRUD_GET_REPLY
-        | MESSAGE_TYPE_CRUD_EDIT_REPLY
-        | MESSAGE_TYPE_CRUD_SET_REPLY
-        | MESSAGE_TYPE_CRUD_DELETE_REPLY => {
+        | MESSAGE_TYPE_CRUD_REPLY => {
             let (term, err) = format_rpc_reply(&msg.payload());
             (format!("\u{2190} [{}] {}", msg.from, term), err)
         }

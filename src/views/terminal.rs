@@ -11,9 +11,9 @@ use crate::{
     identity::storage::{load_history, save_history},
     parser::command::{parse, Command, DotOp},
     parser::verbs::dispatch_verb,
-    state::{AppState, FocusMode},
+    state::{AppState, EditOpenCtx, FocusMode},
     transport,
-    views::editor::{EditorContext, EditorModal},
+    views::editor::{EditorContext, EditorModal, EditorMode},
 };
 
 fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
@@ -87,6 +87,7 @@ pub fn Terminal() -> impl IntoView {
                         // intentionally, but harmless if it leaks: it is
                         // re-injected on every login.
                         cfg.set(".my.identity.did", sender_did);
+                        cfg.set(".my.profile.handle", &username);
                         // Prune inbox entries that expired since last session.
                         let now = js_sys::Date::now() / 1000.0;
                         let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
@@ -97,12 +98,12 @@ pub fn Terminal() -> impl IntoView {
                         }
                         if pruned > 0 {
                             if let Err(e) = persist_config(&username, &cfg).await {
-                                state2.push_error(format!("inbox prune persist: {e}"));
+                                state2.push_error(tf("err-inbox-prune-persist", &[("e", &e)]));
                             }
                         }
                         config.set(cfg);
                     }
-                    Err(e) => state2.push_error(format!("config load error: {e}")),
+                    Err(e) => state2.push_error(tf("err-config-load", &[("e", &e)])),
                 }
                 // Re-apply language preference from config if set.
                 if let Some(lang) = config
@@ -128,7 +129,7 @@ pub fn Terminal() -> impl IntoView {
                     let mut cfg = config.get_untracked();
                     cfg.set(".my.i18n", &browser_lang);
                     if let Err(e) = persist_config(&username, &cfg).await {
-                        state2.push_error(format!("lang persist: {e}"));
+                        state2.push_error(tf("err-lang-persist", &[("e", &e)]));
                     }
                     config.set(cfg);
                 }
@@ -154,10 +155,10 @@ pub fn Terminal() -> impl IntoView {
                 match load_history(&username).await {
                     Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
                         Ok(hist) => state2.history.set(hist),
-                        Err(e) => state2.push_error(format!("history parse error: {e}")),
+                        Err(e) => state2.push_error(tf("err-history-parse", &[("e", &e.to_string())])),
                     },
                     Ok(None) => {}
-                    Err(e) => state2.push_error(format!("history load error: {e}")),
+                    Err(e) => state2.push_error(tf("err-history-load", &[("e", &e)])),
                 }
             });
         }
@@ -251,9 +252,9 @@ pub fn Terminal() -> impl IntoView {
                             });
                         }
                         state2.push_incoming(
-                            format!(
-                                "\u{2190} [{}] new message \u{2014} {} in inbox",
-                                from_display, count
+                            tf(
+                                "msg-new-message",
+                                &[("from", from_display.as_str()), ("count", &count.to_string())],
                             ),
                             None,
                             false,
@@ -272,46 +273,230 @@ pub fn Terminal() -> impl IntoView {
                     };
                     match &incoming.reply_to {
                         Some(msg_id) => {
-                            // Check if this is a pending CRUD edit reply.
-                            let pending = state2
-                                .pending_edits
+                            // Check if this is a pending IPFS-store reply that
+                            // should trigger a CRUD set with the returned CID.
+                            let pending_crud = state2
+                                .pending_ipfs_crud
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
-                            if let Some(edit) = pending {
-                                state2.pending_edits.update(|m| {
+                            if let Some((crud_target, crud_path, cmd_id_opt)) = pending_crud {
+                                state2.pending_ipfs_crud.update(|m| {
                                     m.remove(msg_id);
                                 });
                                 if incoming.is_error {
+                                    if let Some(cid) = cmd_id_opt {
+                                        state2.resolve_command_by_id(
+                                            cid,
+                                            CommandStatus::Error(incoming.display.clone()),
+                                        );
+                                    }
                                     state2.push_error(incoming.display.clone());
                                     continue;
                                 }
-                                let doc_path = edit.doc_path();
-                                let yaml =
-                                    match crate::messages::extract_ok_yaml(&incoming.content) {
-                                        Ok(y) => y,
-                                        Err(e) => {
-                                            state2.push_error(format!("edit decode failed: {e}"));
-                                            continue;
+                                match crate::messages::extract_ok_text(&incoming.content) {
+                                    Ok(cid) => {
+                                        let state3 = state2.clone();
+                                        spawn_local(async move {
+                                            match crate::transport::send_crud_set(
+                                                &crud_target,
+                                                &crud_path,
+                                                ciborium::Value::Text(cid),
+                                            )
+                                            .await
+                                            {
+                                                Ok(set_msg_id) => {
+                                                    if let Some(original_cmd_id) = cmd_id_opt {
+                                                        state3.pending_crud_confirms.update(|m| {
+                                                            m.insert(set_msg_id, original_cmd_id);
+                                                        });
+                                                    }
+                                                }
+                                                Err(e) => {
+                                                    if let Some(cid) = cmd_id_opt {
+                                                        state3.resolve_command_by_id(
+                                                            cid,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                    }
+                                                    state3.push_error(e);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    Err(e) => {
+                                        if let Some(cid) = cmd_id_opt {
+                                            state2.resolve_command_by_id(
+                                                cid,
+                                                CommandStatus::Error(e.clone()),
+                                            );
                                         }
-                                    };
-                                let (doc_path, mode) = edit.into_editor_mode(doc_path);
-                                let ctx = crate::views::editor::EditorContext {
-                                    doc_path,
-                                    initial: yaml,
-                                    language: "yaml".to_string(),
-                                    mode,
-                                };
-                                show_editor.set(Some(ctx));
+                                        state2.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+                                    }
+                                }
                                 continue;
                             }
-                            let status = if incoming.is_error {
-                                CommandStatus::Error(incoming.display.clone())
-                            } else {
-                                CommandStatus::Replied(incoming.display.clone())
-                            };
+                            // Check if this is a pending edit-open reply that
+                            // should populate and open the editor.
+                            let pending_edit = state2
+                                .pending_edit_opens
+                                .get_untracked()
+                                .get(msg_id)
+                                .cloned();
+                            if let Some(ctx) = pending_edit {
+                                state2.pending_edit_opens.update(|m| {
+                                    m.remove(msg_id);
+                                });
+                                if incoming.is_error {
+                                    state2.resolve_command_by_id(
+                                        ctx.cmd_id,
+                                        CommandStatus::Error(incoming.display.clone()),
+                                    );
+                                    state2.push_error(incoming.display.clone());
+                                    continue;
+                                }
+                                // Decode the CBOR reply and open the editor.
+                                // ACL replies are a CBOR Text string ("/ipfs/<cid>" or "").
+                                // Entity replies are raw ciborium CBOR bytes of the struct.
+                                let content_bytes = incoming.content.clone();
+                                let doc_path =
+                                    format!("@{}{}", ctx.target, ctx.crud_path);
+                                let editor_mode = ctx.editor_mode.clone();
+                                let state3 = state2.clone();
+                                let resolved_cmd = ctx.cmd_id;
+                                match ciborium::de::from_reader::<ciborium::Value, _>(
+                                    &mut &content_bytes[..],
+                                ) {
+                                    Ok(ciborium::Value::Text(s))
+                                        if s.starts_with('b') && s.len() > 10 =>
+                                    {
+                                        // Bare CIDv1 — infer dag-cbor vs raw from codec prefix.
+                                        let is_dag_cbor = cid_is_dag_cbor(&s);
+                                        let cid = s.clone();
+                                        let url = format!(
+                                            "{}ipfs/{cid}",
+                                            crate::transport::connection::LOCAL_GATEWAY_URL
+                                        );
+                                        // Update editor_mode to record blob vs IPLD.
+                                        let editor_mode = match editor_mode {
+                                            EditorMode::CrudEdit { target, crud_path, .. } => {
+                                                EditorMode::CrudEdit {
+                                                    target,
+                                                    crud_path,
+                                                    is_blob: Some(!is_dag_cbor),
+                                                }
+                                            }
+                                            other => other,
+                                        };
+                                        spawn_local(async move {
+                                            if is_dag_cbor {
+                                                match fetch_url_bytes(&url).await {
+                                                    Ok(bytes) => {
+                                                        match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                                                            Ok(yaml) => {
+                                                                show_editor.set(Some(
+                                                                    EditorContext::new(doc_path, yaml)
+                                                                        .with_language("yaml")
+                                                                        .with_mode(editor_mode)
+                                                                        .with_cmd_id(resolved_cmd),
+                                                                ));
+                                                            }
+                                                            Err(e) => {
+                                                                state3.resolve_command_by_id(
+                                                                    resolved_cmd,
+                                                                    CommandStatus::Error(e.clone()),
+                                                                );
+                                                                state3.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
+                                                            }
+                                                        }
+                                                    }
+                                                    Err(e) => {
+                                                        state3.resolve_command_by_id(
+                                                            resolved_cmd,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                        state3.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
+                                                    }
+                                                }
+                                            } else {
+                                                match fetch_url_text(&url).await {
+                                                    Ok(text) => {
+                                                        show_editor.set(Some(
+                                                            EditorContext::new(doc_path, text)
+                                                                .with_language("plain")
+                                                                .with_mode(editor_mode)
+                                                                .with_cmd_id(resolved_cmd),
+                                                        ));
+                                                    }
+                                                    Err(e) => {
+                                                        state3.resolve_command_by_id(
+                                                            resolved_cmd,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                        state3.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
+                                                    }
+                                                }
+                                            }
+                                        });
+                                    }
+                                    Ok(ciborium::Value::Text(s)) if s.is_empty() => {
+                                        // No existing content — open editor blank.
+                                        show_editor.set(Some(
+                                            EditorContext::new(doc_path, String::new())
+                                                .with_language("yaml")
+                                                .with_mode(editor_mode)
+                                                .with_cmd_id(ctx.cmd_id),
+                                        ));
+                                    }
+                                    Ok(_) => {
+                                        // Raw CBOR struct — decode to YAML for editing.
+                                        match crate::messages::cbor_bytes_to_yaml(&content_bytes)
+                                        {
+                                            Ok(yaml) => {
+                                                show_editor.set(Some(
+                                                    EditorContext::new(doc_path, yaml)
+                                                        .with_language("yaml")
+                                                        .with_mode(editor_mode)
+                                                        .with_cmd_id(ctx.cmd_id),
+                                                ));
+                                            }
+                                            Err(e) => {
+                                                state2.resolve_command_by_id(
+                                                    ctx.cmd_id,
+                                                    CommandStatus::Error(e.clone()),
+                                                );
+                                                state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
+                                            }
+                                        }
+                                    }
+                                    Err(e) => {
+                                        state2.resolve_command_by_id(
+                                            ctx.cmd_id,
+                                            CommandStatus::Error(e.to_string()),
+                                        );
+                                        state2.push_error(tf("err-edit-cbor", &[("e", &e.to_string())]));
+                                    }
+                                }
+                                continue;
+                            }
+                            // Check if this is a CRUD SET confirmation (publish flow).
+                            let crud_confirm =
+                                state2.pending_crud_confirms.update_untracked(|m| m.remove(msg_id));
+                            if let Some(original_cmd_id) = crud_confirm {
+                                let (status, push_opt) =
+                                    classify_reply(&incoming.content, incoming.is_error, &display);
+                                state2.resolve_command_by_id(original_cmd_id, status);
+                                if let Some(text) = push_opt {
+                                    state2.push_incoming(text, Some(original_cmd_id), incoming.is_error);
+                                }
+                                continue;
+                            }
+                            let (status, push_opt) =
+                                classify_reply(&incoming.content, incoming.is_error, &display);
                             let cmd_id = state2.resolve_command(msg_id, status);
-                            state2.push_incoming(display, cmd_id, incoming.is_error);
+                            if let Some(text) = push_opt {
+                                state2.push_incoming(text, cmd_id, incoming.is_error);
+                            }
                         }
                         None => {
                             state2.push_incoming(display, None, incoming.is_error);
@@ -441,16 +626,78 @@ fn OutputPane(state: AppState) -> impl IntoView {
     }
 }
 
+/// Classify an incoming reply into a `CommandStatus` transition and optional
+/// display text to print below the command line.
+///
+/// Rules:
+/// - Text atom (`:ok`, `:pong`, etc.) → bright-green, no output.
+/// - `[:ok]` → bright-green, no output.
+/// - `[:ok, text]` → bright-green, print `text` below.
+/// - `[:error, reason]` or `is_error` → red, print reason below.
+/// - Anything else → bright-green, print fallback display below.
+fn classify_reply(content: &[u8], is_error: bool, fallback: &str) -> (CommandStatus, Option<String>) {
+    use ciborium::Value as V;
+    if is_error {
+        // Try to extract a human-readable reason from [:error, reason].
+        let reason = match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
+            Ok(V::Array(items)) => items
+                .get(1)
+                .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
+                .unwrap_or_else(|| fallback.to_string()),
+            _ => fallback.to_string(),
+        };
+        return (CommandStatus::Error(String::new()), Some(reason));
+    }
+    match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
+        Ok(V::Text(s)) => {
+            // Only `:ok` is silenced (color-change only, no output text).
+            // All other text atoms (`:pong`, `:error`, etc.) print their text.
+            if s == ":ok" {
+                (CommandStatus::Replied(String::new()), None)
+            } else {
+                (CommandStatus::Replied(String::new()), Some(s))
+            }
+        }
+        Ok(V::Array(items)) => {
+            match (items.first(), items.get(1)) {
+                (Some(V::Text(verb)), value) if verb == ":ok" => match value {
+                    Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
+                    Some(_) => (CommandStatus::Replied(String::new()), None),
+                    None => (CommandStatus::Replied(String::new()), None),
+                },
+                (Some(V::Text(verb)), value) if verb == ":error" => {
+                    let reason = value
+                        .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
+                        .unwrap_or_else(|| fallback.to_string());
+                    (CommandStatus::Error(String::new()), Some(reason))
+                }
+                _ => (CommandStatus::Replied(String::new()), Some(fallback.to_string())),
+            }
+        }
+        _ => (CommandStatus::Replied(String::new()), Some(fallback.to_string())),
+    }
+}
+
 fn render_entry(entry: Entry) -> impl IntoView {
     match entry {
         Entry::Command(c) => {
-            let cls = match c.status {
-                CommandStatus::Sent => "terminal-line line-pending",
-                CommandStatus::Done => "terminal-line line-dimmed",
+            // `status` is `RwSignal<CommandStatus>` — Copy, so capture by value.
+            // The reactive closures below re-run whenever `status.set()` is
+            // called, updating the DOM without requiring `<For>` to re-render
+            // the entire item (keyed `<For>` keeps existing nodes for unchanged keys).
+            let status = c.status;
+            let raw = c.raw.clone();
+            let cls = move || match status.get() {
+                CommandStatus::Sent       => "terminal-line line-pending",
+                CommandStatus::Done       => "terminal-line line-dimmed",
                 CommandStatus::Replied(_) => "terminal-line line-replied",
-                CommandStatus::Error(_) => "terminal-line line-error",
+                CommandStatus::Publishing => "terminal-line line-publishing",
+                CommandStatus::Error(_)   => "terminal-line line-error",
             };
-            let text = format!("→ {}", c.raw);
+            let text = move || match status.get() {
+                CommandStatus::Publishing => format!("→ {}  {}…", raw, crate::i18n::t("status-publishing")),
+                _ => format!("→ {}", raw),
+            };
             view! { <div class=cls>{text}</div> }.into_any()
         }
         Entry::Incoming(i) => {
@@ -526,22 +773,79 @@ fn eval(
                             )
                             .await
                         } else {
+                            // ── :path:edit interceptor ───────────────────────────────────
+                            // Detected before parse_crud_op so the `:edit` suffix is never
+                            // sent on the wire.  The handler sends a plain CRUD GET, then
+                            // the poll loop opens the editor when the reply arrives.
+                            let v_inner = v.strip_prefix(':').unwrap_or(v);
+                            if let Some(path_part) = v_inner.strip_suffix(":edit") {
+                                let crud_path = format!(":{path_part}");
+                                let editor_mode = match path_part {
+                                    "acl" => EditorMode::RuntimeAclEdit {
+                                        target: target.clone(),
+                                    },
+                                    s if s.starts_with("entities.") => {
+                                        let rest = &s["entities.".len()..];
+                                        if let Some((name, field)) = rest.split_once('.') {
+                                            EditorMode::EntityFieldEdit {
+                                                target: target.clone(),
+                                                entity_name: name.to_string(),
+                                                field: field.to_string(),
+                                            }
+                                        } else {
+                                            EditorMode::EntityEdit {
+                                                target: target.clone(),
+                                                entity_name: rest.to_string(),
+                                            }
+                                        }
+                                    }
+                                    _ => EditorMode::CrudEdit {
+                                        target: target.clone(),
+                                        crud_path: crud_path.clone(),
+                                        is_blob: None,
+                                    },
+                                };
+                                match transport::send_crud_get(&target, &crud_path).await {
+                                    Ok(msg_id) => {
+                                        state_async.pending_edit_opens.update(|m| {
+                                            m.insert(
+                                                msg_id,
+                                                EditOpenCtx {
+                                                    target,
+                                                    crud_path,
+                                                    editor_mode,
+                                                    cmd_id,
+                                                },
+                                            );
+                                        });
+                                    }
+                                    Err(e) => {
+                                        state_async.resolve_command_by_id(
+                                            cmd_id,
+                                            CommandStatus::Error(e.clone()),
+                                        );
+                                        let disp =
+                                            e.replace("not logged in", &t("msg-not-logged-in"));
+                                        state_async.push_error(tf(
+                                            "msg-send-failed",
+                                            &[("e", &disp)],
+                                        ));
+                                    }
+                                }
+                                return;
+                            }
+                            // ── Standard CRUD dispatch ───────────────────────────────────
                             match parse_crud_op(v, &body) {
                                 CrudOp::Get(path) => {
                                     transport::send_crud_get(&target, &path).await
                                 }
-                                CrudOp::Edit(path) => {
-                                    let pending = detect_crud_edit(&target, &path);
-                                    let res = transport::send_crud_edit(&target, &path).await;
-                                    if let (Ok(ref msg_id), Some(edit)) = (&res, pending) {
-                                        state_async.pending_edits.update(|m| {
-                                            m.insert(msg_id.clone(), edit);
-                                        });
-                                    }
-                                    res
-                                }
                                 CrudOp::Set(path, value) => {
-                                    transport::send_crud_set(&target, &path, &value).await
+                                    transport::send_crud_set(
+                                        &target,
+                                        &path,
+                                        ciborium::Value::Text(value),
+                                    )
+                                    .await
                                 }
                                 CrudOp::Delete(path) => {
                                     transport::send_crud_delete(&target, &path).await
@@ -969,11 +1273,36 @@ async fn fetch_url_text(url: &str) -> Result<String, String> {
         .ok_or_else(|| "response is not a string".to_string())
 }
 
+/// Minimal HTTP GET → raw bytes, for fetching DAG-CBOR CIDs from the gateway.
+async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
+    let window = web_sys::window().ok_or("no window")?;
+    let promise = window.fetch_with_str(url);
+    let resp_val = JsFuture::from(promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    if !resp.ok() {
+        return Err(format!("HTTP {}", resp.status()));
+    }
+    let buf_promise = resp.array_buffer().map_err(|e| format!("{e:?}"))?;
+    let buf_val = JsFuture::from(buf_promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
+}
+
+/// Returns `true` if the bare CIDv1 string encodes DAG-CBOR (codec 0x71).
+/// Base32-lower CIDv1 DAG-CBOR CIDs start with `"bafyrei"`.
+fn cid_is_dag_cbor(cid: &str) -> bool {
+    cid.starts_with("bafyrei")
+}
+
 // ── CRUD routing ──────────────────────────────────────────────────────────
 
 enum CrudOp {
     Get(String),
-    Edit(String),
     Set(String, String),
     Delete(String),
 }
@@ -999,45 +1328,8 @@ fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
             CrudOp::Set(atom, body.trim().to_string())
         };
     }
-    // verb contains `:edit` — edit
-    if let Some((path, "edit")) = v.split_once(':') {
-        return CrudOp::Edit(format!(":{path}"));
-    }
     // everything else is a get
     CrudOp::Get(format!(":{v}"))
-}
-
-// ── Entity-edit helpers ───────────────────────────────────────────────────
-
-/// Return the `PendingEdit` for a CRUD `:edit` path (e.g. `":acl"`, `":entities.fortune"`).
-fn detect_crud_edit(target: &str, path: &str) -> Option<crate::state::PendingEdit> {
-    use crate::state::PendingEdit;
-    let p = path.strip_prefix(':').unwrap_or(path);
-    if p == "acl" {
-        return Some(PendingEdit::Acl {
-            target: target.to_string(),
-        });
-    }
-    let mut parts = p.splitn(3, '.');
-    if parts.next() != Some("entities") {
-        return None;
-    }
-    let entity_name = parts.next()?.to_string();
-    if entity_name.is_empty() {
-        return None;
-    }
-    match parts.next() {
-        None => Some(PendingEdit::Entity {
-            target: target.to_string(),
-            entity_name,
-        }),
-        Some(field) if !field.is_empty() => Some(PendingEdit::Field {
-            target: target.to_string(),
-            entity_name,
-            field: field.to_string(),
-        }),
-        _ => None,
-    }
 }
 
 fn help_text() -> Vec<String> {

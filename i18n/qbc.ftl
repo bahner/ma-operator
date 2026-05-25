@@ -61,6 +61,7 @@ btn-cancel = na-du
 btn-close = tek-out
 btn-reply = bek-showxa
 btn-publish = sendowt
+btn-publish-ipld = sendowt IPLD
 msg-reply-sent = bek-showxa gonya kom
 msg-reply-failed = bek-showxa hámfalla: { $e }
 msg-entity-publish-sent = entity { $name }: sendowt gonya kom
@@ -68,6 +69,7 @@ msg-entity-publish-failed = sendowt entity hámfalla: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: sendowt gonya kom
 msg-field-publish-failed = sendowt fild hámfalla: { $e }
 msg-acl-publish-sent = runtime ACL: sendowt gonya kom
+msg-crud-edit-publish-sent = { $path }: sendowt gonya kom
 msg-acl-publish-failed = sendowt runtime ACL hámfalla: { $e }
 msg-yaml-error = YAML hámfalla: { $e }
 msg-editor-saved = { $path }:hol
@@ -194,3 +196,36 @@ err-lang-not-found = langue introuvable : { $lang }
 
 msg-send-failed = sako nah bringin: { $e }
 msg-not-logged-in = inyalowda nah owkwa
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse error: { $e }
+yaml-not-mapping = YAML mus bi mapping (keya: valyu pɛr); plen tèks an skalas no kɛn bi stòrd as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = IPLD publish failed: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
+err-popup-blocked = popup block by browser
+status-publishing = publishin
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = fot
+rpc-error-detail = fot: { $detail }
+msg-new-message = ← [{ $from }] nyú mesej — { $count } in de boks
+err-edit-decode-failed = edit: fot decode: { $e }
+err-edit-fetch-failed = edit: fot fetch: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no session kopeng — no pensa dele profil
+profile-delete-error = profil dele bek no go: { $e }
+profile-no-verb = .my.profile: no saben dis word: { $verb }

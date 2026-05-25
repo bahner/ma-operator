@@ -59,6 +59,7 @@ btn-cancel = Kanselim
 btn-close = Klosim
 btn-reply = Bekim
 btn-publish = Publishim
+btn-publish-ipld = Publishim IPLD
 msg-reply-sent = bekim i bin salim
 msg-reply-failed = bekim i no wok: { $e }
 msg-entity-publish-sent = entiti { $name }: publish i bin salim
@@ -66,6 +67,7 @@ msg-entity-publish-failed = publish bilong entiti i no wok: { $e }
 msg-field-publish-sent = entiti { $name }.{ $field }: publish i bin salim
 msg-field-publish-failed = publish bilong fil i no wok: { $e }
 msg-acl-publish-sent = runtime ACL: publish i bin salim
+msg-crud-edit-publish-sent = { $path }: publish i bin salim
 msg-acl-publish-failed = runtime ACL publish i no wok: { $e }
 msg-yaml-error = YAML erò: { $e }
 msg-editor-saved = { $path }:seivim
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              rausim pepa
 
 msg-send-failed = salim i no wok: { $e }
 msg-not-logged-in = yu no bin log in
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse ero: { $e }
+yaml-not-mapping = YAML i mas stap mapping (pe ki: valu); tokples stret na skala i no inap stoa olsem DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode ero: { $e }
+cbor-decode-error = CBOR decode ero: { $e }
+cbor-json-error = CBOR i go JSON ero: { $e }
+yaml-serialize-error = YAML serialize ero: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = IPLD publish i no go: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox prune save ero: { $e }
+err-config-load = config load ero: { $e }
+err-lang-persist = lang persist ero: { $e }
+err-history-parse = history parse ero: { $e }
+err-history-load = history load ero: { $e }
+err-ipfs-reply-decode = IPFS reply decode i no go: { $e }
+err-edit-cbor = edit CBOR ero: { $e }
+err-popup-blocked = browser i blokim popup
+status-publishing = i publishim
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = rong
+rpc-error-detail = rong: { $detail }
+msg-new-message = ← [{ $from }] nupela tok — { $count } long bokis bilong yu
+err-edit-decode-failed = senisim: rong long dekod: { $e }
+err-edit-fetch-failed = senisim: rong long kisim: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = i no gat wok taim — no inap rausim profil
+profile-delete-error = rausim profil i no wok: { $e }
+profile-no-verb = .my.profile: wod i no save: { $verb }

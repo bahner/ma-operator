@@ -59,6 +59,7 @@ btn-cancel = khansela
 btn-close = vala
 btn-reply = phendula
 btn-publish = shicilela
+btn-publish-ipld = shicilela IPLD
 msg-reply-sent = impendulo ithunyelwe
 msg-reply-failed = impendulo ihlulekile: { $e }
 msg-entity-publish-sent = entity { $name }: ukushicilela kuthunyelwe
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ukushicilela entity kuhlulekile: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: ukushicilela kuthunyelwe
 msg-field-publish-failed = ukushicilela insimu kuhlulekile: { $e }
 msg-acl-publish-sent = runtime ACL: ukushicilela kuthunyelwe
+msg-crud-edit-publish-sent = { $path }: ukushicilela kuthunyelwe
 msg-acl-publish-failed = ukushicilela runtime ACL kuhlulekile: { $e }
 msg-yaml-error = iphutha le-YAML: { $e }
 msg-editor-saved = { $path }:gcina
@@ -192,3 +194,36 @@ err-lang-not-found = ulimi alutholwanga: { $lang }
 
 msg-send-failed = ukuthumela kuhlulekile: { $e }
 msg-not-logged-in = awungangeni
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Iphutha lokuhlaziya i-YAML: { $e }
+yaml-not-mapping = I-YAML kufanele ibe yimapping (amajozi okhiye: inani); umbhalo ojwayelekile nezisekelo azinakugcinwa njengo-DAG-CBOR
+dagcbor-encode-error = Iphutha lokukhowuda i-DAG-CBOR: { $e }
+cbor-decode-error = Iphutha lokuvula i-CBOR: { $e }
+cbor-json-error = Iphutha lokuguqula i-CBOR ibe i-JSON: { $e }
+yaml-serialize-error = Iphutha lokusereyeliza i-YAML: { $e }
+edit-reply-invalid = Impendulo yokuhlela engavumelekile
+doc-publish-ipld-error = Ukushicilela i-IPLD kuhlulekile: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Iphutha lokugcina ukunqanyulwa kwebhokisi lomsebenzi: { $e }
+err-config-load = Iphutha lokulayisha ukucwaninga: { $e }
+err-lang-persist = Iphutha lokugcina ulimi: { $e }
+err-history-parse = Iphutha lokuhlaziya umlando: { $e }
+err-history-load = Iphutha lokulayisha umlando: { $e }
+err-ipfs-reply-decode = Ukuvula impendulo ye-IPFS kuhlulekile: { $e }
+err-edit-cbor = Iphutha lokuhlela i-CBOR: { $e }
+err-popup-blocked = Isiphequluli sivimbe isaziso esinye
+status-publishing = ikhishwa
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = iphutha
+rpc-error-detail = iphutha: { $detail }
+msg-new-message = ← [{ $from }] umlayezo omutsha — { $count } ebhokisini
+err-edit-decode-failed = ukuhlelwa: ukuhumusha kwehlulekile: { $e }
+err-edit-fetch-failed = ukuhlelwa: ukuthola kwehlulekile: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = ayikho iseshini esisebenzayo — iprofile ayikwazi ukususwa
+profile-delete-error = ukususa iprofile kuhlulekile: { $e }
+profile-no-verb = .my.profile: umyalelo ongaziwa: { $verb }

@@ -5,6 +5,7 @@
 //! integer.  Indices may have gaps after deletion — always list first.
 
 use crate::config::EgoConfig;
+use crate::i18n::t;
 use crate::messages::IncomingMessage;
 use ma_core::MESSAGE_TYPE_MESSAGE;
 use std::collections::BTreeSet;
@@ -139,6 +140,6 @@ pub fn open_target(target: &str) -> Result<(), String> {
     if opened.is_some() {
         Ok(())
     } else {
-        Err("popup blocked by browser".to_string())
+        Err(t("err-popup-blocked"))
     }
 }

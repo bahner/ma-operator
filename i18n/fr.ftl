@@ -59,6 +59,7 @@ btn-cancel = Annuler
 btn-close = Fermer
 btn-reply = Répondre
 btn-publish = Publier
+btn-publish-ipld = Publier IPLD
 msg-reply-sent = réponse envoyée
 msg-reply-failed = échec de l'envoi de la réponse : { $e }
 msg-entity-publish-sent = entité { $name } : publication envoyée
@@ -66,6 +67,7 @@ msg-entity-publish-failed = échec de la publication de l'entité : { $e }
 msg-field-publish-sent = entité { $name }.{ $field } : publication envoyée
 msg-field-publish-failed = échec de la publication du champ : { $e }
 msg-acl-publish-sent = ACL d'exécution : publication envoyée
+msg-crud-edit-publish-sent = { $path }: publication envoyée
 msg-acl-publish-failed = échec de la publication de l'ACL d'exécution : { $e }
 msg-yaml-error = erreur YAML : { $e }
 msg-editor-saved = { $path }:enregistrer
@@ -185,3 +187,36 @@ err-lang-not-found = langue introuvable : { $lang }
 
 msg-send-failed = échec de l'envoi : { $e }
 msg-not-logged-in = non connecté
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Erreur d'analyse YAML : { $e }
+yaml-not-mapping = YAML doit être un mapping (paires clé : valeur) ; le texte brut et les scalaires ne peuvent pas être stockés en DAG-CBOR
+dagcbor-encode-error = Erreur d'encodage DAG-CBOR : { $e }
+cbor-decode-error = Erreur de décodage CBOR : { $e }
+cbor-json-error = Erreur CBOR vers JSON : { $e }
+yaml-serialize-error = Erreur de sérialisation YAML : { $e }
+edit-reply-invalid = Réponse de modification invalide
+doc-publish-ipld-error = Publication IPLD échouée : { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Erreur de sauvegarde du nettoyage de la boîte de réception : { $e }
+err-config-load = Erreur de chargement de la configuration : { $e }
+err-lang-persist = Erreur de sauvegarde de la langue : { $e }
+err-history-parse = Erreur d'analyse de l'historique : { $e }
+err-history-load = Erreur de chargement de l'historique : { $e }
+err-ipfs-reply-decode = Échec du décodage de la réponse IPFS : { $e }
+err-edit-cbor = Erreur d'édition CBOR : { $e }
+err-popup-blocked = Fenêtre contextuelle bloquée par le navigateur
+status-publishing = publication
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = erreur
+rpc-error-detail = erreur: { $detail }
+msg-new-message = ← [{ $from }] nouveau message — { $count } dans la boîte de réception
+err-edit-decode-failed = édition: échec du décodage: { $e }
+err-edit-fetch-failed = édition: échec du chargement: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = aucune session active — impossible de supprimer le profil
+profile-delete-error = échec de la suppression du profil : { $e }
+profile-no-verb = .my.profile: verbe inconnu : { $verb }

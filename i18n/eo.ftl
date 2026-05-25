@@ -59,6 +59,7 @@ btn-cancel = Nuligi
 btn-close = Fermi
 btn-reply = Respondi
 btn-publish = Publikigi
+btn-publish-ipld = Publikigi IPLD
 msg-reply-sent = respondo sendita
 msg-reply-failed = respondo malsukcesis: { $e }
 msg-entity-publish-sent = entiteco { $name }: publikigo sendita
@@ -66,6 +67,7 @@ msg-entity-publish-failed = entiteca publikigo malsukcesis: { $e }
 msg-field-publish-sent = entiteco { $name }.{ $field }: publikigo sendita
 msg-field-publish-failed = kampa publikigo malsukcesis: { $e }
 msg-acl-publish-sent = rultempo-ACL: publikigo sendita
+msg-crud-edit-publish-sent = { $path }: publikigo sendita
 msg-acl-publish-failed = rultempo-ACL-publikigo malsukcesis: { $e }
 msg-yaml-error = YAML-eraro: { $e }
 msg-editor-saved = { $path }:konservita
@@ -178,3 +180,36 @@ help-doc-del =   .my.doc.<name>:              forigi dokumenton
 
 msg-send-failed = sendo malsukcesis: { $e }
 msg-not-logged-in = ne ensalutinta
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML-analizilo eraro: { $e }
+yaml-not-mapping = YAML devas esti mapo (ŝlosilo: valoro-paroj); simpla teksto kaj skalaro ne povas esti storitaj kiel DAG-CBOR
+dagcbor-encode-error = DAG-CBOR-kodado eraro: { $e }
+cbor-decode-error = CBOR-dekodado eraro: { $e }
+cbor-json-error = CBOR al JSON eraro: { $e }
+yaml-serialize-error = YAML-serialigado eraro: { $e }
+edit-reply-invalid = Nevalida redakta respondo
+doc-publish-ipld-error = IPLD-publikigo malsukcesis: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Prizorgadaj konservado eraro: { $e }
+err-config-load = Agordaj ŝarĝado eraro: { $e }
+err-lang-persist = Lingvo konservado eraro: { $e }
+err-history-parse = Historia analizilo eraro: { $e }
+err-history-load = Historia ŝarĝado eraro: { $e }
+err-ipfs-reply-decode = IPFS-respondo dekodado malsukcesis: { $e }
+err-edit-cbor = CBOR-redaktado eraro: { $e }
+err-popup-blocked = Fenestro blokita de retumilo
+status-publishing = eldonas
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = eraro
+rpc-error-detail = eraro: { $detail }
+msg-new-message = ← [{ $from }] nova mesaĝo — { $count } en ricevujo
+err-edit-decode-failed = redaktado: malĉifrada eraro: { $e }
+err-edit-fetch-failed = redaktado: prena eraro: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = neniu aktiva sesio — ne eblas forigi profilon
+profile-delete-error = forigo de profilo malsukcesis: { $e }
+profile-no-verb = .my.profile: nekonata komando: { $verb }

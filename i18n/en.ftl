@@ -60,6 +60,7 @@ btn-cancel = Cancel
 btn-close = Close
 btn-reply = Reply
 btn-publish = Publish
+btn-publish-ipld = Publish IPLD
 msg-reply-sent = reply sent
 msg-reply-failed = reply failed: { $e }
 msg-entity-publish-sent = entity { $name }: publish sent
@@ -68,6 +69,7 @@ msg-field-publish-sent = entity { $name }.{ $field }: publish sent
 msg-field-publish-failed = field publish failed: { $e }
 msg-acl-publish-sent = runtime ACL: publish sent
 msg-acl-publish-failed = runtime ACL publish failed: { $e }
+msg-crud-edit-publish-sent = { $path }: publish sent
 msg-yaml-error = YAML error: { $e }
 msg-editor-saved = { $path }:save
 msg-fetch-review = fetched { $cid } — review before eval
@@ -193,3 +195,38 @@ help-doc-del =   .my.doc.<name>:              delete document
 # ── Error messages ────────────────────────────────────────────────────────
 msg-send-failed = send failed: { $e }
 msg-not-logged-in = not logged in
+msg-new-message = ← [{ $from }] new message — { $count } in inbox
+
+# ── RPC reply display ─────────────────────────────────────────────────────
+rpc-error = error
+rpc-error-detail = error: { $detail }
+
+# ── Edit errors ───────────────────────────────────────────────────────────
+err-edit-decode-failed = edit decode failed: { $e }
+err-edit-fetch-failed = edit fetch failed: { $e }
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = YAML parse error: { $e }
+yaml-not-mapping = YAML must be a mapping (key: value pairs); plain text and bare scalars cannot be stored as DAG-CBOR
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
+edit-reply-invalid = invalid edit reply
+doc-publish-ipld-error = cannot publish-ipld: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
+err-popup-blocked = popup blocked by browser
+status-publishing = publishing
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = no active session — cannot delete profile
+profile-delete-error = profile deletion failed: { $e }
+profile-no-verb = .my.profile: unknown verb: { $verb }

@@ -59,6 +59,7 @@ btn-cancel = kagbuo
 btn-close = mechie
 btn-reply = zaghachi
 btn-publish = bipụta
+btn-publish-ipld = bipụta IPLD
 msg-reply-sent = ezitela ọzaghachi
 msg-reply-failed = ọzaghachi erughị: { $e }
 msg-entity-publish-sent = entity { $name }: ezitela ịbipụta
@@ -66,6 +67,7 @@ msg-entity-publish-failed = ịbipụta entity erughị: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: ezitela ịbipụta
 msg-field-publish-failed = ịbipụta ngalaba erughị: { $e }
 msg-acl-publish-sent = runtime ACL: ezitela ịbipụta
+msg-crud-edit-publish-sent = { $path }: ezitela ịbipụta
 msg-acl-publish-failed = ịbipụta runtime ACL erughị: { $e }
 msg-yaml-error = njehie YAML: { $e }
 msg-editor-saved = { $path }:chekwaa
@@ -192,3 +194,36 @@ err-lang-not-found = asụsụ ahụ achọtaghị: { $lang }
 
 msg-send-failed = izipu dara ada: { $e }
 msg-not-logged-in = abanye ọ bụghị
+
+# ── CBOR / YAML codec errors ──────────────────────────────────────────────
+yaml-parse-error = Njehie YAML: { $e }
+yaml-not-mapping = YAML ga-abụ mapping (ọpọ igodo: ọnọdụ); edemede nkịtị na scalar enweghị ike idobe ya dị ka DAG-CBOR
+dagcbor-encode-error = Njehie ndenye DAG-CBOR: { $e }
+cbor-decode-error = Njehie denye CBOR: { $e }
+cbor-json-error = Njehie CBOR→JSON: { $e }
+yaml-serialize-error = Njehie serialization YAML: { $e }
+edit-reply-invalid = Nzaghachi mmezi na-arụ ọrụ
+doc-publish-ipld-error = Nkwuputa IPLD dara: { $e }
+
+# ── Internal / session errors ─────────────────────────────────────────────
+err-inbox-prune-persist = Njehie chekwa inbox: { $e }
+err-config-load = Njehie nbudata nhazi: { $e }
+err-lang-persist = Njehie chekwa asụsụ: { $e }
+err-history-parse = Njehie nyochaa akụkọ ihe mere eme: { $e }
+err-history-load = Njehie nbudata akụkọ ihe mere eme: { $e }
+err-ipfs-reply-decode = Njehie denye azịza IPFS: { $e }
+err-edit-cbor = Njehie mmezi CBOR: { $e }
+err-popup-blocked = Browser egbochi popup
+status-publishing = nkwupụta
+
+# ── RPC / redigering ─────────────────────────────────────────────────────
+rpc-error = njehie
+rpc-error-detail = njehie: { $detail }
+msg-new-message = ← [{ $from }] ozi ọhụrụ — { $count } n'igbe ozi
+err-edit-decode-failed = dezie: ọdịda ntụgharị: { $e }
+err-edit-fetch-failed = dezie: ọdịda nweta: { $e }
+
+# ── Profile management ────────────────────────────────────────────────────
+profile-delete-no-session = enweghị nnọọ nọọọ — enweghị ike ihichapụ profaịlụ
+profile-delete-error = ihichapụ profaịlụ dara ada: { $e }
+profile-no-verb = .my.profile: iwu amaghị: { $verb }
