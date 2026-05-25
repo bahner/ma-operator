@@ -323,6 +323,50 @@ pub fn dispatch_verb(
         }
     }
 
+    // ── .my.profile ───────────────────────────────────────────────────────
+    // .my.profile:  — delete this profile entirely from the browser
+    //                 (identity, config, history), then log out.
+    if path == ".my.profile" {
+        match verb {
+            "" => {
+                // Authenticated: only reachable while logged in.
+                let username = state
+                    .session
+                    .get_untracked()
+                    .map(|s| s.username.clone())
+                    .unwrap_or_default();
+                if username.is_empty() {
+                    return Err(t("profile-delete-no-session"));
+                }
+                let state2 = state.clone();
+                leptos::task::spawn_local(async move {
+                    use crate::identity::{delete_config, delete_history, delete_identity};
+                    let mut errors: Vec<String> = Vec::new();
+                    if let Err(e) = delete_identity(&username).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_config(&username).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_history(&username).await {
+                        errors.push(e);
+                    }
+                    if errors.is_empty() {
+                        crate::transport::disconnect();
+                        state2.session.set(None);
+                    } else {
+                        state2.push_error(tf(
+                            "profile-delete-error",
+                            &[("e", &errors.join("; "))],
+                        ));
+                    }
+                });
+                return Ok(());
+            }
+            other => return Err(tf("profile-no-verb", &[("verb", other)])),
+        }
+    }
+
     // ── .my.acl ───────────────────────────────────────────────────────────
     // .my.acl:edit  — open the ACL YAML in a config editor.
     // .my.acl:      — (delete) reset ACL to default (fully open).
@@ -394,7 +438,7 @@ pub fn dispatch_verb(
     // ── .my.doc.<name>:<verb> ──────────────────────────────────────────────
     if let Some(doc_name) = path.strip_prefix(".my.doc.") {
         if doc_name.is_empty() {
-            return Err("missing document name".into());
+            return Err(t("doc-missing-name"));
         }
         let doc_path = path.to_string(); // e.g. ".my.doc.readme"
 
@@ -463,7 +507,7 @@ pub fn dispatch_verb(
             // Use :publish-ipld for YAML→DAG-CBOR structured storage.
             "publish" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.doc.<name>:publish <publisher>".into());
+                    return Err(t("doc-publish-usage"));
                 }
                 let cfg = config.get_untracked();
                 let publisher = resolve_bare_did(&args[0], &cfg)?;
@@ -508,7 +552,7 @@ pub fn dispatch_verb(
             // structured IPLD node via dag_put — fields are traversable directly.
             "publish-ipld" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.doc.<name>:publish-ipld <publisher>".into());
+                    return Err(t("doc-publish-ipld-usage"));
                 }
                 let cfg = config.get_untracked();
                 let publisher = resolve_bare_did(&args[0], &cfg)?;
@@ -520,7 +564,7 @@ pub fn dispatch_verb(
                     return Err(tf("doc-save-first", &[("path", &doc_path)]));
                 }
                 let dag_cbor = crate::messages::yaml_to_dag_cbor(&content_str)
-                    .map_err(|e| format!("cannot publish-ipld: {e}"))?;
+                    .map_err(|e| tf("doc-publish-ipld-error", &[("e", &e)]))?;
 
                 let state2 = state.clone();
                 let doc_path2 = doc_path.clone();
@@ -565,7 +609,7 @@ pub fn dispatch_verb(
             // :fetch <cid> — import content, no editor, no execution
             "fetch" => {
                 if args.len() != 1 {
-                    return Err("usage: .my.doc.<name>:fetch <cid>".into());
+                    return Err(t("doc-fetch-usage"));
                 }
                 let cid = args[0].clone();
                 let state2 = state.clone();
