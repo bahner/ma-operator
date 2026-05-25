@@ -218,9 +218,7 @@ impl AppState {
     pub fn resolve_command_by_id(&self, cmd_id: u64, status: CommandStatus) {
         let found = self.entries.with_untracked(|v| {
             v.iter().find_map(|e| match e {
-                Entry::Command(c) if c.id == cmd_id => {
-                    Some((c.status, c.message_id.clone()))
-                }
+                Entry::Command(c) if c.id == cmd_id => Some((c.status, c.message_id.clone())),
                 _ => None,
             })
         });

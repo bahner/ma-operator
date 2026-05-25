@@ -2,8 +2,8 @@
 //!
 //! Pure functions over byte payloads / DID strings — no UI dependencies.
 
-use ciborium::Value as CborValue;
 use crate::i18n::{t, tf};
+use ciborium::Value as CborValue;
 
 /// Convert a YAML string into a DAG-CBOR byte vector.
 ///
@@ -21,7 +21,8 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
     if !val.is_object() {
         return Err(t("yaml-not-mapping"));
     }
-    serde_ipld_dagcbor::to_vec(&val).map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
+    serde_ipld_dagcbor::to_vec(&val)
+        .map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
 }
 
 /// Decode a CBOR byte slice and convert it to a YAML string.
@@ -32,11 +33,12 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
 /// Used to display CRUD GET replies (entity data, config values) in the
 /// editor before the user edits and re-publishes them.
 pub fn cbor_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
-    let cbor_val: CborValue =
-        ciborium::de::from_reader(bytes).map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
-    let json_val: serde_json::Value =
-        serde_json::to_value(&cbor_val).map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
-    serde_yaml::to_string(&json_val).map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
+    let cbor_val: CborValue = ciborium::de::from_reader(bytes)
+        .map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
+    let json_val: serde_json::Value = serde_json::to_value(&cbor_val)
+        .map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
+    serde_yaml::to_string(&json_val)
+        .map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
 }
 
 /// Extract the text payload from a `[":ok", text_string]` CBOR reply.
@@ -51,8 +53,8 @@ pub fn extract_ok_text(bytes: &[u8]) -> Result<String, String> {
 /// `[":ok", yaml_string]` CBOR array body. The YAML is already a plain
 /// string — no further conversion is needed.
 pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {
-    let val: CborValue =
-        ciborium::de::from_reader(bytes).map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
+    let val: CborValue = ciborium::de::from_reader(bytes)
+        .map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
     match val {
         CborValue::Array(mut items) if items.len() == 2 => {
             let second = items.pop();

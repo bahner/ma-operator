@@ -268,9 +268,7 @@ pub fn dispatch_verb(
                                 if let Ok(json) =
                                     serde_json::from_str::<serde_json::Value>(&json_str)
                                 {
-                                    if let Some(did) =
-                                        json.get("did").and_then(|v| v.as_str())
-                                    {
+                                    if let Some(did) = json.get("did").and_then(|v| v.as_str()) {
                                         let did = did.to_string();
                                         let endpoint_id = json
                                             .get("endpoint_id")
@@ -288,10 +286,9 @@ pub fn dispatch_verb(
                                             let username = sess.username.clone();
                                             let cfg = config.get_untracked();
                                             leptos::task::spawn_local(async move {
-                                                if let Err(e) = crate::config::persist_config(
-                                                    &username, &cfg,
-                                                )
-                                                .await
+                                                if let Err(e) =
+                                                    crate::config::persist_config(&username, &cfg)
+                                                        .await
                                                 {
                                                     web_sys::console::error_1(
                                                         &format!("persist error: {e}").into(),
@@ -591,9 +588,25 @@ pub fn dispatch_verb(
                 Ok(())
             }
 
+            // :cat / :head / :tail / :wc — view stored content inline
+            "cat" | "head" | "tail" | "wc" => {
+                let cfg = config.get_untracked();
+                let content = cfg
+                    .get(&format!("{doc_path}.content"))
+                    .unwrap_or_default()
+                    .to_string();
+                if content.is_empty() {
+                    return Err(tf("doc-content-empty", &[("path", &doc_path)]));
+                }
+                let str_args: Vec<&str> = args.iter().map(String::as_str).collect();
+                for line in crate::cid_ops::apply(verb, &content, &str_args) {
+                    state.push_output(line);
+                }
+                Ok(())
+            }
+
             other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
         }
-    // ── .my.i18n:list ─────────────────────────────────────────────────────
     } else if path == ".my.i18n" && verb == "list" {
         let mut lines = vec![t("lang-list-header")];
         for (code, name) in crate::i18n::SUPPORTED_LANGS {

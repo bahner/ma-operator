@@ -7,7 +7,6 @@
 ///
 /// Adding a new operation: append one `CidOp` entry to `OPS`.
 /// No other code needs to change.
-
 use crate::i18n::{t, tf};
 
 /// Maximum lines printed by `:cat` to avoid flooding the terminal.
@@ -23,10 +22,22 @@ pub struct CidOp {
 }
 
 pub static OPS: &[CidOp] = &[
-    CidOp { name: "cat",  handler: op_cat },
-    CidOp { name: "head", handler: op_head },
-    CidOp { name: "tail", handler: op_tail },
-    CidOp { name: "wc",   handler: op_wc  },
+    CidOp {
+        name: "cat",
+        handler: op_cat,
+    },
+    CidOp {
+        name: "head",
+        handler: op_head,
+    },
+    CidOp {
+        name: "tail",
+        handler: op_tail,
+    },
+    CidOp {
+        name: "wc",
+        handler: op_wc,
+    },
 ];
 
 // ── Public API ────────────────────────────────────────────────────────────
@@ -67,7 +78,10 @@ fn op_cat(content: &str, _args: &[&str]) -> Vec<String> {
         .map(str::to_string)
         .collect();
     if content.lines().count() > MAX_CAT_LINES {
-        lines.push(tf("cid-op-cat-truncated", &[("n", &MAX_CAT_LINES.to_string())]));
+        lines.push(tf(
+            "cid-op-cat-truncated",
+            &[("n", &MAX_CAT_LINES.to_string())],
+        ));
     }
     lines
 }
@@ -76,7 +90,8 @@ fn op_head(content: &str, args: &[&str]) -> Vec<String> {
     if content.contains('\0') {
         return vec![t("cid-op-binary")];
     }
-    let n = args.first()
+    let n = args
+        .first()
         .and_then(|s| s.parse::<usize>().ok())
         .unwrap_or(10);
     content.lines().take(n).map(str::to_string).collect()
@@ -86,7 +101,8 @@ fn op_tail(content: &str, args: &[&str]) -> Vec<String> {
     if content.contains('\0') {
         return vec![t("cid-op-binary")];
     }
-    let n = args.first()
+    let n = args
+        .first()
         .and_then(|s| s.parse::<usize>().ok())
         .unwrap_or(10);
     let all: Vec<&str> = content.lines().collect();

@@ -1,10 +1,10 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle, SigningKey, CRUD_PROTOCOL_ID,
-    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY,
-    MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
-    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID, CONTENT_TYPE_TERM,
+    IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
+    CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT,
+    MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE,
+    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
@@ -484,9 +484,7 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
 
 fn decode_incoming(msg: Message) -> IncomingMessage {
     let (display, is_error) = match msg.message_type.as_str() {
-        MESSAGE_TYPE_RPC_REPLY
-        | MESSAGE_TYPE_RPC
-        | MESSAGE_TYPE_CRUD_REPLY => {
+        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD_REPLY => {
             let (term, err) = format_rpc_reply(&msg.payload());
             (format!("\u{2190} [{}] {}", msg.from, term), err)
         }

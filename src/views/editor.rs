@@ -446,12 +446,8 @@ pub fn EditorModal(
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    text.into_bytes(),
-                    "text/yaml",
-                )
-                .await
+                match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/yaml")
+                    .await
                 {
                     Ok(msg_id) => {
                         if let Some(cid) = cmd_id {
@@ -466,7 +462,7 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                         }
                         state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
-                    },
+                    }
                 }
             });
         }
@@ -481,7 +477,10 @@ pub fn EditorModal(
             let Some(ctx) = show.get_untracked() else {
                 return;
             };
-            let EditorMode::CrudEdit { target, crud_path, .. } = ctx.mode else {
+            let EditorMode::CrudEdit {
+                target, crud_path, ..
+            } = ctx.mode
+            else {
                 return;
             };
             let cmd_id = ctx.cmd_id;
@@ -518,7 +517,7 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                         }
                         state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
-                    },
+                    }
                 }
             });
         }
@@ -534,7 +533,10 @@ pub fn EditorModal(
             let Some(ctx) = show.get_untracked() else {
                 return;
             };
-            let EditorMode::CrudEdit { target, crud_path, .. } = ctx.mode else {
+            let EditorMode::CrudEdit {
+                target, crud_path, ..
+            } = ctx.mode
+            else {
                 return;
             };
             let lang = language.get_untracked();
@@ -543,12 +545,8 @@ pub fn EditorModal(
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    text.into_bytes(),
-                    &content_type,
-                )
-                .await
+                match crate::transport::send_ipfs_store(&target, text.into_bytes(), &content_type)
+                    .await
                 {
                     Ok(msg_id) => {
                         if let Some(cid) = cmd_id {
@@ -563,7 +561,7 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                         }
                         state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
-                    },
+                    }
                 }
             });
         }

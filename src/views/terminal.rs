@@ -158,7 +158,9 @@ pub fn Terminal() -> impl IntoView {
                 match load_history(&username).await {
                     Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
                         Ok(hist) => state2.history.set(hist),
-                        Err(e) => state2.push_error(tf("err-history-parse", &[("e", &e.to_string())])),
+                        Err(e) => {
+                            state2.push_error(tf("err-history-parse", &[("e", &e.to_string())]))
+                        }
                     },
                     Ok(None) => {}
                     Err(e) => state2.push_error(tf("err-history-load", &[("e", &e)])),
@@ -257,7 +259,10 @@ pub fn Terminal() -> impl IntoView {
                         state2.push_incoming(
                             tf(
                                 "msg-new-message",
-                                &[("from", from_display.as_str()), ("count", &count.to_string())],
+                                &[
+                                    ("from", from_display.as_str()),
+                                    ("count", &count.to_string()),
+                                ],
                             ),
                             None,
                             false,
@@ -334,7 +339,8 @@ pub fn Terminal() -> impl IntoView {
                                                 CommandStatus::Error(e.clone()),
                                             );
                                         }
-                                        state2.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+                                        state2
+                                            .push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
                                     }
                                 }
                                 continue;
@@ -399,7 +405,8 @@ pub fn Terminal() -> impl IntoView {
                                                 CommandStatus::Error(e.clone()),
                                             );
                                         }
-                                        state2.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+                                        state2
+                                            .push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
                                     }
                                 }
                                 continue;
@@ -427,8 +434,7 @@ pub fn Terminal() -> impl IntoView {
                                 // ACL replies are a CBOR Text string ("/ipfs/<cid>" or "").
                                 // Entity replies are raw ciborium CBOR bytes of the struct.
                                 let content_bytes = incoming.content.clone();
-                                let doc_path =
-                                    format!("@{}{}", ctx.target, ctx.crud_path);
+                                let doc_path = format!("@{}{}", ctx.target, ctx.crud_path);
                                 let editor_mode = ctx.editor_mode.clone();
                                 let state3 = state2.clone();
                                 let resolved_cmd = ctx.cmd_id;
@@ -447,26 +453,30 @@ pub fn Terminal() -> impl IntoView {
                                         );
                                         // Update editor_mode to record blob vs IPLD.
                                         let editor_mode = match editor_mode {
-                                            EditorMode::CrudEdit { target, crud_path, .. } => {
-                                                EditorMode::CrudEdit {
-                                                    target,
-                                                    crud_path,
-                                                    is_blob: Some(!is_dag_cbor),
-                                                }
-                                            }
+                                            EditorMode::CrudEdit {
+                                                target, crud_path, ..
+                                            } => EditorMode::CrudEdit {
+                                                target,
+                                                crud_path,
+                                                is_blob: Some(!is_dag_cbor),
+                                            },
                                             other => other,
                                         };
                                         spawn_local(async move {
                                             if is_dag_cbor {
                                                 match fetch_url_bytes(&url).await {
                                                     Ok(bytes) => {
-                                                        match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                                                        match crate::messages::cbor_bytes_to_yaml(
+                                                            &bytes,
+                                                        ) {
                                                             Ok(yaml) => {
                                                                 show_editor.set(Some(
-                                                                    EditorContext::new(doc_path, yaml)
-                                                                        .with_language("yaml")
-                                                                        .with_mode(editor_mode)
-                                                                        .with_cmd_id(resolved_cmd),
+                                                                    EditorContext::new(
+                                                                        doc_path, yaml,
+                                                                    )
+                                                                    .with_language("yaml")
+                                                                    .with_mode(editor_mode)
+                                                                    .with_cmd_id(resolved_cmd),
                                                                 ));
                                                             }
                                                             Err(e) => {
@@ -474,7 +484,10 @@ pub fn Terminal() -> impl IntoView {
                                                                     resolved_cmd,
                                                                     CommandStatus::Error(e.clone()),
                                                                 );
-                                                                state3.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
+                                                                state3.push_error(tf(
+                                                                    "err-edit-decode-failed",
+                                                                    &[("e", &e)],
+                                                                ));
                                                             }
                                                         }
                                                     }
@@ -483,7 +496,10 @@ pub fn Terminal() -> impl IntoView {
                                                             resolved_cmd,
                                                             CommandStatus::Error(e.clone()),
                                                         );
-                                                        state3.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
+                                                        state3.push_error(tf(
+                                                            "err-edit-fetch-failed",
+                                                            &[("e", &e)],
+                                                        ));
                                                     }
                                                 }
                                             } else {
@@ -501,7 +517,10 @@ pub fn Terminal() -> impl IntoView {
                                                             resolved_cmd,
                                                             CommandStatus::Error(e.clone()),
                                                         );
-                                                        state3.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
+                                                        state3.push_error(tf(
+                                                            "err-edit-fetch-failed",
+                                                            &[("e", &e)],
+                                                        ));
                                                     }
                                                 }
                                             }
@@ -518,8 +537,7 @@ pub fn Terminal() -> impl IntoView {
                                     }
                                     Ok(_) => {
                                         // Raw CBOR struct — decode to YAML for editing.
-                                        match crate::messages::cbor_bytes_to_yaml(&content_bytes)
-                                        {
+                                        match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
                                             Ok(yaml) => {
                                                 show_editor.set(Some(
                                                     EditorContext::new(doc_path, yaml)
@@ -533,7 +551,10 @@ pub fn Terminal() -> impl IntoView {
                                                     ctx.cmd_id,
                                                     CommandStatus::Error(e.clone()),
                                                 );
-                                                state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
+                                                state2.push_error(tf(
+                                                    "err-edit-decode-failed",
+                                                    &[("e", &e)],
+                                                ));
                                             }
                                         }
                                     }
@@ -542,7 +563,10 @@ pub fn Terminal() -> impl IntoView {
                                             ctx.cmd_id,
                                             CommandStatus::Error(e.to_string()),
                                         );
-                                        state2.push_error(tf("err-edit-cbor", &[("e", &e.to_string())]));
+                                        state2.push_error(tf(
+                                            "err-edit-cbor",
+                                            &[("e", &e.to_string())],
+                                        ));
                                     }
                                 }
                                 continue;
@@ -578,8 +602,11 @@ pub fn Terminal() -> impl IntoView {
                                             );
                                             match fetch_url_text(&url).await {
                                                 Ok(text) => {
-                                                    let args_ref: Vec<&str> =
-                                                        ctx.args.iter().map(|s| s.as_str()).collect();
+                                                    let args_ref: Vec<&str> = ctx
+                                                        .args
+                                                        .iter()
+                                                        .map(|s| s.as_str())
+                                                        .collect();
                                                     for line in crate::cid_ops::apply(
                                                         &ctx.op, &text, &args_ref,
                                                     ) {
@@ -616,14 +643,19 @@ pub fn Terminal() -> impl IntoView {
                                 continue;
                             }
                             // Check if this is a CRUD SET confirmation (publish flow).
-                            let crud_confirm =
-                                state2.pending_crud_confirms.update_untracked(|m| m.remove(msg_id));
+                            let crud_confirm = state2
+                                .pending_crud_confirms
+                                .update_untracked(|m| m.remove(msg_id));
                             if let Some(original_cmd_id) = crud_confirm {
                                 let (status, push_opt) =
                                     classify_reply(&incoming.content, incoming.is_error, &display);
                                 state2.resolve_command_by_id(original_cmd_id, status);
                                 if let Some(text) = push_opt {
-                                    state2.push_incoming(text, Some(original_cmd_id), incoming.is_error);
+                                    state2.push_incoming(
+                                        text,
+                                        Some(original_cmd_id),
+                                        incoming.is_error,
+                                    );
                                 }
                                 continue;
                             }
@@ -771,14 +803,24 @@ fn OutputPane(state: AppState) -> impl IntoView {
 /// - `[:ok, text]` → bright-green, print `text` below.
 /// - `[:error, reason]` or `is_error` → red, print reason below.
 /// - Anything else → bright-green, print fallback display below.
-fn classify_reply(content: &[u8], is_error: bool, fallback: &str) -> (CommandStatus, Option<String>) {
+fn classify_reply(
+    content: &[u8],
+    is_error: bool,
+    fallback: &str,
+) -> (CommandStatus, Option<String>) {
     use ciborium::Value as V;
     if is_error {
         // Try to extract a human-readable reason from [:error, reason].
         let reason = match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
             Ok(V::Array(items)) => items
                 .get(1)
-                .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
+                .and_then(|v| {
+                    if let V::Text(s) = v {
+                        Some(s.clone())
+                    } else {
+                        None
+                    }
+                })
                 .unwrap_or_else(|| fallback.to_string()),
             _ => fallback.to_string(),
         };
@@ -794,23 +836,33 @@ fn classify_reply(content: &[u8], is_error: bool, fallback: &str) -> (CommandSta
                 (CommandStatus::Replied(String::new()), Some(s))
             }
         }
-        Ok(V::Array(items)) => {
-            match (items.first(), items.get(1)) {
-                (Some(V::Text(verb)), value) if verb == ":ok" => match value {
-                    Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
-                    Some(_) => (CommandStatus::Replied(String::new()), None),
-                    None => (CommandStatus::Replied(String::new()), None),
-                },
-                (Some(V::Text(verb)), value) if verb == ":error" => {
-                    let reason = value
-                        .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
-                        .unwrap_or_else(|| fallback.to_string());
-                    (CommandStatus::Error(String::new()), Some(reason))
-                }
-                _ => (CommandStatus::Replied(String::new()), Some(fallback.to_string())),
+        Ok(V::Array(items)) => match (items.first(), items.get(1)) {
+            (Some(V::Text(verb)), value) if verb == ":ok" => match value {
+                Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
+                Some(_) => (CommandStatus::Replied(String::new()), None),
+                None => (CommandStatus::Replied(String::new()), None),
+            },
+            (Some(V::Text(verb)), value) if verb == ":error" => {
+                let reason = value
+                    .and_then(|v| {
+                        if let V::Text(s) = v {
+                            Some(s.clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .unwrap_or_else(|| fallback.to_string());
+                (CommandStatus::Error(String::new()), Some(reason))
             }
-        }
-        _ => (CommandStatus::Replied(String::new()), Some(fallback.to_string())),
+            _ => (
+                CommandStatus::Replied(String::new()),
+                Some(fallback.to_string()),
+            ),
+        },
+        _ => (
+            CommandStatus::Replied(String::new()),
+            Some(fallback.to_string()),
+        ),
     }
 }
 
@@ -824,14 +876,16 @@ fn render_entry(entry: Entry) -> impl IntoView {
             let status = c.status;
             let raw = c.raw.clone();
             let cls = move || match status.get() {
-                CommandStatus::Sent       => "terminal-line line-pending",
-                CommandStatus::Done       => "terminal-line line-dimmed",
+                CommandStatus::Sent => "terminal-line line-pending",
+                CommandStatus::Done => "terminal-line line-dimmed",
                 CommandStatus::Replied(_) => "terminal-line line-replied",
                 CommandStatus::Publishing => "terminal-line line-publishing",
-                CommandStatus::Error(_)   => "terminal-line line-error",
+                CommandStatus::Error(_) => "terminal-line line-error",
             };
             let text = move || match status.get() {
-                CommandStatus::Publishing => format!("→ {}  {}…", raw, crate::i18n::t("status-publishing")),
+                CommandStatus::Publishing => {
+                    format!("→ {}  {}…", raw, crate::i18n::t("status-publishing"))
+                }
                 _ => format!("→ {}", raw),
             };
             view! { <div class=cls>{text}</div> }.into_any()
@@ -975,9 +1029,9 @@ fn eval(
                                         match transport::send_crud_set(
                                             &target,
                                             ":kinds",
-                                            ciborium::Value::Array(vec![
-                                                ciborium::Value::Text(protocol_id.clone()),
-                                            ]),
+                                            ciborium::Value::Array(vec![ciborium::Value::Text(
+                                                protocol_id.clone(),
+                                            )]),
                                         )
                                         .await
                                         {
@@ -1053,10 +1107,8 @@ fn eval(
                                         );
                                         let disp =
                                             e.replace("not logged in", &t("msg-not-logged-in"));
-                                        state_async.push_error(tf(
-                                            "msg-send-failed",
-                                            &[("e", &disp)],
-                                        ));
+                                        state_async
+                                            .push_error(tf("msg-send-failed", &[("e", &disp)]));
                                     }
                                 }
                                 return;
@@ -1090,19 +1142,15 @@ fn eval(
                                         );
                                         let disp =
                                             e.replace("not logged in", &t("msg-not-logged-in"));
-                                        state_async.push_error(tf(
-                                            "msg-send-failed",
-                                            &[("e", &disp)],
-                                        ));
+                                        state_async
+                                            .push_error(tf("msg-send-failed", &[("e", &disp)]));
                                     }
                                 }
                                 return;
                             }
                             // ── Standard CRUD dispatch ───────────────────────────────────
                             match parse_crud_op(v, &body) {
-                                CrudOp::Get(path) => {
-                                    transport::send_crud_get(&target, &path).await
-                                }
+                                CrudOp::Get(path) => transport::send_crud_get(&target, &path).await,
                                 CrudOp::Set(path, value) => {
                                     transport::send_crud_set(
                                         &target,
@@ -1271,9 +1319,14 @@ fn eval_dot(
                 let current_username = username.clone();
                 let state2 = state.clone();
                 spawn_local(async move {
-                    use crate::identity::storage::{list_usernames, delete_identity, delete_config, delete_history};
+                    use crate::identity::storage::{
+                        delete_config, delete_history, delete_identity, list_usernames,
+                    };
                     match list_usernames().await {
-                        Err(e) => { state2.push_error(e); return; }
+                        Err(e) => {
+                            state2.push_error(e);
+                            return;
+                        }
                         Ok(names) if !names.iter().any(|n| n == &target_name) => {
                             state2.push_error(tf("profiles-not-found", &[("name", &target_name)]));
                             return;
@@ -1281,9 +1334,15 @@ fn eval_dot(
                         _ => {}
                     }
                     let mut errors: Vec<String> = Vec::new();
-                    if let Err(e) = delete_identity(&target_name).await { errors.push(e); }
-                    if let Err(e) = delete_config(&target_name).await { errors.push(e); }
-                    if let Err(e) = delete_history(&target_name).await { errors.push(e); }
+                    if let Err(e) = delete_identity(&target_name).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_config(&target_name).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_history(&target_name).await {
+                        errors.push(e);
+                    }
                     if errors.is_empty() {
                         if target_name == current_username {
                             crate::transport::disconnect();
@@ -1292,10 +1351,7 @@ fn eval_dot(
                             state2.push_system(tf("profiles-deleted", &[("name", &target_name)]));
                         }
                     } else {
-                        state2.push_error(tf(
-                            "profile-delete-error",
-                            &[("e", &errors.join("; "))],
-                        ));
+                        state2.push_error(tf("profile-delete-error", &[("e", &errors.join("; "))]));
                     }
                 });
                 return;
@@ -1325,10 +1381,7 @@ fn eval_dot(
                         crate::transport::disconnect();
                         state2.session.set(None);
                     } else {
-                        state2.push_error(tf(
-                            "profile-delete-error",
-                            &[("e", &errors.join("; "))],
-                        ));
+                        state2.push_error(tf("profile-delete-error", &[("e", &errors.join("; "))]));
                     }
                 });
                 return;
@@ -1379,8 +1432,11 @@ fn eval_dot(
                     } else {
                         let profile_name = &path_owned[".my.profiles.".len()..];
                         match load_identity(profile_name).await {
-                            Ok(Some(_)) => state2.push_output(format!("{path_owned}: {profile_name}")),
-                            Ok(None) => state2.push_error(tf("profiles-not-found", &[("name", profile_name)])),
+                            Ok(Some(_)) => {
+                                state2.push_output(format!("{path_owned}: {profile_name}"))
+                            }
+                            Ok(None) => state2
+                                .push_error(tf("profiles-not-found", &[("name", profile_name)])),
                             Err(e) => state2.push_error(e),
                         }
                     }
@@ -1853,4 +1909,3 @@ fn help_actor() -> Vec<String> {
         t("help-footer"),
     ]
 }
-
