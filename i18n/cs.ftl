@@ -219,4 +219,13 @@ err-edit-fetch-failed = chyba načítání při úpravě: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = žádné aktivní sezení — profil nelze smazat
 profile-delete-error = mazání profilu selhalo: { $e }
-profile-no-verb = .my.profile: neznámý příkaz: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (žádný)
+profiles-deleted = profil { $name } smazán
+profiles-not-found = profil nenalezen: { $name }

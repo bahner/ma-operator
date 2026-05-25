@@ -29,6 +29,20 @@ pub struct FocusMode {
     pub prompt: String,
 }
 
+// ── Pending CID content operations ──────────────────────────────────────────
+
+/// Tracks in-flight CRUD GET requests whose reply (a CID) should be fetched
+/// from IPFS and displayed inline using a text content operation.
+#[derive(Clone, Debug)]
+pub struct CidOpCtx {
+    /// Name of the operation to apply (e.g. `"cat"`, `"wc"`).
+    pub op: String,
+    /// Arguments to the operation (e.g. `["-l"]` for `wc -l`).
+    pub args: Vec<String>,
+    /// `CommandRecord.id` of the originating command entry.
+    pub cmd_id: u64,
+}
+
 // ── Pending remote edit opens ─────────────────────────────────────────────
 
 /// Tracks in-flight CRUD GET requests that should open the editor on reply.
@@ -70,6 +84,9 @@ pub struct AppState {
     /// publish flow.  Key: CRUD SET `Message.id`.  Value: the originating
     /// command entry id whose status should be updated on reply.
     pub pending_crud_confirms: RwSignal<HashMap<String, u64>>,
+    /// Tracks in-flight CRUD GET requests that should fetch CID content inline.
+    /// Key: CRUD GET `Message.id`.  Value: content operation context.
+    pub pending_cid_ops: RwSignal<HashMap<String, CidOpCtx>>,
     /// Tracks in-flight CRUD GET requests that should open the editor on reply.
     /// Key: CRUD GET `Message.id`.  Value: editor open context.
     pub pending_edit_opens: RwSignal<HashMap<String, EditOpenCtx>>,
@@ -91,6 +108,7 @@ impl AppState {
             pending_by_msg_id: RwSignal::new(HashMap::new()),
             pending_ipfs_crud: RwSignal::new(HashMap::new()),
             pending_crud_confirms: RwSignal::new(HashMap::new()),
+            pending_cid_ops: RwSignal::new(HashMap::new()),
             pending_edit_opens: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),

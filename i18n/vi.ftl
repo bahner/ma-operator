@@ -226,4 +226,13 @@ err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = không có phiên hoạt động — không thể xóa hồ sơ
 profile-delete-error = xóa hồ sơ thất bại: { $e }
-profile-no-verb = .my.profile: lệnh không xác định: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (không có)
+profiles-deleted = hồ sơ { $name } đã xóa
+profiles-not-found = không tìm thấy hồ sơ: { $name }

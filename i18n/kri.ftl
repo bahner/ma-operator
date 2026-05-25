@@ -212,4 +212,13 @@ err-edit-fetch-failed = edit: fɛtʃ fɛl: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no aktiv sesin — no fit delet profail
 profile-delete-error = profail delet no wok: { $e }
-profile-no-verb = .my.profile: yu no sabi dis wod: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (noting)
+profiles-deleted = profail { $name } delet
+profiles-not-found = profail no dey: { $name }

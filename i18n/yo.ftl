@@ -226,4 +226,13 @@ err-edit-fetch-failed = ṣàtúnṣe: àṣìṣe gbígba: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ko si igbimọ ti nṣiṣẹ — ko le pa profaili rẹ
 profile-delete-error = piparẹ profaili kuna: { $e }
-profile-no-verb = .my.profile: aṣẹ aimọ: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (kosi)
+profiles-deleted = profaili { $name } parẹ
+profiles-not-found = profaili { $name } ko ri: { $name }

@@ -226,4 +226,13 @@ err-edit-fetch-failed = ترمیم: حاصل کرنا ناکام: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = کوئی فعال سیشن نہیں — پروفائل حذف نہیں کی جا سکتی
 profile-delete-error = پروفائل حذف کرنا ناکام ہوا: { $e }
-profile-no-verb = .my.profile: نامعلوم حکم: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (کوئی نہیں)
+profiles-deleted = پروفائل { $name } حذف کی گئی
+profiles-not-found = پروفائل نہیں ملی: { $name }

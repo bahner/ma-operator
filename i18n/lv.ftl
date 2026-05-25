@@ -219,4 +219,13 @@ err-edit-fetch-failed = rediģēšana: iegūšanas kļūda: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nav aktīvas sesijas — profilu nevar dzēst
 profile-delete-error = profila dzēšana neizdevās: { $e }
-profile-no-verb = .my.profile: nezināma komanda: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nav)
+profiles-deleted = profils { $name } dzēsts
+profiles-not-found = profils nav atrasts: { $name }

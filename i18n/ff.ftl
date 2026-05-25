@@ -226,4 +226,13 @@ err-edit-fetch-failed = taƴre: juumre heɓde: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = alaa setoore jeyaare — profil waawataa jooɓaade
 profile-delete-error = feccere profil walaa: { $e }
-profile-no-verb = .my.profile: konu faamaaki: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (hay)
+profiles-deleted = profil { $name } jooɓaama
+profiles-not-found = profil {$name} walaa: { $name }

@@ -229,4 +229,13 @@ status-publishing = publishing
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no active session — cannot delete profile
 profile-delete-error = profile deletion failed: { $e }
-profile-no-verb = .my.profile: unknown verb: { $verb }
+profiles-empty = (none)
+profiles-deleted = profile { $name } deleted
+profiles-not-found = profile not found: { $name }
+
+# ── CID content operations ────────────────────────────────────────────────
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = … (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars

@@ -323,50 +323,6 @@ pub fn dispatch_verb(
         }
     }
 
-    // ── .my.profile ───────────────────────────────────────────────────────
-    // .my.profile:  — delete this profile entirely from the browser
-    //                 (identity, config, history), then log out.
-    if path == ".my.profile" {
-        match verb {
-            "" => {
-                // Authenticated: only reachable while logged in.
-                let username = state
-                    .session
-                    .get_untracked()
-                    .map(|s| s.username.clone())
-                    .unwrap_or_default();
-                if username.is_empty() {
-                    return Err(t("profile-delete-no-session"));
-                }
-                let state2 = state.clone();
-                leptos::task::spawn_local(async move {
-                    use crate::identity::{delete_config, delete_history, delete_identity};
-                    let mut errors: Vec<String> = Vec::new();
-                    if let Err(e) = delete_identity(&username).await {
-                        errors.push(e);
-                    }
-                    if let Err(e) = delete_config(&username).await {
-                        errors.push(e);
-                    }
-                    if let Err(e) = delete_history(&username).await {
-                        errors.push(e);
-                    }
-                    if errors.is_empty() {
-                        crate::transport::disconnect();
-                        state2.session.set(None);
-                    } else {
-                        state2.push_error(tf(
-                            "profile-delete-error",
-                            &[("e", &errors.join("; "))],
-                        ));
-                    }
-                });
-                return Ok(());
-            }
-            other => return Err(tf("profile-no-verb", &[("verb", other)])),
-        }
-    }
-
     // ── .my.acl ───────────────────────────────────────────────────────────
     // .my.acl:edit  — open the ACL YAML in a config editor.
     // .my.acl:      — (delete) reset ACL to default (fully open).

@@ -219,4 +219,13 @@ err-edit-fetch-failed = editare: eroare la încărcare: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nicio sesiune activă — profilul nu poate fi șters
 profile-delete-error = ștergerea profilului a eșuat: { $e }
-profile-no-verb = .my.profile: comandă necunoscută: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (niciunul)
+profiles-deleted = profilul { $name } a fost șters
+profiles-not-found = profilul nu a fost găsit: { $name }

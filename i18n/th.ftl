@@ -226,4 +226,13 @@ err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเ
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ไม่มีเซสชันที่ใช้งานอยู่ — ไม่สามารถลบโปรไฟล์ได้
 profile-delete-error = การลบโปรไฟล์ล้มเหลว: { $e }
-profile-no-verb = .my.profile: คำสั่งที่ไม่รู้จัก: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ไม่มี)
+profiles-deleted = โปรไฟล์ { $name } ถูกลบแล้ว
+profiles-not-found = ไม่พบโปรไฟล์: { $name }

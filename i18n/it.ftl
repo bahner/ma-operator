@@ -219,4 +219,13 @@ err-edit-fetch-failed = modifica: recupero fallito: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nessuna sessione attiva — impossibile eliminare il profilo
 profile-delete-error = eliminazione del profilo fallita: { $e }
-profile-no-verb = .my.profile: comando sconosciuto: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nessuno)
+profiles-deleted = profilo { $name } eliminato
+profiles-not-found = profilo non trovato: { $name }

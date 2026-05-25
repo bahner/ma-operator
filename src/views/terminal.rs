@@ -11,7 +11,7 @@ use crate::{
     identity::storage::{load_history, save_history},
     parser::command::{parse, Command, DotOp},
     parser::verbs::dispatch_verb,
-    state::{AppState, EditOpenCtx, FocusMode},
+    state::{AppState, CidOpCtx, EditOpenCtx, FocusMode},
     transport,
     views::editor::{EditorContext, EditorModal, EditorMode},
 };
@@ -80,14 +80,17 @@ pub fn Terminal() -> impl IntoView {
         if let Some(sess) = session {
             let username = sess.username.clone();
             let sender_did = sess.sender_did.clone();
+            let created_at = sess.created_at.clone();
             spawn_local(async move {
                 match restore_config(&username).await {
                     Ok(mut cfg) => {
                         // Read-only session-derived field; never persisted
                         // intentionally, but harmless if it leaks: it is
                         // re-injected on every login.
-                        cfg.set(".my.identity.did", sender_did);
+                        cfg.set(".my.identity.did", &sender_did);
                         cfg.set(".my.profile.handle", &username);
+                        cfg.set(".my.profile.did", &sender_did);
+                        cfg.set(".my.profile.created_at", &created_at);
                         // Prune inbox entries that expired since last session.
                         let now = js_sys::Date::now() / 1000.0;
                         let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
@@ -479,6 +482,74 @@ pub fn Terminal() -> impl IntoView {
                                 }
                                 continue;
                             }
+                            // Check if this is a pending CID content-op reply
+                            // (e.g. from @sky:alice.fil:cat).  The reply should
+                            // contain a bare CIDv1; fetch and display inline.
+                            let pending_op = state2
+                                .pending_cid_ops
+                                .update_untracked(|m| m.remove(msg_id));
+                            if let Some(ctx) = pending_op {
+                                if incoming.is_error {
+                                    state2.resolve_command_by_id(
+                                        ctx.cmd_id,
+                                        CommandStatus::Error(incoming.display.clone()),
+                                    );
+                                    state2.push_error(incoming.display.clone());
+                                    continue;
+                                }
+                                let content_bytes = incoming.content.clone();
+                                let state3 = state2.clone();
+                                spawn_local(async move {
+                                    match ciborium::de::from_reader::<ciborium::Value, _>(
+                                        &mut &content_bytes[..],
+                                    ) {
+                                        Ok(ciborium::Value::Text(cid))
+                                            if (cid.starts_with('b') || cid.starts_with('Q'))
+                                                && cid.len() > 10 =>
+                                        {
+                                            let url = format!(
+                                                "{}ipfs/{cid}",
+                                                crate::transport::connection::LOCAL_GATEWAY_URL
+                                            );
+                                            match fetch_url_text(&url).await {
+                                                Ok(text) => {
+                                                    let args_ref: Vec<&str> =
+                                                        ctx.args.iter().map(|s| s.as_str()).collect();
+                                                    for line in crate::cid_ops::apply(
+                                                        &ctx.op, &text, &args_ref,
+                                                    ) {
+                                                        state3.push_output(line);
+                                                    }
+                                                    state3.resolve_command_by_id(
+                                                        ctx.cmd_id,
+                                                        CommandStatus::Done,
+                                                    );
+                                                }
+                                                Err(e) => {
+                                                    state3.resolve_command_by_id(
+                                                        ctx.cmd_id,
+                                                        CommandStatus::Error(e.clone()),
+                                                    );
+                                                    state3.push_error(tf(
+                                                        "cid-op-fetch-failed",
+                                                        &[("e", &e)],
+                                                    ));
+                                                }
+                                            }
+                                        }
+                                        _ => {
+                                            // Reply is not a CID — display as plain text.
+                                            let disp = incoming.display.clone();
+                                            state3.push_output(disp);
+                                            state3.resolve_command_by_id(
+                                                ctx.cmd_id,
+                                                CommandStatus::Done,
+                                            );
+                                        }
+                                    }
+                                });
+                                continue;
+                            }
                             // Check if this is a CRUD SET confirmation (publish flow).
                             let crud_confirm =
                                 state2.pending_crud_confirms.update_untracked(|m| m.remove(msg_id));
@@ -834,6 +905,43 @@ fn eval(
                                 }
                                 return;
                             }
+                            // ── CID content operation interceptor ─────────────────────────────
+                            // Detected before parse_crud_op so the content-op
+                            // suffix is never sent on the wire. The handler sends
+                            // a plain CRUD GET then the poll loop fetches the
+                            // returned CID and applies the content operation.
+                            if let Some((base_verb, op_name)) = crate::cid_ops::find_op(v_inner) {
+                                let crud_path = format!(":{base_verb}");
+                                let args: Vec<String> =
+                                    body.split_whitespace().map(String::from).collect();
+                                match transport::send_crud_get(&target, &crud_path).await {
+                                    Ok(msg_id) => {
+                                        state_async.pending_cid_ops.update(|m| {
+                                            m.insert(
+                                                msg_id,
+                                                CidOpCtx {
+                                                    op: op_name.to_string(),
+                                                    args,
+                                                    cmd_id,
+                                                },
+                                            );
+                                        });
+                                    }
+                                    Err(e) => {
+                                        state_async.resolve_command_by_id(
+                                            cmd_id,
+                                            CommandStatus::Error(e.clone()),
+                                        );
+                                        let disp =
+                                            e.replace("not logged in", &t("msg-not-logged-in"));
+                                        state_async.push_error(tf(
+                                            "msg-send-failed",
+                                            &[("e", &disp)],
+                                        ));
+                                    }
+                                }
+                                return;
+                            }
                             // ── Standard CRUD dispatch ───────────────────────────────────
                             match parse_crud_op(v, &body) {
                                 CrudOp::Get(path) => {
@@ -993,6 +1101,80 @@ fn eval_dot(
                 state.push_error(tf("msg-read-only", &[("path", path)]));
                 return;
             }
+
+            // ── .my.profiles.<name>: — delete a named profile ────────────
+            if let Some(target_name) = path.strip_prefix(".my.profiles.") {
+                if target_name.is_empty() || target_name.contains('.') {
+                    state.push_error(tf("profiles-not-found", &[("name", target_name)]));
+                    return;
+                }
+                let target_name = target_name.to_string();
+                let current_username = username.clone();
+                let state2 = state.clone();
+                spawn_local(async move {
+                    use crate::identity::storage::{list_usernames, delete_identity, delete_config, delete_history};
+                    match list_usernames().await {
+                        Err(e) => { state2.push_error(e); return; }
+                        Ok(names) if !names.iter().any(|n| n == &target_name) => {
+                            state2.push_error(tf("profiles-not-found", &[("name", &target_name)]));
+                            return;
+                        }
+                        _ => {}
+                    }
+                    let mut errors: Vec<String> = Vec::new();
+                    if let Err(e) = delete_identity(&target_name).await { errors.push(e); }
+                    if let Err(e) = delete_config(&target_name).await { errors.push(e); }
+                    if let Err(e) = delete_history(&target_name).await { errors.push(e); }
+                    if errors.is_empty() {
+                        if target_name == current_username {
+                            crate::transport::disconnect();
+                            state2.session.set(None);
+                        } else {
+                            state2.push_system(tf("profiles-deleted", &[("name", &target_name)]));
+                        }
+                    } else {
+                        state2.push_error(tf(
+                            "profile-delete-error",
+                            &[("e", &errors.join("; "))],
+                        ));
+                    }
+                });
+                return;
+            }
+
+            // ── .my.profile: — delete current (logged-in) profile ─────────
+            if path == ".my.profile" {
+                if username.is_empty() {
+                    state.push_error(t("profile-delete-no-session"));
+                    return;
+                }
+                let uname = username.clone();
+                let state2 = state.clone();
+                spawn_local(async move {
+                    use crate::identity::{delete_config, delete_history, delete_identity};
+                    let mut errors: Vec<String> = Vec::new();
+                    if let Err(e) = delete_identity(&uname).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_config(&uname).await {
+                        errors.push(e);
+                    }
+                    if let Err(e) = delete_history(&uname).await {
+                        errors.push(e);
+                    }
+                    if errors.is_empty() {
+                        crate::transport::disconnect();
+                        state2.session.set(None);
+                    } else {
+                        state2.push_error(tf(
+                            "profile-delete-error",
+                            &[("e", &errors.join("; "))],
+                        ));
+                    }
+                });
+                return;
+            }
+
             let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
             if removed == 0 {
                 state.push_error(tf("msg-key-not-found", &[("path", path)]));
@@ -1015,6 +1197,38 @@ fn eval_dot(
         }
 
         DotOp::Get => {
+            // ── .my.profiles[.<name>] — virtual: reads IndexedDB ─────────
+            if path == ".my.profiles" || path.starts_with(".my.profiles.") {
+                let state2 = state.clone();
+                let path_owned = path.to_string();
+                spawn_local(async move {
+                    use crate::identity::storage::{list_usernames, load_identity};
+                    if path_owned == ".my.profiles" {
+                        match list_usernames().await {
+                            Err(e) => state2.push_error(e),
+                            Ok(names) => {
+                                state2.push_output(format!("{path_owned}:"));
+                                if names.is_empty() {
+                                    state2.push_output(format!("  {}", t("profiles-empty")));
+                                } else {
+                                    for name in &names {
+                                        state2.push_output(format!("  {name}"));
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        let profile_name = &path_owned[".my.profiles.".len()..];
+                        match load_identity(profile_name).await {
+                            Ok(Some(_)) => state2.push_output(format!("{path_owned}: {profile_name}")),
+                            Ok(None) => state2.push_error(tf("profiles-not-found", &[("name", profile_name)])),
+                            Err(e) => state2.push_error(e),
+                        }
+                    }
+                });
+                return;
+            }
+
             let cfg = config.get_untracked();
             let query = if args.is_empty() {
                 None

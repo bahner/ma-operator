@@ -219,4 +219,13 @@ err-edit-fetch-failed = kuhariri: hitilafu ya kupata: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = hakuna kipindi cha kazi — profaili haiwezi kufutwa
 profile-delete-error = kufuta profaili kumeshindwa: { $e }
-profile-no-verb = .my.profile: amri isiyojulikana: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (hakuna)
+profiles-deleted = profaili { $name } imefutwa
+profiles-not-found = profaili haikupatikana: { $name }

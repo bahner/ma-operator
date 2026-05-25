@@ -226,4 +226,13 @@ err-edit-fetch-failed = gulaala: dogoggora fida: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = waltajjii hojii hin jiru — profaayilii haaquu hin danda'amu
 profile-delete-error = haaquun profaayilii hin milkoofne: { $e }
-profile-no-verb = .my.profile: ajaja hin beekamne: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (hin jiru)
+profiles-deleted = profaayilii { $name } haqame
+profiles-not-found = profaayilii hin argamne: { $name }

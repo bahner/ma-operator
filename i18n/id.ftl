@@ -226,4 +226,13 @@ err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = tidak ada sesi aktif — profil tidak dapat dihapus
 profile-delete-error = penghapusan profil gagal: { $e }
-profile-no-verb = .my.profile: perintah tidak dikenal: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (tidak ada)
+profiles-deleted = profil { $name } dihapus
+profiles-not-found = profil tidak ditemukan: { $name }

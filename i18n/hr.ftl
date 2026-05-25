@@ -219,4 +219,13 @@ err-edit-fetch-failed = uređivanje: pogreška dohvata: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nema aktivne sesije — profil nije moguće izbrisati
 profile-delete-error = brisanje profila nije uspjelo: { $e }
-profile-no-verb = .my.profile: nepoznata naredba: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nijedan)
+profiles-deleted = profil { $name } izbrisan
+profiles-not-found = profil nije pronađen: { $name }

@@ -212,4 +212,13 @@ err-edit-fetch-failed = edit fetch fail: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nuh active session — cyaan delete profile
 profile-delete-error = profile deletion fail: { $e }
-profile-no-verb = .my.profile: unknown word: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (none)
+profiles-deleted = profile { $name } delete
+profiles-not-found = profile nuh find: { $name }

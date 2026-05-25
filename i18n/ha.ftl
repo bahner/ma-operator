@@ -226,4 +226,13 @@ err-edit-fetch-failed = gyara: kuskuren nemo: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = babu takardar izni mai aiki — ba za a iya goge bayanan martaba ba
 profile-delete-error = gogewa bayanan martaba ta ci tura: { $e }
-profile-no-verb = .my.profile: umarni da ba a sani ba: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (babu)
+profiles-deleted = an goge bayanan martaba { $name }
+profiles-not-found = ba a samu bayanan martaba ba: { $name }

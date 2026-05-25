@@ -226,4 +226,13 @@ err-edit-fetch-failed = فشل جلب التحرير: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = لا توجد جلسة نشطة — لا يمكن حذف الملف الشخصي
 profile-delete-error = فشل حذف الملف الشخصي: { $e }
-profile-no-verb = .my.profile: أمر غير معروف: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (لا شيء)
+profiles-deleted = تم حذف الملف الشخصي { $name }
+profiles-not-found = الملف الشخصي غير موجود: { $name }

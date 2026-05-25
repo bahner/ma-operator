@@ -219,4 +219,13 @@ err-edit-fetch-failed = Bearbeitung: Ladefehler: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = keine aktive Sitzung — Profil kann nicht gelöscht werden
 profile-delete-error = Profil konnte nicht gelöscht werden: { $e }
-profile-no-verb = .my.profile: unbekanntes Verb: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (keine)
+profiles-deleted = Profil { $name } gelöscht
+profiles-not-found = Profil nicht gefunden: { $name }

@@ -226,4 +226,13 @@ err-edit-fetch-failed = düzenleme: getirme hatası: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = etkin oturum yok — profil silinemiyor
 profile-delete-error = profil silme başarısız: { $e }
-profile-no-verb = .my.profile: bilinmeyen komut: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (yok)
+profiles-deleted = { $name } profili silindi
+profiles-not-found = profil bulunamadı: { $name }

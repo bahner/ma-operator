@@ -226,4 +226,13 @@ err-edit-fetch-failed = திருத்தம்: பெறுவதில்
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = செயலில் உள்ள அமர்வு இல்லை — சுயவிவரத்தை நீக்க முடியாது
 profile-delete-error = சுயவிவர நீக்கம் தோல்வியடைந்தது: { $e }
-profile-no-verb = .my.profile: அறியப்படாத கட்டளை: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (எதுவுமில்லை)
+profiles-deleted = சுயவிவரம் { $name } நீக்கப்பட்டது
+profiles-not-found = சுயவிவரம் கிடைக்கவில்லை: { $name }

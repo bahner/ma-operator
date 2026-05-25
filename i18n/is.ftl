@@ -219,4 +219,13 @@ err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = engin virk lota — ekki hægt að eyða notandaprófíl
 profile-delete-error = eyðing notandaprófíls mistókst: { $e }
-profile-no-verb = .my.profile: óþekkt skipun: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ekkert)
+profiles-deleted = notandaprófíll { $name } eytt
+profiles-not-found = notandaprófíll finnst ekki: { $name }

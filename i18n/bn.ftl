@@ -226,4 +226,13 @@ err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = কোনো সক্রিয় সেশন নেই — প্রোফাইল মুছে ফেলা সম্ভব নয়
 profile-delete-error = প্রোফাইল মুছতে ব্যর্থ হয়েছে: { $e }
-profile-no-verb = .my.profile: অজানা কমান্ড: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (কিছু নেই)
+profiles-deleted = প্রোফাইল { $name } মুছে ফেলা হয়েছে
+profiles-not-found = প্রোফাইল পাওয়া যায়নি: { $name }

@@ -212,4 +212,13 @@ err-edit-fetch-failed = edishon: faya di karga: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no tin sesjon aktivo — no por borra perfil
 profile-delete-error = borramentu di perfil a faya: { $e }
-profile-no-verb = .my.profile: kumando deskonosí: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nada)
+profiles-deleted = perfil { $name } a wordu borra
+profiles-not-found = perfil no a haña: { $name }

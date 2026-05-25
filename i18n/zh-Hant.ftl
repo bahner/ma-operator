@@ -226,4 +226,13 @@ err-edit-fetch-failed = 編輯: 取得失敗: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = 無活動工作階段 — 無法刪除個人資料
 profile-delete-error = 個人資料刪除失敗: { $e }
-profile-no-verb = .my.profile: 未知命令: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (無)
+profiles-deleted = 個人資料 { $name } 已刪除
+profiles-not-found = 找不到個人資料: { $name }

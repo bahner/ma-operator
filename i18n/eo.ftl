@@ -212,4 +212,13 @@ err-edit-fetch-failed = redaktado: prena eraro: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = neniu aktiva sesio — ne eblas forigi profilon
 profile-delete-error = forigo de profilo malsukcesis: { $e }
-profile-no-verb = .my.profile: nekonata komando: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (neniu)
+profiles-deleted = profilo { $name } forigita
+profiles-not-found = profilo ne trovita: { $name }

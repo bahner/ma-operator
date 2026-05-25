@@ -226,4 +226,13 @@ err-edit-fetch-failed = redigering: hentingsfeil: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ingen aktiv økt — profilen kan ikkje slettast
 profile-delete-error = sletting av profil mislukkast: { $e }
-profile-no-verb = .my.profile: ukjend kommando: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ingen)
+profiles-deleted = profil { $name } sletta
+profiles-not-found = fann ikkje profil: { $name }

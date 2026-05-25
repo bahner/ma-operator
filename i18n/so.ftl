@@ -226,4 +226,13 @@ err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ma jirto fadhiga firfircoon — liiska ma la tirsan karo
 profile-delete-error = tirirka liiska wuu guul-dareystay: { $e }
-profile-no-verb = .my.profile: amarka lama garanayo: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (midna)
+profiles-deleted = liiska { $name } la tiriyey
+profiles-not-found = liiska lama helin: { $name }

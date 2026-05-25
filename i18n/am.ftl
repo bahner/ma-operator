@@ -226,4 +226,13 @@ err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ንቁ ክፍለ ጊዜ የለም — ፕሮፋይልን መሰረዝ አይቻልም
 profile-delete-error = ፕሮፋይልን መሰረዝ አልተሳካም: { $e }
-profile-no-verb = .my.profile: ያልታወቀ ትዕዛዝ: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ምንም)
+profiles-deleted = ፕሮፋይል { $name } ተሰርዟል
+profiles-not-found = ፕሮፋይል አልተገኘም: { $name }

@@ -219,4 +219,13 @@ err-edit-fetch-failed = bewerking: ophalen mislukt: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = geen actieve sessie — profiel kan niet worden verwijderd
 profile-delete-error = verwijderen van profiel mislukt: { $e }
-profile-no-verb = .my.profile: onbekend commando: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (geen)
+profiles-deleted = profiel { $name } verwijderd
+profiles-not-found = profiel niet gevonden: { $name }

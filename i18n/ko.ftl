@@ -226,4 +226,13 @@ err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = 활성 세션이 없습니다 — 프로필을 삭제할 수 없습니다
 profile-delete-error = 프로필 삭제 실패: { $e }
-profile-no-verb = .my.profile: 알 수 없는 명령: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (없음)
+profiles-deleted = 프로필 { $name } 삭제됨
+profiles-not-found = 프로필을 찾을 수 없음: { $name }

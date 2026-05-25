@@ -226,4 +226,13 @@ err-edit-fetch-failed = fanandramana: tsy nahomby ny faka: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = tsy misy fotoana miasa — tsy azo fafana ny profily
 profile-delete-error = tsy nahomby ny famafana profily: { $e }
-profile-no-verb = .my.profile: baiko tsy fantatra: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (tsy misy)
+profiles-deleted = profily { $name } nafafa
+profiles-not-found = tsy hita ny profily: { $name }

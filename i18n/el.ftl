@@ -219,4 +219,13 @@ err-edit-fetch-failed = αποτυχία ανάκτησης επεξεργασί
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = δεν υπάρχει ενεργή συνεδρία — δεν είναι δυνατή η διαγραφή του προφίλ
 profile-delete-error = η διαγραφή του προφίλ απέτυχε: { $e }
-profile-no-verb = .my.profile: άγνωστη εντολή: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (κανένα)
+profiles-deleted = το προφίλ { $name } διαγράφηκε
+profiles-not-found = το προφίλ δεν βρέθηκε: { $name }

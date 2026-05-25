@@ -228,4 +228,13 @@ status-publishing = publiserer
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ingen aktiv økt — profilen kan ikke slettes
 profile-delete-error = sletting av profil mislyktes: { $e }
-profile-no-verb = .my.profile: ukjent kommando: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ingen)
+profiles-deleted = profil { $name } slettet
+profiles-not-found = fant ikke profil: { $name }

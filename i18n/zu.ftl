@@ -226,4 +226,13 @@ err-edit-fetch-failed = ukuhlelwa: ukuthola kwehlulekile: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ayikho iseshini esisebenzayo — iprofile ayikwazi ukususwa
 profile-delete-error = ukususa iprofile kuhlulekile: { $e }
-profile-no-verb = .my.profile: umyalelo ongaziwa: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (akunamuntu)
+profiles-deleted = iprofile { $name } isusiwe
+profiles-not-found = iprofile ayitholakali: { $name }

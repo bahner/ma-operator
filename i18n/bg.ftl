@@ -219,4 +219,13 @@ err-edit-fetch-failed = грешка при зареждане: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = няма активна сесия — профилът не може да бъде изтрит
 profile-delete-error = изтриването на профила не бе успешно: { $e }
-profile-no-verb = .my.profile: непозната команда: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (никой)
+profiles-deleted = профил { $name } изтрит
+profiles-not-found = профилът не е намерен: { $name }

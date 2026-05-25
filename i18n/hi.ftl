@@ -226,4 +226,13 @@ err-edit-fetch-failed = संपादन: लाना विफल: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = कोई सक्रिय सत्र नहीं — प्रोफ़ाइल हटाना संभव नहीं
 profile-delete-error = प्रोफ़ाइल हटाने में विफल: { $e }
-profile-no-verb = .my.profile: अज्ञात आदेश: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (कोई नहीं)
+profiles-deleted = प्रोफ़ाइल { $name } हटाया गया
+profiles-not-found = प्रोफ़ाइल नहीं मिला: { $name }

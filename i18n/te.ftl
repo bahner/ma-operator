@@ -226,4 +226,13 @@ err-edit-fetch-failed = సవరణ: పొందడం విఫలమైం�
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = క్రియాశీల సెషన్ లేదు — ప్రొఫైల్ తొలగించడం సాధ్యం కాదు
 profile-delete-error = ప్రొఫైల్ తొలగింపు విఫలమైంది: { $e }
-profile-no-verb = .my.profile: తెలియని ఆదేశం: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ఏదీ లేదు)
+profiles-deleted = ప్రొఫైల్ { $name } తొలగించబడింది
+profiles-not-found = ప్రొఫైల్ కనుగొనబడలేదు: { $name }

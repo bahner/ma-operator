@@ -212,4 +212,13 @@ err-edit-fetch-failed = edisaun: falta di karregamentu: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ka ten sesãu ativu — ka podi apagá profil
 profile-delete-error = apagamentu di profil falhadu: { $e }
-profile-no-verb = .my.profile: kumandu diskunhisidu: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nada)
+profiles-deleted = profil { $name } apagadu
+profiles-not-found = profil ka atxadu: { $name }

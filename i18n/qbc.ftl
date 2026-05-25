@@ -228,4 +228,13 @@ err-edit-fetch-failed = edit: fot fetch: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no session kopeng — no pensa dele profil
 profile-delete-error = profil dele bek no go: { $e }
-profile-no-verb = .my.profile: no saben dis word: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (none)
+profiles-deleted = profil { $name } dele go
+profiles-not-found = profil no found: { $name }

@@ -212,4 +212,13 @@ err-edit-fetch-failed = edisyon: echèk chajman: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = pa gen sesyon aktif — pa kapab efase pwofil la
 profile-delete-error = efaseman pwofil echwe: { $e }
-profile-no-verb = .my.profile: vèb enkoni: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (okenn)
+profiles-deleted = pwofil { $name } efase
+profiles-not-found = pwofil pa jwenn: { $name }

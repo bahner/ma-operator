@@ -219,4 +219,13 @@ err-edit-fetch-failed = redigeerimine: laadimistõrge: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = aktiivne seanss puudub — profiili ei saa kustutada
 profile-delete-error = profiili kustutamine ebaõnnestus: { $e }
-profile-no-verb = .my.profile: tundmatu käsk: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (ühtegi)
+profiles-deleted = profiil { $name } kustutatud
+profiles-not-found = profiili ei leitud: { $name }

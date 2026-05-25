@@ -226,4 +226,13 @@ err-edit-fetch-failed = редактирование: ошибка загруз�
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = нет активной сессии — профиль не может быть удалён
 profile-delete-error = удаление профиля не удалось: { $e }
-profile-no-verb = .my.profile: неизвестная команда: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (нет)
+profiles-deleted = профиль { $name } удалён
+profiles-not-found = профиль не найден: { $name }

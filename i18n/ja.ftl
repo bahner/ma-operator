@@ -219,4 +219,13 @@ err-edit-fetch-failed = 編集: 取得失敗: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = アクティブなセッションがありません — プロフィールを削除できません
 profile-delete-error = プロフィールの削除に失敗しました: { $e }
-profile-no-verb = .my.profile: 不明なコマンド: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (なし)
+profiles-deleted = プロフィール { $name } を削除しました
+profiles-not-found = プロフィールが見つかりません: { $name }

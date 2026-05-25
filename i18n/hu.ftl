@@ -219,4 +219,13 @@ err-edit-fetch-failed = szerkesztés: betöltési hiba: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nincs aktív munkamenet — a profil nem törölhető
 profile-delete-error = a profil törlése sikertelen: { $e }
-profile-no-verb = .my.profile: ismeretlen parancs: { $verb }
+
+# -- CID content operations
+cid-op-binary = binary content (not displayed)
+cid-op-cat-truncated = ... (output truncated at { $n } lines)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (nincs)
+profiles-deleted = a(z) { $name } profil törölve
+profiles-not-found = a profil nem található: { $name }
