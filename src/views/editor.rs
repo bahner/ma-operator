@@ -97,6 +97,15 @@ pub enum EditorMode {
         /// `None` → unknown, show both.
         is_blob: Option<bool>,
     },
+    /// Edit a kind definition: Publish + Cancel.
+    /// Content serialised to DAG-CBOR, uploaded to IPFS; CID registered via
+    /// CRUD set `:kinds [protocol_id, cid]`.
+    KindEdit {
+        /// DID of the runtime.
+        target: String,
+        /// Protocol ID (e.g. `/ma/stateful/python/0.0.1`).
+        protocol_id: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -560,6 +569,63 @@ pub fn EditorModal(
         }
     };
 
+    // KindEdit — convert YAML buffer to DAG-CBOR and upload to IPFS; then
+    // CRUD set :kinds [protocol_id, cid] to register the kind.
+    let on_kind_publish = {
+        let show = show.clone();
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::KindEdit {
+                target,
+                protocol_id,
+            } = ctx.mode
+            else {
+                return;
+            };
+            let cmd_id = ctx.cmd_id;
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(async move {
+                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                    Ok(b) => b,
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-kind-publish-failed", &[("e", &e)]));
+                        return;
+                    }
+                };
+                match crate::transport::send_ipfs_store(
+                    &target,
+                    cbor_bytes,
+                    "application/vnd.ipld.dag-cbor",
+                )
+                .await
+                {
+                    Ok(msg_id) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                        }
+                        state2.pending_ipfs_kind_upserts.update(|m| {
+                            m.insert(msg_id, (target.clone(), protocol_id.clone(), cmd_id));
+                        });
+                    }
+                    Err(e) => {
+                        if let Some(cid) = cmd_id {
+                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
+                    }
+                }
+            });
+        }
+    };
+
     // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
     // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
     // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
@@ -576,6 +642,12 @@ pub fn EditorModal(
         matches!(
             show.get().map(|c| c.mode),
             Some(EditorMode::EntityFieldEdit { .. })
+        )
+    };
+    let is_kind_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::KindEdit { .. })
         )
     };
     let is_config_edit = move || {
@@ -667,6 +739,18 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_field_edit() { "" } else { "display:none" }
+                        on:click=on_cancel.clone()
+                    >{t("btn-cancel")}</button>
+                    // Publish — KindEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_kind_edit() { "" } else { "display:none" }
+                        on:click=on_kind_publish.clone()
+                    >{t("btn-publish")}</button>
+                    // Cancel — KindEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_kind_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >{t("btn-cancel")}</button>
                     // Save — ConfigEdit mode

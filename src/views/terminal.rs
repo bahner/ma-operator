@@ -339,6 +339,71 @@ pub fn Terminal() -> impl IntoView {
                                 }
                                 continue;
                             }
+                            // Check if this is a pending IPFS-store reply for a kind upsert.
+                            let pending_kind = state2
+                                .pending_ipfs_kind_upserts
+                                .get_untracked()
+                                .get(msg_id)
+                                .cloned();
+                            if let Some((kind_target, protocol_id, cmd_id_opt)) = pending_kind {
+                                state2.pending_ipfs_kind_upserts.update(|m| {
+                                    m.remove(msg_id);
+                                });
+                                if incoming.is_error {
+                                    if let Some(cid) = cmd_id_opt {
+                                        state2.resolve_command_by_id(
+                                            cid,
+                                            CommandStatus::Error(incoming.display.clone()),
+                                        );
+                                    }
+                                    state2.push_error(incoming.display.clone());
+                                    continue;
+                                }
+                                match crate::messages::extract_ok_text(&incoming.content) {
+                                    Ok(cid) => {
+                                        let state3 = state2.clone();
+                                        spawn_local(async move {
+                                            match crate::transport::send_crud_set(
+                                                &kind_target,
+                                                ":kinds",
+                                                ciborium::Value::Array(vec![
+                                                    ciborium::Value::Text(protocol_id.clone()),
+                                                    ciborium::Value::Text(cid),
+                                                ]),
+                                            )
+                                            .await
+                                            {
+                                                Ok(set_msg_id) => {
+                                                    if let Some(original_cmd_id) = cmd_id_opt {
+                                                        state3.pending_crud_confirms.update(|m| {
+                                                            m.insert(set_msg_id, original_cmd_id);
+                                                        });
+                                                    }
+                                                }
+                                                Err(e) => {
+                                                    if let Some(cid) = cmd_id_opt {
+                                                        state3.resolve_command_by_id(
+                                                            cid,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                    }
+                                                    state3.push_error(e);
+                                                }
+                                            }
+                                        });
+                                    }
+                                    Err(e) => {
+                                        if let Some(cid) = cmd_id_opt {
+                                            state2.resolve_command_by_id(
+                                                cid,
+                                                CommandStatus::Error(e.clone()),
+                                            );
+                                        }
+                                        state2.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+                                    }
+                                }
+                                continue;
+                            }
                             // Check if this is a pending edit-open reply that
                             // should populate and open the editor.
                             let pending_edit = state2
@@ -844,11 +909,102 @@ fn eval(
                             )
                             .await
                         } else {
+                            let v_inner = v.strip_prefix(':').unwrap_or(v);
+                            // ── :kinds/<protocol> interceptor ─────────────────────────────────────
+                            // Protocol IDs contain slashes which cannot be encoded as dot-path
+                            // CRUD segments.  We convert them to CBOR value arguments on :kinds.
+                            //   kinds/<proto>        → GET kind (CBOR reply displayed)
+                            //   kinds/<proto>:edit   → GET kind then open editor
+                            //   kinds/<proto>:       → DELETE kind
+                            if let Some(proto_path) = v_inner.strip_prefix("kinds/") {
+                                let (bare_proto, op) =
+                                    if let Some(p) = proto_path.strip_suffix(":edit") {
+                                        (p, "edit")
+                                    } else if let Some(p) = proto_path.strip_suffix(':') {
+                                        (p, "delete")
+                                    } else {
+                                        (proto_path, "get")
+                                    };
+                                let protocol_id = format!("/{bare_proto}");
+                                match op {
+                                    "get" | "edit" => {
+                                        // GET: send CRUD SET :kinds with Text(protocol_id)
+                                        // The runtime recognises Text-arg as a GET-by-ID request.
+                                        let result = transport::send_crud_set(
+                                            &target,
+                                            ":kinds",
+                                            ciborium::Value::Text(protocol_id.clone()),
+                                        )
+                                        .await;
+                                        match result {
+                                            Ok(msg_id) if op == "edit" => {
+                                                state_async.pending_edit_opens.update(|m| {
+                                                    m.insert(
+                                                        msg_id,
+                                                        EditOpenCtx {
+                                                            target: target.clone(),
+                                                            crud_path: ":kinds".to_string(),
+                                                            editor_mode: EditorMode::KindEdit {
+                                                                target: target.clone(),
+                                                                protocol_id: protocol_id.clone(),
+                                                            },
+                                                            cmd_id,
+                                                        },
+                                                    );
+                                                });
+                                            }
+                                            Ok(_) => {}
+                                            Err(e) => {
+                                                state_async.resolve_command_by_id(
+                                                    cmd_id,
+                                                    CommandStatus::Error(e.clone()),
+                                                );
+                                                let disp = e.replace(
+                                                    "not logged in",
+                                                    &t("msg-not-logged-in"),
+                                                );
+                                                state_async.push_error(tf(
+                                                    "msg-send-failed",
+                                                    &[("e", &disp)],
+                                                ));
+                                            }
+                                        }
+                                    }
+                                    _ => {
+                                        // DELETE: send CRUD SET :kinds with Array([Text(protocol_id)])
+                                        match transport::send_crud_set(
+                                            &target,
+                                            ":kinds",
+                                            ciborium::Value::Array(vec![
+                                                ciborium::Value::Text(protocol_id.clone()),
+                                            ]),
+                                        )
+                                        .await
+                                        {
+                                            Ok(_) => {}
+                                            Err(e) => {
+                                                state_async.resolve_command_by_id(
+                                                    cmd_id,
+                                                    CommandStatus::Error(e.clone()),
+                                                );
+                                                let disp = e.replace(
+                                                    "not logged in",
+                                                    &t("msg-not-logged-in"),
+                                                );
+                                                state_async.push_error(tf(
+                                                    "msg-send-failed",
+                                                    &[("e", &disp)],
+                                                ));
+                                            }
+                                        }
+                                    }
+                                }
+                                return;
+                            }
                             // ── :path:edit interceptor ───────────────────────────────────
                             // Detected before parse_crud_op so the `:edit` suffix is never
                             // sent on the wire.  The handler sends a plain CRUD GET, then
                             // the poll loop opens the editor when the reply arrives.
-                            let v_inner = v.strip_prefix(':').unwrap_or(v);
                             if let Some(path_part) = v_inner.strip_suffix(":edit") {
                                 let crud_path = format!(":{path_part}");
                                 let editor_mode = match path_part {
@@ -988,14 +1144,17 @@ fn eval_dot(
     let session = state.session.get_untracked();
     let username = session.map(|s| s.username).unwrap_or_default();
 
+    // ── .help / .help.* ──────────────────────────────────────────────────
+    if path == ".help" || path.starts_with(".help.") {
+        let subtopic = path.strip_prefix(".help.").unwrap_or("");
+        for line in dispatch_help(subtopic) {
+            state.push_system(line);
+        }
+        return;
+    }
+
     // ── Control commands (not config access) ─────────────────────────────
     match path {
-        ".help" => {
-            for line in help_text() {
-                state.push_system(line);
-            }
-            return;
-        }
         ".logout" => {
             transport::disconnect();
             state.session.set(None);
@@ -1268,11 +1427,11 @@ fn eval_dot(
                         state.push_output(format!("  {child}: {v}"));
                         shown += 1;
                     } else {
-                        // Sub-subtree — show full path, skip when value-querying.
+                        // Sub-subtree — show relative child name, skip when value-querying.
                         if query.is_some() {
                             continue;
                         }
-                        state.push_output(format!("  {child_path}"));
+                        state.push_output(format!("  {child}"));
                         shown += 1;
                     }
                 }
@@ -1546,7 +1705,21 @@ fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
     CrudOp::Get(format!(":{v}"))
 }
 
-fn help_text() -> Vec<String> {
+fn dispatch_help(subtopic: &str) -> Vec<String> {
+    match subtopic {
+        "" => help_overview(),
+        "msg" => help_messaging(),
+        "focus" => help_focus(),
+        "path" => help_path(),
+        "my" => help_my(),
+        "inbox" => help_inbox(),
+        "doc" => help_doc(),
+        "actor" => help_actor(),
+        other => vec![tf("help-unknown-topic", &[("topic", other)])],
+    }
+}
+
+fn help_overview() -> Vec<String> {
     vec![
         t("help-header-zion"),
         t("help-cmd-help"),
@@ -1554,35 +1727,72 @@ fn help_text() -> Vec<String> {
         t("help-cmd-panic"),
         t("help-cmd-logout"),
         String::new(),
+        t("help-header-topics"),
+        t("help-topic-msg"),
+        t("help-topic-focus"),
+        t("help-topic-path"),
+        t("help-topic-my"),
+        t("help-topic-inbox"),
+        t("help-topic-doc"),
+        t("help-topic-actor"),
+        t("help-footer"),
+    ]
+}
+
+fn help_messaging() -> Vec<String> {
+    vec![
         t("help-header-messaging"),
         t("help-msg-echo"),
         t("help-msg-send"),
         t("help-msg-fragment"),
         t("help-msg-escape"),
-        String::new(),
+        t("help-footer"),
+    ]
+}
+
+fn help_focus() -> Vec<String> {
+    vec![
         t("help-header-focus"),
         t("help-focus-set"),
         t("help-focus-clear"),
-        String::new(),
+        t("help-footer"),
+    ]
+}
+
+fn help_path() -> Vec<String> {
+    vec![
         t("help-header-config"),
         t("help-config-get"),
         t("help-config-filter"),
         t("help-config-set"),
         t("help-config-delete"),
         t("help-config-verb"),
-        String::new(),
+        t("help-footer"),
+    ]
+}
+
+fn help_my() -> Vec<String> {
+    vec![
         t("help-header-common"),
         t("help-my"),
         t("help-aliases"),
         t("help-aliases-set"),
         t("help-aliases-del"),
+        String::new(),
         t("help-runtime-discover"),
         t("help-runtime-claim"),
+        String::new(),
         t("help-identity"),
         t("help-identity-did"),
         t("help-identity-publish"),
-        t("help-config-path"),
         String::new(),
+        t("help-config-path"),
+        t("help-footer"),
+    ]
+}
+
+fn help_inbox() -> Vec<String> {
+    vec![
         t("help-header-inbox"),
         t("help-inbox"),
         t("help-inbox-n"),
@@ -1593,7 +1803,12 @@ fn help_text() -> Vec<String> {
         t("help-inbox-delall"),
         t("help-inbox-flush"),
         t("help-inbox-traverse"),
-        String::new(),
+        t("help-footer"),
+    ]
+}
+
+fn help_doc() -> Vec<String> {
+    vec![
         t("help-header-documents"),
         t("help-doc-edit"),
         t("help-doc-edit-cid"),
@@ -1606,3 +1821,36 @@ fn help_text() -> Vec<String> {
         t("help-footer"),
     ]
 }
+
+fn help_actor() -> Vec<String> {
+    vec![
+        t("help-header-actor"),
+        t("help-actor-echo"),
+        t("help-actor-text"),
+        t("help-actor-ping"),
+        String::new(),
+        t("help-actor-entities"),
+        t("help-actor-entities-get"),
+        t("help-actor-entities-set"),
+        t("help-actor-entities-edit"),
+        t("help-actor-entities-del"),
+        String::new(),
+        t("help-actor-config-get"),
+        t("help-actor-config-set"),
+        String::new(),
+        t("help-actor-acl"),
+        t("help-actor-acl-edit"),
+        String::new(),
+        t("help-actor-fragment"),
+        t("help-actor-fragment-verb"),
+        String::new(),
+        t("help-header-cid-ops"),
+        t("help-actor-cat"),
+        t("help-actor-head"),
+        t("help-actor-tail"),
+        t("help-actor-wc"),
+        t("help-actor-wc-l"),
+        t("help-footer"),
+    ]
+}
+

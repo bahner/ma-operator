@@ -90,6 +90,10 @@ pub struct AppState {
     /// Tracks in-flight CRUD GET requests that should open the editor on reply.
     /// Key: CRUD GET `Message.id`.  Value: editor open context.
     pub pending_edit_opens: RwSignal<HashMap<String, EditOpenCtx>>,
+    /// Tracks in-flight IPFS store requests for kind upserts.
+    /// Key: ipfs_store `Message.id`.
+    /// Value: `(crud_target_did, protocol_id, cmd_id)`.
+    pub pending_ipfs_kind_upserts: RwSignal<HashMap<String, (String, String, Option<u64>)>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -110,6 +114,7 @@ impl AppState {
             pending_crud_confirms: RwSignal::new(HashMap::new()),
             pending_cid_ops: RwSignal::new(HashMap::new()),
             pending_edit_opens: RwSignal::new(HashMap::new()),
+            pending_ipfs_kind_upserts: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
