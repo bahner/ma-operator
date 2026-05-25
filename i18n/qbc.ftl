@@ -66,6 +66,7 @@ msg-reply-sent = bek-showxa gonya kom
 msg-reply-failed = bek-showxa hámfalla: { $e }
 msg-entity-publish-sent = entity { $name }: sendowt gonya kom
 msg-entity-publish-failed = sendowt entity hámfalla: { $e }
+msg-kind-publish-failed = kind publish fail: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: sendowt gonya kom
 msg-field-publish-failed = sendowt fild hámfalla: { $e }
 msg-acl-publish-sent = runtime ACL: sendowt gonya kom
@@ -238,3 +239,37 @@ cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (none)
 profiles-deleted = profil { $name } dele go
 profiles-not-found = profil no found: { $name }
+
+# -- Help topics index
+help-header-topics = -- topics -- type .help.<topic> for details
+help-topic-msg =   .help.msg                    messaging
+help-topic-focus =   .help.focus                  focus mode
+help-topic-path =   .help.path                   local dot-path grammar
+help-topic-my =   .help.my                     personal config
+help-topic-inbox =   .help.inbox                  inbox
+help-topic-doc =   .help.doc                    documents
+help-topic-actor =   .help.actor                  remote actor
+help-unknown-topic =   .help.{ $topic }: unknown topic
+
+# -- Help actor section
+help-header-actor = -- remote actors
+help-actor-echo =   @actor                       echo resolved DID
+help-actor-text =   @actor body                  send text message
+help-actor-ping =   @actor:ping                  liveness ping
+help-actor-entities =   @actor:entities              list entities
+help-actor-entities-get =   @actor:entities.<n>          get entity
+help-actor-entities-set =   @actor:entities.<n>: <cid>   set entity
+help-actor-entities-edit =   @actor:entities.<n>:edit     edit entity
+help-actor-entities-del =   @actor:entities.<n>:         delete entity
+help-actor-config-get =   @actor:config.<key>          get config value
+help-actor-config-set =   @actor:config.<key>: val     set config value
+help-actor-acl =   @actor:acl                   get ACL
+help-actor-acl-edit =   @actor:acl:edit              edit ACL
+help-actor-fragment =   @actor#entity                send to plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
+help-header-cid-ops = -- CID content ops
+help-actor-cat =   @actor:ent:cat               show file content inline
+help-actor-head =   @actor:ent:head N            first N lines
+help-actor-tail =   @actor:ent:tail N            last N lines
+help-actor-wc =   @actor:ent:wc               line / word / char count
+help-actor-wc-l =   @actor:ent:wc -l            line count only

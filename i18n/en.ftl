@@ -65,6 +65,7 @@ msg-reply-sent = reply sent
 msg-reply-failed = reply failed: { $e }
 msg-entity-publish-sent = entity { $name }: publish sent
 msg-entity-publish-failed = entity publish failed: { $e }
+msg-kind-publish-failed = kind publish failed: { $e }
 msg-field-publish-sent = entity { $name }.{ $field }: publish sent
 msg-field-publish-failed = field publish failed: { $e }
 msg-acl-publish-sent = runtime ACL: publish sent
@@ -141,6 +142,17 @@ help-cmd-help =   .help                        this text
 help-cmd-clear =   .clear                       clear terminal
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
+
+# ── Help text — topics index ──────────────────────────────────────────────
+help-header-topics = ── topics — type .help.<topic> for details ────────────────────────────────
+help-topic-msg =   .help.msg                    messaging — @actor, send, RPC
+help-topic-focus =   .help.focus                  focus mode — .use @actor
+help-topic-path =   .help.path                   local dot-path grammar
+help-topic-my =   .help.my                     personal config — .my.*, aliases, identity
+help-topic-inbox =   .help.inbox                  inbox — .my.inbox.*
+help-topic-doc =   .help.doc                    documents — .my.doc.*
+help-topic-actor =   .help.actor                  remote actor — CRUD, entities, CID ops
+help-unknown-topic =   .help.{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
 help-msg-echo =   @alias                       echo resolved DID (no message sent)
@@ -239,3 +251,26 @@ cid-op-cat-truncated = … (output truncated at { $n } lines)
 cid-op-fetch-failed = failed to fetch content: { $e }
 cid-op-unknown = unknown content operation: { $op }
 cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+
+# ── Help text — actor / remote CRUD ──────────────────────────────────────
+help-header-actor = ── remote actors ─────────────────────────────────────────────────────────
+help-actor-echo =   @actor                       echo resolved DID (no message sent)
+help-actor-text =   @actor body                  send plain text message
+help-actor-ping =   @actor:ping                  liveness ping
+help-actor-entities =   @actor:entities              list all entities
+help-actor-entities-get =   @actor:entities.<n>          get entity (returns CID)
+help-actor-entities-set =   @actor:entities.<n>: <cid>   set entity by CID
+help-actor-entities-edit =   @actor:entities.<n>:edit     edit entity in editor
+help-actor-entities-del =   @actor:entities.<n>:         delete entity
+help-actor-config-get =   @actor:config.<key>          get runtime config value
+help-actor-config-set =   @actor:config.<key>: val     set runtime config value
+help-actor-acl =   @actor:acl                   get ACL (returns CID)
+help-actor-acl-edit =   @actor:acl:edit              edit ACL in editor
+help-actor-fragment =   @actor#entity                send to entity plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to entity plugin verb
+help-header-cid-ops = ── CID content ops ───────────────────────────────────────────────────────
+help-actor-cat =   @actor:ent:cat               show file content inline
+help-actor-head =   @actor:ent:head N            first N lines (default 10)
+help-actor-tail =   @actor:ent:tail N            last N lines (default 10)
+help-actor-wc =   @actor:ent:wc               line / word / char count
+help-actor-wc-l =   @actor:ent:wc -l            line count only
