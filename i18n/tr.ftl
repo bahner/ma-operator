@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        bu metin
 help-cmd-clear =   .clear                       terminali temizle
 help-cmd-panic =   .panic                       son çare — sorun çıkarsa kullan
+help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────

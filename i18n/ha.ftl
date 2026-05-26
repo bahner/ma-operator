@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        wannan rubutu
 help-cmd-clear =   .clear                       share terminal
 help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani idan akwai matsala
+help-cmd-history =   .history                     tarihin umarni (maimaita masu jere sun haɗu)
 help-cmd-logout =   .logout                      fita
 
 # ── Rubutun taimako — aikawasiku ──────────────────────────────────────────

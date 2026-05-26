@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        teks ini
 help-cmd-clear =   .clear                       bersihkan terminal
 help-cmd-panic =   .panic                       pilihan terakhir — gunakan saat bermasalah
+help-cmd-history =   .history                     riwayat perintah (duplikat berurutan digabung)
 help-cmd-logout =   .logout                      keluar
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────

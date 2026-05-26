@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        tämä teksti
 help-cmd-clear =   .clear                       tyhjennä terminaali
 help-cmd-panic =   .panic                       viimeinen keino — käytä jos olet pulassa
+help-cmd-history =   .history                     komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty)
 help-cmd-logout =   .logout                      kirjaudu ulos
 
 help-msg-echo =   @alias                       näytä ratkaistu DID (ei viestiä lähetetty)

@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dispela tok
 help-cmd-clear =   .clear                       klinim terminal
 help-cmd-panic =   .panic                       las rot — yusim sapos yu bagarap
+help-cmd-history =   .history                     histri bilong komand (ol sem koman i stap wantaim)
 help-cmd-logout =   .logout                      autim
 help-msg-echo =   @alias                       soim DID (noh mesej salim)
 help-msg-send =   @alias[:verb] body           salim mesej / RPC i go long aktor

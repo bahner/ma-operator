@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        tento text
 help-cmd-clear =   .clear                       vymazať terminál
 help-cmd-panic =   .panic                       posledná záchrana — použite v núdzi
+help-cmd-history =   .history                     história príkazov (za sebou idúce duplikáty zlúčené)
 help-cmd-logout =   .logout                      odhlásiť
 
 help-msg-echo =   @alias                       zobraziť preložený DID (žiadna správa sa neodošle)

@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        此說明文字
 help-cmd-clear =   .clear                       清除終端機
 help-cmd-panic =   .panic                       最後手段 — 遇到問題時使用
+help-cmd-history =   .history                     命令歷史（連續重複項已合併）
 help-cmd-logout =   .logout                      登出
 
 # ── 說明文字 — 訊息傳遞 ───────────────────────────────────────────────────

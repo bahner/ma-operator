@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        이 텍스트
 help-cmd-clear =   .clear                       터미널 지우기
 help-cmd-panic =   .panic                       최후 수단 — 문제 발생 시 사용
+help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
 help-cmd-logout =   .logout                      로그아웃
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────

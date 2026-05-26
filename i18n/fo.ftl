@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        hesin tekstur
 help-cmd-clear =   .clear                       reinsa terminalen
 help-cmd-panic =   .panic                       seinasti ráður — nýt um tú ert í vandræðum
+help-cmd-history =   .history                     skipanaferill (eftirfylgjandi endurtøkur samlagar)
 help-cmd-logout =   .logout                      rita út
 
 help-msg-echo =   @alias                       vís leyst DID (einki boð sent)

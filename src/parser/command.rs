@@ -170,13 +170,20 @@ fn shell_split(s: &str) -> Vec<String> {
 
 fn split_actor_head(head: &str) -> (&str, Option<String>) {
     if head.starts_with("did:") {
-        // did:ma:<id> contains two ':' in the DID itself. A verb adds one more
-        // (e.g. did:ma:<id>:ping), so only split when we have more than two.
-        let colon_count = head.bytes().filter(|&b| b == b':').count();
-        if colon_count > 2 {
-            if let Some((target, verb)) = head.rsplit_once(':') {
-                if !verb.is_empty() {
-                    return (target, Some(verb.to_string()));
+        // did:ma:<id> contains exactly two ':'. The 3rd colon is the verb
+        // separator. Splitting at the 3rd colon preserves compound verbs
+        // like "entities.rms:edit" intact, while simple verbs like "ping"
+        // are also handled correctly.
+        let mut colon_count = 0;
+        for (i, ch) in head.char_indices() {
+            if ch == ':' {
+                colon_count += 1;
+                if colon_count == 3 {
+                    let verb = &head[i + 1..];
+                    if !verb.is_empty() {
+                        return (&head[..i], Some(verb.to_string()));
+                    }
+                    break;
                 }
             }
         }
@@ -232,6 +239,27 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some("ping".to_string()),
+                body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_did_target_with_compound_verb() {
+        let cfg = EgoConfig::new();
+        let cmd = parse(
+            "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3:entities.rms:edit",
+            &cfg,
+            None,
+        )
+        .expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
+                verb: Some("entities.rms:edit".to_string()),
                 body: String::new(),
             }
         );

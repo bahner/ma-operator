@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ይህ ጽሑፍ
 help-cmd-clear =   .clear                       terminal ያጽዱ
 help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — ችግር ሲያጋጥምዎ ይጠቀሙ
+help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
 help-cmd-logout =   .logout                      ይውጡ
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────

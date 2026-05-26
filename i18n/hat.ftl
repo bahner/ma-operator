@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        teks sa a
 help-cmd-clear =   .clear                       efase terminal
 help-cmd-panic =   .panic                       dènye rekous — itilize si ou pèdi
+help-cmd-history =   .history                     istwa kòmand (repetisyon konsekitif konbine)
 help-cmd-logout =   .logout                      dekonekte
 help-msg-echo =   @alias                       montre DID rezoud la (pa voye mesaj)
 help-msg-send =   @alias[:verb] body           voye mesaj / RPC bay aktè

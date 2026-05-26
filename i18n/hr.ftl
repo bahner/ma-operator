@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ovaj tekst
 help-cmd-clear =   .clear                       očisti terminal
 help-cmd-panic =   .panic                       zadnja mogućnost — koristite ako ste u nevolji
+help-cmd-history =   .history                     povijest naredbi (uzastopni duplikati spojeni)
 help-cmd-logout =   .logout                      odjava
 
 help-msg-echo =   @alias                       prikaži razriješeni DID (nije poslana poruka)

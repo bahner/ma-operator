@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        یہ متن
 help-cmd-clear =   .clear                       ٹرمینل صاف کریں
 help-cmd-panic =   .panic                       آخری چارہ — مسئلہ ہونے پر استعمال کریں
+help-cmd-history =   .history                     کمانڈ ہسٹری (مسلسل تکرار ضم ہو گئی)
 help-cmd-logout =   .logout                      لاگ آؤٹ
 
 # ── مدد — پیغام رسانی ─────────────────────────────────────────────────────

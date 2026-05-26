@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        този текст
 help-cmd-clear =   .clear                       изчистване на терминала
 help-cmd-panic =   .panic                       последна мярка — използвайте ако сте в затруднение
+help-cmd-history =   .history                     история на командите (последователните дублирания се обединяват)
 help-cmd-logout =   .logout                      изход
 
 help-msg-echo =   @alias                       показва разрешения DID (не изпраща съобщение)

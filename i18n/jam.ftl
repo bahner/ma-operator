@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis text ya
 help-cmd-clear =   .clear                       wipe di terminal
 help-cmd-panic =   .panic                       last resort — use if yuh find yuhself inna trouble
+help-cmd-history =   .history                     command histri (consecutive duplicate dem merge)
 help-cmd-logout =   .logout                      log out
 help-msg-echo =   @alias                       echo di resolved DID (nuh message sent)
 help-msg-send =   @alias[:verb] body           send message / RPC to actor

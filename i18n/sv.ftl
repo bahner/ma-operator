@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        denna text
 help-cmd-clear =   .clear                       rensa terminalen
 help-cmd-panic =   .panic                       sista utvägen — använd om du är i trubbel
+help-cmd-history =   .history                     kommandohistorik (på varandra följande dubletter slås samman)
 help-cmd-logout =   .logout                      logga ut
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────

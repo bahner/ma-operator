@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        lo mbhalo
 help-cmd-clear =   .clear                       coca i-terminal
 help-cmd-panic =   .panic                       indlela yokugqibela — sebenzisa xa uneengxaki
+help-cmd-history =   .history                     imbali yemiyalelo (izinto eziphindwayo ezilandelanayo zidityanisiwe)
 help-cmd-logout =   .logout                      phuma
 
 # ── Uncedo — ukuthumela ───────────────────────────────────────────────────

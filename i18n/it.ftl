@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        questo testo
 help-cmd-clear =   .clear                       pulisci terminale
 help-cmd-panic =   .panic                       ultima risorsa — usa se sei nei guai
+help-cmd-history =   .history                     cronologia comandi (duplicati consecutivi uniti)
 help-cmd-logout =   .logout                      disconnetti
 
 help-msg-echo =   @alias                       mostra DID risolto (nessun messaggio inviato)

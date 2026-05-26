@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        此帮助文本
 help-cmd-clear =   .clear                       清屏
 help-cmd-panic =   .panic                       最后手段 — 遇到问题时使用
+help-cmd-history =   .history                     命令历史（连续重复项已合并）
 help-cmd-logout =   .logout                      退出登录
 
 # ── 帮助文本 — 消息传递 ───────────────────────────────────────────────────

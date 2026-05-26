@@ -141,6 +141,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis I-text
 help-cmd-clear =   .clear                       clear di terminal
 help-cmd-panic =   .panic                       last resort — use if I-self find trouble in Babylon
+help-cmd-history =   .history                     I-command history (consecutive repeats mash inna one)
 help-cmd-logout =   .logout                      depart from Zion
 help-msg-echo =   @alias                       echo di I-dentity DID (no message sent)
 help-msg-send =   @alias[:verb] body           send message / RPC to I-dren

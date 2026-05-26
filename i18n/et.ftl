@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        see tekst
 help-cmd-clear =   .clear                       tühjenda terminal
 help-cmd-panic =   .panic                       viimane abinõu — kasuta, kui oled hätta sattunud
+help-cmd-history =   .history                     käsuajalugu (järjestikused kordused ühendatud)
 help-cmd-logout =   .logout                      logi välja
 
 help-msg-echo =   @alias                       kuva lahendatud DID (ühtegi sõnumit pole saadetud)

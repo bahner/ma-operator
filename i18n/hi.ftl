@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        यह पाठ
 help-cmd-clear =   .clear                       टर्मिनल साफ़ करें
 help-cmd-panic =   .panic                       अंतिम उपाय — समस्या होने पर उपयोग करें
+help-cmd-history =   .history                     आदेश इतिहास (क्रमिक दोहराव एकत्रित)
 help-cmd-logout =   .logout                      लॉग आउट
 
 # ── सहायता — संदेश ────────────────────────────────────────────────────────

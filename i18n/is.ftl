@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        þessi texti
 help-cmd-clear =   .clear                       hreinsa útstöðina
 help-cmd-panic =   .panic                       síðasta úrræði — notaðu ef þú ert í vandræðum
+help-cmd-history =   .history                     skipanasaga (samhliða endurtekningar sameinaðar)
 help-cmd-logout =   .logout                      skrá út
 
 help-msg-echo =   @alias                       sýna leyst DID (engin skilaboð send)

@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        deftere ndee
 help-cmd-clear =   .clear                       yaltina terminal
 help-cmd-panic =   .panic                       laawol ɓurno — faala e nder nafoore
+help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
 help-cmd-logout =   .logout                      yalta
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────

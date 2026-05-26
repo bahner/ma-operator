@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        văn bản này
 help-cmd-clear =   .clear                       xóa terminal
 help-cmd-panic =   .panic                       phương án cuối cùng — dùng khi gặp sự cố
+help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
 help-cmd-logout =   .logout                      đăng xuất
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────

@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        このテキスト
 help-cmd-clear =   .clear                       ターミナルをクリア
 help-cmd-panic =   .panic                       最後の手段 — 困ったときに使用
+help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
 
 help-msg-echo =   @alias                       解決済み DID を表示 (メッセージは送信されない)

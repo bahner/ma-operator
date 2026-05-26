@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        acest text
 help-cmd-clear =   .clear                       șterge terminalul
 help-cmd-panic =   .panic                       ultima soluție — folosiți dacă aveți probleme
+help-cmd-history =   .history                     istoricul comenzilor (duplicate consecutive îmbinate)
 help-cmd-logout =   .logout                      deconectare
 
 help-msg-echo =   @alias                       afișează DID rezolvat (niciun mesaj trimis)

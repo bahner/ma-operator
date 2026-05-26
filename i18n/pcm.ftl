@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
 help-cmd-panic =   .panic                       las resort — yus am if yu waka enter wahala
+help-cmd-history =   .history                     history of command (repeat wey follow each oda don join)
 help-cmd-logout =   .logout                      log owt
 help-msg-echo =   @alias                       eko di DID wey dem resolve (noh mesej send)
 help-msg-send =   @alias[:verb] body           send mesej / RPC go aktor

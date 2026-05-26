@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        barruu kana
 help-cmd-clear =   .clear                       terminal qulqulleessi
 help-cmd-panic =   .panic                       karaa dhumaa — rakkoo yoo mudateef fayyadami
+help-cmd-history =   .history                     seenaa ajajaa (irra deddeebi'iinsa walitti-aanaa walitti-qabame)
 help-cmd-logout =   .logout                      bahu
 
 # ── Gargaarsa — ergaa erguuf ──────────────────────────────────────────────

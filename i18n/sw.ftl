@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        maandishi haya
 help-cmd-clear =   .clear                       futa terminal
 help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa katika shida
+help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
 help-cmd-logout =   .logout                      toka
 
 help-msg-echo =   @alias                       onyesha DID iliyotatuliwa (hakuna ujumbe unaotumwa)

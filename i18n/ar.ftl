@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        هذا النص
 help-cmd-clear =   .clear                       مسح الطرفية
 help-cmd-panic =   .panic                       الملاذ الأخير — استخدم عند المشاكل
+help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
 help-cmd-logout =   .logout                      تسجيل الخروج
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────

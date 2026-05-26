@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        lahatsoratra ity
 help-cmd-clear =   .clear                       manadio terminal
 help-cmd-panic =   .panic                       fanalana farany — ampiasao raha ahitana olana
+help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
 help-cmd-logout =   .logout                      mivoaka
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────

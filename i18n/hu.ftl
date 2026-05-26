@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ez a szöveg
 help-cmd-clear =   .clear                       terminál törlése
 help-cmd-panic =   .panic                       végső megoldás — ha bajban van, használja
+help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
 help-cmd-logout =   .logout                      kijelentkezés
 
 help-msg-echo =   @alias                       feloldott DID megjelenítése (nem küld üzenetet)

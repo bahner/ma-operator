@@ -140,6 +140,7 @@ help-footer = ──────────────────────
 # ── Help text — zion commands ─────────────────────────────────────────────
 help-cmd-help =   .help                        this text
 help-cmd-clear =   .clear                       clear terminal
+help-cmd-history =   .history                     command history (consecutive duplicates merged)
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
 

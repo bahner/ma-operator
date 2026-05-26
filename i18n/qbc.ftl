@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis lit-pej
 help-cmd-clear =   .clear                       kel terminal
 help-cmd-panic =   .panic                       owkwa keting — du wit problem
+help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
 help-cmd-logout =   .logout                      tek-out
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────

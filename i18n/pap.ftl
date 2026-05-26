@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        e teksto aki
 help-cmd-clear =   .clear                       limpiá terminal
 help-cmd-panic =   .panic                       último rekurso — usá si bo haya bou di problema
+help-cmd-history =   .history                     historial di komando (duplikado konsekutivo kombiná)
 help-cmd-logout =   .logout                      sali
 help-msg-echo =   @alias                       ekuá DID resueltá (ningun mensahe enviá)
 help-msg-send =   @alias[:verb] body           mandá mensahe / RPC na aktor

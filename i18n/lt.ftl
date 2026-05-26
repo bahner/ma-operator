@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        šis tekstas
 help-cmd-clear =   .clear                       išvalyti terminalą
 help-cmd-panic =   .panic                       paskutinė priemonė — naudokite, jei esate bėdoje
+help-cmd-history =   .history                     komandų istorija (nuoseklūs dublikatai sujungti)
 help-cmd-logout =   .logout                      atsijungti
 
 help-msg-echo =   @alias                       rodyti išspręstą DID (joks pranešimas neišsiųstas)

@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        αυτό το κείμενο
 help-cmd-clear =   .clear                       εκκαθάριση τερματικού
 help-cmd-panic =   .panic                       τελευταία λύση — χρησιμοποιήστε αν αντιμετωπίζετε πρόβλημα
+help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
 help-cmd-logout =   .logout                      αποσύνδεση
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID (δεν αποστέλλεται μήνυμα)

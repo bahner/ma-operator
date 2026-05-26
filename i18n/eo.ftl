@@ -139,6 +139,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ĉi tiu teksto
 help-cmd-clear =   .clear                       malplenigu terminalon
 help-cmd-panic =   .panic                       lasta rimedo — uzu se vi perdas sin
+help-cmd-history =   .history                     komanda historio (sinsekvaj duplikaĵoj kunfanditaj)
 help-cmd-logout =   .logout                      elsaluti
 help-msg-echo =   @alias                       eĥigi solvitan DID (neniu mesaĝo sendita)
 help-msg-send =   @alias[:verb] body           sendi mesaĝon / RPC al aktoro

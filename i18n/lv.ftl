@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        šis teksts
 help-cmd-clear =   .clear                       notīrīt termināli
 help-cmd-panic =   .panic                       pēdējais līdzeklis — izmantojiet, ja esat nonācis grūtībās
+help-cmd-history =   .history                     komandu vēsture (secīgie dublikāti apvienoti)
 help-cmd-logout =   .logout                      atteikties
 
 help-msg-echo =   @alias                       parādīt atrisināto DID (ziņojums nav nosūtīts)

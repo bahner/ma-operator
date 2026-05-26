@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ọ̀rọ̀ yìí
 help-cmd-clear =   .clear                       pa terminal mọ́
 help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò bí o bá rí ìṣòro
+help-cmd-history =   .history                     ìtàn àṣẹ (àwọn tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀)
 help-cmd-logout =   .logout                      jáde
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────

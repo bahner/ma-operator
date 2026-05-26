@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        deze tekst
 help-cmd-clear =   .clear                       terminal leegmaken
 help-cmd-panic =   .panic                       laatste redmiddel — gebruik als u in de problemen zit
+help-cmd-history =   .history                     opdrachtgeschiedenis (opeenvolgende duplicaten samengevoegd)
 help-cmd-logout =   .logout                      afmelden
 
 help-msg-echo =   @alias                       opgelost DID weergeven (geen bericht verzonden)

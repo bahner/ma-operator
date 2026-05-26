@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ข้อความนี้
 help-cmd-clear =   .clear                       ล้าง terminal
 help-cmd-panic =   .panic                       ทางเลือกสุดท้าย — ใช้เมื่อมีปัญหา
+help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────

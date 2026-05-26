@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ederede a
 help-cmd-clear =   .clear                       kpochaa terminal
 help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mgbe ị nọ n'nsogbu
+help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────

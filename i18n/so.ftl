@@ -137,6 +137,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        qoraalkan
 help-cmd-clear =   .clear                       nadiifi terminal
 help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticmaal haddaad dhibaato ku jirto
+help-cmd-history =   .history                     taariikhda amarrada (nuqulaha xiriirka biirtay)
 help-cmd-logout =   .logout                      ka bax
 
 # ── Gargaarku — farriin diridda ───────────────────────────────────────────

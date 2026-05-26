@@ -136,6 +136,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dieser Text
 help-cmd-clear =   .clear                       Terminal leeren
 help-cmd-panic =   .panic                       letztes Mittel — verwenden, wenn Sie in der Klemme sitzen
+help-cmd-history =   .history                     Befehlsverlauf (aufeinanderfolgende Duplikate zusammengefasst)
 help-cmd-logout =   .logout                      abmelden
 
 help-msg-echo =   @alias                       aufgelöstes DID anzeigen (keine Nachricht gesendet)
