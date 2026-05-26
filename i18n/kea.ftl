@@ -45,6 +45,7 @@ msg-link-key-not-found = xavi `{ $key }` ka atxadu dentru di dokumentu ligadu
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = nomi di alias ka podi sta bázyu
+err-alias-has-dot = nomi di alias ka podi tê '.'
 err-alias-has-fragment = nomi di alias ka podi tê '#'
 err-alias-value-fragment = valór di alias tên ku sê did:ma:<ipns> só (sen fragmentu)
 err-alias-value-path = valór di alias tên ku sê did:ma:<ipns> só (sen kaminhu)

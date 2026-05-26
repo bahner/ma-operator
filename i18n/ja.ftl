@@ -45,6 +45,7 @@ msg-link-key-not-found = リンクされたドキュメントにキー `{ $key }
 
 # ── エイリアス検証 ────────────────────────────────────────────────────────
 err-alias-name-empty = エイリアス名は空にできません
+err-alias-has-dot = エイリアス名に '.' を含めることはできません
 err-alias-has-fragment = エイリアス名に '#' を含めることはできません
 err-alias-value-fragment = エイリアスの値はフラグメントなしの純粋な did:ma:<ipns> である必要があります
 err-alias-value-path = エイリアスの値はパスなしの純粋な did:ma:<ipns> である必要があります

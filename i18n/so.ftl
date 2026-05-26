@@ -45,6 +45,7 @@ msg-link-key-not-found = furaha `{ $key }` dokumantigii la xidhay lama helin
 
 # ── Xaqiijinta magaca kale ────────────────────────────────────────────────
 err-alias-name-empty = magaca magaca kale ma noqon karo mid maran
+err-alias-has-dot = magacyada kale kuma jiri karaan '.'
 err-alias-has-fragment = magacyada kale kuma jiri karaan '#'
 err-alias-value-fragment = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (fragment la'aan)
 err-alias-value-path = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (path la'aan)

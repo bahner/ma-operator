@@ -45,6 +45,7 @@ msg-link-key-not-found = लिंक किए गए दस्तावेज�
 
 # ── उपनाम सत्यापन ─────────────────────────────────────────────────────────
 err-alias-name-empty = उपनाम नाम खाली नहीं हो सकता
+err-alias-has-dot = उपनाम नामों में '.' नहीं हो सकता
 err-alias-has-fragment = उपनाम नामों में '#' नहीं हो सकता
 err-alias-value-fragment = उपनाम मान bare did:ma:<ipns> होना चाहिए (कोई फ़्रैगमेंट नहीं)
 err-alias-value-path = उपनाम मान bare did:ma:<ipns> होना चाहिए (कोई पथ नहीं)

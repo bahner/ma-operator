@@ -45,6 +45,7 @@ msg-link-key-not-found = chave `{ $key }` não encontrada no documento ligado
 
 # ── Validação de alias ────────────────────────────────────────────────────
 err-alias-name-empty = o nome do alias não pode estar vazio
+err-alias-has-dot = o nome do alias não pode conter '.'
 err-alias-has-fragment = o nome do alias não pode conter '#'
 err-alias-value-fragment = o valor do alias deve ser um did:ma:<ipns> puro (sem fragmento)
 err-alias-value-path = o valor do alias deve ser um did:ma:<ipns> puro (sem caminho)

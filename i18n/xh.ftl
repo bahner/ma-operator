@@ -45,6 +45,7 @@ msg-link-key-not-found = isitshixo `{ $key }` safumaneka kwimveliso yexhumaniso
 
 # ── Ukuqinisekiswa kwegama eligunyaziweyo ─────────────────────────────────
 err-alias-name-empty = igama legama elikhawulezayo alikwazi ukuba ngenaluto
+err-alias-has-dot = amagama amafutshane awakwazi ukuba ne-'.'
 err-alias-has-fragment = amagama amafutshane awakwazi ukuba ne-'#'
 err-alias-value-fragment = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwe-fragment)
 err-alias-value-path = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwepath)

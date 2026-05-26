@@ -45,6 +45,7 @@ msg-link-key-not-found = tsy hita ny fanalahidy `{ $key }` ao amin'ny antontan-t
 
 # ── Fanamarinana anarana fanampiny ─────────────────────────────────────────
 err-alias-name-empty = tsy afaka ho foana ny anarana fanampiny
+err-alias-has-dot = ny anarana fanampiny dia tsy afaka misy '.'
 err-alias-has-fragment = ny anarana fanampiny dia tsy afaka misy '#'
 err-alias-value-fragment = ny sanda fanampiny dia tsy maintsy bare did:ma:<ipns> (tsy misy fragment)
 err-alias-value-path = ny sanda fanampiny dia tsy maintsy bare did:ma:<ipns> (tsy misy path)

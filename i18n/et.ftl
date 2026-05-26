@@ -45,6 +45,7 @@ msg-link-key-not-found = võtit `{ $key }` ei leitud lingitud dokumendist
 
 # ── Aliase valideerimine ──────────────────────────────────────────────────
 err-alias-name-empty = aliase nimi ei saa olla tühi
+err-alias-has-dot = aliase nimi ei saa sisaldada '.'
 err-alias-has-fragment = aliase nimi ei saa sisaldada '#'
 err-alias-value-fragment = aliase väärtus peab olema puhas did:ma:<ipns> (ilma fragmendita)
 err-alias-value-path = aliase väärtus peab olema puhas did:ma:<ipns> (ilma teeta)

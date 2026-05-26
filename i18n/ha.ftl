@@ -45,6 +45,7 @@ msg-link-key-not-found = ba a samu maɓalli `{ $key }` a cikin takarda da aka ha
 
 # ── Tabbatar da laƙabi ────────────────────────────────────────────────────
 err-alias-name-empty = sunan laƙabi ba zai iya zama fanko ba
+err-alias-has-dot = sunayen laƙabi ba su iya ƙunsar '.' ba
 err-alias-has-fragment = sunayen laƙabi ba su iya ƙunsar '#' ba
 err-alias-value-fragment = ƙimar laƙabi dole ne ta kasance bare did:ma:<ipns> (babu fragment)
 err-alias-value-path = ƙimar laƙabi dole ne ta kasance bare did:ma:<ipns> (babu path)

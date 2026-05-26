@@ -45,6 +45,7 @@ msg-link-key-not-found = ključ `{ $key }` ni najden v povezanem dokumentu
 
 # ── Preverjanje vzdevkov ──────────────────────────────────────────────────
 err-alias-name-empty = ime vzdevka ne sme biti prazno
+err-alias-has-dot = ime vzdevka ne sme vsebovati '.'
 err-alias-has-fragment = ime vzdevka ne sme vsebovati '#'
 err-alias-value-fragment = vrednost vzdevka mora biti čisti did:ma:<ipns> (brez fragmenta)
 err-alias-value-path = vrednost vzdevka mora biti čisti did:ma:<ipns> (brez poti)

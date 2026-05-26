@@ -45,6 +45,7 @@ msg-link-key-not-found = bağlantılı belgede `{ $key }` anahtarı bulunamadı
 
 # ── Takma ad doğrulama ────────────────────────────────────────────────────
 err-alias-name-empty = takma ad boş olamaz
+err-alias-has-dot = takma adlar '.' içeremez
 err-alias-has-fragment = takma adlar '#' içeremez
 err-alias-value-fragment = takma ad değeri salt did:ma:<ipns> olmalıdır (parça yok)
 err-alias-value-path = takma ad değeri salt did:ma:<ipns> olmalıdır (yol yok)

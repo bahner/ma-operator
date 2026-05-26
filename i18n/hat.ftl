@@ -45,6 +45,7 @@ msg-link-key-not-found = kle `{ $key }` pa jwenn nan dokiman lye a
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = non alias pa ka vid
+err-alias-has-dot = non alias pa ka gen '.'
 err-alias-has-fragment = non alias pa ka gen '#'
 err-alias-value-fragment = valè alias dwe yon did:ma:<ipns> pou kò li (pa gen fragman)
 err-alias-value-path = valè alias dwe yon did:ma:<ipns> pou kò li (pa gen chemen)

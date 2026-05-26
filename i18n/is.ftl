@@ -45,6 +45,7 @@ msg-link-key-not-found = lykillinn `{ $key }` finnst ekki í tengdu skjali
 
 # ── Staðfesting á samnefnum ───────────────────────────────────────────────
 err-alias-name-empty = samnefnið má ekki vera tómt
+err-alias-has-dot = samnefni má ekki innihalda '.'
 err-alias-has-fragment = samnefni má ekki innihalda '#'
 err-alias-value-fragment = gildi samnefnis verður að vera hreint did:ma:<ipns> (ekkert brot)
 err-alias-value-path = gildi samnefnis verður að vera hreint did:ma:<ipns> (engin slóð)

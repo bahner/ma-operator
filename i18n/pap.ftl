@@ -45,6 +45,7 @@ msg-link-key-not-found = yabi `{ $key }` no haña den dokumentu linkeá
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = nòmber di alias no por ta bashi
+err-alias-has-dot = nòmber di alias no por get '.'
 err-alias-has-fragment = nòmber di alias no por get '#'
 err-alias-value-fragment = valor di alias mester ta un did:ma:<ipns> so (sin fragmènt)
 err-alias-value-path = valor di alias mester ta un did:ma:<ipns> so (sin pado)

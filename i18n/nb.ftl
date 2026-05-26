@@ -45,6 +45,7 @@ msg-link-key-not-found = nøkkel `{ $key }` ikke funnet i lenket dokument
 
 # ── Alias-validering ──────────────────────────────────────────────────────
 err-alias-name-empty = aliasnavn kan ikke være tomt
+err-alias-has-dot = aliasnavn kan ikke inneholde '.'
 err-alias-has-fragment = aliasnavn kan ikke inneholde '#'
 err-alias-value-fragment = aliasverdi må være en enkel did:ma:<ipns> (ingen fragment)
 err-alias-value-path = aliasverdi må være en enkel did:ma:<ipns> (ingen sti)

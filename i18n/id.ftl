@@ -45,6 +45,7 @@ msg-link-key-not-found = kunci `{ $key }` tidak ditemukan dalam dokumen tertaut
 
 # ── Validasi alias ────────────────────────────────────────────────────────
 err-alias-name-empty = nama alias tidak boleh kosong
+err-alias-has-dot = nama alias tidak boleh mengandung '.'
 err-alias-has-fragment = nama alias tidak boleh mengandung '#'
 err-alias-value-fragment = nilai alias harus berupa did:ma:<ipns> tanpa fragmen
 err-alias-value-path = nilai alias harus berupa did:ma:<ipns> tanpa jalur

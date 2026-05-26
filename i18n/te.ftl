@@ -45,6 +45,7 @@ msg-link-key-not-found = లింక్ చేసిన డాక్యుమ�
 
 # ── మారుపేరు ధృవీకరణ ─────────────────────────────────────────────────────
 err-alias-name-empty = మారుపేరు ఖాళీగా ఉండకూడదు
+err-alias-has-dot = మారుపేర్లలో '.' ఉండకూడదు
 err-alias-has-fragment = మారుపేర్లలో '#' ఉండకూడదు
 err-alias-value-fragment = మారుపేరు విలువ bare did:ma:<ipns> అయి ఉండాలి (ఫ్రాగ్మెంట్ లేదు)
 err-alias-value-path = మారుపేరు విలువ bare did:ma:<ipns> అయి ఉండాలి (పాత్ లేదు)

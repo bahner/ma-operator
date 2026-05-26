@@ -45,6 +45,7 @@ msg-link-key-not-found = klíč `{ $key }` nenalezen v propojeném dokumentu
 
 # ── Ověření aliasů ────────────────────────────────────────────────────────
 err-alias-name-empty = název aliasu nesmí být prázdný
+err-alias-has-dot = název aliasu nesmí obsahovat '.'
 err-alias-has-fragment = název aliasu nesmí obsahovat '#'
 err-alias-value-fragment = hodnota aliasu musí být čisté did:ma:<ipns> (bez fragmentu)
 err-alias-value-path = hodnota aliasu musí být čisté did:ma:<ipns> (bez cesty)

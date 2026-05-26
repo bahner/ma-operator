@@ -45,6 +45,7 @@ msg-link-key-not-found = raktas `{ $key }` nerastas susietame dokumente
 
 # ── Pseudonimų tikrinimas ─────────────────────────────────────────────────
 err-alias-name-empty = pseudonimo pavadinimas negali būti tuščias
+err-alias-has-dot = pseudonimo pavadinimas negali turėti '.'
 err-alias-has-fragment = pseudonimo pavadinimas negali turėti '#'
 err-alias-value-fragment = pseudonimo reikšmė turi būti grynas did:ma:<ipns> (be fragmento)
 err-alias-value-path = pseudonimo reikšmė turi būti grynas did:ma:<ipns> (be kelio)

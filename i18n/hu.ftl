@@ -45,6 +45,7 @@ msg-link-key-not-found = `{ $key }` kulcs nem található a hivatkozott dokument
 
 # ── Alias érvényesítés ────────────────────────────────────────────────────
 err-alias-name-empty = az álnév neve nem lehet üres
+err-alias-has-dot = az álnév neve nem tartalmazhat '.' karaktert
 err-alias-has-fragment = az álnév neve nem tartalmazhat '#' karaktert
 err-alias-value-fragment = az álnév értékének tiszta did:ma:<ipns> kell lennie (töredék nélkül)
 err-alias-value-path = az álnév értékének tiszta did:ma:<ipns> kell lennie (útvonal nélkül)

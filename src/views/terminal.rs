@@ -26,6 +26,9 @@ fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
     if name.is_empty() {
         return Err(t("err-alias-name-empty"));
     }
+    if name.contains('.') {
+        return Err(t("err-alias-has-dot"));
+    }
     if name.contains('#') {
         return Err(t("err-alias-has-fragment"));
     }
@@ -225,7 +228,10 @@ pub fn Terminal() -> impl IntoView {
                         };
                         let cfg = config.get_untracked();
                         if !crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
-                            let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                            let (base, frag) = incoming
+                                .from
+                                .split_once('#')
+                                .unwrap_or((&incoming.from, ""));
                             let from_disp = match cfg.reverse_alias(base) {
                                 Some(a) if frag.is_empty() => format!("@{a}"),
                                 Some(a) => format!("@{a}#{frag}"),
@@ -241,7 +247,10 @@ pub fn Terminal() -> impl IntoView {
                     if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
                         let from_display = {
                             let cfg = config.get_untracked();
-                            let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                            let (base, frag) = incoming
+                                .from
+                                .split_once('#')
+                                .unwrap_or((&incoming.from, ""));
                             match cfg.reverse_alias(base) {
                                 Some(a) if frag.is_empty() => format!("@{a}"),
                                 Some(a) => format!("@{a}#{frag}"),
@@ -276,7 +285,10 @@ pub fn Terminal() -> impl IntoView {
                     }
                     let display = {
                         let cfg = config.get_untracked();
-                        let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                        let (base, frag) = incoming
+                            .from
+                            .split_once('#')
+                            .unwrap_or((&incoming.from, ""));
                         if let Some(alias) = cfg.reverse_alias(base) {
                             let replacement = if frag.is_empty() {
                                 format!("@{alias}")

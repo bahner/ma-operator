@@ -45,6 +45,7 @@ msg-link-key-not-found = ukhiye `{ $key }` akutholakalanga kumstandi oxhunyiwe
 
 # ── Ukuqinisekisa isidlaliso ──────────────────────────────────────────────
 err-alias-name-empty = igama lesidlaliso alikwazi ukuba ngenalutho
+err-alias-has-dot = amagama esidlaliso awakwazi ukuba ne-'.'
 err-alias-has-fragment = amagama esidlaliso awakwazi ukuba ne-'#'
 err-alias-value-fragment = inani lesidlaliso kufanele libe bare did:ma:<ipns> (akuna fragment)
 err-alias-value-path = inani lesidlaliso kufanele libe bare did:ma:<ipns> (akuna path)

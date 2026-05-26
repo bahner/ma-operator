@@ -45,6 +45,7 @@ msg-link-key-not-found = sleutel `{ $key }` niet gevonden in gekoppeld document
 
 # ── Aliasvalidatie ────────────────────────────────────────────────────────
 err-alias-name-empty = aliasnaam mag niet leeg zijn
+err-alias-has-dot = aliasnaam mag geen '.' bevatten
 err-alias-has-fragment = aliasnaam mag geen '#' bevatten
 err-alias-value-fragment = aliaswaarde moet een zuivere did:ma:<ipns> zijn (zonder fragment)
 err-alias-value-path = aliaswaarde moet een zuivere did:ma:<ipns> zijn (zonder pad)

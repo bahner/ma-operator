@@ -45,6 +45,7 @@ msg-link-key-not-found = achịghị igodo `{ $key }` n'akwụkwọ ejikọrọ
 
 # ── Nkwado aha nchọkwa ─────────────────────────────────────────────────────
 err-alias-name-empty = aha nchọkwa enweghị ike ịbụ efu
+err-alias-has-dot = aha nchọkwa enweghị ike inwe '.'
 err-alias-has-fragment = aha nchọkwa enweghị ike inwe '#'
 err-alias-value-fragment = uru nchọkwa ga-abụ bare did:ma:<ipns> (enweghị fragment)
 err-alias-value-path = uru nchọkwa ga-abụ bare did:ma:<ipns> (enweghị path)

@@ -45,6 +45,7 @@ msg-link-key-not-found = ufunguo `{ $key }` haupatikani katika hati iliyounganis
 
 # ── Uthibitisho wa jina la kubadilisha ───────────────────────────────────
 err-alias-name-empty = jina la jina la kubadilisha haliwezi kuwa wazi
+err-alias-has-dot = jina la jina la kubadilisha haliwezi kuwa na '.'
 err-alias-has-fragment = jina la jina la kubadilisha haliwezi kuwa na '#'
 err-alias-value-fragment = thamani ya jina la kubadilisha lazima iwe did:ma:<ipns> safi (bila kipande)
 err-alias-value-path = thamani ya jina la kubadilisha lazima iwe did:ma:<ipns> safi (bila njia)

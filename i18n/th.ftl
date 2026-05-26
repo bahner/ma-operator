@@ -45,6 +45,7 @@ msg-link-key-not-found = ไม่พบคีย์ `{ $key }` ในเอก�
 
 # ── การตรวจสอบนามแฝง ──────────────────────────────────────────────────────
 err-alias-name-empty = ชื่อนามแฝงต้องไม่ว่างเปล่า
+err-alias-has-dot = ชื่อนามแฝงต้องไม่มี '.'
 err-alias-has-fragment = ชื่อนามแฝงต้องไม่มี '#'
 err-alias-value-fragment = ค่านามแฝงต้องเป็น bare did:ma:<ipns> (ไม่มี fragment)
 err-alias-value-path = ค่านามแฝงต้องเป็น bare did:ma:<ipns> (ไม่มี path)

@@ -45,6 +45,7 @@ msg-link-key-not-found = kľúč `{ $key }` nenájdený v prepojenom dokumente
 
 # ── Overenie aliasov ──────────────────────────────────────────────────────
 err-alias-name-empty = názov aliasu nesmie byť prázdny
+err-alias-has-dot = názov aliasu nesmie obsahovať '.'
 err-alias-has-fragment = názov aliasu nesmie obsahovať '#'
 err-alias-value-fragment = hodnota aliasu musí byť čisté did:ma:<ipns> (bez fragmentu)
 err-alias-value-path = hodnota aliasu musí byť čisté did:ma:<ipns> (bez cesty)

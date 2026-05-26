@@ -45,6 +45,7 @@ msg-link-key-not-found = ŝlosilo `{ $key }` ne trovita en ligita dokumento
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = kromnomo ne povas esti malplena
+err-alias-has-dot = kromnomo ne povas enhavi '.'
 err-alias-has-fragment = kromnomo ne povas enhavi '#'
 err-alias-value-fragment = valoro de kromnomo devas esti nuda did:ma:<ipns> (sen fragmento)
 err-alias-value-path = valoro de kromnomo devas esti nuda did:ma:<ipns> (sen vojo)

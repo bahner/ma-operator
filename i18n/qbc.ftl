@@ -47,6 +47,7 @@ msg-link-key-not-found = ki `{ $key }` na finyish wit im link-dok
 
 # ── Alias falaare ─────────────────────────────────────────────────────────
 err-alias-name-empty = alias nim na owkwa im nating
+err-alias-has-dot = alias nim na tenye '.'
 err-alias-has-fragment = alias nim na tenye '#'
 err-alias-value-fragment = alias sanda gonya bare did:ma:<ipns> (na wit fragment)
 err-alias-value-path = alias sanda gonya bare did:ma:<ipns> (na wit path)

@@ -45,6 +45,7 @@ msg-link-key-not-found = ki `{ $key }` nor fine insaid di linkid dokument
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = alias nem nor fit bi empty
+err-alias-has-dot = alias nem nor fit get '.'
 err-alias-has-fragment = alias nem nor fit get '#'
 err-alias-value-fragment = alias value mas bi bɛ did:ma:<ipns> (nor get fragment)
 err-alias-value-path = alias value mas bi bɛ did:ma:<ipns> (nor get path)

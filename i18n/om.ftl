@@ -45,6 +45,7 @@ msg-link-key-not-found = furtuun `{ $key }` galmee walitti hidhametti hin argamn
 
 # ── Mirkaneessaa moggaasa ─────────────────────────────────────────────────
 err-alias-name-empty = maqaan moggaasaa duwwaa ta'uu hin danda'u
+err-alias-has-dot = maqaalee moggaasaa '.' qabaachuu hin danda'an
 err-alias-has-fragment = maqaalee moggaasaa '#' qabaachuu hin danda'an
 err-alias-value-fragment = gatiin moggaasaa bare did:ma:<ipns> ta'uu qaba (fragment hin qabu)
 err-alias-value-path = gatiin moggaasaa bare did:ma:<ipns> ta'uu qaba (path hin qabu)

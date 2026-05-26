@@ -45,6 +45,7 @@ msg-link-key-not-found = atslēga `{ $key }` nav atrasta saistītajā dokumentā
 
 # ── Aizstājvārdu validācija ───────────────────────────────────────────────
 err-alias-name-empty = aizstājvārda nosaukums nevar būt tukšs
+err-alias-has-dot = aizstājvārda nosaukums nevar saturēt '.'
 err-alias-has-fragment = aizstājvārda nosaukums nevar saturēt '#'
 err-alias-value-fragment = aizstājvārda vērtībai jābūt tīram did:ma:<ipns> (bez fragmenta)
 err-alias-value-path = aizstājvārda vērtībai jābūt tīram did:ma:<ipns> (bez ceļa)

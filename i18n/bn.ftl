@@ -45,6 +45,7 @@ msg-link-key-not-found = লিঙ্ক করা ডকুমেন্টে `
 
 # ── উপনাম যাচাইকরণ ────────────────────────────────────────────────────────
 err-alias-name-empty = উপনামের নাম খালি হতে পারবে না
+err-alias-has-dot = উপনামে '.' থাকতে পারবে না
 err-alias-has-fragment = উপনামে '#' থাকতে পারবে না
 err-alias-value-fragment = উপনামের মান bare did:ma:<ipns> হতে হবে (কোনো ফ্র্যাগমেন্ট নেই)
 err-alias-value-path = উপনামের মান bare did:ma:<ipns> হতে হবে (কোনো পথ নেই)

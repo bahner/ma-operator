@@ -45,6 +45,7 @@ msg-link-key-not-found = a kò rí bọ́tìnnì `{ $key }` nínú ìwé tí a s
 
 # ── Ìfọ̀rọ̀wérọ̀ àpèlé ────────────────────────────────────────────────────
 err-alias-name-empty = orúkọ àpèlé kò lè ṣofo
+err-alias-has-dot = orúkọ àpèlé kò lè ní '.'
 err-alias-has-fragment = orúkọ àpèlé kò lè ní '#'
 err-alias-value-fragment = iye àpèlé gbọdọ̀ jẹ́ bare did:ma:<ipns> (kò sí fragment)
 err-alias-value-path = iye àpèlé gbọdọ̀ jẹ́ bare did:ma:<ipns> (kò sí path)

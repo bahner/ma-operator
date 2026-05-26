@@ -45,6 +45,7 @@ msg-link-key-not-found = cheia `{ $key }` nu a fost găsită în documentul lega
 
 # ── Validarea aliasurilor ─────────────────────────────────────────────────
 err-alias-name-empty = numele aliasului nu poate fi gol
+err-alias-has-dot = numele aliasului nu poate conține '.'
 err-alias-has-fragment = numele aliasului nu poate conține '#'
 err-alias-value-fragment = valoarea aliasului trebuie să fie un did:ma:<ipns> pur (fără fragment)
 err-alias-value-path = valoarea aliasului trebuie să fie un did:ma:<ipns> pur (fără cale)

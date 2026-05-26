@@ -45,6 +45,7 @@ msg-link-key-not-found = avainta `{ $key }` ei löydy linkitetystä asiakirjasta
 
 # ── Aliasvalidointi ───────────────────────────────────────────────────────
 err-alias-name-empty = aliaksen nimi ei voi olla tyhjä
+err-alias-has-dot = aliaksen nimi ei voi sisältää '.':ää
 err-alias-has-fragment = aliaksen nimi ei voi sisältää '#':ää
 err-alias-value-fragment = aliaksen arvon on oltava pelkkä did:ma:<ipns> (ei fragmenttia)
 err-alias-value-path = aliaksen arvon on oltava pelkkä did:ma:<ipns> (ei polkua)

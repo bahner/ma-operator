@@ -45,6 +45,7 @@ msg-link-key-not-found = 在連結文件中找不到鍵 `{ $key }`
 
 # ── 別名驗證 ──────────────────────────────────────────────────────────────
 err-alias-name-empty = 別名不能為空
+err-alias-has-dot = 別名不能包含 '.'
 err-alias-has-fragment = 別名不能包含 '#'
 err-alias-value-fragment = 別名值必須是純 did:ma:<ipns>（無片段）
 err-alias-value-path = 別名值必須是純 did:ma:<ipns>（無路徑）

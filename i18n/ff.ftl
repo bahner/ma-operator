@@ -45,6 +45,7 @@ msg-link-key-not-found = keblal `{ $key }` tawaaka e takka ɗannol
 
 # ── Falaare ɗemngal ───────────────────────────────────────────────────────
 err-alias-name-empty = innde hesbu taa fotde luuro
+err-alias-has-dot = innde hesbu taa fotde '.'
 err-alias-has-fragment = innde hesbu taa fotde '#'
 err-alias-value-fragment = njamu hesbu fotde bare did:ma:<ipns> (yimɓe fragment)
 err-alias-value-path = njamu hesbu fotde bare did:ma:<ipns> (yimɓe path)

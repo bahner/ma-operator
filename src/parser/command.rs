@@ -8,8 +8,9 @@
 ///   .path:verb [args]    → DotOp::Verb
 ///
 /// Actor grammar:
-///   @target[:verb] [body]    → ActorMessage
-///   \@literal text           → plain text (escaped @)
+///   @alias[.path[:verb]] [body]   → ActorMessage  (alias names must not contain '.')
+///   @did:ma:<id>[:verb] [body]    → ActorMessage
+///   \@literal text                → plain text (escaped @)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -35,7 +36,7 @@ pub enum Command {
         op: DotOp,
         args: Vec<String>,
     },
-    /// @target[:verb] [args]  – message to an actor
+    /// @alias[.path[:verb]] [body]  – message to an actor
     ActorMessage {
         /// Fully resolved DID (or DID#fragment)
         target: String,
@@ -190,9 +191,15 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
         return (head, None);
     }
 
-    if let Some((target, verb)) = head.split_once(':') {
-        if !verb.is_empty() {
-            return (target, Some(verb.to_string()));
+    // For alias targets: split on the first '.' — aliases must not contain '.'
+    // so the first '.' always marks the start of the path:verb portion.
+    // e.g.  sky.acl:edit          → ("sky",          Some("acl:edit"))
+    //       sky.entities.rms:edit → ("sky",          Some("entities.rms:edit"))
+    //       sky.ping              → ("sky",          Some("ping"))
+    //       fjodor#fortune.ping   → ("fjodor#fortune", Some("ping"))
+    if let Some((alias, path_verb)) = head.split_once('.') {
+        if !path_verb.is_empty() {
+            return (alias, Some(path_verb.to_string()));
         }
     }
     (head, None)
@@ -273,7 +280,7 @@ mod tests {
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
-        let cmd = parse("@fjodor:ping", &cfg, None).expect("command should parse");
+        let cmd = parse("@fjodor.ping", &cfg, None).expect("command should parse");
 
         assert_eq!(
             cmd,
@@ -294,7 +301,7 @@ mod tests {
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
-        let cmd = parse("@fjodor#fortune:ping", &cfg, None).expect("command should parse");
+        let cmd = parse("@fjodor#fortune.ping", &cfg, None).expect("command should parse");
 
         assert_eq!(
             cmd,
@@ -303,6 +310,48 @@ mod tests {
                     "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#fortune"
                         .to_string(),
                 verb: Some("ping".to_string()),
+                body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_alias_target_with_compound_verb() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky.acl:edit", &cfg, None).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
+                verb: Some("acl:edit".to_string()),
+                body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_alias_target_with_nested_path_verb() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky.entities.rms:edit", &cfg, None).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
+                verb: Some("entities.rms:edit".to_string()),
                 body: String::new(),
             }
         );

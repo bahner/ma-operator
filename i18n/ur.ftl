@@ -45,6 +45,7 @@ msg-link-key-not-found = منسلک دستاویز میں کلید `{ $key }` ن
 
 # ── عرفی نام کی تصدیق ────────────────────────────────────────────────────
 err-alias-name-empty = عرفی نام خالی نہیں ہو سکتا
+err-alias-has-dot = عرفی ناموں میں '.' نہیں ہو سکتا
 err-alias-has-fragment = عرفی ناموں میں '#' نہیں ہو سکتا
 err-alias-value-fragment = عرفی نام کی قدر bare did:ma:<ipns> ہونی چاہیے (کوئی فریگمنٹ نہیں)
 err-alias-value-path = عرفی نام کی قدر bare did:ma:<ipns> ہونی چاہیے (کوئی راستہ نہیں)

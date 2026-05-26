@@ -45,6 +45,7 @@ msg-link-key-not-found = 연결된 문서에서 키 `{ $key }`를 찾을 수 없
 
 # ── 별칭 유효성 검사 ──────────────────────────────────────────────────────
 err-alias-name-empty = 별칭 이름은 비어있을 수 없습니다
+err-alias-has-dot = 별칭 이름에 '.'을 포함할 수 없습니다
 err-alias-has-fragment = 별칭 이름에 '#'을 포함할 수 없습니다
 err-alias-value-fragment = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (프래그먼트 없음)
 err-alias-value-path = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (경로 없음)

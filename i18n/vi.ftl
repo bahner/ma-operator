@@ -45,6 +45,7 @@ msg-link-key-not-found = không tìm thấy khóa `{ $key }` trong tài liệu �
 
 # ── Xác thực bí danh ──────────────────────────────────────────────────────
 err-alias-name-empty = tên bí danh không được để trống
+err-alias-has-dot = tên bí danh không được chứa '.'
 err-alias-has-fragment = tên bí danh không được chứa '#'
 err-alias-value-fragment = giá trị bí danh phải là bare did:ma:<ipns> (không có phân mảnh)
 err-alias-value-path = giá trị bí danh phải là bare did:ma:<ipns> (không có đường dẫn)

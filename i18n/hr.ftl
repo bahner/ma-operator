@@ -45,6 +45,7 @@ msg-link-key-not-found = ključ `{ $key }` nije pronađen u povezanom dokumentu
 
 # ── Provjera valjanosti pseudonima ────────────────────────────────────────
 err-alias-name-empty = naziv pseudonima ne smije biti prazan
+err-alias-has-dot = naziv pseudonima ne smije sadržavati '.'
 err-alias-has-fragment = naziv pseudonima ne smije sadržavati '#'
 err-alias-value-fragment = vrijednost pseudonima mora biti čist did:ma:<ipns> (bez fragmenta)
 err-alias-value-path = vrijednost pseudonima mora biti čist did:ma:<ipns> (bez putanje)

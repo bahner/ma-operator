@@ -45,6 +45,7 @@ msg-link-key-not-found = ki `{ $key }` i no painim insait long dokumen i bin lin
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = nem bilong alias i no ken i emptipela
+err-alias-has-dot = nem bilong alias i no ken gat '.'
 err-alias-has-fragment = nem bilong alias i no ken gat '#'
 err-alias-value-fragment = valiu bilong alias i mas i stap did:ma:<ipns> tasol (no gat fragmen)
 err-alias-value-path = valiu bilong alias i mas i stap did:ma:<ipns> tasol (no gat pat)

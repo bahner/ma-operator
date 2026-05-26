@@ -45,6 +45,7 @@ msg-link-key-not-found = key `{ $key }` nor find inside linked document
 
 # ── Alias validation ──────────────────────────────────────────────────────
 err-alias-name-empty = alias name nor fit be empty
+err-alias-has-dot = alias name nor fit get '.'
 err-alias-has-fragment = alias name nor fit get '#'
 err-alias-value-fragment = alias value must be bare did:ma:<ipns> (no fragment)
 err-alias-value-path = alias value must be bare did:ma:<ipns> (no path)

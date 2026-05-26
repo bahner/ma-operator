@@ -45,6 +45,7 @@ msg-link-key-not-found = ቁልፍ `{ $key }` በተያያዘው ሰነድ ው�
 
 # ── የቅፅል ስም ማረጋገጫ ───────────────────────────────────────────────────────
 err-alias-name-empty = የቅፅል ስም ባዶ ሊሆን አይችልም
+err-alias-has-dot = የቅፅል ስሞች '.' ሊይዙ አይችሉም
 err-alias-has-fragment = የቅፅል ስሞች '#' ሊይዙ አይችሉም
 err-alias-value-fragment = የቅፅል ስም ዋጋ bare did:ma:<ipns> መሆን አለበት (fragment የለም)
 err-alias-value-path = የቅፅል ስም ዋጋ bare did:ma:<ipns> መሆን አለበት (path የለም)

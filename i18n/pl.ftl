@@ -45,6 +45,7 @@ msg-link-key-not-found = klucz `{ $key }` nie znaleziony w połączonym dokumenc
 
 # ── Walidacja aliasów ─────────────────────────────────────────────────────
 err-alias-name-empty = nazwa aliasu nie może być pusta
+err-alias-has-dot = nazwa aliasu nie może zawierać '.'
 err-alias-has-fragment = nazwa aliasu nie może zawierać '#'
 err-alias-value-fragment = wartość aliasu musi być czystym did:ma:<ipns> (bez fragmentu)
 err-alias-value-path = wartość aliasu musi być czystym did:ma:<ipns> (bez ścieżki)
