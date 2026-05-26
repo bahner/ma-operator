@@ -1,4 +1,6 @@
-.PHONY: serve dev clean publish check dist
+WASM = target/wasm32-unknown-unknown/release/zion.wasm
+
+.PHONY: serve dev clean publish check dist twiggy twiggy-dom
 
 dist:
 	trunk build $(TRUNK_OPTS)
@@ -27,3 +29,12 @@ cid:
 
 check:
 	cargo check --target wasm32-unknown-unknown
+
+twiggy: $(WASM)
+	twiggy top -n 40 $(WASM)
+
+twiggy-dom: $(WASM)
+	twiggy dominators $(WASM) | head -80
+
+$(WASM):
+	cargo build --release --target wasm32-unknown-unknown
