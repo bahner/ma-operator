@@ -191,13 +191,26 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
         return (head, None);
     }
 
-    // For alias targets: split on the first '.' — aliases must not contain '.'
-    // so the first '.' always marks the start of the path:verb portion.
-    // e.g.  sky.acl:edit          → ("sky",          Some("acl:edit"))
-    //       sky.entities.rms:edit → ("sky",          Some("entities.rms:edit"))
-    //       sky.ping              → ("sky",          Some("ping"))
-    //       fjodor#fortune.ping   → ("fjodor#fortune", Some("ping"))
-    if let Some((alias, path_verb)) = head.split_once('.') {
+    // Non-DID: last ':' is the verb separator.
+    //   @💃:say            → alias="💃",       verb="say"
+    //   @sky.acl:edit      → alias="sky",       verb="acl:edit"
+    //   @sky.entities.rms:edit → alias="sky",   verb="entities.rms:edit"
+    //   @sky.ping          → alias="sky",       verb="ping"   (no colon)
+    //   @fjodor#fortune.ping → alias="fjodor#fortune", verb="ping"
+    if let Some((before, verb_part)) = head.rsplit_once(':') {
+        if !verb_part.is_empty() {
+            if let Some(dot_pos) = before.find('.') {
+                let alias = &before[..dot_pos];
+                let path  = &before[dot_pos + 1..];
+                return (alias, Some(format!("{path}:{verb_part}")));
+            }
+            return (before, Some(verb_part.to_string()));
+        }
+    }
+    // No colon — dot separates alias from bare path/verb.
+    if let Some(dot_pos) = head.find('.') {
+        let alias    = &head[..dot_pos];
+        let path_verb = &head[dot_pos + 1..];
         if !path_verb.is_empty() {
             return (alias, Some(path_verb.to_string()));
         }
