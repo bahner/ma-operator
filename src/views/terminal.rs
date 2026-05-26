@@ -225,10 +225,12 @@ pub fn Terminal() -> impl IntoView {
                         };
                         let cfg = config.get_untracked();
                         if !crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
-                            let from_disp = cfg
-                                .reverse_alias(&incoming.from)
-                                .map(|a| format!("@{a}"))
-                                .unwrap_or_else(|| incoming.from.clone());
+                            let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                            let from_disp = match cfg.reverse_alias(base) {
+                                Some(a) if frag.is_empty() => format!("@{a}"),
+                                Some(a) => format!("@{a}#{frag}"),
+                                None => incoming.from.clone(),
+                            };
                             state2.push_system(tf(
                                 "msg-blocked",
                                 &[("cap", cap), ("from", &from_disp)],
@@ -239,9 +241,12 @@ pub fn Terminal() -> impl IntoView {
                     if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
                         let from_display = {
                             let cfg = config.get_untracked();
-                            cfg.reverse_alias(&incoming.from)
-                                .map(|a| format!("@{a}"))
-                                .unwrap_or_else(|| incoming.from.clone())
+                            let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                            match cfg.reverse_alias(base) {
+                                Some(a) if frag.is_empty() => format!("@{a}"),
+                                Some(a) => format!("@{a}#{frag}"),
+                                None => incoming.from.clone(),
+                            }
                         };
                         let count = state2.ingest_mailbox_message(&incoming, config);
                         // Persist asynchronously.
@@ -271,10 +276,14 @@ pub fn Terminal() -> impl IntoView {
                     }
                     let display = {
                         let cfg = config.get_untracked();
-                        if let Some(alias) = cfg.reverse_alias(&incoming.from) {
-                            incoming
-                                .display
-                                .replace(&incoming.from, &format!("@{alias}"))
+                        let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+                        if let Some(alias) = cfg.reverse_alias(base) {
+                            let replacement = if frag.is_empty() {
+                                format!("@{alias}")
+                            } else {
+                                format!("@{alias}#{frag}")
+                            };
+                            incoming.display.replace(&incoming.from, &replacement)
                         } else {
                             incoming.display.clone()
                         }
@@ -1216,6 +1225,20 @@ fn eval_dot(
             state.screensaver.set(true);
             return;
         }
+        ".history" => {
+            let hist = state.history.get_untracked();
+            // uniq-style filter: suppress consecutive identical entries.
+            let mut n = 0usize;
+            let mut last: Option<&str> = None;
+            for entry in &hist {
+                if last != Some(entry.as_str()) {
+                    n += 1;
+                    state.push_system(format!("{n:>4}  {entry}"));
+                    last = Some(entry.as_str());
+                }
+            }
+            return;
+        }
         ".ma" => {
             state.push_output("間");
             return;
@@ -1780,6 +1803,7 @@ fn help_overview() -> Vec<String> {
         t("help-header-zion"),
         t("help-cmd-help"),
         t("help-cmd-clear"),
+        t("help-cmd-history"),
         t("help-cmd-panic"),
         t("help-cmd-logout"),
         String::new(),
