@@ -356,6 +356,12 @@ html, body {
     color: var(--colour-alias);
 }
 
+@keyframes terminal-blink {
+    0%   { caret-color: var(--colour-cursor); }
+    50%  { caret-color: transparent; }
+    100% { caret-color: var(--colour-cursor); }
+}
+
 .input-field {
     flex: 1;
     background: none;
@@ -364,7 +370,13 @@ html, body {
     color: var(--colour-text);
     font-family: var(--font-family);
     font-size: var(--font-size);
-    caret-color: var(--colour-cursor);
+    caret-color: transparent;
+    caret-shape: block;
+}
+
+.input-field:focus {
+    caret-animation: none;
+    animation: terminal-blink 1s step-end infinite;
 }
 
 .input-field::selection {
