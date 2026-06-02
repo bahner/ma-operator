@@ -37,7 +37,6 @@ pub fn Landing() -> impl IntoView {
 
     view! {
         <div class="landing">
-            <h1>"DON'T PANIC"</h1>
             <div class="landing-box">
                 <div class="landing-tabs">
                     <button

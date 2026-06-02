@@ -201,7 +201,7 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
         if !verb_part.is_empty() {
             if let Some(dot_pos) = before.find('.') {
                 let alias = &before[..dot_pos];
-                let path  = &before[dot_pos + 1..];
+                let path = &before[dot_pos + 1..];
                 return (alias, Some(format!("{path}:{verb_part}")));
             }
             return (before, Some(verb_part.to_string()));
@@ -209,7 +209,7 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
     }
     // No colon — dot separates alias from bare path/verb.
     if let Some(dot_pos) = head.find('.') {
-        let alias    = &head[..dot_pos];
+        let alias = &head[..dot_pos];
         let path_verb = &head[dot_pos + 1..];
         if !path_verb.is_empty() {
             return (alias, Some(path_verb.to_string()));

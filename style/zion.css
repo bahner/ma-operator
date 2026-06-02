@@ -19,7 +19,7 @@
     --colour-cursor:      #00ff41;
     --colour-highlight:   #003300;
     --font-family:        "Courier New", Courier, "Lucida Console", monospace;
-    --font-size:          14px;
+    --font-size:          16px;
     --line-height:        1.5;
 }
 
@@ -45,6 +45,7 @@ html, body {
 #app {
     width: 100vw;
     height: 100vh;
+    height: 100dvh;
     display: flex;
     flex-direction: column;
 }
@@ -54,9 +55,10 @@ html, body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start;
+    justify-content: center;
     height: 100vh;
-    padding: 0;
+    height: 100dvh;
+    padding: 1rem;
     gap: 2rem;
 }
 
@@ -79,7 +81,7 @@ html, body {
 .landing-box {
     border: 1px solid var(--colour-border);
     padding: 1rem;
-    min-width: 400px;
+    min-width: min(400px, calc(100vw - 2rem));
     max-width: 600px;
     width: 100%;
     background: var(--colour-input-bg);
@@ -131,11 +133,11 @@ html, body {
 
 .form-row input {
     background: var(--colour-bg);
-    border: 1px solid var(--colour-border);
+    border: 1px solid var(--colour-dimmed);
     color: var(--colour-text);
     font-family: var(--font-family);
     font-size: var(--font-size);
-    padding: 0.4rem 0.6rem;
+    padding: 0.5rem 0.6rem;
     outline: none;
     width: 100%;
 }
@@ -229,6 +231,25 @@ html, body {
     margin-top: 0.5rem;
 }
 
+@media (max-width: 30em) {
+    .landing {
+        --font-size: 16px;
+    }
+    .landing-box {
+        padding: 0.75rem;
+    }
+    .landing-tab {
+        padding: 0.4rem 0.6rem;
+    }
+    .form-row label {
+        font-size: 0.9rem;
+    }
+    .landing-error,
+    .landing-status {
+        font-size: 0.95rem;
+    }
+}
+
 /* ── Terminal (main view) ────────────────────────────────────────────── */
 
 /*
@@ -251,6 +272,7 @@ html, body {
         "input";
     grid-template-rows: 1fr auto auto;
     height: 100vh;
+    height: 100dvh;
     width: 100vw;
 }
 
@@ -269,6 +291,7 @@ html, body {
 
 .terminal.placement-left .editor-panel {
     height: 100vh;
+    height: 100dvh;
     min-height: 0;
     border-top: none;
     border-right: 1px solid var(--colour-dimmed);
@@ -289,9 +312,37 @@ html, body {
 
 .terminal.placement-right .editor-panel {
     height: 100vh;
+    height: 100dvh;
     min-height: 0;
     border-top: none;
     border-left: 1px solid var(--colour-dimmed);
+}
+
+/* ── Narrow screens: collapse side-by-side placements to stacked ──── */
+@media (max-width: 37.5em) {
+    .terminal.placement-left,
+    .terminal.placement-right,
+    .terminal.placement-left:has(.editor-panel),
+    .terminal.placement-right:has(.editor-panel) {
+        grid-template-areas:
+            "output"
+            "editor"
+            "input";
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr auto auto;
+    }
+
+    .terminal.placement-left .editor-panel,
+    .terminal.placement-right .editor-panel {
+        height: 50vh;
+        border-right: none;
+        border-left: none;
+        border-top: 1px solid var(--colour-dimmed);
+    }
+
+    .input-row {
+        padding: 0.4rem 0.5rem;
+    }
 }
 
 .terminal-output {
