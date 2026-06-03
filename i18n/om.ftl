@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zion URL link tiin banuu
+help-header-url = ── ulaagalee URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Fuullee itti sirraa'e wajjin zion banu link qoodi:
+help-url-msg =   ?msg=<did>                   dursee guuti: @<did> (ergaa salphaa)
+help-url-say =   ?say=<did>                   dursee guuti: @<did>:say (jechi say)
+help-url-emote =   ?emote=<did>                 dursee guuti: @<did>:emote (jechi emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Galchi guutameera garuu hin ergamne — erguu Enter tuqi.

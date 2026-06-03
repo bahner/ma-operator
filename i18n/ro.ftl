@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    deschiderea zion printr-un link URL
+help-header-url = ── parametri URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Distribuie un link care deschide zion cu un destinatar precompletat:
+help-url-msg =   ?msg=<did>                   precompletează: @<did> (mesaj simplu)
+help-url-say =   ?say=<did>                   precompletează: @<did>:say (verb say)
+help-url-emote =   ?emote=<did>                 precompletează: @<did>:emote (verb emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentru a trimite.

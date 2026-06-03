@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zion megnyitása URL-linken keresztül
+help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
+help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
+help-url-msg =   ?msg=<did>                   előre kitölti: @<did> (egyszerű üzenet)
+help-url-say =   ?say=<did>                   előre kitölti: @<did>:say (say ige)
+help-url-emote =   ?emote=<did>                 előre kitölti: @<did>:emote (emote ige)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.

@@ -260,3 +260,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    abri zion via un ligason URL
+help-header-url = ── parametru URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Partilha un ligason ki abri zion ku un destinatáriu ia metidu:
+help-url-msg =   ?msg=<did>                   mete antis: @<did> (mensaji simples)
+help-url-say =   ?say=<did>                   mete antis: @<did>:say (verbu say)
+help-url-emote =   ?emote=<did>                 mete antis: @<did>:emote (verbu emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Entrada sta metida ma ka manda ainda — preme Enter pa manda.

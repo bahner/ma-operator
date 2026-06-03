@@ -211,9 +211,10 @@ help-doc-del =   .my.doc.<name>:              delete document
 # ── Help text — URL parameters ──────────────────────────────────────────────
 help-header-url = ── URL parameters ─────────────────────────────────────────────────────────
 help-url-intro =   Share a link to open zion with a pre-filled recipient:
-help-url-chat =   ?chat=<did>                  pre-fill input as: @<did> (space)
-help-url-say =   ?say=<did>                   same as ?chat= (alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   pre-fill: @<did> (plain message)
+help-url-say =   ?say=<did>                   pre-fill: @<did>:say (say verb)
+help-url-emote =   ?emote=<did>                 pre-fill: @<did>:emote (emote verb)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   The input is pre-filled but not sent — press Enter to send.
 
 # ── Error messages ────────────────────────────────────────────────────────

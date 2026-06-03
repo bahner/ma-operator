@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
-help-url-chat =   ?chat=<did>                  입력을 미리 채움: @<did> (공백)
-help-url-say =   ?say=<did>                   ?chat= 과 동일 (별칭)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   미리 채움: @<did> (텍스트 메시지)
+help-url-say =   ?say=<did>                   미리 채움: @<did>:say (say 동사)
+help-url-emote =   ?emote=<did>                 미리 채움: @<did>:emote (emote 동사)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.

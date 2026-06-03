@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zion atvēršana, izmantojot URL saiti
+help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
+help-url-intro =   Dalies ar saiti, kas atver zion ar iepriekš aizpildītu saņēmēju:
+help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did> (parasta ziņa)
+help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>:say (darbības vārds say)
+help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>:emote (darbības vārds emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospied Enter, lai nosūtītu.

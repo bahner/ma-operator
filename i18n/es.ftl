@@ -270,7 +270,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── parámetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Comparte un enlace que abre zion con un destinatario ya rellenado:
-help-url-chat =   ?chat=<did>                  rellena la entrada: @<did> (espacio)
-help-url-say =   ?say=<did>                   igual que ?chat= (alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   rellena: @<did> (mensaje de texto)
+help-url-say =   ?say=<did>                   rellena: @<did>:say (verbo say)
+help-url-emote =   ?emote=<did>                 rellena: @<did>:emote (verbo emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   El campo se rellena pero no se envía — pulsa Intro para enviar.

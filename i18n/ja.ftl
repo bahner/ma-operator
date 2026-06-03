@@ -270,7 +270,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
-help-url-chat =   ?chat=<did>                  入力欄に @<did> (スペース) を事前入力
-help-url-say =   ?say=<did>                   ?chat= と同じ（エイリアス）
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   事前入力: @<did>（テキストメッセージ）
+help-url-say =   ?say=<did>                   事前入力: @<did>:say（say動詞）
+help-url-emote =   ?emote=<did>                 事前入力: @<did>:emote（emote動詞）
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。

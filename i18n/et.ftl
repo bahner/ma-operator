@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zion'i avamine URL-lingi kaudu
+help-header-url = ── URL-parameetrid ──────────────────────────────────────────────────────────────
+help-url-intro =   Jaga linki, mis avab zion'i eeltäidetud saajaga:
+help-url-msg =   ?msg=<did>                   eeltäidab: @<did> (lihtteade)
+help-url-say =   ?say=<did>                   eeltäidab: @<did>:say (tegusõna say)
+help-url-emote =   ?emote=<did>                 eeltäidab: @<did>:emote (tegusõna emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Sisend on eeltäidetud, kuid saatmata — vajuta Enter saatmiseks.

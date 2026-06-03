@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    URL दुव्याद्वारे zion उघडणे
+help-header-url = ── URL पॅरामीटर ─────────────────────────────────────────────────────────────────
+help-url-intro =   पूर्व-भरलेल्या प्राप्तकर्त्यासह zion उघडणारी लिंक शेअर करा:
+help-url-msg =   ?msg=<did>                   पूर्व-भरणे: @<did> (साधा संदेश)
+help-url-say =   ?say=<did>                   पूर्व-भरणे: @<did>:say (say क्रियापद)
+help-url-emote =   ?emote=<did>                 पूर्व-भरणे: @<did>:emote (emote क्रियापद)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   इनपुट पूर्व-भरलेले आहे पण पाठवले नाही — पाठवण्यासाठी Enter दाबा.

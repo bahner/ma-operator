@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zionin avaaminen URL-linkin kautta
+help-header-url = ── URL-parametrit ───────────────────────────────────────────────────────────────
+help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla:
+help-url-msg =   ?msg=<did>                   esitäyttää: @<did> (tekstiviesti)
+help-url-say =   ?say=<did>                   esitäyttää: @<did>:say (verbi say)
+help-url-emote =   ?emote=<did>                 esitäyttää: @<did>:emote (verbi emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.

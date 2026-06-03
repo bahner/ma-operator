@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    opna zion í gegnum URL-tengil
+help-header-url = ── URL-broytar ──────────────────────────────────────────────────────────────────
+help-url-intro =   Del ein tengil sum opnar zion við fyritfuldum móttakara:
+help-url-msg =   ?msg=<did>                   fyritfyllir: @<did> (vanligt boð)
+help-url-say =   ?say=<did>                   fyritfyllir: @<did>:say (sagnorð say)
+help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>:emote (sagnorð emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fyri at senda.

@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    udditde zion e nder togol URL
+help-header-url = ── kaaɗe URL ────────────────────────────────────────────────────────────────────
+help-url-intro =   Neltir togol udditde zion e jibinirde njemiraande:
+help-url-msg =   ?msg=<did>                   ara-ɓulla: @<did> (tiiɗnde yooltii)
+help-url-say =   ?say=<did>                   ara-ɓulla: @<did>:say (haala say)
+help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>:emote (haala emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter ngam neltude.

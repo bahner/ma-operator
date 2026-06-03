@@ -260,3 +260,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    habri zion via un link URL
+help-header-url = ── parámetronan URL ─────────────────────────────────────────────────────────────
+help-url-intro =   Parti un link ku habri zion ku un destinatario ya yená:
+help-url-msg =   ?msg=<did>                   yena di antemano: @<did> (mensahe simpel)
+help-url-say =   ?say=<did>                   yena di antemano: @<did>:say (verbu say)
+help-url-emote =   ?emote=<did>                 yena di antemano: @<did>:emote (verbu emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.

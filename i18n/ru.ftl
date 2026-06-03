@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── параметры URL ───────────────────────────────────────────────────────────
 help-url-intro =   Поделись ссылкой, открывающей zion с заранее заполненным получателем:
-help-url-chat =   ?chat=<did>                  предзаполняет ввод: @<did> (пробел)
-help-url-say =   ?say=<did>                   то же что ?chat= (псевдоним)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   предзаполняет: @<did> (текстовое сообщение)
+help-url-say =   ?say=<did>                   предзаполняет: @<did>:say (глагол say)
+help-url-emote =   ?emote=<did>                 предзаполняет: @<did>:emote (глагол emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Поле заполнено, но не отправлено — нажми Enter для отправки.

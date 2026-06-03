@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    otwieranie ziona przez link URL
+help-header-url = ── parametry URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Udostępnij link, który otworzy zion z wstępnie wypełnionym odbiorcą:
+help-url-msg =   ?msg=<did>                   wstępnie wypełnia: @<did> (zwykła wiadomość)
+help-url-say =   ?say=<did>                   wstępnie wypełnia: @<did>:say (czasownik say)
+help-url-emote =   ?emote=<did>                 wstępnie wypełnia: @<did>:emote (czasownik emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Pole jest wstępnie wypełnione, ale nie wysłane — naciśnij Enter, aby wysłać.

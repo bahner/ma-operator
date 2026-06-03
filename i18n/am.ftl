@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zionን በURL አገናኝ ቁልፍ መክፈት
+help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
+help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
+help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did> (ቀላል መልዕክት)
+help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>:say (say ቃሉ)
+help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>:emote (emote ቃሉ)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።

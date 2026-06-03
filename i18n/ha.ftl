@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    buɗe zion ta hanyar URL link
+help-header-url = ── sharuɗɗan URL ─────────────────────────────────────────────────────────────────
+help-url-intro =   Raba hanyar haɗin zion tare da mai karɓa da aka shigar da shi a gaba:
+help-url-msg =   ?msg=<did>                   cika a gaba: @<did> (saƙon rubutu)
+help-url-say =   ?say=<did>                   cika a gaba: @<did>:say (fi'ili say)
+help-url-emote =   ?emote=<did>                 cika a gaba: @<did>:emote (fi'ili emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don aika.

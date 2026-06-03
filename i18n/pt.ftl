@@ -270,7 +270,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── parâmetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Partilha um link que abre zion com o destinatário pré-preenchido:
-help-url-chat =   ?chat=<did>                  pré-preenche a entrada: @<did> (espaço)
-help-url-say =   ?say=<did>                   igual a ?chat= (alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   pré-preenche: @<did> (mensagem de texto)
+help-url-say =   ?say=<did>                   pré-preenche: @<did>:say (verbo say)
+help-url-emote =   ?emote=<did>                 pré-preenche: @<did>:emote (verbo emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   O campo é pré-preenchido mas não enviado — prime Enter para enviar.

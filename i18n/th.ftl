@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    เปิด zion ผ่านลิงก์ URL
+help-header-url = ── พารามิเตอร์ URL ───────────────────────────────────────────────────────────────
+help-url-intro =   แบ่งปันลิงก์ที่เปิด zion พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
+help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did> (ข้อความธรรมดา)
+help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>:say (กริยา say)
+help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>:emote (กริยา emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง

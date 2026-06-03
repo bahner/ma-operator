@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
-help-url-chat =   ?chat=<did>                  fyller i: @<did> (mellanslag)
-help-url-say =   ?say=<did>                   samma som ?chat= (alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   fyller i: @<did> (textmeddelande)
+help-url-say =   ?say=<did>                   fyller i: @<did>:say (say-verb)
+help-url-emote =   ?emote=<did>                 fyller i: @<did>:emote (emote-verb)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inmatningsfältet fylls i men skickas inte — tryck Enter för att skicka.

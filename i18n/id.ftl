@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    membuka zion melalui tautan URL
+help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
+help-url-msg =   ?msg=<did>                   isi otomatis: @<did> (pesan biasa)
+help-url-say =   ?say=<did>                   isi otomatis: @<did>:say (kata kerja say)
+help-url-emote =   ?emote=<did>                 isi otomatis: @<did>:emote (kata kerja emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.

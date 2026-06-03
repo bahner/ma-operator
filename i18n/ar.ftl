@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
 help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
-help-url-chat =   ?chat=<did>                  يملأ الإدخال مسبقاً: @<did> (مسافة)
-help-url-say =   ?say=<did>                   نفس ?chat= (اسم مستعار)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did> (رسالة نصية)
+help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>:say (فعل say)
+help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>:emote (فعل emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.

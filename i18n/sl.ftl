@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    odpiranje zion prek URL povezave
+help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
+help-url-intro =   Deli povezavo, ki odpre zion z vnaprej izpolnjenim prejemnikom:
+help-url-msg =   ?msg=<did>                   vnaprej izpolni: @<did> (navadno sporočilo)
+help-url-say =   ?say=<did>                   vnaprej izpolni: @<did>:say (glagol say)
+help-url-emote =   ?emote=<did>                 vnaprej izpolni: @<did>:emote (glagol emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Vnosno polje je vnaprej izpolnjeno, a ni poslano — pritisni Enter za pošiljanje.

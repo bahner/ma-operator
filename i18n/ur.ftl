@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    URL لنک کے ذریعے zion کھولنا
+help-header-url = ── URL پیرامیٹرز ─────────────────────────────────────────────────────────────────
+help-url-intro =   ایک لنک شیئر کریں جو پہلے سے بھرے ہوئے وصول کنندہ کے ساتھ zion کھولے:
+help-url-msg =   ?msg=<did>                   پہلے سے بھرتا ہے: @<did> (سادہ پیغام)
+help-url-say =   ?say=<did>                   پہلے سے بھرتا ہے: @<did>:say (say فعل)
+help-url-emote =   ?emote=<did>                 پہلے سے بھرتا ہے: @<did>:emote (emote فعل)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   ان پٹ پہلے سے بھرا ہوا ہے لیکن بھیجا نہیں گیا — بھیجنے کے لیے Enter دبائیں۔

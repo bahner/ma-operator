@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    furista zion adeegsiga xiriirka URL
+help-header-url = ── cabbirada URL ─────────────────────────────────────────────────────────────────
+help-url-intro =   La wadaag xiriir si loo furo zion oo leh qofka la xiriira ee hore loo buuxiyey:
+help-url-msg =   ?msg=<did>                   hore u buuxi: @<did> (fariin fudud)
+help-url-say =   ?say=<did>                   hore u buuxi: @<did>:say (fal say)
+help-url-emote =   ?emote=<did>                 hore u buuxi: @<did>:emote (fal emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si aad u dirto.

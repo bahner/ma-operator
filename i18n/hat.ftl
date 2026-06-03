@@ -260,3 +260,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    ouvri zion atravè yon lyen URL
+help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
+help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
+help-url-msg =   ?msg=<did>                   ranpli davans: @<did> (mesaj senp)
+help-url-say =   ?say=<did>                   ranpli davans: @<did>:say (vèb say)
+help-url-emote =   ?emote=<did>                 ranpli davans: @<did>:emote (vèb emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.

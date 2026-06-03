@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    fanokafana zion amin'ny rohy URL
+help-header-url = ── ampahany URL ─────────────────────────────────────────────────────────────────
+help-url-intro =   Zarao rohy hanokafana zion miaraka amin'ny mpandray efa voatondro:
+help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did> (hafatra tsotra)
+help-url-say =   ?say=<did>                   fenoina mialoha: @<did>:say (matoanteny say)
+help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>:emote (matoanteny emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter handefa.

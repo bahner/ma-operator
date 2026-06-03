@@ -262,3 +262,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    open Zion tru a URL link
+help-header-url = ── URL I-parameters ─────────────────────────────────────────────────────────────
+help-url-intro =   Share a link fi open Zion wid a I-recipient ready fill:
+help-url-msg =   ?msg=<did>                   fill up: @<did> (I-message)
+help-url-say =   ?say=<did>                   fill up: @<did>:say (say verb)
+help-url-emote =   ?emote=<did>                 fill up: @<did>:emote (emote verb)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Di I-input fill up but not send — press Enter fi send.

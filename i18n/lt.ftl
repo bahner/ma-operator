@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    zion atidarymas per URL nuorodą
+help-header-url = ── URL parametrai ───────────────────────────────────────────────────────────────
+help-url-intro =   Pasidalinkite nuoroda, kuri atidaro zion su iš anksto užpildytu gavėju:
+help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did> (paprastas pranešimas)
+help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>:say (veiksmažodis say)
+help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>:emote (veiksmažodis emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Enter siųsti.

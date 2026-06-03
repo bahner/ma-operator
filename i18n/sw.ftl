@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    kufungua zion kupitia kiungo cha URL
+help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
+help-url-msg =   ?msg=<did>                   jaza mapema: @<did> (ujumbe wa kawaida)
+help-url-say =   ?say=<did>                   jaza mapema: @<did>:say (kitenzi say)
+help-url-emote =   ?emote=<did>                 jaza mapema: @<did>:emote (kitenzi emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.

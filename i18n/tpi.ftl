@@ -260,3 +260,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    opim zion long URL link
+help-header-url = ── URL paramita ─────────────────────────────────────────────────────────────────
+help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim olgeta i stap pinis:
+help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did> (simol meses)
+help-url-say =   ?say=<did>                   pulapim pastaim: @<did>:say (vep say)
+help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>:emote (vep emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.

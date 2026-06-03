@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    URL లింక్ ద్వారా zion తెరవడం
+help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
+help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
+help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did> (సాధారణ సందేశం)
+help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>:say (say క్రియ)
+help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>:emote (emote క్రియ)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.

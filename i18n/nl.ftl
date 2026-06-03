@@ -270,7 +270,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
 help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
-help-url-chat =   ?chat=<did>                  vult in: @<did> (spatie)
-help-url-say =   ?say=<did>                   zelfde als ?chat= (alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   vult in: @<did> (tekstbericht)
+help-url-say =   ?say=<did>                   vult in: @<did>:say (say-werkwoord)
+help-url-emote =   ?emote=<did>                 vult in: @<did>:emote (emote-werkwoord)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Het invoerveld wordt ingevuld maar niet verzonden — druk op Enter.

@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    ṣii zion nipasẹ asopọ URL
+help-header-url = ── awọn paramita URL ────────────────────────────────────────────────────────────
+help-url-intro =   Pin asopọ kan ti o ṣii zion pẹlu olugba tí a ti kọ siwaju:
+help-url-msg =   ?msg=<did>                   kọ siwaju: @<did> (ifiranṣẹ rọrun)
+help-url-say =   ?say=<did>                   kọ siwaju: @<did>:say (ọrọ-iṣe say)
+help-url-emote =   ?emote=<did>                 kọ siwaju: @<did>:emote (ọrọ-iṣe emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Titẹ sii kọ siwaju ṣugbọn a ko firanṣẹ — tẹ Enter lati firanṣẹ.

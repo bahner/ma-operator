@@ -260,3 +260,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    open zion through URL link
+help-header-url = ── URL parameters dem ───────────────────────────────────────────────────────────
+help-url-intro =   Share link wey go open zion with di person wey don put inside:
+help-url-msg =   ?msg=<did>                   put before: @<did> (normal message)
+help-url-say =   ?say=<did>                   put before: @<did>:say (verb say)
+help-url-emote =   ?emote=<did>                 put before: @<did>:emote (verb emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Di input don fill but dem no send am — press Enter make e send.

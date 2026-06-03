@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    mepee zion site na njikọ URL
+help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
+help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
+help-url-msg =   ?msg=<did>                   deeye tupu: @<did> (ozi dị mfe)
+help-url-say =   ?say=<did>                   deeye tupu: @<did>:say (ngwa ọrụ say)
+help-url-emote =   ?emote=<did>                 deeye tupu: @<did>:emote (ngwa ọrụ emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.

@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    mở zion thông qua liên kết URL
+help-header-url = ── tham số URL ──────────────────────────────────────────────────────────────────
+help-url-intro =   Chia sẻ một liên kết mở zion với người nhận đã được điền sẵn:
+help-url-msg =   ?msg=<did>                   điền sẵn: @<did> (tin nhắn thông thường)
+help-url-say =   ?say=<did>                   điền sẵn: @<did>:say (động từ say)
+help-url-emote =   ?emote=<did>                 điền sẵn: @<did>:emote (động từ emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.

@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
-help-url-chat =   ?chat=<did>                  預填輸入：@<did>（空格）
-help-url-say =   ?say=<did>                   與 ?chat= 相同（別名）
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   預填：@<did>（文字訊息）
+help-url-say =   ?say=<did>                   預填：@<did>:say（say 動詞）
+help-url-emote =   ?emote=<did>                 預填：@<did>:emote（emote 動詞）
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。

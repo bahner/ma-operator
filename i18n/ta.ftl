@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    URL இணைப்பு வழியாக zion திறக்க
+help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
+help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
+help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did> (எளிய செய்தி)
+help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>:say (say வினை)
+help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>:emote (emote வினை)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.

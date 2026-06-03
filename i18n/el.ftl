@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    άνοιγμα του zion μέσω συνδέσμου URL
+help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
+help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
+help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did> (απλό μήνυμα)
+help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>:say (ρήμα say)
+help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>:emote (ρήμα emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.

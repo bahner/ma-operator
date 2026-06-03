@@ -263,7 +263,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
 help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
-help-url-chat =   ?chat=<did>                  antaŭplenigas enigon: @<did> (spaco)
-help-url-say =   ?say=<did>                   sama kiel ?chat= (kromnomo)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   antaŭplenigas: @<did> (teksta mesaĝo)
+help-url-say =   ?say=<did>                   antaŭplenigas: @<did>:say (verbo say)
+help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>:emote (verbo emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.

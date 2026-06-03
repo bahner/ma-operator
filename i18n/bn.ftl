@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    URL লিঙ্কের মাধ্যমে zion খোলা
+help-header-url = ── URL প্যারামিটার ────────────────────────────────────────────────────────────────
+help-url-intro =   পূর্বভরণকৃত প্রাপকসহ zion খোলার লিঙ্ক শেয়ার করুন:
+help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did> (সাধারণ বার্তা)
+help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>:say (say ক্রিয়া)
+help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>:emote (emote ক্রিয়া)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   ইনপুট পূর্বভরণ করা হয়েছে কিন্তু পাঠানো হয়নি — পাঠাতে Enter চাপুন।

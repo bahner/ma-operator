@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    otvorenie zion cez URL odkaz
+help-header-url = ── URL parametre ────────────────────────────────────────────────────────────────
+help-url-intro =   Zdieľaj odkaz, ktorý otvorí zion s vopred vyplneným príjemcom:
+help-url-msg =   ?msg=<did>                   vopred vyplní: @<did> (jednoduchá správa)
+help-url-say =   ?say=<did>                   vopred vyplní: @<did>:say (sloveso say)
+help-url-emote =   ?emote=<did>                 vopred vyplní: @<did>:emote (sloveso emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Pole je vopred vyplnené, ale neodoslané — stlač Enter na odoslanie.

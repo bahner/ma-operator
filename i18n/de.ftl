@@ -270,7 +270,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL-Parameter ───────────────────────────────────────────────────────────
 help-url-intro =   Link teilen, der zion mit vorausgefülltem Empfänger öffnet:
-help-url-chat =   ?chat=<did>                  Eingabe vorausfüllen: @<did> (Leerzeichen)
-help-url-say =   ?say=<did>                   wie ?chat= (Alias)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   vorausfüllen: @<did> (Textnachricht)
+help-url-say =   ?say=<did>                   vorausfüllen: @<did>:say (Say-Verb)
+help-url-emote =   ?emote=<did>                 vorausfüllen: @<did>:emote (Emote-Verb)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Das Eingabefeld wird gefüllt, aber nicht gesendet — Enter drücken zum Senden.

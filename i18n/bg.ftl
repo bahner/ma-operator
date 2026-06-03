@@ -267,3 +267,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    отваряне на zion чрез URL връзка
+help-header-url = ── URL параметри ────────────────────────────────────────────────────────────────
+help-url-intro =   Сподели връзка, която отваря zion с предварително попълнен получател:
+help-url-msg =   ?msg=<did>                   предварително попълва: @<did> (обикновено съобщение)
+help-url-say =   ?say=<did>                   предварително попълва: @<did>:say (глагол say)
+help-url-emote =   ?emote=<did>                 предварително попълва: @<did>:emote (глагол emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Полето е предварително попълнено, но не изпратено — натисни Enter за изпращане.

@@ -274,3 +274,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    ukuvula zion ngesixhokelelwano se-URL
+help-header-url = ── izinhlelo ze-URL ─────────────────────────────────────────────────────────────
+help-url-intro =   Yabelana ngesixhokelelwano esivula zion enomamukeli osegcwaliswe phambilini:
+help-url-msg =   ?msg=<did>                   gcwalisa phambilini: @<did> (umlayezo olula)
+help-url-say =   ?say=<did>                   gcwalisa phambilini: @<did>:say (isenzo say)
+help-url-emote =   ?emote=<did>                 gcwalisa phambilini: @<did>:emote (isenzo emote)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Ukufakwa kugcwaliswe phambilini kodwa akuthunyiswanga — cindezela Enter ukuthumela.

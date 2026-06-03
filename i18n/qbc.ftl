@@ -276,3 +276,12 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+
+help-topic-url =   .help.url                    open zion tru URL peng
+help-header-url = ── URL pamitim ──────────────────────────────────────────────────────────────────
+help-url-intro =   Fo peng fo open zion wit belter wating already fill:
+help-url-msg =   ?msg=<did>                   fill befo: @<did> (basic palabras)
+help-url-say =   ?say=<did>                   fill befo: @<did>:say (say verd)
+help-url-emote =   ?emote=<did>                 fill befo: @<did>:emote (emote verd)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-note =   Di input fill but no sen — peng Enter fo sen.

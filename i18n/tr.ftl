@@ -277,7 +277,8 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
-help-url-chat =   ?chat=<did>                  girişi önceden doldurur: @<did> (boşluk)
-help-url-say =   ?say=<did>                   ?chat= ile aynı (takma ad)
-help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-msg =   ?msg=<did>                   önceden doldurur: @<did> (metin mesajı)
+help-url-say =   ?say=<did>                   önceden doldurur: @<did>:say (say fiili)
+help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>:emote (emote fiili)
+help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.

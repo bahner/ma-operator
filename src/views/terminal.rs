@@ -1265,7 +1265,14 @@ fn eval(
                     None => transport::send_text(&target, &body).await,
                 };
                 match result {
-                    Ok(msg_id) => state_async.bind_message_id(cmd_id, msg_id),
+                    Ok(msg_id) => {
+                        // say and emote are fire-and-forget: no reply is expected.
+                        if matches!(verb.as_deref(), Some("say") | Some("emote")) {
+                            state_async.resolve_command_by_id(cmd_id, CommandStatus::Done);
+                        } else {
+                            state_async.bind_message_id(cmd_id, msg_id);
+                        }
+                    }
                     Err(e) => {
                         state_async.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                         let display = e.replace("not logged in", &t("msg-not-logged-in"));
@@ -2022,8 +2029,9 @@ fn help_url() -> Vec<String> {
     vec![
         t("help-header-url"),
         t("help-url-intro"),
-        t("help-url-chat"),
+        t("help-url-msg"),
         t("help-url-say"),
+        t("help-url-emote"),
         t("help-url-example"),
         t("help-url-note"),
         t("help-footer"),

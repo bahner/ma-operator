@@ -3,19 +3,32 @@ use leptos::prelude::*;
 use crate::state::AppState;
 use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
 
-/// Read `?chat=` or `?say=` from the current URL and return the pre-filled
-/// terminal input string (e.g. `"@did:ma:... "`), or `None` if absent.
+/// Read `?msg=`, `?say=`, or `?emote=` from the current URL and return the
+/// pre-filled terminal input string, or `None` if absent.
+///
+/// - `?msg=<did>`   → `@<did> `        (plain text message)
+/// - `?say=<did>`   → `@<did>:say `    (say verb RPC)
+/// - `?emote=<did>` → `@<did>:emote `  (emote verb RPC)
 fn url_prefill() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;
     let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
-    for key in &["chat", "say"] {
-        if let Some(target) = params.get(key) {
-            let target = target.trim().to_string();
-            if !target.is_empty() {
-                // Prepend @ so the terminal grammar treats it as a send target.
-                return Some(format!("@{target} "));
-            }
+    if let Some(target) = params.get("msg") {
+        let target = target.trim().to_string();
+        if !target.is_empty() {
+            return Some(format!("@{target} "));
+        }
+    }
+    if let Some(target) = params.get("say") {
+        let target = target.trim().to_string();
+        if !target.is_empty() {
+            return Some(format!("@{target}:say "));
+        }
+    }
+    if let Some(target) = params.get("emote") {
+        let target = target.trim().to_string();
+        if !target.is_empty() {
+            return Some(format!("@{target}:emote "));
         }
     }
     None
