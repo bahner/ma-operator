@@ -29,7 +29,8 @@ msg-type-help = Napíšte .help pre zoznam príkazov.
 msg-connecting = pripájanie k iroh...
 msg-iroh-ready = iroh endpoint pripravený
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identita nebola nájdená online — spusti '.my.identity:publish @ma', aby si bol dostupný.
+msg-auto-published = DID zverejnené cez lokálne ma ({ $url })
+msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.my.ma:discover' a potom '.my.identity:publish @ma'. Napíš '.help.publish' pre podrobnosti.
 msg-blocked = ⊗ zablokované [{ $cap }]: { $from }
 msg-focus-cleared = fokus vymazaný
 msg-focusing = zameranie na { $did } ako { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = zisťovanie zlyhalo: očakávané `did` začínajúce did
 discover-no-endpoint = varovanie zisťovania: `endpoint_id` chýba v status.json; uložené len DID
 discover-success = ma zistené na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma vytvorený — publikujte cez: .my.identity:publish @ma
+discover-alias-hint =   alias @ma vytvorený — spusti '.my.identity:publish @ma' na zverejnenie svojej identity.
 claim-success = Runtime prevzatý pre { $did }
 claim-conflict = Runtime už prevzatý inou identitou
 claim-http-failed = prevzatie zlyhalo: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   vopred vyplní: @<did>:say (sloves
 help-url-emote =   ?emote=<did>                 vopred vyplní: @<did>:emote (sloveso emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Pole je vopred vyplnené, ale neodoslané — stlač Enter na odoslanie.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                zverejniť svoju identitu v sieti
+help-header-publish = ── zverejnenie identity ─────────────────────────────────────────────────────
+help-publish-intro = Zverejnenie sprístupní tvoju identitu v sieti. Ostatní môžu vyhľadať tvoj DID a kontaktovať ťa.
+help-publish-ma = Na zverejnenie potrebuješ nainštalované ma (lokálny runtime). Prepája ego s IPFS/IPNS v tvojom mene.
+help-publish-steps = Kroky: spusti '.my.ma:discover' na zistenie lokálneho ma, potom '.my.identity:publish @ma'.
+help-publish-without = Bez zverejnenia ťa ostatní nemôžu kontaktovať — aj keď poznajú tvoj DID, nedokážu rozlíšiť tvoj endpoint.

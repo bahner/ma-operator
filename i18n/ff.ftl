@@ -29,7 +29,8 @@ msg-type-help = Winndita .help tawa hisɗaa dabaaji yimɓe.
 msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Mum jeyaa ko yahi e wuro ka jokkondiri — waddu '.my.identity:publish @ma' nde ngon kaaɗitii.
+msg-auto-published = DID hollitaama e nder ma ({ $url })
+msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.my.ma:discover' ɓe '.my.identity:publish @ma'. Windu '.help.publish' ngam tabitinde.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
 msg-focusing = nelitaade { $did } haa { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = yiytaade haaɗaaka: `did` fotde fuɗɗoraade did:ma:, taw
 discover-no-endpoint = kaaɗto yiytaade: `endpoint_id` tawaaka e status.json; DID tan mooftaama
 discover-success = ma yiytaama e { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   hesbu @ma hobbinaama — yettin e: .my.identity:publish @ma
+discover-alias-hint =   tinndi @ma ɓe — laato '.my.identity:publish @ma' ngam jaatugol tigiraaɗe maa.
 claim-success = Runtime ɗaɓɓaama ko { $did }
 claim-conflict = Runtime ɗaɓɓaa ko ɗemngal goɗngal
 claim-http-failed = gollal haaɗaaka: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   ara-ɓulla: @<did>:say (haala say)
 help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>:emote (haala emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter ngam neltude.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                jaatugol tigi maa to laawol
+help-header-publish = ── jaatugol tigi ────────────────────────────────────────────────────────────
+help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mbaawi yiylaade DID maa ngam tawtaade.
+help-publish-ma = Ngam jaatugol, a haani ma (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.
+help-publish-steps = Laaɓol: laato '.my.ma:discover' ngam yiyde ma laawol, ɓe '.my.identity:publish @ma'.
+help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.

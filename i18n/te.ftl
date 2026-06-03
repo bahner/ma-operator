@@ -29,7 +29,8 @@ msg-type-help = ఆదేశాల జాబితా కోసం .help అన�
 msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — '.my.identity:publish @ma' అమలు చేసి చేరుకోదగినదిగా మారండి.
+msg-auto-published = DID స్థానిక ma ({ $url }) ద్వారా ప్రచురించబడింది
+msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.my.ma:discover' అప్పుడు '.my.identity:publish @ma' అమలు చేయండి. వివరాల కోసం '.help.publish' టైప్ చేయండి.
 msg-blocked = ⊗ నిరోధించబడింది [{ $cap }]: { $from }
 msg-focus-cleared = ఫోకస్ తొలగించబడింది
 msg-focusing = { $did } ని { $prompt } గా ఫోకస్ చేస్తోంది
@@ -91,7 +92,7 @@ discover-invalid-did = డిస్కవర్ విఫలమైంది: `di
 discover-no-endpoint = డిస్కవర్ హెచ్చరిక: status.json లో `endpoint_id` లేదు; DID మాత్రమే సేవ్ అయింది
 discover-success = { $url } వద్ద ma కనుగొనబడింది
 discover-did-line = DID: { $did }
-discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — ప్రచురించండి: .my.identity:publish @ma
+discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — మీ గుర్తింపు ప్రచురించడానికి '.my.identity:publish @ma' అమలు చేయండి.
 claim-success = { $did } కోసం రన్‌టైమ్ క్లెయిమ్ చేయబడింది
 claim-conflict = రన్‌టైమ్ ఇప్పటికే మరొక గుర్తింపు ద్వారా క్లెయిమ్ చేయబడింది
 claim-http-failed = క్లెయిమ్ విఫలమైంది: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   ముందే నింపుత
 help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>:emote (emote క్రియ)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                నెట్‌వర్క్‌లో మీ గుర్తింపు ప్రచురించండి
+help-header-publish = ── గుర్తింపు ప్రచురణ ────────────────────────────────────────────────────────
+help-publish-intro = ప్రచురణ మీ గుర్తింపును నెట్‌వర్క్‌లో కనుగొనగలిగేలా చేస్తుంది. ఇతరులు మీ DID వెతికి మిమ్మల్ని చేరుకోవచ్చు.
+help-publish-ma = ప్రచురించడానికి ma (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.
+help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.my.ma:discover' అమలు చేయండి, తర్వాత '.my.identity:publish @ma'.
+help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.

@@ -29,7 +29,8 @@ msg-type-help = Nhập .help để xem danh sách lệnh.
 msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Danh tính không tìm thấy trực tuyến — chạy '.my.identity:publish @ma' để có thể tiếp cận được.
+msg-auto-published = DID được xuất bản qua ma cục bộ ({ $url })
+msg-identity-not-published = Không tìm thấy danh tính trực tuyến — nếu ma được cài đặt cục bộ, hãy chạy '.my.ma:discover' rồi '.my.identity:publish @ma'. Gõ '.help.publish' để xem chi tiết.
 msg-blocked = ⊗ bị chặn [{ $cap }]: { $from }
 msg-focus-cleared = đã xóa tiêu điểm
 msg-focusing = đang tập trung { $did } thành { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = khám phá thất bại: `did` phải bắt đầu bằng
 discover-no-endpoint = cảnh báo khám phá: `endpoint_id` thiếu trong status.json; chỉ lưu DID
 discover-success = đã khám phá ma tại { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   đã tạo bí danh @ma — xuất bản: .my.identity:publish @ma
+discover-alias-hint =   bí danh @ma đã được tạo — chạy '.my.identity:publish @ma' để xuất bản danh tính của bạn.
 claim-success = Runtime đã được yêu cầu cho { $did }
 claim-conflict = Runtime đã được yêu cầu bởi danh tính khác
 claim-http-failed = yêu cầu thất bại: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   điền sẵn: @<did>:say (động
 help-url-emote =   ?emote=<did>                 điền sẵn: @<did>:emote (động từ emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                xuất bản danh tính của bạn lên mạng
+help-header-publish = ── xuất bản danh tính ───────────────────────────────────────────────────────
+help-publish-intro = Xuất bản giúp danh tính của bạn được tìm thấy trên mạng. Người khác có thể tra cứu DID của bạn để liên lạc.
+help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
+help-publish-steps = Các bước: chạy '.my.ma:discover' để phát hiện ma cục bộ, sau đó '.my.identity:publish @ma'.
+help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.

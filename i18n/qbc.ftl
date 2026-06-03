@@ -31,7 +31,8 @@ msg-type-help = Showxa .help fo kowl komands.
 msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identiti peng no find on-ring — run '.my.identity:publish @ma' so ships can ping you.
+msg-auto-published = DID push out, local ma ({ $url })
+msg-identity-not-published = Inyalowda pashang nowit kewe na la tube — si ma besh da gut, run '.my.ma:discover' den '.my.identity:publish @ma'. Slip '.help.publish' fo detay.
 msg-blocked = ⊗ hamma [{ $cap }]: { $from }
 msg-focus-cleared = fokus na du
 msg-focusing = fokus { $did } as { $prompt }
@@ -93,7 +94,7 @@ discover-invalid-did = diskova hámfalla: `did` gonya showxa did:ma: diching, to
 discover-no-endpoint = diskova beleti: `endpoint_id` na finyish wit status.json; DID oyedeng hol
 discover-success = ma diskova at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma mek finyish — sendowt wit: .my.identity:publish @ma
+discover-alias-hint =   @ma alias kowl da — run '.my.identity:publish @ma' fo pashang inyalowda setara.
 claim-success = Runtime klaim fo { $did }
 claim-conflict = Runtime ta klaim by bifo selfmang
 claim-http-failed = kolowda hámfalla: HTTP { $status }
@@ -286,3 +287,10 @@ help-url-say =   ?say=<did>                   fill befo: @<did>:say (say verd)
 help-url-emote =   ?emote=<did>                 fill befo: @<did>:emote (emote verd)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input fill but no sen — peng Enter fo sen.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                pashang inyalowda setara to da ring
+help-header-publish = ── pashang setara ───────────────────────────────────────────────────────────
+help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID inyalowda setara fo da kontak.
+help-publish-ma = Fo pashang, ma (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
+help-publish-steps = Stap: run '.my.ma:discover' fo find local ma, den '.my.identity:publish @ma'.
+help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.

@@ -29,7 +29,8 @@ msg-type-help = Rubuta .help don jerin umarni.
 msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Ba a samu asalinku ta yanar gizo ba — gudanar da '.my.identity:publish @ma' don zama mai sauki ga wasu.
+msg-auto-published = An buga DID ta hanyar ma na gida ({ $url })
+msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.my.ma:discover' sannan '.my.identity:publish @ma'. Rubuta '.help.publish' don cikakken bayani.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
 msg-focusing = ana mai da hankali { $did } a matsayin { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = bincike ya kasa: `did` dole ne ya fara da did:ma:, an sam
 discover-no-endpoint = gargadin bincike: `endpoint_id` yana rasa a status.json; an ajiye DID kawai
 discover-success = an gano ma a { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   an ƙirƙiri laƙabi @ma — wallafa da: .my.identity:publish @ma
+discover-alias-hint =   an ƙirƙiri laƙabi @ma — gudanar da '.my.identity:publish @ma' don wallafa ainihinku.
 claim-success = an ɗauki Runtime don { $did }
 claim-conflict = wani asali ya riga ya ɗauki Runtime
 claim-http-failed = ɗaukar ya kasa: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   cika a gaba: @<did>:say (fi'ili sa
 help-url-emote =   ?emote=<did>                 cika a gaba: @<did>:emote (fi'ili emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don aika.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                wallafa ainihinku a cikin hanyar sadarwa
+help-header-publish = ── wallafa ainihi ───────────────────────────────────────────────────────────
+help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanyar sadarwa. Wasu na iya neman DID ɗinku don tuntubarku.
+help-publish-ma = Don wallafawa, kuna buƙatar ma (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.
+help-publish-steps = Matakan: gudanar da '.my.ma:discover' don gano ma na cikin gida, sannan '.my.identity:publish @ma'.
+help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.

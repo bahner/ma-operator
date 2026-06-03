@@ -29,7 +29,8 @@ msg-type-help = Введите .help для списка команд.
 msg-connecting = подключение к iroh...
 msg-iroh-ready = iroh endpoint готов
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Идентичность не найдена онлайн — выполни '.my.identity:publish @ma', чтобы стать доступным.
+msg-auto-published = DID опубликован через локальный ma ({ $url })
+msg-identity-not-published = Личность не найдена онлайн — если ma установлен локально, выполни '.my.ma:discover', а затем '.my.identity:publish @ma'. Напиши '.help.publish' для деталей.
 msg-blocked = ⊗ заблокировано [{ $cap }]: { $from }
 msg-focus-cleared = фокус снят
 msg-focusing = фокус на { $did } как { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = обнаружение не удалось: ожидал�
 discover-no-endpoint = предупреждение: `endpoint_id` отсутствует в status.json; сохранён только DID
 discover-success = ma обнаружен по { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдоним @ma создан — опубликуйте: .my.identity:publish @ma
+discover-alias-hint =   псевдоним @ma создан — выполни '.my.identity:publish @ma' для публикации своей личности.
 claim-success = среда выполнения заявлена для { $did }
 claim-conflict = среда выполнения уже заявлена другой личностью
 claim-http-failed = заявка не удалась: HTTP { $status }
@@ -283,3 +284,10 @@ help-url-say =   ?say=<did>                   предзаполняет: @<did>
 help-url-emote =   ?emote=<did>                 предзаполняет: @<did>:emote (глагол emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Поле заполнено, но не отправлено — нажми Enter для отправки.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                публикация личности в сети
+help-header-publish = ── публикация личности ──────────────────────────────────────────────────────
+help-publish-intro = Публикация делает твою личность доступной для поиска в сети. Другие могут найти твой DID, чтобы связаться с тобой.
+help-publish-ma = Для публикации нужен установленный ma (локальная среда выполнения). Он соединяет ego с IPFS/IPNS от твоего имени.
+help-publish-steps = Шаги: выполни '.my.ma:discover' для обнаружения локального ma, затем '.my.identity:publish @ma'.
+help-publish-without = Без публикации другие не смогут тебя найти — даже зная твой DID, они не смогут определить твой endpoint.

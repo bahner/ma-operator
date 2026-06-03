@@ -29,7 +29,8 @@ msg-type-help = Type .help fi see list of commands.
 msg-connecting = e dey connect to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Dem no find your identity online — run '.my.identity:publish @ma' so people fit reach you.
+msg-auto-published = DID don publish through local ma ({ $url })
+msg-identity-not-published = Identity no dey online — if ma don install for your side, run '.my.ma:discover' den '.my.identity:publish @ma'. Type '.help.publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = discover fail: expected `did` fi start with did:ma:, got 
 discover-no-endpoint = discover warning: `endpoint_id` nor dey status.json; stored DID only
 discover-success = ma discovered for { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma created — publish with: .my.identity:publish @ma
+discover-alias-hint =   alias @ma don create — run '.my.identity:publish @ma' make you publish your identity.
 claim-success = Runtime claimed for { $did }
 claim-conflict = Runtime already claimed by another identity
 claim-http-failed = claim fail: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   put before: @<did>:say (verb say)
 help-url-emote =   ?emote=<did>                 put before: @<did>:emote (verb emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input don fill but dem no send am — press Enter make e send.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publish your identity for the network
+help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
+help-publish-intro = Publishing go make your identity findable for the network. Other people fit search your DID to reach you.
+help-publish-ma = To publish, you need ma (local runtime) installed. E go connect ego to IPFS/IPNS for your side.
+help-publish-steps = Steps: run '.my.ma:discover' to find your local ma, den '.my.identity:publish @ma'.
+help-publish-without = Without publishing, other people no fit reach you — even if dem sabi your DID, dem no fit resolve your endpoint.

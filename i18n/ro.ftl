@@ -29,7 +29,8 @@ msg-type-help = Tastați .help pentru o listă de comenzi.
 msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identitate negăsită online — rulează '.my.identity:publish @ma' pentru a deveni accesibil.
+msg-auto-published = DID publicat prin ma local ({ $url })
+msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.my.ma:discover' apoi '.my.identity:publish @ma'. Tastează '.help.publish' pentru detalii.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
 msg-focusing = focalizare pe { $did } ca { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = descoperire eșuată: așteptat `did` începând cu did:m
 discover-no-endpoint = avertisment descoperire: `endpoint_id` absent în status.json; salvat doar DID
 discover-success = ma descoperit la { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma creat — publicați prin: .my.identity:publish @ma
+discover-alias-hint =   alias @ma creat — rulează '.my.identity:publish @ma' pentru a-ți publica identitatea.
 claim-success = Runtime revendicat pentru { $did }
 claim-conflict = Runtime deja revendicat de o altă identitate
 claim-http-failed = revendicare eșuată: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   precompletează: @<did>:say (verb 
 help-url-emote =   ?emote=<did>                 precompletează: @<did>:emote (verb emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentru a trimite.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publicarea identității în rețea
+help-header-publish = ── publicarea identității ───────────────────────────────────────────────────
+help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alții pot căuta DID-ul tău pentru a te contacta.
+help-publish-ma = Pentru a publica, ai nevoie de ma (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
+help-publish-steps = Pași: rulează '.my.ma:discover' pentru a detecta ma-ul local, apoi '.my.identity:publish @ma'.
+help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.

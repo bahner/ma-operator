@@ -29,7 +29,8 @@ msg-type-help = Tape .help pou yon lis kòmand.
 msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Idantite pa jwenn sou entènèt — egzekite '.my.identity:publish @ma' pou ou ka jwenn.
+msg-auto-published = DID pibliye via ma lokal ({ $url })
+msg-identity-not-published = Idantite pa jwenn sou entènèt — si ou gen ma ki instalé lokalman, kouri '.my.ma:discover' epi '.my.identity:publish @ma'. Tape '.help.publish' pou detay.
 msg-blocked = ⊗ bloke [{ $cap }]: { $from }
 msg-focus-cleared = fòkis efase
 msg-focusing = fòkis { $did } kòm { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = dekouvèt echwe: te atann `did` kòmanse ak did:ma:, jwen
 discover-no-endpoint = avètisman dekouvèt: `endpoint_id` manke nan status.json; sèlman DID estoke
 discover-success = ma dekouvri nan { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma kreye — pibliye ak: .my.identity:publish @ma
+discover-alias-hint =   alias @ma te kreye — kouri '.my.identity:publish @ma' pou pibliye idantite ou.
 claim-success = Runtime reklame pou { $did }
 claim-conflict = Runtime deja reklame pa yon lòt idantite
 claim-http-failed = reklamasyon echwe: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   ranpli davans: @<did>:say (vèb sa
 help-url-emote =   ?emote=<did>                 ranpli davans: @<did>:emote (vèb emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                pibliye idantite ou sou rezo a
+help-header-publish = ── pibliye idantite ─────────────────────────────────────────────────────────
+help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka chèche DID ou pou kontakte ou.
+help-publish-ma = Pou pibliye, ou bezwen ma (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.
+help-publish-steps = Etap: kouri '.my.ma:discover' pou detekte ma lokal, epi '.my.identity:publish @ma'.
+help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.

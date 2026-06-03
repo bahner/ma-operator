@@ -29,7 +29,8 @@ msg-type-help = Raitim .help bilong lukim lis bilong komand.
 msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Ol i no painim yu long intaneth — putim wok '.my.identity:publish @ma' bilong ol i ken painim yu.
+msg-auto-published = DID i bin publishim long local ma ({ $url })
+msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.my.ma:discover' na '.my.identity:publish @ma'. Rait '.help.publish' bilong kisim sampela save.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokus i klia pinis
 msg-focusing = fokus { $did } olsem { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = discoveri i no wok: i ekspektim `did` i stat long did:ma:
 discover-no-endpoint = woning discoveri: `endpoint_id` i no stap long status.json; seivim DID tasol
 discover-success = ma discoveri long { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma i mekim — publishim wantaim: .my.identity:publish @ma
+discover-alias-hint =   alias @ma i kamap pinis — ran '.my.identity:publish @ma' bilong putim nem bilong yu antap.
 claim-success = Runtime klemim bilong { $did }
 claim-conflict = Runtime i klemim pinis long narapela identiti
 claim-http-failed = klem i no wok: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   pulapim pastaim: @<did>:say (vep s
 help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>:emote (vep emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                putim nem bilong yu antap long net
+help-header-publish = ── putim nem antap ──────────────────────────────────────────────────────────
+help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol arapela man inap painim DID bilong yu bilong toktok wantaim yu.
+help-publish-ma = Bilong putim nem antap, yu nidim ma (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.
+help-publish-steps = Ol hap: ran '.my.ma:discover' bilong painim local ma, na '.my.identity:publish @ma'.
+help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.

@@ -29,7 +29,8 @@ msg-type-help = Unesite .help za popis naredbi.
 msg-connecting = spajanje na iroh...
 msg-iroh-ready = iroh krajnja točka spremna
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identitet nije pronađen online — pokreni '.my.identity:publish @ma' da postaneš dostupan.
+msg-auto-published = DID objavljen putem lokalnog ma ({ $url })
+msg-identity-not-published = Identitet nije pronađen online — ako imaš ma instaliran lokalno, pokreni '.my.ma:discover' i zatim '.my.identity:publish @ma'. Upiši '.help.publish' za pojedinosti.
 msg-blocked = ⊗ blokirano [{ $cap }]: { $from }
 msg-focus-cleared = fokus obrisan
 msg-focusing = fokusiranje na { $did } kao { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = otkrivanje nije uspjelo: očekivano `did` koje počinje s
 discover-no-endpoint = upozorenje otkrivanja: `endpoint_id` odsutan u status.json; pohranjen samo DID
 discover-success = ma otkriveno na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   pseudonim @ma stvoren — objavite s: .my.identity:publish @ma
+discover-alias-hint =   alias @ma stvoren — pokreni '.my.identity:publish @ma' za objavu svog identiteta.
 claim-success = Izvođenje zatraženo za { $did }
 claim-conflict = Izvođenje već zatraženo od drugog identiteta
 claim-http-failed = zahtjev nije uspio: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   unaprijed ispunjava: @<did>:say (g
 help-url-emote =   ?emote=<did>                 unaprijed ispunjava: @<did>:emote (glagol emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Unos je unaprijed ispunjen ali nije poslan — pritisni Enter za slanje.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                objaviti identitet u mreži
+help-header-publish = ── objava identiteta ────────────────────────────────────────────────────────
+help-publish-intro = Objavljivanje čini tvoj identitet pronađljivim u mreži. Drugi mogu potražiti tvoj DID da te kontaktiraju.
+help-publish-ma = Za objavu trebaš instaliran ma (lokalno izvršno okruženje). Ono povezuje ego s IPFS/IPNS u tvoje ime.
+help-publish-steps = Koraci: pokreni '.my.ma:discover' za otkrivanje lokalnog ma, zatim '.my.identity:publish @ma'.
+help-publish-without = Bez objave drugi te ne mogu doseći — čak i ako znaju tvoj DID, ne mogu razriješiti tvoj endpoint.

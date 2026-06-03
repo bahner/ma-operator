@@ -29,7 +29,8 @@ msg-type-help = Ierakstiet .help, lai iegūtu komandu sarakstu.
 msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identitāte nav atrasta tiešsaistē — palaid '.my.identity:publish @ma', lai kļūtu sasniedzams.
+msg-auto-published = DID publicēts caur lokālo ma ({ $url })
+msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.my.ma:discover' un pēc tam '.my.identity:publish @ma'. Raksti '.help.publish' detaļām.
 msg-blocked = ⊗ bloķēts [{ $cap }]: { $from }
 msg-focus-cleared = fokuss notīrīts
 msg-focusing = fokusē { $did } kā { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = atklāšana neizdevās: gaidīja `did` sākumu ar did:ma:
 discover-no-endpoint = atklāšanas brīdinājums: `endpoint_id` trūkst status.json; saglabāja tikai DID
 discover-success = ma atklāts { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   aizstājvārds @ma izveidots — publicējiet ar: .my.identity:publish @ma
+discover-alias-hint =   aizstājvārds @ma izveidots — izpildi '.my.identity:publish @ma', lai publicētu savu identitāti.
 claim-success = Izpildlaiks pieprasīts { $did }
 claim-conflict = Izpildlaiks jau pieprasīts citas identitātes
 claim-http-failed = pieprasīšana neizdevās: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>:say (da
 help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>:emote (darbības vārds emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospied Enter, lai nosūtītu.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                identitātes publicēšana tīklā
+help-header-publish = ── identitātes publicēšana ──────────────────────────────────────────────────
+help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Citi var meklēt tavu DID, lai sazinātos ar tevi.
+help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts ma (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.
+help-publish-steps = Soļi: izpildi '.my.ma:discover', lai noteiktu vietējo ma, pēc tam '.my.identity:publish @ma'.
+help-publish-without = Bez publicēšanas citi nevar tevi sasniegt — pat zinot tavu DID, viņi nevar atrisināt tavu endpoint.

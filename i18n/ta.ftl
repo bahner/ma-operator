@@ -29,7 +29,8 @@ msg-type-help = கட்டளைகளின் பட்டியலுக்
 msg-connecting = iroh உடன் இணைக்கப்படுகிறது...
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = அடையாளம் ஆன்லைனில் காணப்படவில்லை — '.my.identity:publish @ma' இயக்கி அணுகக்கூடியதாகுங்கள்.
+msg-auto-published = DID உள்ளூர் ma ({ $url }) வழியாக வெளியிடப்பட்டது
+msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.my.ma:discover' பின்னர் '.my.identity:publish @ma' இயக்கவும். விவரங்களுக்கு '.help.publish' தட்டச்சு செய்யவும்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
 msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது
@@ -91,7 +92,7 @@ discover-invalid-did = கண்டுபிடித்தல் தோல்�
 discover-no-endpoint = கண்டுபிடித்தல் எச்சரிக்கை: status.json இல் `endpoint_id` இல்லை; DID மட்டும் சேமிக்கப்பட்டது
 discover-success = { $url } இல் ma கண்டுபிடிக்கப்பட்டது
 discover-did-line = DID: { $did }
-discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — வெளியிடவும்: .my.identity:publish @ma
+discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — உங்கள் அடையாளத்தை வெளியிட '.my.identity:publish @ma' இயக்கவும்.
 claim-success = { $did } க்கு இயக்க நேரம் கோரப்பட்டது
 claim-conflict = இயக்க நேரம் ஏற்கனவே மற்றொரு அடையாளத்தால் கோரப்பட்டுள்ளது
 claim-http-failed = கோரிக்கை தோல்வியடைந்தது: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   முன்னரே நிரப
 help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>:emote (emote வினை)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                நெட்வொர்க்கில் உங்கள் அடையாளத்தை வெளியிடுங்கள்
+help-header-publish = ── அடையாள வெளியீடு ──────────────────────────────────────────────────────────
+help-publish-intro = வெளியீடு உங்கள் அடையாளத்தை நெட்வொர்க்கில் கண்டறியக்கூடியதாக செய்கிறது. மற்றவர்கள் உங்கள் DID தேடி உங்களை அடையலாம்.
+help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
+help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.my.ma:discover' இயக்கவும், பின்னர் '.my.identity:publish @ma'.
+help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.

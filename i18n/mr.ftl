@@ -29,7 +29,8 @@ msg-type-help = आदेश सूचीसाठी .help टाइप कर�
 msg-connecting = iroh ला जोडले जात आहे...
 msg-iroh-ready = iroh एंडपॉइंट तयार
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = ओळख ऑनलाइन आढळली नाही — संपर्कयोग्य होण्यासाठी '.my.identity:publish @ma' चालवा।
+msg-auto-published = DID स्थानिक ma ({ $url }) द्वारे प्रकाशित झाला
+msg-identity-not-published = ओळख ऑनलाइन सापडली नाही — जर ma स्थानिकपणे स्थापित असेल, तर '.my.ma:discover' नंतर '.my.identity:publish @ma' चालवा। तपशीलांसाठी '.help.publish' टाइप करा।
 msg-blocked = ⊗ अवरोधित [{ $cap }]: { $from }
 msg-focus-cleared = फोकस साफ केले
 msg-focusing = { $did } ला { $prompt } म्हणून फोकस केले जात आहे
@@ -91,7 +92,7 @@ discover-invalid-did = शोध अयशस्वी: `did` did:ma: ने स
 discover-no-endpoint = शोध चेतावणी: status.json मध्ये `endpoint_id` नाही; फक्त DID संग्रहित
 discover-success = { $url } वर ma सापडला
 discover-did-line = DID: { $did }
-discover-alias-hint =   टोपणनाव @ma तयार केले — प्रकाशित करा: .my.identity:publish @ma
+discover-alias-hint =   टोपणनाव @ma तयार केले — आपली ओळख प्रकाशित करण्यासाठी '.my.identity:publish @ma' चालवा।
 claim-success = { $did } साठी रनटाइम दाखल केला
 claim-conflict = रनटाइम आधीच दुसऱ्या ओळखीने दाखल केला आहे
 claim-http-failed = दाखल करणे अयशस्वी: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   पूर्व-भरणे: @<di
 help-url-emote =   ?emote=<did>                 पूर्व-भरणे: @<did>:emote (emote क्रियापद)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   इनपुट पूर्व-भरलेले आहे पण पाठवले नाही — पाठवण्यासाठी Enter दाबा.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                नेटवर्कवर ओळख प्रकाशित करा
+help-header-publish = ── ओळख प्रकाशन ──────────────────────────────────────────────────────────────
+help-publish-intro = प्रकाशन आपली ओळख नेटवर्कवर शोधण्यायोग्य बनवते। इतर आपला DID शोधून तुमच्याशी संपर्क साधू शकतात।
+help-publish-ma = प्रकाशित करण्यासाठी ma (स्थानिक रनटाइम) स्थापित करणे आवश्यक आहे. ते आपल्या वतीने ego ला IPFS/IPNS शी जोडते।
+help-publish-steps = पायऱ्या: स्थानिक ma शोधण्यासाठी '.my.ma:discover' चालवा, नंतर '.my.identity:publish @ma'।
+help-publish-without = प्रकाशनाशिवाय इतर तुमच्यापर्यंत पोहोचू शकत नाहीत — तुमचा DID माहीत असला तरी ते तुमचा endpoint सोडवू शकत नाहीत।

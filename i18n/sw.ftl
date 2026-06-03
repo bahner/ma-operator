@@ -29,7 +29,8 @@ msg-type-help = Andika .help kupata orodha ya amri.
 msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Utambulisho haupatikani mtandaoni — endesha '.my.identity:publish @ma' ili uweze kupatikana.
+msg-auto-published = DID imechapishwa kupitia ma ya ndani ({ $url })
+msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.my.ma:discover' kisha '.my.identity:publish @ma'. Andika '.help.publish' kwa maelezo.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
 msg-focusing = kuzingatia { $did } kama { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = ugunduzi umeshindwa: ilitarajiwa `did` kuanza na did:ma:,
 discover-no-endpoint = onyo la ugunduzi: `endpoint_id` haipo katika status.json; DID tu ilihifadhiwa
 discover-success = ma imegunduliwa katika { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   jina la kubadilisha @ma limeundwa — chapisha na: .my.identity:publish @ma
+discover-alias-hint =   jina bandia @ma limeundwa — endesha '.my.identity:publish @ma' kutangaza utambulisho wako.
 claim-success = Wakati wa utekelezaji umedaiwa kwa { $did }
 claim-conflict = Wakati wa utekelezaji tayari umedaiwa na utambulisho mwingine
 claim-http-failed = kudai kumeshindwa: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   jaza mapema: @<did>:say (kitenzi s
 help-url-emote =   ?emote=<did>                 jaza mapema: @<did>:emote (kitenzi emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                chapisha utambulisho wako kwenye mtandao
+help-header-publish = ── kuchapisha utambulisho ────────────────────────────────────────────────────
+help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtandao. Wengine wanaweza kutafuta DID yako kukufikia.
+help-publish-ma = Ili kuchapisha, unahitaji ma (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.
+help-publish-steps = Hatua: endesha '.my.ma:discover' kugundua ma ya ndani, kisha '.my.identity:publish @ma'.
+help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.

@@ -29,7 +29,8 @@ msg-type-help = .help と入力するとコマンド一覧が表示されます�
 msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = IDドキュメントがオンラインで見つかりません — '.my.identity:publish @ma' を実行して到達可能になってください。
+msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
+msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.my.ma:discover'を実行してから'.my.identity:publish @ma'を実行してください。詳細は'.help.publish'と入力してください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
 msg-focusing = { $did } を { $prompt } としてフォーカス中
@@ -91,7 +92,7 @@ discover-invalid-did = 検出に失敗しました: `did` は did:ma: で始ま�
 discover-no-endpoint = 検出の警告: status.json に `endpoint_id` がありません。DID のみ保存しました
 discover-success = { $url } で ma を検出しました
 discover-did-line = DID: { $did }
-discover-alias-hint =   エイリアス @ma を作成しました — 次で公開してください: .my.identity:publish @ma
+discover-alias-hint =   エイリアス @ma が作成されました — '.my.identity:publish @ma'を実行して身元を公開してください。
 claim-success = { $did } のランタイムを要求しました
 claim-conflict = ランタイムはすでに別のアイデンティティにより要求されています
 claim-http-failed = 要求に失敗しました: HTTP { $status }
@@ -276,3 +277,10 @@ help-url-say =   ?say=<did>                   事前入力: @<did>:say（say動�
 help-url-emote =   ?emote=<did>                 事前入力: @<did>:emote（emote動詞）
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                ネットワークに身元を公開する
+help-header-publish = ── 身元の公開 ────────────────────────────────────────────────────────────────
+help-publish-intro = 公開することでネットワーク上で身元を見つけられるようになります。他の人はDIDを検索してあなたに連絡できます。
+help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。
+help-publish-steps = 手順：'.my.ma:discover'でローカルmaを検出し、'.my.identity:publish @ma'を実行してください。
+help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。

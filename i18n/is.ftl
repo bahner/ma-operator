@@ -29,7 +29,8 @@ msg-type-help = Sláðu inn .help til að sjá lista yfir skipanir.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Auðkenni fannst ekki á netinu — keyrðu '.my.identity:publish @ma' til að verða aðgengilegt.
+msg-auto-published = DID birt í gegnum staðbundið ma ({ $url })
+msg-identity-not-published = Auðkenni finnst ekki á netinu — ef ma er uppsett á þessum tölvu, keyrðu '.my.ma:discover' og svo '.my.identity:publish @ma'. Skrifaðu '.help.publish' fyrir frekari upplýsingar.
 msg-blocked = ⊗ lokað á [{ $cap }]: { $from }
 msg-focus-cleared = fókus hreinsaður
 msg-focusing = beinir athygli að { $did } sem { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = uppgötvun mistókst: bjóst við að `did` byrjaði á d
 discover-no-endpoint = viðvörun uppgötvunar: `endpoint_id` vantar í status.json; vistuðum aðeins DID
 discover-success = ma uppgötvað við { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   samnefni @ma búið til — birtið með: .my.identity:publish @ma
+discover-alias-hint =   gælunafn @ma búið til — keyrðu '.my.identity:publish @ma' til að birta auðkenni þitt.
 claim-success = Keyrsluumhverfi gert tilkall til fyrir { $did }
 claim-conflict = Keyrsluumhverfi þegar gert tilkall til af annarri auðkenni
 claim-http-failed = tilkall mistókst: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   fyllir fyrirfram: @<did>:say (sagn
 help-url-emote =   ?emote=<did>                 fyllir fyrirfram: @<did>:emote (sagnorð emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inntakið er fyrirfram fyllt en ekki sent — ýttu á Enter til að senda.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                birta auðkenni þitt á netinu
+help-header-publish = ── birting auðkennis ────────────────────────────────────────────────────────
+help-publish-intro = Birting gerir auðkenni þitt leitanlegt á netinu. Aðrir geta leitað að DID þínu til að ná í þig.
+help-publish-ma = Til að birta þarftu ma (staðbundið keyrsluumhverfi) uppsett. Það tengir ego við IPFS/IPNS fyrir þína hönd.
+help-publish-steps = Skref: keyrðu '.my.ma:discover' til að finna staðbundið ma, síðan '.my.identity:publish @ma'.
+help-publish-without = Án birtingar geta aðrir ekki náð í þig — jafnvel þótt þeir þekki DID þitt geta þeir ekki leyst upp endpoint þinn.

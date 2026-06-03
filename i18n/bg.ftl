@@ -29,7 +29,8 @@ msg-type-help = Въведете .help за списък с команди.
 msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Идентичността не е намерена онлайн — изпълни '.my.identity:publish @ma', за да станеш достъпен.
+msg-auto-published = DID публикуван чрез локален ma ({ $url })
+msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.my.ma:discover' и след това '.my.identity:publish @ma'. Напиши '.help.publish' за подробности.
 msg-blocked = ⊗ блокирано [{ $cap }]: { $from }
 msg-focus-cleared = фокусът е изчистен
 msg-focusing = фокусиране върху { $did } като { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = откриването е неуспешно: очакв�
 discover-no-endpoint = предупреждение при откриване: `endpoint_id` липсва в status.json; запазен само DID
 discover-success = ma е открито на { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдоним @ma създаден — публикувайте с: .my.identity:publish @ma
+discover-alias-hint =   псевдоним @ma създаден — изпълни '.my.identity:publish @ma' за публикуване на самоличността ти.
 claim-success = Средата за изпълнение е заявена за { $did }
 claim-conflict = Средата за изпълнение вече е заявена от друга идентичност
 claim-http-failed = заявяването е неуспешно: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   предварително поп�
 help-url-emote =   ?emote=<did>                 предварително попълва: @<did>:emote (глагол emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Полето е предварително попълнено, но не изпратено — натисни Enter за изпращане.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                публикуване на самоличността ти в мрежата
+help-header-publish = ── публикуване на самоличност ───────────────────────────────────────────────
+help-publish-intro = Публикуването прави самоличността ти намираема в мрежата. Другите могат да потърсят твоя DID, за да те достигнат.
+help-publish-ma = За публикуване е необходим инсталиран ma (локален runtime). Той свързва ego с IPFS/IPNS от твое име.
+help-publish-steps = Стъпки: изпълни '.my.ma:discover' за намиране на локалния ma, след което '.my.identity:publish @ma'.
+help-publish-without = Без публикуване другите не могат да те достигнат — дори да знаят твоя DID, не могат да разрешат твоя endpoint.

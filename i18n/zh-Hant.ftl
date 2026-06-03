@@ -29,7 +29,8 @@ msg-type-help = 輸入 .help 查看指令清單。
 msg-connecting = 正在連線到 iroh...
 msg-iroh-ready = iroh 端點就緒
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = 未在網上找到身份 — 執行 '.my.identity:publish @ma' 以便成為可聯絡的。
+msg-auto-published = DID 已透過本地 ma ({ $url }) 發布
+msg-identity-not-published = 未在線找到身份 — 如果本地安裝了 ma，請執行 '.my.ma:discover' 然後 '.my.identity:publish @ma'。輸入 '.help.publish' 查看詳情。
 msg-blocked = ⊗ 已封鎖 [{ $cap }]: { $from }
 msg-focus-cleared = 焦點已清除
 msg-focusing = 將 { $did } 聚焦為 { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = 探索失敗：期望 `did` 以 did:ma: 開頭，得到 `
 discover-no-endpoint = 探索警告：status.json 中缺少 `endpoint_id`；僅儲存了 DID
 discover-success = 已在 { $url } 探索到 ma
 discover-did-line = DID: { $did }
-discover-alias-hint =   別名 @ma 已建立 — 發佈指令: .my.identity:publish @ma
+discover-alias-hint =   已建立別名 @ma — 執行 '.my.identity:publish @ma' 以發布你的身份。
 claim-success = 執行階段已為 { $did } 宣告
 claim-conflict = 執行階段已被另一身分宣告
 claim-http-failed = 宣告失敗：HTTP { $status }
@@ -283,3 +284,10 @@ help-url-say =   ?say=<did>                   預填：@<did>:say（say 動詞�
 help-url-emote =   ?emote=<did>                 預填：@<did>:emote（emote 動詞）
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                將你的身份發布到網路
+help-header-publish = ── 發布身份 ──────────────────────────────────────────────────────────────────
+help-publish-intro = 發布使你的身份在網路上可被找到。其他人可以查找你的 DID 來聯繫你。
+help-publish-ma = 發布需要安裝 ma（本地執行環境）。它代表你將 ego 連接到 IPFS/IPNS。
+help-publish-steps = 步驟：執行 '.my.ma:discover' 偵測本地 ma，然後 '.my.identity:publish @ma'。
+help-publish-without = 未發布時，其他人無法聯繫你 — 即使知道你的 DID，也無法解析你的 endpoint。

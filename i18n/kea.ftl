@@ -29,7 +29,8 @@ msg-type-help = Tipa .help pa lista di komandu.
 msg-connecting = konektandu a iroh...
 msg-iroh-ready = pontu iroh prontu
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identidadi ka atxadu na linia — kurri '.my.identity:publish @ma' pa sê atiníbel.
+msg-auto-published = DID pablikadu via ma lokal ({ $url })
+msg-identity-not-published = Idantidadi ka acha na intanet — si bu ten ma instaladu lokal, kori '.my.ma:discover' dipus '.my.identity:publish @ma'. Skriva '.help.publish' pa ditailyu.
 msg-blocked = ⊗ blokadu [{ $cap }]: { $from }
 msg-focus-cleared = foku limpadu
 msg-focusing = foku { $did } komo { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = diskuberta falhadu: speráva `did` kumesá ku did:ma:, at
 discover-no-endpoint = avizu diskuberta: `endpoint_id` falta na status.json; só DID gravadu
 discover-success = ma deskubertu na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma kriadu — publiká ku: .my.identity:publish @ma
+discover-alias-hint =   alias @ma ta kriadu — kori '.my.identity:publish @ma' pa publika bo idantidadi.
 claim-success = Runtime reklamadu pa { $did }
 claim-conflict = Runtime ja reklamadu pa otra identidadi
 claim-http-failed = reklamason falhadu: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   mete antis: @<did>:say (verbu say)
 help-url-emote =   ?emote=<did>                 mete antis: @<did>:emote (verbu emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Entrada sta metida ma ka manda ainda — preme Enter pa manda.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publika bo idantidadi na rede
+help-header-publish = ── publika idantidadi ───────────────────────────────────────────────────────
+help-publish-intro = Publikason fazi bo idantidadi atxável na rede. Otus podi txuba bo DID pa kontakta ku bu.
+help-publish-ma = Pa publika, bu ta prexisa ma (runtime lokal) instaladu. El liga ego ku IPFS/IPNS na bo nomi.
+help-publish-steps = Passu: kori '.my.ma:discover' pa diteta ma lokal, dipus '.my.identity:publish @ma'.
+help-publish-without = Sin publikason, otus ka pa konsigi atingi bu — mes ki es sabi bo DID, es ka pa rezolvi bo endpoint.

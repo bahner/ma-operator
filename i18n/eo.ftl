@@ -29,7 +29,8 @@ msg-type-help = Tajpu .help por listo de komandoj.
 msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identeco ne trovita rete — rulu '.my.identity:publish @ma' por fariĝi atingebla.
+msg-auto-published = DID publikigita per loka ma ({ $url })
+msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.my.ma:discover' poste '.my.identity:publish @ma'. Skribu '.help.publish' por detaloj.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
 msg-focusing = fokuso { $did } kiel { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = malkovro malsukcesis: atendis `did` komenci per did:ma:, 
 discover-no-endpoint = malkovro-averto: `endpoint_id` mankas en status.json; nur DID konservita
 discover-success = ma malkovrita ĉe { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   kromnomo @ma kreita — publikigi per: .my.identity:publish @ma
+discover-alias-hint =   kromnomo @ma kreita — rulu '.my.identity:publish @ma' por publikigi vian identecon.
 claim-success = Rultempo reklamita por { $did }
 claim-conflict = Rultempo jam reklamita de alia identeco
 claim-http-failed = reklamo malsukcesis: HTTP { $status }
@@ -269,3 +270,10 @@ help-url-say =   ?say=<did>                   antaŭplenigas: @<did>:say (verbo 
 help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>:emote (verbo emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publikigi vian identecon al la reto
+help-header-publish = ── publikigi identecon ──────────────────────────────────────────────────────
+help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj povas serĉi vian DID por kontakti vin.
+help-publish-ma = Por publikigi, vi bezonas instalitan ma (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.
+help-publish-steps = Paŝoj: rulu '.my.ma:discover' por detekti lokan ma, poste '.my.identity:publish @ma'.
+help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.

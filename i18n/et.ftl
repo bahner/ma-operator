@@ -29,7 +29,8 @@ msg-type-help = Käskude loendi saamiseks kirjuta .help.
 msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identiteeti ei leitud veebist — käivita '.my.identity:publish @ma', et muutuda kättesaadavaks.
+msg-auto-published = DID avaldatud kohaliku ma kaudu ({ $url })
+msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.my.ma:discover' ja seejärel '.my.identity:publish @ma'. Kirjuta '.help.publish' üksikasjade jaoks.
 msg-blocked = ⊗ blokeeritud [{ $cap }]: { $from }
 msg-focus-cleared = fookus tühjendatud
 msg-focusing = fokuseeritakse { $did } kui { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = avastamine ebaõnnestus: oodati `did` algust did:ma:-ga, 
 discover-no-endpoint = avastamise hoiatus: `endpoint_id` puudub status.json-ist; salvestati ainult DID
 discover-success = ma avastati aadressil { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma loodud — avalda käsuga: .my.identity:publish @ma
+discover-alias-hint =   alias @ma loodud — käivita '.my.identity:publish @ma' oma identiteedi avaldamiseks.
 claim-success = Käitusaeg nõutud kasutajale { $did }
 claim-conflict = Käitusaeg on juba teise identiteedi poolt nõutud
 claim-http-failed = nõudmine ebaõnnestus: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   eeltäidab: @<did>:say (tegusõna 
 help-url-emote =   ?emote=<did>                 eeltäidab: @<did>:emote (tegusõna emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Sisend on eeltäidetud, kuid saatmata — vajuta Enter saatmiseks.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                identiteedi avaldamine võrgus
+help-header-publish = ── identiteedi avaldamine ───────────────────────────────────────────────────
+help-publish-intro = Avaldamine muudab su identiteedi võrgus leitavaks. Teised saavad sinu DID-i otsida, et sinuga ühendust võtta.
+help-publish-ma = Avaldamiseks vajad installitud ma-d (kohalik käituskeskkond). See ühendab ego IPFS/IPNS-iga sinu nimel.
+help-publish-steps = Sammud: käivita '.my.ma:discover' kohaliku ma tuvastamiseks, seejärel '.my.identity:publish @ma'.
+help-publish-without = Ilma avaldamiseta teised ei saa sulle jõuda — isegi kui nad teavad sinu DID-i, ei suuda nad sinu endpointi lahendada.

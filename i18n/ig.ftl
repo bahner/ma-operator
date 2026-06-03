@@ -29,7 +29,8 @@ msg-type-help = Pịnye .help maka ndepụta iwu.
 msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = A chọtaghị njirimara na ịntanetị — gaa '.my.identity:publish @ma' ka a nwee ike iru gị.
+msg-auto-published = Ebipụtara DID site na ma mpaghara ({ $url })
+msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.my.ma:discover' wee mee '.my.identity:publish @ma'. Dee '.help.publish' maka nkọwa.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
 msg-focusing = na-etinye uche na { $did } dị ka { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = nchọpụta erughị: `did` ga-amalite na did:ma:, nweta
 discover-no-endpoint = ọdịmara nchọpụta: `endpoint_id` dịghị na status.json; echekwara DID naanị
 discover-success = achọpụtara ma na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   emepụtara nchọkwa @ma — bipụta na: .my.identity:publish @ma
+discover-alias-hint =   emepụtara alias @ma — mee '.my.identity:publish @ma' iji bipute njirimara gị.
 claim-success = akwụtara Runtime maka { $did }
 claim-conflict = njirimara ọzọ akwụtara Runtime otu oge
 claim-http-failed = ikwu akwụ erughị: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   deeye tupu: @<did>:say (ngwa ọr�
 help-url-emote =   ?emote=<did>                 deeye tupu: @<did>:emote (ngwa ọrụ emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                bipute njirimara gị na netwọk
+help-header-publish = ── ibiputa njirimara ─────────────────────────────────────────────────────────
+help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. Ndị ọzọ nwere ike ịchọ DID gị iji kpọtụrụ gị.
+help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
+help-publish-steps = Usoro: bido '.my.ma:discover' iji chọpụta ma nke mpaghara, wee mee '.my.identity:publish @ma'.
+help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.

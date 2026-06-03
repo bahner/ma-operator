@@ -29,7 +29,8 @@ msg-type-help = Tiki .help pa un lista di komando.
 msg-connecting = konektando na iroh...
 msg-iroh-ready = punto iroh ta listu
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Nan a haña bo identidad online — kuree '.my.identity:publish @ma' pa por yega bo.
+msg-auto-published = DID publiká via ma lokal ({ $url })
+msg-identity-not-published = Identidad no a haña na internet — si ma ta instalá lokalmente, drenta '.my.ma:discover' i despues '.my.identity:publish @ma'. Tik '.help.publish' pa detaljenan.
 msg-blocked = ⊗ blokea [{ $cap }]: { $from }
 msg-focus-cleared = foko limpiá
 msg-focusing = foko { $did } komo { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = diskobri fayá: tabata spera `did` kuminsá ku did:ma:, r
 discover-no-endpoint = aviso diskobri: `endpoint_id` falta na status.json; sòlu DID wardá
 discover-success = ma diskubrí na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma kreá — publiká ku: .my.identity:publish @ma
+discover-alias-hint =   alias @ma a krea — drenta '.my.identity:publish @ma' pa publiká bo identidad.
 claim-success = Runtime reklamá pa { $did }
 claim-conflict = Runtime a keda reklamá pa un otro identidad
 claim-http-failed = reklamashon fayá: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   yena di antemano: @<did>:say (verb
 help-url-emote =   ?emote=<did>                 yena di antemano: @<did>:emote (verbu emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publiká bo identidad riba e red
+help-header-publish = ── publikashon di identidad ─────────────────────────────────────────────────
+help-publish-intro = Publikashon ta hasi bo identidad enkontrable riba e red. Otronan por buská bo DID pa kontakto.
+help-publish-ma = Pa publiká, bo mester tin ma (runtime lokal) instalá. E ta konektá ego ku IPFS/IPNS na nòmber di bo.
+help-publish-steps = Pasónan: drenta '.my.ma:discover' pa detektá e ma lokal, despues '.my.identity:publish @ma'.
+help-publish-without = Sin publikashon, otronan no por alkanso bo — no importa si nan konosé bo DID, nan no por risòlbe bo endpoint.

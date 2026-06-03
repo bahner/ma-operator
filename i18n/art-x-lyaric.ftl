@@ -31,7 +31,8 @@ msg-type-help = Type .help fi a list of livity commands.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint irie
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = I-man identity no sight inna di network — run '.my.identity:publish @ma' mek all man find I.
+msg-auto-published = DID published through I-an-I local ma ({ $url })
+msg-identity-not-published = Ites not inna di web — if ma install inna di machine, run '.my.ma:discover' den '.my.identity:publish @ma'. Write '.help.publish' fi di details.
 msg-blocked = ⊗ blocked by Zion [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -93,7 +94,7 @@ discover-invalid-did = seeking fall: expected `did` fi start with did:ma:, got `
 discover-no-endpoint = seeking notice: `endpoint_id` missing in status.json; kept DID only
 discover-success = ma found at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma manifest — forward with: .my.identity:publish @ma
+discover-alias-hint =   alias @ma create — run '.my.identity:publish @ma' fi publish di ites.
 claim-success = Runtime claim for { $did } in Iration
 claim-conflict = Runtime already claim by another I-dentity
 claim-http-failed = claim fall: HTTP { $status }
@@ -272,3 +273,10 @@ help-url-say =   ?say=<did>                   fill up: @<did>:say (say verb)
 help-url-emote =   ?emote=<did>                 fill up: @<did>:emote (emote verb)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di I-input fill up but not send — press Enter fi send.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publish di ites pon di network
+help-header-publish = ── publish di ites ──────────────────────────────────────────────────────────
+help-publish-intro = Publishing mek di ites findable pon di network. Odda ones can search di DID fi reach.
+help-publish-ma = Fi publish, InI need ma (local runtime) install. It bridge ego to IPFS/IPNS pon di behalf.
+help-publish-steps = Steps: run '.my.ma:discover' fi find di local ma, den '.my.identity:publish @ma'.
+help-publish-without = Without publishing, odda ones cannot reach — even knowing di DID, dem cannot resolve di endpoint.

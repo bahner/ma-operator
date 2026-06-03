@@ -29,7 +29,8 @@ msg-type-help = พิมพ์ .help เพื่อดูรายการค
 msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = ไม่พบข้อมูลประจำตัวออนไลน์ — รัน '.my.identity:publish @ma' เพื่อให้สามารถติดต่อได้
+msg-auto-published = DID ถูกเผยแพร่ผ่าน ma ในเครื่อง ({ $url })
+msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.my.ma:discover' จากนั้น '.my.identity:publish @ma' พิมพ์ '.help.publish' เพื่อดูรายละเอียด
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
 msg-focusing = กำลังโฟกัส { $did } เป็น { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = การค้นหาล้มเหลว: `did` ต�
 discover-no-endpoint = คำเตือนการค้นหา: `endpoint_id` ขาดใน status.json; บันทึกเฉพาะ DID
 discover-success = พบ ma ที่ { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   สร้างนามแฝง @ma แล้ว — เผยแพร่: .my.identity:publish @ma
+discover-alias-hint =   สร้างชื่อแทน @ma แล้ว — รัน '.my.identity:publish @ma' เพื่อเผยแพร่ตัวตนของคุณ
 claim-success = Runtime ถูกอ้างสิทธิ์สำหรับ { $did }
 claim-conflict = Runtime ถูกอ้างสิทธิ์โดยตัวตนอื่นแล้ว
 claim-http-failed = คำขอล้มเหลว: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   กรอกล่วงหน้�
 help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>:emote (กริยา emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                เผยแพร่ตัวตนของคุณสู่เครือข่าย
+help-header-publish = ── การเผยแพร่ตัวตน ───────────────────────────────────────────────────────────
+help-publish-intro = การเผยแพร่ทำให้ตัวตนของคุณค้นหาได้บนเครือข่าย คนอื่นสามารถค้นหา DID ของคุณเพื่อติดต่อคุณได้
+help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
+help-publish-steps = ขั้นตอน: รัน '.my.ma:discover' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity:publish @ma'
+help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้

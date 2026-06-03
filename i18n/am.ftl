@@ -29,7 +29,8 @@ msg-type-help = የትዕዛዞች ዝርዝር ለማየት .help ይተይቡ�
 msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = ማንነት በኦንላይን አልተገኘም — ለመድረስ '.my.identity:publish @ma' ያሂዱ።
+msg-auto-published = DID በአካባቢ ma ({ $url }) አማካኝነት ታትሟል
+msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.my.ma:discover' ከዚያም '.my.identity:publish @ma' ያሂዱ። ዝርዝር ለማየት '.help.publish' ይጻፉ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
 msg-focusing = { $did } እንደ { $prompt } ላይ ትኩረት እያደረገ
@@ -91,7 +92,7 @@ discover-invalid-did = ፍለጋ አልተሰራም: `did` did:ma: ለ መጀም
 discover-no-endpoint = የፍለጋ ማስጠንቀቂያ: `endpoint_id` status.json ውስጥ ጎደለ; DID ብቻ ተቀምጧል
 discover-success = ma { $url } ላይ ተገኘ
 discover-did-line = DID: { $did }
-discover-alias-hint =   ቅፅል ስም @ma ተፈጠረ — ያትሙ: .my.identity:publish @ma
+discover-alias-hint =   ቅጽል ስም @ma ተፈጠረ — ህሊናዎን ለማሳተም '.my.identity:publish @ma' ያሂዱ።
 claim-success = Runtime ለ{ $did } ተጠየቀ
 claim-conflict = Runtime ቀደም ሲል በሌላ ማንነት ተጠይቋል
 claim-http-failed = ጥያቄ አልተሰራም: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>:say (say 
 help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>:emote (emote ቃሉ)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                ህሊናዎን ወደ ኔትወርክ ያሳትሙ
+help-header-publish = ── ህሊና ማሳተም ────────────────────────────────────────────────────────────────
+help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊፈለግ የሚችል ያደርጋል። ሌሎች DID ዎን ፈልገው ሊያገኙዎ ይችላሉ።
+help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
+help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.my.ma:discover' ያሂዱ፣ ከዚያም '.my.identity:publish @ma'።
+help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።

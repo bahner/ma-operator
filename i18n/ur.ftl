@@ -29,7 +29,8 @@ msg-type-help = کمانڈ کی فہرست کے لیے .help ٹائپ کریں۔
 msg-connecting = iroh سے منسلک ہو رہا ہے...
 msg-iroh-ready = iroh اینڈ پوائنٹ تیار ہے
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = شناخت آن لائن نہیں ملی — قابل رسائی بننے کے لیے '.my.identity:publish @ma' چلائیں۔
+msg-auto-published = DID مقامی ma ({ $url }) کے ذریعے شائع ہوا
+msg-identity-not-published = شناخت آن لائن نہیں ملی — اگر ma مقامی طور پر نصب ہے، تو '.my.ma:discover' چلائیں پھر '.my.identity:publish @ma'۔ تفصیلات کے لیے '.help.publish' ٹائپ کریں۔
 msg-blocked = ⊗ بلاک کیا گیا [{ $cap }]: { $from }
 msg-focus-cleared = فوکس صاف کیا گیا
 msg-focusing = { $did } کو { $prompt } کے طور پر فوکس کیا جا رہا ہے
@@ -91,7 +92,7 @@ discover-invalid-did = دریافت ناکام: `did` کو did:ma: سے شروع
 discover-no-endpoint = دریافت انتباہ: status.json میں `endpoint_id` غائب؛ صرف DID محفوظ
 discover-success = { $url } پر ma دریافت ہوا
 discover-did-line = DID: { $did }
-discover-alias-hint =   عرفی نام @ma بنایا گیا — شائع کریں: .my.identity:publish @ma
+discover-alias-hint =   عرف @ma بنایا گیا — اپنی شناخت شائع کرنے کے لیے '.my.identity:publish @ma' چلائیں۔
 claim-success = { $did } کے لیے رن ٹائم کا دعوی کیا گیا
 claim-conflict = رن ٹائم پہلے ہی کسی اور شناخت نے دعوی کیا ہے
 claim-http-failed = دعوی ناکام: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   پہلے سے بھرتا ہے: @<d
 help-url-emote =   ?emote=<did>                 پہلے سے بھرتا ہے: @<did>:emote (emote فعل)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ان پٹ پہلے سے بھرا ہوا ہے لیکن بھیجا نہیں گیا — بھیجنے کے لیے Enter دبائیں۔
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                نیٹ ورک پر اپنی شناخت شائع کریں
+help-header-publish = ── شناخت کی اشاعت ───────────────────────────────────────────────────────────
+help-publish-intro = اشاعت آپ کی شناخت کو نیٹ ورک پر قابلِ دریافت بناتی ہے۔ دوسرے آپ کا DID تلاش کر کے آپ سے رابطہ کر سکتے ہیں۔
+help-publish-ma = شائع کرنے کے لیے آپ کو ma (مقامی رن ٹائم) نصب چاہیے۔ یہ آپ کی جانب سے ego کو IPFS/IPNS سے جوڑتا ہے۔
+help-publish-steps = اقدامات: مقامی ma دریافت کرنے کے لیے '.my.ma:discover' چلائیں، پھر '.my.identity:publish @ma'۔
+help-publish-without = اشاعت کے بغیر دوسرے آپ تک نہیں پہنچ سکتے — چاہے وہ آپ کا DID جانتے ہوں، وہ آپ کا endpoint حل نہیں کر سکتے۔

@@ -29,7 +29,8 @@ msg-type-help = Skriv .help for ei liste over kommandoar.
 msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identitet ikkje funnen online — køyr '.my.identity:publish @ma' for å bli tilgjengeleg.
+msg-auto-published = DID publisert via lokal ma ({ $url })
+msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.my.ma:discover' og deretter '.my.identity:publish @ma'. Skriv '.help.publish' for detaljar.
 msg-blocked = ⊗ blokkert [{ $cap }]: { $from }
 msg-focus-cleared = fokus tømt
 msg-focusing = fokuserer { $did } som { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = oppdaging mislykkast: forventa `did` byrjar med did:ma:, 
 discover-no-endpoint = oppdagingsåtvaring: `endpoint_id` manglar i status.json; lagra berre DID
 discover-success = ma oppdaga ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma oppretta — publiser med: .my.identity:publish @ma
+discover-alias-hint =   alias @ma oppretta — køyr '.my.identity:publish @ma' for å publisere identiteten din.
 claim-success = Køyretid gjort krav på for { $did }
 claim-conflict = Køyretid allereie gjort krav på av ein annan identitet
 claim-http-failed = krav mislykkast: HTTP { $status }
@@ -283,3 +284,10 @@ help-url-say =   ?say=<did>                   fyller inn: @<did>:say (si-verb)
 help-url-emote =   ?emote=<did>                 fyller inn: @<did>:emote (emote-verb)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inputfeltet vert fylt ut, men vert ikkje sendt — trykk Enter for å sende.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publisere identiteten din til nettverket
+help-header-publish = ── publisering av identitet ─────────────────────────────────────────────────
+help-publish-intro = Publisering gjer identiteten din synleg på nettverket. Andre kan slå opp din DID for å nå deg.
+help-publish-ma = For å publisere treng du ma (lokal køyretid) installert. Han koplar ego til IPFS/IPNS på dine vegner.
+help-publish-steps = Steg: køyr '.my.ma:discover' for å oppdage din lokale ma, deretter '.my.identity:publish @ma'.
+help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.

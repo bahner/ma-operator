@@ -29,7 +29,8 @@ msg-type-help = Qor .help si aad u hesho liiska amarka.
 msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Aqoonsigaaga lama helin internetka — orod '.my.identity:publish @ma' si aad u gacan-siisato.
+msg-auto-published = DID lagu daabacay ma maxalliga ({ $url })
+msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.my.ma:discover' ka dibna '.my.identity:publish @ma'. Qor '.help.publish' faahfaahin.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
 msg-focusing = xushmadda { $did } ahaan { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = ogaanshaha ku guuldareystay: `did` waa inuu ku billowdo d
 discover-no-endpoint = digniin ogaanshaha: `endpoint_id` ka maqan status.json; DID oo keliya la keydiay
 discover-success = ma laga ogaaday { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   magaca kale @ma la abuuray — daabac khadkan: .my.identity:publish @ma
+discover-alias-hint =   magac-beelka @ma ayaa la abuuray — orod '.my.identity:publish @ma' si aad u baahiso aqoonsikaaga.
 claim-success = Runtime waxaa loo hantiyay { $did }
 claim-conflict = Runtime aqoonsi kale ayaa hore u hantiyay
 claim-http-failed = codsigii ku guuldareystay: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   hore u buuxi: @<did>:say (fal say)
 help-url-emote =   ?emote=<did>                 hore u buuxi: @<did>:emote (fal emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si aad u dirto.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                ku baahiso aqoonsikaaga shabakadda
+help-header-publish = ── baahinta aqoonsiga ───────────────────────────────────────────────────────
+help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo shabakadda. Dadka kaleba waxay raadsan karaan DID-kaaga si ay kugu soo dhawaadaan.
+help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
+help-publish-steps = Tallaabooyinka: orod '.my.ma:discover' si aad u ogaato ma gudaha ah, ka dibna '.my.identity:publish @ma'.
+help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.

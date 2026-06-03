@@ -29,7 +29,8 @@ msg-type-help = Tẹ .help fún àtòjọ àwọn àṣẹ.
 msg-connecting = ìsopọ̀ mọ́ iroh...
 msg-iroh-ready = ìpádédé iroh ti ṣetán
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Idanimọ ko ri ni ori ayelujara — ṣiṣẹ '.my.identity:publish @ma' lati di abawo.
+msg-auto-published = DID ti jẹ atejade nipasẹ ma agbegbe ({ $url })
+msg-identity-not-published = Ìdánimọ̀ kò rí lórí ayelujara — tí o bá fi ma sórí kọ̀mpútà rẹ, ṣe '.my.ma:discover' lẹ́hìn náà '.my.identity:publish @ma'. Tẹ '.help.publish' fún àlàyé.
 msg-blocked = ⊗ a dènà [{ $cap }]: { $from }
 msg-focus-cleared = a pa ìfọkànsí rẹ
 msg-focusing = ìfọkànsí { $did } gẹ́gẹ́ bí { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = ìwárí kùnà: `did` gbọdọ̀ bẹ̀rẹ̀ pẹ̀lú
 discover-no-endpoint = ìkìlọ̀ ìwárí: `endpoint_id` àánù nínú status.json; a tọ́jú DID nìkan
 discover-success = a rí ma ní { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   a ṣẹ̀dá àpèlé @ma — tẹ jáde pẹ̀lú: .my.identity:publish @ma
+discover-alias-hint =   à tún ṣẹ̀dá alias @ma — ṣe '.my.identity:publish @ma' láti tẹ ìdánimọ̀ rẹ jáde.
 claim-success = a gba Runtime fún { $did }
 claim-conflict = ìdánimọ̀ mìíràn ti gba Runtime
 claim-http-failed = gbígba kùnà: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   kọ siwaju: @<did>:say (ọrọ-i
 help-url-emote =   ?emote=<did>                 kọ siwaju: @<did>:emote (ọrọ-iṣe emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Titẹ sii kọ siwaju ṣugbọn a ko firanṣẹ — tẹ Enter lati firanṣẹ.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                tẹ ìdánimọ̀ rẹ jáde sórí nẹtiwọ́kì
+help-header-publish = ── títẹ ìdánimọ̀ jáde ───────────────────────────────────────────────────────
+help-publish-intro = Títẹ jáde mú kí ìdánimọ̀ rẹ lè rí lórí nẹtiwọ́kì. Àwọn mìíràn lè wà DID rẹ láti kan sí ọ.
+help-publish-ma = Láti tẹ jáde, o nílò ma (runtime àdúgbò) tí a fi sórí. Ó so ego mọ IPFS/IPNS ní orúkọ rẹ.
+help-publish-steps = Àwọn ìgbésẹ̀: ṣe '.my.ma:discover' láti rí ma àdúgbò, lẹ́hìn náà '.my.identity:publish @ma'.
+help-publish-without = Láìsí títẹ jáde, àwọn mìíràn kò lè de ọ — bí wọ́n bá mọ DID rẹ pàápàá, wọn kò lè yanjú endpoint rẹ.

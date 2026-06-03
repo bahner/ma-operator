@@ -91,6 +91,10 @@ pub fn Terminal() -> impl IntoView {
                         // intentionally, but harmless if it leaks: it is
                         // re-injected on every login.
                         cfg.set(".my.identity.did", &sender_did);
+                        // Seed auto-publish with default "true" if not already set.
+                        if cfg.get(".my.identity.auto-publish").is_none() {
+                            cfg.set(".my.identity.auto-publish", "true");
+                        }
                         cfg.set(".my.profile.handle", &username);
                         cfg.set(".my.profile.did", &sender_did);
                         cfg.set(".my.profile.created_at", &created_at);
@@ -198,19 +202,102 @@ pub fn Terminal() -> impl IntoView {
                 {
                     Ok(()) => {
                         state2.push_system(t("msg-iroh-ready"));
-                        // Background check: is our DID document reachable online?
+                        // Auto-discover local ma and publish DID document.
+                        // Falls back to a reachability warning if no local ma is found.
+                        // Disabled when `.my.identity.auto-publish` is set to "false".
                         let state3 = state2.clone();
                         let own_did = sender_did.clone();
                         spawn_local(async move {
-                            let reachable = if let Some(resolver) =
-                                crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-                            {
-                                resolver.resolve(&own_did).await.is_ok()
-                            } else {
-                                false
+                            let auto_publish = config
+                                .get_untracked()
+                                .get(".my.identity.auto-publish")
+                                .map_or(true, |v| v != "false");
+                            if !auto_publish {
+                                let reachable = if let Some(resolver) =
+                                    crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+                                {
+                                    resolver.resolve(&own_did).await.is_ok()
+                                } else {
+                                    false
+                                };
+                                if !reachable {
+                                    state3.push_error(t("msg-identity-not-published"));
+                                }
+                                return;
+                            }
+                            let ma_url = {
+                                let cfg = config.get_untracked();
+                                cfg.get(".my.ma.url")
+                                    .unwrap_or("http://localhost:5003")
+                                    .trim_end_matches('/')
+                                    .to_string()
                             };
-                            if !reachable {
-                                state3.push_error(t("msg-identity-not-published"));
+                            let status_url = format!("{ma_url}/status.json");
+                            match fetch_url_text(&status_url).await {
+                                Ok(json_str) => {
+                                    if let Ok(json) =
+                                        serde_json::from_str::<serde_json::Value>(&json_str)
+                                    {
+                                        if let Some(did) = json.get("did").and_then(|v| v.as_str())
+                                        {
+                                            if did.starts_with("did:ma:") {
+                                                let did = did.to_string();
+                                                let endpoint_id = json
+                                                    .get("endpoint_id")
+                                                    .and_then(|v| v.as_str())
+                                                    .unwrap_or("")
+                                                    .to_string();
+                                                config.update(|cfg| {
+                                                    cfg.set(".my.ma.did", &did);
+                                                    if !endpoint_id.is_empty() {
+                                                        cfg.set(".my.ma.endpoint_id", &endpoint_id);
+                                                    }
+                                                    cfg.set(".my.aliases.ma", &did);
+                                                });
+                                                if let Some(sess) = state3.session.get_untracked() {
+                                                    let username = sess.username.clone();
+                                                    let cfg = config.get_untracked();
+                                                    spawn_local(async move {
+                                                        let _ =
+                                                            persist_config(&username, &cfg).await;
+                                                    });
+                                                }
+                                                if transport::send_ipfs_publish(&did).await.is_ok()
+                                                {
+                                                    state3.push_system(tf(
+                                                        "msg-auto-published",
+                                                        &[("url", &ma_url)],
+                                                    ));
+                                                }
+                                                return;
+                                            }
+                                        }
+                                    }
+                                    // JSON did not contain a valid DID — fall through to reachability check.
+                                    let reachable = if let Some(resolver) =
+                                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+                                    {
+                                        resolver.resolve(&own_did).await.is_ok()
+                                    } else {
+                                        false
+                                    };
+                                    if !reachable {
+                                        state3.push_error(t("msg-identity-not-published"));
+                                    }
+                                }
+                                Err(_) => {
+                                    // No local ma — check if DID is already reachable.
+                                    let reachable = if let Some(resolver) =
+                                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+                                    {
+                                        resolver.resolve(&own_did).await.is_ok()
+                                    } else {
+                                        false
+                                    };
+                                    if !reachable {
+                                        state3.push_error(t("msg-identity-not-published"));
+                                    }
+                                }
                             }
                         });
                     }
@@ -1052,7 +1139,9 @@ fn eval(
                         // Bare-atom verbs (no '.' in the verb string) are also RPC —
                         // e.g. :ping, :pong, :anything. Path-based verbs containing
                         // '.' (e.g. entities.foo:edit, config.i18n:) are CRUD.
-                        if target.contains('#') || !v.contains('.') {
+                        // Verbs containing ':' without '#' in the target are also CRUD —
+                        // e.g. owners:edit, acl:edit, config: (path:verb or path: syntax).
+                        if target.contains('#') || (!v.contains('.') && !v.contains(':')) {
                             transport::send_rpc(
                                 &target,
                                 v,
@@ -1884,6 +1973,7 @@ fn dispatch_help(subtopic: &str) -> Vec<String> {
         "doc" => help_doc(),
         "actor" => help_actor(),
         "url" => help_url(),
+        "publish" => help_publish(),
         other => vec![tf("help-unknown-topic", &[("topic", other)])],
     }
 }
@@ -1906,6 +1996,7 @@ fn help_overview() -> Vec<String> {
         t("help-topic-doc"),
         t("help-topic-actor"),
         t("help-topic-url"),
+        t("help-topic-publish"),
         t("help-footer"),
     ]
 }
@@ -2034,6 +2125,18 @@ fn help_url() -> Vec<String> {
         t("help-url-emote"),
         t("help-url-example"),
         t("help-url-note"),
+        t("help-footer"),
+    ]
+}
+
+fn help_publish() -> Vec<String> {
+    vec![
+        t("help-header-publish"),
+        String::new(),
+        t("help-publish-intro"),
+        t("help-publish-ma"),
+        t("help-publish-steps"),
+        t("help-publish-without"),
         t("help-footer"),
     ]
 }

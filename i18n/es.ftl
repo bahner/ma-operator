@@ -29,7 +29,8 @@ msg-type-help = Escribe .help para obtener una lista de comandos.
 msg-connecting = conectando a iroh...
 msg-iroh-ready = punto final de iroh listo
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identidad no encontrada en línea — ejecuta '.my.identity:publish @ma' para ser alcanzable.
+msg-auto-published = DID publicado a través de ma local ({ $url })
+msg-identity-not-published = Identidad no encontrada en línea — si tienes ma instalado localmente, ejecuta '.my.ma:discover' y luego '.my.identity:publish @ma'. Escribe '.help.publish' para más detalles.
 msg-blocked = ⊗ bloqueado [{ $cap }]: { $from }
 msg-focus-cleared = enfoque borrado
 msg-focusing = enfocando { $did } como { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = descubrimiento fallido: se esperaba que `did` comenzara c
 discover-no-endpoint = advertencia de descubrimiento: `endpoint_id` ausente en status.json; solo se guardó DID
 discover-success = ma descubierto en { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma creado — publica con: .my.identity:publish @ma
+discover-alias-hint =   alias @ma creado — ejecuta '.my.identity:publish @ma' para publicar tu identidad.
 claim-success = Tiempo de ejecución reclamado para { $did }
 claim-conflict = Tiempo de ejecución ya reclamado por otra identidad
 claim-http-failed = reclamación fallida: HTTP { $status }
@@ -276,3 +277,10 @@ help-url-say =   ?say=<did>                   rellena: @<did>:say (verbo say)
 help-url-emote =   ?emote=<did>                 rellena: @<did>:emote (verbo emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   El campo se rellena pero no se envía — pulsa Intro para enviar.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publicar tu identidad en la red
+help-header-publish = ── publicar identidad ───────────────────────────────────────────────────────
+help-publish-intro = Publicar hace que tu identidad sea localizable en la red. Otros pueden buscar tu DID para contactarte.
+help-publish-ma = Para publicar necesitas ma (runtime local) instalado. Conecta ego con IPFS/IPNS en tu nombre.
+help-publish-steps = Pasos: ejecuta '.my.ma:discover' para detectar tu ma local, luego '.my.identity:publish @ma'.
+help-publish-without = Sin publicar, otros no pueden alcanzarte — aunque conozcan tu DID, no pueden resolver tu endpoint.

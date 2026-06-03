@@ -6,9 +6,6 @@ rust-version = "1.95"
 description = "zion – MA Actor identity and messaging workstation"
 license = "MIT OR Apache-2.0"
 
-[patch.crates-io]
-ma-core = { path = "../rust-ma-core" }
-
 [profile.release]
 opt-level = "z"
 lto = true
@@ -16,7 +13,7 @@ codegen-units = 1
 
 [dependencies]
 leptos = { version = "0.8", features = ["csr"] }
-ma-core = { version = "0.10.27", default-features = false, features = ["config", "iroh", "gossip", "acl"] }
+ma-core = { version = "0.10.28", default-features = false, features = ["config", "iroh", "gossip", "acl"] }
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 web-sys = { version = "0.3", features = [

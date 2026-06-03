@@ -29,7 +29,8 @@ msg-type-help = اكتب .help للحصول على قائمة الأوامر.
 msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = لم يتم العثور على الهوية عبر الإنترنت — قم بتشغيل '.my.identity:publish @ma' لتصبح قابلاً للوصول.
+msg-auto-published = تم نشر DID عبر ma المحلي ({ $url })
+msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.my.ma:discover' ثم '.my.identity:publish @ma'. اكتب '.help.publish' للتفاصيل.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
 msg-focusing = تركيز { $did } بوصفه { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = فشل الاكتشاف: متوقع أن يبدأ `did` �
 discover-no-endpoint = تحذير الاكتشاف: `endpoint_id` مفقود في status.json؛ تم تخزين DID فقط
 discover-success = تم اكتشاف ma في { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   تم إنشاء الاسم المستعار @ma — انشر بـ: .my.identity:publish @ma
+discover-alias-hint =   تم إنشاء الاسم المستعار @ma — شغّل '.my.identity:publish @ma' لنشر هويتك.
 claim-success = تم المطالبة بوقت التشغيل لـ { $did }
 claim-conflict = وقت التشغيل مطالب به بالفعل من قِبل هوية أخرى
 claim-http-failed = فشلت المطالبة: HTTP { $status }
@@ -283,3 +284,10 @@ help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>:say 
 help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>:emote (فعل emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                نشر هويتك على الشبكة
+help-header-publish = ── نشر الهوية ───────────────────────────────────────────────────────────────
+help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف على الشبكة. يمكن للآخرين البحث عن DID الخاص بك للتواصل معك.
+help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
+help-publish-steps = الخطوات: شغّل '.my.ma:discover' للكشف عن ma المحلي، ثم '.my.identity:publish @ma'.
+help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.

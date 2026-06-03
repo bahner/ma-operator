@@ -29,7 +29,8 @@ msg-type-help = Írja be a .help parancsot a parancsok listájához.
 msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Az identitás nem található online — futtasd a '.my.identity:publish @ma' parancsot az elérhetőség érdekében.
+msg-auto-published = DID közzétéve helyi ma-n keresztül ({ $url })
+msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.my.ma:discover', majd '.my.identity:publish @ma'. Írd '.help.publish' a részletekért.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
 msg-focusing = fókuszálás: { $did } mint { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = felderítés sikertelen: a `did` did:ma:-vel kell kezdőd
 discover-no-endpoint = felderítési figyelmeztetés: `endpoint_id` hiányzik a status.json-ból; csak DID mentve
 discover-success = ma felderítve a következő helyen: { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma álnév létrehozva — tegye közzé: .my.identity:publish @ma
+discover-alias-hint =   @ma alias létrehozva — futtasd '.my.identity:publish @ma' az identitásod közzétételéhez.
 claim-success = Futtatókörnyezet igénybe véve: { $did }
 claim-conflict = A futtatókörnyezetet már egy másik identitás igénybe vette
 claim-http-failed = igénybevétel sikertelen: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   előre kitölti: @<did>:say (say i
 help-url-emote =   ?emote=<did>                 előre kitölti: @<did>:emote (emote ige)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                azonosságod közzététele a hálózaton
+help-header-publish = ── azonosság közzététele ─────────────────────────────────────────────────────
+help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a hálózaton. Mások megkereshetik a DID-edet, hogy elérjenek.
+help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
+help-publish-steps = Lépések: futtasd '.my.ma:discover' a helyi ma megtalálásához, majd '.my.identity:publish @ma'.
+help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.

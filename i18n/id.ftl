@@ -29,7 +29,8 @@ msg-type-help = Ketik .help untuk daftar perintah.
 msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identitas tidak ditemukan online — jalankan '.my.identity:publish @ma' agar dapat dijangkau.
+msg-auto-published = DID diterbitkan melalui ma lokal ({ $url })
+msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.my.ma:discover' lalu '.my.identity:publish @ma'. Ketik '.help.publish' untuk detail.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
 msg-focusing = memfokuskan { $did } sebagai { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = penemuan gagal: `did` diharapkan dimulai dengan did:ma:, 
 discover-no-endpoint = peringatan penemuan: `endpoint_id` tidak ada di status.json; hanya DID tersimpan
 discover-success = ma ditemukan di { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma dibuat — terbitkan dengan: .my.identity:publish @ma
+discover-alias-hint =   alias @ma dibuat — jalankan '.my.identity:publish @ma' untuk mempublikasikan identitas Anda.
 claim-success = Runtime diklaim untuk { $did }
 claim-conflict = Runtime sudah diklaim oleh identitas lain
 claim-http-failed = klaim gagal: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   isi otomatis: @<did>:say (kata ker
 help-url-emote =   ?emote=<did>                 isi otomatis: @<did>:emote (kata kerja emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                publikasikan identitas Anda ke jaringan
+help-header-publish = ── publikasi identitas ──────────────────────────────────────────────────────
+help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringan. Orang lain dapat mencari DID Anda untuk menghubungi Anda.
+help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
+help-publish-steps = Langkah: jalankan '.my.ma:discover' untuk mendeteksi ma lokal, lalu '.my.identity:publish @ma'.
+help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.

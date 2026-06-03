@@ -29,7 +29,8 @@ msg-type-help = Komut listesi için .help yazın.
 msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Kimlik çevrimiçi bulunamadı — erişilebilir olmak için '.my.identity:publish @ma' komutunu çalıştır.
+msg-auto-published = DID yerel ma ({ $url }) aracılığıyla yayımlandı
+msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.my.ma:discover' ardından '.my.identity:publish @ma' çalıştırın. Ayrıntılar için '.help.publish' yazın.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
 msg-focusing = { $did } üzerine { $prompt } olarak odaklanılıyor
@@ -91,7 +92,7 @@ discover-invalid-did = keşif başarısız: `did` did:ma: ile başlamalıydı, a
 discover-no-endpoint = keşif uyarısı: status.json'da `endpoint_id` eksik; yalnızca DID depolandı
 discover-success = ma { $url } adresinde keşfedildi
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma takma adı oluşturuldu — yayımla: .my.identity:publish @ma
+discover-alias-hint =   @ma takma adı oluşturuldu — kimliğini yayımlamak için '.my.identity:publish @ma' çalıştır.
 claim-success = Çalışma zamanı { $did } için talep edildi
 claim-conflict = Çalışma zamanı başka bir kimlik tarafından zaten talep edildi
 claim-http-failed = talep başarısız: HTTP { $status }
@@ -283,3 +284,10 @@ help-url-say =   ?say=<did>                   önceden doldurur: @<did>:say (say
 help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>:emote (emote fiili)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                kimliğini ağa yayımla
+help-header-publish = ── kimlik yayımlama ─────────────────────────────────────────────────────────
+help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğerleri sana ulaşmak için DID'ini arayabilir.
+help-publish-ma = Yayımlamak için ma (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.
+help-publish-steps = Adımlar: yerel ma'yı algılamak için '.my.ma:discover' çalıştır, ardından '.my.identity:publish @ma'.
+help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.

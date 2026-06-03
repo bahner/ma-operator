@@ -29,7 +29,8 @@ msg-type-help = Soraty .help mba hahazo lisitry ny baiko.
 msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Tsy hita ny fampahalalana an-tserasera — alefaso '.my.identity:publish @ma' mba ho azo tratra.
+msg-auto-published = Navoaka ny DID amin'alalan'ny ma eo an-toerana ({ $url })
+msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.my.ma:discover' ary '.my.identity:publish @ma'. Soraty '.help.publish' ho an'ny antsipiriany.
 msg-blocked = ⊗ voasakana [{ $cap }]: { $from }
 msg-focus-cleared = voafafa ny sain-toerana
 msg-focusing = manamarika { $did } ho { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = tsy nahomby ny fikarohana: `did` dia tsy maintsy manombok
 discover-no-endpoint = fampitandremana fikarohana: `endpoint_id` tsy hita ao amin'ny status.json; DID ihany no voatahiry
 discover-success = ma hita tao amin'ny { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   anarana fanampiny @ma noforonina — havoaka amin'ny: .my.identity:publish @ma
+discover-alias-hint =   voaforona ny alias @ma — ampiasao '.my.identity:publish @ma' hamoaka ny mombamombao.
 claim-success = Runtime nalainy ho an'ny { $did }
 claim-conflict = Runtime efa nalainy mombamomba hafa
 claim-http-failed = fangatahana tsy nahomby: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   fenoina mialoha: @<did>:say (matoa
 help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>:emote (matoanteny emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter handefa.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                famoahana ny mombamombao eo amin'ny tambajotra
+help-header-publish = ── famoahana mombamomba ─────────────────────────────────────────────────────
+help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'ny tambajotra. Ny hafa dia afaka mitady ny DID-nao hahafantarany anao.
+help-publish-ma = Mba hamoahana, mila ny ma (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.
+help-publish-steps = Dingana: ampiasao '.my.ma:discover' hikaroana ny ma eo an-toerana, ary '.my.identity:publish @ma'.
+help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.

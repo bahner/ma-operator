@@ -29,7 +29,8 @@ msg-type-help = Kirjoita .help saadaksesi luettelon komennoista.
 msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identiteettiä ei löydy verkosta — suorita '.my.identity:publish @ma' tullaksesi tavoitettavaksi.
+msg-auto-published = DID julkaistu paikallisen ma:n kautta ({ $url })
+msg-identity-not-published = Henkilöllisyyttä ei löydetty verkosta — jos ma on asennettu paikallisesti, aja '.my.ma:discover' sitten '.my.identity:publish @ma'. Kirjoita '.help.publish' yksityiskohtia varten.
 msg-blocked = ⊗ estetty [{ $cap }]: { $from }
 msg-focus-cleared = kohdistus tyhjennetty
 msg-focusing = kohdistetaan { $did } nimellä { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = löytäminen epäonnistui: odotettiin `did`:n alkavan did
 discover-no-endpoint = löytämisvaroitus: `endpoint_id` puuttuu status.json:sta; tallennettiin vain DID
 discover-success = ma löydettiin osoitteesta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma luotu — julkaise komennolla: .my.identity:publish @ma
+discover-alias-hint =   alias @ma luotu — aja '.my.identity:publish @ma' julkaistaksesi henkilöllisyytesi.
 claim-success = Ajonaikainen varattu kohteelle { $did }
 claim-conflict = Ajonaikainen on jo varattu toiselle identiteetille
 claim-http-failed = varaus epäonnistui: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   esitäyttää: @<did>:say (verbi s
 help-url-emote =   ?emote=<did>                 esitäyttää: @<did>:emote (verbi emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                henkilöllisyyden julkaiseminen verkossa
+help-header-publish = ── henkilöllisyyden julkaiseminen ───────────────────────────────────────────
+help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi verkossa. Muut voivat hakea DID:äsi tavoittaakseen sinut.
+help-publish-ma = Julkaisemiseen tarvitset ma:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
+help-publish-steps = Vaiheet: aja '.my.ma:discover' paikallisen ma:n havaitsemiseksi, sitten '.my.identity:publish @ma'.
+help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.

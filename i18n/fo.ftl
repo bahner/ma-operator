@@ -29,7 +29,8 @@ msg-type-help = Skriva .help fyri lista av skipanum.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Samleiki ikki fundin online — køyr '.my.identity:publish @ma' fyri at verða nakan til.
+msg-auto-published = DID birt við staðbundið ma ({ $url })
+msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.my.ma:discover' og síðan '.my.identity:publish @ma'. Skriva '.help.publish' fyri detaljar.
 msg-blocked = ⊗ stovnað [{ $cap }]: { $from }
 msg-focus-cleared = fókus av
 msg-focusing = fókuserar { $did } sum { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = uppgáva misluktist: ventaði `did` byrja við did:ma:, f
 discover-no-endpoint = uppgáva-ávirkan: `endpoint_id` manglar í status.json; vistað einans DID
 discover-success = ma funnist við { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   samnefni @ma stovnað — birta við: .my.identity:publish @ma
+discover-alias-hint =   alias @ma stovnað — køyr '.my.identity:publish @ma' fyri at birta tín samleika.
 claim-success = Keyrsluumhvørvi gjørt krav á fyri { $did }
 claim-conflict = Keyrsluumhvørvi longu gjørt krav á av annarri samleika
 claim-http-failed = krøv misluktist: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   fyritfyllir: @<did>:say (sagnorð 
 help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>:emote (sagnorð emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fyri at senda.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                birta tín samleika í netinum
+help-header-publish = ── birting av samleika ──────────────────────────────────────────────────────
+help-publish-intro = Birting ger tín samleika funnarligan í netinum. Aðrir kunnu leita eftir tínum DID fyri at ná til tín.
+help-publish-ma = Fyri at birta trengt tú ma (lokalt kørsluumhvørvi) installerað. Tað tengir ego við IPFS/IPNS fyri tín hønd.
+help-publish-steps = Steg: køyr '.my.ma:discover' fyri at finna lokalt ma, síðan '.my.identity:publish @ma'.
+help-publish-without = Uttan birting kunnu aðrir ikki ná til tín — jafnvel um tey kennu tín DID, kunnu tey ikki greina endepunkt tín.

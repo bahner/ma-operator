@@ -29,7 +29,8 @@ msg-type-help = Taip .help fi get list ɔf komand dem.
 msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Dem no fayn yu nem onlayn — ron '.my.identity:publish @ma' mek pipul kin ritch yu.
+msg-auto-published = DID don pablish tru local ma ({ $url })
+msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.my.ma:discover' den '.my.identity:publish @ma'. Rait '.help.publish' fo mɔ infɔmeshɔn.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
 msg-focusing = fokɔs { $did } as { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = diskɔva fail: ekspekt `did` fi stat wit did:ma:, get `{ 
 discover-no-endpoint = diskɔva waning: `endpoint_id` nor dɛ status.json; sev DID only
 discover-success = ma diskɔva at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma kreate — pɔblish wit: .my.identity:publish @ma
+discover-alias-hint =   @ma alias mek — ron '.my.identity:publish @ma' fo pɔblish yu ɔpsɛt.
 claim-success = Runtime claim fɔ { $did }
 claim-conflict = Runtime already claim by anɔdɔ identity
 claim-http-failed = claim fail: HTTP { $status }
@@ -270,3 +271,10 @@ help-url-say =   ?say=<did>                   put bifo: @<did>:say (vɛb say)
 help-url-emote =   ?emote=<did>                 put bifo: @<did>:emote (vɛb emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                pɔblish yu ɔpsɛt ɔn di nɛtwɔk
+help-header-publish = ── pɔblish ɔpsɛt ────────────────────────────────────────────────────────────
+help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda pipul kɛn luk yu DID fɔ rich yu.
+help-publish-ma = Fɔ pɔblish, yu nid ma (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.
+help-publish-steps = Stɛps: ron '.my.ma:discover' fɔ faind lɔkɔl ma, den '.my.identity:publish @ma'.
+help-publish-without = Widaut pɔblishine, ɔda pipul kɛnnɔ rich yu — even if dɛn nɔ yu DID, dɛn kɛnnɔ sɔlv yu endpoint.

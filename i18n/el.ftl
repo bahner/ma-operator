@@ -29,7 +29,8 @@ msg-type-help = Πληκτρολογήστε .help για λίστα εντολ�
 msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Η ταυτότητα δεν βρέθηκε online — εκτέλεσε το '.my.identity:publish @ma' για να γίνεις προσβάσιμος.
+msg-auto-published = DID δημοσιεύτηκε μέσω τοπικού ma ({ $url })
+msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.my.ma:discover' και μετά '.my.identity:publish @ma'. Πληκτρολόγησε '.help.publish' για λεπτομέρειες.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
 msg-focusing = εστίαση σε { $did } ως { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = η ανακάλυψη απέτυχε: αναμένετα�
 discover-no-endpoint = προειδοποίηση ανακάλυψης: το `endpoint_id` απουσιάζει στο status.json· αποθηκεύτηκε μόνο το DID
 discover-success = το ma ανακαλύφθηκε στο { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — δημοσιεύστε με: .my.identity:publish @ma
+discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — εκτέλεσε '.my.identity:publish @ma' για να δημοσιεύσεις την ταυτότητά σου.
 claim-success = Το περιβάλλον εκτέλεσης διεκδικήθηκε για { $did }
 claim-conflict = Το περιβάλλον εκτέλεσης έχει ήδη διεκδικηθεί από άλλη ταυτότητα
 claim-http-failed = η διεκδίκηση απέτυχε: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   προσυμπληρώνει: @<di
 help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>:emote (ρήμα emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                δημοσίευση ταυτότητας στο δίκτυο
+help-header-publish = ── δημοσίευση ταυτότητας ────────────────────────────────────────────────────
+help-publish-intro = Η δημοσίευση κάνει την ταυτότητά σου εντοπίσιμη στο δίκτυο. Άλλοι μπορούν να αναζητήσουν το DID σου για να σε βρουν.
+help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το ma (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.
+help-publish-steps = Βήματα: εκτέλεσε '.my.ma:discover' για ανίχνευση του τοπικού ma, μετά '.my.identity:publish @ma'.
+help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.

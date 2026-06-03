@@ -29,7 +29,8 @@ msg-type-help = Typ .help voor een lijst met opdrachten.
 msg-connecting = verbinding maken met iroh...
 msg-iroh-ready = iroh-eindpunt gereed
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identiteit niet online gevonden — voer '.my.identity:publish @ma' uit om bereikbaar te worden.
+msg-auto-published = DID gepubliceerd via lokale ma ({ $url })
+msg-identity-not-published = Identiteit niet online gevonden — als je ma lokaal geïnstalleerd hebt, voer '.my.ma:discover' uit en dan '.my.identity:publish @ma'. Typ '.help.publish' voor details.
 msg-blocked = ⊗ geblokkeerd [{ $cap }]: { $from }
 msg-focus-cleared = focus gewist
 msg-focusing = focussen op { $did } als { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = detectie mislukt: `did` moest beginnen met did:ma:, ontva
 discover-no-endpoint = detectiewaarschuwing: `endpoint_id` ontbreekt in status.json; alleen DID opgeslagen
 discover-success = ma gedetecteerd bij { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma aangemaakt — publiceer met: .my.identity:publish @ma
+discover-alias-hint =   alias @ma aangemaakt — voer '.my.identity:publish @ma' uit om je identiteit te publiceren.
 claim-success = Runtime geclaimd voor { $did }
 claim-conflict = Runtime al geclaimd door een andere identiteit
 claim-http-failed = claimen mislukt: HTTP { $status }
@@ -276,3 +277,10 @@ help-url-say =   ?say=<did>                   vult in: @<did>:say (say-werkwoord
 help-url-emote =   ?emote=<did>                 vult in: @<did>:emote (emote-werkwoord)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Het invoerveld wordt ingevuld maar niet verzonden — druk op Enter.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                je identiteit publiceren op het netwerk
+help-header-publish = ── identiteit publiceren ────────────────────────────────────────────────────
+help-publish-intro = Publiceren maakt je identiteit vindbaar op het netwerk. Anderen kunnen je DID opzoeken om je te bereiken.
+help-publish-ma = Om te publiceren heb je ma (lokale runtime) nodig. Het koppelt ego aan IPFS/IPNS namens jou.
+help-publish-steps = Stappen: voer '.my.ma:discover' uit om je lokale ma te detecteren, dan '.my.identity:publish @ma'.
+help-publish-without = Zonder publiceren kunnen anderen je niet bereiken — zelfs als ze je DID kennen, kunnen ze je endpoint niet oplossen.

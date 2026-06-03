@@ -29,7 +29,8 @@ msg-type-help = Įveskite .help, kad gautumėte komandų sąrašą.
 msg-connecting = jungiamasi prie iroh...
 msg-iroh-ready = iroh galinys paruoštas
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Tapatybė nerasta internete — paleisk '.my.identity:publish @ma', kad taptum pasiekiamas.
+msg-auto-published = DID paskelbtas per vietinį ma ({ $url })
+msg-identity-not-published = Tapatybė nerasta internete — jei ma įdiegtas vietoje, paleisk '.my.ma:discover' ir tada '.my.identity:publish @ma'. Parašyk '.help.publish' dėl detalių.
 msg-blocked = ⊗ užblokuota [{ $cap }]: { $from }
 msg-focus-cleared = fokusas išvalytas
 msg-focusing = fokusuojama { $did } kaip { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = aptikimas nepavyko: tikėtasi, kad `did` prasideda did:ma
 discover-no-endpoint = aptikimo įspėjimas: `endpoint_id` trūksta status.json; išsaugota tik DID
 discover-success = ma aptikta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   pseudonimas @ma sukurtas — publikuokite su: .my.identity:publish @ma
+discover-alias-hint =   slapyvardis @ma sukurtas — paleisk '.my.identity:publish @ma' savo tapatybei paskelbti.
 claim-success = Vykdymo laikas pareikštas { $did }
 claim-conflict = Vykdymo laikas jau pareikštas kitos tapatybės
 claim-http-failed = pareikšimas nepavyko: HTTP { $status }
@@ -277,3 +278,10 @@ help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>:say (v
 help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>:emote (veiksmažodis emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Enter siųsti.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                tapatybės paskelbimas tinkle
+help-header-publish = ── tapatybės paskelbimas ────────────────────────────────────────────────────
+help-publish-intro = Paskelbimas padaro tavo tapatybę randamą tinkle. Kiti gali ieškoti tavo DID, kad su tavimi susisiektų.
+help-publish-ma = Paskelbimui reikia įdiegto ma (vietinė vykdymo aplinka). Ji sujungia ego su IPFS/IPNS tavo vardu.
+help-publish-steps = Žingsniai: paleisk '.my.ma:discover' vietiniam ma aptikti, tada '.my.identity:publish @ma'.
+help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.

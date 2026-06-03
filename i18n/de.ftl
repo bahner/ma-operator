@@ -29,7 +29,8 @@ msg-type-help = Geben Sie .help ein, um eine Liste der Befehle zu erhalten.
 msg-connecting = Verbindung zu iroh wird hergestellt...
 msg-iroh-ready = iroh-Endpunkt bereit
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Identität nicht online gefunden — führe '.my.identity:publish @ma' aus, um erreichbar zu werden.
+msg-auto-published = DID über lokales ma veröffentlicht ({ $url })
+msg-identity-not-published = Identität nicht online gefunden — wenn ma lokal installiert ist, führe '.my.ma:discover' und dann '.my.identity:publish @ma' aus. Tippe '.help.publish' für Details.
 msg-blocked = ⊗ gesperrt [{ $cap }]: { $from }
 msg-focus-cleared = Fokus gelöscht
 msg-focusing = Fokussierung auf { $did } als { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = Erkennung fehlgeschlagen: `did` sollte mit did:ma: beginn
 discover-no-endpoint = Erkennungswarnung: `endpoint_id` fehlt in status.json; nur DID gespeichert
 discover-success = ma erkannt bei { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   Alias @ma erstellt — veröffentlichen mit: .my.identity:publish @ma
+discover-alias-hint =   Alias @ma erstellt — führe '.my.identity:publish @ma' aus, um deine Identität zu veröffentlichen.
 claim-success = Laufzeit für { $did } beansprucht
 claim-conflict = Laufzeit bereits von einer anderen Identität beansprucht
 claim-http-failed = Beanspruchung fehlgeschlagen: HTTP { $status }
@@ -276,3 +277,10 @@ help-url-say =   ?say=<did>                   vorausfüllen: @<did>:say (Say-Ver
 help-url-emote =   ?emote=<did>                 vorausfüllen: @<did>:emote (Emote-Verb)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Das Eingabefeld wird gefüllt, aber nicht gesendet — Enter drücken zum Senden.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                Identität im Netzwerk veröffentlichen
+help-header-publish = ── Identität veröffentlichen ────────────────────────────────────────────────
+help-publish-intro = Durch Veröffentlichung wird deine Identität im Netzwerk auffindbar. Andere können deine DID nachschlagen, um dich zu erreichen.
+help-publish-ma = Zum Veröffentlichen benötigst du ma (lokale Laufzeit). Es verbindet ego mit IPFS/IPNS in deinem Auftrag.
+help-publish-steps = Schritte: führe '.my.ma:discover' aus, um dein lokales ma zu finden, dann '.my.identity:publish @ma'.
+help-publish-without = Ohne Veröffentlichung können andere dich nicht erreichen — selbst wenn sie deine DID kennen, können sie deinen Endpunkt nicht auflösen.

@@ -29,7 +29,8 @@ msg-type-help = Thayipha .help ukuze uthole uhlu lwemiyalelo.
 msg-connecting = ixhunywa ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungile
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Isazisi asifunyanwa ku-intanethi — qalisa '.my.identity:publish @ma' ukuze ufinyelekeke.
+msg-auto-published = I-DID ishicilelwe nge-ma yendawo ({ $url })
+msg-identity-not-published = Ubunikazi abufunyanwanga ku-inthanethi — uma u-ma ufakiwe endaweni, qhuba '.my.ma:discover' bese '.my.identity:publish @ma'. Bhala '.help.publish' ngemininingwane.
 msg-blocked = ⊗ kuvinjwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kudulwe
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }
@@ -91,7 +92,7 @@ discover-invalid-did = ukutholwa kuhlulekile: `did` kufanele iqale nge-did:ma:, 
 discover-no-endpoint = isexwayiso sokutholwa: `endpoint_id` ayekho ku-status.json; i-DID kuphela igcinwe
 discover-success = ma itholakale ku-{ $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   isidlaliso @ma sidalwe — shicilela ngo: .my.identity:publish @ma
+discover-alias-hint =   i-alias @ma idalwe — qhuba '.my.identity:publish @ma' ukushicilela ubunikazi bakho.
 claim-success = i-Runtime ibonelelwe ku-{ $did }
 claim-conflict = i-Runtime isicelwe obunikazi obunye
 claim-http-failed = isicelo sihlulekile: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   gcwalisa phambilini: @<did>:say (i
 help-url-emote =   ?emote=<did>                 gcwalisa phambilini: @<did>:emote (isenzo emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ukufakwa kugcwaliswe phambilini kodwa akuthunyiswanga — cindezela Enter ukuthumela.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                shicilela ubunikazi bakho kwi-network
+help-header-publish = ── ukushicilela ubunikazi ────────────────────────────────────────────────────
+help-publish-intro = Ukushicilela kwenza ubunikazi bakho butholakale ku-network. Abanye bangafuna i-DID yakho ukukufinyelela.
+help-publish-ma = Ukushicilela, udinga u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
+help-publish-steps = Izinyathelo: qhuba '.my.ma:discover' ukuze uthole u-ma wendawo, bese '.my.identity:publish @ma'.
+help-publish-without = Ngaphandle kokushicilela, abanye abanakukufinyelela — ngisho noma bazi i-DID yakho, abanakuxazulula i-endpoint yakho.

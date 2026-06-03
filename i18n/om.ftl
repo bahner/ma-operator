@@ -29,7 +29,8 @@ msg-type-help = Tarree ajajootaaf .help barreessi.
 msg-connecting = iroh walitti hidhamaa...
 msg-iroh-ready = xumura iroh qophaa'eera
 msg-iroh-failed = iroh: { $e }
-msg-identity-not-published = Eenyummaan toora interneetii irratti hin argamne — '.my.identity:publish @ma' fiiduu miira argamuu.
+msg-auto-published = DID ma naannoo ({ $url }) tiin maxxanfame
+msg-identity-not-published = Eenyummaan interneetii irraa hin argamne — yoo ma naannoo irratti fe'ame, '.my.ma:discover' itti aansuun '.my.identity:publish @ma' oofaa. Bal'ina argachuuf '.help.publish' barreessi.
 msg-blocked = ⊗ uggurame [{ $cap }]: { $from }
 msg-focus-cleared = xiyyeeffannoon qulqullaa'e
 msg-focusing = { $did } gara { $prompt }tti xiyyeeffachaa jira
@@ -91,7 +92,7 @@ discover-invalid-did = argannoon hin milkaa'ne: `did` did:ma: irraa eegaluu qaba
 discover-no-endpoint = gorsa argannoo: `endpoint_id` status.json keessa hin jiru; DID qofa kuufame
 discover-success = ma { $url } irratti argame
 discover-did-line = DID: { $did }
-discover-alias-hint =   moggaasi @ma uumame — maxxansi: .my.identity:publish @ma
+discover-alias-hint =   maqaa gorsaa @ma uumame — eenyummaa kee maxxansuuf '.my.identity:publish @ma' oofaa.
 claim-success = Runtime { $did }f fudhatame
 claim-conflict = Runtime eenyummaa biroon duraan fudhatameera
 claim-http-failed = fudhachuu hin milkaa'ne: HTTP { $status }
@@ -284,3 +285,10 @@ help-url-say =   ?say=<did>                   dursee guuti: @<did>:say (jechi sa
 help-url-emote =   ?emote=<did>                 dursee guuti: @<did>:emote (jechi emote)
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Galchi guutameera garuu hin ergamne — erguu Enter tuqi.
+# ── Help text — publishing ────────────────────────────────────────────────
+help-topic-publish =   .help.publish                eenyummaa kee networki irratti maxxansi
+help-header-publish = ── eenyummaa maxxansuu ──────────────────────────────────────────────────────
+help-publish-intro = Maxxansuun eenyummaa kee networki irratti argamuu danda'u taasisa. Namoota biroo DID kee barbaaduun si argachuu danda'u.
+help-publish-ma = Maxxansuuf, ma (runtime naannoo) fe'amuu qaba. Ego fi IPFS/IPNS si bakka buusee walitti hidha.
+help-publish-steps = Tartiiba: ma naannoo argachuuf '.my.ma:discover' oofaa, itti aansuun '.my.identity:publish @ma'.
+help-publish-without = Maxxansuu malee namooni biroon si dhaqqabuu hin danda'an — DID kee beekaniiyyuu endpoint kee furuuf dandeetii hin qaban.
