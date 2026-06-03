@@ -83,6 +83,8 @@ inbox-empty = inboks i emptipela
 inbox-entry-not-found = inboks entri { $n } i no painim
 inbox-no-message-id = inboks entri { $n } i no gat message_id
 inbox-no-verb = i no gat vèb `{ $verb }` bilong inboks entri { $n }
+inbox-filter-no-arg = filtim i nidim DID o alias tok
+inbox-filter-empty = i no gat tok bilong { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = discoveri i no wok long { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = i no gat vèb `{ $verb }` bilong .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = yusim olsem: .my.identity:publish <did-o-alias>
+identity-exported = Bundle i save kamdaun olsem { $filename }
+identity-export-failed = Eksport i no wok: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content i emptipela
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             klemim ownashop bilong runtime l
 help-identity =   .my.identity                 soim seting bilong identiti
 help-identity-did =   .my.identity.did             soim yu DID (ritim tasol)
 help-identity-publish =   .my.identity:publish @pub    pablisim yu DID long pablisha sovic
+help-identity-export =   .my.identity:export          kisim bundle bilong yu yet
 help-config-path =   .config                      soim olgeta .config.* entri
 help-inbox =   .my.inbox                    soim bokis bilong mesej (sabpatri)
 help-inbox-n =   .my.inbox.N                  soim fild bilong entri N
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             openim content bilong entri rit
 help-inbox-del =   .my.inbox.N:                 rausim entri N
 help-inbox-delall =   .my.inbox:                   rausim olgeta entri long bokis
 help-inbox-flush =   .my.inbox:flush              soim olgeta entri long terminal
+help-inbox-filter =   .my.inbox:filter @who        soim tasol enteri bilong @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   wokabaut long senda DID dokumen isi isi
 help-doc-edit =   .my.doc.<name>:edit           openim edita wantaim content i sev pinis
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     kisim CID, openim bilong lukluk tasol

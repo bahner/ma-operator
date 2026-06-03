@@ -83,6 +83,8 @@ inbox-empty = ইনবক্স খালি
 inbox-entry-not-found = ইনবক্স এন্ট্রি { $n } পাওয়া যায়নি
 inbox-no-message-id = ইনবক্স এন্ট্রি { $n }-এ message_id নেই
 inbox-no-verb = ইনবক্স এন্ট্রি { $n }-এর জন্য `{ $verb }` ক্রিয়া নেই
+inbox-filter-no-arg = ফিল্টারের জন্য DID বা ছদ্মনাম প্রয়োজন
+inbox-filter-empty = { $did } থেকে কোনো বার্তা নেই
 
 # ── ক্রিয়া — রানটাইম ─────────────────────────────────────────────────────
 discover-fetch-failed = { $url }-এ আবিষ্কার ব্যর্থ: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl-এর জন্য `{ $verb }` ক্রিয়া ন�
 
 # ── ক্রিয়া — পরিচয় ───────────────────────────────────────────────────────
 publish-usage = ব্যবহার: .my.identity:publish <did-বা-উপনাম>
+identity-exported = { $filename } হিসেবে বান্ডেল ডাউনলোড হয়েছে
+identity-export-failed = রপ্তানি ব্যর্থ হয়েছে: { $e }
 
 # ── ক্রিয়া — ডকুমেন্ট ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content খালি
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             আপনার DID দিয়
 help-identity =   .my.identity                 পরিচয় কনফিগ দেখান
 help-identity-did =   .my.identity.did             নিজের DID দেখান (শুধুমাত্র পঠনযোগ্য)
 help-identity-publish =   .my.identity:publish @pub    প্রকাশনা সেবার মাধ্যমে DID প্রকাশ করুন
+help-identity-export =   .my.identity:export          নিজের পরিচয় বান্ডেল ডাউনলোড করুন
 help-config-path =   .config                      সমস্ত .config.* এন্ট্রি দেখান
 
 # ── সহায়তা — ইনবক্স ──────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             শুধুমাত্র প
 help-inbox-del =   .my.inbox.N:                 এন্ট্রি N মুছুন
 help-inbox-delall =   .my.inbox:                   সমস্ত ইনবক্স এন্ট্রি মুছুন
 help-inbox-flush =   .my.inbox:flush              সমস্ত এন্ট্রি টার্মিনালে প্রিন্ট করুন
+help-inbox-filter =   .my.inbox:filter @who        @who থেকে কেবল এন্ট্রি দেখাও
 help-inbox-traverse =   .my.inbox.N.sender.<field>   প্রেরক DID ডকুমেন্ট অলস অন্বেষণ
 
 # ── সহায়তা — ডকুমেন্ট ───────────────────────────────────────────────────

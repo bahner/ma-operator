@@ -83,6 +83,8 @@ inbox-empty = apótí ìnrọ̀lé ṣofo
 inbox-entry-not-found = a kò rí ìforúkọsílẹ̀ apótí { $n }
 inbox-no-message-id = ìforúkọsílẹ̀ apótí { $n } kò ní message_id
 inbox-no-verb = kò sí ìgbésẹ̀ `{ $verb }` fún ìforúkọsílẹ̀ apótí { $n }
+inbox-filter-no-arg = àlẹ̀mọ̀ nilo ariyanjiyan DID tàbí orúkọ àpèjẹ
+inbox-filter-empty = kò sí ìròyìn láti { $did }
 
 # ── Àwọn ìgbésẹ̀ — ìgbà àkókò iṣẹ ──────────────────────────────────────
 discover-fetch-failed = ìwárí kùnà ní { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = kò sí ìgbésẹ̀ `{ $verb }` fún .my.acl
 
 # ── Àwọn ìgbésẹ̀ — ìdánimọ̀ ──────────────────────────────────────────────
 publish-usage = lílo: .my.identity:publish <did-tàbí-àpèlé>
+identity-exported = A gba bundle silẹ bi { $filename }
+identity-export-failed = Okeere kuna: { $e }
 
 # ── Àwọn ìgbésẹ̀ — àwọn ìwé ──────────────────────────────────────────────
 doc-content-empty = { $path }.content ṣofo
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             gba ẹ̀tọ́ runtime pẹ̀l�
 help-identity =   .my.identity                 ṣàfihàn ìtúpalẹ̀ ìdánimọ̀
 help-identity-did =   .my.identity.did             ṣàfihàn DID rẹ (kíkà nìkan)
 help-identity-publish =   .my.identity:publish @pub    tẹ DID jáde nípasẹ̀ iṣẹ́ àtẹjáde
+help-identity-export =   .my.identity:export          gba bundle idanimọ tirẹ
 help-config-path =   .config                      ṣàfihàn gbogbo àwọn ìforúkọsílẹ̀ .config.*
 
 # ── Ìrànlọ́wọ́ — apótí ìnrọ̀lé ────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             ṣí àkóónú fún kíkà n�
 help-inbox-del =   .my.inbox.N:                 pa ìforúkọsílẹ̀ N rẹ̀
 help-inbox-delall =   .my.inbox:                   pa gbogbo àwọn ìforúkọsílẹ̀ apótí rẹ̀
 help-inbox-flush =   .my.inbox:flush              tẹ gbogbo àwọn ìforúkọsílẹ̀ jáde sí terminal
+help-inbox-filter =   .my.inbox:filter @who        ṣàfihàn àwọn ìdáhùn láti @who nìkàn
 help-inbox-traverse =   .my.inbox.N.sender.<field>   ṣàwárí ìwé DID aránnísọ̀pọ̀ lẹ̀ẹ̀ kan
 
 # ── Ìrànlọ́wọ́ — àwọn ìwé ─────────────────────────────────────────────────

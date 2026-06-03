@@ -83,6 +83,8 @@ inbox-empty = akwatin wasiku fanko ne
 inbox-entry-not-found = ba a samu shigarwar akwatin wasiku { $n } ba
 inbox-no-message-id = shigarwar akwatin wasiku { $n } ba ta da message_id
 inbox-no-verb = babu aikatau `{ $verb }` don shigarwar akwatin wasiku { $n }
+inbox-filter-no-arg = tace tana buƙatar jayayya ta DID ko alias
+inbox-filter-empty = babu saƙonnin daga { $did }
 
 # ── Aikatau — lokacin gudana ──────────────────────────────────────────────
 discover-fetch-failed = bincike ya kasa a { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = babu aikatau `{ $verb }` don .my.acl
 
 # ── Aikatau — asali ───────────────────────────────────────────────────────
 publish-usage = amfani: .my.identity:publish <did-ko-laƙabi>
+identity-exported = An sauke ƙunshin a matsayin { $filename }
+identity-export-failed = Fitarwa ta kasa: { $e }
 
 # ── Aikatau — takardu ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content fanko ne
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             ɗauki mallakar runtime da DID �
 help-identity =   .my.identity                 nuna saitunan asali
 help-identity-did =   .my.identity.did             nuna DID ɗinka (karatu kawai)
 help-identity-publish =   .my.identity:publish @pub    wallafa DID ta hanyar sabis na wallafa
+help-identity-export =   .my.identity:export          sauke ƙunshin shaida naka
 help-config-path =   .config                      nuna duk shigarwar .config.*
 
 # ── Rubutun taimako — akwatin wasiku ─────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             buɗa abun ciki don karatu kawa
 help-inbox-del =   .my.inbox.N:                 goge shigarwa N
 help-inbox-delall =   .my.inbox:                   goge duk shigarwar akwatin wasiku
 help-inbox-flush =   .my.inbox:flush              buga duk shigarwa zuwa terminal
+help-inbox-filter =   .my.inbox:filter @who        nuna shigarwa daga @who kawai
 help-inbox-traverse =   .my.inbox.N.sender.<field>   bincika takarda DID mai aika a hankali
 
 # ── Rubutun taimako — takardu ─────────────────────────────────────────────

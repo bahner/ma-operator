@@ -84,6 +84,8 @@ inbox-empty = innboksen er tom
 inbox-entry-not-found = innboksoppføring { $n } ikke funnet
 inbox-no-message-id = innboksoppføring { $n } har ingen message_id
 inbox-no-verb = intet verb `{ $verb }` for innboksoppføring { $n }
+inbox-filter-no-arg = filter krever et DID- eller alias-argument
+inbox-filter-empty = ingen meldinger fra { $did }
 
 # ── Verb — kjøretid ───────────────────────────────────────────────────────
 discover-fetch-failed = oppdagelse feilet ved { $url }: { $e }
@@ -108,6 +110,8 @@ acl-no-verb = intet verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
 publish-usage = bruk: .my.identity:publish <did-eller-alias>
+identity-exported = Bundle lastet ned som { $filename }
+identity-export-failed = Eksport mislyktes: { $e }
 
 # ── Verb — dokumenter ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content er tom
@@ -171,6 +175,7 @@ help-runtime-claim =   .my.ma:claim             gjør krav på kjøretid med din
 help-identity =   .my.identity                 vis identitetskonfigurasjon
 help-identity-did =   .my.identity.did             vis egen DID (skrivebeskyttet)
 help-identity-publish =   .my.identity:publish @pub    publiser egen DID via utgiver-tjeneste
+help-identity-export =   .my.identity:export          last ned eget identitetspakke
 help-config-path =   .config                      vis alle .config.*-oppføringer
 
 # ── Hjelpetekst — innboks ─────────────────────────────────────────────────
@@ -182,6 +187,7 @@ help-inbox-open =   .my.inbox.N:open             åpne innholdet i skrivebeskytt
 help-inbox-del =   .my.inbox.N:                 slett oppføring N
 help-inbox-delall =   .my.inbox:                   slett alle innboksoppføringer
 help-inbox-flush =   .my.inbox:flush              skriv alle oppføringer til terminal
+help-inbox-filter =   .my.inbox:filter @who        vis bare oppføringer fra @who
 help-inbox-traverse =   .my.inbox.N.sender.<felt>   traverser avsenderens DID-dokument lat
 
 # ── Hjelpetekst — dokumenter ──────────────────────────────────────────────

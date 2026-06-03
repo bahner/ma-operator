@@ -83,6 +83,8 @@ inbox-empty = igbe ozi di efu
 inbox-entry-not-found = achịghị ndepụta igbe ozi { $n }
 inbox-no-message-id = ndepụta igbe ozi { $n } enweghị message_id
 inbox-no-verb = enweghị ọrụ `{ $verb }` maka ndepụta igbe ozi { $n }
+inbox-filter-no-arg = filter chọrọ arụmụka DID ma ọ bụ alias
+inbox-filter-empty = enweghị ozi sitere na { $did }
 
 # ── Ọrụ — oge ọrụ ─────────────────────────────────────────────────────────
 discover-fetch-failed = nchọpụta erughị na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = enweghị ọrụ `{ $verb }` maka .my.acl
 
 # ── Ọrụ — njirimara ───────────────────────────────────────────────────────
 publish-usage = ojiji: .my.identity:publish <did-ma-ọ-bụ-nchọkwa>
+identity-exported = A budata bundle dị ka { $filename }
+identity-export-failed = Nbupu enweghị ike: { $e }
 
 # ── Ọrụ — akwụkwọ ────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content di efu
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             kwụa akwụ runtime site na DI
 help-identity =   .my.identity                 gosi nhazi njirimara
 help-identity-did =   .my.identity.did             gosi DID gị (ịgụ naanị)
 help-identity-publish =   .my.identity:publish @pub    bipụta DID site na ọrụ ịbipụta
+help-identity-export =   .my.identity:export          budata bundle identity gị
 help-config-path =   .config                      gosi ndepụta .config.* niile
 
 # ── Enyemaka — igbe ozi ──────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             mepee ọdịnaya maka ịgụ 
 help-inbox-del =   .my.inbox.N:                 hichapụ ndepụta N
 help-inbox-delall =   .my.inbox:                   hichapụ ndepụta igbe ozi niile
 help-inbox-flush =   .my.inbox:flush              bipụta ndepụta niile na terminal
+help-inbox-filter =   .my.inbox:filter @who        gosi naanị ndepụta site na @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   gafee akwụkwọ DID onye zigara n'ụzọ nwayọọ
 
 # ── Enyemaka — akwụkwọ ────────────────────────────────────────────────────

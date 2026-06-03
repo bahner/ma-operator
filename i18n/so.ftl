@@ -83,6 +83,8 @@ inbox-empty = sanduuqa gelitaanku wuu maran yahay
 inbox-entry-not-found = gelitaanka sanduuqa { $n } lama helin
 inbox-no-message-id = gelitaanka sanduuqa { $n } message_id ma laha
 inbox-no-verb = ficil `{ $verb }` gelitaanka sanduuqa { $n } ma jiro
+inbox-filter-no-arg = shaandhaynaasha waxay u baahan yihiin DID ama magacgalnida doodda
+inbox-filter-empty = wax farriin ah kuma jirin { $did }
 
 # ── Ficilada — wakhtiga shaqada ───────────────────────────────────────────
 discover-fetch-failed = ogaanshaha ku guuldareystay { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ficil `{ $verb }` .my.acl ma jiro
 
 # ── Ficilada — aqoonsiga ──────────────────────────────────────────────────
 publish-usage = isticmaalka: .my.identity:publish <did-ama-magaca-kale>
+identity-exported = Bundle-ka waxaa loo dejisay { $filename }
+identity-export-failed = Dhoofinta waxay la kulmeen: { $e }
 
 # ── Ficilada — dokumantigyada ─────────────────────────────────────────────
 doc-content-empty = { $path }.content wuu maran yahay
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             hantida runtime DID-kaagana
 help-identity =   .my.identity                 tus dejinta aqoonsiga
 help-identity-did =   .my.identity.did             tus DID-kaaga (akhrin oo keliya)
 help-identity-publish =   .my.identity:publish @pub    DID u daabac adeegga daabacaadda
+help-identity-export =   .my.identity:export          soo dajiso bundle-ka aqoonsigaaga
 help-config-path =   .config                      tus dhammaan gelitaanada .config.*
 
 # ── Gargaarku — sanduuqa gelitaanka ──────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             fur waxa ku jira si loo akhriyo
 help-inbox-del =   .my.inbox.N:                 tirtir gelitaanka N
 help-inbox-delall =   .my.inbox:                   tirtir dhammaan gelitaanada sanduuqa
 help-inbox-flush =   .my.inbox:flush              daabac dhammaan gelitaanada terminal
+help-inbox-filter =   .my.inbox:filter @who        muuji kaliya qeybaha ka yimid @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   orod dokumantigga DID wariyaha si tartiib ah
 
 # ── Gargaarku — dokumantigyada ────────────────────────────────────────────

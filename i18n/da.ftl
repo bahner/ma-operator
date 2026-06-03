@@ -83,6 +83,8 @@ inbox-empty = indbakken er tom
 inbox-entry-not-found = indbakkepost { $n } ikke fundet
 inbox-no-message-id = indbakkepost { $n } har ingen message_id
 inbox-no-verb = intet verb `{ $verb }` for indbakkepost { $n }
+inbox-filter-no-arg = filter kræver et DID- eller aliasargument
+inbox-filter-empty = ingen beskeder fra { $did }
 
 # ── Verb — kørselstid ─────────────────────────────────────────────────────
 discover-fetch-failed = opdagelse mislykkedes ved { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = intet verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
 publish-usage = brug: .my.identity:publish <did-eller-alias>
+identity-exported = Pakke hentet som { $filename }
+identity-export-failed = Eksport mislykkedes: { $e }
 
 # ── Verb — dokumenter ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content er tom
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             gør krav på kørselstid med di
 help-identity =   .my.identity                 vis identitetskonfiguration
 help-identity-did =   .my.identity.did             vis eget DID (skrivebeskyttet)
 help-identity-publish =   .my.identity:publish @pub    publicér eget DID via udgiver-tjeneste
+help-identity-export =   .my.identity:export          hent eget identitetspakke
 help-config-path =   .config                      vis alle .config.*-poster
 
 # ── Hjælpetekst — indbakke ────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             åbn indhold i skrivebeskyttet 
 help-inbox-del =   .my.inbox.N:                 slet post N
 help-inbox-delall =   .my.inbox:                   slet alle indbakkeposter
 help-inbox-flush =   .my.inbox:flush              udskriv alle poster til terminalen
+help-inbox-filter =   .my.inbox:filter @who        vis kun poster fra @who
 help-inbox-traverse =   .my.inbox.N.sender.<felt>   traversér afsenderens DID-dokument latenst
 
 # ── Hjælpetekst — dokumenter ──────────────────────────────────────────────

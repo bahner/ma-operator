@@ -83,6 +83,8 @@ inbox-empty = bwat resepsyon vid
 inbox-entry-not-found = antre bwat resepsyon { $n } pa jwenn
 inbox-no-message-id = antre bwat resepsyon { $n } pa gen message_id
 inbox-no-verb = pa gen vèb `{ $verb }` pou antre bwat resepsyon { $n }
+inbox-filter-no-arg = filtre bezwen yon agiman DID oswa alias
+inbox-filter-empty = pa gen mesaj soti nan { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = dekouvèt echwe nan { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = pa gen vèb `{ $verb }` pou .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = itilizasyon: .my.identity:publish <did-oswa-alias>
+identity-exported = Pakè a telechaje kòm { $filename }
+identity-export-failed = Ekspòtasyon echwe: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content vid
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             reklame pwopriyete runtime avèk
 help-identity =   .my.identity                 montre konfigirasyon idantite
 help-identity-did =   .my.identity.did             montre pwòp DID (li sèlman)
 help-identity-publish =   .my.identity:publish @pub    pibliye pwòp DID via sèvis pibliye
+help-identity-export =   .my.identity:export          telechaje pakè idantite ou
 help-config-path =   .config                      montre tout antri .config.*
 help-inbox =   .my.inbox                    liste bwat resepsyon (wè souabre)
 help-inbox-n =   .my.inbox.N                  montre chan antri N
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             ouvri kontni antri li sèlman n
 help-inbox-del =   .my.inbox.N:                 efase antri N
 help-inbox-delall =   .my.inbox:                   efase tout antri nan bwat resepsyon
 help-inbox-flush =   .my.inbox:flush              enprime tout antri nan terminal
+help-inbox-filter =   .my.inbox:filter @who        montre sèlman antre ki soti nan @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   travèse dokiman DID expèditè alèz
 help-doc-edit =   .my.doc.<name>:edit           ouvri editè avèk kontni sovgade
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     rekipere CID, ouvri pou revizyon sèlman

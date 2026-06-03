@@ -83,6 +83,8 @@ inbox-empty = inbox empty
 inbox-entry-not-found = inbox entry { $n } nor find
 inbox-no-message-id = inbox entry { $n } nor get message_id
 inbox-no-verb = no verb `{ $verb }` for inbox entry { $n }
+inbox-filter-no-arg = filter nid DID abi alias argument
+inbox-filter-empty = no message dey from { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = discover fail for { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = usage: .my.identity:publish <did-or-alias>
+identity-exported = Bundle don download as { $filename }
+identity-export-failed = Export fail: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content dey empty
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             klaim ownashop of runtime wit yu
 help-identity =   .my.identity                 shoh identity konfig
 help-identity-did =   .my.identity.did             shoh yu own DID (read-only)
 help-identity-publish =   .my.identity:publish @pub    publish yu own DID via publisher savis
+help-identity-export =   .my.identity:export          download your own identity bundle
 help-config-path =   .config                      shoh all .config.* entri dem
 help-inbox =   .my.inbox                    list inbox (sabtri vyu)
 help-inbox-n =   .my.inbox.N                  shoh entri N field dem
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             open entri content read-only in
 help-inbox-del =   .my.inbox.N:                 dilit entri N
 help-inbox-delall =   .my.inbox:                   dilit all inbox entri dem
 help-inbox-flush =   .my.inbox:flush              print all entri dem go terminal
+help-inbox-filter =   .my.inbox:filter @who        show only entri from @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse senda DID dokument layzily
 help-doc-edit =   .my.doc.<name>:edit           open edita wit saved content
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     fetsh CID, open for review only

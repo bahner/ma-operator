@@ -83,6 +83,8 @@ inbox-empty = kotak masuk kosong
 inbox-entry-not-found = entri kotak masuk { $n } tidak ditemukan
 inbox-no-message-id = entri kotak masuk { $n } tidak memiliki message_id
 inbox-no-verb = tidak ada kata kerja `{ $verb }` untuk entri kotak masuk { $n }
+inbox-filter-no-arg = filter memerlukan argumen DID atau alias
+inbox-filter-empty = tidak ada pesan dari { $did }
 
 # ── Kata kerja — runtime ──────────────────────────────────────────────────
 discover-fetch-failed = penemuan gagal di { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = tidak ada kata kerja `{ $verb }` untuk .my.acl
 
 # ── Kata kerja — identitas ────────────────────────────────────────────────
 publish-usage = penggunaan: .my.identity:publish <did-atau-alias>
+identity-exported = Paket diunduh sebagai { $filename }
+identity-export-failed = Ekspor gagal: { $e }
 
 # ── Kata kerja — dokumen ──────────────────────────────────────────────────
 doc-content-empty = { $path }.content kosong
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             klaim kepemilikan runtime dengan
 help-identity =   .my.identity                 tampilkan konfigurasi identitas
 help-identity-did =   .my.identity.did             tampilkan DID sendiri (hanya baca)
 help-identity-publish =   .my.identity:publish @pub    terbitkan DID melalui layanan penerbitan
+help-identity-export =   .my.identity:export          unduh paket identitas sendiri
 help-config-path =   .config                      tampilkan semua entri .config.*
 
 # ── Bantuan — kotak masuk ─────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             buka konten entri di editor han
 help-inbox-del =   .my.inbox.N:                 hapus entri N
 help-inbox-delall =   .my.inbox:                   hapus semua entri kotak masuk
 help-inbox-flush =   .my.inbox:flush              cetak semua entri ke terminal
+help-inbox-filter =   .my.inbox:filter @who        tampilkan hanya entri dari @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   jelajahi dokumen DID pengirim secara malas
 
 # ── Bantuan — dokumen ─────────────────────────────────────────────────────

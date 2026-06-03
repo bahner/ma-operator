@@ -83,6 +83,8 @@ inbox-empty = इनबॉक्स खाली है
 inbox-entry-not-found = इनबॉक्स प्रविष्टि { $n } नहीं मिली
 inbox-no-message-id = इनबॉक्स प्रविष्टि { $n } में message_id नहीं है
 inbox-no-verb = इनबॉक्स प्रविष्टि { $n } के लिए `{ $verb }` क्रिया नहीं
+inbox-filter-no-arg = फ़िल्टर के लिए DID या उपनाम की आवश्यकता है
+inbox-filter-empty = { $did } से कोई संदेश नहीं
 
 # ── क्रिया — रनटाइम ───────────────────────────────────────────────────────
 discover-fetch-failed = { $url } पर खोज विफल: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl के लिए `{ $verb }` क्रिया नही�
 
 # ── क्रिया — पहचान ────────────────────────────────────────────────────────
 publish-usage = उपयोग: .my.identity:publish <did-या-उपनाम>
+identity-exported = बंडल { $filename } के रूप में डाउनलोड हुआ
+identity-export-failed = निर्यात विफल: { $e }
 
 # ── क्रिया — दस्तावेज़ ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content खाली है
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             अपने DID से रन�
 help-identity =   .my.identity                 पहचान कॉन्फ़िग दिखाएं
 help-identity-did =   .my.identity.did             अपना DID दिखाएं (केवल पढ़ने योग्य)
 help-identity-publish =   .my.identity:publish @pub    प्रकाशन सेवा द्वारा DID प्रकाशित करें
+help-identity-export =   .my.identity:export          अपना पहचान बंडल डाउनलोड करें
 help-config-path =   .config                      सभी .config.* प्रविष्टियां दिखाएं
 
 # ── सहायता — इनबॉक्स ─────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             सामग्री केव
 help-inbox-del =   .my.inbox.N:                 प्रविष्टि N हटाएं
 help-inbox-delall =   .my.inbox:                   सभी इनबॉक्स प्रविष्टियां हटाएं
 help-inbox-flush =   .my.inbox:flush              सभी प्रविष्टियां टर्मिनल में प्रिंट करें
+help-inbox-filter =   .my.inbox:filter @who        केवल @who से प्रविष्टियाँ दिखाएं
 help-inbox-traverse =   .my.inbox.N.sender.<field>   प्रेषक DID दस्तावेज़ का आलसी अन्वेषण
 
 # ── सहायता — दस्तावेज़ ────────────────────────────────────────────────────

@@ -83,6 +83,8 @@ inbox-empty = postilaatikko on tyhjä
 inbox-entry-not-found = postilaatikon merkintää { $n } ei löydy
 inbox-no-message-id = postilaatikon merkinnällä { $n } ei ole message_id:tä
 inbox-no-verb = ei verbiä `{ $verb }` postilaatikon merkinnälle { $n }
+inbox-filter-no-arg = suodatin vaatii DID- tai alias-argumentin
+inbox-filter-empty = ei viestejä kohteelta { $did }
 
 # ── Verbit — ajonaikainen ─────────────────────────────────────────────────
 discover-fetch-failed = löytäminen epäonnistui osoitteessa { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ei verbiä `{ $verb }` kohteelle .my.acl
 
 # ── Verbit — identiteetti ─────────────────────────────────────────────────
 publish-usage = käyttö: .my.identity:publish <did-tai-alias>
+identity-exported = Paketti ladattu nimellä { $filename }
+identity-export-failed = Vienti epäonnistui: { $e }
 
 # ── Verbit — asiakirjat ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content on tyhjä
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             varaa ajonaikainen DID:lläsi
 help-identity =   .my.identity                 näytä identiteetin kokoonpano
 help-identity-did =   .my.identity.did             näytä oma DID (kirjoitussuojattu)
 help-identity-publish =   .my.identity:publish @pub    julkaise oma DID julkaisijan kautta
+help-identity-export =   .my.identity:export          lataa oma identiteettipaketti
 help-config-path =   .config                      näytä kaikki .config.*-merkinnät
 
 help-inbox =   .my.inbox                    listaa postilaatikko (alipuunäkymä)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             avaa sisältö kirjoitussuojatu
 help-inbox-del =   .my.inbox.N:                 poista merkintä N
 help-inbox-delall =   .my.inbox:                   poista kaikki postilaatikon merkinnät
 help-inbox-flush =   .my.inbox:flush              tulosta kaikki merkinnät terminaaliin
+help-inbox-filter =   .my.inbox:filter @who        näytä vain @who:n merkinnät
 help-inbox-traverse =   .my.inbox.N.sender.<kenttä>  traversoi lähettäjän DID-asiakirja viiveellä
 
 help-doc-edit =   .my.doc.<nimi>:edit           avaa editori tallennetulla sisällöllä

@@ -83,6 +83,8 @@ inbox-empty = doručená pošta je prázdna
 inbox-entry-not-found = záznam { $n } doručenej pošty nenájdený
 inbox-no-message-id = záznam { $n } doručenej pošty nemá message_id
 inbox-no-verb = žiadne sloveso `{ $verb }` pre záznam { $n } doručenej pošty
+inbox-filter-no-arg = filter vyžaduje argument DID alebo alias
+inbox-filter-empty = žiadne správy od { $did }
 
 # ── Slovesá — runtime ─────────────────────────────────────────────────────
 discover-fetch-failed = zisťovanie zlyhalo na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = žiadne sloveso `{ $verb }` pre .my.acl
 
 # ── Slovesá — identita ────────────────────────────────────────────────────
 publish-usage = použitie: .my.identity:publish <did-alebo-alias>
+identity-exported = Balík stiahnutý ako { $filename }
+identity-export-failed = Export zlyhal: { $e }
 
 # ── Slovesá — dokumenty ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content je prázdne
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             prevziať runtime svojím DID
 help-identity =   .my.identity                 zobraziť konfiguráciu identity
 help-identity-did =   .my.identity.did             zobraziť vlastný DID (len na čítanie)
 help-identity-publish =   .my.identity:publish @pub    publikovať vlastný DID cez vydavateľskú službu
+help-identity-export =   .my.identity:export          stiahnuť vlastný identifikačný balík
 help-config-path =   .config                      zobraziť všetky záznamy .config.*
 
 help-inbox =   .my.inbox                    vypísať doručenú poštu (pohľad podstromu)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             otvoriť obsah v editore len na
 help-inbox-del =   .my.inbox.N:                 vymazať záznam N
 help-inbox-delall =   .my.inbox:                   vymazať všetky záznamy doručenej pošty
 help-inbox-flush =   .my.inbox:flush              vytlačiť všetky záznamy v termináli
+help-inbox-filter =   .my.inbox:filter @who        zobraziť iba záznamy od @who
 help-inbox-traverse =   .my.inbox.N.sender.<pole>   prechádzať DID dokument odosielateľa lenivo
 
 help-doc-edit =   .my.doc.<názov>:edit           otvoriť editor s uloženým obsahom

@@ -83,6 +83,8 @@ inbox-empty = prejeta pošta je prazna
 inbox-entry-not-found = vnos { $n } prejete pošte ni najden
 inbox-no-message-id = vnos { $n } prejete pošte nima message_id
 inbox-no-verb = ni glagola `{ $verb }` za vnos { $n } prejete pošte
+inbox-filter-no-arg = filter zahteva argument DID ali vzdevka
+inbox-filter-empty = ni sporočil od { $did }
 
 # ── Glagoli — izvajanje ───────────────────────────────────────────────────
 discover-fetch-failed = odkrivanje ni uspelo na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ni glagola `{ $verb }` za .my.acl
 
 # ── Glagoli — identiteta ──────────────────────────────────────────────────
 publish-usage = uporaba: .my.identity:publish <did-ali-vzdevek>
+identity-exported = Paket prenesen kot { $filename }
+identity-export-failed = Izvoz ni uspel: { $e }
 
 # ── Glagoli — dokumenti ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content je prazno
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             zahtevaj izvajanje s svojim DID-
 help-identity =   .my.identity                 prikaži konfiguracijo identitete
 help-identity-did =   .my.identity.did             prikaži lasten DID (samo za branje)
 help-identity-publish =   .my.identity:publish @pub    objavi lasten DID prek storitve založnika
+help-identity-export =   .my.identity:export          prenesi lastni paket identitete
 help-config-path =   .config                      prikaži vse vnose .config.*
 
 help-inbox =   .my.inbox                    izpiši prejeto pošto (pogled poddrevesa)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             odpri vsebino v urejevalniku sa
 help-inbox-del =   .my.inbox.N:                 izbriši vnos N
 help-inbox-delall =   .my.inbox:                   izbriši vse vnose prejete pošte
 help-inbox-flush =   .my.inbox:flush              izpiši vse vnose v terminal
+help-inbox-filter =   .my.inbox:filter @who        prikaži samo vnose od @who
 help-inbox-traverse =   .my.inbox.N.sender.<polje>  leno prehodi DID dokument pošiljatelja
 
 help-doc-edit =   .my.doc.<ime>:edit           odpri urejevalnik s shranjeno vsebino

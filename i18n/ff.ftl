@@ -83,6 +83,8 @@ inbox-empty = burro naatna luuɗi
 inbox-entry-not-found = jottaandi burro { $n } tawaaka
 inbox-no-message-id = jottaandi burro { $n } alaa message_id
 inbox-no-verb = baɗe `{ $verb }` jottaandi burro { $n } alaa
+inbox-filter-no-arg = filtiru ina bukata DID walla teddungal
+inbox-filter-empty = alaa maande firo { $did }
 
 # ── Baɗe — sahaa runtime ──────────────────────────────────────────────────
 discover-fetch-failed = yiytaade haaɗaaka e { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = baɗe `{ $verb }` .my.acl alaa
 
 # ── Baɗe — ɗemngal ───────────────────────────────────────────────────────
 publish-usage = golle: .my.identity:publish <did-walla-hesbu>
+identity-exported = Paake ɗownlooday haa { $filename }
+identity-export-failed = Ɗaɓɓude rewaani: { $e }
 
 # ── Baɗe — takka ─────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content luuɗi
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             ɗaɓɓude runtime DID maa
 help-identity =   .my.identity                 hollu fikaji neɗɗaagu
 help-identity-did =   .my.identity.did             hollu DID maa (jannde tan)
 help-identity-publish =   .my.identity:publish @pub    yettin DID e batu yettindengal
+help-identity-export =   .my.identity:export          ɗownlooda paake maa aan maa
 help-config-path =   .config                      hollu jottaadi .config.* fof
 
 # ── Ballal — burro naatna ─────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             uddita mbeɗe jannde tan e winn
 help-inbox-del =   .my.inbox.N:                 yaltina jottaandi N
 help-inbox-delall =   .my.inbox:                   yaltina jottaandi burro fof
 help-inbox-flush =   .my.inbox:flush              winndita jottaandi fof e terminal
+help-inbox-filter =   .my.inbox:filter @who        yiiɗo ko @who heɓi tan
 help-inbox-traverse =   .my.inbox.N.sender.<field>   laato takka DID nawnooɗo garol garol
 
 # ── Ballal — takka ───────────────────────────────────────────────────────

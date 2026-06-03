@@ -6,7 +6,7 @@
 
 ---
 
-`ego` is a browser-based actor workstation compiled to WASM.
+`zion` is a browser-based actor workstation compiled to WASM.
 Each tab is one `did:ma:` identity. There is no backend — all state
 lives in IndexedDB and all networking goes over iroh QUIC transport
 provided by `ma-core`.
@@ -71,7 +71,7 @@ src/
 www/
   editor.js             — CodeMirror 6 shim; exposes window.maEditor
 style/
-  ego.css
+  zion.css
 lang/                   — Fluent (FTL) translation files; one per BCP-47 tag
   en.ftl                — canonical source; defines all keys
   lang/*.ftl            — all other supported locales
@@ -193,7 +193,7 @@ After discovery:
 
 Prerequisites for publish to work:
 1. [IPFS Desktop](https://docs.ipfs.tech/install/ipfs-desktop/) — provides Kubo
-2. `ma` runtime running — bridges ego → Kubo
+2. `ma` runtime running — bridges zion → Kubo
 
 ---
 
@@ -480,7 +480,7 @@ make check        # cargo check --target wasm32-unknown-unknown
 
 ## Inbound ACL — `.my.acl`
 
-ego enforces a client-side inbound ACL stored at `.my.acl` in `EgoConfig`
+zion enforces a client-side inbound ACL stored at `.my.acl` in `EgoConfig`
 (a plain YAML string). It is evaluated on every poll tick before a message
 is delivered to the terminal.
 

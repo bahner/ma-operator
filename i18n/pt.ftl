@@ -83,6 +83,8 @@ inbox-empty = a caixa de entrada está vazia
 inbox-entry-not-found = entrada { $n } da caixa de entrada não encontrada
 inbox-no-message-id = a entrada { $n } da caixa de entrada não tem message_id
 inbox-no-verb = nenhum verbo `{ $verb }` para a entrada { $n } da caixa de entrada
+inbox-filter-no-arg = o filtro requer um argumento DID ou alias
+inbox-filter-empty = nenhuma mensagem de { $did }
 
 # ── Verbos — tempo de execução ────────────────────────────────────────────
 discover-fetch-failed = descoberta falhou em { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = nenhum verbo `{ $verb }` para .my.acl
 
 # ── Verbos — identidade ───────────────────────────────────────────────────
 publish-usage = utilização: .my.identity:publish <did-ou-alias>
+identity-exported = Pacote descarregado como { $filename }
+identity-export-failed = Exportação falhou: { $e }
 
 # ── Verbos — documentos ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content está vazio
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             reclamar tempo de execução com
 help-identity =   .my.identity                 mostrar configuração de identidade
 help-identity-did =   .my.identity.did             mostrar DID próprio (só de leitura)
 help-identity-publish =   .my.identity:publish @pub    publicar DID próprio através do serviço editor
+help-identity-export =   .my.identity:export          descarregar o próprio pacote de identidade
 help-config-path =   .config                      mostrar todas as entradas .config.*
 
 help-inbox =   .my.inbox                    listar caixa de entrada (vista de subárvore)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             abrir conteúdo em editor só d
 help-inbox-del =   .my.inbox.N:                 eliminar entrada N
 help-inbox-delall =   .my.inbox:                   eliminar todas as entradas da caixa de entrada
 help-inbox-flush =   .my.inbox:flush              imprimir todas as entradas no terminal
+help-inbox-filter =   .my.inbox:filter @who        mostrar apenas entradas de @who
 help-inbox-traverse =   .my.inbox.N.sender.<campo>  percorrer documento DID do remetente de forma diferida
 
 help-doc-edit =   .my.doc.<nome>:edit           abrir editor com conteúdo guardado

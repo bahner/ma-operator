@@ -83,6 +83,8 @@ inbox-empty = la boîte de réception est vide
 inbox-entry-not-found = entrée { $n } de la boîte de réception introuvable
 inbox-no-message-id = l'entrée { $n } de la boîte de réception n'a pas de message_id
 inbox-no-verb = aucun verbe `{ $verb }` pour l'entrée { $n } de la boîte de réception
+inbox-filter-no-arg = le filtre nécessite un argument DID ou alias
+inbox-filter-empty = aucun message de { $did }
 
 # ── Verbes — exécution ────────────────────────────────────────────────────
 discover-fetch-failed = découverte échouée à { $url } : { $e }
@@ -107,6 +109,8 @@ acl-no-verb = aucun verbe `{ $verb }` pour .my.acl
 
 # ── Verbes — identité ─────────────────────────────────────────────────────
 publish-usage = utilisation : .my.identity:publish <did-ou-alias>
+identity-exported = Paquet téléchargé sous { $filename }
+identity-export-failed = Échec de l'exportation : { $e }
 
 # ── Verbes — documents ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content est vide
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             revendiquer l'exécution avec vo
 help-identity =   .my.identity                 afficher la configuration de l'identité
 help-identity-did =   .my.identity.did             afficher son DID (lecture seule)
 help-identity-publish =   .my.identity:publish @pub    publier son DID via le service d'édition
+help-identity-export =   .my.identity:export          télécharger son propre paquet d'identité
 help-config-path =   .config                      afficher toutes les entrées .config.*
 
 help-inbox =   .my.inbox                    lister la boîte de réception (vue sous-arbre)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             ouvrir le contenu dans un édit
 help-inbox-del =   .my.inbox.N:                 supprimer l'entrée N
 help-inbox-delall =   .my.inbox:                   supprimer toutes les entrées de la boîte de réception
 help-inbox-flush =   .my.inbox:flush              afficher toutes les entrées dans le terminal
+help-inbox-filter =   .my.inbox:filter @who        afficher uniquement les entrées de @who
 help-inbox-traverse =   .my.inbox.N.sender.<champ>  traverser le document DID de l'expéditeur en différé
 
 help-doc-edit =   .my.doc.<nom>:edit           ouvrir l'éditeur avec le contenu enregistré

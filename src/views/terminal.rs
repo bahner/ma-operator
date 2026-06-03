@@ -2047,6 +2047,7 @@ fn help_my() -> Vec<String> {
         t("help-identity"),
         t("help-identity-did"),
         t("help-identity-publish"),
+        t("help-identity-export"),
         String::new(),
         t("help-config-path"),
         t("help-footer"),
@@ -2064,6 +2065,7 @@ fn help_inbox() -> Vec<String> {
         t("help-inbox-del"),
         t("help-inbox-delall"),
         t("help-inbox-flush"),
+        t("help-inbox-filter"),
         t("help-inbox-traverse"),
         t("help-footer"),
     ]

@@ -83,6 +83,8 @@ inbox-empty = innboks er tómur
 inbox-entry-not-found = innboks-færslan { $n } funnist ikki
 inbox-no-message-id = innboks-færslan { $n } hevur ongt message_id
 inbox-no-verb = einki sagnorð `{ $verb }` fyri innboks-færslu { $n }
+inbox-filter-no-arg = filtran krevur eitt DID- ella alias-argument
+inbox-filter-empty = eingin boð frá { $did }
 
 # ── Sagnorð — keyrsluumhvørvi ─────────────────────────────────────────────
 discover-fetch-failed = uppgáva misluktist við { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = einki sagnorð `{ $verb }` fyri .my.acl
 
 # ── Sagnorð — samleiki ────────────────────────────────────────────────────
 publish-usage = nýtsla: .my.identity:publish <did-ella-samnefni>
+identity-exported = Pakkin niðurhlaðin sum { $filename }
+identity-export-failed = Útflutningur misheppnaðist: { $e }
 
 # ── Sagnorð — skjøl ──────────────────────────────────────────────────────
 doc-content-empty = { $path }.content er tómur
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             ger krav á keyrsluumhvørvið v
 help-identity =   .my.identity                 vís stillingar fyri samleika
 help-identity-did =   .my.identity.did             vís egna DID (skrivavørn)
 help-identity-publish =   .my.identity:publish @pub    birta egna DID í gongum útgevaraaðgerð
+help-identity-export =   .my.identity:export          hlaða niður egna kennslueinkapakka
 help-config-path =   .config                      vís allar .config.*-færslur
 
 help-inbox =   .my.inbox                    lista innboks (undirtréssýni)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             opna innihald í skrivavørnum 
 help-inbox-del =   .my.inbox.N:                 strika færslu N
 help-inbox-delall =   .my.inbox:                   strika allar innboks-færslur
 help-inbox-flush =   .my.inbox:flush              prenta allar færslur á terminalen
+help-inbox-filter =   .my.inbox:filter @who        vís bert innferal frá @who
 help-inbox-traverse =   .my.inbox.N.sender.<øki>    fletta DID-skjal avsendara seinkað
 
 help-doc-edit =   .my.doc.<navn>:edit           opna ritforrit við vistað innihald

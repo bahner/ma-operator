@@ -83,6 +83,8 @@ inbox-empty = входящие пусты
 inbox-entry-not-found = запись входящих { $n } не найдена
 inbox-no-message-id = запись входящих { $n } не имеет message_id
 inbox-no-verb = нет команды `{ $verb }` для записи входящих { $n }
+inbox-filter-no-arg = фильтр требует аргумент DID или псевдоним
+inbox-filter-empty = нет сообщений от { $did }
 
 # ── Глаголы — среда выполнения ────────────────────────────────────────────
 discover-fetch-failed = обнаружение не удалось по { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = нет команды `{ $verb }` для .my.acl
 
 # ── Глаголы — личность ────────────────────────────────────────────────────
 publish-usage = использование: .my.identity:publish <did-или-псевдоним>
+identity-exported = Пакет загружен как { $filename }
+identity-export-failed = Экспорт не удался: { $e }
 
 # ── Глаголы — документы ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content пуст
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             заявить права на �
 help-identity =   .my.identity                 показать конфигурацию личности
 help-identity-did =   .my.identity.did             показать собственный DID (только чтение)
 help-identity-publish =   .my.identity:publish @pub    опубликовать DID через сервис публикации
+help-identity-export =   .my.identity:export          загрузить собственный пакет идентичности
 help-config-path =   .config                      показать все записи .config.*
 
 # ── Справка — входящие ────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             открыть содержим
 help-inbox-del =   .my.inbox.N:                 удалить запись N
 help-inbox-delall =   .my.inbox:                   удалить все входящие
 help-inbox-flush =   .my.inbox:flush              вывести все записи в терминал
+help-inbox-filter =   .my.inbox:filter @who        показать только записи от @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   обход документа отправителя
 
 # ── Справка — документы ───────────────────────────────────────────────────

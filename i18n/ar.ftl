@@ -83,6 +83,8 @@ inbox-empty = صندوق الوارد فارغ
 inbox-entry-not-found = إدخال صندوق الوارد { $n } غير موجود
 inbox-no-message-id = إدخال صندوق الوارد { $n } لا يحتوي على message_id
 inbox-no-verb = لا يوجد فعل `{ $verb }` لإدخال صندوق الوارد { $n }
+inbox-filter-no-arg = يتطلب الفلتر وسيطة DID أو مستعار
+inbox-filter-empty = لا رسائل من { $did }
 
 # ── الأفعال — وقت التشغيل ─────────────────────────────────────────────────
 discover-fetch-failed = فشل الاكتشاف في { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = لا يوجد فعل `{ $verb }` لـ .my.acl
 
 # ── الأفعال — الهوية ──────────────────────────────────────────────────────
 publish-usage = الاستخدام: .my.identity:publish <did-أو-اسم-مستعار>
+identity-exported = تم تنزيل الحزمة باسم { $filename }
+identity-export-failed = فشل التصدير: { $e }
 
 # ── الأفعال — المستندات ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content فارغ
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             المطالبة بملكية و
 help-identity =   .my.identity                 عرض ضبط الهوية
 help-identity-did =   .my.identity.did             عرض DID الخاص (للقراءة فقط)
 help-identity-publish =   .my.identity:publish @pub    نشر DID عبر خدمة النشر
+help-identity-export =   .my.identity:export          تنزيل حزمة هويتك
 help-config-path =   .config                      عرض جميع إدخالات .config.*
 
 # ── المساعدة — صندوق الوارد ──────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             فتح المحتوى للقر�
 help-inbox-del =   .my.inbox.N:                 حذف الإدخال N
 help-inbox-delall =   .my.inbox:                   حذف جميع إدخالات صندوق الوارد
 help-inbox-flush =   .my.inbox:flush              طباعة جميع الإدخالات في الطرفية
+help-inbox-filter =   .my.inbox:filter @who        عرض الإدخالات من @who فقط
 help-inbox-traverse =   .my.inbox.N.sender.<field>   استعراض مستند DID المرسل بشكل كسول
 
 # ── المساعدة — المستندات ─────────────────────────────────────────────────

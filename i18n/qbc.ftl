@@ -85,6 +85,8 @@ inbox-empty = inbox im nating
 inbox-entry-not-found = inbox tenye { $n } na finyish wit
 inbox-no-message-id = inbox tenye { $n } na tenye message_id
 inbox-no-verb = na du `{ $verb }` fo inbox tenye { $n }
+inbox-filter-no-arg = filtew nid DID wa alias argument
+inbox-filter-empty = nating showxa fom { $did }
 
 # ── Du — runtime ──────────────────────────────────────────────────────────
 discover-fetch-failed = diskova hámfalla wit { $url }: { $e }
@@ -109,6 +111,8 @@ acl-no-verb = na du `{ $verb }` fo .my.acl
 
 # ── Du — selfmang ─────────────────────────────────────────────────────────
 publish-usage = showxa: .my.identity:publish <did-oyedeng-alias>
+identity-exported = Bundle downye as { $filename }
+identity-export-failed = Export bombauch: { $e }
 
 # ── Du — dokuments ────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content im nating
@@ -172,6 +176,7 @@ help-runtime-claim =   .my.ma:claim             klaim runtime wit yu DID
 help-identity =   .my.identity                 lit selfmang konfig
 help-identity-did =   .my.identity.did             lit yu DID (lit-seng oyedeng)
 help-identity-publish =   .my.identity:publish @pub    sendowt DID wit publishe
+help-identity-export =   .my.identity:export          downye yu owp identity bundle
 help-config-path =   .config                      lit kowl .config.* tenye
 
 # ── Halp — inbox ─────────────────────────────────────────────────────────
@@ -183,6 +188,7 @@ help-inbox-open =   .my.inbox.N:open             udda mbeɗe lit-seng editow
 help-inbox-del =   .my.inbox.N:                 na-du tenye N
 help-inbox-delall =   .my.inbox:                   na-du kowl inbox tenye
 help-inbox-flush =   .my.inbox:flush              lit kowl tenye terminal
+help-inbox-filter =   .my.inbox:filter @who        lit kowl tenye fom @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   mali-du DID dok showxa-mang
 
 # ── Halp — dokuments ─────────────────────────────────────────────────────

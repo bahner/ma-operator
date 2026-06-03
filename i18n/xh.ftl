@@ -83,6 +83,8 @@ inbox-empty = isibhengezo sokufika singenaluto
 inbox-entry-not-found = ingeniso yesibhengezo { $n } ayifumaneki
 inbox-no-message-id = ingeniso yesibhengezo { $n } ayinayo message_id
 inbox-no-verb = akukho senzo `{ $verb }` sengeniso yesibhengezo { $n }
+inbox-filter-no-arg = i-filter ifuna isikhalazo se-DID okanye alias
+inbox-filter-empty = akukho myalezo ovela ku { $did }
 
 # ── Izenzo — ixesha lokusebenza ───────────────────────────────────────────
 discover-fetch-failed = ukubona kuhluleke ku-{ $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = akukho senzo `{ $verb }` se-.my.acl
 
 # ── Izenzo — ubunjani ─────────────────────────────────────────────────────
 publish-usage = ukusetyenziswa: .my.identity:publish <did-okanye-igama-elikhawulezayo>
+identity-exported = Ibundle ikhutshelwe njengo { $filename }
+identity-export-failed = Ukuthumela ngaphandle kuhlulekile: { $e }
 
 # ── Izenzo — imibhalo ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ingenaluto
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             zimisele nge-runtime nge-DID yak
 help-identity =   .my.identity                 bonisa izikhokelo zobunjani
 help-identity-did =   .my.identity.did             bonisa i-DID yakho (ukufunda kuphela)
 help-identity-publish =   .my.identity:publish @pub    shicilela i-DID ngosizo lweshishino loshicilelo
+help-identity-export =   .my.identity:export          khutshelwa ibundle yakho yesazisi
 help-config-path =   .config                      bonisa zonke iingeniso ze-.config.*
 
 # ── Uncedo — isibhengezo sokufika ────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             vula okuqukethweyo ukufunda kup
 help-inbox-del =   .my.inbox.N:                 cima ingeniso N
 help-inbox-delall =   .my.inbox:                   cima zonke iingeniso zesibhengezo
 help-inbox-flush =   .my.inbox:flush              printa zonke iingeniso ku-terminal
+help-inbox-filter =   .my.inbox:filter @who        bonisa amangeniso avela @who kuphela
 help-inbox-traverse =   .my.inbox.N.sender.<field>   hamba imveliso ye-DID yomthumeli ngobulumko
 
 # ── Uncedo — imibhalo ────────────────────────────────────────────────────

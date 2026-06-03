@@ -83,6 +83,8 @@ inbox-empty = la casella di posta è vuota
 inbox-entry-not-found = voce { $n } della casella di posta non trovata
 inbox-no-message-id = la voce { $n } della casella di posta non ha message_id
 inbox-no-verb = nessun verbo `{ $verb }` per la voce { $n } della casella di posta
+inbox-filter-no-arg = il filtro richiede un argomento DID o alias
+inbox-filter-empty = nessun messaggio da { $did }
 
 # ── Verbi — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = rilevamento fallito a { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = nessun verbo `{ $verb }` per .my.acl
 
 # ── Verbi — identità ─────────────────────────────────────────────────────
 publish-usage = utilizzo: .my.identity:publish <did-o-alias>
+identity-exported = Bundle scaricato come { $filename }
+identity-export-failed = Esportazione fallita: { $e }
 
 # ── Verbi — documenti ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content è vuoto
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             reclama runtime con il tuo DID
 help-identity =   .my.identity                 mostra configurazione identità
 help-identity-did =   .my.identity.did             mostra DID proprio (sola lettura)
 help-identity-publish =   .my.identity:publish @pub    pubblica DID proprio tramite servizio editore
+help-identity-export =   .my.identity:export          scarica il proprio bundle di identità
 help-config-path =   .config                      mostra tutte le voci .config.*
 
 help-inbox =   .my.inbox                    elenca casella di posta (vista sottoalbero)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             apri contenuto in editor di sol
 help-inbox-del =   .my.inbox.N:                 elimina voce N
 help-inbox-delall =   .my.inbox:                   elimina tutte le voci della casella di posta
 help-inbox-flush =   .my.inbox:flush              stampa tutte le voci nel terminale
+help-inbox-filter =   .my.inbox:filter @who        mostra solo le voci di @who
 help-inbox-traverse =   .my.inbox.N.sender.<campo>  attraversa documento DID mittente in modo lazy
 
 help-doc-edit =   .my.doc.<nome>:edit           apri editor con contenuto salvato

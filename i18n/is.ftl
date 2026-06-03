@@ -83,6 +83,8 @@ inbox-empty = pósthólf er tómt
 inbox-entry-not-found = færsla { $n } í pósthólfi finnst ekki
 inbox-no-message-id = færsla { $n } í pósthólfi hefur ekkert message_id
 inbox-no-verb = engin sögn `{ $verb }` fyrir færslu { $n } í pósthólfi
+inbox-filter-no-arg = sía þarf DID- eða samnefnisrök
+inbox-filter-empty = engin skilaboð frá { $did }
 
 # ── Sagnir — keyrsluumhverfi ──────────────────────────────────────────────
 discover-fetch-failed = uppgötvun mistókst við { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = engin sögn `{ $verb }` fyrir .my.acl
 
 # ── Sagnir — auðkenni ────────────────────────────────────────────────────
 publish-usage = notkun: .my.identity:publish <did-eða-samnefni>
+identity-exported = Búnt niðurhlað sem { $filename }
+identity-export-failed = Útflutningur mistókst: { $e }
 
 # ── Sagnir — skjöl ───────────────────────────────────────────────────────
 doc-content-empty = { $path }.content er tómt
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             gera tilkall til keyrsluumhverfi
 help-identity =   .my.identity                 sýna stillingu auðkennis
 help-identity-did =   .my.identity.did             sýna eigið DID (læst fyrir skrift)
 help-identity-publish =   .my.identity:publish @pub    birta eigið DID í gegnum útgefendasþjónustu
+help-identity-export =   .my.identity:export          hlaða niður eigin auðkennisbúnt
 help-config-path =   .config                      sýna allar .config.*-færslur
 
 help-inbox =   .my.inbox                    lista pósthólf (undirtréssýn)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             opna efni í ritli læstum fyri
 help-inbox-del =   .my.inbox.N:                 eyða færslu N
 help-inbox-delall =   .my.inbox:                   eyða öllum pósthólffærslum
 help-inbox-flush =   .my.inbox:flush              prenta allar færslur á útstöðina
+help-inbox-filter =   .my.inbox:filter @who        sýna aðeins færslur frá @who
 help-inbox-traverse =   .my.inbox.N.sender.<svæði>  fletta upp DID-skjali sendanda seinkað
 
 help-doc-edit =   .my.doc.<nafn>:edit           opna ritil með vistað efni

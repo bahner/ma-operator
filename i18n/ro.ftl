@@ -83,6 +83,8 @@ inbox-empty = căsuța poștală este goală
 inbox-entry-not-found = intrarea { $n } din căsuța poștală nu a fost găsită
 inbox-no-message-id = intrarea { $n } din căsuța poștală nu are message_id
 inbox-no-verb = niciun verb `{ $verb }` pentru intrarea { $n } din căsuța poștală
+inbox-filter-no-arg = filtrul necesită un argument DID sau alias
+inbox-filter-empty = niciun mesaj de la { $did }
 
 # ── Verbe — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = descoperire eșuată la { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = niciun verb `{ $verb }` pentru .my.acl
 
 # ── Verbe — identitate ────────────────────────────────────────────────────
 publish-usage = utilizare: .my.identity:publish <did-sau-alias>
+identity-exported = Pachetul a fost descărcat ca { $filename }
+identity-export-failed = Exportul a eșuat: { $e }
 
 # ── Verbe — documente ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content este gol
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             revendică runtime cu DID-ul tă
 help-identity =   .my.identity                 afișează configurația identității
 help-identity-did =   .my.identity.did             afișează DID propriu (doar citire)
 help-identity-publish =   .my.identity:publish @pub    publică DID propriu prin serviciul editor
+help-identity-export =   .my.identity:export          descarcă propriul pachet de identitate
 help-config-path =   .config                      afișează toate intrările .config.*
 
 help-inbox =   .my.inbox                    listează căsuța poștală (vedere subarbore)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             deschide conținutul în editor
 help-inbox-del =   .my.inbox.N:                 șterge intrarea N
 help-inbox-delall =   .my.inbox:                   șterge toate intrările din căsuța poștală
 help-inbox-flush =   .my.inbox:flush              afișează toate intrările în terminal
+help-inbox-filter =   .my.inbox:filter @who        arată doar înregistrările de la @who
 help-inbox-traverse =   .my.inbox.N.sender.<câmp>   parcurge documentul DID al expeditorului leneș
 
 help-doc-edit =   .my.doc.<nume>:edit           deschide editor cu conținut salvat

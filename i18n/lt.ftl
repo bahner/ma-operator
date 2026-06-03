@@ -83,6 +83,8 @@ inbox-empty = pašto dėžutė tuščia
 inbox-entry-not-found = pašto dėžutės įrašas { $n } nerastas
 inbox-no-message-id = pašto dėžutės įrašas { $n } neturi message_id
 inbox-no-verb = pašto dėžutės įrašui { $n } nėra veiksmažodžio `{ $verb }`
+inbox-filter-no-arg = filtras reikalauja DID arba slapyvardžio argumento
+inbox-filter-empty = nėra žinučių iš { $did }
 
 # ── Veiksmažodžiai — vykdymo laikas ──────────────────────────────────────
 discover-fetch-failed = aptikimas nepavyko { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl nėra veiksmažodžio `{ $verb }`
 
 # ── Veiksmažodžiai — tapatybė ────────────────────────────────────────────
 publish-usage = naudojimas: .my.identity:publish <did-arba-pseudonimas>
+identity-exported = Paketas atsisiųstas kaip { $filename }
+identity-export-failed = Eksportas nepavyko: { $e }
 
 # ── Veiksmažodžiai — dokumentai ───────────────────────────────────────────
 doc-content-empty = { $path }.content yra tuščias
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             pareikšti vykdymo laiką savo D
 help-identity =   .my.identity                 rodyti tapatybės konfigūraciją
 help-identity-did =   .my.identity.did             rodyti savo DID (tik skaitomas)
 help-identity-publish =   .my.identity:publish @pub    publikuoti savo DID per leidėjo paslaugą
+help-identity-export =   .my.identity:export          atsisiųsti savą tapatybės paketą
 help-config-path =   .config                      rodyti visus .config.* įrašus
 
 help-inbox =   .my.inbox                    išvardyti pašto dėžutę (pomedinė peržiūra)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             atidaryti turinį tik skaitomam
 help-inbox-del =   .my.inbox.N:                 ištrinti įrašą N
 help-inbox-delall =   .my.inbox:                   ištrinti visus pašto dėžutės įrašus
 help-inbox-flush =   .my.inbox:flush              spausdinti visus įrašus terminale
+help-inbox-filter =   .my.inbox:filter @who        rodyti tik @who įrašus
 help-inbox-traverse =   .my.inbox.N.sender.<laukas>  naršyti siuntėjo DID dokumentą su vėlavimu
 
 help-doc-edit =   .my.doc.<pavadinimas>:edit           atidaryti redaktorių su išsaugotu turiniu

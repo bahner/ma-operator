@@ -83,6 +83,8 @@ inbox-empty = Posteingang ist leer
 inbox-entry-not-found = Posteingangs-Eintrag { $n } nicht gefunden
 inbox-no-message-id = Posteingangs-Eintrag { $n } hat keine message_id
 inbox-no-verb = kein Verb `{ $verb }` für Posteingangs-Eintrag { $n }
+inbox-filter-no-arg = Filter benötigt ein DID- oder Alias-Argument
+inbox-filter-empty = keine Nachrichten von { $did }
 
 # ── Verben — Laufzeit ─────────────────────────────────────────────────────
 discover-fetch-failed = Erkennung fehlgeschlagen bei { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = kein Verb `{ $verb }` für .my.acl
 
 # ── Verben — Identität ────────────────────────────────────────────────────
 publish-usage = Verwendung: .my.identity:publish <did-oder-alias>
+identity-exported = Paket heruntergeladen als { $filename }
+identity-export-failed = Export fehlgeschlagen: { $e }
 
 # ── Verben — Dokumente ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ist leer
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             Laufzeit mit Ihrer DID beanspruc
 help-identity =   .my.identity                 Identitätskonfiguration anzeigen
 help-identity-did =   .my.identity.did             eigene DID anzeigen (schreibgeschützt)
 help-identity-publish =   .my.identity:publish @pub    eigene DID über Herausgeber-Dienst veröffentlichen
+help-identity-export =   .my.identity:export          eigenes Identitätspaket herunterladen
 help-config-path =   .config                      alle .config.*-Einträge anzeigen
 
 help-inbox =   .my.inbox                    Posteingang auflisten (Teilbaumansicht)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             Inhalt im schreibgeschützten E
 help-inbox-del =   .my.inbox.N:                 Eintrag N löschen
 help-inbox-delall =   .my.inbox:                   alle Posteingangs-Einträge löschen
 help-inbox-flush =   .my.inbox:flush              alle Einträge im Terminal ausgeben
+help-inbox-filter =   .my.inbox:filter @who        nur Einträge von @who anzeigen
 help-inbox-traverse =   .my.inbox.N.sender.<feld>   DID-Dokument des Absenders lazy traversieren
 
 help-doc-edit =   .my.doc.<name>:edit           Editor mit gespeichertem Inhalt öffnen

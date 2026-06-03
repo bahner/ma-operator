@@ -85,6 +85,8 @@ inbox-empty = inbox empty
 inbox-entry-not-found = inbox entry { $n } nuh find
 inbox-no-message-id = inbox entry { $n } nuh have message_id
 inbox-no-verb = no verb `{ $verb }` fi inbox entry { $n }
+inbox-filter-no-arg = filter need DID or alias argument
+inbox-filter-empty = no message from { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = seeking fall at { $url }: { $e }
@@ -109,6 +111,8 @@ acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = livity: .my.identity:publish <did-or-alias>
+identity-exported = Bundle downpressed as { $filename }
+identity-export-failed = Export nah work: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content empty
@@ -166,6 +170,7 @@ help-runtime-claim =   .my.ma:claim             claim runtime ownership with I a
 help-identity =   .my.identity                 sight I and I identity config
 help-identity-did =   .my.identity.did             sight I and I DID (I-sight only)
 help-identity-publish =   .my.identity:publish @pub    publish I and I DID via publisher
+help-identity-export =   .my.identity:export          download I-and-I identity bundle
 help-config-path =   .config                      sight all .config.* entries
 help-inbox =   .my.inbox                    sight I-box (subtree view)
 help-inbox-n =   .my.inbox.N                  sight entry N fields
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             open entry in I-sight only in e
 help-inbox-del =   .my.inbox.N:                 remove entry N
 help-inbox-delall =   .my.inbox:                   remove all I-box entries
 help-inbox-flush =   .my.inbox:flush              manifest all entries to terminal
+help-inbox-filter =   .my.inbox:filter @who        sight only I-box from @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document in I-time
 help-doc-edit =   .my.doc.<name>:edit           open editor with saved I-writing
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     fetch CID, open for I-sight only

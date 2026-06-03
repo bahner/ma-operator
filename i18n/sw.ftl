@@ -83,6 +83,8 @@ inbox-empty = kisanduku cha barua kipo wazi
 inbox-entry-not-found = ingizo { $n } la kisanduku cha barua halipatikani
 inbox-no-message-id = ingizo { $n } la kisanduku cha barua halina message_id
 inbox-no-verb = hakuna kitenzi `{ $verb }` kwa ingizo { $n } la kisanduku cha barua
+inbox-filter-no-arg = kichujio kinahitaji hoja ya DID au jina bandia
+inbox-filter-empty = hakuna ujumbe kutoka { $did }
 
 # ── Vitenzi — wakati wa utekelezaji ──────────────────────────────────────
 discover-fetch-failed = ugunduzi umeshindwa katika { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = hakuna kitenzi `{ $verb }` kwa .my.acl
 
 # ── Vitenzi — utambulisho ─────────────────────────────────────────────────
 publish-usage = matumizi: .my.identity:publish <did-au-jina-la-kubadilisha>
+identity-exported = Kifurushi kilipakuliwa kama { $filename }
+identity-export-failed = Usafirishaji umeshindwa: { $e }
 
 # ── Vitenzi — nyaraka ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ipo wazi
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             dai wakati wa utekelezaji na DID
 help-identity =   .my.identity                 onyesha usanidi wa utambulisho
 help-identity-did =   .my.identity.did             onyesha DID yako mwenyewe (kusoma tu)
 help-identity-publish =   .my.identity:publish @pub    chapisha DID yako kupitia huduma ya mchapishaji
+help-identity-export =   .my.identity:export          pakua kifurushi cha utambulisho wako
 help-config-path =   .config                      onyesha ingizo zote za .config.*
 
 help-inbox =   .my.inbox                    orodhesha kisanduku cha barua (mtazamo wa mti mdogo)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             fungua maudhui katika mhariri w
 help-inbox-del =   .my.inbox.N:                 futa ingizo N
 help-inbox-delall =   .my.inbox:                   futa ingizo zote za kisanduku cha barua
 help-inbox-flush =   .my.inbox:flush              chapisha ingizo zote kwenye terminal
+help-inbox-filter =   .my.inbox:filter @who        onyesha maingizo kutoka @who peke yake
 help-inbox-traverse =   .my.inbox.N.sender.<uwanja>  pita hati ya DID ya mtumaji kwa uvivu
 
 help-doc-edit =   .my.doc.<jina>:edit           fungua mhariri na maudhui yaliyohifadhiwa

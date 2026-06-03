@@ -83,6 +83,8 @@ inbox-empty = pristigla pošta je prazna
 inbox-entry-not-found = unos { $n } pristigle pošte nije pronađen
 inbox-no-message-id = unos { $n } pristigle pošte nema message_id
 inbox-no-verb = nema glagola `{ $verb }` za unos { $n } pristigle pošte
+inbox-filter-no-arg = filter zahtijeva argument DID ili alias
+inbox-filter-empty = nema poruka od { $did }
 
 # ── Glagoli — izvođenje ───────────────────────────────────────────────────
 discover-fetch-failed = otkrivanje nije uspjelo na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = nema glagola `{ $verb }` za .my.acl
 
 # ── Glagoli — identitet ───────────────────────────────────────────────────
 publish-usage = korištenje: .my.identity:publish <did-ili-pseudonim>
+identity-exported = Paket preuzet kao { $filename }
+identity-export-failed = Izvoz nije uspio: { $e }
 
 # ── Glagoli — dokumenti ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content je prazno
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             zahtijevaj izvođenje svojim DID
 help-identity =   .my.identity                 prikaži konfiguraciju identiteta
 help-identity-did =   .my.identity.did             prikaži vlastiti DID (samo za čitanje)
 help-identity-publish =   .my.identity:publish @pub    objavi vlastiti DID putem usluge izdavača
+help-identity-export =   .my.identity:export          preuzmi vlastiti paket identiteta
 help-config-path =   .config                      prikaži sve unose .config.*
 
 help-inbox =   .my.inbox                    izlistaj pristiglu poštu (prikaz podstabla)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             otvori sadržaj u uređivaču s
 help-inbox-del =   .my.inbox.N:                 obriši unos N
 help-inbox-delall =   .my.inbox:                   obriši sve unose pristigle pošte
 help-inbox-flush =   .my.inbox:flush              ispiši sve unose u terminal
+help-inbox-filter =   .my.inbox:filter @who        prikaži samo unose od @who
 help-inbox-traverse =   .my.inbox.N.sender.<polje>  lijeno prolazi DID dokumentom pošiljatelja
 
 help-doc-edit =   .my.doc.<naziv>:edit           otvori uređivač sa spremljenim sadržajem

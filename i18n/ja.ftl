@@ -83,6 +83,8 @@ inbox-empty = 受信トレイは空です
 inbox-entry-not-found = 受信トレイのエントリー { $n } が見つかりません
 inbox-no-message-id = 受信トレイのエントリー { $n } に message_id がありません
 inbox-no-verb = 受信トレイのエントリー { $n } に動詞 `{ $verb }` がありません
+inbox-filter-no-arg = フィルターにはDIDまたはエイリアスの引数が必要です
+inbox-filter-empty = { $did } からのメッセージはありません
 
 # ── 動詞 — ランタイム ─────────────────────────────────────────────────────
 discover-fetch-failed = { $url } での検出に失敗しました: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl に動詞 `{ $verb }` がありません
 
 # ── 動詞 — アイデンティティ ──────────────────────────────────────────────
 publish-usage = 使用方法: .my.identity:publish <did-またはエイリアス>
+identity-exported = バンドルを { $filename } としてダウンロードしました
+identity-export-failed = エクスポート失敗: { $e }
 
 # ── 動詞 — ドキュメント ──────────────────────────────────────────────────
 doc-content-empty = { $path }.content が空です
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             自分の DID でランタイム
 help-identity =   .my.identity                 アイデンティティ設定を表示
 help-identity-did =   .my.identity.did             自分の DID を表示 (読み取り専用)
 help-identity-publish =   .my.identity:publish @pub    発行サービスを通じて自分の DID を公開
+help-identity-export =   .my.identity:export          自分の身元バンドルをダウンロード
 help-config-path =   .config                      すべての .config.* エントリーを表示
 
 help-inbox =   .my.inbox                    受信トレイを一覧表示 (サブツリービュー)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             読み取り専用エディタ�
 help-inbox-del =   .my.inbox.N:                 エントリー N を削除
 help-inbox-delall =   .my.inbox:                   受信トレイのすべてのエントリーを削除
 help-inbox-flush =   .my.inbox:flush              ターミナルにすべてのエントリーを出力
+help-inbox-filter =   .my.inbox:filter @who        @who からの項目のみ表示
 help-inbox-traverse =   .my.inbox.N.sender.<フィールド>  送信者の DID ドキュメントを遅延トラバース
 
 help-doc-edit =   .my.doc.<名前>:edit           保存されたコンテンツでエディターを開く

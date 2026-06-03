@@ -83,6 +83,8 @@ inbox-empty = τα εισερχόμενα είναι κενά
 inbox-entry-not-found = η καταχώρηση { $n } των εισερχομένων δεν βρέθηκε
 inbox-no-message-id = η καταχώρηση { $n } των εισερχομένων δεν έχει message_id
 inbox-no-verb = δεν υπάρχει ρήμα `{ $verb }` για την καταχώρηση { $n } των εισερχομένων
+inbox-filter-no-arg = το φίλτρο χρειάζεται DID ή ψευδώνυμο
+inbox-filter-empty = δεν υπάρχουν μηνύματα από { $did }
 
 # ── Ρήματα — περιβάλλον εκτέλεσης ───────────────────────────────────────
 discover-fetch-failed = η ανακάλυψη απέτυχε στο { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = δεν υπάρχει ρήμα `{ $verb }` για .my.acl
 
 # ── Ρήματα — ταυτότητα ────────────────────────────────────────────────────
 publish-usage = χρήση: .my.identity:publish <did-ή-ψευδώνυμο>
+identity-exported = Το πακέτο λήφθηκε ως { $filename }
+identity-export-failed = Η εξαγωγή απέτυχε: { $e }
 
 # ── Ρήματα — έγγραφα ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content είναι κενό
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             διεκδίκηση περιβ�
 help-identity =   .my.identity                 εμφάνιση διαμόρφωσης ταυτότητας
 help-identity-did =   .my.identity.did             εμφάνιση ιδίου DID (μόνο ανάγνωση)
 help-identity-publish =   .my.identity:publish @pub    δημοσίευση ιδίου DID μέσω υπηρεσίας εκδότη
+help-identity-export =   .my.identity:export          λήψη δικού σου πακέτου ταυτότητας
 help-config-path =   .config                      εμφάνιση όλων των καταχωρήσεων .config.*
 
 help-inbox =   .my.inbox                    καταγραφή εισερχομένων (προβολή υποδέντρου)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             άνοιγμα περιεχομ
 help-inbox-del =   .my.inbox.N:                 διαγραφή καταχώρησης N
 help-inbox-delall =   .my.inbox:                   διαγραφή όλων των καταχωρήσεων εισερχομένων
 help-inbox-flush =   .my.inbox:flush              εκτύπωση όλων των καταχωρήσεων στο τερματικό
+help-inbox-filter =   .my.inbox:filter @who        εμφάνιση μόνο εγγραφών από @who
 help-inbox-traverse =   .my.inbox.N.sender.<πεδίο>  τεμπέλικη διάσχιση εγγράφου DID αποστολέα
 
 help-doc-edit =   .my.doc.<όνομα>:edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο

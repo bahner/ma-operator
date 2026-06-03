@@ -4,10 +4,12 @@
 /// dispatched here. Each entry is `(path, verb)` and maps to an async
 /// handler. Unknown `(path, verb)` pairs are an error.
 use leptos::prelude::*;
+use wasm_bindgen::JsCast;
 
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
+use crate::identity::load_identity;
 use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
@@ -78,6 +80,48 @@ pub fn dispatch_verb(
             for line in body.lines() {
                 state.push_output(format!("    {line}"));
             }
+        }
+        return Ok(());
+    }
+
+    // Filter: .my.inbox:filter @who — show only entries from a specific sender.
+    if path == ".my.inbox" && verb == "filter" {
+        let raw_arg = args.first().ok_or_else(|| t("inbox-filter-no-arg"))?;
+        let cfg = config.get_untracked();
+        let target_did = resolve_bare_did(raw_arg, &cfg)?;
+        let entries = cfg.list(".my.inbox.");
+        let mut indices: std::collections::BTreeSet<usize> = std::collections::BTreeSet::new();
+        for (k, _) in &entries {
+            let tail = &k[".my.inbox.".len()..];
+            if let Some(idx_str) = tail.split('.').next() {
+                if let Ok(n) = idx_str.parse::<usize>() {
+                    indices.insert(n);
+                }
+            }
+        }
+        let mut found = false;
+        for n in &indices {
+            let base = format!(".my.inbox.{n}");
+            let from = cfg.get(&format!("{base}.from")).unwrap_or("").to_string();
+            if from != target_did {
+                continue;
+            }
+            found = true;
+            let ct = cfg
+                .get(&format!("{base}.content_type"))
+                .unwrap_or("")
+                .to_string();
+            let body = cfg
+                .get(&format!("{base}.content"))
+                .unwrap_or("")
+                .to_string();
+            state.push_output(format!("[{n}] from: {from}  ({ct})"));
+            for line in body.lines() {
+                state.push_output(format!("    {line}"));
+            }
+        }
+        if !found {
+            state.push_system(tf("inbox-filter-empty", &[("did", &target_did)]));
         }
         return Ok(());
     }
@@ -366,6 +410,29 @@ pub fn dispatch_verb(
     }
 
     // ── .my.identity ──────────────────────────────────────────────────────
+    if path == ".my.identity" && verb == "export" {
+        let session = state
+            .session
+            .get_untracked()
+            .ok_or_else(|| t("msg-not-logged-in"))?;
+        let username = session.username.clone();
+        let state2 = state.clone();
+        leptos::task::spawn_local(async move {
+            match load_identity(&username).await {
+                Ok(Some(stored)) => {
+                    let filename = format!("{username}.zion.json");
+                    trigger_download(&filename, &stored.export_json);
+                    state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));
+                }
+                Ok(None) => {
+                    state2.push_error(tf("error-identity-not-found", &[("name", &username)]))
+                }
+                Err(e) => state2.push_error(tf("identity-export-failed", &[("e", &e)])),
+            }
+        });
+        return Ok(());
+    }
+
     if path == ".my.identity" && verb == "publish" {
         if args.len() != 1 {
             return Err(t("publish-usage"));
@@ -620,6 +687,37 @@ pub fn dispatch_verb(
 }
 
 // ── Helpers ────────────────────────────────────────────────────────────────
+
+fn trigger_download(filename: &str, content: &str) {
+    let window = match web_sys::window() {
+        Some(w) => w,
+        None => return,
+    };
+    let document = match window.document() {
+        Some(d) => d,
+        None => return,
+    };
+    let bag = web_sys::BlobPropertyBag::new();
+    bag.set_type("application/json");
+    let Ok(blob) = web_sys::Blob::new_with_str_sequence_and_options(
+        &js_sys::Array::of1(&wasm_bindgen::JsValue::from_str(content)),
+        &bag,
+    ) else {
+        return;
+    };
+    let Ok(url) = web_sys::Url::create_object_url_with_blob(&blob) else {
+        return;
+    };
+    let Ok(element) = document.create_element("a") else {
+        let _ = web_sys::Url::revoke_object_url(&url);
+        return;
+    };
+    let anchor: web_sys::HtmlAnchorElement = element.unchecked_into();
+    anchor.set_href(&url);
+    anchor.set_download(filename);
+    anchor.click();
+    let _ = web_sys::Url::revoke_object_url(&url);
+}
 
 fn lang_for_content_type(ct: &str) -> &'static str {
     if ct.contains("markdown") {

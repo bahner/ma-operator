@@ -83,6 +83,8 @@ inbox-empty = boaty fidirana foana
 inbox-entry-not-found = tsy hita ny fidirana boaty { $n }
 inbox-no-message-id = ny fidirana boaty { $n } dia tsy manana message_id
 inbox-no-verb = tsy misy fiasa `{ $verb }` ho an'ny fidirana boaty { $n }
+inbox-filter-no-arg = ny filtra mitaky DID na alias
+inbox-filter-empty = tsy misy hafatra avy amin'ny { $did }
 
 # ── Fiasa — fotoana fiasan'ny runtime ─────────────────────────────────────
 discover-fetch-failed = tsy nahomby ny fikarohana tao amin'ny { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = tsy misy fiasa `{ $verb }` ho an'ny .my.acl
 
 # ── Fiasa — mombamomba ────────────────────────────────────────────────────
 publish-usage = fampiasana: .my.identity:publish <did-na-anarana-fanampiny>
+identity-exported = Nampidina ny vondrona ho { $filename }
+identity-export-failed = Tsy nahomby ny fanondranana: { $e }
 
 # ── Fiasa — antontan-taratasy ─────────────────────────────────────────────
 doc-content-empty = { $path }.content foana
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             alao runtime amin'ny DID anao
 help-identity =   .my.identity                 asehoy fikajiana mombamomba
 help-identity-did =   .my.identity.did             asehoy ny DID anao (famakiana ihany)
 help-identity-publish =   .my.identity:publish @pub    avoaka DID amin'ny serivisy famoahana
+help-identity-export =   .my.identity:export          omioty ny vondrona maha-izy ny anao
 help-config-path =   .config                      asehoy ny fidirana .config.* rehetra
 
 # ── Fanampiana — boaty fidirana ───────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             misokatra sainy famakiana ihany
 help-inbox-del =   .my.inbox.N:                 fafao fidirana N
 help-inbox-delall =   .my.inbox:                   fafao ny fidirana boaty rehetra
 help-inbox-flush =   .my.inbox:flush              ataovy printy fidirana rehetra amin'ny terminal
+help-inbox-filter =   .my.inbox:filter @who        asehoy ireo sokajy avy amin'ny @who fotsiny
 help-inbox-traverse =   .my.inbox.N.sender.<field>   mandeha antontan-taratasy DID mpandefitra mora moramora
 
 # ── Fanampiana — antontan-taratasy ───────────────────────────────────────

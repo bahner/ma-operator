@@ -83,6 +83,8 @@ inbox-empty = 收件匣為空
 inbox-entry-not-found = 找不到收件匣項目 { $n }
 inbox-no-message-id = 收件匣項目 { $n } 沒有 message_id
 inbox-no-verb = 收件匣項目 { $n } 沒有 `{ $verb }` 動詞
+inbox-filter-no-arg = 過濾器需要 DID 或別名參數
+inbox-filter-empty = 沒有來自 { $did } 的訊息
 
 # ── 動詞 — 執行階段 ───────────────────────────────────────────────────────
 discover-fetch-failed = 探索失敗於 { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl 沒有 `{ $verb }` 動詞
 
 # ── 動詞 — 身分 ───────────────────────────────────────────────────────────
 publish-usage = 用法: .my.identity:publish <did-或-別名>
+identity-exported = 包已下載為 { $filename }
+identity-export-failed = 匯出失敗：{ $e }
 
 # ── 動詞 — 文件 ───────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content 為空
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             用您的 DID 宣告執行階段
 help-identity =   .my.identity                 顯示身分設定
 help-identity-did =   .my.identity.did             顯示自己的 DID（唯讀）
 help-identity-publish =   .my.identity:publish @pub    透過發佈服務發佈自己的 DID
+help-identity-export =   .my.identity:export          下載自己的身份包
 help-config-path =   .config                      顯示所有 .config.* 條目
 
 # ── 說明文字 — 收件匣 ─────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             在編輯器中唯讀開啟項�
 help-inbox-del =   .my.inbox.N:                 刪除項目 N
 help-inbox-delall =   .my.inbox:                   刪除所有收件匣項目
 help-inbox-flush =   .my.inbox:flush              將所有項目列印到終端機
+help-inbox-filter =   .my.inbox:filter @who        僅顯示來自 @who 的條目
 help-inbox-traverse =   .my.inbox.N.sender.<field>   惰性遍歷寄件者 DID 文件
 
 # ── 說明文字 — 文件 ───────────────────────────────────────────────────────

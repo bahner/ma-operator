@@ -83,6 +83,8 @@ inbox-empty = 收件箱为空
 inbox-entry-not-found = 找不到收件箱条目 { $n }
 inbox-no-message-id = 收件箱条目 { $n } 没有 message_id
 inbox-no-verb = 收件箱条目 { $n } 没有 `{ $verb }` 动词
+inbox-filter-no-arg = 过滤器需要 DID 或别名参数
+inbox-filter-empty = 没有来自 { $did } 的消息
 
 # ── 动词 — 运行时 ─────────────────────────────────────────────────────────
 discover-fetch-failed = 发现失败于 { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl 没有 `{ $verb }` 动词
 
 # ── 动词 — 身份 ───────────────────────────────────────────────────────────
 publish-usage = 用法: .my.identity:publish <did-或-别名>
+identity-exported = 包已下载为 { $filename }
+identity-export-failed = 导出失败：{ $e }
 
 # ── 动词 — 文档 ───────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content 为空
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             用您的 DID 声明运行时所
 help-identity =   .my.identity                 显示身份配置
 help-identity-did =   .my.identity.did             显示自己的 DID（只读）
 help-identity-publish =   .my.identity:publish @pub    通过发布服务发布自己的 DID
+help-identity-export =   .my.identity:export          下载自己的身份包
 help-config-path =   .config                      显示所有 .config.* 条目
 
 # ── 帮助文本 — 收件箱 ─────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             在编辑器中只读打开条�
 help-inbox-del =   .my.inbox.N:                 删除条目 N
 help-inbox-delall =   .my.inbox:                   删除所有收件箱条目
 help-inbox-flush =   .my.inbox:flush              将所有条目打印到终端
+help-inbox-filter =   .my.inbox:filter @who        仅显示来自 @who 的条目
 help-inbox-traverse =   .my.inbox.N.sender.<field>   惰性遍历发送者 DID 文档
 
 # ── 帮助文本 — 文档 ───────────────────────────────────────────────────────

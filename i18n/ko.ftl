@@ -83,6 +83,8 @@ inbox-empty = 받은 편지함이 비어있습니다
 inbox-entry-not-found = 받은 편지함 항목 { $n }을(를) 찾을 수 없음
 inbox-no-message-id = 받은 편지함 항목 { $n }에 message_id가 없음
 inbox-no-verb = 받은 편지함 항목 { $n }에 `{ $verb }` 동사가 없음
+inbox-filter-no-arg = 필터에는 DID 또는 별칭 인수가 필요합니다
+inbox-filter-empty = { $did }의 메시지가 없습니다
 
 # ── 동사 — 런타임 ─────────────────────────────────────────────────────────
 discover-fetch-failed = { $url }에서 검색 실패: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl에 `{ $verb }` 동사가 없음
 
 # ── 동사 — 신원 ───────────────────────────────────────────────────────────
 publish-usage = 사용법: .my.identity:publish <did-또는-별칭>
+identity-exported = 번들을 { $filename }(으)로 다운로드했습니다
+identity-export-failed = 내보내기 실패: { $e }
 
 # ── 동사 — 문서 ───────────────────────────────────────────────────────────
 doc-content-empty = { $path }.content이(가) 비어있음
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             DID로 런타임 소유권 청�
 help-identity =   .my.identity                 신원 설정 표시
 help-identity-did =   .my.identity.did             자신의 DID 표시 (읽기 전용)
 help-identity-publish =   .my.identity:publish @pub    게시 서비스를 통해 DID 게시
+help-identity-export =   .my.identity:export          내 신원 번들 다운로드
 help-config-path =   .config                      모든 .config.* 항목 표시
 
 # ── 도움말 — 받은 편지함 ──────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             편집기에서 읽기 전용�
 help-inbox-del =   .my.inbox.N:                 항목 N 삭제
 help-inbox-delall =   .my.inbox:                   모든 받은 편지함 항목 삭제
 help-inbox-flush =   .my.inbox:flush              모든 항목을 터미널에 출력
+help-inbox-filter =   .my.inbox:filter @who        @who의 항목만 표시
 help-inbox-traverse =   .my.inbox.N.sender.<field>   발신자 DID 문서 지연 탐색
 
 # ── 도움말 — 문서 ─────────────────────────────────────────────────────────

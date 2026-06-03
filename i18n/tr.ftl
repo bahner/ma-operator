@@ -83,6 +83,8 @@ inbox-empty = gelen kutusu boş
 inbox-entry-not-found = gelen kutusu girdisi { $n } bulunamadı
 inbox-no-message-id = gelen kutusu girdisi { $n } message_id içermiyor
 inbox-no-verb = gelen kutusu girdisi { $n } için `{ $verb }` fiili yok
+inbox-filter-no-arg = filtre bir DID veya takma ad bağımsız değişkeni gerektirir
+inbox-filter-empty = { $did } adresinden mesaj yok
 
 # ── Fiiller — çalışma zamanı ──────────────────────────────────────────────
 discover-fetch-failed = keşif { $url } adresinde başarısız: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl için `{ $verb }` fiili yok
 
 # ── Fiiller — kimlik ──────────────────────────────────────────────────────
 publish-usage = kullanım: .my.identity:publish <did-veya-takma-ad>
+identity-exported = Paket { $filename } olarak indirildi
+identity-export-failed = Dışa aktarma başarısız: { $e }
 
 # ── Fiiller — belgeler ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content boş
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             DID'inle çalışma zamanı sahi
 help-identity =   .my.identity                 kimlik yapılandırmasını göster
 help-identity-did =   .my.identity.did             kendi DID'ini göster (salt okunur)
 help-identity-publish =   .my.identity:publish @pub    yayım servisi aracılığıyla DID yayımla
+help-identity-export =   .my.identity:export          kendi kimlik paketini indir
 help-config-path =   .config                      tüm .config.* girdilerini göster
 
 # ── Yardım — gelen kutusu ─────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             içeriği salt okunur editörde
 help-inbox-del =   .my.inbox.N:                 N girdisini sil
 help-inbox-delall =   .my.inbox:                   tüm gelen kutusu girdilerini sil
 help-inbox-flush =   .my.inbox:flush              tüm girdileri terminale yazdır
+help-inbox-filter =   .my.inbox:filter @who        yalnızca @who girdilerini göster
 help-inbox-traverse =   .my.inbox.N.sender.<field>   gönderici DID belgesini tembel gez
 
 # ── Yardım — belgeler ─────────────────────────────────────────────────────

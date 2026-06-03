@@ -83,6 +83,8 @@ inbox-empty = hộp thư đến trống
 inbox-entry-not-found = không tìm thấy mục hộp thư đến { $n }
 inbox-no-message-id = mục hộp thư đến { $n } không có message_id
 inbox-no-verb = không có động từ `{ $verb }` cho mục hộp thư đến { $n }
+inbox-filter-no-arg = bộ lọc yêu cầu đối số DID hoặc bí danh
+inbox-filter-empty = không có tin nhắn từ { $did }
 
 # ── Động từ — runtime ─────────────────────────────────────────────────────
 discover-fetch-failed = khám phá thất bại tại { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = không có động từ `{ $verb }` cho .my.acl
 
 # ── Động từ — danh tính ───────────────────────────────────────────────────
 publish-usage = cách dùng: .my.identity:publish <did-hoặc-bí-danh>
+identity-exported = Gói đã tải xuống là { $filename }
+identity-export-failed = Xuất thất bại: { $e }
 
 # ── Động từ — tài liệu ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content trống
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             yêu cầu quyền sở hữu ru
 help-identity =   .my.identity                 hiển thị cấu hình danh tính
 help-identity-did =   .my.identity.did             hiển thị DID của mình (chỉ đọc)
 help-identity-publish =   .my.identity:publish @pub    xuất bản DID qua dịch vụ xuất bản
+help-identity-export =   .my.identity:export          tải xuống gói nhận dạng của bạn
 help-config-path =   .config                      hiển thị tất cả mục .config.*
 
 # ── Trợ giúp — hộp thư đến ───────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             mở nội dung chỉ đọc tr
 help-inbox-del =   .my.inbox.N:                 xóa mục N
 help-inbox-delall =   .my.inbox:                   xóa tất cả mục hộp thư đến
 help-inbox-flush =   .my.inbox:flush              in tất cả mục ra terminal
+help-inbox-filter =   .my.inbox:filter @who        chỉ hiển thị mục từ @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   duyệt lười tài liệu DID người gửi
 
 # ── Trợ giúp — tài liệu ──────────────────────────────────────────────────

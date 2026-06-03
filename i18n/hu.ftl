@@ -83,6 +83,8 @@ inbox-empty = a bejövő üzenetek üresek
 inbox-entry-not-found = a bejövő üzenetek { $n }. bejegyzése nem található
 inbox-no-message-id = a bejövő üzenetek { $n }. bejegyzésének nincs message_id-je
 inbox-no-verb = nincs `{ $verb }` ige a bejövő üzenetek { $n }. bejegyzéséhez
+inbox-filter-no-arg = a szűrőhöz DID vagy alias argumentum szükséges
+inbox-filter-empty = nincs üzenet { $did } felhasználótól
 
 # ── Igék — futtatókörnyezet ───────────────────────────────────────────────
 discover-fetch-failed = felderítés sikertelen a következő helyen: { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = nincs `{ $verb }` ige a .my.acl-hez
 
 # ── Igék — identitás ──────────────────────────────────────────────────────
 publish-usage = használat: .my.identity:publish <did-vagy-álnév>
+identity-exported = A csomag letöltve { $filename } névvel
+identity-export-failed = Az export sikertelen: { $e }
 
 # ── Igék — dokumentumok ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content üres
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             futtatókörnyezet igénybevéte
 help-identity =   .my.identity                 identitáskonfiguráció megjelenítése
 help-identity-did =   .my.identity.did             saját DID megjelenítése (csak olvasható)
 help-identity-publish =   .my.identity:publish @pub    saját DID közzététele a kiadói szolgáltatáson keresztül
+help-identity-export =   .my.identity:export          saját identitáscsomag letöltése
 help-config-path =   .config                      összes .config.* bejegyzés megjelenítése
 
 help-inbox =   .my.inbox                    bejövő üzenetek listázása (részfa nézet)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             tartalom megnyitása csak olvas
 help-inbox-del =   .my.inbox.N:                 N. bejegyzés törlése
 help-inbox-delall =   .my.inbox:                   összes bejövő bejegyzés törlése
 help-inbox-flush =   .my.inbox:flush              összes bejegyzés kiírása a terminálra
+help-inbox-filter =   .my.inbox:filter @who        csak @who bejegyzéseinek megjelenítése
 help-inbox-traverse =   .my.inbox.N.sender.<mező>   feladó DID-dokumentum lusta bejárása
 
 help-doc-edit =   .my.doc.<név>:edit           szerkesztő megnyitása mentett tartalommal

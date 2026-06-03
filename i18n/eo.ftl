@@ -83,6 +83,8 @@ inbox-empty = ricevujo malplena
 inbox-entry-not-found = ricevujo-ero { $n } ne trovita
 inbox-no-message-id = ricevujo-ero { $n } ne havas message_id
 inbox-no-verb = neniu verbo `{ $verb }` por ricevujo-ero { $n }
+inbox-filter-no-arg = filtro bezonas DID-aŭ-kromnoman argumenton
+inbox-filter-empty = neniu mesaĝo de { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = malkovro malsukcesis ĉe { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = neniu verbo `{ $verb }` por .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = uzado: .my.identity:publish <did-aŭ-kromnomo>
+identity-exported = Pakaĵo elŝutita kiel { $filename }
+identity-export-failed = Eksporto malsukcesis: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content estas malplena
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             postuli posedadon de rultemo per
 help-identity =   .my.identity                 montri identecajn agordojn
 help-identity-did =   .my.identity.did             montri propran DID (nur-legebla)
 help-identity-publish =   .my.identity:publish @pub    publikigi propran DID per eldonisto
+help-identity-export =   .my.identity:export          elŝutu propran identec-pakaĵon
 help-config-path =   .config                      montri ĉiujn .config.*-enrigetojn
 help-inbox =   .my.inbox                    listigi poŝtkeston (subarbovido)
 help-inbox-n =   .my.inbox.N                  montri kampojn de eniro N
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             malfermi enhavon nur-legenda en
 help-inbox-del =   .my.inbox.N:                 forigi eniro N
 help-inbox-delall =   .my.inbox:                   forigi ĉiujn poŝtkestajn enrigetojn
 help-inbox-flush =   .my.inbox:flush              presi ĉiujn enrigetojn al terminalo
+help-inbox-filter =   .my.inbox:filter @who        montri nur enskribojn de @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   trairi sendantan DID-dokumenton malrapide
 help-doc-edit =   .my.doc.<name>:edit           malfermi redaktilon kun konservita enhavo
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     alŝuti CID, malfermi por recenzo nur

@@ -83,6 +83,8 @@ inbox-empty = fuudhaa ergaan duwwaadha
 inbox-entry-not-found = galmeen fuudhaa ergaa { $n } hin argamne
 inbox-no-message-id = galmeen fuudhaa ergaa { $n } message_id hin qabu
 inbox-no-verb = gochan `{ $verb }` galmee fuudhaa ergaa { $n }f hin jiru
+inbox-filter-no-arg = filtarrichi DID ykn alias barbaada
+inbox-filter-empty = ergaan { $did } irraa hin jiru
 
 # ── Gochaalee — yeroo hojii ───────────────────────────────────────────────
 discover-fetch-failed = argannoon { $url }: { $e } irratti hin milkaa'ne
@@ -107,6 +109,8 @@ acl-no-verb = gochan `{ $verb }` .my.aclf hin jiru
 
 # ── Gochaalee — eenyummaa ─────────────────────────────────────────────────
 publish-usage = fayyadamuu: .my.identity:publish <did-ykn-moggaasa>
+identity-exported = Bundle garagalche { $filename }
+identity-export-failed = Baasuun hin dandeenye: { $e }
 
 # ── Gochaalee — galmeelee ─────────────────────────────────────────────────
 doc-content-empty = { $path }.content duwwaadha
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             DID keetiin runtime fudhadhu
 help-identity =   .my.identity                 qindaa'ina eenyummaa agarsiisi
 help-identity-did =   .my.identity.did             DID kee agarsiisi (dubbisuu qofa)
 help-identity-publish =   .my.identity:publish @pub    tajaajiila maxxansaa dhaan DID maxxansi
+help-identity-export =   .my.identity:export          bundle eenyummaa kee buufadhu
 help-config-path =   .config                      galmeewwan .config.* hunda agarsiisi
 
 # ── Gargaarsa — fuudhaa ergaa ─────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             qabiyyee dubbisuu qofa sirreess
 help-inbox-del =   .my.inbox.N:                 galmee N haaqami
 help-inbox-delall =   .my.inbox:                   galmeewwan fuudhaa ergaa hunda haaqami
 help-inbox-flush =   .my.inbox:flush              galmeewwan hunda terminalitti maxxansi
+help-inbox-filter =   .my.inbox:filter @who        galmeewwan @who irraa qofa agarsiisi
 help-inbox-traverse =   .my.inbox.N.sender.<field>   galmee DID ergaa erganii lolasaan saagi
 
 # ── Gargaarsa — galmeelee ─────────────────────────────────────────────────

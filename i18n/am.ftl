@@ -83,6 +83,8 @@ inbox-empty = የገቢ ሳጥኑ ባዶ ነው
 inbox-entry-not-found = የገቢ ሳጥን ግቤት { $n } አልተገኘም
 inbox-no-message-id = የገቢ ሳጥን ግቤት { $n } message_id የለውም
 inbox-no-verb = ለየገቢ ሳጥን ግቤት { $n } `{ $verb }` ተግባር የለም
+inbox-filter-no-arg = ፊልተር DID ወይም ሃሳብ ስም ያስፈልጋቸዋል
+inbox-filter-empty = ከ { $did } መልዕክቶች የሉም
 
 # ── ተግባራት — የስራ ሰዓት ─────────────────────────────────────────────────────
 discover-fetch-failed = ፍለጋ { $url } ላይ አልተሰራም: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ለ.my.acl `{ $verb }` ተግባር የለም
 
 # ── ተግባራት — ማንነት ────────────────────────────────────────────────────────
 publish-usage = አጠቃቀም: .my.identity:publish <did-ወይም-ቅፅል-ስም>
+identity-exported = ቅጅ እንደ { $filename } ወርዷል
+identity-export-failed = ወደ ውጪ ማስቀረት አልተሳካም: { $e }
 
 # ── ተግባራት — ሰነዶች ───────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ባዶ ነው
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             DIDዎ በ runtime ባለቤት�
 help-identity =   .my.identity                 የማንነት ቅንብሮችን አሳይ
 help-identity-did =   .my.identity.did             ራስዎ DID አሳይ (ለማንበብ ብቻ)
 help-identity-publish =   .my.identity:publish @pub    DID በ publishing service ያሳትሙ
+help-identity-export =   .my.identity:export          የራስ የማንነት ቅጅ አውርድ
 help-config-path =   .config                      ሁሉንም .config.* ግቤቶች አሳይ
 
 # ── እርዳታ — የገቢ ሳጥን ─────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             ይዘቱን ለማንበብ �
 help-inbox-del =   .my.inbox.N:                 ግቤት N ሰርዝ
 help-inbox-delall =   .my.inbox:                   ሁሉንም የገቢ ሳጥን ግቤቶች ሰርዝ
 help-inbox-flush =   .my.inbox:flush              ሁሉንም ግቤቶች ወደ terminal አትም
+help-inbox-filter =   .my.inbox:filter @who        ከ @who ብቻ ያሉ ልኮዎችን አሳይ
 help-inbox-traverse =   .my.inbox.N.sender.<field>   የላኪ DID ሰነድ በዝግታ ያስሱ
 
 # ── እርዳታ — ሰነዶች ────────────────────────────────────────────────────────

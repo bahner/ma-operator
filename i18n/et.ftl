@@ -83,6 +83,8 @@ inbox-empty = postkast on tühi
 inbox-entry-not-found = postkasti kirjet { $n } ei leitud
 inbox-no-message-id = postkasti kirjel { $n } puudub message_id
 inbox-no-verb = postkasti kirjele { $n } pole verbi `{ $verb }`
+inbox-filter-no-arg = filter vajab DID-i või aliase argumenti
+inbox-filter-empty = { $did } sõnumeid pole
 
 # ── Verbid — käitusaeg ────────────────────────────────────────────────────
 discover-fetch-failed = avastamine ebaõnnestus aadressil { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl jaoks pole verbi `{ $verb }`
 
 # ── Verbid — identiteet ───────────────────────────────────────────────────
 publish-usage = kasutus: .my.identity:publish <did-või-alias>
+identity-exported = Pakett alla laaditud nimega { $filename }
+identity-export-failed = Eksport ebaõnnestus: { $e }
 
 # ── Verbid — dokumendid ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content on tühi
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             nõua käitusaeg oma DID-iga
 help-identity =   .my.identity                 kuva identiteedi konfiguratsioon
 help-identity-did =   .my.identity.did             kuva oma DID (kirjutuskaitstud)
 help-identity-publish =   .my.identity:publish @pub    avalda oma DID avaldajateenuse kaudu
+help-identity-export =   .my.identity:export          laadi alla oma identiteedipakett
 help-config-path =   .config                      kuva kõik .config.*-kirjed
 
 help-inbox =   .my.inbox                    loetle postkast (alampuuvaade)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             ava sisu kirjutuskaitstud redak
 help-inbox-del =   .my.inbox.N:                 kustuta kirje N
 help-inbox-delall =   .my.inbox:                   kustuta kõik postkasti kirjed
 help-inbox-flush =   .my.inbox:flush              prindi kõik kirjed terminali
+help-inbox-filter =   .my.inbox:filter @who        näita ainult @who kirjeid
 help-inbox-traverse =   .my.inbox.N.sender.<väli>   läbi saatja DID-dokument viivitusega
 
 help-doc-edit =   .my.doc.<nimi>:edit           ava redaktor salvestatud sisuga

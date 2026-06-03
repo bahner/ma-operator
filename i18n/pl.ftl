@@ -83,6 +83,8 @@ inbox-empty = skrzynka odbiorcza jest pusta
 inbox-entry-not-found = wpis { $n } skrzynki odbiorczej nie znaleziony
 inbox-no-message-id = wpis { $n } skrzynki odbiorczej nie ma message_id
 inbox-no-verb = brak czasownika `{ $verb }` dla wpisu { $n } skrzynki odbiorczej
+inbox-filter-no-arg = filtr wymaga argumentu DID lub aliasu
+inbox-filter-empty = brak wiadomości od { $did }
 
 # ── Czasowniki — środowisko uruchomieniowe ────────────────────────────────
 discover-fetch-failed = wykrywanie nie powiodło się pod { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = brak czasownika `{ $verb }` dla .my.acl
 
 # ── Czasowniki — tożsamość ────────────────────────────────────────────────
 publish-usage = użycie: .my.identity:publish <did-lub-alias>
+identity-exported = Pakiet pobrany jako { $filename }
+identity-export-failed = Eksport nie powiódł się: { $e }
 
 # ── Czasowniki — dokumenty ────────────────────────────────────────────────
 doc-content-empty = { $path }.content jest puste
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             przejmij środowisko uruchomieni
 help-identity =   .my.identity                 pokaż konfigurację tożsamości
 help-identity-did =   .my.identity.did             pokaż własny DID (tylko do odczytu)
 help-identity-publish =   .my.identity:publish @pub    opublikuj własny DID przez usługę wydawcy
+help-identity-export =   .my.identity:export          pobierz własny pakiet tożsamości
 help-config-path =   .config                      pokaż wszystkie wpisy .config.*
 
 help-inbox =   .my.inbox                    wylistuj skrzynkę odbiorczą (widok poddrzewa)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             otwórz treść w edytorze tylk
 help-inbox-del =   .my.inbox.N:                 usuń wpis N
 help-inbox-delall =   .my.inbox:                   usuń wszystkie wpisy skrzynki odbiorczej
 help-inbox-flush =   .my.inbox:flush              wydrukuj wszystkie wpisy w terminalu
+help-inbox-filter =   .my.inbox:filter @who        pokaż tylko wpisy od @who
 help-inbox-traverse =   .my.inbox.N.sender.<pole>   przejrzyj dokument DID nadawcy leniwie
 
 help-doc-edit =   .my.doc.<nazwa>:edit           otwórz edytor z zapisaną treścią

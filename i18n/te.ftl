@@ -83,6 +83,8 @@ inbox-empty = ఇన్‌బాక్స్ ఖాళీగా ఉంది
 inbox-entry-not-found = ఇన్‌బాక్స్ నమోదు { $n } కనుగొనబడలేదు
 inbox-no-message-id = ఇన్‌బాక్స్ నమోదు { $n } కి message_id లేదు
 inbox-no-verb = ఇన్‌బాక్స్ నమోదు { $n } కోసం `{ $verb }` క్రియ లేదు
+inbox-filter-no-arg = ఫిల్టర్‌కు DID లేదా మారుపేరు వాదన అవసరం
+inbox-filter-empty = { $did } నుండి సందేశాలు లేవు
 
 # ── క్రియలు — రన్‌టైమ్ ────────────────────────────────────────────────────
 discover-fetch-failed = { $url } వద్ద డిస్కవర్ విఫలమైంది: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl కోసం `{ $verb }` క్రియ లేదు
 
 # ── క్రియలు — గుర్తింపు ──────────────────────────────────────────────────
 publish-usage = వాడకం: .my.identity:publish <did-లేదా-మారుపేరు>
+identity-exported = బండిల్ { $filename } గా డౌన్‌లోడ్ అయింది
+identity-export-failed = ఎగుమతి విఫలమైంది: { $e }
 
 # ── క్రియలు — డాక్యుమెంట్‌లు ────────────────────────────────────────────
 doc-content-empty = { $path }.content ఖాళీగా ఉంది
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             మీ DID తో రన్‌�
 help-identity =   .my.identity                 గుర్తింపు కాన్ఫిగ్ చూపించు
 help-identity-did =   .my.identity.did             మీ DID చూపించు (చదవడానికి మాత్రమే)
 help-identity-publish =   .my.identity:publish @pub    ప్రచురణ సేవ ద్వారా DID ప్రచురించండి
+help-identity-export =   .my.identity:export          మీ గుర్తింపు బండిల్ డౌన్‌లోడ్ చేయండి
 help-config-path =   .config                      అన్ని .config.* నమోదులు చూపించు
 
 # ── సహాయం — ఇన్‌బాక్స్ ────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             చదవడానికి మ
 help-inbox-del =   .my.inbox.N:                 నమోదు N తొలగించు
 help-inbox-delall =   .my.inbox:                   అన్ని ఇన్‌బాక్స్ నమోదులు తొలగించు
 help-inbox-flush =   .my.inbox:flush              అన్ని నమోదులు టెర్మినల్‌కు ప్రింట్ చేయి
+help-inbox-filter =   .my.inbox:filter @who        @who నుండి మాత్రమే ఎంట్రీలు చూపించు
 help-inbox-traverse =   .my.inbox.N.sender.<field>   పంపినవారి DID డాక్యుమెంట్‌ను సోమరిగా అన్వేషించు
 
 # ── సహాయం — డాక్యుమెంట్‌లు ─────────────────────────────────────────────

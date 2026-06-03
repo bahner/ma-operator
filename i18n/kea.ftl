@@ -83,6 +83,8 @@ inbox-empty = kaixa di entrada bázya
 inbox-entry-not-found = entráda di kaixa { $n } ka atxadu
 inbox-no-message-id = entráda di kaixa { $n } ka tên message_id
 inbox-no-verb = ka tên vèrbu `{ $verb }` pa entráda di kaixa { $n }
+inbox-filter-no-arg = filtru presiza un argumento DID ó alias
+inbox-filter-empty = nenhum mensaji di { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = diskuberta falhadu na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ka tên vèrbu `{ $verb }` pa .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = uzajen: .my.identity:publish <did-o-alias>
+identity-exported = Bundle downloadadu kómu { $filename }
+identity-export-failed = Spurtasion falha: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content é bázyu
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             reklama propriedadi di runtime k
 help-identity =   .my.identity                 mustra konfigurason di identidadi
 help-identity-did =   .my.identity.did             mustra DID própriu (sô-leitura)
 help-identity-publish =   .my.identity:publish @pub    publiká DID própriu via servis di publikason
+help-identity-export =   .my.identity:export          download bu própriu bundle di identidade
 help-config-path =   .config                      mustra tudu entradas .config.*
 help-inbox =   .my.inbox                    lista kaixa di entrada (vista di sób-árvori)
 help-inbox-n =   .my.inbox.N                  mustra kanpus di entrada N
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             abri konteúdu di entrada sô-l
 help-inbox-del =   .my.inbox.N:                 apaga entrada N
 help-inbox-delall =   .my.inbox:                   apaga tudu entradas di kaixa
 help-inbox-flush =   .my.inbox:flush              imprime tudu entradas na terminal
+help-inbox-filter =   .my.inbox:filter @who        mostra só entradas di @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traversa dokumentu DID di remetenti pasientemente
 help-doc-edit =   .my.doc.<name>:edit           abri editor ku konteúdu salvadu
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     busca CID, abri pa revisão sô

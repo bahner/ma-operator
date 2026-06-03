@@ -83,6 +83,8 @@ inbox-empty = inbox empty
 inbox-entry-not-found = inbox entry { $n } nuh find
 inbox-no-message-id = inbox entry { $n } nuh have message_id
 inbox-no-verb = no verb `{ $verb }` fi inbox entry { $n }
+inbox-filter-no-arg = filta need DID ar alias aagiment
+inbox-filter-empty = no mesij fram { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = discover failed at { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = usage: .my.identity:publish <did-or-alias>
+identity-exported = Bundle download as { $filename }
+identity-export-failed = Export fail: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content is empty
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             claim runtime ownership wid yuh 
 help-identity =   .my.identity                 show I and I identity config
 help-identity-did =   .my.identity.did             show own DID (read-only)
 help-identity-publish =   .my.identity:publish @pub    publish I and I DID via publisher service
+help-identity-export =   .my.identity:export          download yuh own identity bundle
 help-config-path =   .config                      show all .config.* entries
 help-inbox =   .my.inbox                    list inbox (subtree view)
 help-inbox-n =   .my.inbox.N                  show entry N field dem
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             open entry content read-only in
 help-inbox-del =   .my.inbox.N:                 delete entry N
 help-inbox-delall =   .my.inbox:                   delete all inbox entries
 help-inbox-flush =   .my.inbox:flush              print all entries to terminal
+help-inbox-filter =   .my.inbox:filter @who        sho nuo memba fram @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document lazily
 help-doc-edit =   .my.doc.<name>:edit           open editor wid saved content
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     fetch CID, open fi review only

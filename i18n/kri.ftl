@@ -83,6 +83,8 @@ inbox-empty = inbox empty
 inbox-entry-not-found = inbox entri { $n } nor fine
 inbox-no-message-id = inbox entri { $n } nor get message_id
 inbox-no-verb = nor get vɛb `{ $verb }` fɔ inbox entri { $n }
+inbox-filter-no-arg = filta nid DID ɔr alias argument
+inbox-filter-empty = nɔ mesej fɔm { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = diskɔva fail at { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = nor get vɛb `{ $verb }` fɔ .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = yusij: .my.identity:publish <did-ɔ-alias>
+identity-exported = Bɔndɔl dɔnlod as { $filename }
+identity-export-failed = Ekspɔt fɛl: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content empty
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             klem runtime onashep wid yu DID
 help-identity =   .my.identity                 shoh identity konifig
 help-identity-did =   .my.identity.did             shoh on DID (rid onli)
 help-identity-publish =   .my.identity:publish @pub    pablish on DID bifo pablisha sovic
+help-identity-export =   .my.identity:export          dɔnlod yu ɔn idɛntiti bɔndɔl
 help-config-path =   .config                      shoh all .config.* entri dem
 help-inbox =   .my.inbox                    list inbox (sabtri vyu)
 help-inbox-n =   .my.inbox.N                  shoh entri N fild dem
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             opin entri kontent rid-onli ins
 help-inbox-del =   .my.inbox.N:                 dilet entri N
 help-inbox-delall =   .my.inbox:                   dilet all inbox entri dem
 help-inbox-flush =   .my.inbox:flush              print all entri dem go terminal
+help-inbox-filter =   .my.inbox:filter @who        sho ɔnli entri fɔm @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   travos senda DID dokument layzili
 help-doc-edit =   .my.doc.<name>:edit           opin edita wid seyvd kontent
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     fech CID, opin foh rivyu onli

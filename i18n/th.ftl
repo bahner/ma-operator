@@ -83,6 +83,8 @@ inbox-empty = inbox ว่างเปล่า
 inbox-entry-not-found = ไม่พบรายการ inbox { $n }
 inbox-no-message-id = รายการ inbox { $n } ไม่มี message_id
 inbox-no-verb = ไม่มีกริยา `{ $verb }` สำหรับรายการ inbox { $n }
+inbox-filter-no-arg = ตัวกรองต้องการอาร์กิวเมนต์ DID หรือนามแฝง
+inbox-filter-empty = ไม่มีข้อความจาก { $did }
 
 # ── กริยา — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = การค้นหาล้มเหลวที่ { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ .my.
 
 # ── กริยา — identity ──────────────────────────────────────────────────────
 publish-usage = การใช้งาน: .my.identity:publish <did-หรือ-นามแฝง>
+identity-exported = ดาวน์โหลดบันเดิลเป็น { $filename }
+identity-export-failed = การส่งออกล้มเหลว: { $e }
 
 # ── กริยา — documents ─────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ว่างเปล่า
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             อ้างสิทธิ์ r
 help-identity =   .my.identity                 แสดงการกำหนดค่า identity
 help-identity-did =   .my.identity.did             แสดง DID ของคุณ (อ่านอย่างเดียว)
 help-identity-publish =   .my.identity:publish @pub    เผยแพร่ DID ผ่านบริการเผยแพร่
+help-identity-export =   .my.identity:export          ดาวน์โหลดบันเดิลตัวตนของตัวเอง
 help-config-path =   .config                      แสดงรายการ .config.* ทั้งหมด
 
 # ── ช่วยเหลือ — inbox ───────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             เปิดเนื้อห�
 help-inbox-del =   .my.inbox.N:                 ลบรายการ N
 help-inbox-delall =   .my.inbox:                   ลบรายการ inbox ทั้งหมด
 help-inbox-flush =   .my.inbox:flush              พิมพ์รายการทั้งหมดไปยัง terminal
+help-inbox-filter =   .my.inbox:filter @who        แสดงเฉพาะรายการจาก @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   ดึงเอกสาร DID ผู้ส่งแบบ lazy
 
 # ── ช่วยเหลือ — เอกสาร ──────────────────────────────────────────────────

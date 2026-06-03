@@ -83,6 +83,8 @@ inbox-empty = iesūtne ir tukša
 inbox-entry-not-found = iesūtnes ieraksts { $n } nav atrasts
 inbox-no-message-id = iesūtnes ierakstam { $n } nav message_id
 inbox-no-verb = iesūtnes ierakstam { $n } nav darbības vārda `{ $verb }`
+inbox-filter-no-arg = filtram nepieciešams DID vai alias arguments
+inbox-filter-empty = nav ziņojumu no { $did }
 
 # ── Darbības vārdi — izpildlaiks ─────────────────────────────────────────
 discover-fetch-failed = atklāšana neizdevās { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl nav darbības vārda `{ $verb }`
 
 # ── Darbības vārdi — identitāte ──────────────────────────────────────────
 publish-usage = lietošana: .my.identity:publish <did-vai-aizstājvārds>
+identity-exported = Pakotne lejupielādēta kā { $filename }
+identity-export-failed = Eksports neizdevās: { $e }
 
 # ── Darbības vārdi — dokumenti ───────────────────────────────────────────
 doc-content-empty = { $path }.content ir tukšs
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             pieprasīt izpildlaiku ar savu D
 help-identity =   .my.identity                 parādīt identitātes konfigurāciju
 help-identity-did =   .my.identity.did             parādīt savu DID (tikai lasāms)
 help-identity-publish =   .my.identity:publish @pub    publicēt savu DID caur izdevēja pakalpojumu
+help-identity-export =   .my.identity:export          lejupielādēt savu identitātes pakotni
 help-config-path =   .config                      parādīt visus .config.* ierakstus
 
 help-inbox =   .my.inbox                    uzskaitīt iesūtni (apakškoka skats)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             atvērt saturu tikai lasāmā r
 help-inbox-del =   .my.inbox.N:                 dzēst ierakstu N
 help-inbox-delall =   .my.inbox:                   dzēst visus iesūtnes ierakstus
 help-inbox-flush =   .my.inbox:flush              izdrukāt visus ierakstus terminālī
+help-inbox-filter =   .my.inbox:filter @who        rādīt tikai @who ierakstus
 help-inbox-traverse =   .my.inbox.N.sender.<lauks>  šķērsot sūtītāja DID dokumentu ar kavēšanos
 
 help-doc-edit =   .my.doc.<nosaukums>:edit           atvērt redaktoru ar saglabāto saturu

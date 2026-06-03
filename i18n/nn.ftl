@@ -83,6 +83,8 @@ inbox-empty = innboksen er tom
 inbox-entry-not-found = innbokspost { $n } ikkje funnen
 inbox-no-message-id = innbokspost { $n } manglar message_id
 inbox-no-verb = inkje verb `{ $verb }` for innbokspost { $n }
+inbox-filter-no-arg = filter krev eit DID- eller alias-argument
+inbox-filter-empty = ingen meldingar frå { $did }
 
 # ── Verb — køyretid ───────────────────────────────────────────────────────
 discover-fetch-failed = oppdaging mislykkast ved { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = inkje verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
 publish-usage = bruk: .my.identity:publish <did-eller-alias>
+identity-exported = Bundle lasta ned som { $filename }
+identity-export-failed = Eksport mislukkast: { $e }
 
 # ── Verb — dokument ───────────────────────────────────────────────────────
 doc-content-empty = { $path }.content er tom
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             gjer krav på køyretid med din 
 help-identity =   .my.identity                 vis identitetskonfigurasjon
 help-identity-did =   .my.identity.did             vis eige DID (skriveverna)
 help-identity-publish =   .my.identity:publish @pub    publiser eige DID via utgjevar-teneste
+help-identity-export =   .my.identity:export          last ned eigen identitetspakke
 help-config-path =   .config                      vis alle .config.*-postar
 
 # ── Hjelptekst — innboks ──────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             opna innhald i skriveverna redi
 help-inbox-del =   .my.inbox.N:                 slett post N
 help-inbox-delall =   .my.inbox:                   slett alle innbokspostar
 help-inbox-flush =   .my.inbox:flush              skriv alle postar til terminalen
+help-inbox-filter =   .my.inbox:filter @who        vis berre oppføringar frå @who
 help-inbox-traverse =   .my.inbox.N.sender.<felt>   traverser avsendar sitt DID-dokument latent
 
 # ── Hjelptekst — dokument ─────────────────────────────────────────────────

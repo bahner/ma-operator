@@ -84,6 +84,8 @@ inbox-empty = inbox is empty
 inbox-entry-not-found = inbox entry { $n } not found
 inbox-no-message-id = inbox entry { $n } has no message_id
 inbox-no-verb = no verb `{ $verb }` for inbox entry { $n }
+inbox-filter-no-arg = filter requires a DID or alias argument
+inbox-filter-empty = no messages from { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = discover failed at { $url }: { $e }
@@ -111,6 +113,8 @@ lang-list-header = Available languages (set with .my.i18n: <code>):
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = usage: .my.identity:publish <did-or-alias>
+identity-exported = Bundle downloaded as { $filename }
+identity-export-failed = export failed: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content is empty
@@ -186,6 +190,7 @@ help-runtime-claim =   .my.ma:claim             claim runtime ownership with you
 help-identity =   .my.identity                 show identity config
 help-identity-did =   .my.identity.did             show own DID (read-only)
 help-identity-publish =   .my.identity:publish @pub    publish own DID via publisher service
+help-identity-export =   .my.identity:export          download own identity bundle
 help-config-path =   .config                      show all .config.* entries
 
 # ── Help text — inbox ─────────────────────────────────────────────────────
@@ -197,6 +202,7 @@ help-inbox-open =   .my.inbox.N:open             open entry content read-only in
 help-inbox-del =   .my.inbox.N:                 delete entry N
 help-inbox-delall =   .my.inbox:                   delete all inbox entries
 help-inbox-flush =   .my.inbox:flush              print all entries to terminal
+help-inbox-filter =   .my.inbox:filter @who        show only entries from @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document lazily
 
 # ── Help text — documents ─────────────────────────────────────────────────

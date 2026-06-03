@@ -83,6 +83,8 @@ inbox-empty = postvak in is leeg
 inbox-entry-not-found = item { $n } in postvak in niet gevonden
 inbox-no-message-id = item { $n } in postvak in heeft geen message_id
 inbox-no-verb = geen werkwoord `{ $verb }` voor item { $n } in postvak in
+inbox-filter-no-arg = filter vereist een DID- of alias-argument
+inbox-filter-empty = geen berichten van { $did }
 
 # ── Werkwoorden — runtime ─────────────────────────────────────────────────
 discover-fetch-failed = detectie mislukt bij { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = geen werkwoord `{ $verb }` voor .my.acl
 
 # ── Werkwoorden — identiteit ──────────────────────────────────────────────
 publish-usage = gebruik: .my.identity:publish <did-of-alias>
+identity-exported = Bundel gedownload als { $filename }
+identity-export-failed = Export mislukt: { $e }
 
 # ── Werkwoorden — documenten ──────────────────────────────────────────────
 doc-content-empty = { $path }.content is leeg
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             runtime claimen met uw DID
 help-identity =   .my.identity                 identiteitsconfiguratie weergeven
 help-identity-did =   .my.identity.did             eigen DID weergeven (alleen-lezen)
 help-identity-publish =   .my.identity:publish @pub    eigen DID publiceren via uitgeversdienst
+help-identity-export =   .my.identity:export          eigen identiteitsbundel downloaden
 help-config-path =   .config                      alle .config.*-items weergeven
 
 help-inbox =   .my.inbox                    postvak in weergeven (deelboomweergave)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             inhoud openen in alleen-lezen e
 help-inbox-del =   .my.inbox.N:                 item N verwijderen
 help-inbox-delall =   .my.inbox:                   alle items in postvak in verwijderen
 help-inbox-flush =   .my.inbox:flush              alle items naar terminal afdrukken
+help-inbox-filter =   .my.inbox:filter @who        toon alleen vermeldingen van @who
 help-inbox-traverse =   .my.inbox.N.sender.<veld>   DID-document afzender lazy doorlopen
 
 help-doc-edit =   .my.doc.<naam>:edit           editor openen met opgeslagen inhoud

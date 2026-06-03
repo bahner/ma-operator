@@ -83,6 +83,8 @@ inbox-empty = உள்வரவு காலியாக உள்ளது
 inbox-entry-not-found = உள்வரவு உள்ளீடு { $n } கிடைக்கவில்லை
 inbox-no-message-id = உள்வரவு உள்ளீடு { $n } க்கு message_id இல்லை
 inbox-no-verb = உள்வரவு உள்ளீடு { $n } க்கு `{ $verb }` வினைச்சொல் இல்லை
+inbox-filter-no-arg = வடிகட்டிக்கு DID அல்லது புனைப்பெயர் வாதம் தேவை
+inbox-filter-empty = { $did } இலிருந்து செய்திகள் இல்லை
 
 # ── வினைச்சொற்கள் — இயக்க நேரம் ─────────────────────────────────────────
 discover-fetch-failed = { $url } இல் கண்டுபிடித்தல் தோல்வியடைந்தது: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = .my.acl க்கு `{ $verb }` வினைச்சொல் �
 
 # ── வினைச்சொற்கள் — அடையாளம் ──────────────────────────────────────────
 publish-usage = பயன்பாடு: .my.identity:publish <did-அல்லது-புனைப்பெயர்>
+identity-exported = தொகுப்பு { $filename } என பதிவிறக்கப்பட்டது
+identity-export-failed = ஏற்றுமதி தோல்வி: { $e }
 
 # ── வினைச்சொற்கள் — ஆவணங்கள் ───────────────────────────────────────────
 doc-content-empty = { $path }.content காலியாக உள்ளது
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             உங்கள் DID உடன
 help-identity =   .my.identity                 அடையாள அமைவு காட்டவும்
 help-identity-did =   .my.identity.did             உங்கள் DID காட்டவும் (படிக்க மட்டும்)
 help-identity-publish =   .my.identity:publish @pub    வெளியீட்டு சேவை மூலம் DID வெளியிடவும்
+help-identity-export =   .my.identity:export          உங்கள் அடையாள தொகுப்பை பதிவிறக்கவும்
 help-config-path =   .config                      அனைத்து .config.* உள்ளீடுகளை காட்டவும்
 
 # ── உதவி — உள்வரவு ───────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             படிக்க மட்ட
 help-inbox-del =   .my.inbox.N:                 உள்ளீடு N நீக்கவும்
 help-inbox-delall =   .my.inbox:                   அனைத்து உள்வரவு உள்ளீடுகளை நீக்கவும்
 help-inbox-flush =   .my.inbox:flush              அனைத்து உள்ளீடுகளை முனையத்தில் அச்சிடவும்
+help-inbox-filter =   .my.inbox:filter @who        @who இலிருந்து மட்டும் உள்ளீடுகள் காட்டு
 help-inbox-traverse =   .my.inbox.N.sender.<field>   அனுப்புவோர் DID ஆவணத்தை சோம்பலாக ஆராயவும்
 
 # ── உதவி — ஆவணங்கள் ─────────────────────────────────────────────────────

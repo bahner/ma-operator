@@ -83,6 +83,8 @@ inbox-empty = входящата поща е празна
 inbox-entry-not-found = запис { $n } от входящата поща не е намерен
 inbox-no-message-id = запис { $n } от входящата поща няма message_id
 inbox-no-verb = няма глагол `{ $verb }` за запис { $n } от входящата поща
+inbox-filter-no-arg = филтърът изисква DID или псевдоним
+inbox-filter-empty = няма съобщения от { $did }
 
 # ── Глаголи — среда за изпълнение ────────────────────────────────────────
 discover-fetch-failed = откриването е неуспешно на { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = няма глагол `{ $verb }` за .my.acl
 
 # ── Глаголи — идентичност ─────────────────────────────────────────────────
 publish-usage = употреба: .my.identity:publish <did-или-псевдоним>
+identity-exported = Пакетът е изтеглен като { $filename }
+identity-export-failed = Грешка при експортиране: { $e }
 
 # ── Глаголи — документи ───────────────────────────────────────────────────
 doc-content-empty = { $path }.content е празно
@@ -165,6 +169,7 @@ help-runtime-claim =   .my.ma:claim             заявява средата з
 help-identity =   .my.identity                 показва конфигурацията на идентичността
 help-identity-did =   .my.identity.did             показва собствения DID (само за четене)
 help-identity-publish =   .my.identity:publish @pub    публикува собствения DID чрез услугата на издателя
+help-identity-export =   .my.identity:export          изтегли собствения пакет с идентичност
 help-config-path =   .config                      показва всички записи .config.*
 
 help-inbox =   .my.inbox                    изброява входящата поща (изглед на поддърво)
@@ -175,6 +180,7 @@ help-inbox-open =   .my.inbox.N:open             отваря съдържани
 help-inbox-del =   .my.inbox.N:                 изтрива запис N
 help-inbox-delall =   .my.inbox:                   изтрива всички записи от входящата поща
 help-inbox-flush =   .my.inbox:flush              отпечатва всички записи в терминала
+help-inbox-filter =   .my.inbox:filter @who        покажи само записи от @who
 help-inbox-traverse =   .my.inbox.N.sender.<поле>   обхожда DID документа на подателя мързеливо
 
 help-doc-edit =   .my.doc.<име>:edit           отваря редактор със запазено съдържание

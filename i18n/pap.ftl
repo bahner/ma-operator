@@ -83,6 +83,8 @@ inbox-empty = inbox ta bashi
 inbox-entry-not-found = entrada di inbox { $n } no haña
 inbox-no-message-id = entrada di inbox { $n } no tin message_id
 inbox-no-verb = no tin verb `{ $verb }` pa entrada di inbox { $n }
+inbox-filter-no-arg = filter mester un argumento DID of alias
+inbox-filter-empty = no tin mensahe di { $did }
 
 # ── Verbs — runtime ───────────────────────────────────────────────────────
 discover-fetch-failed = diskobri fayá na { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = no tin verb `{ $verb }` pa .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = uso: .my.identity:publish <did-o-alias>
+identity-exported = Bundle a baha komo { $filename }
+identity-export-failed = Eksportashon a faya: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
 doc-content-empty = { $path }.content ta bashi
@@ -164,6 +168,7 @@ help-runtime-claim =   .my.ma:claim             reklamá poseeshon di runtime ku
 help-identity =   .my.identity                 mustrá konfigurashon di identidad
 help-identity-did =   .my.identity.did             mustrá propio DID (solo-lektura)
 help-identity-publish =   .my.identity:publish @pub    publiká propio DID via servishon di publikashon
+help-identity-export =   .my.identity:export          baha bo propio bundle di identidad
 help-config-path =   .config                      mustrá tur entrada .config.*
 help-inbox =   .my.inbox                    listá kasita di entrada (wista di subarber)
 help-inbox-n =   .my.inbox.N                  mustrá kampo di entrada N
@@ -173,6 +178,7 @@ help-inbox-open =   .my.inbox.N:open             habri kontenidonan di entrada s
 help-inbox-del =   .my.inbox.N:                 bòrá entrada N
 help-inbox-delall =   .my.inbox:                   bòrá tur entrada den kasita
 help-inbox-flush =   .my.inbox:flush              imprimí tur entrada na terminal
+help-inbox-filter =   .my.inbox:filter @who        mustra sòlo entradanan di @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   atravesá dokumento DID di remitente parsiosamente
 help-doc-edit =   .my.doc.<name>:edit           habri editor ku kontenidonan salvá
 help-doc-edit-cid =   .my.doc.<name>:edit <cid>     buská CID, habri pa revisión solamente

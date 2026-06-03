@@ -83,6 +83,8 @@ inbox-empty = inkorgen är tom
 inbox-entry-not-found = inkorgspost { $n } hittades inte
 inbox-no-message-id = inkorgspost { $n } saknar message_id
 inbox-no-verb = inget verb `{ $verb }` för inkorgspost { $n }
+inbox-filter-no-arg = filter kräver ett DID- eller aliasargument
+inbox-filter-empty = inga meddelanden från { $did }
 
 # ── Verb — körtid ─────────────────────────────────────────────────────────
 discover-fetch-failed = identifiering misslyckades vid { $url }: { $e }
@@ -107,6 +109,8 @@ acl-no-verb = inget verb `{ $verb }` för .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
 publish-usage = användning: .my.identity:publish <did-eller-alias>
+identity-exported = Bundle nedladdat som { $filename }
+identity-export-failed = Export misslyckades: { $e }
 
 # ── Verb — dokument ───────────────────────────────────────────────────────
 doc-content-empty = { $path }.content är tom
@@ -170,6 +174,7 @@ help-runtime-claim =   .my.ma:claim             gör anspråk på körtid med di
 help-identity =   .my.identity                 visa identitetskonfiguration
 help-identity-did =   .my.identity.did             visa eget DID (skrivskyddat)
 help-identity-publish =   .my.identity:publish @pub    publicera eget DID via utgivartjänst
+help-identity-export =   .my.identity:export          ladda ned eget identitetspaket
 help-config-path =   .config                      visa alla .config.*-poster
 
 # ── Hjälptext — inkorg ────────────────────────────────────────────────────
@@ -181,6 +186,7 @@ help-inbox-open =   .my.inbox.N:open             öppna innehållet i skrivskydd
 help-inbox-del =   .my.inbox.N:                 radera post N
 help-inbox-delall =   .my.inbox:                   radera alla inkorgsposter
 help-inbox-flush =   .my.inbox:flush              skriv alla poster till terminalen
+help-inbox-filter =   .my.inbox:filter @who        visa bara poster från @who
 help-inbox-traverse =   .my.inbox.N.sender.<fält>   traversera avsändarens DID-dokument latent
 
 # ── Hjälptext — dokument ──────────────────────────────────────────────────
