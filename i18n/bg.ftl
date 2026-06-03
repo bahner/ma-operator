@@ -29,6 +29,7 @@ msg-type-help = Въведете .help за списък с команди.
 msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Идентичността не е намерена онлайн — изпълни '.my.identity:publish @ma', за да станеш достъпен.
 msg-blocked = ⊗ блокирано [{ $cap }]: { $from }
 msg-focus-cleared = фокусът е изчистен
 msg-focusing = фокусиране върху { $did } като { $prompt }

@@ -29,6 +29,7 @@ msg-type-help = Írja be a .help parancsot a parancsok listájához.
 msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Az identitás nem található online — futtasd a '.my.identity:publish @ma' parancsot az elérhetőség érdekében.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
 msg-focusing = fókuszálás: { $did } mint { $prompt }

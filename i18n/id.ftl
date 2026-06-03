@@ -29,6 +29,7 @@ msg-type-help = Ketik .help untuk daftar perintah.
 msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identitas tidak ditemukan online — jalankan '.my.identity:publish @ma' agar dapat dijangkau.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
 msg-focusing = memfokuskan { $did } sebagai { $prompt }

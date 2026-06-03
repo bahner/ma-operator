@@ -29,6 +29,7 @@ msg-type-help = Tarree ajajootaaf .help barreessi.
 msg-connecting = iroh walitti hidhamaa...
 msg-iroh-ready = xumura iroh qophaa'eera
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Eenyummaan toora interneetii irratti hin argamne — '.my.identity:publish @ma' fiiduu miira argamuu.
 msg-blocked = ⊗ uggurame [{ $cap }]: { $from }
 msg-focus-cleared = xiyyeeffannoon qulqullaa'e
 msg-focusing = { $did } gara { $prompt }tti xiyyeeffachaa jira

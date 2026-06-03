@@ -29,6 +29,7 @@ msg-type-help = Andika .help kupata orodha ya amri.
 msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Utambulisho haupatikani mtandaoni — endesha '.my.identity:publish @ma' ili uweze kupatikana.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
 msg-focusing = kuzingatia { $did } kama { $prompt }

@@ -29,6 +29,7 @@ msg-type-help = اكتب .help للحصول على قائمة الأوامر.
 msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = لم يتم العثور على الهوية عبر الإنترنت — قم بتشغيل '.my.identity:publish @ma' لتصبح قابلاً للوصول.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
 msg-focusing = تركيز { $did } بوصفه { $prompt }
@@ -249,6 +250,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    فتح zion عبر رابط URL
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -273,3 +275,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
+help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
+help-url-chat =   ?chat=<did>                  يملأ الإدخال مسبقاً: @<did> (مسافة)
+help-url-say =   ?say=<did>                   نفس ?chat= (اسم مستعار)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.

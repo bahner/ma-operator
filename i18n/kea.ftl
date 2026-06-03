@@ -29,6 +29,7 @@ msg-type-help = Tipa .help pa lista di komandu.
 msg-connecting = konektandu a iroh...
 msg-iroh-ready = pontu iroh prontu
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identidadi ka atxadu na linia — kurri '.my.identity:publish @ma' pa sê atiníbel.
 msg-blocked = ⊗ blokadu [{ $cap }]: { $from }
 msg-focus-cleared = foku limpadu
 msg-focusing = foku { $did } komo { $prompt }

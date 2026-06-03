@@ -29,6 +29,7 @@ msg-type-help = Chwetheza .help ukufumana uluhlu lwemiyalelo.
 msg-connecting = iyaxhuma ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungele
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Isinikelo asfunyanwanga kwinethi — qhuba '.my.identity:publish @ma' ukuze ufumaneke.
 msg-blocked = ⊗ ivalelwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kucinyiwe
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }

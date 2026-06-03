@@ -29,6 +29,7 @@ msg-type-help = Digita .help per ottenere un elenco di comandi.
 msg-connecting = connessione a iroh in corso...
 msg-iroh-ready = endpoint iroh pronto
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identità non trovata online — esegui '.my.identity:publish @ma' per essere raggiungibile.
 msg-blocked = ⊗ bloccato [{ $cap }]: { $from }
 msg-focus-cleared = focus cancellato
 msg-focusing = focus su { $did } come { $prompt }
@@ -242,6 +243,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    aprire zion tramite un link URL
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -266,3 +268,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── parametri URL ───────────────────────────────────────────────────────────
+help-url-intro =   Condividi un link che apre zion con il destinatario già compilato:
+help-url-chat =   ?chat=<did>                  precompila l'input: @<did> (spazio)
+help-url-say =   ?say=<did>                   uguale a ?chat= (alias)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   Il campo viene precompilato ma non inviato — premi Invio per inviare.

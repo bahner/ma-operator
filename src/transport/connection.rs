@@ -32,7 +32,9 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {}", sender_did);
-    let mut endpoint = new_ma_endpoint(iroh_key).await.map_err(|e| e.to_string())?;
+    let mut endpoint = new_ma_endpoint(iroh_key, false)
+        .await
+        .map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
     let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
     let crud_inbox = endpoint.service(CRUD_PROTOCOL_ID);

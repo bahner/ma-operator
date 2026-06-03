@@ -29,6 +29,7 @@ msg-type-help = Pịnye .help maka ndepụta iwu.
 msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = A chọtaghị njirimara na ịntanetị — gaa '.my.identity:publish @ma' ka a nwee ike iru gị.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
 msg-focusing = na-etinye uche na { $did } dị ka { $prompt }

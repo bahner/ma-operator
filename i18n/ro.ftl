@@ -29,6 +29,7 @@ msg-type-help = Tastați .help pentru o listă de comenzi.
 msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identitate negăsită online — rulează '.my.identity:publish @ma' pentru a deveni accesibil.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
 msg-focusing = focalizare pe { $did } ca { $prompt }

@@ -29,6 +29,7 @@ msg-type-help = .help と入力するとコマンド一覧が表示されます�
 msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = IDドキュメントがオンラインで見つかりません — '.my.identity:publish @ma' を実行して到達可能になってください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
 msg-focusing = { $did } を { $prompt } としてフォーカス中
@@ -242,6 +243,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    URLリンクからzionを開く
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -266,3 +268,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
+help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
+help-url-chat =   ?chat=<did>                  入力欄に @<did> (スペース) を事前入力
+help-url-say =   ?say=<did>                   ?chat= と同じ（エイリアス）
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。

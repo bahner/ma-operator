@@ -29,6 +29,7 @@ msg-type-help = Tẹ .help fún àtòjọ àwọn àṣẹ.
 msg-connecting = ìsopọ̀ mọ́ iroh...
 msg-iroh-ready = ìpádédé iroh ti ṣetán
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Idanimọ ko ri ni ori ayelujara — ṣiṣẹ '.my.identity:publish @ma' lati di abawo.
 msg-blocked = ⊗ a dènà [{ $cap }]: { $from }
 msg-focus-cleared = a pa ìfọkànsí rẹ
 msg-focusing = ìfọkànsí { $did } gẹ́gẹ́ bí { $prompt }

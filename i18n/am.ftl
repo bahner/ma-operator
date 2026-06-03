@@ -29,6 +29,7 @@ msg-type-help = የትዕዛዞች ዝርዝር ለማየት .help ይተይቡ�
 msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = ማንነት በኦንላይን አልተገኘም — ለመድረስ '.my.identity:publish @ma' ያሂዱ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
 msg-focusing = { $did } እንደ { $prompt } ላይ ትኩረት እያደረገ

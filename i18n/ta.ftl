@@ -29,6 +29,7 @@ msg-type-help = கட்டளைகளின் பட்டியலுக்
 msg-connecting = iroh உடன் இணைக்கப்படுகிறது...
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = அடையாளம் ஆன்லைனில் காணப்படவில்லை — '.my.identity:publish @ma' இயக்கி அணுகக்கூடியதாகுங்கள்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
 msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது

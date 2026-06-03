@@ -29,6 +29,7 @@ msg-type-help = Typ .help voor een lijst met opdrachten.
 msg-connecting = verbinding maken met iroh...
 msg-iroh-ready = iroh-eindpunt gereed
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identiteit niet online gevonden — voer '.my.identity:publish @ma' uit om bereikbaar te worden.
 msg-blocked = ⊗ geblokkeerd [{ $cap }]: { $from }
 msg-focus-cleared = focus gewist
 msg-focusing = focussen op { $did } als { $prompt }
@@ -242,6 +243,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    zion openen via een URL-link
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -266,3 +268,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
+help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
+help-url-chat =   ?chat=<did>                  vult in: @<did> (spatie)
+help-url-say =   ?say=<did>                   zelfde als ?chat= (alias)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   Het invoerveld wordt ingevuld maar niet verzonden — druk op Enter.

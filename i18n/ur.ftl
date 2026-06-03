@@ -29,6 +29,7 @@ msg-type-help = کمانڈ کی فہرست کے لیے .help ٹائپ کریں۔
 msg-connecting = iroh سے منسلک ہو رہا ہے...
 msg-iroh-ready = iroh اینڈ پوائنٹ تیار ہے
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = شناخت آن لائن نہیں ملی — قابل رسائی بننے کے لیے '.my.identity:publish @ma' چلائیں۔
 msg-blocked = ⊗ بلاک کیا گیا [{ $cap }]: { $from }
 msg-focus-cleared = فوکس صاف کیا گیا
 msg-focusing = { $did } کو { $prompt } کے طور پر فوکس کیا جا رہا ہے

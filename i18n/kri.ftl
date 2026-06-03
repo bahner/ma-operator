@@ -29,6 +29,7 @@ msg-type-help = Taip .help fi get list ɔf komand dem.
 msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Dem no fayn yu nem onlayn — ron '.my.identity:publish @ma' mek pipul kin ritch yu.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
 msg-focusing = fokɔs { $did } as { $prompt }

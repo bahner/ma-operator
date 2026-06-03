@@ -29,6 +29,7 @@ msg-type-help = Rubuta .help don jerin umarni.
 msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Ba a samu asalinku ta yanar gizo ba — gudanar da '.my.identity:publish @ma' don zama mai sauki ga wasu.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
 msg-focusing = ana mai da hankali { $did } a matsayin { $prompt }

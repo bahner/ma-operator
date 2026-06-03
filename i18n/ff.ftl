@@ -29,6 +29,7 @@ msg-type-help = Winndita .help tawa hisɗaa dabaaji yimɓe.
 msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Mum jeyaa ko yahi e wuro ka jokkondiri — waddu '.my.identity:publish @ma' nde ngon kaaɗitii.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
 msg-focusing = nelitaade { $did } haa { $prompt }

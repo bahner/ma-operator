@@ -29,6 +29,7 @@ msg-type-help = Käskude loendi saamiseks kirjuta .help.
 msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identiteeti ei leitud veebist — käivita '.my.identity:publish @ma', et muutuda kättesaadavaks.
 msg-blocked = ⊗ blokeeritud [{ $cap }]: { $from }
 msg-focus-cleared = fookus tühjendatud
 msg-focusing = fokuseeritakse { $did } kui { $prompt }

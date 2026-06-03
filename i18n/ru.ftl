@@ -29,6 +29,7 @@ msg-type-help = Введите .help для списка команд.
 msg-connecting = подключение к iroh...
 msg-iroh-ready = iroh endpoint готов
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Идентичность не найдена онлайн — выполни '.my.identity:publish @ma', чтобы стать доступным.
 msg-blocked = ⊗ заблокировано [{ $cap }]: { $from }
 msg-focus-cleared = фокус снят
 msg-focusing = фокус на { $did } как { $prompt }
@@ -249,6 +250,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    открыть zion по URL-ссылке
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -273,3 +275,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── параметры URL ───────────────────────────────────────────────────────────
+help-url-intro =   Поделись ссылкой, открывающей zion с заранее заполненным получателем:
+help-url-chat =   ?chat=<did>                  предзаполняет ввод: @<did> (пробел)
+help-url-say =   ?say=<did>                   то же что ?chat= (псевдоним)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   Поле заполнено, но не отправлено — нажми Enter для отправки.

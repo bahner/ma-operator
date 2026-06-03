@@ -29,6 +29,7 @@ msg-type-help = พิมพ์ .help เพื่อดูรายการค
 msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = ไม่พบข้อมูลประจำตัวออนไลน์ — รัน '.my.identity:publish @ma' เพื่อให้สามารถติดต่อได้
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
 msg-focusing = กำลังโฟกัส { $did } เป็น { $prompt }

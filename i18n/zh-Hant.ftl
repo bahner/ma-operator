@@ -29,6 +29,7 @@ msg-type-help = 輸入 .help 查看指令清單。
 msg-connecting = 正在連線到 iroh...
 msg-iroh-ready = iroh 端點就緒
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = 未在網上找到身份 — 執行 '.my.identity:publish @ma' 以便成為可聯絡的。
 msg-blocked = ⊗ 已封鎖 [{ $cap }]: { $from }
 msg-focus-cleared = 焦點已清除
 msg-focusing = 將 { $did } 聚焦為 { $prompt }
@@ -249,6 +250,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    透過 URL 連結開啟 zion
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -273,3 +275,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
+help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
+help-url-chat =   ?chat=<did>                  預填輸入：@<did>（空格）
+help-url-say =   ?say=<did>                   與 ?chat= 相同（別名）
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。

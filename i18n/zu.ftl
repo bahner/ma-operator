@@ -29,6 +29,7 @@ msg-type-help = Thayipha .help ukuze uthole uhlu lwemiyalelo.
 msg-connecting = ixhunywa ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungile
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Isazisi asifunyanwa ku-intanethi — qalisa '.my.identity:publish @ma' ukuze ufinyelekeke.
 msg-blocked = ⊗ kuvinjwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kudulwe
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }

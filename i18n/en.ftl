@@ -29,6 +29,7 @@ msg-type-help = Type .help for a list of commands.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identity not found online — run '.my.identity:publish @ma' to become reachable.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -154,6 +155,7 @@ help-topic-my =   .help.my                     personal config — .my.*, aliase
 help-topic-inbox =   .help.inbox                  inbox — .my.inbox.*
 help-topic-doc =   .help.doc                    documents — .my.doc.*
 help-topic-actor =   .help.actor                  remote actor — CRUD, entities, CID ops
+help-topic-url =   .help.url                    opening zion via a URL link
 help-unknown-topic =   .help.{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
@@ -205,6 +207,14 @@ help-doc-publish-ipld =   .my.doc.<name>:publish-ipld @pub  store YAML as struct
 help-doc-fetch =   .my.doc.<name>:fetch <cid>    import CID content (no execution)
 help-doc-cid =   .my.doc.<name>:cid            show stored CID
 help-doc-del =   .my.doc.<name>:              delete document
+
+# ── Help text — URL parameters ──────────────────────────────────────────────
+help-header-url = ── URL parameters ─────────────────────────────────────────────────────────
+help-url-intro =   Share a link to open zion with a pre-filled recipient:
+help-url-chat =   ?chat=<did>                  pre-fill input as: @<did> (space)
+help-url-say =   ?say=<did>                   same as ?chat= (alias)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   The input is pre-filled but not sent — press Enter to send.
 
 # ── Error messages ────────────────────────────────────────────────────────
 msg-send-failed = send failed: { $e }

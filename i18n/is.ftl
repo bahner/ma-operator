@@ -29,6 +29,7 @@ msg-type-help = Sláðu inn .help til að sjá lista yfir skipanir.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Auðkenni fannst ekki á netinu — keyrðu '.my.identity:publish @ma' til að verða aðgengilegt.
 msg-blocked = ⊗ lokað á [{ $cap }]: { $from }
 msg-focus-cleared = fókus hreinsaður
 msg-focusing = beinir athygli að { $did } sem { $prompt }

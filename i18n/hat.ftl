@@ -29,6 +29,7 @@ msg-type-help = Tape .help pou yon lis kòmand.
 msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Idantite pa jwenn sou entènèt — egzekite '.my.identity:publish @ma' pou ou ka jwenn.
 msg-blocked = ⊗ bloke [{ $cap }]: { $from }
 msg-focus-cleared = fòkis efase
 msg-focusing = fòkis { $did } kòm { $prompt }

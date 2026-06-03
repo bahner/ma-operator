@@ -29,6 +29,7 @@ msg-type-help = Type .help fi get a list of commands.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Dem nuh find yuh identity online — run '.my.identity:publish @ma' fi mek people can reach yuh.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }

@@ -29,6 +29,7 @@ msg-type-help = Tiki .help pa un lista di komando.
 msg-connecting = konektando na iroh...
 msg-iroh-ready = punto iroh ta listu
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Nan a haña bo identidad online — kuree '.my.identity:publish @ma' pa por yega bo.
 msg-blocked = ⊗ blokea [{ $cap }]: { $from }
 msg-focus-cleared = foko limpiá
 msg-focusing = foko { $did } komo { $prompt }

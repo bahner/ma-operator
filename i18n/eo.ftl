@@ -29,6 +29,7 @@ msg-type-help = Tajpu .help por listo de komandoj.
 msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identeco ne trovita rete — rulu '.my.identity:publish @ma' por fariĝi atingebla.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
 msg-focusing = fokuso { $did } kiel { $prompt }
@@ -235,6 +236,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    malfermi zion per URL-ligilo
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -259,3 +261,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
+help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
+help-url-chat =   ?chat=<did>                  antaŭplenigas enigon: @<did> (spaco)
+help-url-say =   ?say=<did>                   sama kiel ?chat= (kromnomo)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.

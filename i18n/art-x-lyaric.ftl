@@ -31,6 +31,7 @@ msg-type-help = Type .help fi a list of livity commands.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint irie
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = I-man identity no sight inna di network — run '.my.identity:publish @ma' mek all man find I.
 msg-blocked = ⊗ blocked by Zion [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }

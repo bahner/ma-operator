@@ -31,6 +31,7 @@ msg-type-help = Showxa .help fo kowl komands.
 msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identiti peng no find on-ring — run '.my.identity:publish @ma' so ships can ping you.
 msg-blocked = ⊗ hamma [{ $cap }]: { $from }
 msg-focus-cleared = fokus na du
 msg-focusing = fokus { $did } as { $prompt }

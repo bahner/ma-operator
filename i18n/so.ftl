@@ -29,6 +29,7 @@ msg-type-help = Qor .help si aad u hesho liiska amarka.
 msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Aqoonsigaaga lama helin internetka — orod '.my.identity:publish @ma' si aad u gacan-siisato.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
 msg-focusing = xushmadda { $did } ahaan { $prompt }

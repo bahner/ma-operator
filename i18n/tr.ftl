@@ -29,6 +29,7 @@ msg-type-help = Komut listesi için .help yazın.
 msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Kimlik çevrimiçi bulunamadı — erişilebilir olmak için '.my.identity:publish @ma' komutunu çalıştır.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
 msg-focusing = { $did } üzerine { $prompt } olarak odaklanılıyor
@@ -249,6 +250,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    zion'u bir URL bağlantısıyla aç
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -273,3 +275,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
+help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
+help-url-chat =   ?chat=<did>                  girişi önceden doldurur: @<did> (boşluk)
+help-url-say =   ?say=<did>                   ?chat= ile aynı (takma ad)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.

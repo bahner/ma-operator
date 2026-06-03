@@ -29,6 +29,7 @@ msg-type-help = Ierakstiet .help, lai iegūtu komandu sarakstu.
 msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identitāte nav atrasta tiešsaistē — palaid '.my.identity:publish @ma', lai kļūtu sasniedzams.
 msg-blocked = ⊗ bloķēts [{ $cap }]: { $from }
 msg-focus-cleared = fokuss notīrīts
 msg-focusing = fokusē { $did } kā { $prompt }

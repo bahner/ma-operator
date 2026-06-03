@@ -191,12 +191,29 @@ pub fn Terminal() -> impl IntoView {
                     ipns_secret_key,
                     did_signing_key,
                     did_encryption_key,
-                    sender_did,
+                    sender_did.clone(),
                     created_at,
                 )
                 .await
                 {
-                    Ok(()) => state2.push_system(t("msg-iroh-ready")),
+                    Ok(()) => {
+                        state2.push_system(t("msg-iroh-ready"));
+                        // Background check: is our DID document reachable online?
+                        let state3 = state2.clone();
+                        let own_did = sender_did.clone();
+                        spawn_local(async move {
+                            let reachable = if let Some(resolver) =
+                                crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+                            {
+                                resolver.resolve(&own_did).await.is_ok()
+                            } else {
+                                false
+                            };
+                            if !reachable {
+                                state3.push_error(t("msg-identity-not-published"));
+                            }
+                        });
+                    }
                     Err(e) => state2.push_error(tf("msg-iroh-failed", &[("e", &e)])),
                 }
                 let _ = username;
@@ -1859,6 +1876,7 @@ fn dispatch_help(subtopic: &str) -> Vec<String> {
         "inbox" => help_inbox(),
         "doc" => help_doc(),
         "actor" => help_actor(),
+        "url" => help_url(),
         other => vec![tf("help-unknown-topic", &[("topic", other)])],
     }
 }
@@ -1880,6 +1898,7 @@ fn help_overview() -> Vec<String> {
         t("help-topic-inbox"),
         t("help-topic-doc"),
         t("help-topic-actor"),
+        t("help-topic-url"),
         t("help-footer"),
     ]
 }
@@ -1995,6 +2014,18 @@ fn help_actor() -> Vec<String> {
         t("help-actor-tail"),
         t("help-actor-wc"),
         t("help-actor-wc-l"),
+        t("help-footer"),
+    ]
+}
+
+fn help_url() -> Vec<String> {
+    vec![
+        t("help-header-url"),
+        t("help-url-intro"),
+        t("help-url-chat"),
+        t("help-url-say"),
+        t("help-url-example"),
+        t("help-url-note"),
         t("help-footer"),
     ]
 }

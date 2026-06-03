@@ -29,6 +29,7 @@ msg-type-help = Kirjoita .help saadaksesi luettelon komennoista.
 msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identiteettiä ei löydy verkosta — suorita '.my.identity:publish @ma' tullaksesi tavoitettavaksi.
 msg-blocked = ⊗ estetty [{ $cap }]: { $from }
 msg-focus-cleared = kohdistus tyhjennetty
 msg-focusing = kohdistetaan { $did } nimellä { $prompt }

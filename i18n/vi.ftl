@@ -29,6 +29,7 @@ msg-type-help = Nhập .help để xem danh sách lệnh.
 msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Danh tính không tìm thấy trực tuyến — chạy '.my.identity:publish @ma' để có thể tiếp cận được.
 msg-blocked = ⊗ bị chặn [{ $cap }]: { $from }
 msg-focus-cleared = đã xóa tiêu điểm
 msg-focusing = đang tập trung { $did } thành { $prompt }

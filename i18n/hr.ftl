@@ -29,6 +29,7 @@ msg-type-help = Unesite .help za popis naredbi.
 msg-connecting = spajanje na iroh...
 msg-iroh-ready = iroh krajnja točka spremna
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identitet nije pronađen online — pokreni '.my.identity:publish @ma' da postaneš dostupan.
 msg-blocked = ⊗ blokirano [{ $cap }]: { $from }
 msg-focus-cleared = fokus obrisan
 msg-focusing = fokusiranje na { $did } kao { $prompt }

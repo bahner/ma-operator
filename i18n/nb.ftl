@@ -29,6 +29,7 @@ msg-type-help = Skriv .help for en liste over kommandoer.
 msg-connecting = kobler til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Identitet ikke funnet online — kjør '.my.identity:publish @ma' for å bli tilgjengelig.
 msg-blocked = ⊗ blokkert [{ $cap }]: { $from }
 msg-focus-cleared = fokus fjernet
 msg-focusing = fokuserer { $did } som { $prompt }
@@ -251,6 +252,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    åpne zion via en URL-lenke
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -275,3 +277,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL-parametere ──────────────────────────────────────────────────────────
+help-url-intro =   Del en lenke som åpner zion med ferdig utfylt mottaker:
+help-url-chat =   ?chat=<did>                  fyller inn: @<did> (mellomrom)
+help-url-say =   ?say=<did>                   samme som ?chat= (alias)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   Inputfeltet fylles ut, men sendes ikke — trykk Enter for å sende.

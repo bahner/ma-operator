@@ -29,6 +29,7 @@ msg-type-help = Skriva .help fyri lista av skipanum.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Samleiki ikki fundin online — køyr '.my.identity:publish @ma' fyri at verða nakan til.
 msg-blocked = ⊗ stovnað [{ $cap }]: { $from }
 msg-focus-cleared = fókus av
 msg-focusing = fókuserar { $did } sum { $prompt }

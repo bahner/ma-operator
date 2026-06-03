@@ -29,6 +29,7 @@ msg-type-help = 명령어 목록을 보려면 .help를 입력하세요.
 msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = 온라인에서 신원을 찾을 수 없습니다 — '.my.identity:publish @ma'를 실행하여 연결 가능하게 되세요.
 msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
 msg-focus-cleared = 포커스가 해제됨
 msg-focusing = { $did }을(를) { $prompt }(으)로 포커스 중
@@ -249,6 +250,7 @@ help-topic-my =   .help.my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
+help-topic-url =   .help.url                    URL 링크로 zion 열기
 help-unknown-topic =   .help.{ $topic }: unknown topic
 
 # -- Help actor section
@@ -273,3 +275,9 @@ help-actor-head =   @actor:ent:head N            first N lines
 help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
+help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
+help-url-chat =   ?chat=<did>                  입력을 미리 채움: @<did> (공백)
+help-url-say =   ?say=<did>                   ?chat= 과 동일 (별칭)
+help-url-example =   https://ma.bahner.com/?chat=did:ma:k51…
+help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.

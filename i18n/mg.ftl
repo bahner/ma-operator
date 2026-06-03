@@ -29,6 +29,7 @@ msg-type-help = Soraty .help mba hahazo lisitry ny baiko.
 msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Tsy hita ny fampahalalana an-tserasera — alefaso '.my.identity:publish @ma' mba ho azo tratra.
 msg-blocked = ⊗ voasakana [{ $cap }]: { $from }
 msg-focus-cleared = voafafa ny sain-toerana
 msg-focusing = manamarika { $did } ho { $prompt }

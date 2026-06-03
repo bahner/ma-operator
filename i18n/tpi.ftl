@@ -29,6 +29,7 @@ msg-type-help = Raitim .help bilong lukim lis bilong komand.
 msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Ol i no painim yu long intaneth — putim wok '.my.identity:publish @ma' bilong ol i ken painim yu.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokus i klia pinis
 msg-focusing = fokus { $did } olsem { $prompt }

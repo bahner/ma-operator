@@ -29,6 +29,7 @@ msg-type-help = Πληκτρολογήστε .help για λίστα εντολ�
 msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
+msg-identity-not-published = Η ταυτότητα δεν βρέθηκε online — εκτέλεσε το '.my.identity:publish @ma' για να γίνεις προσβάσιμος.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
 msg-focusing = εστίαση σε { $did } ως { $prompt }
