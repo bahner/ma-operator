@@ -217,6 +217,7 @@ status-publishing = 公開中
 rpc-error = エラー
 rpc-error-detail = エラー: { $detail }
 msg-new-message = ← [{ $from }] 新しいメッセージ — 受信トレイに { $count } 件
+msg-chat = { $sender }「{ $body }」
 err-edit-decode-failed = 編集: デコード失敗: { $e }
 err-edit-fetch-failed = 編集: 取得失敗: { $e }
 

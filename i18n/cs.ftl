@@ -217,6 +217,7 @@ status-publishing = publikování
 rpc-error = chyba
 rpc-error-detail = chyba: { $detail }
 msg-new-message = ← [{ $from }] nová zpráva — { $count } v doručené poště
+msg-chat = { $sender } říká { $body }
 err-edit-decode-failed = chyba dekódování při úpravě: { $e }
 err-edit-fetch-failed = chyba načítání při úpravě: { $e }
 

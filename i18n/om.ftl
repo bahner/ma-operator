@@ -224,6 +224,7 @@ status-publishing = maxxansuu
 rpc-error = dogoggora
 rpc-error-detail = dogoggora: { $detail }
 msg-new-message = ← [{ $from }] ergaa haaraa — { $count } sanduuqa
+msg-chat = { $sender } jedha { $body }
 err-edit-decode-failed = gulaala: dogoggora hiikuu: { $e }
 err-edit-fetch-failed = gulaala: dogoggora fida: { $e }
 

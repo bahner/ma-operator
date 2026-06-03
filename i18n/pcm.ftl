@@ -210,6 +210,7 @@ status-publishing = dey publish
 rpc-error = ɛrɔ
 rpc-error-detail = ɛrɔ: { $detail }
 msg-new-message = ← [{ $from }] new mesej — { $count } dey inbox
+msg-chat = { $sender } tok { $body }
 err-edit-decode-failed = edit: decode fail: { $e }
 err-edit-fetch-failed = edit: fetch fail: { $e }
 

@@ -224,6 +224,7 @@ status-publishing = đang xuất bản
 rpc-error = lỗi
 rpc-error-detail = lỗi: { $detail }
 msg-new-message = ← [{ $from }] tin nhắn mới — { $count } trong hộp thư
+msg-chat = { $sender } nói { $body }
 err-edit-decode-failed = chỉnh sửa: giải mã thất bại: { $e }
 err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
 

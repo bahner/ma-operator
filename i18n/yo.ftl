@@ -224,6 +224,7 @@ status-publishing = n gbejade
 rpc-error = àṣìṣe
 rpc-error-detail = àṣìṣe: { $detail }
 msg-new-message = ← [{ $from }] ifiranṣẹ tuntun — { $count } ninu apo
+msg-chat = { $sender } sọ { $body }
 err-edit-decode-failed = ṣàtúnṣe: àṣìṣe ìtúpalẹ̀: { $e }
 err-edit-fetch-failed = ṣàtúnṣe: àṣìṣe gbígba: { $e }
 

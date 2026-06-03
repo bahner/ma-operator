@@ -217,6 +217,7 @@ status-publishing = objavljujem
 rpc-error = greška
 rpc-error-detail = greška: { $detail }
 msg-new-message = ← [{ $from }] nova poruka — { $count } u pristigloj pošti
+msg-chat = { $sender } kaže { $body }
 err-edit-decode-failed = uređivanje: pogreška dekodiranja: { $e }
 err-edit-fetch-failed = uređivanje: pogreška dohvata: { $e }
 

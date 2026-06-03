@@ -217,6 +217,7 @@ status-publishing = útgevur
 rpc-error = feilur
 rpc-error-detail = feilur: { $detail }
 msg-new-message = ← [{ $from }] nýtt boð — { $count } í innposti
+msg-chat = { $sender } sigur { $body }
 err-edit-decode-failed = redigering: avkódingsfeilur: { $e }
 err-edit-fetch-failed = redigering: heintingsfeilur: { $e }
 

@@ -7,6 +7,7 @@ use ma_core::{
     MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
+use crate::i18n::tf;
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY, SESSION_INBOX,
@@ -521,7 +522,10 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
         MESSAGE_TYPE_CHAT => {
             let bytes = msg.payload();
             let body = String::from_utf8_lossy(&bytes);
-            (format!("\u{2190} {} {}", msg.from, body), false)
+            (
+                tf("msg-chat", &[("sender", &msg.from), ("body", &body)]),
+                false,
+            )
         }
         MESSAGE_TYPE_EMOTE => {
             let bytes = msg.payload();

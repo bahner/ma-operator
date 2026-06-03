@@ -224,6 +224,7 @@ status-publishing = กำลังเผยแพร่
 rpc-error = ข้อผิดพลาด
 rpc-error-detail = ข้อผิดพลาด: { $detail }
 msg-new-message = ← [{ $from }] ข้อความใหม่ — { $count } ในกล่องขาเข้า
+msg-chat = { $sender } พูดว่า { $body }
 err-edit-decode-failed = แก้ไข: ถอดรหัสล้มเหลว: { $e }
 err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเหลว: { $e }
 

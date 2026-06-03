@@ -224,6 +224,7 @@ status-publishing = يُنشر
 rpc-error = خطأ
 rpc-error-detail = خطأ: { $detail }
 msg-new-message = ← [{ $from }] رسالة جديدة — { $count } في البريد الوارد
+msg-chat = { $sender } يقول { $body }
 err-edit-decode-failed = فشل فك ترميز التحرير: { $e }
 err-edit-fetch-failed = فشل جلب التحرير: { $e }
 

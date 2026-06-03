@@ -210,6 +210,7 @@ status-publishing = ta publica
 rpc-error = fout
 rpc-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] mesashi nobo — { $count } den inbox
+msg-chat = { $sender } bisa { $body }
 err-edit-decode-failed = edishon: faya di dekoifikashon: { $e }
 err-edit-fetch-failed = edishon: faya di karga: { $e }
 

@@ -217,6 +217,7 @@ status-publishing = gefur út
 rpc-error = villa
 rpc-error-detail = villa: { $detail }
 msg-new-message = ← [{ $from }] ný skilaboð — { $count } í pósthólfi
+msg-chat = { $sender } segir { $body }
 err-edit-decode-failed = ritvinnsla: afkóðunarvilla: { $e }
 err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
 

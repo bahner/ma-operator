@@ -217,6 +217,7 @@ status-publishing = julkaistaan
 rpc-error = virhe
 rpc-error-detail = virhe: { $detail }
 msg-new-message = ← [{ $from }] uusi viesti — { $count } saapuneissa
+msg-chat = { $sender } sanoo { $body }
 err-edit-decode-failed = muokkaus: purku epäonnistui: { $e }
 err-edit-fetch-failed = muokkaus: haku epäonnistui: { $e }
 

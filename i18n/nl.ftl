@@ -217,6 +217,7 @@ status-publishing = publiceert
 rpc-error = fout
 rpc-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] nieuw bericht — { $count } in inbox
+msg-chat = { $sender } zegt { $body }
 err-edit-decode-failed = bewerking: decodering mislukt: { $e }
 err-edit-fetch-failed = bewerking: ophalen mislukt: { $e }
 

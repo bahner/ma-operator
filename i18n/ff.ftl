@@ -224,6 +224,7 @@ status-publishing = fallude
 rpc-error = juumre
 rpc-error-detail = juumre: { $detail }
 msg-new-message = ← [{ $from }] tinndi kesu — { $count } e ndema
+msg-chat = { $sender } wi'i { $body }
 err-edit-decode-failed = taƴre: juumre waɗde welngo: { $e }
 err-edit-fetch-failed = taƴre: juumre heɓde: { $e }
 

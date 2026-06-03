@@ -226,6 +226,7 @@ status-publishing = publishin
 rpc-error = fot
 rpc-error-detail = fot: { $detail }
 msg-new-message = ← [{ $from }] nyú mesej — { $count } in de boks
+msg-chat = { $sender } sa { $body }
 err-edit-decode-failed = edit: fot decode: { $e }
 err-edit-fetch-failed = edit: fot fetch: { $e }
 

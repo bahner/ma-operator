@@ -224,6 +224,7 @@ status-publishing = 发布中
 rpc-error = 错误
 rpc-error-detail = 错误: { $detail }
 msg-new-message = ← [{ $from }] 新消息 — 收件箱中 { $count } 条
+msg-chat = { $sender } 说 { $body }
 err-edit-decode-failed = 编辑: 解码失败: { $e }
 err-edit-fetch-failed = 编辑: 获取失败: { $e }
 

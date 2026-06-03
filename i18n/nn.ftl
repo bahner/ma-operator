@@ -224,6 +224,7 @@ status-publishing = publiserer
 rpc-error = feil
 rpc-error-detail = feil: { $detail }
 msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
+msg-chat = { $sender } seier { $body }
 err-edit-decode-failed = redigering: dekodingsfeil: { $e }
 err-edit-fetch-failed = redigering: hentingsfeil: { $e }
 

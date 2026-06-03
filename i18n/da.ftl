@@ -224,6 +224,7 @@ status-publishing = udgiver
 rpc-error = fejl
 rpc-error-detail = fejl: { $detail }
 msg-new-message = ← [{ $from }] ny besked — { $count } i indbakken
+msg-chat = { $sender } siger { $body }
 err-edit-decode-failed = redigering: afkodningsfejl: { $e }
 err-edit-fetch-failed = redigering: hentningsfejl: { $e }
 

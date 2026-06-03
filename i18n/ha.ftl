@@ -224,6 +224,7 @@ status-publishing = wallafawa
 rpc-error = kuskure
 rpc-error-detail = kuskure: { $detail }
 msg-new-message = ← [{ $from }] saƙo sabon — { $count } a akwatin karɓa
+msg-chat = { $sender } yana cewa { $body }
 err-edit-decode-failed = gyara: kuskuren fassara: { $e }
 err-edit-fetch-failed = gyara: kuskuren nemo: { $e }
 

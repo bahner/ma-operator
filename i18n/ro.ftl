@@ -217,6 +217,7 @@ status-publishing = publicare
 rpc-error = eroare
 rpc-error-detail = eroare: { $detail }
 msg-new-message = ← [{ $from }] mesaj nou — { $count } în inbox
+msg-chat = { $sender } spune { $body }
 err-edit-decode-failed = editare: eroare la decodare: { $e }
 err-edit-fetch-failed = editare: eroare la încărcare: { $e }
 

@@ -217,6 +217,7 @@ status-publishing = publikowanie
 rpc-error = błąd
 rpc-error-detail = błąd: { $detail }
 msg-new-message = ← [{ $from }] nowa wiadomość — { $count } w skrzynce odbiorczej
+msg-chat = { $sender } mówi { $body }
 err-edit-decode-failed = edycja: błąd dekodowania: { $e }
 err-edit-fetch-failed = edycja: błąd pobierania: { $e }
 

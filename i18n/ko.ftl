@@ -224,6 +224,7 @@ status-publishing = 게시 중
 rpc-error = 오류
 rpc-error-detail = 오류: { $detail }
 msg-new-message = ← [{ $from }] 새 메시지 — 받은 편지함에 { $count } 개
+msg-chat = { $sender } 말한다 { $body }
 err-edit-decode-failed = 편집: 디코딩 실패: { $e }
 err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
 

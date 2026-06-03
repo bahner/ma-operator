@@ -224,6 +224,7 @@ status-publishing = publicerar
 rpc-error = fel
 rpc-error-detail = fel: { $detail }
 msg-new-message = ← [{ $from }] nytt meddelande — { $count } i inkorgen
+msg-chat = { $sender } säger { $body }
 err-edit-decode-failed = redigering: avkodningsfel: { $e }
 err-edit-fetch-failed = redigering: hämtningsfel: { $e }
 

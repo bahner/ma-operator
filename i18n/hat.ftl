@@ -210,6 +210,7 @@ status-publishing = ap pibliye
 rpc-error = erè
 rpc-error-detail = erè: { $detail }
 msg-new-message = ← [{ $from }] nouvo mesaj — { $count } nan bwat resepsyon
+msg-chat = { $sender } di { $body }
 err-edit-decode-failed = edisyon: echèk dekodaj: { $e }
 err-edit-fetch-failed = edisyon: echèk chajman: { $e }
 

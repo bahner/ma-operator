@@ -224,6 +224,7 @@ status-publishing = প্রকাশিত হচ্ছে
 rpc-error = ত্রুটি
 rpc-error-detail = ত্রুটি: { $detail }
 msg-new-message = ← [{ $from }] নতুন বার্তা — { $count } ইনবক্সে
+msg-chat = { $sender } বলে { $body }
 err-edit-decode-failed = সম্পাদনা ডিকোড ব্যর্থ: { $e }
 err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্থ: { $e }
 

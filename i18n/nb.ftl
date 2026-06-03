@@ -199,6 +199,7 @@ lang-list-header = Tilgjengelige språk (angi med .my.i18n: <code>):
 msg-send-failed = sending feilet: { $e }
 msg-not-logged-in = ikke innlogget
 msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
+msg-chat = { $sender } sier { $body }
 
 # ── RPC-svardisplay ───────────────────────────────────────────────────────
 rpc-error = feil

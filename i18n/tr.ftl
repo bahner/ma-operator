@@ -224,6 +224,7 @@ status-publishing = yayınlanıyor
 rpc-error = hata
 rpc-error-detail = hata: { $detail }
 msg-new-message = ← [{ $from }] yeni mesaj — { $count } gelen kutusunda
+msg-chat = { $sender } diyor { $body }
 err-edit-decode-failed = düzenleme: kod çözme hatası: { $e }
 err-edit-fetch-failed = düzenleme: getirme hatası: { $e }
 

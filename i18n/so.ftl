@@ -224,6 +224,7 @@ status-publishing = daabacaad
 rpc-error = khalad
 rpc-error-detail = khalad: { $detail }
 msg-new-message = ← [{ $from }] fariin cusub — { $count } sanduuqa
+msg-chat = { $sender } yiri { $body }
 err-edit-decode-failed = tafatirka: khalad sharraxaad: { $e }
 err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
 

@@ -210,6 +210,7 @@ status-publishing = ta publika
 rpc-error = érru
 rpc-error-detail = érru: { $detail }
 msg-new-message = ← [{ $from }] mensajen novu — { $count } na kaixa di entrada
+msg-chat = { $sender } fala { $body }
 err-edit-decode-failed = edisaun: falta di decodifikasaun: { $e }
 err-edit-fetch-failed = edisaun: falta di karregamentu: { $e }
 

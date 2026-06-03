@@ -224,6 +224,7 @@ status-publishing = شائع ہو رہا ہے
 rpc-error = خطا
 rpc-error-detail = خطا: { $detail }
 msg-new-message = ← [{ $from }] نئی پیغام — { $count } ان باکس میں
+msg-chat = { $sender } کہتا ہے { $body }
 err-edit-decode-failed = ترمیم: ڈی کوڈ ناکام: { $e }
 err-edit-fetch-failed = ترمیم: حاصل کرنا ناکام: { $e }
 

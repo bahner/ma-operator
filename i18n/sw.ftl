@@ -217,6 +217,7 @@ status-publishing = inachapisha
 rpc-error = hitilafu
 rpc-error-detail = hitilafu: { $detail }
 msg-new-message = ← [{ $from }] ujumbe mpya — { $count } kwenye kisanduku
+msg-chat = { $sender } anasema { $body }
 err-edit-decode-failed = kuhariri: hitilafu ya usimbaji: { $e }
 err-edit-fetch-failed = kuhariri: hitilafu ya kupata: { $e }
 

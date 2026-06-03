@@ -224,6 +224,7 @@ status-publishing = mempublikasikan
 rpc-error = kesalahan
 rpc-error-detail = kesalahan: { $detail }
 msg-new-message = ← [{ $from }] pesan baru — { $count } di kotak masuk
+msg-chat = { $sender } bilang { $body }
 err-edit-decode-failed = pengeditan: gagal mendekode: { $e }
 err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
 

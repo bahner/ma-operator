@@ -224,6 +224,7 @@ status-publishing = mamoaka
 rpc-error = hadisoana
 rpc-error-detail = hadisoana: { $detail }
 msg-new-message = ← [{ $from }] hafatra vaovao — { $count } ao amin'ny boaty
+msg-chat = { $sender } milaza { $body }
 err-edit-decode-failed = fanandramana: tsy nahomby ny fanakambanana: { $e }
 err-edit-fetch-failed = fanandramana: tsy nahomby ny faka: { $e }
 

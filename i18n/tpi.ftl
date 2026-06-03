@@ -210,6 +210,7 @@ status-publishing = i publishim
 rpc-error = rong
 rpc-error-detail = rong: { $detail }
 msg-new-message = ← [{ $from }] nupela tok — { $count } long bokis bilong yu
+msg-chat = { $sender } i tok { $body }
 err-edit-decode-failed = senisim: rong long dekod: { $e }
 err-edit-fetch-failed = senisim: rong long kisim: { $e }
 

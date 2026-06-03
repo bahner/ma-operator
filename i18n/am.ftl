@@ -224,6 +224,7 @@ status-publishing = እያሳተሙ
 rpc-error = ስህተት
 rpc-error-detail = ስህተት: { $detail }
 msg-new-message = ← [{ $from }] አዲስ መልዕክት — { $count } ወደ ሳጥን ደረሰ
+msg-chat = { $sender } ይላል { $body }
 err-edit-decode-failed = ማርትዕ: ዲኮድ አልተሳካም: { $e }
 err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
 

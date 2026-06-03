@@ -217,6 +217,7 @@ status-publishing = δημοσίευση
 rpc-error = σφάλμα
 rpc-error-detail = σφάλμα: { $detail }
 msg-new-message = ← [{ $from }] νέο μήνυμα — { $count } στα εισερχόμενα
+msg-chat = { $sender } λέει { $body }
 err-edit-decode-failed = αποτυχία αποκωδικοποίησης επεξεργασίας: { $e }
 err-edit-fetch-failed = αποτυχία ανάκτησης επεξεργασίας: { $e }
 

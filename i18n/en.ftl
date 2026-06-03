@@ -221,6 +221,7 @@ help-url-note =   The input is pre-filled but not sent — press Enter to send.
 msg-send-failed = send failed: { $e }
 msg-not-logged-in = not logged in
 msg-new-message = ← [{ $from }] new message — { $count } in inbox
+msg-chat = { $sender } says { $body }
 
 # ── RPC reply display ─────────────────────────────────────────────────────
 rpc-error = error

@@ -217,6 +217,7 @@ status-publishing = skelbiama
 rpc-error = klaida
 rpc-error-detail = klaida: { $detail }
 msg-new-message = ← [{ $from }] naujas pranešimas — { $count } gautuosiuose
+msg-chat = { $sender } sako { $body }
 err-edit-decode-failed = redagavimas: dekodaravimo klaida: { $e }
 err-edit-fetch-failed = redagavimas: gavimo klaida: { $e }
 

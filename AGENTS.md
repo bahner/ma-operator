@@ -1,5 +1,11 @@
 # ma-agent — AI Agent Reference
 
+## Agent rules
+
+- **Never modify files outside the current workspace without explicit user approval.** Always ask first.
+
+---
+
 `ego` is a browser-based actor workstation compiled to WASM.
 Each tab is one `did:ma:` identity. There is no backend — all state
 lives in IndexedDB and all networking goes over iroh QUIC transport

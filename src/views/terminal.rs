@@ -1266,8 +1266,8 @@ fn eval(
                 };
                 match result {
                     Ok(msg_id) => {
-                        // say and emote are fire-and-forget: no reply is expected.
-                        if matches!(verb.as_deref(), Some("say") | Some("emote")) {
+                        // Plain messages, say and emote are fire-and-forget: no reply is expected.
+                        if matches!(verb.as_deref(), None | Some("say") | Some("emote")) {
                             state_async.resolve_command_by_id(cmd_id, CommandStatus::Done);
                         } else {
                             state_async.bind_message_id(cmd_id, msg_id);

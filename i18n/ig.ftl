@@ -224,6 +224,7 @@ status-publishing = nkwupụta
 rpc-error = njehie
 rpc-error-detail = njehie: { $detail }
 msg-new-message = ← [{ $from }] ozi ọhụrụ — { $count } n'igbe ozi
+msg-chat = { $sender } si { $body }
 err-edit-decode-failed = dezie: ọdịda ntụgharị: { $e }
 err-edit-fetch-failed = dezie: ọdịda nweta: { $e }
 

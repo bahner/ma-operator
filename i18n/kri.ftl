@@ -210,6 +210,7 @@ status-publishing = publishin
 rpc-error = ɛrɔ
 rpc-error-detail = ɛrɔ: { $detail }
 msg-new-message = ← [{ $from }] nyù mɛsej — { $count } de insay inbox
+msg-chat = { $sender } se { $body }
 err-edit-decode-failed = edit: dipkod fɛl: { $e }
 err-edit-fetch-failed = edit: fɛtʃ fɛl: { $e }
 

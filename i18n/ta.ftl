@@ -224,6 +224,7 @@ status-publishing = வெளியிடுகிறது
 rpc-error = பிழை
 rpc-error-detail = பிழை: { $detail }
 msg-new-message = ← [{ $from }] புதிய செய்தி — { $count } இன்பாக்ஸில்
+msg-chat = { $sender } சொல்கிறார் { $body }
 err-edit-decode-failed = திருத்தம்: டிகோட் தோல்வி: { $e }
 err-edit-fetch-failed = திருத்தம்: பெறுவதில் தோல்வி: { $e }
 

@@ -224,6 +224,7 @@ status-publishing = ikhishwa
 rpc-error = iphutha
 rpc-error-detail = iphutha: { $detail }
 msg-new-message = ← [{ $from }] umlayezo omutsha — { $count } ebhokisini
+msg-chat = { $sender } uthi { $body }
 err-edit-decode-failed = ukuhlelwa: ukuhumusha kwehlulekile: { $e }
 err-edit-fetch-failed = ukuhlelwa: ukuthola kwehlulekile: { $e }
 

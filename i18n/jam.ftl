@@ -210,6 +210,7 @@ status-publishing = publishin
 rpc-error = erra
 rpc-error-detail = erra: { $detail }
 msg-new-message = ← [{ $from }] new mesij — { $count } inna inbox
+msg-chat = { $sender } seh { $body }
 err-edit-decode-failed = edit decode fail: { $e }
 err-edit-fetch-failed = edit fetch fail: { $e }
 

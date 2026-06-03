@@ -224,6 +224,7 @@ status-publishing = ప్రచురిస్తోంది
 rpc-error = లోపం
 rpc-error-detail = లోపం: { $detail }
 msg-new-message = ← [{ $from }] కొత్త సందేశం — { $count } ఇన్‌బాక్స్‌లో
+msg-chat = { $sender } అంటారు { $body }
 err-edit-decode-failed = సవరణ: డీకోడ్ విఫలమైంది: { $e }
 err-edit-fetch-failed = సవరణ: పొందడం విఫలమైంది: { $e }
 

@@ -217,6 +217,7 @@ status-publishing = közzététel
 rpc-error = hiba
 rpc-error-detail = hiba: { $detail }
 msg-new-message = ← [{ $from }] új üzenet — { $count } a beérkező levelekben
+msg-chat = { $sender } mondja { $body }
 err-edit-decode-failed = szerkesztés: dekódolási hiba: { $e }
 err-edit-fetch-failed = szerkesztés: betöltési hiba: { $e }
 

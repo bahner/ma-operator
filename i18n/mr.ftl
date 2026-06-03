@@ -224,6 +224,7 @@ status-publishing = प्रकाशित करत आहे
 rpc-error = त्रुटी
 rpc-error-detail = त्रुटी: { $detail }
 msg-new-message = ← [{ $from }] नवीन संदेश — { $count } इनबॉक्समध्ये
+msg-chat = { $sender } म्हणतो { $body }
 err-edit-decode-failed = संपादन: डीकोड अयशस्वी: { $e }
 err-edit-fetch-failed = संपादन: आणणे अयशस्वी: { $e }
 

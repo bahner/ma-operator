@@ -217,6 +217,7 @@ status-publishing = avaldamine
 rpc-error = viga
 rpc-error-detail = viga: { $detail }
 msg-new-message = ← [{ $from }] uus sõnum — { $count } postkastis
+msg-chat = { $sender } ütleb { $body }
 err-edit-decode-failed = redigeerimine: dekodeerimistõrge: { $e }
 err-edit-fetch-failed = redigeerimine: laadimistõrge: { $e }
 
