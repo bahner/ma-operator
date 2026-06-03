@@ -25,6 +25,21 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
         .map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
 }
 
+/// Convert a YAML string into a `ciborium::Value`.
+///
+/// Flow: YAML → `serde_json::Value` (via serde_yaml) → `ciborium::Value`.
+/// Handles scalars, sequences, and mappings — unlike [`yaml_to_dag_cbor`]
+/// this accepts any valid YAML, not only objects/maps.
+///
+/// Used when saving inline CRUD values (e.g. config sequences like
+/// `owners`) that should be sent directly via `send_crud_set` rather
+/// than going through the IPFS publish flow.
+pub fn yaml_to_cbor_value(yaml: &str) -> Result<ciborium::Value, String> {
+    let json_val: serde_json::Value =
+        serde_yaml::from_str(yaml).map_err(|e| tf("yaml-parse-error", &[("e", &e.to_string())]))?;
+    serde_json::from_value(json_val).map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))
+}
+
 /// Decode a CBOR byte slice and convert it to a YAML string.
 ///
 /// Flow: raw CBOR bytes → `ciborium::Value` → `serde_json::Value` (via

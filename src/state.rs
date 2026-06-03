@@ -99,6 +99,9 @@ pub struct AppState {
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
     entry_counter: RwSignal<u64>,
     pub lang: RwSignal<String>,
+    /// Pre-filled input text from URL params (`?chat=` / `?say=`).
+    /// Set at app startup, consumed once by InputBar after login.
+    pub prefill_input: RwSignal<Option<String>>,
 }
 
 impl AppState {
@@ -118,6 +121,7 @@ impl AppState {
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
+            prefill_input: RwSignal::new(None),
         }
     }
 

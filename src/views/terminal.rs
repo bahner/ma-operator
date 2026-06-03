@@ -283,6 +283,40 @@ pub fn Terminal() -> impl IntoView {
                         );
                         continue;
                     }
+                    // Unsolicited (non-reply) RPC: ego only handles :ping.
+                    // Auto-pong fires for :ping, then ALL unsolicited RPC is
+                    // silently dropped — ego has no RPC server for anything else,
+                    // and we do not want to display loopback or unknown verbs.
+                    if incoming.reply_to.is_none()
+                        && incoming.message_type == ma_core::MESSAGE_TYPE_RPC
+                    {
+                        if let Ok(ciborium::Value::Text(atom)) =
+                            ciborium::de::from_reader::<ciborium::Value, _>(
+                                &mut &incoming.content[..],
+                            )
+                        {
+                            if atom == ":ping" {
+                                let pong_target = incoming.from.clone();
+                                let pong_reply_to = incoming.message_id.clone();
+                                spawn_local(async move {
+                                    let _ = transport::send_rpc_pong(&pong_target, &pong_reply_to)
+                                        .await;
+                                });
+                            }
+                        }
+                        // Drop all unsolicited RPC — :ping handled above, everything
+                        // else (unknown verbs, loopback echoes) is silently ignored.
+                        continue;
+                    }
+                    // Suppress loopback: non-reply messages FROM our own DID are
+                    // echoes of what we just sent — already shown as `→ …` on the
+                    // outgoing side.  Drop silently.
+                    if incoming.reply_to.is_none() {
+                        let own_did = transport::get_sender_did().unwrap_or_default();
+                        if !own_did.is_empty() && incoming.from == own_did {
+                            continue;
+                        }
+                    }
                     let display = {
                         let cfg = config.get_untracked();
                         let (base, frag) = incoming
@@ -290,7 +324,18 @@ pub fn Terminal() -> impl IntoView {
                             .split_once('#')
                             .unwrap_or((&incoming.from, ""));
                         if let Some(alias) = cfg.reverse_alias(base) {
-                            let replacement = if frag.is_empty() {
+                            // Emote and chat: sender is displayed without @
+                            // brackets (e.g. `* 💃 fniser.`, `💃: hello`).
+                            // All other message types use the @alias convention.
+                            let bare = incoming.message_type == ma_core::MESSAGE_TYPE_EMOTE
+                                || incoming.message_type == ma_core::MESSAGE_TYPE_CHAT;
+                            let replacement = if bare {
+                                if frag.is_empty() {
+                                    alias.to_string()
+                                } else {
+                                    format!("{alias}#{frag}")
+                                }
+                            } else if frag.is_empty() {
                                 format!("@{alias}")
                             } else {
                                 format!("@{alias}#{frag}")
@@ -392,7 +437,7 @@ pub fn Terminal() -> impl IntoView {
                                         spawn_local(async move {
                                             match crate::transport::send_crud_set(
                                                 &kind_target,
-                                                ":kinds",
+                                                ".kinds",
                                                 ciborium::Value::Array(vec![
                                                     ciborium::Value::Text(protocol_id.clone()),
                                                     ciborium::Value::Text(cid),
@@ -452,111 +497,70 @@ pub fn Terminal() -> impl IntoView {
                                     continue;
                                 }
                                 // Decode the CBOR reply and open the editor.
-                                // ACL replies are a CBOR Text string ("/ipfs/<cid>" or "").
-                                // Entity replies are raw ciborium CBOR bytes of the struct.
+                                // Dispatch on content_type — no payload sniffing.
                                 let content_bytes = incoming.content.clone();
+                                let content_type = incoming.content_type.clone();
                                 let doc_path = format!("@{}{}", ctx.target, ctx.crud_path);
-                                let editor_mode = ctx.editor_mode.clone();
                                 let state3 = state2.clone();
                                 let resolved_cmd = ctx.cmd_id;
-                                match ciborium::de::from_reader::<ciborium::Value, _>(
-                                    &mut &content_bytes[..],
-                                ) {
-                                    Ok(ciborium::Value::Text(s))
-                                        if s.starts_with('b') && s.len() > 10 =>
-                                    {
-                                        // Bare CIDv1 — infer dag-cbor vs raw from codec prefix.
-                                        let is_dag_cbor = cid_is_dag_cbor(&s);
-                                        let cid = s.clone();
-                                        let url = format!(
-                                            "{}ipfs/{cid}",
-                                            crate::transport::connection::LOCAL_GATEWAY_URL
-                                        );
-                                        // Update editor_mode to record blob vs IPLD.
-                                        let editor_mode = match editor_mode {
-                                            EditorMode::CrudEdit {
-                                                target, crud_path, ..
-                                            } => EditorMode::CrudEdit {
-                                                target,
-                                                crud_path,
-                                                is_blob: Some(!is_dag_cbor),
-                                            },
-                                            other => other,
-                                        };
-                                        spawn_local(async move {
-                                            if is_dag_cbor {
-                                                match fetch_url_bytes(&url).await {
-                                                    Ok(bytes) => {
-                                                        match crate::messages::cbor_bytes_to_yaml(
-                                                            &bytes,
-                                                        ) {
-                                                            Ok(yaml) => {
-                                                                show_editor.set(Some(
-                                                                    EditorContext::new(
-                                                                        doc_path, yaml,
-                                                                    )
-                                                                    .with_language("yaml")
-                                                                    .with_mode(editor_mode)
-                                                                    .with_cmd_id(resolved_cmd),
-                                                                ));
-                                                            }
-                                                            Err(e) => {
-                                                                state3.resolve_command_by_id(
-                                                                    resolved_cmd,
-                                                                    CommandStatus::Error(e.clone()),
-                                                                );
-                                                                state3.push_error(tf(
-                                                                    "err-edit-decode-failed",
-                                                                    &[("e", &e)],
-                                                                ));
+                                // Build the editor mode, stamping in the content_type
+                                // so the save handler knows which path to take.
+                                let editor_mode = match ctx.editor_mode {
+                                    EditorMode::CrudEdit {
+                                        target, crud_path, ..
+                                    } => EditorMode::CrudEdit {
+                                        target,
+                                        crud_path,
+                                        content_type: content_type.clone(),
+                                    },
+                                    other => other,
+                                };
+                                match content_type.as_str() {
+                                    "application/x-ma-term+dag-cbor" => {
+                                        // CID text — fetch DAG-CBOR from IPFS and decode to YAML.
+                                        match ciborium::de::from_reader::<ciborium::Value, _>(
+                                            &mut &content_bytes[..],
+                                        ) {
+                                            Ok(ciborium::Value::Text(cid)) => {
+                                                let url = format!(
+                                                    "{}ipfs/{cid}",
+                                                    crate::transport::connection::LOCAL_GATEWAY_URL
+                                                );
+                                                spawn_local(async move {
+                                                    match fetch_url_bytes(&url).await {
+                                                        Ok(bytes) => {
+                                                            match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                                                                Ok(yaml) => {
+                                                                    show_editor.set(Some(
+                                                                        EditorContext::new(doc_path, yaml)
+                                                                            .with_language("yaml")
+                                                                            .with_mode(editor_mode)
+                                                                            .with_cmd_id(resolved_cmd),
+                                                                    ));
+                                                                }
+                                                                Err(e) => {
+                                                                    state3.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
+                                                                    state3.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
+                                                                }
                                                             }
                                                         }
+                                                        Err(e) => {
+                                                            state3.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
+                                                            state3.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
+                                                        }
                                                     }
-                                                    Err(e) => {
-                                                        state3.resolve_command_by_id(
-                                                            resolved_cmd,
-                                                            CommandStatus::Error(e.clone()),
-                                                        );
-                                                        state3.push_error(tf(
-                                                            "err-edit-fetch-failed",
-                                                            &[("e", &e)],
-                                                        ));
-                                                    }
-                                                }
-                                            } else {
-                                                match fetch_url_text(&url).await {
-                                                    Ok(text) => {
-                                                        show_editor.set(Some(
-                                                            EditorContext::new(doc_path, text)
-                                                                .with_language("plain")
-                                                                .with_mode(editor_mode)
-                                                                .with_cmd_id(resolved_cmd),
-                                                        ));
-                                                    }
-                                                    Err(e) => {
-                                                        state3.resolve_command_by_id(
-                                                            resolved_cmd,
-                                                            CommandStatus::Error(e.clone()),
-                                                        );
-                                                        state3.push_error(tf(
-                                                            "err-edit-fetch-failed",
-                                                            &[("e", &e)],
-                                                        ));
-                                                    }
-                                                }
+                                                });
                                             }
-                                        });
+                                            Ok(_) | Err(_) => {
+                                                state2.resolve_command_by_id(
+                                                    resolved_cmd,
+                                                    CommandStatus::Error(t("err-edit-cbor")),
+                                                );
+                                                state2.push_error(t("err-edit-cbor"));
+                                            }
+                                        }
                                     }
-                                    Ok(ciborium::Value::Text(s)) if s.is_empty() => {
-                                        // No existing content — open editor blank.
-                                        show_editor.set(Some(
-                                            EditorContext::new(doc_path, String::new())
-                                                .with_language("yaml")
-                                                .with_mode(editor_mode)
-                                                .with_cmd_id(ctx.cmd_id),
-                                        ));
-                                    }
-                                    Ok(_) => {
+                                    "application/x-ma-term+cbor" => {
                                         // Raw CBOR struct — decode to YAML for editing.
                                         match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
                                             Ok(yaml) => {
@@ -564,12 +568,12 @@ pub fn Terminal() -> impl IntoView {
                                                     EditorContext::new(doc_path, yaml)
                                                         .with_language("yaml")
                                                         .with_mode(editor_mode)
-                                                        .with_cmd_id(ctx.cmd_id),
+                                                        .with_cmd_id(resolved_cmd),
                                                 ));
                                             }
                                             Err(e) => {
                                                 state2.resolve_command_by_id(
-                                                    ctx.cmd_id,
+                                                    resolved_cmd,
                                                     CommandStatus::Error(e.clone()),
                                                 );
                                                 state2.push_error(tf(
@@ -579,15 +583,68 @@ pub fn Terminal() -> impl IntoView {
                                             }
                                         }
                                     }
-                                    Err(e) => {
-                                        state2.resolve_command_by_id(
-                                            ctx.cmd_id,
-                                            CommandStatus::Error(e.to_string()),
-                                        );
-                                        state2.push_error(tf(
-                                            "err-edit-cbor",
-                                            &[("e", &e.to_string())],
-                                        ));
+                                    "application/x-ma-term+yaml" => {
+                                        // Inline YAML string encoded as CBOR text.
+                                        match ciborium::de::from_reader::<ciborium::Value, _>(
+                                            &mut &content_bytes[..],
+                                        ) {
+                                            Ok(ciborium::Value::Text(yaml)) => {
+                                                show_editor.set(Some(
+                                                    EditorContext::new(doc_path, yaml)
+                                                        .with_language("yaml")
+                                                        .with_mode(editor_mode)
+                                                        .with_cmd_id(resolved_cmd),
+                                                ));
+                                            }
+                                            Ok(_) | Err(_) => {
+                                                // Fallback: try raw CBOR → YAML decode.
+                                                match crate::messages::cbor_bytes_to_yaml(
+                                                    &content_bytes,
+                                                ) {
+                                                    Ok(yaml) => {
+                                                        show_editor.set(Some(
+                                                            EditorContext::new(doc_path, yaml)
+                                                                .with_language("yaml")
+                                                                .with_mode(editor_mode)
+                                                                .with_cmd_id(resolved_cmd),
+                                                        ));
+                                                    }
+                                                    Err(e) => {
+                                                        state2.resolve_command_by_id(
+                                                            resolved_cmd,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                        state2.push_error(tf(
+                                                            "err-edit-decode-failed",
+                                                            &[("e", &e)],
+                                                        ));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    _ => {
+                                        // Unknown / legacy content-type — best-effort CBOR → YAML.
+                                        match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+                                            Ok(yaml) => {
+                                                show_editor.set(Some(
+                                                    EditorContext::new(doc_path, yaml)
+                                                        .with_language("yaml")
+                                                        .with_mode(editor_mode)
+                                                        .with_cmd_id(resolved_cmd),
+                                                ));
+                                            }
+                                            Err(e) => {
+                                                state2.resolve_command_by_id(
+                                                    resolved_cmd,
+                                                    CommandStatus::Error(e.clone()),
+                                                );
+                                                state2.push_error(tf(
+                                                    "err-edit-decode-failed",
+                                                    &[("e", &e)],
+                                                ));
+                                            }
+                                        }
                                     }
                                 }
                                 continue;
@@ -772,6 +829,7 @@ pub fn Terminal() -> impl IntoView {
                 focus_actor=state.focus_actor
                 history=state.history
                 eval_input=eval_input
+                prefill_input=state.prefill_input
             />
         </div>
     }
@@ -973,10 +1031,11 @@ fn eval(
                     Some("say") => transport::send_chat(&target, &body).await,
                     Some("emote") => transport::send_emote(&target, &body).await,
                     Some(v) => {
-                        // Fragment-addressed target → plugin RPC.
-                        // :ping on the bare runtime DID is the one RPC exception.
-                        // Everything else without a fragment goes to CRUD.
-                        if target.contains('#') || v == "ping" {
+                        // Fragment-addressed targets always use RPC.
+                        // Bare-atom verbs (no '.' in the verb string) are also RPC —
+                        // e.g. :ping, :pong, :anything. Path-based verbs containing
+                        // '.' (e.g. entities.foo:edit, config.i18n:) are CRUD.
+                        if target.contains('#') || !v.contains('.') {
                             transport::send_rpc(
                                 &target,
                                 v,
@@ -1007,7 +1066,7 @@ fn eval(
                                         // The runtime recognises Text-arg as a GET-by-ID request.
                                         let result = transport::send_crud_set(
                                             &target,
-                                            ":kinds",
+                                            ".kinds",
                                             ciborium::Value::Text(protocol_id.clone()),
                                         )
                                         .await;
@@ -1018,7 +1077,7 @@ fn eval(
                                                         msg_id,
                                                         EditOpenCtx {
                                                             target: target.clone(),
-                                                            crud_path: ":kinds".to_string(),
+                                                            crud_path: ".kinds".to_string(),
                                                             editor_mode: EditorMode::KindEdit {
                                                                 target: target.clone(),
                                                                 protocol_id: protocol_id.clone(),
@@ -1049,7 +1108,7 @@ fn eval(
                                         // DELETE: send CRUD SET :kinds with Array([Text(protocol_id)])
                                         match transport::send_crud_set(
                                             &target,
-                                            ":kinds",
+                                            ".kinds",
                                             ciborium::Value::Array(vec![ciborium::Value::Text(
                                                 protocol_id.clone(),
                                             )]),
@@ -1081,7 +1140,7 @@ fn eval(
                             // sent on the wire.  The handler sends a plain CRUD GET, then
                             // the poll loop opens the editor when the reply arrives.
                             if let Some(path_part) = v_inner.strip_suffix(":edit") {
-                                let crud_path = format!(":{path_part}");
+                                let crud_path = format!(".{path_part}");
                                 let editor_mode = match path_part {
                                     "acl" => EditorMode::RuntimeAclEdit {
                                         target: target.clone(),
@@ -1104,7 +1163,7 @@ fn eval(
                                     _ => EditorMode::CrudEdit {
                                         target: target.clone(),
                                         crud_path: crud_path.clone(),
-                                        is_blob: None,
+                                        content_type: String::new(),
                                     },
                                 };
                                 match transport::send_crud_get(&target, &crud_path).await {
@@ -1140,7 +1199,7 @@ fn eval(
                             // a plain CRUD GET then the poll loop fetches the
                             // returned CID and applies the content operation.
                             if let Some((base_verb, op_name)) = crate::cid_ops::find_op(v_inner) {
-                                let crud_path = format!(":{base_verb}");
+                                let crud_path = format!(".{base_verb}");
                                 let args: Vec<String> =
                                     body.split_whitespace().map(String::from).collect();
                                 match transport::send_crud_get(&target, &crud_path).await {
@@ -1757,12 +1816,6 @@ async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
     Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
 }
 
-/// Returns `true` if the bare CIDv1 string encodes DAG-CBOR (codec 0x71).
-/// Base32-lower CIDv1 DAG-CBOR CIDs start with `"bafyrei"`.
-fn cid_is_dag_cbor(cid: &str) -> bool {
-    cid.starts_with("bafyrei")
-}
-
 // ── CRUD routing ──────────────────────────────────────────────────────────
 
 enum CrudOp {
@@ -1781,11 +1834,11 @@ fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
 
     // :create <name> — set with name as body
     if v == "create" {
-        return CrudOp::Set(":create".to_string(), body.trim().to_string());
+        return CrudOp::Set(".create".to_string(), body.trim().to_string());
     }
     // verb ends with `:` — set or delete
     if let Some(path) = v.strip_suffix(':') {
-        let atom = format!(":{path}");
+        let atom = format!(".{path}");
         return if body.trim().is_empty() {
             CrudOp::Delete(atom)
         } else {
@@ -1793,7 +1846,7 @@ fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
         };
     }
     // everything else is a get
-    CrudOp::Get(format!(":{v}"))
+    CrudOp::Get(format!(".{v}"))
 }
 
 fn dispatch_help(subtopic: &str) -> Vec<String> {

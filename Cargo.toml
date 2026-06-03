@@ -6,6 +6,9 @@ rust-version = "1.95"
 description = "zion – MA Actor identity and messaging workstation"
 license = "MIT OR Apache-2.0"
 
+[patch.crates-io]
+ma-core = { path = "../rust-ma-core" }
+
 [profile.release]
 opt-level = "z"
 lto = true

@@ -85,17 +85,19 @@ pub enum EditorMode {
         target: String,
     },
     /// Edit an arbitrary CRUD path on a remote runtime: Publish + Cancel.
-    /// Content serialised to DAG-CBOR, uploaded to IPFS; CID registered via
-    /// CRUD set at `crud_path`.
+    /// Save behaviour is determined by `content_type`:
+    /// - `application/x-ma-term+dag-cbor` → serialise to DAG-CBOR, upload to
+    ///   IPFS, register CID via CRUD set at `crud_path`.
+    /// - anything else (`+cbor`, `+yaml`) → parse editor YAML, send inline
+    ///   via CRUD set at `crud_path`.
     CrudEdit {
         /// DID of the runtime.
         target: String,
-        /// Full CRUD path, e.g. `":alice.fil"` or `":config.foo"`.
+        /// Full CRUD path, e.g. `".entities.alice.fil"` or `".config.owners"`.
         crud_path: String,
-        /// Hint for which publish button to show.
-        /// `Some(true)` → blob (raw bytes), `Some(false)` → IPLD (DAG-CBOR),
-        /// `None` → unknown, show both.
-        is_blob: Option<bool>,
+        /// Content-type from the GET reply that opened this editor session.
+        /// Drives the save handler — no further conditions needed.
+        content_type: String,
     },
     /// Edit a kind definition: Publish + Cancel.
     /// Content serialised to DAG-CBOR, uploaded to IPFS; CID registered via
@@ -468,8 +470,11 @@ pub fn EditorModal(
         }
     };
 
-    // CrudEdit — convert YAML to DAG-CBOR, upload to IPFS, CRUD set at path.
-    let on_crud_publish = {
+    // CrudEdit — save handler; behaviour is driven entirely by `content_type`
+    // from the GET reply that opened this session:
+    //   application/x-ma-term+dag-cbor → IPFS publish flow
+    //   anything else (+cbor, +yaml)   → parse YAML → CBOR → inline CRUD set
+    let on_crud_save = {
         let show = show.clone();
         let state = state.clone();
         move |_| {
@@ -478,7 +483,9 @@ pub fn EditorModal(
                 return;
             };
             let EditorMode::CrudEdit {
-                target, crud_path, ..
+                target,
+                crud_path,
+                content_type,
             } = ctx.mode
             else {
                 return;
@@ -487,80 +494,80 @@ pub fn EditorModal(
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(b) => b,
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                match content_type.as_str() {
+                    "application/x-ma-term+dag-cbor" => {
+                        let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                            Ok(b) => b,
+                            Err(e) => {
+                                if let Some(cid) = cmd_id {
+                                    state2.resolve_command_by_id(
+                                        cid,
+                                        CommandStatus::Error(e.clone()),
+                                    );
+                                }
+                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                                return;
+                            }
+                        };
+                        match crate::transport::send_ipfs_store(
+                            &target,
+                            cbor_bytes,
+                            "application/vnd.ipld.dag-cbor",
+                        )
+                        .await
+                        {
+                            Ok(msg_id) => {
+                                if let Some(cid) = cmd_id {
+                                    state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                                }
+                                state2.pending_ipfs_crud.update(|m| {
+                                    m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
+                                });
+                            }
+                            Err(e) => {
+                                if let Some(cid) = cmd_id {
+                                    state2.resolve_command_by_id(
+                                        cid,
+                                        CommandStatus::Error(e.clone()),
+                                    );
+                                }
+                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                            }
                         }
-                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                        return;
                     }
-                };
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    cbor_bytes,
-                    "application/vnd.ipld.dag-cbor",
-                )
-                .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
+                    _ => {
+                        // +cbor, +yaml, or unknown — parse YAML and send inline.
+                        let cbor_val = match crate::messages::yaml_to_cbor_value(&text) {
+                            Ok(v) => v,
+                            Err(e) => {
+                                if let Some(cid) = cmd_id {
+                                    state2.resolve_command_by_id(
+                                        cid,
+                                        CommandStatus::Error(e.clone()),
+                                    );
+                                }
+                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                                return;
+                            }
+                        };
+                        match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
+                            Ok(set_msg_id) => {
+                                if let Some(original_cmd_id) = cmd_id {
+                                    state2.pending_crud_confirms.update(|m| {
+                                        m.insert(set_msg_id, original_cmd_id);
+                                    });
+                                }
+                            }
+                            Err(e) => {
+                                if let Some(cid) = cmd_id {
+                                    state2.resolve_command_by_id(
+                                        cid,
+                                        CommandStatus::Error(e.clone()),
+                                    );
+                                }
+                                state2.push_error(e);
+                            }
                         }
-                        state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
-                    }
-                }
-            });
-        }
-    };
-
-    // CrudEdit — upload raw text bytes as a blob (any content type), CRUD set at path.
-    let on_crud_publish_blob = {
-        let show = show.clone();
-        let state = state.clone();
-        let language = language.clone();
-        move |_| {
-            let text = js_editor_get_value(EDITOR_EL_ID);
-            let Some(ctx) = show.get_untracked() else {
-                return;
-            };
-            let EditorMode::CrudEdit {
-                target, crud_path, ..
-            } = ctx.mode
-            else {
-                return;
-            };
-            let lang = language.get_untracked();
-            let content_type = content_type_for(&lang).to_string();
-            let cmd_id = ctx.cmd_id;
-            show.set(None);
-            let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                match crate::transport::send_ipfs_store(&target, text.into_bytes(), &content_type)
-                    .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                        }
-                        state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
                     }
                 }
             });
@@ -666,10 +673,6 @@ pub fn EditorModal(
             Some(EditorMode::CrudEdit { .. })
         )
     };
-    // Both publish buttons are always visible in CrudEdit mode; the user
-    // chooses whether to publish as a raw blob or as IPLD DAG-CBOR.
-    let is_blob_publish = is_crud_edit;
-    let is_ipld_publish = is_crud_edit;
 
     view! {
         <Show when=move || show.get().is_some()>
@@ -775,18 +778,12 @@ pub fn EditorModal(
                         style=move || if is_runtime_acl_edit() { "" } else { "display:none" }
                         on:click=on_cancel.clone()
                     >{t("btn-cancel")}</button>
-                    // Publish (blob) — CrudEdit mode
+                    // Save — CrudEdit mode
                     <button
                         class="editor-btn btn-save"
-                        style=move || if is_blob_publish() { "" } else { "display:none" }
-                        on:click=on_crud_publish_blob.clone()
-                    >{t("btn-publish")}</button>
-                    // Publish IPLD — CrudEdit mode
-                    <button
-                        class="editor-btn btn-save"
-                        style=move || if is_ipld_publish() { "" } else { "display:none" }
-                        on:click=on_crud_publish.clone()
-                    >{t("btn-publish-ipld")}</button>
+                        style=move || if is_crud_edit() { "" } else { "display:none" }
+                        on:click=on_crud_save.clone()
+                    >{t("btn-save")}</button>
                     // Cancel — CrudEdit mode
                     <button
                         class="editor-btn btn-cancel"

@@ -78,6 +78,11 @@ pub fn is_connected() -> bool {
 
 // ── Session helpers ────────────────────────────────────────────────────────
 
+/// Return the current session's own DID, or `None` if not logged in.
+pub fn get_sender_did() -> Option<String> {
+    SESSION_SENDER_DID.with(|d| d.borrow().clone())
+}
+
 fn get_session() -> Result<(String, SigningKey), String> {
     let signing_key_bytes = SESSION_SIGNING_KEY
         .with(|k| *k.borrow())
@@ -333,6 +338,28 @@ pub async fn send_text_reply(
     Ok(msg_id)
 }
 
+/// Send a `:pong` reply to a peer that sent `:ping`.
+/// `reply_to_id` is the `Message.id` of the incoming `:ping`.
+pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session()?;
+    let mut pong = Vec::new();
+    ciborium::ser::into_writer(&ciborium::Value::Text(":pong".to_string()), &mut pong)
+        .map_err(|e| e.to_string())?;
+    let mut msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_RPC_REPLY,
+        CONTENT_TYPE_TERM,
+        &pong,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    msg.reply_to = Some(reply_to_id.to_string());
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
 /// Drain pending RPC-inbox messages (`:pong` replies etc.), same decoding as inbox.
 pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
     let now = (js_sys::Date::now() / 1000.0) as u64;
@@ -355,15 +382,15 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
     })
 }
 
-/// CRUD get — read a value at `path` (e.g. `:config.i18n`).
-/// Payload: CBOR `[":get", ":path"]`
+/// CRUD get — read a value at `path` (e.g. `.config.i18n`).
+/// Payload: CBOR `[":get", ".path"]`
 pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
-    let atom = if path.starts_with(':') {
+    let atom = if path.starts_with('.') {
         path.to_string()
     } else {
-        format!(":{path}")
+        format!(".{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![
         ciborium::Value::Text(":get".to_string()),
@@ -386,7 +413,7 @@ pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, Strin
 }
 
 /// CRUD set — write `value` at `path`.
-/// Payload: CBOR `[":path", value]`
+/// Payload: CBOR `[".path", value]`
 pub async fn send_crud_set(
     target_did: &str,
     path: &str,
@@ -394,10 +421,10 @@ pub async fn send_crud_set(
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
-    let atom = if path.starts_with(':') {
+    let atom = if path.starts_with('.') {
         path.to_string()
     } else {
-        format!(":{path}")
+        format!(".{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![ciborium::Value::Text(atom), value]);
     let mut body = Vec::new();
@@ -417,14 +444,14 @@ pub async fn send_crud_set(
 }
 
 /// CRUD delete — remove the subtree at `path`.
-/// Payload: CBOR `[":delete", ":path"]`
+/// Payload: CBOR `[":delete", ".path"]`
 pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session()?;
-    let atom = if path.starts_with(':') {
+    let atom = if path.starts_with('.') {
         path.to_string()
     } else {
-        format!(":{path}")
+        format!(".{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![
         ciborium::Value::Text(":delete".to_string()),
@@ -483,20 +510,21 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
 }
 
 fn decode_incoming(msg: Message) -> IncomingMessage {
+    use ma_core::MESSAGE_TYPE_CRUD;
     let (display, is_error) = match msg.message_type.as_str() {
-        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD_REPLY => {
+        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY => {
             let (term, err) = format_rpc_reply(&msg.payload());
-            (format!("\u{2190} [{}] {}", msg.from, term), err)
+            (format!("\u{2190} {} {}", msg.from, term), err)
         }
         MESSAGE_TYPE_CHAT => {
             let bytes = msg.payload();
             let body = String::from_utf8_lossy(&bytes);
-            (format!("\u{2190} [{}] {}", msg.from, body), false)
+            (format!("\u{2190} {} {}", msg.from, body), false)
         }
         MESSAGE_TYPE_EMOTE => {
             let bytes = msg.payload();
             let body = String::from_utf8_lossy(&bytes);
-            (format!("* [{}] {}", msg.from, body), false)
+            (format!("* {} {}", msg.from, body), false)
         }
         _ => {
             let bytes = msg.payload();

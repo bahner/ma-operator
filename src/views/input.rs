@@ -12,6 +12,7 @@ pub fn InputBar(
     focus_actor: RwSignal<Option<FocusMode>>,
     history: RwSignal<Vec<String>>,
     eval_input: RwSignal<Option<String>>,
+    prefill_input: RwSignal<Option<String>>,
 ) -> impl IntoView {
     let value = RwSignal::new(String::new());
     let hist_idx: RwSignal<Option<usize>> = RwSignal::new(None);
@@ -19,6 +20,14 @@ pub fn InputBar(
     let draft = RwSignal::new(String::new());
 
     let on_submit = std::rc::Rc::new(on_submit);
+
+    // Pre-fill input from URL params. Consumed once on first Some value.
+    Effect::new(move |_| {
+        if let Some(text) = prefill_input.get() {
+            prefill_input.set(None);
+            value.set(text);
+        }
+    });
 
     // Process programmatic eval input exactly like a multi-line paste.
     {
@@ -38,47 +47,53 @@ pub fn InputBar(
 
     let on_keydown = {
         let on_submit = on_submit.clone();
-        move |ev: web_sys::KeyboardEvent| match ev.key().as_str() {
-            "Enter" => {
-                let line = value.get_untracked();
-                hist_idx.set(None);
-                value.set(String::new());
-                on_submit(line);
-            }
-            "ArrowUp" => {
-                ev.prevent_default();
-                let hist = history.get_untracked();
-                if hist.is_empty() {
-                    return;
+        move |ev: web_sys::KeyboardEvent| {
+            let key = js_sys::Reflect::get(&ev, &wasm_bindgen::JsValue::from_str("key"))
+                .ok()
+                .and_then(|v| v.as_string())
+                .unwrap_or_default();
+            match key.as_str() {
+                "Enter" => {
+                    let line = value.get_untracked();
+                    hist_idx.set(None);
+                    value.set(String::new());
+                    on_submit(line);
                 }
-                let idx = match hist_idx.get_untracked() {
-                    None => {
-                        draft.set(value.get_untracked());
-                        hist.len() - 1
+                "ArrowUp" => {
+                    ev.prevent_default();
+                    let hist = history.get_untracked();
+                    if hist.is_empty() {
+                        return;
                     }
-                    Some(0) => 0,
-                    Some(i) => i - 1,
-                };
-                hist_idx.set(Some(idx));
-                value.set(hist[idx].clone());
-            }
-            "ArrowDown" => {
-                ev.prevent_default();
-                let hist = history.get_untracked();
-                match hist_idx.get_untracked() {
-                    None => {}
-                    Some(i) if i + 1 >= hist.len() => {
-                        hist_idx.set(None);
-                        value.set(draft.get_untracked());
-                    }
-                    Some(i) => {
-                        let next = i + 1;
-                        hist_idx.set(Some(next));
-                        value.set(hist[next].clone());
+                    let idx = match hist_idx.get_untracked() {
+                        None => {
+                            draft.set(value.get_untracked());
+                            hist.len() - 1
+                        }
+                        Some(0) => 0,
+                        Some(i) => i - 1,
+                    };
+                    hist_idx.set(Some(idx));
+                    value.set(hist[idx].clone());
+                }
+                "ArrowDown" => {
+                    ev.prevent_default();
+                    let hist = history.get_untracked();
+                    match hist_idx.get_untracked() {
+                        None => {}
+                        Some(i) if i + 1 >= hist.len() => {
+                            hist_idx.set(None);
+                            value.set(draft.get_untracked());
+                        }
+                        Some(i) => {
+                            let next = i + 1;
+                            hist_idx.set(Some(next));
+                            value.set(hist[next].clone());
+                        }
                     }
                 }
+                _ => {}
             }
-            _ => {}
         }
     };
 

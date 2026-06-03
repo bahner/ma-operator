@@ -8,7 +8,7 @@
     --colour-bg:          #0d0d0d;
     --colour-text:        #00ff41;
     --colour-dimmed:      #008f11;
-    --colour-pending:     #004d00;
+    --colour-pending:     #008f11;
     --colour-publishing:  #ff8c00;
     --colour-replied:     #00ff41;
     --colour-alias:       #ffd700;
@@ -325,6 +325,14 @@ html, body {
 .line-output { color: var(--colour-text); }
 .line-input  { color: var(--colour-dimmed); }
 .line-pending    { color: var(--colour-pending); }
+.line-pending::after {
+    content: " …";
+    animation: pending-pulse 1.2s ease-in-out infinite;
+}
+@keyframes pending-pulse {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+}
 .line-publishing { color: var(--colour-publishing); }
 .line-dimmed     { color: var(--colour-dimmed); }
 .line-replied    { color: var(--colour-replied); }
@@ -596,3 +604,16 @@ html, body {
 }
 .editor-cm-host .cm-activeLineGutter,
 .editor-cm-host .cm-activeLine { background: rgba(255,255,255,0.04); }
+.editor-cm-host .cm-cursor,
+.editor-cm-host .cm-dropCursor {
+    border-left: none !important;
+    background-color: var(--colour-cursor);
+    width: 1ch !important;
+    opacity: 0.7;
+    animation: editor-blink 1s step-end infinite;
+}
+@keyframes editor-blink {
+    0%   { opacity: 0.7; }
+    50%  { opacity: 0; }
+    100% { opacity: 0.7; }
+}
