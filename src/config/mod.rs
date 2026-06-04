@@ -69,13 +69,7 @@ impl EgoConfig {
     /// Read-only keys may not be written via `.key: value`. Currently only
     /// `.my.identity.did`, which is injected from the active session.
     pub fn is_read_only(key: &str) -> bool {
-        matches!(
-            key,
-            ".my.identity.did"
-                | ".my.profile.handle"
-                | ".my.profile.did"
-                | ".my.profile.created_at"
-        )
+        key == ".my.identity.did"
     }
 
     /// True if `key` is an exact leaf (a value is stored at that path).
@@ -183,6 +177,51 @@ impl EgoConfig {
 
     pub fn from_json(json: &str) -> Result<Self, String> {
         serde_json::from_str(json).map_err(|e| e.to_string())
+    }
+
+    // ── Profile serialization / merge ─────────────────────────────────────
+
+    /// Prefixes included when serialising the portable profile blob.
+    /// Explicitly excluded: .my.inbox.*, .my.identity.*, .my.ma.*,
+    /// .my.profile.* (derived/ephemeral), .my.acl (security-sensitive).
+    const PROFILE_PREFIXES: &'static [&'static str] = &[
+        ".my.aliases.",
+        ".my.doc.",
+        ".my.i18n",
+        ".config.",
+    ];
+
+    /// Serialize the portable profile subtrees to JSON bytes.
+    /// Only keys matching `PROFILE_PREFIXES` are included.
+    pub fn serialize_profile_subtrees(&self) -> Result<Vec<u8>, String> {
+        let selected: HashMap<&str, &str> = self
+            .tree
+            .iter()
+            .filter(|(k, _)| {
+                Self::PROFILE_PREFIXES
+                    .iter()
+                    .any(|prefix| k.as_str() == *prefix || k.starts_with(prefix))
+            })
+            .map(|(k, v)| (k.as_str(), v.as_str()))
+            .collect();
+        serde_json::to_vec(&selected).map_err(|e| e.to_string())
+    }
+
+    /// Merge a deserialized profile JSON object into this config.
+    /// Existing local keys are NOT overwritten — remote data only fills gaps.
+    /// This is safe to call on a populated config (new browser = empty config,
+    /// so all remote keys are accepted).
+    pub fn merge_profile(&mut self, json_bytes: &[u8]) -> Result<usize, String> {
+        let map: HashMap<String, String> =
+            serde_json::from_slice(json_bytes).map_err(|e| e.to_string())?;
+        let mut count = 0usize;
+        for (k, v) in map {
+            self.tree.entry(k).or_insert_with(|| {
+                count += 1;
+                v
+            });
+        }
+        Ok(count)
     }
 }
 

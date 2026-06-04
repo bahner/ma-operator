@@ -95,9 +95,14 @@ pub fn Terminal() -> impl IntoView {
                         if cfg.get(".my.identity.auto-publish").is_none() {
                             cfg.set(".my.identity.auto-publish", "true");
                         }
-                        cfg.set(".my.profile.handle", &username);
-                        cfg.set(".my.profile.did", &sender_did);
-                        cfg.set(".my.profile.created_at", &created_at);
+                        // Seed SESSION_AGENT_CID from stored profile CID if present.
+                        if let Some(cid) = cfg
+                            .get(&format!(".my.profile.{username}"))
+                            .map(|s| s.to_string())
+                        {
+                            crate::state::SESSION_AGENT_CID
+                                .with(|c| *c.borrow_mut() = Some(cid));
+                        }
                         // Prune inbox entries that expired since last session.
                         let now = js_sys::Date::now() / 1000.0;
                         let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
@@ -577,6 +582,87 @@ pub fn Terminal() -> impl IntoView {
                                         }
                                         state2
                                             .push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+                                    }
+                                }
+                                continue;
+                            }
+                            // Check if this is a pending profile-publish reply
+                            // (encrypted profile blob stored — CID arrives here).
+                            let pending_profile = state2
+                                .pending_profile_publish
+                                .get_untracked()
+                                .get(msg_id)
+                                .cloned();
+                            if let Some((ma_did, cmd_id_opt)) = pending_profile {
+                                state2.pending_profile_publish.update(|m| {
+                                    m.remove(msg_id);
+                                });
+                                if incoming.is_error {
+                                    if let Some(cid) = cmd_id_opt {
+                                        state2.resolve_command_by_id(
+                                            cid,
+                                            CommandStatus::Error(incoming.display.clone()),
+                                        );
+                                    }
+                                    state2.push_error(incoming.display.clone());
+                                    continue;
+                                }
+                                match crate::messages::extract_ok_text(&incoming.content) {
+                                    Ok(cid_str) => {
+                                        crate::state::SESSION_AGENT_CID
+                                            .with(|c| *c.borrow_mut() = Some(cid_str.clone()));
+                                        // Store CID under .my.profile.<username>
+                                        let own_username = state2
+                                            .session
+                                            .get_untracked()
+                                            .map(|s| s.username.clone())
+                                            .unwrap_or_default();
+                                        let cid_key =
+                                            format!(".my.profile.{own_username}");
+                                        config.update(|cfg| cfg.set(&cid_key, &cid_str));
+                                        if let Some(sess) = state2.session.get_untracked() {
+                                            let uname = sess.username.clone();
+                                            let cfg = config.get_untracked();
+                                            spawn_local(async move {
+                                                let _ = persist_config(&uname, &cfg).await;
+                                            });
+                                        }
+                                        // Now republish DID doc with updated ma.agent.
+                                        let state3 = state2.clone();
+                                        spawn_local(async move {
+                                            match transport::send_ipfs_publish(&ma_did).await {
+                                                Ok(msg_id2) => {
+                                                    if let Some(cid) = cmd_id_opt {
+                                                        state3.bind_message_id(cid, msg_id2);
+                                                    }
+                                                    state3.push_system(t("profile-publish-done"));
+                                                }
+                                                Err(e) => {
+                                                    if let Some(cid) = cmd_id_opt {
+                                                        state3.resolve_command_by_id(
+                                                            cid,
+                                                            CommandStatus::Error(e.clone()),
+                                                        );
+                                                    }
+                                                    state3.push_error(tf(
+                                                        "profile-publish-failed",
+                                                        &[("e", &e)],
+                                                    ));
+                                                }
+                                            }
+                                        });
+                                    }
+                                    Err(e) => {
+                                        if let Some(cid) = cmd_id_opt {
+                                            state2.resolve_command_by_id(
+                                                cid,
+                                                CommandStatus::Error(e.clone()),
+                                            );
+                                        }
+                                        state2.push_error(tf(
+                                            "err-ipfs-reply-decode",
+                                            &[("e", &e)],
+                                        ));
                                     }
                                 }
                                 continue;
@@ -1460,6 +1546,59 @@ fn eval_dot(
     // ── Generic CRUD on the dot tree ─────────────────────────────────────
     match op {
         DotOp::Set(value) => {
+            // ── .my.profile.<name>: <cid> — fetch+decrypt+merge from CID ──
+            if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+                if profile_name.contains('.') {
+                    state.push_error(t("profile-wrong-user"));
+                    return;
+                }
+                if profile_name != username.as_str() {
+                    state.push_error(tf("profile-wrong-user-name", &[("name", profile_name)]));
+                    return;
+                }
+                let cid = value.clone();
+                let path_owned = path.to_string();
+                let uname = username.clone();
+                let state2 = state.clone();
+                spawn_local(async move {
+                    let url = format!(
+                        "{}ipfs/{cid}",
+                        crate::transport::connection::LOCAL_GATEWAY_URL
+                    );
+                    let cbor_bytes = match fetch_url_bytes(&url).await {
+                        Ok(b) => b,
+                        Err(e) => {
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                    };
+                    let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
+                        Ok(b) => b,
+                        Err(e) => {
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                    };
+                    crate::state::SESSION_AGENT_CID
+                        .with(|c| *c.borrow_mut() = Some(cid.clone()));
+                    config.update(|c| c.set(&path_owned, &cid));
+                    let n = match config.try_update(|cfg| cfg.merge_profile(&json_bytes)) {
+                        Some(Ok(n)) => n,
+                        Some(Err(e)) => {
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                        None => 0,
+                    };
+                    let cfg = config.get_untracked();
+                    if let Err(e) = persist_config(&uname, &cfg).await {
+                        state2.push_error(e);
+                    } else {
+                        state2.push_system(tf("profile-update-done", &[("n", &n.to_string())]));
+                    }
+                });
+                return;
+            }
             if EgoConfig::is_read_only(path) {
                 state.push_error(tf("msg-read-only", &[("path", path)]));
                 return;
@@ -1516,8 +1655,9 @@ fn eval_dot(
                 return;
             }
 
-            // ── .my.profiles.<name>: — delete a named profile ────────────
-            if let Some(target_name) = path.strip_prefix(".my.profiles.") {
+            // ── .my.profile.<name>: — delete a named profile ─────────────
+            // Works for any profile name; disconnects if deleting self.
+            if let Some(target_name) = path.strip_prefix(".my.profile.") {
                 if target_name.is_empty() || target_name.contains('.') {
                     state.push_error(tf("profiles-not-found", &[("name", target_name)]));
                     return;
@@ -1564,33 +1704,9 @@ fn eval_dot(
                 return;
             }
 
-            // ── .my.profile: — delete current (logged-in) profile ─────────
+            // ── .my.profile: — ambiguous bare delete, require explicit name ─
             if path == ".my.profile" {
-                if username.is_empty() {
-                    state.push_error(t("profile-delete-no-session"));
-                    return;
-                }
-                let uname = username.clone();
-                let state2 = state.clone();
-                spawn_local(async move {
-                    use crate::identity::{delete_config, delete_history, delete_identity};
-                    let mut errors: Vec<String> = Vec::new();
-                    if let Err(e) = delete_identity(&uname).await {
-                        errors.push(e);
-                    }
-                    if let Err(e) = delete_config(&uname).await {
-                        errors.push(e);
-                    }
-                    if let Err(e) = delete_history(&uname).await {
-                        errors.push(e);
-                    }
-                    if errors.is_empty() {
-                        crate::transport::disconnect();
-                        state2.session.set(None);
-                    } else {
-                        state2.push_error(tf("profile-delete-error", &[("e", &errors.join("; "))]));
-                    }
-                });
+                state.push_error(t("profile-delete-needs-name"));
                 return;
             }
 
@@ -1616,39 +1732,63 @@ fn eval_dot(
         }
 
         DotOp::Get => {
-            // ── .my.profiles[.<name>] — virtual: reads IndexedDB ─────────
-            if path == ".my.profiles" || path.starts_with(".my.profiles.") {
+            // ── .my.profile — virtual: list all IndexedDB profiles ────────
+            // Each entry shows its stored CID if one has been published.
+            if path == ".my.profile" {
                 let state2 = state.clone();
-                let path_owned = path.to_string();
+                let cfg = config.get_untracked();
                 spawn_local(async move {
-                    use crate::identity::storage::{list_usernames, load_identity};
-                    if path_owned == ".my.profiles" {
-                        match list_usernames().await {
-                            Err(e) => state2.push_error(e),
-                            Ok(names) => {
-                                state2.push_output(format!("{path_owned}:"));
-                                if names.is_empty() {
-                                    state2.push_output(format!("  {}", t("profiles-empty")));
-                                } else {
-                                    for name in &names {
+                    use crate::identity::storage::list_usernames;
+                    match list_usernames().await {
+                        Err(e) => state2.push_error(e),
+                        Ok(names) => {
+                            state2.push_output(".my.profile:".to_string());
+                            if names.is_empty() {
+                                state2.push_output(format!("  {}", t("profiles-empty")));
+                            } else {
+                                for name in &names {
+                                    let cid_key = format!(".my.profile.{name}");
+                                    if let Some(cid) = cfg.get(&cid_key) {
+                                        state2.push_output(format!("  {name}  {cid}"));
+                                    } else {
                                         state2.push_output(format!("  {name}"));
                                     }
                                 }
                             }
                         }
-                    } else {
-                        let profile_name = &path_owned[".my.profiles.".len()..];
-                        match load_identity(profile_name).await {
-                            Ok(Some(_)) => {
-                                state2.push_output(format!("{path_owned}: {profile_name}"))
-                            }
-                            Ok(None) => state2
-                                .push_error(tf("profiles-not-found", &[("name", profile_name)])),
-                            Err(e) => state2.push_error(e),
-                        }
                     }
                 });
                 return;
+            }
+            // ── .my.profile.<name> — show CID if stored ───────────────────
+            if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+                if !profile_name.is_empty() && !profile_name.contains('.') {
+                    let state2 = state.clone();
+                    let cfg = config.get_untracked();
+                    let profile_name = profile_name.to_string();
+                    let path_owned = path.to_string();
+                    spawn_local(async move {
+                        use crate::identity::storage::list_usernames;
+                        match list_usernames().await {
+                            Err(e) => state2.push_error(e),
+                            Ok(names) => {
+                                if !names.iter().any(|n| n == &profile_name) {
+                                    state2.push_error(tf(
+                                        "profiles-not-found",
+                                        &[("name", &profile_name)],
+                                    ));
+                                    return;
+                                }
+                                if let Some(cid) = cfg.get(&path_owned) {
+                                    state2.push_output(format!("{path_owned}: {cid}"));
+                                } else {
+                                    state2.push_output(format!("{path_owned}: (no CID — use :{name}:publish)", name = profile_name));
+                                }
+                            }
+                        }
+                    });
+                    return;
+                }
             }
 
             let cfg = config.get_untracked();

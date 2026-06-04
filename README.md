@@ -42,7 +42,7 @@ cd ma-agent
 make dev          # opens on http://localhost:8088
 ```
 
-Or just open [https://間.bahner.com/](https://間.bahner.com/) — a live build is hosted there.
+Or just open [https://zion.bahner.com/](https://zion.bahner.com/) — a live build is hosted there.
 You can also open the latest IPFS build directly in a compatible browser (Brave works out of the box).
 
 ---

@@ -4,6 +4,7 @@
 /// dispatched here. Each entry is `(path, verb)` and maps to an async
 /// handler. Unknown `(path, verb)` pairs are an error.
 use leptos::prelude::*;
+use ma_core::{DidDocumentResolver, Ipld};
 use wasm_bindgen::JsCast;
 
 use crate::config::EgoConfig;
@@ -13,6 +14,17 @@ use crate::identity::load_identity;
 use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
+
+/// Extract the `ma.agent` CID string from a resolved `Document`, if present.
+fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
+    match &doc.ma {
+        Some(Ipld::Map(map)) => match map.get("agent") {
+            Some(Ipld::String(s)) => Some(s.clone()),
+            _ => None,
+        },
+        _ => None,
+    }
+}
 
 /// Default base URL for the local `ma` daemon.
 /// Override per-profile with `.my.ma.url: http://host:port`.
@@ -455,6 +467,181 @@ pub fn dispatch_verb(
         return Ok(());
     }
 
+    // ── .my.profile.<name>:<verb> ─────────────────────────────────────────
+    if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+        if profile_name.is_empty() || profile_name.contains('.') {
+            return Err(t("profile-wrong-user"));
+        }
+        let own_username = state
+            .session
+            .get_untracked()
+            .map(|s| s.username.clone())
+            .unwrap_or_default();
+        if profile_name != own_username.as_str() {
+            return Err(tf("profile-wrong-user-name", &[("name", profile_name)]));
+        }
+        let publisher = config
+            .get_untracked()
+            .get(".my.ma.did")
+            .map(|s| s.to_string())
+            .ok_or_else(|| t("profile-no-ma"))?;
+        let path_owned = path.to_string();
+        let profile_name = profile_name.to_string();
+        match verb {
+            "publish" => {
+                let cfg = config.get_untracked();
+                let cmd_id = state.push_command(format!("{path_owned}:publish"));
+                let state2 = state.clone();
+                leptos::task::spawn_local(async move {
+                    match cfg.serialize_profile_subtrees() {
+                        Err(e) => {
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(e.clone()),
+                            );
+                            state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
+                        }
+                        Ok(profile_bytes) => {
+                            match crate::transport::send_profile_store(
+                                &publisher,
+                                profile_bytes,
+                            )
+                            .await
+                            {
+                                Ok(msg_id) => {
+                                    state2.pending_profile_publish.update(|m| {
+                                        m.insert(msg_id, (publisher, Some(cmd_id)));
+                                    });
+                                    state2.push_system(t("profile-publish-sent"));
+                                }
+                                Err(e) => {
+                                    state2.resolve_command_by_id(
+                                        cmd_id,
+                                        CommandStatus::Error(e.clone()),
+                                    );
+                                    state2.push_error(tf(
+                                        "profile-publish-failed",
+                                        &[("e", &e)],
+                                    ));
+                                }
+                            }
+                        }
+                    }
+                });
+                return Ok(());
+            }
+            // :fetch — read CID from DID document and store it locally.
+            // Does NOT decrypt or merge profile data.
+            "fetch" => {
+                let cmd_id = state.push_command(format!("{path_owned}:fetch"));
+                let state2 = state.clone();
+                let username2 = own_username.clone();
+                let own_did = crate::state::SESSION_SENDER_DID
+                    .with(|d| d.borrow().clone())
+                    .ok_or_else(|| t("msg-not-logged-in"))?;
+                leptos::task::spawn_local(async move {
+                    // Step 1: resolve DID doc to get the agent CID.
+                    let resolver_opt =
+                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
+                    let resolver = match resolver_opt {
+                        Some(r) => r,
+                        None => {
+                            let e = t("msg-not-logged-in");
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                            state2.push_error(e);
+                            return;
+                        }
+                    };
+                    let cid = match resolver.resolve(&own_did).await {
+                        Err(e) => {
+                            let msg = format!("{e}");
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(msg.clone()),
+                            );
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &msg)]));
+                            return;
+                        }
+                        Ok(doc) => match doc_agent_cid(&doc) {
+                            None => {
+                                state2.resolve_command_by_id(
+                                    cmd_id,
+                                    CommandStatus::Error(t("profile-no-cid-in-doc")),
+                                );
+                                state2.push_error(t("profile-no-cid-in-doc"));
+                                return;
+                            }
+                            Some(c) => c,
+                        },
+                    };
+                    // Step 2: download encrypted blob from IPFS gateway.
+                    let url = format!(
+                        "{}ipfs/{cid}",
+                        crate::transport::connection::LOCAL_GATEWAY_URL
+                    );
+                    let cbor_bytes = match fetch_url_bytes(&url).await {
+                        Ok(b) => b,
+                        Err(e) => {
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(e.clone()),
+                            );
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                    };
+                    // Step 3: decrypt and merge into config.
+                    let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
+                        Ok(b) => b,
+                        Err(e) => {
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(e.clone()),
+                            );
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                    };
+                    crate::state::SESSION_AGENT_CID
+                        .with(|c| *c.borrow_mut() = Some(cid.clone()));
+                    config.update(|cfg| cfg.set(&path_owned, &cid));
+                    match config.try_update(|cfg| cfg.merge_profile(&json_bytes)) {
+                        Some(Ok(n)) => {
+                            let cfg2 = config.get_untracked();
+                            let state3 = state2.clone();
+                            let username3 = username2.clone();
+                            leptos::task::spawn_local(async move {
+                                if let Err(e) =
+                                    crate::config::persist_config(&username3, &cfg2).await
+                                {
+                                    state3.push_error(e);
+                                }
+                            });
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Replied(cid.clone()),
+                            );
+                            state2.push_system(tf(
+                                "profile-fetch-done",
+                                &[("n", &n.to_string())],
+                            ));
+                        }
+                        Some(Err(e)) => {
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(e.clone()),
+                            );
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                        }
+                        None => {}
+                    }
+                });
+                return Ok(());
+            }
+            other => return Err(tf("err-unknown-verb", &[("verb", other)])),
+        }
+    }
+
     // ── .my.doc.<name>:<verb> ──────────────────────────────────────────────
     if let Some(doc_name) = path.strip_prefix(".my.doc.") {
         if doc_name.is_empty() {
@@ -788,6 +975,26 @@ fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
             "inspect runtime logs for detailed cause and retry",
         )
     }
+}
+
+/// Fetch raw bytes from any URL.
+async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
+    let window = web_sys::window().ok_or("no window")?;
+    let promise = window.fetch_with_str(url);
+    let resp_val = JsFuture::from(promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    if !resp.ok() {
+        return Err(format!("HTTP {}", resp.status()));
+    }
+    let buf_promise = resp.array_buffer().map_err(|e| format!("{e:?}"))?;
+    let buf_val = JsFuture::from(buf_promise)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
 }
 
 /// Fetch raw text from any URL.

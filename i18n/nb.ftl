@@ -240,6 +240,17 @@ status-publishing = publiserer
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ingen aktiv økt — profilen kan ikke slettes
 profile-delete-error = sletting av profil mislyktes: { $e }
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.my.ma:discover' first
+profile-no-cid = no CID stored for this profile — run ':publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
+profile-publish-done = profile published — DID document updated with ma.agent CID
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys merged from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
+msg-identity-exists = identity already published — profile CID loaded from local storage
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
