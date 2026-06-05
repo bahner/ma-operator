@@ -11,6 +11,7 @@ label-confirm-passphrase = wachtzin bevestigen
 btn-login = aanmelden
 btn-export = exporteren
 btn-generate = genereren
+btn-new-endpoint = nieuw eindpunt
 passphrase-warning = Verloren wachtzin = verloren identiteit. Herstel is niet mogelijk.
 import-help = Kies een geëxporteerd .zion.json-bestand. Het pakket blijft versleuteld.
 status-unlocking = ontgrendelen...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -301,3 +302,5 @@ help-publish-intro = Publiceren maakt je identiteit vindbaar op het netwerk. And
 help-publish-ma = Om te publiceren heb je ma (lokale runtime) nodig. Het koppelt ego aan IPFS/IPNS namens jou.
 help-publish-steps = Stappen: voer '.my.ma:discover' uit om je lokale ma te detecteren, dan '.my.identity:publish @ma'.
 help-publish-without = Zonder publiceren kunnen anderen je niet bereiken — zelfs als ze je DID kennen, kunnen ze je endpoint niet oplossen.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

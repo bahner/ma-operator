@@ -11,6 +11,7 @@ label-confirm-passphrase = konfirmi pasfrazon
 btn-login = ensaluti
 btn-export = elporti
 btn-generate = generi
+btn-new-endpoint = nova finpunkto
 passphrase-warning = Perdita pasfrazo = perdita identeco. Ne ekzistas reakiro.
 import-help = Elektu eksportitan .zion.json dosieron. La pakaĵo restas ĉifrita.
 status-unlocking = malŝlosante...
@@ -234,7 +235,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -294,3 +295,5 @@ help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj p
 help-publish-ma = Por publikigi, vi bezonas instalitan ma (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.
 help-publish-steps = Paŝoj: rulu '.my.ma:discover' por detekti lokan ma, poste '.my.identity:publish @ma'.
 help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

@@ -11,6 +11,7 @@ label-confirm-passphrase = கடவுச்சொற்றொடரை உற�
 btn-login = உள்நுழையவும்
 btn-export = ஏற்றுமதி
 btn-generate = உருவாக்கவும்
+btn-new-endpoint = புதிய இறுதிப்புள்ளி
 passphrase-warning = கடவுச்சொற்றொடர் தொலைந்தால் அடையாளம் தொலையும். மீட்பு இல்லை.
 import-help = ஏற்றுமதி செய்யப்பட்ட .zion.json கோப்பைத் தேர்ந்தெடுக்கவும். தொகுப்பு மறைகுறியாக்கப்பட்டு இருக்கும்.
 status-unlocking = திறக்கப்படுகிறது...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = வெளியீடு உங்கள் அடையா
 help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
 help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.my.ma:discover' இயக்கவும், பின்னர் '.my.identity:publish @ma'.
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

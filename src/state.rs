@@ -61,6 +61,40 @@ pub struct EditOpenCtx {
     pub cmd_id: u64,
 }
 
+// ── Pending IPFS-store / CRUD contexts ────────────────────────────────────
+
+/// Context for an in-flight IPFS store request that should trigger a CRUD SET
+/// on completion (the returned CID becomes the SET value).
+#[derive(Clone, Debug)]
+pub struct IpfsCrudPending {
+    /// DID of the remote runtime to send the CRUD SET to.
+    pub target_did: String,
+    /// CRUD path for the SET, e.g. `":acl"` or `":entities.ping"`.
+    pub crud_path: String,
+    /// `CommandRecord.id` of the originating command entry, if any.
+    pub cmd_id: Option<u64>,
+}
+
+/// Context for an in-flight IPFS store request that registers a new kind.
+#[derive(Clone, Debug)]
+pub struct IpfsKindUpsertPending {
+    /// DID of the remote runtime that will receive the `:kinds` SET.
+    pub target_did: String,
+    /// Protocol ID string, e.g. `"/ma/my-kind/0.0.1"`.
+    pub protocol_id: String,
+    /// `CommandRecord.id` of the originating command entry, if any.
+    pub cmd_id: Option<u64>,
+}
+
+/// Context for an in-flight IPFS store request that publishes a profile blob.
+#[derive(Clone, Debug)]
+pub struct ProfilePublishPending {
+    /// DID of the publisher runtime that will receive the DID document.
+    pub publisher_did: String,
+    /// `CommandRecord.id` of the originating command entry, if any.
+    pub cmd_id: Option<u64>,
+}
+
 // ── App state (reactive) ───────────────────────────────────────────────────
 
 #[derive(Clone)]
@@ -79,7 +113,7 @@ pub struct AppState {
     /// Value: `(crud_target_did, crud_path, ipfs_prefix, cmd_id)` where
     /// `ipfs_prefix` is `"/ipfs/"` for raw blobs or `"/ipld/"` for DAG-CBOR
     /// nodes, and `cmd_id` is the originating command entry id (if any).
-    pub pending_ipfs_crud: RwSignal<HashMap<String, (String, String, Option<u64>)>>,
+    pub pending_ipfs_crud: RwSignal<HashMap<String, IpfsCrudPending>>,
     /// Tracks in-flight CRUD SET requests that are the second leg of a
     /// publish flow.  Key: CRUD SET `Message.id`.  Value: the originating
     /// command entry id whose status should be updated on reply.
@@ -93,11 +127,11 @@ pub struct AppState {
     /// Tracks in-flight IPFS store requests for kind upserts.
     /// Key: ipfs_store `Message.id`.
     /// Value: `(crud_target_did, protocol_id, cmd_id)`.
-    pub pending_ipfs_kind_upserts: RwSignal<HashMap<String, (String, String, Option<u64>)>>,
+    pub pending_ipfs_kind_upserts: RwSignal<HashMap<String, IpfsKindUpsertPending>>,
     /// Tracks in-flight IPFS store requests for profile encryption.
     /// Key: ipfs_store `Message.id`.
     /// Value: `(publisher_did, cmd_id_opt)`.
-    pub pending_profile_publish: RwSignal<HashMap<String, (String, Option<u64>)>>,
+    pub pending_profile_publish: RwSignal<HashMap<String, ProfilePublishPending>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -342,24 +376,24 @@ pub struct StoredIdentity {
 thread_local! {
     pub static ENDPOINT: RefCell<Option<Rc<dyn ma_core::MaEndpoint>>> =
         RefCell::new(None);
-    pub static SESSION_IROH_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
-    pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
-    pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
-    pub static SESSION_RPC_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
-    pub static SESSION_CRUD_INBOX: RefCell<Option<Inbox<Message>>> = RefCell::new(None);
-    pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
-    pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = RefCell::new(None);
-    pub static SESSION_SENDER_DID: RefCell<Option<String>> = RefCell::new(None);
-    pub static SESSION_CREATED_AT: RefCell<Option<String>> = RefCell::new(None);
+    pub static SESSION_IROH_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
+    pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
+    pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
+    pub static SESSION_RPC_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
+    pub static SESSION_CRUD_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
+    pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
+    pub static SESSION_ENCRYPTION_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
+    pub static SESSION_SENDER_DID: RefCell<Option<String>> = const { RefCell::new(None) };
+    pub static SESSION_CREATED_AT: RefCell<Option<String>> = const { RefCell::new(None) };
     /// Language preference chain for this session, e.g. `"nb_NO:en_GB:en"`.
     /// Injected into the `ma["lang"]` field of the published DID document.
-    pub static SESSION_LANG: RefCell<Option<String>> = RefCell::new(None);
+    pub static SESSION_LANG: RefCell<Option<String>> = const { RefCell::new(None) };
     /// Shared DID resolver — created once at connect() so its cache is
     /// reused across all concurrent sends instead of each call fetching
     /// the same DID document from scratch.
-    pub static SESSION_RESOLVER: RefCell<Option<Rc<IpfsGatewayResolver>>> = RefCell::new(None);
+    pub static SESSION_RESOLVER: RefCell<Option<Rc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
     /// CID of the most recently stored encrypted profile blob.
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_ipfs_publish` to embed `ma.agent` in the DID document.
-    pub static SESSION_AGENT_CID: RefCell<Option<String>> = RefCell::new(None);
+    pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
 }

@@ -1,10 +1,10 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    EncryptionKey, Envelope, IpfsGatewayResolver, Ipld, MaExtension, Message, SecretBundle,
+    IpfsGatewayResolver, Ipld, Message, SecretBundle,
     SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID,
     MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST,
-    MESSAGE_TYPE_IPFS_STORE, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY,
+    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY,
     RPC_PROTOCOL_ID,
 };
 
@@ -269,7 +269,7 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
     // INBOX_PROTOCOL_ID and RPC_PROTOCOL_ID for reply delivery.
     let ma_ext = ENDPOINT
         .with(|e| e.borrow().as_ref().map(|ep| ep.ma_extension()))
-        .unwrap_or_else(MaExtension::new)
+        .unwrap_or_default()
         .kind("agent");
     // Inject language preference hint if set.
     let ma_ext = match SESSION_LANG.with(|l| l.borrow().clone()) {
@@ -324,103 +324,87 @@ pub async fn send_ipfs_store(
     Ok(msg_id)
 }
 
+/// Protocol string used as AAD context for profile blobs.
+const PROFILE_PROTOCOL: &str = "/ma/profile/0.0.1";
+
 /// Encrypt the portable profile subtrees for self, then send to IPFS for
 /// storage.  Returns the dispatched `Message.id`; the CID arrives later
 /// via an RPC reply keyed on that id.
 ///
-/// Encryption: `Message::enclose_for(&own_document)` — ephemeral X25519 ECDH
-/// + XChaCha20-Poly1305, addressed from and to the current identity.  The
-/// resulting `Envelope` is CBOR-serialised and stored as an opaque blob.
-/// Only the holder of the X25519 private key (`did_encryption_key`) can
-/// decrypt it.
+/// Format stored on IPFS: `nonce(24 bytes) || ciphertext+tag`
+/// Algorithm: XChaCha20-Poly1305, key = `did_encryption_key` (`#enc`).
+/// AAD: `["/ma/profile/0.0.1", "did:ma:...#enc"]`
+/// Plaintext: CBOR-serialised profile key/value map.
 pub async fn send_profile_store(
     publisher_did: &str,
     profile_bytes: Vec<u8>,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    use chacha20poly1305::{aead::Aead, aead::Payload, KeyInit, XChaCha20Poly1305, XNonce};
 
-    let ipns_key = SESSION_IPNS_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
     let enc_key_bytes = SESSION_ENCRYPTION_KEY
         .with(|k| *k.borrow())
         .ok_or_else(|| "not logged in".to_string())?;
-    let sign_key_bytes = SESSION_SIGNING_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let created_at = SESSION_CREATED_AT
-        .with(|c| c.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-
-    // Rebuild own document deterministically (same as in send_ipfs_publish).
-    let mut bundle = SecretBundle::generate();
-    bundle.iroh_secret_key = [0u8; 32];
-    bundle.ipns_secret_key = ipns_key;
-    bundle.did_signing_key = sign_key_bytes;
-    bundle.did_encryption_key = enc_key_bytes;
-    bundle.created_at = created_at;
-    let own_document = bundle
-        .build_document(MaExtension::new())
-        .map_err(|e| format!("build document failed: {e}"))?;
-
-    // Encrypt profile bytes as a message from self to self.
-    let plain_msg = Message::new(
-        &sender_did,
-        &sender_did,
-        MESSAGE_TYPE_IPFS_STORE,
-        "application/json",
-        &profile_bytes,
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let envelope = plain_msg
-        .enclose_for(&own_document)
-        .map_err(|e| e.to_string())?;
-    let cbor_bytes = envelope.encode().map_err(|e| e.to_string())?;
-
-    // Store the encrypted blob via IPFS.
-    send_ipfs_store(publisher_did, cbor_bytes, "application/cbor").await
-}
-
-/// Decrypt a profile blob fetched from IPFS.  Returns the raw JSON profile
-/// bytes on success.
-pub fn decrypt_profile(cbor_bytes: &[u8]) -> Result<Vec<u8>, String> {
-    let enc_key_bytes = SESSION_ENCRYPTION_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let sign_key_bytes = SESSION_SIGNING_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let created_at = SESSION_CREATED_AT
-        .with(|c| c.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let ipns_key = SESSION_IPNS_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-
-    // Rebuild own document to verify signature on the inner message.
-    let mut bundle = SecretBundle::generate();
-    bundle.iroh_secret_key = [0u8; 32];
-    bundle.ipns_secret_key = ipns_key;
-    bundle.did_signing_key = sign_key_bytes;
-    bundle.did_encryption_key = enc_key_bytes;
-    bundle.created_at = created_at;
-    let own_document = bundle
-        .build_document(MaExtension::new())
-        .map_err(|e| format!("build document failed: {e}"))?;
-
     let sender_did = SESSION_SENDER_DID
         .with(|d| d.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
-    let did = Did::try_from(sender_did.as_str()).map_err(|e| e.to_string())?;
-    let enc_key = EncryptionKey::from_private_key_bytes(did, enc_key_bytes)
-        .map_err(|e| e.to_string())?;
 
-    let envelope = Envelope::decode(cbor_bytes).map_err(|e| e.to_string())?;
-    let message = envelope
-        .open(&enc_key, &own_document)
-        .map_err(|e| e.to_string())?;
-    Ok(message.content.clone())
+    let aad = build_profile_aad(&sender_did)?;
+
+    let mut nonce_bytes = [0u8; 24];
+    getrandom::fill(&mut nonce_bytes).map_err(|e| e.to_string())?;
+    let nonce = XNonce::from(nonce_bytes);
+
+    let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
+        .map_err(|e| format!("cipher init failed: {e}"))?;
+    let ciphertext = cipher
+        .encrypt(&nonce, Payload { msg: &profile_bytes, aad: &aad })
+        .map_err(|e| format!("encryption failed: {e}"))?;
+
+    let mut blob = Vec::with_capacity(24 + ciphertext.len());
+    blob.extend_from_slice(&nonce_bytes);
+    blob.extend_from_slice(&ciphertext);
+
+    send_ipfs_store(publisher_did, blob, "application/octet-stream").await
+}
+
+/// Decrypt a profile blob fetched from IPFS.  Returns raw CBOR profile bytes.
+///
+/// Expected format: `nonce(24 bytes) || ciphertext+tag`
+pub fn decrypt_profile(blob: &[u8]) -> Result<Vec<u8>, String> {
+    use chacha20poly1305::{aead::Aead, aead::Payload, KeyInit, XChaCha20Poly1305, XNonce};
+
+    if blob.len() < 25 {
+        return Err(format!("profile blob too short ({} bytes)", blob.len()));
+    }
+    let enc_key_bytes = SESSION_ENCRYPTION_KEY
+        .with(|k| *k.borrow())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let sender_did = SESSION_SENDER_DID
+        .with(|d| d.borrow().clone())
+        .ok_or_else(|| "not logged in".to_string())?;
+
+    let aad = build_profile_aad(&sender_did)?;
+    let nonce = XNonce::from_slice(&blob[..24]);
+    let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
+        .map_err(|e| format!("cipher init failed: {e}"))?;
+    cipher
+        .decrypt(nonce, Payload { msg: &blob[24..], aad: &aad })
+        .map_err(|_| "profile decryption failed (wrong key or corrupted blob)".to_string())
+}
+
+/// Build the AAD for profile blobs: CBOR(["/ma/profile/0.0.1", "did:ma:...#enc"]).
+fn build_profile_aad(sender_did: &str) -> Result<Vec<u8>, String> {
+    let kid = format!("{sender_did}#enc");
+    let mut out = Vec::new();
+    ciborium::ser::into_writer(
+        &ciborium::Value::Array(vec![
+            ciborium::Value::Text(PROFILE_PROTOCOL.to_string()),
+            ciborium::Value::Text(kid),
+        ]),
+        &mut out,
+    )
+    .map_err(|e| format!("aad encode failed: {e}"))?;
+    Ok(out)
 }
 
 /// Send a plain-text reply to a message.

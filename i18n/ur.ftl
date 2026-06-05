@@ -11,6 +11,7 @@ label-confirm-passphrase = پاس فریز کی تصدیق کریں
 btn-login = لاگ ان کریں
 btn-export = برآمد
 btn-generate = بنائیں
+btn-new-endpoint = نئی اینڈپوائنٹ
 passphrase-warning = پاس فریز کھونے کا مطلب شناخت کھونا ہے۔ کوئی بحالی ممکن نہیں۔
 import-help = برآمد شدہ .zion.json فائل منتخب کریں۔ بنڈل خفیہ کاری شدہ رہتا ہے۔
 status-unlocking = کھولا جا رہا ہے...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = اشاعت آپ کی شناخت کو نیٹ ورک پر ق�
 help-publish-ma = شائع کرنے کے لیے آپ کو ma (مقامی رن ٹائم) نصب چاہیے۔ یہ آپ کی جانب سے ego کو IPFS/IPNS سے جوڑتا ہے۔
 help-publish-steps = اقدامات: مقامی ma دریافت کرنے کے لیے '.my.ma:discover' چلائیں، پھر '.my.identity:publish @ma'۔
 help-publish-without = اشاعت کے بغیر دوسرے آپ تک نہیں پہنچ سکتے — چاہے وہ آپ کا DID جانتے ہوں، وہ آپ کا endpoint حل نہیں کر سکتے۔
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

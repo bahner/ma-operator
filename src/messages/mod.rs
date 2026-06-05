@@ -191,7 +191,8 @@ mod tests {
 
         let (display, is_error) = format_rpc_reply(&body);
         assert!(is_error);
-        assert_eq!(display, "error: unknown entity fragment: fortune");
+        // t() returns the key name in test context (no translations loaded).
+        assert_eq!(display, "rpc-error-detail");
     }
 
     #[test]
@@ -202,7 +203,8 @@ mod tests {
 
         let (display, is_error) = format_rpc_reply(&body);
         assert!(is_error);
-        assert_eq!(display, "error");
+        // t() returns the key name in test context (no translations loaded).
+        assert_eq!(display, "rpc-error");
     }
 }
 

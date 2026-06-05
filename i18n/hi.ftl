@@ -11,6 +11,7 @@ label-confirm-passphrase = पासफ़्रेज़ की पुष्ट
 btn-login = लॉगिन करें
 btn-export = निर्यात
 btn-generate = बनाएं
+btn-new-endpoint = नया एंडपॉइंट
 passphrase-warning = पासफ़्रेज़ खो गया = पहचान खो गई। कोई पुनर्प्राप्ति नहीं है।
 import-help = निर्यात किया गया .zion.json फ़ाइल चुनें। बंडल एन्क्रिप्टेड रहता है।
 status-unlocking = अनलॉक हो रहा है...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = प्रकाशन आपकी पहचान को �
 help-publish-ma = प्रकाशित करने के लिए आपको ma (स्थानीय रनटाइम) स्थापित करना होगा। यह आपकी ओर से ego को IPFS/IPNS से जोड़ता है।
 help-publish-steps = चरण: स्थानीय ma खोजने के लिए '.my.ma:discover' चलाएं, फिर '.my.identity:publish @ma'।
 help-publish-without = प्रकाशन के बिना अन्य लोग आप तक नहीं पहुंच सकते — भले ही वे आपका DID जानते हों, वे आपका endpoint नहीं सुलझा सकते।
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

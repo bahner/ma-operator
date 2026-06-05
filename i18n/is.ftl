@@ -11,6 +11,7 @@ label-confirm-passphrase = staðfesta lykilsetningu
 btn-login = skrá inn
 btn-export = flytja út
 btn-generate = búa til
+btn-new-endpoint = nýr endapunktur
 passphrase-warning = Gleymd lykilsetning = glatað auðkenni. Engin endurheimting er möguleg.
 import-help = Veldu útflutta .zion.json-skrá. Pakkinn helst dulkóðaður.
 status-unlocking = opnar lás...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Birting gerir auðkenni þitt leitanlegt á netinu. Aðrir 
 help-publish-ma = Til að birta þarftu ma (staðbundið keyrsluumhverfi) uppsett. Það tengir ego við IPFS/IPNS fyrir þína hönd.
 help-publish-steps = Skref: keyrðu '.my.ma:discover' til að finna staðbundið ma, síðan '.my.identity:publish @ma'.
 help-publish-without = Án birtingar geta aðrir ekki náð í þig — jafnvel þótt þeir þekki DID þitt geta þeir ekki leyst upp endpoint þinn.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

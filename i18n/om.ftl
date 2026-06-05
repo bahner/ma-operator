@@ -11,6 +11,7 @@ label-confirm-passphrase = jecha icciitii mirkaneessi
 btn-login = seeni
 btn-export = baasi
 btn-generate = uumi
+btn-new-endpoint = dhibcaha haaraa
 passphrase-warning = Jecha icciitii dhabuu = eenyummaa dhabuu. Deebii hin jiru.
 import-help = Faayilii .zion.json baafame filadhu. Kuusaan icciitii ta'ee jira.
 status-unlocking = banamaa jira...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Maxxansuun eenyummaa kee networki irratti argamuu danda'u t
 help-publish-ma = Maxxansuuf, ma (runtime naannoo) fe'amuu qaba. Ego fi IPFS/IPNS si bakka buusee walitti hidha.
 help-publish-steps = Tartiiba: ma naannoo argachuuf '.my.ma:discover' oofaa, itti aansuun '.my.identity:publish @ma'.
 help-publish-without = Maxxansuu malee namooni biroon si dhaqqabuu hin danda'an — DID kee beekaniiyyuu endpoint kee furuuf dandeetii hin qaban.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

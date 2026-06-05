@@ -11,6 +11,7 @@ label-confirm-passphrase = 確認密碼短語
 btn-login = 登入
 btn-export = 匯出
 btn-generate = 產生
+btn-new-endpoint = 新端點
 passphrase-warning = 遺失密碼短語即遺失身分。無法復原。
 import-help = 選擇已匯出的 .zion.json 檔案。金鑰包保持加密狀態。
 status-unlocking = 解鎖中...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +309,5 @@ help-publish-intro = 發布使你的身份在網路上可被找到。其他人�
 help-publish-ma = 發布需要安裝 ma（本地執行環境）。它代表你將 ego 連接到 IPFS/IPNS。
 help-publish-steps = 步驟：執行 '.my.ma:discover' 偵測本地 ma，然後 '.my.identity:publish @ma'。
 help-publish-without = 未發布時，其他人無法聯繫你 — 即使知道你的 DID，也無法解析你的 endpoint。
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

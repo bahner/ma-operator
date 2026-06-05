@@ -11,6 +11,7 @@ label-confirm-passphrase = jelmondat megerősítése
 btn-login = bejelentkezés
 btn-export = exportálás
 btn-generate = generálás
+btn-new-endpoint = új végpont
 passphrase-warning = Elveszett jelmondat = elveszett identitás. Helyreállítás nem lehetséges.
 import-help = Válasszon egy exportált .zion.json fájlt. A csomag titkosítva marad.
 status-unlocking = feloldás folyamatban...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a
 help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
 help-publish-steps = Lépések: futtasd '.my.ma:discover' a helyi ma megtalálásához, majd '.my.identity:publish @ma'.
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

@@ -254,6 +254,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
     let entities: Rc<RefCell<Vec<Entity>>> = Rc::new(RefCell::new(entities_init));
     let frame: Rc<RefCell<f64>> = Rc::new(RefCell::new(0.0_f64));
 
+    #[allow(clippy::type_complexity)]
     let f: Rc<RefCell<Option<Closure<dyn FnMut()>>>> = Rc::new(RefCell::new(None));
     let f_clone = f.clone();
 

@@ -11,6 +11,7 @@ label-confirm-passphrase = confirmați fraza de acces
 btn-login = autentificare
 btn-export = exportare
 btn-generate = generare
+btn-new-endpoint = punct nou de acces
 passphrase-warning = Fraza de acces pierdută = identitate pierdută. Recuperarea nu este posibilă.
 import-help = Alegeți un fișier .zion.json exportat. Pachetul rămâne criptat.
 status-unlocking = deblocare...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alți
 help-publish-ma = Pentru a publica, ai nevoie de ma (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
 help-publish-steps = Pași: rulează '.my.ma:discover' pentru a detecta ma-ul local, apoi '.my.identity:publish @ma'.
 help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

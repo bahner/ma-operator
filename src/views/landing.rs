@@ -10,7 +10,7 @@ use crate::{
     i18n::{t, tf},
     identity::{
         create_identity, export_for_download, import_from_bytes, list_usernames, load_identity,
-        save_identity, unlock_identity,
+        rekey_iroh, save_identity, unlock_identity,
     },
     state::{AppState, SessionState},
 };
@@ -84,7 +84,6 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
 
     // Load usernames on mount
     {
-        let usernames = usernames.clone();
         spawn_local(async move {
             match list_usernames().await {
                 Ok(names) => {
@@ -173,6 +172,51 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
         });
     };
 
+    let session = state.session;
+    let on_new_endpoint = move |_: MouseEvent| {
+        let uname = selected.get_untracked();
+        let pass = password.get_untracked();
+        error.set(String::new());
+        status.set(t("status-unlocking"));
+        spawn_local(async move {
+            match load_identity(&uname).await {
+                Ok(Some(stored)) => match rekey_iroh(&stored.export_json, &pass) {
+                    Ok((new_json, id)) => match save_identity(&uname, &new_json).await {
+                        Ok(()) => {
+                            let _ = restore_config(&uname).await;
+                            status.set(String::new());
+                            session.set(Some(SessionState {
+                                username: uname,
+                                iroh_key: id.iroh_key,
+                                ipns_secret_key: id.ipns_secret_key,
+                                did_signing_key: id.did_signing_key,
+                                did_encryption_key: id.did_encryption_key,
+                                sender_did: id.sender_did,
+                                created_at: id.created_at,
+                            }));
+                        }
+                        Err(e) => {
+                            status.set(String::new());
+                            error.set(e);
+                        }
+                    },
+                    Err(e) => {
+                        status.set(String::new());
+                        error.set(tf("error-wrong-passphrase", &[("e", &e)]));
+                    }
+                },
+                Ok(None) => {
+                    status.set(String::new());
+                    error.set(tf("error-identity-not-found", &[("name", &uname)]));
+                }
+                Err(e) => {
+                    status.set(String::new());
+                    error.set(e);
+                }
+            }
+        });
+    };
+
     view! {
         <ul class="identity-list">
             <For
@@ -221,6 +265,7 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
         </div>
         <div class="btn-row">
             <button class="btn" on:click=on_login>{move || { let _ = lang.get(); t("btn-login") }}</button>
+            <button class="btn btn-sm" on:click=on_new_endpoint>{move || { let _ = lang.get(); t("btn-new-endpoint") }}</button>
             <button class="btn btn-sm" on:click=on_export>{move || { let _ = lang.get(); t("btn-export") }}</button>
         </div>
     }

@@ -11,6 +11,7 @@ label-confirm-passphrase = potvrdiť prístupovú frázu
 btn-login = prihlásiť
 btn-export = exportovať
 btn-generate = generovať
+btn-new-endpoint = nový koncový bod
 passphrase-warning = Stratená prístupová fráza = stratená identita. Obnova nie je možná.
 import-help = Vyberte exportovaný súbor .zion.json. Balíček zostane zašifrovaný.
 status-unlocking = odomykanie...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Zverejnenie sprístupní tvoju identitu v sieti. Ostatní m
 help-publish-ma = Na zverejnenie potrebuješ nainštalované ma (lokálny runtime). Prepája ego s IPFS/IPNS v tvojom mene.
 help-publish-steps = Kroky: spusti '.my.ma:discover' na zistenie lokálneho ma, potom '.my.identity:publish @ma'.
 help-publish-without = Bez zverejnenia ťa ostatní nemôžu kontaktovať — aj keď poznajú tvoj DID, nedokážu rozlíšiť tvoj endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

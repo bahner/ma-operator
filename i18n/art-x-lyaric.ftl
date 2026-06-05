@@ -13,6 +13,7 @@ label-confirm-passphrase = confirm pass phrase
 btn-login = enter
 btn-export = carry out
 btn-generate = manifest
+btn-new-endpoint = new overstanding
 passphrase-warning = Lose pass phrase = lose identity. There is no recovery in Babylon.
 import-help = Select an exported .zion.json file. Di bundle stay irie and encrypted.
 status-unlocking = opening...
@@ -236,7 +237,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -297,3 +298,5 @@ help-publish-intro = Publishing mek di ites findable pon di network. Odda ones c
 help-publish-ma = Fi publish, InI need ma (local runtime) install. It bridge ego to IPFS/IPNS pon di behalf.
 help-publish-steps = Steps: run '.my.ma:discover' fi find di local ma, den '.my.identity:publish @ma'.
 help-publish-without = Without publishing, odda ones cannot reach — even knowing di DID, dem cannot resolve di endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

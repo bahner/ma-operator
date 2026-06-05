@@ -11,6 +11,7 @@ label-confirm-passphrase = потвърдете паролата-фраза
 btn-login = вход
 btn-export = експортиране
 btn-generate = генериране
+btn-new-endpoint = нова крайна точка
 passphrase-warning = Изгубена парола-фраза = изгубена идентичност. Възстановяването не е възможно.
 import-help = Изберете експортиран .zion.json файл. Пакетът остава криптиран.
 status-unlocking = отключване...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Публикуването прави самоличнос�
 help-publish-ma = За публикуване е необходим инсталиран ma (локален runtime). Той свързва ego с IPFS/IPNS от твое име.
 help-publish-steps = Стъпки: изпълни '.my.ma:discover' за намиране на локалния ma, след което '.my.identity:publish @ma'.
 help-publish-without = Без публикуване другите не могат да те достигнат — дори да знаят твоя DID, не могат да разрешат твоя endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

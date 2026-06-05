@@ -13,6 +13,7 @@ label-confirm-passphrase = sikkina sekrit-lang
 btn-login = ingang
 btn-export = tekout
 btn-generate = mek
+btn-new-endpoint = nyu boneway
 passphrase-warning = Losh sekrit-lang = losh selfmang. Na du finyish wit nating.
 import-help = Saf .zion.json fayl. Fonosing im hol sekrit gut.
 status-unlocking = uddering...
@@ -250,7 +251,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -311,3 +312,5 @@ help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID iny
 help-publish-ma = Fo pashang, ma (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
 help-publish-steps = Stap: run '.my.ma:discover' fo find local ma, den '.my.identity:publish @ma'.
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

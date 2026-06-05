@@ -11,6 +11,7 @@ label-confirm-passphrase = tabbatar da kalmar sirri
 btn-login = shiga
 btn-export = fitar da
 btn-generate = samar
+btn-new-endpoint = sabon ƙarshe
 passphrase-warning = Rasa kalmar sirri = rasa asali. Babu dawo.
 import-help = Zaɓi fayil .zion.json da aka fitar. Kunshin yana ɓoye.
 status-unlocking = ana buɗewa...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanya
 help-publish-ma = Don wallafawa, kuna buƙatar ma (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.
 help-publish-steps = Matakan: gudanar da '.my.ma:discover' don gano ma na cikin gida, sannan '.my.identity:publish @ma'.
 help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

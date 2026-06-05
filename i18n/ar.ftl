@@ -11,6 +11,7 @@ label-confirm-passphrase = تأكيد عبارة المرور
 btn-login = تسجيل الدخول
 btn-export = تصدير
 btn-generate = إنشاء
+btn-new-endpoint = نقطة وصول جديدة
 passphrase-warning = فقدان عبارة المرور = فقدان الهوية. لا يوجد استرداد.
 import-help = اختر ملف .zion.json المُصدَّر. تبقى الحزمة مشفرة.
 status-unlocking = جارٍ إلغاء القفل...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +309,5 @@ help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف 
 help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
 help-publish-steps = الخطوات: شغّل '.my.ma:discover' للكشف عن ma المحلي، ثم '.my.identity:publish @ma'.
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

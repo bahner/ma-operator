@@ -11,6 +11,7 @@ label-confirm-passphrase = hamafiso ny teny miafina
 btn-login = miditra
 btn-export = mamoaka
 btn-generate = mamorona
+btn-new-endpoint = fanombohana vaovao
 passphrase-warning = Very ny teny miafina = very ny mombamomba. Tsy misy famerenana.
 import-help = Safidio ny rakitra .zion.json novoahina. Ny fonosana dia mitoetra voamboasakana.
 status-unlocking = mivoha...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'n
 help-publish-ma = Mba hamoahana, mila ny ma (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.
 help-publish-steps = Dingana: ampiasao '.my.ma:discover' hikaroana ny ma eo an-toerana, ary '.my.identity:publish @ma'.
 help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

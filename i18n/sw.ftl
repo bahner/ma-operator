@@ -11,6 +11,7 @@ label-confirm-passphrase = thibitisha neno la siri
 btn-login = ingia
 btn-export = hamisha
 btn-generate = tengeneza
+btn-new-endpoint = kituo kipya
 passphrase-warning = Neno la siri lililopotea = utambulisho uliopotea. Hakuna urejeshaji unaowezekana.
 import-help = Chagua faili ya .zion.json iliyohamishwa. Kifurushi kinabaki kimefichwa.
 status-unlocking = kufungua...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtanda
 help-publish-ma = Ili kuchapisha, unahitaji ma (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.
 help-publish-steps = Hatua: endesha '.my.ma:discover' kugundua ma ya ndani, kisha '.my.identity:publish @ma'.
 help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

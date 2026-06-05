@@ -104,3 +104,81 @@ pub fn did_to_alias<'a>(did: &str, cfg: &'a EgoConfig) -> Option<&'a str> {
     }
     None
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::config::EgoConfig;
+
+    fn cfg_with_alias(name: &str, did: &str) -> EgoConfig {
+        let mut cfg = EgoConfig::default();
+        cfg.set(format!(".my.aliases.{name}"), did);
+        cfg
+    }
+
+    // ── resolve_targets ───────────────────────────────────────────────────
+
+    #[test]
+    fn resolve_known_alias() {
+        let cfg = cfg_with_alias("alice", "did:ma:alice123");
+        let result = resolve_targets("@alice hello", &cfg).unwrap();
+        assert_eq!(result, "did:ma:alice123 hello");
+    }
+
+    #[test]
+    fn resolve_unknown_alias_fails() {
+        let cfg = EgoConfig::default();
+        let result = resolve_targets("@nobody hello", &cfg);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn escaped_at_becomes_literal() {
+        let cfg = EgoConfig::default();
+        let result = resolve_targets("\\@alice hello", &cfg).unwrap();
+        assert_eq!(result, "@alice hello");
+    }
+
+    #[test]
+    fn bare_did_passes_through() {
+        let cfg = EgoConfig::default();
+        let result = resolve_targets("@did:ma:abc123 hello", &cfg).unwrap();
+        assert_eq!(result, "@did:ma:abc123 hello");
+    }
+
+    #[test]
+    fn alias_with_fragment() {
+        let cfg = cfg_with_alias("alice", "did:ma:alice123");
+        let result = resolve_targets("@alice#sign", &cfg).unwrap();
+        assert_eq!(result, "did:ma:alice123#sign");
+    }
+
+    #[test]
+    fn no_at_sign_returns_input_unchanged() {
+        let cfg = EgoConfig::default();
+        let result = resolve_targets("just plain text", &cfg).unwrap();
+        assert_eq!(result, "just plain text");
+    }
+
+    #[test]
+    fn lone_at_sign_is_preserved() {
+        // A bare @ not followed by a token is kept as-is.
+        let cfg = EgoConfig::default();
+        let result = resolve_targets("@ alone", &cfg).unwrap();
+        assert_eq!(result, "@ alone");
+    }
+
+    // ── did_to_alias ──────────────────────────────────────────────────────
+
+    #[test]
+    fn did_to_alias_found() {
+        let cfg = cfg_with_alias("alice", "did:ma:alice123");
+        assert_eq!(did_to_alias("did:ma:alice123", &cfg), Some("alice"));
+    }
+
+    #[test]
+    fn did_to_alias_not_found() {
+        let cfg = EgoConfig::default();
+        assert_eq!(did_to_alias("did:ma:nobody", &cfg), None);
+    }
+}

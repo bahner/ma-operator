@@ -11,6 +11,7 @@ label-confirm-passphrase = konfomim pasfreis
 btn-login = lagin
 btn-export = ekspotim
 btn-generate = mekim
+btn-new-endpoint = nupela hap
 passphrase-warning = Lusim pasfreis = lusim identiti. I no gat wei bilong kisim bek.
 import-help = Makim .zion.json fail i bin ekspotim. Banis i stap ensekrip.
 status-unlocking = i openim...
@@ -234,7 +235,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -295,3 +296,5 @@ help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol a
 help-publish-ma = Bilong putim nem antap, yu nidim ma (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.
 help-publish-steps = Ol hap: ran '.my.ma:discover' bilong painim local ma, na '.my.identity:publish @ma'.
 help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

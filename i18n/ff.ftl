@@ -11,6 +11,7 @@ label-confirm-passphrase = sikkina daande sirlu
 btn-login = naatna
 btn-export = yaltina
 btn-generate = hobbaade
+btn-new-endpoint = tele yimre
 passphrase-warning = Janfude daande sirlu = janfude ɗemngal. Taa ɗon rewaade.
 import-help = Suɓo fayle .zion.json yi'aaɗo. Fonosandi foti hesɓinde sirlu.
 status-unlocking = uddude...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mb
 help-publish-ma = Ngam jaatugol, a haani ma (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.
 help-publish-steps = Laaɓol: laato '.my.ma:discover' ngam yiyde ma laawol, ɓe '.my.identity:publish @ma'.
 help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

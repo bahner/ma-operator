@@ -11,6 +11,7 @@ label-confirm-passphrase = パスフレーズの確認
 btn-login = ログイン
 btn-export = エクスポート
 btn-generate = 生成
+btn-new-endpoint = 新しいエンドポイント
 passphrase-warning = パスフレーズを失うとアイデンティティも失います。回復はできません。
 import-help = エクスポートされた .zion.json ファイルを選択してください。パッケージは暗号化されたままです。
 status-unlocking = ロック解除中...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -301,3 +302,5 @@ help-publish-intro = 公開することでネットワーク上で身元を見�
 help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。
 help-publish-steps = 手順：'.my.ma:discover'でローカルmaを検出し、'.my.identity:publish @ma'を実行してください。
 help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

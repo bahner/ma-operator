@@ -11,6 +11,7 @@ label-confirm-passphrase = potvrdi lozinku-frazu
 btn-login = prijava
 btn-export = izvoz
 btn-generate = generiraj
+btn-new-endpoint = nova krajnja točka
 passphrase-warning = Izgubljena lozinka-fraza = izgubljen identitet. Oporavak nije moguć.
 import-help = Odaberite izvezenu .zion.json datoteku. Paket ostaje šifriran.
 status-unlocking = otključavanje...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Objavljivanje čini tvoj identitet pronađljivim u mreži. 
 help-publish-ma = Za objavu trebaš instaliran ma (lokalno izvršno okruženje). Ono povezuje ego s IPFS/IPNS u tvoje ime.
 help-publish-steps = Koraci: pokreni '.my.ma:discover' za otkrivanje lokalnog ma, zatim '.my.identity:publish @ma'.
 help-publish-without = Bez objave drugi te ne mogu doseći — čak i ako znaju tvoj DID, ne mogu razriješiti tvoj endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

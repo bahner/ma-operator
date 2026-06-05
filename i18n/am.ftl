@@ -11,6 +11,7 @@ label-confirm-passphrase = ሚስጥራዊ ሐረግ አረጋግጥ
 btn-login = ግባ
 btn-export = አውጣ
 btn-generate = ፍጠር
+btn-new-endpoint = አዲስ ነጥብ
 passphrase-warning = ሚስጥራዊ ሐረጉን ማጣት = ማንነትን ማጣት። ምንም ማስታወሻ የለም።
 import-help = የተወጣ .zion.json ፋይል ይምረጡ። ጥቅሉ ምስጠራ ሆኖ ይቆያል።
 status-unlocking = እየተከፈተ...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊ�
 help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
 help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.my.ma:discover' ያሂዱ፣ ከዚያም '.my.identity:publish @ma'።
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

@@ -11,6 +11,7 @@ label-confirm-passphrase = επιβεβαίωση φράσης πρόσβαση�
 btn-login = σύνδεση
 btn-export = εξαγωγή
 btn-generate = δημιουργία
+btn-new-endpoint = νέο σημείο σύνδεσης
 passphrase-warning = Χαμένη φράση πρόσβασης = χαμένη ταυτότητα. Η ανάκτηση δεν είναι δυνατή.
 import-help = Επιλέξτε εξαγόμενο αρχείο .zion.json. Το πακέτο παραμένει κρυπτογραφημένο.
 status-unlocking = ξεκλείδωμα...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Η δημοσίευση κάνει την ταυτότητ�
 help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το ma (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.
 help-publish-steps = Βήματα: εκτέλεσε '.my.ma:discover' για ανίχνευση του τοπικού ma, μετά '.my.identity:publish @ma'.
 help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

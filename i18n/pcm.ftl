@@ -11,6 +11,7 @@ label-confirm-passphrase = confirm passphrase
 btn-login = login
 btn-export = export
 btn-generate = generate
+btn-new-endpoint = new endpoint
 passphrase-warning = Lose passphrase = lose identity. E no get recovery.
 import-help = Select one exported .zion.json file. Di bundle go stay encrypted.
 status-unlocking = e dey unlock...
@@ -234,7 +235,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -295,3 +296,5 @@ help-publish-intro = Publishing go make your identity findable for the network. 
 help-publish-ma = To publish, you need ma (local runtime) installed. E go connect ego to IPFS/IPNS for your side.
 help-publish-steps = Steps: run '.my.ma:discover' to find your local ma, den '.my.identity:publish @ma'.
 help-publish-without = Without publishing, other people no fit reach you — even if dem sabi your DID, dem no fit resolve your endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

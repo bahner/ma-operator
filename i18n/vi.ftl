@@ -11,6 +11,7 @@ label-confirm-passphrase = xác nhận cụm mật khẩu
 btn-login = đăng nhập
 btn-export = xuất
 btn-generate = tạo
+btn-new-endpoint = điểm cuối mới
 passphrase-warning = Mất cụm mật khẩu = mất danh tính. Không thể khôi phục.
 import-help = Chọn tệp .zion.json đã xuất. Gói vẫn được mã hóa.
 status-unlocking = đang mở khóa...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Xuất bản giúp danh tính của bạn được tìm th�
 help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
 help-publish-steps = Các bước: chạy '.my.ma:discover' để phát hiện ma cục bộ, sau đó '.my.identity:publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

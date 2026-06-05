@@ -11,6 +11,7 @@ label-confirm-passphrase = jẹ́rìísí ọ̀rọ̀ àṣírí
 btn-login = wọlé
 btn-export = gbámújade
 btn-generate = ṣẹ̀dá
+btn-new-endpoint = ipari titun
 passphrase-warning = Pàdánù ọ̀rọ̀ àṣírí = pàdánù ìdánimọ̀. Kò sí ìpadàbọ̀.
 import-help = Yan fáìlì .zion.json tí a gbámújade. Àpò náà ṣì wà ní ìmọ̀lò.
 status-unlocking = ìṣí ṣílẹ̀...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Títẹ jáde mú kí ìdánimọ̀ rẹ lè rí lórí n�
 help-publish-ma = Láti tẹ jáde, o nílò ma (runtime àdúgbò) tí a fi sórí. Ó so ego mọ IPFS/IPNS ní orúkọ rẹ.
 help-publish-steps = Àwọn ìgbésẹ̀: ṣe '.my.ma:discover' láti rí ma àdúgbò, lẹ́hìn náà '.my.identity:publish @ma'.
 help-publish-without = Láìsí títẹ jáde, àwọn mìíràn kò lè de ọ — bí wọ́n bá mọ DID rẹ pàápàá, wọn kò lè yanjú endpoint rẹ.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

@@ -11,6 +11,7 @@ label-confirm-passphrase = vahvista salasana
 btn-login = kirjaudu sisään
 btn-export = vie
 btn-generate = luo
+btn-new-endpoint = uusi päätepiste
 passphrase-warning = Kadotettu salasana = kadotettu identiteetti. Palautumista ei ole.
 import-help = Valitse viety .zion.json-tiedosto. Paketti pysyy salattuna.
 status-unlocking = avataan lukitus...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi ver
 help-publish-ma = Julkaisemiseen tarvitset ma:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
 help-publish-steps = Vaiheet: aja '.my.ma:discover' paikallisen ma:n havaitsemiseksi, sitten '.my.identity:publish @ma'.
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

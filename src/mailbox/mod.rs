@@ -131,6 +131,125 @@ pub fn is_probable_cid(token: &str) -> bool {
         && token.chars().all(|c| c.is_ascii_alphanumeric())
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_cfg() -> EgoConfig {
+        EgoConfig::default()
+    }
+
+    // ── is_link_value ─────────────────────────────────────────────────────
+
+    #[test]
+    fn is_link_value_did_ma() {
+        assert!(is_link_value("did:ma:k51qzi5uqu5dhl2je7b6t6j2qovwjhbmv2q3j9k"));
+    }
+
+    #[test]
+    fn is_link_value_bafy_cid() {
+        assert!(is_link_value("bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"));
+    }
+
+    #[test]
+    fn is_link_value_qm_cid() {
+        assert!(is_link_value("QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"));
+    }
+
+    #[test]
+    fn is_link_value_short_cid_not_link() {
+        assert!(!is_link_value("bafyshort"));
+    }
+
+    #[test]
+    fn is_link_value_plain_string_not_link() {
+        assert!(!is_link_value("hello world"));
+    }
+
+    // ── is_probable_cid ───────────────────────────────────────────────────
+
+    #[test]
+    fn is_probable_cid_bafy() {
+        assert!(is_probable_cid("bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"));
+    }
+
+    #[test]
+    fn is_probable_cid_qm() {
+        assert!(is_probable_cid("QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"));
+    }
+
+    #[test]
+    fn is_probable_cid_with_non_alphanumeric_not_cid() {
+        assert!(!is_probable_cid("bafy/path/component"));
+    }
+
+    #[test]
+    fn is_probable_cid_too_short_not_cid() {
+        assert!(!is_probable_cid("Qmshort"));
+    }
+
+    // ── next_inbox_index / inbox_count ────────────────────────────────────
+
+    #[test]
+    fn next_inbox_index_empty_cfg_is_zero() {
+        let cfg = make_cfg();
+        assert_eq!(next_inbox_index(&cfg), 0);
+    }
+
+    #[test]
+    fn inbox_count_empty_cfg_is_zero() {
+        let cfg = make_cfg();
+        assert_eq!(inbox_count(&cfg), 0);
+    }
+
+    #[test]
+    fn next_inbox_index_after_manual_entry() {
+        let mut cfg = make_cfg();
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.content", "hello");
+        assert_eq!(next_inbox_index(&cfg), 1);
+    }
+
+    #[test]
+    fn inbox_count_after_manual_entry() {
+        let mut cfg = make_cfg();
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.2.from", "did:ma:other"); // gap
+        assert_eq!(inbox_count(&cfg), 2);
+    }
+
+    // ── prune_inbox_expired ───────────────────────────────────────────────
+
+    #[test]
+    fn prune_removes_expired_entries() {
+        let mut cfg = make_cfg();
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.expires_at", "1000.000"); // far in the past
+        let removed = prune_inbox_expired(&mut cfg, 9_999_999.0);
+        assert!(removed > 0, "should have removed at least one key");
+        assert_eq!(inbox_count(&cfg), 0);
+    }
+
+    #[test]
+    fn prune_keeps_non_expired_entries() {
+        let mut cfg = make_cfg();
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.expires_at", "9999999999.0"); // far in the future
+        let removed = prune_inbox_expired(&mut cfg, 1_000.0);
+        assert_eq!(removed, 0);
+        assert_eq!(inbox_count(&cfg), 1);
+    }
+
+    #[test]
+    fn prune_keeps_entries_without_expires_at() {
+        let mut cfg = make_cfg();
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        // No expires_at set — should never be pruned.
+        let removed = prune_inbox_expired(&mut cfg, 9_999_999.0);
+        assert_eq!(removed, 0);
+    }
+}
+
 #[allow(dead_code)]
 pub fn open_target(target: &str) -> Result<(), String> {
     let window = web_sys::window().ok_or_else(|| "no browser window".to_string())?;

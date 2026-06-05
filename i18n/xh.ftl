@@ -11,6 +11,7 @@ label-confirm-passphrase = qinisekisa igama elinzulazulu
 btn-login = ngena
 btn-export = khipha
 btn-generate = yila
+btn-new-endpoint = indawo entsha
 passphrase-warning = Ukulahlekelwa ligama elinzulazulu = ukulahlekelwa ubunjani. Akukho buyiselwa.
 import-help = Khetha ifayile .zion.json ekhishiweyo. Iphakheji igciniwe ngokhuselo.
 status-unlocking = ivulwa...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Ukupapasha kwenza ubuzwe bakho bube nokufunyanwa kwi-networ
 help-publish-ma = Ukupapasha, ufuna u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
 help-publish-steps = Amanyathelo: qhuba '.my.ma:discover' ukufumana u-ma wendawo, wulandelise '.my.identity:publish @ma'.
 help-publish-without = Ngaphandle kokupapasha, abanye abanakufikelela kuwe — nangona bazi i-DID yakho, abanakuyisombulula i-endpoint yakho.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

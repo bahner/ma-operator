@@ -11,6 +11,7 @@ label-confirm-passphrase = confirm passphrase
 btn-login = login
 btn-export = export
 btn-generate = generate
+btn-new-endpoint = new endpoint
 passphrase-warning = Lost passphrase = lost identity. There is no recovery.
 import-help = Select an exported .zion.json file. The bundle stays encrypted.
 status-unlocking = unlocking...
@@ -261,7 +262,7 @@ status-publishing = publishing
 
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no active session — cannot delete profile
-profile-delete-needs-name = specify a profile name: .my.profile.<name>:
+profile-delete-needs-name = specify a profile name: .profiles.<name>:
 profile-delete-error = profile deletion failed: { $e }
 profiles-empty = (none)
 profiles-deleted = profile { $name } deleted
@@ -276,7 +277,9 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
+msg-identity-exists = identity already published — profile up to date
 
 # ── CID content operations ────────────────────────────────────────────────
 cid-op-binary = binary content (not displayed)

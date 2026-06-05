@@ -11,6 +11,7 @@ label-confirm-passphrase = staðfest loyniorð
 btn-login = rita inn
 btn-export = flyt út
 btn-generate = skapa
+btn-new-endpoint = nýggjur endapunktur
 passphrase-warning = Gloymt loyniorð = gloymur samleika. Onki endurheimtan er møgulig.
 import-help = Vel ein útfluttan .zion.json-fíl. Pakkin verður kryptaður.
 status-unlocking = loysir lás...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Birting ger tín samleika funnarligan í netinum. Aðrir ku
 help-publish-ma = Fyri at birta trengt tú ma (lokalt kørsluumhvørvi) installerað. Tað tengir ego við IPFS/IPNS fyri tín hønd.
 help-publish-steps = Steg: køyr '.my.ma:discover' fyri at finna lokalt ma, síðan '.my.identity:publish @ma'.
 help-publish-without = Uttan birting kunnu aðrir ikki ná til tín — jafnvel um tey kennu tín DID, kunnu tey ikki greina endepunkt tín.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

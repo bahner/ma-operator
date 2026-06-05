@@ -11,6 +11,7 @@ label-confirm-passphrase = పాస్‌ఫ్రేజ్ నిర్ధా�
 btn-login = లాగిన్ చేయండి
 btn-export = ఎగుమతి
 btn-generate = తయారు చేయండి
+btn-new-endpoint = కొత్త ముగింపు
 passphrase-warning = పాస్‌ఫ్రేజ్ పోయింది = గుర్తింపు పోయింది. పునరుద్ధరణ సాధ్యం కాదు.
 import-help = ఎగుమతి చేసిన .zion.json ఫైల్ ఎంచుకోండి. బండిల్ ఎన్‌క్రిప్టెడ్ గా ఉంటుంది.
 status-unlocking = అన్‌లాక్ అవుతోంది...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = ప్రచురణ మీ గుర్తింపున
 help-publish-ma = ప్రచురించడానికి ma (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.
 help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.my.ma:discover' అమలు చేయండి, తర్వాత '.my.identity:publish @ma'.
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

@@ -11,6 +11,7 @@ label-confirm-passphrase = bekræft adgangssætning
 btn-login = log ind
 btn-export = eksportér
 btn-generate = generér
+btn-new-endpoint = nyt slutpunkt
 passphrase-warning = Mistet adgangssætning = mistet identitet. Der er ingen gendannelse.
 import-help = Vælg en eksporteret .zion.json-fil. Pakken forbliver krypteret.
 status-unlocking = låser op...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +309,5 @@ help-publish-intro = Udgivelse gør din identitet synlig på netværket. Andre k
 help-publish-ma = For at udgive skal du have ma (lokal kørselstid) installeret. Det forbinder ego med IPFS/IPNS på dine vegne.
 help-publish-steps = Trin: kør '.my.ma:discover' for at opdage din lokale ma, derefter '.my.identity:publish @ma'.
 help-publish-without = Uden udgivelse kan andre ikke nå dig — selv om de kender dit DID, kan de ikke opløse dit endepunkt.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

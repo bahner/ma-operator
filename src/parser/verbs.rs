@@ -6,17 +6,17 @@
 use leptos::prelude::*;
 use ma_core::{DidDocumentResolver, Ipld};
 use wasm_bindgen::JsCast;
-
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
+use crate::http::{fetch_cid_bytes, fetch_cid_text, fetch_url_text};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
-use crate::state::AppState;
+use crate::state::{AppState, ProfilePublishPending};
 use crate::transport;
 use crate::views::editor::EditorContext;
 
 /// Extract the `ma.agent` CID string from a resolved `Document`, if present.
-fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
+pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
     match &doc.ma {
         Some(Ipld::Map(map)) => match map.get("agent") {
             Some(Ipld::String(s)) => Some(s.clone()),
@@ -467,8 +467,8 @@ pub fn dispatch_verb(
         return Ok(());
     }
 
-    // ── .my.profile.<name>:<verb> ─────────────────────────────────────────
-    if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+    // ── .profiles.<name>:<verb> ───────────────────────────────────────────
+    if let Some(profile_name) = path.strip_prefix(".profiles.") {
         if profile_name.is_empty() || profile_name.contains('.') {
             return Err(t("profile-wrong-user"));
         }
@@ -480,51 +480,79 @@ pub fn dispatch_verb(
         if profile_name != own_username.as_str() {
             return Err(tf("profile-wrong-user-name", &[("name", profile_name)]));
         }
-        let publisher = config
-            .get_untracked()
-            .get(".my.ma.did")
-            .map(|s| s.to_string())
-            .ok_or_else(|| t("profile-no-ma"))?;
+        let publisher = if let Some(arg) = args.first() {
+            resolve_bare_did(arg, &config.get_untracked())?
+        } else {
+            resolve_bare_did("@ma", &config.get_untracked())
+                .or_else(|_| {
+                    config
+                        .get_untracked()
+                        .get(".my.ma.did")
+                        .map(|s| s.to_string())
+                        .ok_or_else(|| t("profile-no-ma"))
+                })?
+        };
         let path_owned = path.to_string();
-        let profile_name = profile_name.to_string();
         match verb {
             "publish" => {
                 let cfg = config.get_untracked();
                 let cmd_id = state.push_command(format!("{path_owned}:publish"));
                 let state2 = state.clone();
+                let ma_base = {
+                    let c = config.get_untracked();
+                    c.get(".my.ma.url")
+                        .unwrap_or(MA_URL)
+                        .trim_end_matches('/')
+                        .to_string()
+                };
                 leptos::task::spawn_local(async move {
-                    match cfg.serialize_profile_subtrees() {
+                    let profile_bytes = match cfg.serialize_profile_subtrees() {
                         Err(e) => {
                             state2.resolve_command_by_id(
                                 cmd_id,
                                 CommandStatus::Error(e.clone()),
                             );
                             state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
+                            return;
                         }
-                        Ok(profile_bytes) => {
-                            match crate::transport::send_profile_store(
-                                &publisher,
-                                profile_bytes,
-                            )
-                            .await
+                        Ok(b) => b,
+                    };
+                    // Try publish; on transport timeout, re-discover and retry once.
+                    let result =
+                        crate::transport::send_profile_store(&publisher, profile_bytes.clone())
+                            .await;
+                    let result = match result {
+                        Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
+                            // Stale iroh connection — refresh endpoint_id and retry.
+                            if let Ok(new_publisher) =
+                                rediscover_ma(&ma_base, config).await
                             {
-                                Ok(msg_id) => {
-                                    state2.pending_profile_publish.update(|m| {
-                                        m.insert(msg_id, (publisher, Some(cmd_id)));
-                                    });
-                                    state2.push_system(t("profile-publish-sent"));
-                                }
-                                Err(e) => {
-                                    state2.resolve_command_by_id(
-                                        cmd_id,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                    state2.push_error(tf(
-                                        "profile-publish-failed",
-                                        &[("e", &e)],
-                                    ));
-                                }
+                                crate::transport::send_profile_store(
+                                    &new_publisher,
+                                    profile_bytes,
+                                )
+                                .await
+                            } else {
+                                result
                             }
+                        }
+                        other => other,
+                    };
+                    match result {
+                        Ok(msg_id) => {
+                            state2.pending_profile_publish.update(|m| {
+                                m.insert(msg_id, ProfilePublishPending {
+                                    publisher_did: publisher,
+                                    cmd_id: Some(cmd_id),
+                                });
+                            });
+                        }
+                        Err(e) => {
+                            state2.resolve_command_by_id(
+                                cmd_id,
+                                CommandStatus::Error(e.clone()),
+                            );
+                            state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
                         }
                     }
                 });
@@ -540,11 +568,23 @@ pub fn dispatch_verb(
                     .with(|d| d.borrow().clone())
                     .ok_or_else(|| t("msg-not-logged-in"))?;
                 leptos::task::spawn_local(async move {
-                    // Step 1: resolve DID doc to get the agent CID.
-                    let resolver_opt =
-                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
-                    let resolver = match resolver_opt {
-                        Some(r) => r,
+                    // Step 1: resolve DID document via SESSION_RESOLVER
+                    // (handles CBOR, local gateway with cooldown, dweb.link + w3s.link fallback).
+                    let resolver = crate::state::SESSION_RESOLVER
+                        .with(|r| r.borrow().clone());
+                    let doc = match resolver {
+                        Some(r) => match (*r).resolve(&own_did).await {
+                            Ok(d) => d,
+                            Err(e) => {
+                                let display = t("profile-fetch-did-resolve-failed");
+                                state2.resolve_command_by_id(
+                                    cmd_id,
+                                    CommandStatus::Error(format!("{e}")),
+                                );
+                                state2.push_error(display);
+                                return;
+                            }
+                        },
                         None => {
                             let e = t("msg-not-logged-in");
                             state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
@@ -552,34 +592,19 @@ pub fn dispatch_verb(
                             return;
                         }
                     };
-                    let cid = match resolver.resolve(&own_did).await {
-                        Err(e) => {
-                            let msg = format!("{e}");
+                    let cid = match doc_agent_cid(&doc) {
+                        None => {
                             state2.resolve_command_by_id(
                                 cmd_id,
-                                CommandStatus::Error(msg.clone()),
+                                CommandStatus::Error(t("profile-no-cid-in-doc")),
                             );
-                            state2.push_error(tf("profile-fetch-failed", &[("e", &msg)]));
+                            state2.push_error(t("profile-no-cid-in-doc"));
                             return;
                         }
-                        Ok(doc) => match doc_agent_cid(&doc) {
-                            None => {
-                                state2.resolve_command_by_id(
-                                    cmd_id,
-                                    CommandStatus::Error(t("profile-no-cid-in-doc")),
-                                );
-                                state2.push_error(t("profile-no-cid-in-doc"));
-                                return;
-                            }
-                            Some(c) => c,
-                        },
+                        Some(c) => c,
                     };
                     // Step 2: download encrypted blob from IPFS gateway.
-                    let url = format!(
-                        "{}ipfs/{cid}",
-                        crate::transport::connection::LOCAL_GATEWAY_URL
-                    );
-                    let cbor_bytes = match fetch_url_bytes(&url).await {
+                    let cbor_bytes = match fetch_cid_bytes(&cid).await {
                         Ok(b) => b,
                         Err(e) => {
                             state2.resolve_command_by_id(
@@ -672,10 +697,10 @@ pub fn dispatch_verb(
                     // :edit <cid> — fetch from gateway; NEVER auto-execute
                     let cid = args[0].clone();
                     let state2 = state.clone();
-                    let show_editor2 = show_editor.clone();
+                    let show_editor2 = show_editor;
                     let doc_path2 = doc_path.clone();
                     leptos::task::spawn_local(async move {
-                        match fetch_from_gateway(&cid).await {
+                        match fetch_cid_text(&cid).await {
                             Ok(text) => {
                                 state2.push_system(tf("msg-fetch-review", &[("cid", &cid)]));
                                 show_editor2.set(Some(
@@ -820,14 +845,14 @@ pub fn dispatch_verb(
                 }
                 let cid = args[0].clone();
                 let state2 = state.clone();
-                let config2 = config.clone();
+                let config2 = config;
                 let doc_path2 = doc_path.clone();
                 leptos::task::spawn_local(async move {
-                    match fetch_from_gateway(&cid).await {
+                    match fetch_cid_text(&cid).await {
                         Ok(text) => {
                             config2.update(|c| {
-                                c.set(&format!("{doc_path2}.content"), &text);
-                                c.set(&format!("{doc_path2}.cid"), &cid);
+                                c.set(format!("{doc_path2}.content"), &text);
+                                c.set(format!("{doc_path2}.cid"), &cid);
                             });
                             state2.push_system(tf(
                                 "doc-fetch-done",
@@ -916,6 +941,35 @@ fn lang_for_content_type(ct: &str) -> &'static str {
     }
 }
 
+/// Fetch fresh status from the local ma daemon, update config with the new
+/// endpoint_id, and return the ma DID.  Used to recover from stale iroh
+/// connections before retrying a publish.
+async fn rediscover_ma(ma_base: &str, config: leptos::prelude::RwSignal<crate::config::EgoConfig>) -> Result<String, String> {
+    let status_url = format!("{ma_base}/status.json");
+    let json_str = fetch_url_text(&status_url).await?;
+    let json: serde_json::Value =
+        serde_json::from_str(&json_str).map_err(|e| e.to_string())?;
+    let did = json
+        .get("did")
+        .and_then(|v| v.as_str())
+        .filter(|s| s.starts_with("did:ma:"))
+        .ok_or_else(|| "no valid DID in status".to_string())?
+        .to_string();
+    let endpoint_id = json
+        .get("endpoint_id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    config.update(|cfg| {
+        cfg.set(".my.ma.did", &did);
+        if !endpoint_id.is_empty() {
+            cfg.set(".my.ma.endpoint_id", &endpoint_id);
+        }
+        cfg.set(".my.aliases.ma", &did);
+    });
+    Ok(did)
+}
+
 fn discover_fetch_hint(err: &str) -> &'static str {
     if err.contains("HTTP 404") {
         "Hint: endpoint not found. Check that `ma` is running and exposes /status.json on port 5003."
@@ -977,54 +1031,7 @@ fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
     }
 }
 
-/// Fetch raw bytes from any URL.
-async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-    let window = web_sys::window().ok_or("no window")?;
-    let promise = window.fetch_with_str(url);
-    let resp_val = JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
-    }
-    let buf_promise = resp.array_buffer().map_err(|e| format!("{e:?}"))?;
-    let buf_val = JsFuture::from(buf_promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
-}
 
-/// Fetch raw text from any URL.
-async fn fetch_url_text(url: &str) -> Result<String, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-
-    let window = web_sys::window().ok_or("no window")?;
-    let promise = window.fetch_with_str(url);
-    let resp_val = JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
-    }
-    let text_promise = resp.text().map_err(|e| format!("{e:?}"))?;
-    let text_val = JsFuture::from(text_promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    text_val
-        .as_string()
-        .ok_or_else(|| "response is not a string".to_string())
-}
-
-/// Fetch raw text bytes from an IPFS gateway.
-/// Uses the dweb.link gateway (same resolver as transport layer).
-async fn fetch_from_gateway(cid: &str) -> Result<String, String> {
-    fetch_url_text(&format!("https://dweb.link/ipfs/{cid}")).await
-}
 
 /// POST a JSON string body to `url` and return the HTTP status code.
 async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {

@@ -11,6 +11,7 @@ label-confirm-passphrase = conferma passphrase
 btn-login = accedi
 btn-export = esporta
 btn-generate = genera
+btn-new-endpoint = nuovo endpoint
 passphrase-warning = Passphrase persa = identità persa. Non è possibile recuperarla.
 import-help = Seleziona un file .zion.json esportato. Il pacchetto rimane cifrato.
 status-unlocking = sblocco in corso...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -301,3 +302,5 @@ help-publish-intro = La pubblicazione rende la tua identità trovabile sulla ret
 help-publish-ma = Per pubblicare hai bisogno di ma (runtime locale) installato. Collega ego a IPFS/IPNS per conto tuo.
 help-publish-steps = Passi: esegui '.my.ma:discover' per rilevare il tuo ma locale, poi '.my.identity:publish @ma'.
 help-publish-without = Senza pubblicazione, altri non possono raggiungerti — anche se conoscono il tuo DID, non riescono a risolvere il tuo endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

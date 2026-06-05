@@ -11,6 +11,7 @@ label-confirm-passphrase = gosi okwu nzuzo
 btn-login = banye
 btn-export = pụta
 btn-generate = mepụta
+btn-new-endpoint = ọnụ ụzọ ọhụrụ
 passphrase-warning = Ịhapụ okwu nzuzo = ịhapụ njirimara. Ọ dịghị iweghachi.
 import-help = Họrọ faịlụ .zion.json etinyere. Bundle ahụ ka dị na nzuzo.
 status-unlocking = na-emeghe...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. 
 help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
 help-publish-steps = Usoro: bido '.my.ma:discover' iji chọpụta ma nke mpaghara, wee mee '.my.identity:publish @ma'.
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

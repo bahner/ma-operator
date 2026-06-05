@@ -12,6 +12,7 @@ use crate::{
     parser::command::{parse, Command, DotOp},
     parser::verbs::dispatch_verb,
     state::{AppState, CidOpCtx, EditOpenCtx, FocusMode},
+    http::{fetch_cid_bytes, fetch_cid_text, fetch_url_text},
     transport,
     views::editor::{EditorContext, EditorModal, EditorMode},
 };
@@ -44,6 +45,114 @@ fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
     Ok(())
 }
 
+async fn startup_profile_exists(
+    doc: ma_core::Document,
+    username: String,
+    state: AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    let remote_cid = match crate::parser::verbs::doc_agent_cid(&doc) {
+        Some(c) => c,
+        None => return, // No ma.agent — nothing to merge.
+    };
+    let local_cid = config
+        .get_untracked()
+        .get(&format!(".profiles.{username}"))
+        .map(|s| s.to_string());
+    if local_cid.as_deref() == Some(remote_cid.as_str()) {
+        return; // Already up to date — silent.
+    }
+    let cbor_bytes = match fetch_cid_bytes(&remote_cid).await {
+        Ok(b) => b,
+        Err(_) => return,
+    };
+    let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
+        Ok(b) => b,
+        Err(_) => return,
+    };
+    crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
+    let profile_key = format!(".profiles.{username}");
+    config.update(|cfg| cfg.set(&profile_key, &remote_cid));
+    let n = config
+        .try_update(|cfg| cfg.merge_profile(&json_bytes))
+        .and_then(|r| r.ok())
+        .unwrap_or(0);
+    state.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
+    let cfg = config.get_untracked();
+    let _ = persist_config(&username, &cfg).await;
+}
+
+async fn startup_no_document(state: AppState, config: RwSignal<EgoConfig>) {
+    let ma_url = {
+        let cfg = config.get_untracked();
+        cfg.get(".my.ma.url")
+            .unwrap_or("http://localhost:5003")
+            .trim_end_matches('/')
+            .to_string()
+    };
+    let status_url = format!("{ma_url}/status.json");
+    let json_str = match fetch_url_text(&status_url).await {
+        Ok(s) => s,
+        Err(_) => return, // No local ma — silent.
+    };
+    let json = match serde_json::from_str::<serde_json::Value>(&json_str) {
+        Ok(v) => v,
+        Err(_) => return,
+    };
+    let ma_did = match json
+        .get("did")
+        .and_then(|v| v.as_str())
+        .filter(|s| s.starts_with("did:ma:"))
+    {
+        Some(d) => d.to_string(),
+        None => return,
+    };
+    let endpoint_id = json
+        .get("endpoint_id")
+        .and_then(|v| v.as_str())
+        .unwrap_or("")
+        .to_string();
+    config.update(|cfg| {
+        cfg.set(".my.ma.did", &ma_did);
+        if !endpoint_id.is_empty() {
+            cfg.set(".my.ma.endpoint_id", &endpoint_id);
+        }
+        cfg.set(".my.aliases.ma", &ma_did);
+    });
+    if let Some(sess) = state.session.get_untracked() {
+        let cfg = config.get_untracked();
+        let _ = persist_config(&sess.username, &cfg).await;
+    }
+    if transport::send_ipfs_publish(&ma_did).await.is_ok() {
+        state.push_system(tf("msg-auto-published", &[("url", &ma_url)]));
+    }
+}
+
+async fn startup_did_sync(
+    own_did: String,
+    username: String,
+    state: AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
+    let Some(resolver) = resolver else { return };
+    match (*resolver).resolve(&own_did).await {
+        Ok(doc) => startup_profile_exists(doc, username, state, config).await,
+        Err(_) => {
+            // Only publish if no CID is stored locally — meaning the document
+            // was never published from this device. Any error when a CID exists
+            // (504, timeout, etc.) is transient and should not trigger a publish.
+            let has_local_cid = config
+                .get_untracked()
+                .get(&format!(".profiles.{username}"))
+                .is_some();
+            if !has_local_cid {
+                startup_no_document(state, config).await;
+            }
+        }
+    }
+}
+
 #[component]
 pub fn Terminal() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
@@ -54,14 +163,13 @@ pub fn Terminal() -> impl IntoView {
     // Editor modal signal — Some(EditorContext) opens the overlay
     let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
 
-    // When .config.editor.persistent is "true", keep the editor panel open
+    // When .my.config.editor.persistent is "true", keep the editor panel open
     // at all times using a scratch document.
     {
-        let config = config.clone();
         Effect::new(move |_| {
             let is_persistent = config
                 .get()
-                .get(".config.editor.persistent")
+                .get(".my.config.editor.persistent")
                 .unwrap_or("false")
                 == "true";
             if is_persistent && show_editor.get().is_none() {
@@ -78,12 +186,10 @@ pub fn Terminal() -> impl IntoView {
     // Load config from IndexedDB on mount
     {
         let state2 = state.clone();
-        let config = config.clone();
         let session = state.session.get_untracked();
         if let Some(sess) = session {
             let username = sess.username.clone();
             let sender_did = sess.sender_did.clone();
-            let created_at = sess.created_at.clone();
             spawn_local(async move {
                 match restore_config(&username).await {
                     Ok(mut cfg) => {
@@ -95,9 +201,18 @@ pub fn Terminal() -> impl IntoView {
                         if cfg.get(".my.identity.auto-publish").is_none() {
                             cfg.set(".my.identity.auto-publish", "true");
                         }
+                        // One-time migration: move .my.profile.<username> → .profiles.<username>.
+                        let old_profile_key = format!(".my.profile.{username}");
+                        let new_profile_key = format!(".profiles.{username}");
+                        if cfg.get(&new_profile_key).is_none() {
+                            if let Some(cid) = cfg.get(&old_profile_key).map(|s| s.to_string()) {
+                                cfg.set(&new_profile_key, &cid);
+                                cfg.delete(&old_profile_key);
+                            }
+                        }
                         // Seed SESSION_AGENT_CID from stored profile CID if present.
                         if let Some(cid) = cfg
-                            .get(&format!(".my.profile.{username}"))
+                            .get(&new_profile_key)
                             .map(|s| s.to_string())
                         {
                             crate::state::SESSION_AGENT_CID
@@ -108,7 +223,7 @@ pub fn Terminal() -> impl IntoView {
                         let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
                         apply_config_to_dom(&cfg);
                         // Apply log level from config if set.
-                        if let Some(level) = cfg.get(".config.log.level") {
+                        if let Some(level) = cfg.get(".my.config.log.level") {
                             crate::apply_log_level(level);
                         }
                         if pruned > 0 {
@@ -132,15 +247,18 @@ pub fn Terminal() -> impl IntoView {
                     crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
                 } else if let Some(lang) = config
                     .get_untracked()
-                    .get(".config.ui.language")
+                    .get(".my.config.ui.language")
                     .map(|s| s.to_string())
                 {
                     crate::i18n::init(&lang).await;
                     state2.lang.set(crate::i18n::lang());
+                    crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
                 } else {
                     // No preference stored yet — seed .my.i18n from the browser-detected language.
                     let browser_lang = crate::i18n::lang();
                     state2.lang.set(browser_lang.clone());
+                    crate::state::SESSION_LANG
+                        .with(|l| *l.borrow_mut() = Some(browser_lang.clone()));
                     let mut cfg = config.get_untracked();
                     cfg.set(".my.i18n", &browser_lang);
                     if let Err(e) = persist_config(&username, &cfg).await {
@@ -207,108 +325,10 @@ pub fn Terminal() -> impl IntoView {
                 {
                     Ok(()) => {
                         state2.push_system(t("msg-iroh-ready"));
-                        // Auto-discover local ma and publish DID document.
-                        // Falls back to a reachability warning if no local ma is found.
-                        // Disabled when `.my.identity.auto-publish` is set to "false".
-                        let state3 = state2.clone();
-                        let own_did = sender_did.clone();
-                        spawn_local(async move {
-                            let auto_publish = config
-                                .get_untracked()
-                                .get(".my.identity.auto-publish")
-                                .map_or(true, |v| v != "false");
-                            if !auto_publish {
-                                let reachable = if let Some(resolver) =
-                                    crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-                                {
-                                    resolver.resolve(&own_did).await.is_ok()
-                                } else {
-                                    false
-                                };
-                                if !reachable {
-                                    state3.push_error(t("msg-identity-not-published"));
-                                }
-                                return;
-                            }
-                            let ma_url = {
-                                let cfg = config.get_untracked();
-                                cfg.get(".my.ma.url")
-                                    .unwrap_or("http://localhost:5003")
-                                    .trim_end_matches('/')
-                                    .to_string()
-                            };
-                            let status_url = format!("{ma_url}/status.json");
-                            match fetch_url_text(&status_url).await {
-                                Ok(json_str) => {
-                                    if let Ok(json) =
-                                        serde_json::from_str::<serde_json::Value>(&json_str)
-                                    {
-                                        if let Some(did) = json.get("did").and_then(|v| v.as_str())
-                                        {
-                                            if did.starts_with("did:ma:") {
-                                                let did = did.to_string();
-                                                let endpoint_id = json
-                                                    .get("endpoint_id")
-                                                    .and_then(|v| v.as_str())
-                                                    .unwrap_or("")
-                                                    .to_string();
-                                                config.update(|cfg| {
-                                                    cfg.set(".my.ma.did", &did);
-                                                    if !endpoint_id.is_empty() {
-                                                        cfg.set(".my.ma.endpoint_id", &endpoint_id);
-                                                    }
-                                                    cfg.set(".my.aliases.ma", &did);
-                                                });
-                                                if let Some(sess) = state3.session.get_untracked() {
-                                                    let username = sess.username.clone();
-                                                    let cfg = config.get_untracked();
-                                                    spawn_local(async move {
-                                                        let _ =
-                                                            persist_config(&username, &cfg).await;
-                                                    });
-                                                }
-                                                if transport::send_ipfs_publish(&did).await.is_ok()
-                                                {
-                                                    state3.push_system(tf(
-                                                        "msg-auto-published",
-                                                        &[("url", &ma_url)],
-                                                    ));
-                                                }
-                                                return;
-                                            }
-                                        }
-                                    }
-                                    // JSON did not contain a valid DID — fall through to reachability check.
-                                    let reachable = if let Some(resolver) =
-                                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-                                    {
-                                        resolver.resolve(&own_did).await.is_ok()
-                                    } else {
-                                        false
-                                    };
-                                    if !reachable {
-                                        state3.push_error(t("msg-identity-not-published"));
-                                    }
-                                }
-                                Err(_) => {
-                                    // No local ma — check if DID is already reachable.
-                                    let reachable = if let Some(resolver) =
-                                        crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-                                    {
-                                        resolver.resolve(&own_did).await.is_ok()
-                                    } else {
-                                        false
-                                    };
-                                    if !reachable {
-                                        state3.push_error(t("msg-identity-not-published"));
-                                    }
-                                }
-                            }
-                        });
+                        startup_did_sync(sender_did, username, state2, config).await;
                     }
                     Err(e) => state2.push_error(tf("msg-iroh-failed", &[("e", &e)])),
                 }
-                let _ = username;
             });
         }
     }
@@ -463,7 +483,9 @@ pub fn Terminal() -> impl IntoView {
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
-                            if let Some((crud_target, crud_path, cmd_id_opt)) = pending_crud {
+                            if let Some(p) = pending_crud {
+                                let (crud_target, crud_path, cmd_id_opt) =
+                                    (p.target_did, p.crud_path, p.cmd_id);
                                 state2.pending_ipfs_crud.update(|m| {
                                     m.remove(msg_id);
                                 });
@@ -526,7 +548,9 @@ pub fn Terminal() -> impl IntoView {
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
-                            if let Some((kind_target, protocol_id, cmd_id_opt)) = pending_kind {
+                            if let Some(p) = pending_kind {
+                                let (kind_target, protocol_id, cmd_id_opt) =
+                                    (p.target_did, p.protocol_id, p.cmd_id);
                                 state2.pending_ipfs_kind_upserts.update(|m| {
                                     m.remove(msg_id);
                                 });
@@ -593,7 +617,8 @@ pub fn Terminal() -> impl IntoView {
                                 .get_untracked()
                                 .get(msg_id)
                                 .cloned();
-                            if let Some((ma_did, cmd_id_opt)) = pending_profile {
+                            if let Some(p) = pending_profile {
+                                let (ma_did, cmd_id_opt) = (p.publisher_did, p.cmd_id);
                                 state2.pending_profile_publish.update(|m| {
                                     m.remove(msg_id);
                                 });
@@ -611,14 +636,14 @@ pub fn Terminal() -> impl IntoView {
                                     Ok(cid_str) => {
                                         crate::state::SESSION_AGENT_CID
                                             .with(|c| *c.borrow_mut() = Some(cid_str.clone()));
-                                        // Store CID under .my.profile.<username>
+                                        // Store CID under .profiles.<username>
                                         let own_username = state2
                                             .session
                                             .get_untracked()
                                             .map(|s| s.username.clone())
                                             .unwrap_or_default();
                                         let cid_key =
-                                            format!(".my.profile.{own_username}");
+                                            format!(".profiles.{own_username}");
                                         config.update(|cfg| cfg.set(&cid_key, &cid_str));
                                         if let Some(sess) = state2.session.get_untracked() {
                                             let uname = sess.username.clone();
@@ -628,14 +653,21 @@ pub fn Terminal() -> impl IntoView {
                                             });
                                         }
                                         // Now republish DID doc with updated ma.agent.
+                                        // Retry once on transport timeout (stale iroh connection).
                                         let state3 = state2.clone();
                                         spawn_local(async move {
-                                            match transport::send_ipfs_publish(&ma_did).await {
+                                            let result = transport::send_ipfs_publish(&ma_did).await;
+                                            let result = match result {
+                                                Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
+                                                    transport::send_ipfs_publish(&ma_did).await
+                                                }
+                                                other => other,
+                                            };
+                                            match result {
                                                 Ok(msg_id2) => {
                                                     if let Some(cid) = cmd_id_opt {
                                                         state3.bind_message_id(cid, msg_id2);
                                                     }
-                                                    state3.push_system(t("profile-publish-done"));
                                                 }
                                                 Err(e) => {
                                                     if let Some(cid) = cmd_id_opt {
@@ -712,12 +744,8 @@ pub fn Terminal() -> impl IntoView {
                                             &mut &content_bytes[..],
                                         ) {
                                             Ok(ciborium::Value::Text(cid)) => {
-                                                let url = format!(
-                                                    "{}ipfs/{cid}",
-                                                    crate::transport::connection::LOCAL_GATEWAY_URL
-                                                );
                                                 spawn_local(async move {
-                                                    match fetch_url_bytes(&url).await {
+                                                    match fetch_cid_bytes(&cid).await {
                                                         Ok(bytes) => {
                                                             match crate::messages::cbor_bytes_to_yaml(&bytes) {
                                                                 Ok(yaml) => {
@@ -864,11 +892,7 @@ pub fn Terminal() -> impl IntoView {
                                             if (cid.starts_with('b') || cid.starts_with('Q'))
                                                 && cid.len() > 10 =>
                                         {
-                                            let url = format!(
-                                                "{}ipfs/{cid}",
-                                                crate::transport::connection::LOCAL_GATEWAY_URL
-                                            );
-                                            match fetch_url_text(&url).await {
+                                            match fetch_cid_text(&cid).await {
                                                 Ok(text) => {
                                                     let args_ref: Vec<&str> = ctx
                                                         .args
@@ -955,8 +979,6 @@ pub fn Terminal() -> impl IntoView {
     // Core input handler.
     let handle_input_fn: std::sync::Arc<dyn Fn(String) + Send + Sync> = {
         let state = state.clone();
-        let config = config.clone();
-        let eval_lines = eval_lines.clone();
         std::sync::Arc::new(move |line: String| {
             let line = line.trim().to_string();
             if line.is_empty() {
@@ -992,9 +1014,9 @@ pub fn Terminal() -> impl IntoView {
                     cmd,
                     &line,
                     &state,
-                    config.clone(),
+                    config,
                     show_editor,
-                    eval_lines.clone(),
+                    eval_lines,
                 ),
                 Err(e) => state.push_error(format!("'{line}': {e}")),
             }
@@ -1009,8 +1031,8 @@ pub fn Terminal() -> impl IntoView {
 
     view! {
         <div class="terminal"
-             class:placement-left=move || config.get().get(".config.editor.placement").unwrap_or("bottom") == "left"
-             class:placement-right=move || config.get().get(".config.editor.placement").unwrap_or("bottom") == "right"
+             class:placement-left=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "left"
+             class:placement-right=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "right"
         >
             <OutputPane state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>
@@ -1546,8 +1568,8 @@ fn eval_dot(
     // ── Generic CRUD on the dot tree ─────────────────────────────────────
     match op {
         DotOp::Set(value) => {
-            // ── .my.profile.<name>: <cid> — fetch+decrypt+merge from CID ──
-            if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+            // ── .profiles.<name>: <cid> — fetch+decrypt+merge from CID ──
+            if let Some(profile_name) = path.strip_prefix(".profiles.") {
                 if profile_name.contains('.') {
                     state.push_error(t("profile-wrong-user"));
                     return;
@@ -1561,18 +1583,62 @@ fn eval_dot(
                 let uname = username.clone();
                 let state2 = state.clone();
                 spawn_local(async move {
-                    let url = format!(
-                        "{}ipfs/{cid}",
-                        crate::transport::connection::LOCAL_GATEWAY_URL
-                    );
-                    let cbor_bytes = match fetch_url_bytes(&url).await {
+                    // Resolve the blob CID: if the given CID is a DID document
+                    // with a ma.agent field, use that as the blob CID.
+                    let blob_cid = match fetch_cid_bytes(&cid).await {
+                        Err(e) => {
+                            state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                            return;
+                        }
+                        Ok(bytes) => {
+                            if let Ok(doc) = serde_json::from_slice::<ma_core::Document>(&bytes) {
+                                // It's a DID document — extract ma.agent CID.
+                                match crate::parser::verbs::doc_agent_cid(&doc) {
+                                    Some(agent_cid) => agent_cid,
+                                    None => {
+                                        state2.push_error(t("profile-no-cid-in-doc"));
+                                        return;
+                                    }
+                                }
+                            } else {
+                                // Raw blob — decrypt inline without a second fetch.
+                                match crate::transport::decrypt_profile(&bytes) {
+                                    Err(e) => {
+                                        state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
+                                        return;
+                                    }
+                                    Ok(profile_bytes) => {
+                                        crate::state::SESSION_AGENT_CID
+                                            .with(|c| *c.borrow_mut() = Some(cid.clone()));
+                                        config.update(|c| c.set(&path_owned, &cid));
+                                        let n = config
+                                            .try_update(|cfg| cfg.merge_profile(&profile_bytes))
+                                            .and_then(|r| r.ok())
+                                            .unwrap_or(0);
+                                        let cfg = config.get_untracked();
+                                        if let Err(e) = persist_config(&uname, &cfg).await {
+                                            state2.push_error(e);
+                                        } else {
+                                            state2.push_system(tf(
+                                                "profile-update-done",
+                                                &[("n", &n.to_string())],
+                                            ));
+                                        }
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    };
+                    // blob_cid came from ma.agent — fetch and decrypt it.
+                    let blob_bytes = match fetch_cid_bytes(&blob_cid).await {
                         Ok(b) => b,
                         Err(e) => {
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
                             return;
                         }
                     };
-                    let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
+                    let profile_bytes = match crate::transport::decrypt_profile(&blob_bytes) {
                         Ok(b) => b,
                         Err(e) => {
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
@@ -1580,9 +1646,9 @@ fn eval_dot(
                         }
                     };
                     crate::state::SESSION_AGENT_CID
-                        .with(|c| *c.borrow_mut() = Some(cid.clone()));
-                    config.update(|c| c.set(&path_owned, &cid));
-                    let n = match config.try_update(|cfg| cfg.merge_profile(&json_bytes)) {
+                        .with(|c| *c.borrow_mut() = Some(blob_cid.clone()));
+                    config.update(|c| c.set(&path_owned, &blob_cid));
+                    let n = match config.try_update(|cfg| cfg.merge_profile(&profile_bytes)) {
                         Some(Ok(n)) => n,
                         Some(Err(e)) => {
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
@@ -1629,10 +1695,10 @@ fn eval_dot(
                     state2.push_error(e);
                 } else {
                     apply_config_to_dom(&cfg);
-                    if path_owned == ".config.log.level" {
+                    if path_owned == ".my.config.log.level" {
                         crate::apply_log_level(&value);
                     }
-                    if path_owned == ".config.ui.language" {
+                    if path_owned == ".my.config.ui.language" {
                         let _ = crate::i18n::init(&value).await;
                         state2.lang.set(crate::i18n::lang());
                     }
@@ -1655,9 +1721,9 @@ fn eval_dot(
                 return;
             }
 
-            // ── .my.profile.<name>: — delete a named profile ─────────────
+            // ── .profiles.<name>: — delete a named profile ─────────────
             // Works for any profile name; disconnects if deleting self.
-            if let Some(target_name) = path.strip_prefix(".my.profile.") {
+            if let Some(target_name) = path.strip_prefix(".profiles.") {
                 if target_name.is_empty() || target_name.contains('.') {
                     state.push_error(tf("profiles-not-found", &[("name", target_name)]));
                     return;
@@ -1704,8 +1770,8 @@ fn eval_dot(
                 return;
             }
 
-            // ── .my.profile: — ambiguous bare delete, require explicit name ─
-            if path == ".my.profile" {
+            // ── .profiles: — ambiguous bare delete, require explicit name ─
+            if path == ".profiles" {
                 state.push_error(t("profile-delete-needs-name"));
                 return;
             }
@@ -1732,9 +1798,9 @@ fn eval_dot(
         }
 
         DotOp::Get => {
-            // ── .my.profile — virtual: list all IndexedDB profiles ────────
+            // ── .profiles — virtual: list all IndexedDB profiles ────────
             // Each entry shows its stored CID if one has been published.
-            if path == ".my.profile" {
+            if path == ".profiles" {
                 let state2 = state.clone();
                 let cfg = config.get_untracked();
                 spawn_local(async move {
@@ -1742,12 +1808,12 @@ fn eval_dot(
                     match list_usernames().await {
                         Err(e) => state2.push_error(e),
                         Ok(names) => {
-                            state2.push_output(".my.profile:".to_string());
+                            state2.push_output(".profiles:".to_string());
                             if names.is_empty() {
                                 state2.push_output(format!("  {}", t("profiles-empty")));
                             } else {
                                 for name in &names {
-                                    let cid_key = format!(".my.profile.{name}");
+                                    let cid_key = format!(".profiles.{name}");
                                     if let Some(cid) = cfg.get(&cid_key) {
                                         state2.push_output(format!("  {name}  {cid}"));
                                     } else {
@@ -1760,8 +1826,8 @@ fn eval_dot(
                 });
                 return;
             }
-            // ── .my.profile.<name> — show CID if stored ───────────────────
-            if let Some(profile_name) = path.strip_prefix(".my.profile.") {
+            // ── .profiles.<name> — show CID if stored ───────────────────
+            if let Some(profile_name) = path.strip_prefix(".profiles.") {
                 if !profile_name.is_empty() && !profile_name.contains('.') {
                     let state2 = state.clone();
                     let cfg = config.get_untracked();
@@ -1934,18 +2000,18 @@ fn apply_config_to_dom(cfg: &EgoConfig) {
 
     let style = format!(
         "--colour-text:{};--colour-dimmed:{};--colour-pending:{};--colour-replied:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};--colour-input-bg:{};--colour-border:{};--colour-cursor:{};--colour-highlight:{};",
-        cfg.get(".config.colour.text").unwrap_or("#00ff41"),
-        cfg.get(".config.colour.dimmed").unwrap_or("#008f11"),
-        cfg.get(".config.colour.pending").unwrap_or("#004d00"),
-        cfg.get(".config.colour.replied").unwrap_or("#00ff41"),
-        cfg.get(".config.colour.alias").unwrap_or("#ffd700"),
-        cfg.get(".config.colour.error").unwrap_or("#ff3333"),
-        cfg.get(".config.colour.system").unwrap_or("#888888"),
-        cfg.get(".config.colour.bg").unwrap_or("#0d0d0d"),
-        cfg.get(".config.colour.input_bg").unwrap_or("#0a0a0a"),
-        cfg.get(".config.colour.border").unwrap_or("#003300"),
-        cfg.get(".config.colour.cursor").unwrap_or("#00ff41"),
-        cfg.get(".config.colour.highlight").unwrap_or("#003300"),
+        cfg.get(".my.config.colour.text").unwrap_or("#00ff41"),
+        cfg.get(".my.config.colour.dimmed").unwrap_or("#008f11"),
+        cfg.get(".my.config.colour.pending").unwrap_or("#004d00"),
+        cfg.get(".my.config.colour.replied").unwrap_or("#00ff41"),
+        cfg.get(".my.config.colour.alias").unwrap_or("#ffd700"),
+        cfg.get(".my.config.colour.error").unwrap_or("#ff3333"),
+        cfg.get(".my.config.colour.system").unwrap_or("#888888"),
+        cfg.get(".my.config.colour.bg").unwrap_or("#0d0d0d"),
+        cfg.get(".my.config.colour.input_bg").unwrap_or("#0a0a0a"),
+        cfg.get(".my.config.colour.border").unwrap_or("#003300"),
+        cfg.get(".my.config.colour.cursor").unwrap_or("#00ff41"),
+        cfg.get(".my.config.colour.highlight").unwrap_or("#003300"),
     );
 
     let _ = root.set_attribute("style", &style);
@@ -1983,11 +2049,7 @@ async fn resolve_and_traverse(
                     .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
             } else {
                 // Bare CID — fetch from local gateway.
-                let url = format!(
-                    "{}ipfs/{link}",
-                    crate::transport::connection::LOCAL_GATEWAY_URL
-                );
-                match fetch_url_text(&url).await {
+                match fetch_cid_text(link).await {
                     Ok(t) => {
                         serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
                     }
@@ -2025,48 +2087,6 @@ async fn resolve_and_traverse(
         other => other.to_string(),
     };
     state.push_output(format!("{link}.{subpath}: {display}"));
-}
-
-/// Minimal HTTP GET → text, reusing the same gateway as the transport layer.
-async fn fetch_url_text(url: &str) -> Result<String, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-    let window = web_sys::window().ok_or("no window")?;
-    let promise = window.fetch_with_str(url);
-    let resp_val = JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
-    }
-    let text_promise = resp.text().map_err(|e| format!("{e:?}"))?;
-    let text_val = JsFuture::from(text_promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    text_val
-        .as_string()
-        .ok_or_else(|| "response is not a string".to_string())
-}
-
-/// Minimal HTTP GET → raw bytes, for fetching DAG-CBOR CIDs from the gateway.
-async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-    let window = web_sys::window().ok_or("no window")?;
-    let promise = window.fetch_with_str(url);
-    let resp_val = JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
-    }
-    let buf_promise = resp.array_buffer().map_err(|e| format!("{e:?}"))?;
-    let buf_val = JsFuture::from(buf_promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
 }
 
 // ── CRUD routing ──────────────────────────────────────────────────────────

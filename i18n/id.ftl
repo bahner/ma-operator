@@ -11,6 +11,7 @@ label-confirm-passphrase = konfirmasi frasa sandi
 btn-login = masuk
 btn-export = ekspor
 btn-generate = buat
+btn-new-endpoint = titik akhir baru
 passphrase-warning = Frasa sandi hilang = identitas hilang. Tidak ada pemulihan.
 import-help = Pilih file .zion.json yang telah diekspor. Bundel tetap terenkripsi.
 status-unlocking = membuka kunci...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringa
 help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
 help-publish-steps = Langkah: jalankan '.my.ma:discover' untuk mendeteksi ma lokal, lalu '.my.identity:publish @ma'.
 help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

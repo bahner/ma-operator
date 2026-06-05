@@ -2713,9 +2713,9 @@ checksum = "112b39cec0b298b6c1999fee3e31427f74f676e4cb9879ed1a121b43661a4154"
 
 [[package]]
 name = "ma-core"
-version = "0.10.28"
+version = "0.10.30"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "80722b0d272c2e829709b9e1ed5063c52458fad690ac9c835efcb4e2d18d8d77"
+checksum = "7b5fe4302fa43c42913050c3423dc54e37bddeead38a115f2addc6e42766e719"
 dependencies = [
  "anyhow",
  "argon2",
@@ -5941,6 +5941,7 @@ name = "zion"
 version = "0.1.0"
 dependencies = [
  "base64",
+ "chacha20poly1305",
  "ciborium",
  "console_error_panic_hook",
  "console_log",

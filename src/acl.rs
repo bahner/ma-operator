@@ -40,3 +40,58 @@ pub fn open_acl() -> AclMap {
 pub fn check_ego_acl(cfg: &EgoConfig, from: &str, cap: &str) -> bool {
     check_cap(&load_ego_acl(cfg), from, cap).is_ok()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn cfg_with_acl(yaml: &str) -> EgoConfig {
+        let mut cfg = EgoConfig::default();
+        cfg.set(ACL_KEY, yaml);
+        cfg
+    }
+
+    // ── open_acl / load_ego_acl defaults ─────────────────────────────────
+
+    #[test]
+    fn empty_cfg_defaults_to_open_acl() {
+        let cfg = EgoConfig::default();
+        assert!(check_ego_acl(&cfg, "did:ma:stranger", CAP_INBOX));
+        assert!(check_ego_acl(&cfg, "did:ma:stranger", CAP_RPC));
+    }
+
+    #[test]
+    fn open_acl_allows_inbox_and_rpc() {
+        let acl = open_acl();
+        assert!(check_cap(&acl, "did:ma:anyone", CAP_INBOX).is_ok());
+        assert!(check_cap(&acl, "did:ma:anyone", CAP_RPC).is_ok());
+    }
+
+    // ── explicit YAML ACL ─────────────────────────────────────────────────
+
+    #[test]
+    fn explicit_allow_inbox_only() {
+        let yaml = format!("\"did:ma:alice\": [{CAP_INBOX}]\n");
+        let cfg = cfg_with_acl(&yaml);
+        assert!(check_ego_acl(&cfg, "did:ma:alice", CAP_INBOX));
+        assert!(!check_ego_acl(&cfg, "did:ma:alice", CAP_RPC));
+    }
+
+    #[test]
+    fn explicit_deny_overrides_wildcard() {
+        // Build AclMap directly: wildcard allows, eve is explicit Deny.
+        let mut acl: AclMap = open_acl();
+        acl.insert("did:ma:eve".to_string(), CapabilityEntry::Deny);
+        // Eve is denied despite the wildcard allow.
+        assert!(check_cap(&acl, "did:ma:eve", CAP_INBOX).is_err());
+        // Others are still allowed via the wildcard.
+        assert!(check_cap(&acl, "did:ma:alice", CAP_INBOX).is_ok());
+    }
+
+    #[test]
+    fn unparseable_acl_falls_back_to_open() {
+        let cfg = cfg_with_acl("this is not valid yaml acl !!!");
+        // Falls back to open_acl.
+        assert!(check_ego_acl(&cfg, "did:ma:anyone", CAP_INBOX));
+    }
+}

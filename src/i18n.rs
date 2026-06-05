@@ -11,7 +11,7 @@
 //! i18n::init_from_browser().await;
 //!
 //! // After config loads, re-apply if user has a preference:
-//! if let Some(lang) = cfg.get(".config.ui.language") {
+//! if let Some(lang) = cfg.get(".my.config.ui.language") {
 //!     i18n::init(&lang).await;
 //! }
 //!
@@ -165,7 +165,7 @@ fn normalize(lang: &str) -> Vec<String> {
     let mut region: Option<String> = None;
 
     for part in lang.split(['-', '_']).filter(|s| !s.is_empty()) {
-        let first_upper = part.chars().next().map_or(false, char::is_uppercase);
+        let first_upper = part.chars().next().is_some_and(char::is_uppercase);
         let all_upper = part
             .chars()
             .all(|c| c.is_ascii_alphabetic() && c.is_uppercase());
@@ -227,4 +227,96 @@ fn parse(ftl: &str) -> HashMap<String, String> {
         }
     }
     map
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    // ── normalize ─────────────────────────────────────────────────────────
+
+    #[test]
+    fn normalize_simple_language() {
+        assert_eq!(normalize("en"), vec!["en"]);
+    }
+
+    #[test]
+    fn normalize_no_maps_to_nb() {
+        assert_eq!(normalize("no"), vec!["nb"]);
+    }
+
+    #[test]
+    fn normalize_language_region() {
+        assert_eq!(normalize("en-GB"), vec!["en-GB", "en"]);
+    }
+
+    #[test]
+    fn normalize_language_script() {
+        assert_eq!(normalize("zh-Hans"), vec!["zh-Hans", "zh"]);
+    }
+
+    #[test]
+    fn normalize_language_script_region() {
+        assert_eq!(normalize("zh-Hans-TW"), vec!["zh-Hans-TW", "zh-Hans", "zh"]);
+    }
+
+    #[test]
+    fn normalize_underscore_separator() {
+        assert_eq!(normalize("zh_Hans_TW"), vec!["zh-Hans-TW", "zh-Hans", "zh"]);
+    }
+
+    #[test]
+    fn normalize_private_use_tag_passthrough() {
+        assert_eq!(normalize("art-x-lyaric"), vec!["art-x-lyaric"]);
+    }
+
+    #[test]
+    fn normalize_all_caps_single_part_treated_as_region() {
+        // ALL-CAPS is classified as region; prepended to default language "en".
+        // "EN" alone has no preceding language part, so language stays "en".
+        assert_eq!(normalize("EN"), vec!["en-EN", "en"]);
+    }
+
+    // ── parse ─────────────────────────────────────────────────────────────
+
+    #[test]
+    fn parse_simple_key_value() {
+        let ftl = "btn-login = login\n";
+        let map = parse(ftl);
+        assert_eq!(map.get("btn-login").map(String::as_str), Some("login"));
+    }
+
+    #[test]
+    fn parse_ignores_comments() {
+        let ftl = "# This is a comment\nbtn-login = login\n";
+        let map = parse(ftl);
+        assert!(!map.contains_key("# This is a comment"));
+        assert_eq!(map.get("btn-login").map(String::as_str), Some("login"));
+    }
+
+    #[test]
+    fn parse_ignores_blank_lines() {
+        let ftl = "\n\nbtn-login = login\n\n";
+        let map = parse(ftl);
+        assert_eq!(map.len(), 1);
+    }
+
+    #[test]
+    fn parse_first_occurrence_wins() {
+        let ftl = "key = first\nkey = second\n";
+        let map = parse(ftl);
+        assert_eq!(map.get("key").map(String::as_str), Some("first"));
+    }
+
+    #[test]
+    fn parse_substitution_value_preserved() {
+        let ftl = "msg = hello { $name }\n";
+        let map = parse(ftl);
+        assert_eq!(map.get("msg").map(String::as_str), Some("hello { $name }"));
+    }
+
+    #[test]
+    fn parse_empty_string_gives_empty_map() {
+        assert!(parse("").is_empty());
+    }
 }

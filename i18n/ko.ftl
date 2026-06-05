@@ -11,6 +11,7 @@ label-confirm-passphrase = 암호문 확인
 btn-login = 로그인
 btn-export = 내보내기
 btn-generate = 생성
+btn-new-endpoint = 새 엔드포인트
 passphrase-warning = 암호문을 잃으면 신원을 잃습니다. 복구할 수 없습니다.
 import-help = 내보낸 .zion.json 파일을 선택하세요. 번들은 암호화된 상태를 유지합니다.
 status-unlocking = 잠금 해제 중...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +309,5 @@ help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습
 help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.
 help-publish-steps = 단계: '.my.ma:discover'로 로컬 ma를 감지한 후 '.my.identity:publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

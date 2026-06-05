@@ -11,6 +11,7 @@ label-confirm-passphrase = apstiprināt paroles frāzi
 btn-login = pierakstīties
 btn-export = eksportēt
 btn-generate = ģenerēt
+btn-new-endpoint = jauns galapunkts
 passphrase-warning = Zaudēta paroles frāze = zaudēta identitāte. Atjaunošana nav iespējama.
 import-help = Izvēlieties eksportētu .zion.json failu. Pakete paliek šifrēta.
 status-unlocking = atbloķē...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Cit
 help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts ma (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.
 help-publish-steps = Soļi: izpildi '.my.ma:discover', lai noteiktu vietējo ma, pēc tam '.my.identity:publish @ma'.
 help-publish-without = Bez publicēšanas citi nevar tevi sasniegt — pat zinot tavu DID, viņi nevar atrisināt tavu endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

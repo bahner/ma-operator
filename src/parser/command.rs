@@ -29,6 +29,7 @@ pub enum DotOp {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+#[allow(clippy::enum_variant_names)]
 pub enum Command {
     /// `.foo.bar` with an op and any trailing args (whitespace-split).
     DotCommand {

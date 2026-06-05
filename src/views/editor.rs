@@ -5,9 +5,9 @@
 /// action buttons:
 ///
 /// - **Save** — persist `.content` and `.content_type` to `EgoConfig`,
-///              keep the editor open.
+///   keep the editor open.
 /// - **Eval** — run the _current buffer_ (not necessarily saved) line-by-
-///              line through the terminal evaluator, then close the editor.
+///   line through the terminal evaluator, then close the editor.
 /// - **Cancel** — close without saving.
 ///
 /// # SECURITY
@@ -20,7 +20,7 @@ use wasm_bindgen::prelude::*;
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
-use crate::state::AppState;
+use crate::state::{AppState, IpfsCrudPending, IpfsKindUpsertPending};
 
 // ── JS bridge ─────────────────────────────────────────────────────────────
 
@@ -176,7 +176,6 @@ pub fn EditorModal(
 
     // Mount / unmount the CM6 editor when `show` changes.
     Effect::new({
-        let language = language.clone();
         move |_| {
             match show.get() {
                 Some(ref ctx) => {
@@ -203,7 +202,6 @@ pub fn EditorModal(
 
     // Language selector change handler.
     let on_lang_change = {
-        let language = language.clone();
         move |ev: web_sys::Event| {
             let sel = ev
                 .target()
@@ -217,9 +215,6 @@ pub fn EditorModal(
 
     // Save button.
     let on_save = {
-        let show = show.clone();
-        let config = config.clone();
-        let language = language.clone();
         let state = state.clone();
         move |_| {
             let Some(ctx) = show.get_untracked() else {
@@ -250,9 +245,9 @@ pub fn EditorModal(
             }
 
             config.update(|c| {
-                c.set(&format!("{}.content", ctx.doc_path), &text);
+                c.set(format!("{}.content", ctx.doc_path), &text);
                 c.set(
-                    &format!("{}.content_type", ctx.doc_path),
+                    format!("{}.content_type", ctx.doc_path),
                     content_type_for(&lang),
                 );
             });
@@ -277,8 +272,6 @@ pub fn EditorModal(
 
     // Eval button — run current buffer, close editor.
     let on_eval_click = {
-        let show = show.clone();
-        let on_eval = on_eval.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
             show.set(None); // close first so CM6 is destroyed cleanly
@@ -288,7 +281,6 @@ pub fn EditorModal(
 
     // Cancel / Close button.
     let on_cancel = {
-        let show = show.clone();
         move |_| {
             show.set(None);
         }
@@ -296,7 +288,6 @@ pub fn EditorModal(
 
     // Reply button — send the buffer as a reply to the originating message.
     let on_reply = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -319,7 +310,6 @@ pub fn EditorModal(
 
     // EntityEdit — convert YAML buffer to DAG-CBOR and send to runtime.
     let on_entity_publish = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -360,7 +350,11 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, (target.clone(), path.clone(), cmd_id));
+                            m.insert(msg_id, IpfsCrudPending {
+                                target_did: target.clone(),
+                                crud_path: path.clone(),
+                                cmd_id,
+                            });
                         });
                     }
                     Err(e) => {
@@ -376,7 +370,6 @@ pub fn EditorModal(
 
     // EntityFieldEdit — convert YAML buffer to DAG-CBOR and send to runtime.
     let on_entity_field_publish = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -418,7 +411,11 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, (target.clone(), path.clone(), cmd_id));
+                            m.insert(msg_id, IpfsCrudPending {
+                                target_did: target.clone(),
+                                crud_path: path.clone(),
+                                cmd_id,
+                            });
                         });
                     }
                     Err(e) => {
@@ -434,7 +431,6 @@ pub fn EditorModal(
 
     // RuntimeAclEdit — upload ACL content to IPFS then send CRUD set.
     let on_acl_publish = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -456,7 +452,11 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, (target.clone(), ":acl".to_string(), cmd_id));
+                            m.insert(msg_id, IpfsCrudPending {
+                                target_did: target.clone(),
+                                crud_path: ":acl".to_string(),
+                                cmd_id,
+                            });
                         });
                     }
                     Err(e) => {
@@ -475,7 +475,6 @@ pub fn EditorModal(
     //   application/x-ma-term+dag-cbor → IPFS publish flow
     //   anything else (+cbor, +yaml)   → parse YAML → CBOR → inline CRUD set
     let on_crud_save = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -521,7 +520,11 @@ pub fn EditorModal(
                                     state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                                 }
                                 state2.pending_ipfs_crud.update(|m| {
-                                    m.insert(msg_id, (target.clone(), crud_path.clone(), cmd_id));
+                                    m.insert(msg_id, IpfsCrudPending {
+                                        target_did: target.clone(),
+                                        crud_path: crud_path.clone(),
+                                        cmd_id,
+                                    });
                                 });
                             }
                             Err(e) => {
@@ -577,7 +580,6 @@ pub fn EditorModal(
     // KindEdit — convert YAML buffer to DAG-CBOR and upload to IPFS; then
     // CRUD set :kinds [protocol_id, cid] to register the kind.
     let on_kind_publish = {
-        let show = show.clone();
         let state = state.clone();
         move |_| {
             let text = js_editor_get_value(EDITOR_EL_ID);
@@ -617,7 +619,11 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_kind_upserts.update(|m| {
-                            m.insert(msg_id, (target.clone(), protocol_id.clone(), cmd_id));
+                            m.insert(msg_id, IpfsKindUpsertPending {
+                                target_did: target.clone(),
+                                protocol_id: protocol_id.clone(),
+                                cmd_id,
+                            });
                         });
                     }
                     Err(e) => {
@@ -687,7 +693,7 @@ pub fn EditorModal(
                     <select
                         class="editor-lang-select"
                         style=move || if is_standard() { "" } else { "display:none" }
-                        on:change=on_lang_change.clone()
+                        on:change=on_lang_change
                         prop:value=move || language.get()
                     >
                         <option value="plain">"plain"</option>
@@ -704,13 +710,13 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-eval"
                         style=move || if is_standard() { "" } else { "display:none" }
-                        on:click=on_eval_click.clone()
+                        on:click=on_eval_click
                     >{t("btn-eval")}</button>
                     // Cancel / Close — Standard + View; label adapts
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_standard() || is_view() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{move || if is_view() { t("btn-close") } else { t("btn-cancel") }}</button>
                     // Reply — Reply mode only
                     <button
@@ -728,7 +734,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                     // Publish — EntityFieldEdit mode
                     <button
@@ -740,7 +746,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_entity_field_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                     // Publish — KindEdit mode
                     <button
@@ -752,7 +758,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_kind_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                     // Save — ConfigEdit mode
                     <button
@@ -764,7 +770,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_config_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                     // Publish — RuntimeAclEdit mode
                     <button
@@ -776,7 +782,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_runtime_acl_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                     // Save — CrudEdit mode
                     <button
@@ -788,7 +794,7 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_crud_edit() { "" } else { "display:none" }
-                        on:click=on_cancel.clone()
+                        on:click=on_cancel
                     >{t("btn-cancel")}</button>
                 </div>
                 <div id=EDITOR_EL_ID class="editor-cm-host"></div>

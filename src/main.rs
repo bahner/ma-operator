@@ -1,6 +1,7 @@
 mod acl;
 mod app;
 mod cid_ops;
+mod http;
 mod config;
 mod core;
 mod i18n;

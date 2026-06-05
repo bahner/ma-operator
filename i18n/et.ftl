@@ -11,6 +11,7 @@ label-confirm-passphrase = kinnita paroolilause
 btn-login = logi sisse
 btn-export = ekspordi
 btn-generate = genereeri
+btn-new-endpoint = uus lõpp-punkt
 passphrase-warning = Kaotatud paroolilause = kaotatud identiteet. Taastamine pole võimalik.
 import-help = Vali eksporditud .zion.json-fail. Pakett jääb krüpteerituks.
 status-unlocking = avatakse lukk...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Avaldamine muudab su identiteedi võrgus leitavaks. Teised 
 help-publish-ma = Avaldamiseks vajad installitud ma-d (kohalik käituskeskkond). See ühendab ego IPFS/IPNS-iga sinu nimel.
 help-publish-steps = Sammud: käivita '.my.ma:discover' kohaliku ma tuvastamiseks, seejärel '.my.identity:publish @ma'.
 help-publish-without = Ilma avaldamiseta teised ei saa sulle jõuda — isegi kui nad teavad sinu DID-i, ei suuda nad sinu endpointi lahendada.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

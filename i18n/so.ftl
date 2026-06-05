@@ -11,6 +11,7 @@ label-confirm-passphrase = xaqiiji ereyga sirta
 btn-login = gal
 btn-export = soo saar
 btn-generate = abuur
+btn-new-endpoint = xidid cusub
 passphrase-warning = Luminta ereyga sirta = luminta aqoonsigu. Soo noqosho ma jirto.
 import-help = Dooro faylka .zion.json ee la soo saaray. Xidhmadda way ku xidnaataa sirta.
 status-unlocking = la furayo...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo s
 help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
 help-publish-steps = Tallaabooyinka: orod '.my.ma:discover' si aad u ogaato ma gudaha ah, ka dibna '.my.identity:publish @ma'.
 help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

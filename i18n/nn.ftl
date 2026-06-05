@@ -11,6 +11,7 @@ label-confirm-passphrase = stadfest passfrase
 btn-login = logg inn
 btn-export = eksporter
 btn-generate = generer
+btn-new-endpoint = nytt endepunkt
 passphrase-warning = Mist passfrase = mist identitet. Det finst ingen atterhenting.
 import-help = Vel ei eksportert .zion.json-fil. Pakka forblir kryptert.
 status-unlocking = låser opp...
@@ -238,17 +239,15 @@ err-edit-fetch-failed = redigering: hentingsfeil: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ingen aktiv økt — profilen kan ikkje slettast
 profile-delete-error = sletting av profil mislukkast: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.my.ma:discover' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys merged from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+profile-wrong-user = kan ikkje setje CID for ein annan profil — berre din eigen
+profile-wrong-user-name = kan ikkje setje CID for '{ $name }' — berre din eigen profil
+profile-no-ma = ingen ma-køyretid konfigurert — køyr '.my.ma:discover' fyrst
+profile-no-cid = ingen CID lagra for denne profilen — køyr ':publish' fyrst
+profile-no-cid-in-doc = ingen profil-CID funnen i DID-dokument — køyr ':publish' fyrst
+profile-publish-failed = profilpublisering mislukkast: { $e }
+profile-fetch-done = profil henta — { $n } nøklar slegne saman frå IPFS
+profile-fetch-failed = profil-henting mislukkast: { $e }
+msg-identity-exists = identitet alt publisert — profil-CID lasta frå lokal lagring
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +307,5 @@ help-publish-intro = Publisering gjer identiteten din synleg på nettverket. And
 help-publish-ma = For å publisere treng du ma (lokal køyretid) installert. Han koplar ego til IPFS/IPNS på dine vegner.
 help-publish-steps = Steg: køyr '.my.ma:discover' for å oppdage din lokale ma, deretter '.my.identity:publish @ma'.
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
+profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity:publish @ma' fyrst, deretter ':publish' profilen din
+profile-update-done = profile updated — { $n } keys merged from CID

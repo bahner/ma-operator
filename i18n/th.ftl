@@ -11,6 +11,7 @@ label-confirm-passphrase = ยืนยันวลีรหัสผ่าน
 btn-login = เข้าสู่ระบบ
 btn-export = ส่งออก
 btn-generate = สร้าง
+btn-new-endpoint = จุดเชื่อมต่อใหม่
 passphrase-warning = หากสูญหายวลีรหัสผ่าน ตัวตนของคุณจะสูญหายไปด้วย ไม่มีการกู้คืน
 import-help = เลือกไฟล์ .zion.json ที่ส่งออกไว้ กลุ่มคีย์ยังคงเข้ารหัสอยู่
 status-unlocking = กำลังปลดล็อก...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -309,3 +310,5 @@ help-publish-intro = การเผยแพร่ทำให้ตัวต�
 help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
 help-publish-steps = ขั้นตอน: รัน '.my.ma:discover' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity:publish @ma'
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

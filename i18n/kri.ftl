@@ -11,6 +11,7 @@ label-confirm-passphrase = konfam passfraze
 btn-login = login
 btn-export = eksport
 btn-generate = jenaret
+btn-new-endpoint = nyu endpoint
 passphrase-warning = Lus passfraze = lus identity. Nor get no wei fi get am bak.
 import-help = Selekt wan .zion.json fail we dem eksport. Di babol go stei enkryptid.
 status-unlocking = de unlok...
@@ -234,7 +235,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -295,3 +296,5 @@ help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda p
 help-publish-ma = Fɔ pɔblish, yu nid ma (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.
 help-publish-steps = Stɛps: ron '.my.ma:discover' fɔ faind lɔkɔl ma, den '.my.identity:publish @ma'.
 help-publish-without = Widaut pɔblishine, ɔda pipul kɛnnɔ rich yu — even if dɛn nɔ yu DID, dɛn kɛnnɔ sɔlv yu endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

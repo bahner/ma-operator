@@ -11,6 +11,7 @@ label-confirm-passphrase = patvirtinti slaptažodžio frazę
 btn-login = prisijungti
 btn-export = eksportuoti
 btn-generate = generuoti
+btn-new-endpoint = naujas galas
 passphrase-warning = Prarasta slaptažodžio frazė = prarasta tapatybė. Atkūrimas neįmanomas.
 import-help = Pasirinkite eksportuotą .zion.json failą. Paketas lieka užšifruotas.
 status-unlocking = atrakinamas...
@@ -241,7 +242,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -302,3 +303,5 @@ help-publish-intro = Paskelbimas padaro tavo tapatybę randamą tinkle. Kiti gal
 help-publish-ma = Paskelbimui reikia įdiegto ma (vietinė vykdymo aplinka). Ji sujungia ego su IPFS/IPNS tavo vardu.
 help-publish-steps = Žingsniai: paleisk '.my.ma:discover' vietiniam ma aptikti, tada '.my.identity:publish @ma'.
 help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

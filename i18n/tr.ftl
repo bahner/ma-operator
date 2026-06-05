@@ -11,6 +11,7 @@ label-confirm-passphrase = parolayı onayla
 btn-login = giriş yap
 btn-export = dışa aktar
 btn-generate = oluştur
+btn-new-endpoint = yeni uç nokta
 passphrase-warning = Parola kaybolursa kimlik de kaybolur. Kurtarma mümkün değildir.
 import-help = Dışa aktarılmış .zion.json dosyasını seçin. Paket şifreli kalır.
 status-unlocking = kilidi açılıyor...
@@ -248,7 +249,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -308,3 +309,5 @@ help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğ
 help-publish-ma = Yayımlamak için ma (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.
 help-publish-steps = Adımlar: yerel ma'yı algılamak için '.my.ma:discover' çalıştır, ardından '.my.identity:publish @ma'.
 help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

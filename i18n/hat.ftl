@@ -11,6 +11,7 @@ label-confirm-passphrase = konfime mo sekrè
 btn-login = konekte
 btn-export = ekspòte
 btn-generate = jenere
+btn-new-endpoint = nouvo koneksyon
 passphrase-warning = Pèdi mo sekrè = pèdi idantite. Pa gen rekiperasyon.
 import-help = Chwazi yon fichye .zion.json ekspòte. Pakèt la rete chifre.
 status-unlocking = ap debloke...
@@ -234,7 +235,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys merged from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile CID loaded from local storage
+msg-identity-exists = identity already published — profile up to date
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
@@ -295,3 +296,5 @@ help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka 
 help-publish-ma = Pou pibliye, ou bezwen ma (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.
 help-publish-steps = Etap: kouri '.my.ma:discover' pou detekte ma lokal, epi '.my.identity:publish @ma'.
 help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID

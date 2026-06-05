@@ -4,11 +4,11 @@
 ///   .my.aliases.fjodor  → did:ma:<...>
 ///   .my.home            → did:ma:<...>#actor
 ///   .my.did             → did:ma:<...>
-///   .config.colour.alias     → #ffd700
-///   .config.colour.text      → #00ff41
-///   .config.colour.pending   → #004d00
-///   .config.colour.replied   → #00ff41
-///   .config.screensaver.timeout → 300
+///   .my.config.colour.alias     → #ffd700
+///   .my.config.colour.text      → #00ff41
+///   .my.config.colour.pending   → #004d00
+///   .my.config.colour.replied   → #00ff41
+///   .my.config.screensaver.timeout → 300
 ///
 /// The tree is stored as a flat HashMap<String, String> in IndexedDB
 /// (per-user) and serialized as JSON.
@@ -33,21 +33,21 @@ impl EgoConfig {
 
     fn set_defaults(&mut self) {
         let defaults = [
-            (".config.colour.text", "#00ff41"),
-            (".config.colour.dimmed", "#008f11"),
-            (".config.colour.pending", "#004d00"),
-            (".config.colour.replied", "#00ff41"),
-            (".config.colour.alias", "#ffd700"),
-            (".config.colour.error", "#ff3333"),
-            (".config.colour.system", "#888888"),
-            (".config.colour.bg", "#0d0d0d"),
-            (".config.colour.input_bg", "#0a0a0a"),
-            (".config.colour.border", "#003300"),
-            (".config.colour.cursor", "#00ff41"),
-            (".config.colour.highlight", "#003300"),
-            (".config.screensaver.timeout", "300"),
-            (".config.editor.placement", "bottom"),
-            (".config.editor.persistent", "false"),
+            (".my.config.colour.text", "#00ff41"),
+            (".my.config.colour.dimmed", "#008f11"),
+            (".my.config.colour.pending", "#004d00"),
+            (".my.config.colour.replied", "#00ff41"),
+            (".my.config.colour.alias", "#ffd700"),
+            (".my.config.colour.error", "#ff3333"),
+            (".my.config.colour.system", "#888888"),
+            (".my.config.colour.bg", "#0d0d0d"),
+            (".my.config.colour.input_bg", "#0a0a0a"),
+            (".my.config.colour.border", "#003300"),
+            (".my.config.colour.cursor", "#00ff41"),
+            (".my.config.colour.highlight", "#003300"),
+            (".my.config.screensaver.timeout", "300"),
+            (".my.config.editor.placement", "bottom"),
+            (".my.config.editor.persistent", "false"),
         ];
         for (k, v) in &defaults {
             self.tree
@@ -154,17 +154,17 @@ impl EgoConfig {
 
     #[allow(dead_code)]
     pub fn colour_alias(&self) -> &str {
-        self.get(".config.colour.alias").unwrap_or("#ffd700")
+        self.get(".my.config.colour.alias").unwrap_or("#ffd700")
     }
 
     #[allow(dead_code)]
     pub fn colour_text(&self) -> &str {
-        self.get(".config.colour.text").unwrap_or("#00ff41")
+        self.get(".my.config.colour.text").unwrap_or("#00ff41")
     }
 
     #[allow(dead_code)]
     pub fn screensaver_timeout_secs(&self) -> u64 {
-        self.get(".config.screensaver.timeout")
+        self.get(".my.config.screensaver.timeout")
             .and_then(|v| v.parse().ok())
             .unwrap_or(300)
     }
@@ -183,15 +183,15 @@ impl EgoConfig {
 
     /// Prefixes included when serialising the portable profile blob.
     /// Explicitly excluded: .my.inbox.*, .my.identity.*, .my.ma.*,
-    /// .my.profile.* (derived/ephemeral), .my.acl (security-sensitive).
+    /// .profiles.* (local CID index, ephemeral), .my.acl (security-sensitive).
     const PROFILE_PREFIXES: &'static [&'static str] = &[
         ".my.aliases.",
         ".my.doc.",
         ".my.i18n",
-        ".config.",
+        ".my.config.",
     ];
 
-    /// Serialize the portable profile subtrees to JSON bytes.
+    /// Serialize the portable profile subtrees to CBOR bytes.
     /// Only keys matching `PROFILE_PREFIXES` are included.
     pub fn serialize_profile_subtrees(&self) -> Result<Vec<u8>, String> {
         let selected: HashMap<&str, &str> = self
@@ -204,22 +204,26 @@ impl EgoConfig {
             })
             .map(|(k, v)| (k.as_str(), v.as_str()))
             .collect();
-        serde_json::to_vec(&selected).map_err(|e| e.to_string())
+        serde_ipld_dagcbor::to_vec(&selected).map_err(|e| e.to_string())
     }
 
-    /// Merge a deserialized profile JSON object into this config.
-    /// Existing local keys are NOT overwritten — remote data only fills gaps.
-    /// This is safe to call on a populated config (new browser = empty config,
-    /// so all remote keys are accepted).
-    pub fn merge_profile(&mut self, json_bytes: &[u8]) -> Result<usize, String> {
+    /// Replace the profile subtrees in this config with data from a remote profile blob.
+    /// All local keys matching `PROFILE_PREFIXES` are removed first, then the remote
+    /// keys are inserted wholesale — preventing buildup of stale aliases, inbox entries,
+    /// and other profile data.
+    pub fn merge_profile(&mut self, cbor_bytes: &[u8]) -> Result<usize, String> {
         let map: HashMap<String, String> =
-            serde_json::from_slice(json_bytes).map_err(|e| e.to_string())?;
-        let mut count = 0usize;
+            serde_ipld_dagcbor::from_slice(cbor_bytes).map_err(|e| e.to_string())?;
+        // Remove all local keys covered by the profile prefixes so that old aliases
+        // and similar data do not accumulate across profile fetches.
+        self.tree.retain(|k, _| {
+            !Self::PROFILE_PREFIXES
+                .iter()
+                .any(|prefix| k == *prefix || k.starts_with(prefix))
+        });
+        let count = map.len();
         for (k, v) in map {
-            self.tree.entry(k).or_insert_with(|| {
-                count += 1;
-                v
-            });
+            self.tree.insert(k, v);
         }
         Ok(count)
     }
