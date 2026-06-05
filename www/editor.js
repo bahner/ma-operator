@@ -27,7 +27,7 @@ window.maEditor = {
 // ── Async CM6 load ────────────────────────────────────────────────────────
 (async () => {
     const { EditorState } = await import("https://esm.sh/@codemirror/state@6");
-    const { EditorView, keymap, lineNumbers, highlightActiveLine } =
+    const { EditorView, keymap, lineNumbers, highlightActiveLine, drawSelection } =
         await import("https://esm.sh/@codemirror/view@6");
     const { defaultKeymap, history, historyKeymap } =
         await import("https://esm.sh/@codemirror/commands@6");
@@ -52,6 +52,8 @@ window.maEditor = {
             keymap.of([...defaultKeymap, ...historyKeymap]),
             lineNumbers(),
             highlightActiveLine(),
+            drawSelection(),
+            EditorView.theme({ ".cm-content": { caretColor: "transparent" } }),
             EditorView.lineWrapping,
             ..._languageExtension(lang),
         ];
