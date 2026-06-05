@@ -251,3 +251,254 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
         None => Ok(EgoConfig::new()),
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn bare() -> EgoConfig {
+        EgoConfig::default()
+    }
+
+    // ── get / set ─────────────────────────────────────────────────────────
+
+    #[test]
+    fn get_missing_returns_none() {
+        assert!(bare().get(".my.aliases.nobody").is_none());
+    }
+
+    #[test]
+    fn set_then_get() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        assert_eq!(cfg.get(".my.aliases.alice"), Some("did:ma:abc"));
+    }
+
+    #[test]
+    fn set_overwrites() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        cfg.set(".my.i18n", "sv");
+        assert_eq!(cfg.get(".my.i18n"), Some("sv"));
+    }
+
+    // ── new() applies defaults ─────────────────────────────────────────────
+
+    #[test]
+    fn new_has_colour_defaults() {
+        let cfg = EgoConfig::new();
+        assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
+        assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
+        assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
+    }
+
+    #[test]
+    fn new_does_not_overwrite_existing() {
+        let mut cfg = bare();
+        cfg.set(".my.config.colour.text", "#ffffff");
+        cfg.set_defaults();
+        assert_eq!(cfg.get(".my.config.colour.text"), Some("#ffffff"));
+    }
+
+    // ── is_read_only ──────────────────────────────────────────────────────
+
+    #[test]
+    fn identity_did_is_read_only() {
+        assert!(EgoConfig::is_read_only(".my.identity.did"));
+    }
+
+    #[test]
+    fn other_keys_not_read_only() {
+        assert!(!EgoConfig::is_read_only(".my.aliases.alice"));
+        assert!(!EgoConfig::is_read_only(".my.i18n"));
+    }
+
+    // ── is_leaf / has_children / has_leaf_ancestor ────────────────────────
+
+    #[test]
+    fn is_leaf_present() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        assert!(cfg.is_leaf(".my.i18n"));
+    }
+
+    #[test]
+    fn is_leaf_absent() {
+        assert!(!bare().is_leaf(".my.i18n"));
+    }
+
+    #[test]
+    fn has_children_true() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        assert!(cfg.has_children(".my.aliases"));
+        assert!(cfg.has_children(".my"));
+    }
+
+    #[test]
+    fn has_children_false_for_leaf() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        assert!(!cfg.has_children(".my.i18n"));
+    }
+
+    #[test]
+    fn has_leaf_ancestor_true() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        // .my.i18n is a leaf; trying to set .my.i18n.subtag would have an ancestor leaf
+        assert!(cfg.has_leaf_ancestor(".my.i18n.subtag"));
+    }
+
+    #[test]
+    fn has_leaf_ancestor_false() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        assert!(!cfg.has_leaf_ancestor(".my.aliases.bob"));
+    }
+
+    // ── delete / delete_subtree ───────────────────────────────────────────
+
+    #[test]
+    fn delete_existing_key() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        assert!(cfg.delete(".my.i18n"));
+        assert!(cfg.get(".my.i18n").is_none());
+    }
+
+    #[test]
+    fn delete_absent_key_returns_false() {
+        assert!(!bare().delete(".my.nonexistent"));
+    }
+
+    #[test]
+    fn delete_subtree_removes_exact_and_children() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:a");
+        cfg.set(".my.aliases.bob", "did:ma:b");
+        cfg.set(".my.i18n", "nb");
+        let n = cfg.delete_subtree(".my.aliases");
+        assert_eq!(n, 2);
+        assert!(cfg.get(".my.aliases.alice").is_none());
+        assert!(cfg.get(".my.aliases.bob").is_none());
+        assert_eq!(cfg.get(".my.i18n"), Some("nb")); // untouched
+    }
+
+    #[test]
+    fn delete_subtree_exact_leaf() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        assert_eq!(cfg.delete_subtree(".my.i18n"), 1);
+        assert!(cfg.get(".my.i18n").is_none());
+    }
+
+    #[test]
+    fn delete_subtree_absent_returns_zero() {
+        assert_eq!(bare().delete_subtree(".my.aliases"), 0);
+    }
+
+    // ── list ──────────────────────────────────────────────────────────────
+
+    #[test]
+    fn list_prefix_sorted() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.bob", "did:ma:b");
+        cfg.set(".my.aliases.alice", "did:ma:a");
+        let entries = cfg.list(".my.aliases.");
+        // Keys come back sorted
+        assert_eq!(entries[0].0, ".my.aliases.alice");
+        assert_eq!(entries[1].0, ".my.aliases.bob");
+    }
+
+    #[test]
+    fn list_empty_prefix() {
+        assert!(bare().list(".my.aliases.").is_empty());
+    }
+
+    // ── resolve_alias / reverse_alias ─────────────────────────────────────
+
+    #[test]
+    fn resolve_alias_found() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        assert_eq!(cfg.resolve_alias("alice"), Some("did:ma:abc"));
+    }
+
+    #[test]
+    fn resolve_alias_missing() {
+        assert!(bare().resolve_alias("nobody").is_none());
+    }
+
+    #[test]
+    fn reverse_alias_found() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        assert_eq!(cfg.reverse_alias("did:ma:abc"), Some("alice"));
+    }
+
+    #[test]
+    fn reverse_alias_missing() {
+        assert!(bare().reverse_alias("did:ma:unknown").is_none());
+    }
+
+    // ── JSON round-trip ───────────────────────────────────────────────────
+
+    #[test]
+    fn json_roundtrip() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        let json = cfg.to_json().unwrap();
+        let restored = EgoConfig::from_json(&json).unwrap();
+        assert_eq!(restored.get(".my.i18n"), Some("nb"));
+        assert_eq!(restored.get(".my.aliases.alice"), Some("did:ma:abc"));
+    }
+
+    #[test]
+    fn from_json_invalid_fails() {
+        assert!(EgoConfig::from_json("not json").is_err());
+    }
+
+    // ── serialize_profile_subtrees / merge_profile ─────────────────────────
+
+    #[test]
+    fn profile_roundtrip_keeps_aliases_and_config() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.alice", "did:ma:abc");
+        cfg.set(".my.i18n", "nb");
+        cfg.set(".my.config.colour.text", "#112233");
+        // inbox should NOT be included
+        cfg.set(".my.inbox.0.from", "did:ma:xyz");
+
+        let bytes = cfg.serialize_profile_subtrees().unwrap();
+
+        let mut target = bare();
+        let n = target.merge_profile(&bytes).unwrap();
+        assert!(n >= 3);
+        assert_eq!(target.get(".my.aliases.alice"), Some("did:ma:abc"));
+        assert_eq!(target.get(".my.i18n"), Some("nb"));
+        assert_eq!(target.get(".my.config.colour.text"), Some("#112233"));
+        assert!(target.get(".my.inbox.0.from").is_none());
+    }
+
+    #[test]
+    fn merge_profile_replaces_old_aliases() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.old", "did:ma:old");
+
+        // Profile blob has only a new alias
+        let mut source = bare();
+        source.set(".my.aliases.new", "did:ma:new");
+        let bytes = source.serialize_profile_subtrees().unwrap();
+
+        cfg.merge_profile(&bytes).unwrap();
+        assert!(cfg.get(".my.aliases.old").is_none(), "stale alias should be gone");
+        assert_eq!(cfg.get(".my.aliases.new"), Some("did:ma:new"));
+    }
+
+    #[test]
+    fn merge_profile_invalid_cbor_fails() {
+        assert!(bare().merge_profile(b"not cbor").is_err());
+    }
+}

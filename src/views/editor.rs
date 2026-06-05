@@ -299,12 +299,7 @@ pub fn EditorModal(
             };
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                match crate::transport::send_text_reply(&to, &text, &reply_to_id).await {
-                    Ok(_) => state2.push_system(t("msg-reply-sent")),
-                    Err(e) => state2.push_error(tf("msg-reply-failed", &[("e", &e)])),
-                }
-            });
+            leptos::task::spawn_local(do_editor_reply(text, to, reply_to_id, state2));
         }
     };
 
@@ -323,51 +318,11 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let path = format!(":entities.{entity_name}");
+            let _path = format!(":entities.{entity_name}");
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(b) => b,
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                        return;
-                    }
-                };
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    cbor_bytes,
-                    "application/vnd.ipld.dag-cbor",
-                )
-                .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                        }
-                        state2.pending_ipfs_crud.update(|m| {
-                            m.insert(
-                                msg_id,
-                                IpfsCrudPending {
-                                    target_did: target.clone(),
-                                    crud_path: path.clone(),
-                                    cmd_id,
-                                },
-                            );
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
-                    }
-                }
-            });
+            leptos::task::spawn_local(do_entity_publish(text, target, entity_name, cmd_id, state2));
         }
     };
 
@@ -387,51 +342,11 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let path = format!(":entities.{entity_name}.{field}");
+            let _path = format!(":entities.{entity_name}.{field}");
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(b) => b,
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]));
-                        return;
-                    }
-                };
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    cbor_bytes,
-                    "application/vnd.ipld.dag-cbor",
-                )
-                .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                        }
-                        state2.pending_ipfs_crud.update(|m| {
-                            m.insert(
-                                msg_id,
-                                IpfsCrudPending {
-                                    target_did: target.clone(),
-                                    crud_path: path.clone(),
-                                    cmd_id,
-                                },
-                            );
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
-                    }
-                }
-            });
+            leptos::task::spawn_local(do_entity_field_publish(text, target, entity_name, field, cmd_id, state2));
         }
     };
 
@@ -449,33 +364,7 @@ pub fn EditorModal(
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/yaml")
-                    .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                        }
-                        state2.pending_ipfs_crud.update(|m| {
-                            m.insert(
-                                msg_id,
-                                IpfsCrudPending {
-                                    target_did: target.clone(),
-                                    crud_path: ":acl".to_string(),
-                                    cmd_id,
-                                },
-                            );
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
-                    }
-                }
-            });
+            leptos::task::spawn_local(do_acl_publish(text, target, cmd_id, state2));
         }
     };
 
@@ -501,91 +390,7 @@ pub fn EditorModal(
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                match content_type.as_str() {
-                    "application/x-ma-term+dag-cbor" => {
-                        let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                            Ok(b) => b,
-                            Err(e) => {
-                                if let Some(cid) = cmd_id {
-                                    state2.resolve_command_by_id(
-                                        cid,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                }
-                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                                return;
-                            }
-                        };
-                        match crate::transport::send_ipfs_store(
-                            &target,
-                            cbor_bytes,
-                            "application/vnd.ipld.dag-cbor",
-                        )
-                        .await
-                        {
-                            Ok(msg_id) => {
-                                if let Some(cid) = cmd_id {
-                                    state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                                }
-                                state2.pending_ipfs_crud.update(|m| {
-                                    m.insert(
-                                        msg_id,
-                                        IpfsCrudPending {
-                                            target_did: target.clone(),
-                                            crud_path: crud_path.clone(),
-                                            cmd_id,
-                                        },
-                                    );
-                                });
-                            }
-                            Err(e) => {
-                                if let Some(cid) = cmd_id {
-                                    state2.resolve_command_by_id(
-                                        cid,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                }
-                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                            }
-                        }
-                    }
-                    _ => {
-                        // +cbor, +yaml, or unknown — parse YAML and send inline.
-                        let cbor_val = match crate::messages::yaml_to_cbor_value(&text) {
-                            Ok(v) => v,
-                            Err(e) => {
-                                if let Some(cid) = cmd_id {
-                                    state2.resolve_command_by_id(
-                                        cid,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                }
-                                state2.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                                return;
-                            }
-                        };
-                        match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
-                            Ok(set_msg_id) => {
-                                if let Some(original_cmd_id) = cmd_id {
-                                    state2.pending_crud_confirms.update(|m| {
-                                        m.insert(set_msg_id, original_cmd_id);
-                                    });
-                                }
-                            }
-                            Err(e) => {
-                                if let Some(cid) = cmd_id {
-                                    state2.resolve_command_by_id(
-                                        cid,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                }
-                                state2.push_error(e);
-                            }
-                        }
-                    }
-                }
-            });
+            leptos::task::spawn_local(do_crud_save(text, target, crud_path, content_type, cmd_id, state2));
         }
     };
 
@@ -608,47 +413,7 @@ pub fn EditorModal(
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                    Ok(b) => b,
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-kind-publish-failed", &[("e", &e)]));
-                        return;
-                    }
-                };
-                match crate::transport::send_ipfs_store(
-                    &target,
-                    cbor_bytes,
-                    "application/vnd.ipld.dag-cbor",
-                )
-                .await
-                {
-                    Ok(msg_id) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Publishing);
-                        }
-                        state2.pending_ipfs_kind_upserts.update(|m| {
-                            m.insert(
-                                msg_id,
-                                IpfsKindUpsertPending {
-                                    target_did: target.clone(),
-                                    protocol_id: protocol_id.clone(),
-                                    cmd_id,
-                                },
-                            );
-                        });
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
-                    }
-                }
-            });
+            leptos::task::spawn_local(do_kind_publish(text, target, protocol_id, cmd_id, state2));
         }
     };
 
@@ -817,6 +582,264 @@ pub fn EditorModal(
         </Show>
     }
 }
+
+// ── Editor save/publish handlers ────────────────────────────────────────────
+
+async fn do_editor_reply(text: String, to: String, reply_to_id: String, state: AppState) {
+    match crate::transport::send_text_reply(&to, &text, &reply_to_id).await {
+        Ok(_) => state.push_system(t("msg-reply-sent")),
+        Err(e) => state.push_error(tf("msg-reply-failed", &[("e", &e)])),
+    }
+
+}
+
+async fn do_entity_publish(text: String, target: String, entity_name: String, cmd_id: Option<u64>, state: AppState) {
+    let path = format!(":entities.{entity_name}");
+    let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+        Ok(b) => b,
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+            return;
+        }
+    };
+    match crate::transport::send_ipfs_store(
+        &target,
+        cbor_bytes,
+        "application/vnd.ipld.dag-cbor",
+    )
+    .await
+    {
+        Ok(msg_id) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Publishing);
+            }
+            state.pending_ipfs_crud.update(|m| {
+                m.insert(
+                    msg_id,
+                    IpfsCrudPending {
+                        target_did: target.clone(),
+                        crud_path: path.clone(),
+                        cmd_id,
+                    },
+                );
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+        }
+    }
+
+}
+
+async fn do_entity_field_publish(text: String, target: String, entity_name: String, field: String, cmd_id: Option<u64>, state: AppState) {
+    let path = format!(":entities.{entity_name}.{field}");
+    let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+        Ok(b) => b,
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-field-publish-failed", &[("e", &e)]));
+            return;
+        }
+    };
+    match crate::transport::send_ipfs_store(
+        &target,
+        cbor_bytes,
+        "application/vnd.ipld.dag-cbor",
+    )
+    .await
+    {
+        Ok(msg_id) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Publishing);
+            }
+            state.pending_ipfs_crud.update(|m| {
+                m.insert(
+                    msg_id,
+                    IpfsCrudPending {
+                        target_did: target.clone(),
+                        crud_path: path.clone(),
+                        cmd_id,
+                    },
+                );
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
+        }
+    }
+
+}
+
+async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state: AppState) {
+    match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/yaml")
+        .await
+    {
+        Ok(msg_id) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Publishing);
+            }
+            state.pending_ipfs_crud.update(|m| {
+                m.insert(
+                    msg_id,
+                    IpfsCrudPending {
+                        target_did: target.clone(),
+                        crud_path: ":acl".to_string(),
+                        cmd_id,
+                    },
+                );
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
+        }
+    }
+
+}
+
+async fn do_crud_save(text: String, target: String, crud_path: String, content_type: String, cmd_id: Option<u64>, state: AppState) {
+    match content_type.as_str() {
+        "application/x-ma-term+dag-cbor" => {
+            let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+                Ok(b) => b,
+                Err(e) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(
+                            cid,
+                            CommandStatus::Error(e.clone()),
+                        );
+                    }
+                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                    return;
+                }
+            };
+            match crate::transport::send_ipfs_store(
+                &target,
+                cbor_bytes,
+                "application/vnd.ipld.dag-cbor",
+            )
+            .await
+            {
+                Ok(msg_id) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(cid, CommandStatus::Publishing);
+                    }
+                    state.pending_ipfs_crud.update(|m| {
+                        m.insert(
+                            msg_id,
+                            IpfsCrudPending {
+                                target_did: target.clone(),
+                                crud_path: crud_path.clone(),
+                                cmd_id,
+                            },
+                        );
+                    });
+                }
+                Err(e) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(
+                            cid,
+                            CommandStatus::Error(e.clone()),
+                        );
+                    }
+                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                }
+            }
+        }
+        _ => {
+            // +cbor, +yaml, or unknown — parse YAML and send inline.
+            let cbor_val = match crate::messages::yaml_to_cbor_value(&text) {
+                Ok(v) => v,
+                Err(e) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(
+                            cid,
+                            CommandStatus::Error(e.clone()),
+                        );
+                    }
+                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                    return;
+                }
+            };
+            match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
+                Ok(set_msg_id) => {
+                    if let Some(original_cmd_id) = cmd_id {
+                        state.pending_crud_confirms.update(|m| {
+                            m.insert(set_msg_id, original_cmd_id);
+                        });
+                    }
+                }
+                Err(e) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(
+                            cid,
+                            CommandStatus::Error(e.clone()),
+                        );
+                    }
+                    state.push_error(e);
+                }
+            }
+        }
+    }
+
+}
+
+async fn do_kind_publish(text: String, target: String, protocol_id: String, cmd_id: Option<u64>, state: AppState) {
+    let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
+        Ok(b) => b,
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]));
+            return;
+        }
+    };
+    match crate::transport::send_ipfs_store(
+        &target,
+        cbor_bytes,
+        "application/vnd.ipld.dag-cbor",
+    )
+    .await
+    {
+        Ok(msg_id) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Publishing);
+            }
+            state.pending_ipfs_kind_upserts.update(|m| {
+                m.insert(
+                    msg_id,
+                    IpfsKindUpsertPending {
+                        target_did: target.clone(),
+                        protocol_id: protocol_id.clone(),
+                        cmd_id,
+                    },
+                );
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
+        }
+    }
+
+}
+
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 

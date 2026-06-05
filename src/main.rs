@@ -1,5 +1,9 @@
 mod acl;
 mod app;
+mod eval;
+mod help;
+mod inbox_poll;
+mod startup;
 mod cid_ops;
 mod config;
 mod core;
