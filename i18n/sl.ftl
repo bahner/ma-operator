@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       počisti terminal
 help-cmd-panic =   .panic                       zadnja možnost — uporabite, če ste v težavah
 help-cmd-history =   .history                     zgodovina ukazov (zaporedni dvojniki združeni)
 help-cmd-logout =   .logout                      odjava
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       prikaži razrešeni DID (ni poslano sporočilo)
 help-msg-send =   @alias[:verb] body           pošlji sporočilo / RPC akterju
@@ -305,3 +307,9 @@ help-publish-steps = Koraki: poženi '.my.ma:discover' za zaznavo lokalnega ma, 
 help-publish-without = Brez objave te drugi ne morejo doseči — čeprav poznajo tvoj DID, ne morejo razrešiti tvojega endpointa.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

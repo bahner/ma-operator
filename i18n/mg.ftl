@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       manadio terminal
 help-cmd-panic =   .panic                       fanalana farany — ampiasao raha ahitana olana
 help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
 help-cmd-logout =   .logout                      mivoaka
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       asehoy DID nonadihina (tsy nalefa hafatra)
@@ -312,3 +314,9 @@ help-publish-steps = Dingana: ampiasao '.my.ma:discover' hikaroana ny ma eo an-t
 help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

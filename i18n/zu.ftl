@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       sula i-terminal
 help-cmd-panic =   .panic                       indlela yokugcina — sebenzisa uma unenkinga
 help-cmd-history =   .history                     umlando wemiyalelo (izinhlobo ezifanayo ezilandelanayo zihlanganiswé)
 help-cmd-logout =   .logout                      phuma
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Usizo — ukuthumela ────────────────────────────────────────────────────
 help-msg-echo =   @alias                       bonisa i-DID esihlunywayo (akuthumelwanga imiyalezo)
@@ -312,3 +314,9 @@ help-publish-steps = Izinyathelo: qhuba '.my.ma:discover' ukuze uthole u-ma wend
 help-publish-without = Ngaphandle kokushicilela, abanye abanakukufinyelela — ngisho noma bazi i-DID yakho, abanakuxazulula i-endpoint yakho.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       清除終端機
 help-cmd-panic =   .panic                       最後手段 — 遇到問題時使用
 help-cmd-history =   .history                     命令歷史（連續重複項已合併）
 help-cmd-logout =   .logout                      登出
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── 說明文字 — 訊息傳遞 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       回顯已解析的 DID（不傳送訊息）
@@ -311,3 +313,9 @@ help-publish-steps = 步驟：執行 '.my.ma:discover' 偵測本地 ma，然後 
 help-publish-without = 未發布時，其他人無法聯繫你 — 即使知道你的 DID，也無法解析你的 endpoint。
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

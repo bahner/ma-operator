@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       share terminal
 help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani idan akwai matsala
 help-cmd-history =   .history                     tarihin umarni (maimaita masu jere sun haɗu)
 help-cmd-logout =   .logout                      fita
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Rubutun taimako — aikawasiku ──────────────────────────────────────────
 help-msg-echo =   @alias                       nuna DID da aka warware (babu aika saƙo)
@@ -312,3 +314,9 @@ help-publish-steps = Matakan: gudanar da '.my.ma:discover' don gano ma na cikin 
 help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -1,64 +1,70 @@
-use leptos::prelude::*;
+use super::doc::format_publish_error;
+use super::resolve_bare_did;
 use crate::config::EgoConfig;
+use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
+use crate::identity::load_identity;
 use crate::state::AppState;
 use crate::transport;
 use crate::views::editor::EditorContext;
-use crate::identity::load_identity;
-use crate::core::CommandStatus;
 use js_sys;
+use leptos::prelude::*;
 use wasm_bindgen::JsCast;
-use super::doc::format_publish_error;
-use super::resolve_bare_did;
 
-pub(super) fn handle_identity(path: &str, verb: &str, args: &[String], state: &AppState,
-    config: RwSignal<EgoConfig>, _show_editor: RwSignal<Option<EditorContext>>,
-    _on_eval: Callback<String>) -> Result<(), String> {
-// ── .my.identity ──────────────────────────────────────────────────────
-if path == ".my.identity" && verb == "export" {
-    let session = state
-        .session
-        .get_untracked()
-        .ok_or_else(|| t("msg-not-logged-in"))?;
-    let username = session.username.clone();
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        match load_identity(&username).await {
-            Ok(Some(stored)) => {
-                let filename = format!("{username}.zion.json");
-                trigger_download(&filename, &stored.export_json);
-                state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));
+pub(super) fn handle_identity(
+    path: &str,
+    verb: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    _show_editor: RwSignal<Option<EditorContext>>,
+    _on_eval: Callback<String>,
+) -> Result<(), String> {
+    // ── .my.identity ──────────────────────────────────────────────────────
+    if path == ".my.identity" && verb == "export" {
+        let session = state
+            .session
+            .get_untracked()
+            .ok_or_else(|| t("msg-not-logged-in"))?;
+        let username = session.username.clone();
+        let state2 = state.clone();
+        leptos::task::spawn_local(async move {
+            match load_identity(&username).await {
+                Ok(Some(stored)) => {
+                    let filename = format!("{username}.zion.json");
+                    trigger_download(&filename, &stored.export_json);
+                    state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));
+                }
+                Ok(None) => {
+                    state2.push_error(tf("error-identity-not-found", &[("name", &username)]))
+                }
+                Err(e) => state2.push_error(tf("identity-export-failed", &[("e", &e)])),
             }
-            Ok(None) => {
-                state2.push_error(tf("error-identity-not-found", &[("name", &username)]))
-            }
-            Err(e) => state2.push_error(tf("identity-export-failed", &[("e", &e)])),
-        }
-    });
-    return Ok(());
-}
-
-if path == ".my.identity" && verb == "publish" {
-    if args.len() != 1 {
-        return Err(t("publish-usage"));
+        });
+        return Ok(());
     }
-    let cfg = config.get_untracked();
-    let publisher = resolve_bare_did(&args[0], &cfg)?;
-    let publisher_disp = args[0].to_string();
-    let cmd_id = state.push_command(format!(".my.identity:publish {publisher_disp}"));
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        match transport::send_ipfs_publish(&publisher).await {
-            Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
-            Err(e) => {
-                let mapped = format_publish_error(&e);
-                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(mapped.clone()));
-                state2.push_error(mapped);
-            }
+
+    if path == ".my.identity" && verb == "publish" {
+        if args.len() != 1 {
+            return Err(t("publish-usage"));
         }
-    });
-    return Ok(());
-}
+        let cfg = config.get_untracked();
+        let publisher = resolve_bare_did(&args[0], &cfg)?;
+        let publisher_disp = args[0].to_string();
+        let cmd_id = state.push_command(format!(".my.identity:publish {publisher_disp}"));
+        let state2 = state.clone();
+        leptos::task::spawn_local(async move {
+            match transport::send_ipfs_publish(&publisher).await {
+                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                Err(e) => {
+                    let mapped = format_publish_error(&e);
+                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(mapped.clone()));
+                    state2.push_error(mapped);
+                }
+            }
+        });
+        return Ok(());
+    }
 
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
 }

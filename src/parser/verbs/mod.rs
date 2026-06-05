@@ -7,12 +7,12 @@ mod inbox;
 mod ma;
 mod profiles;
 
-use leptos::prelude::*;
 use crate::config::EgoConfig;
 use crate::i18n::tf;
-use ma_core::Ipld;
 use crate::state::AppState;
 use crate::views::editor::EditorContext;
+use leptos::prelude::*;
+use ma_core::Ipld;
 
 /// Extract the `ma.agent` CID string from a resolved `Document`, if present.
 pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {

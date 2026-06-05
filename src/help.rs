@@ -26,6 +26,8 @@ fn overview() -> Vec<String> {
         t("help-cmd-history"),
         t("help-cmd-panic"),
         t("help-cmd-logout"),
+        t("help-cmd-batch"),
+        t("help-cmd-batch-sync"),
         String::new(),
         t("help-header-topics"),
         t("help-topic-msg"),

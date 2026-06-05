@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       kpochaa terminal
 help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mgbe ị nọ n'nsogbu
 help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID ezatara (ezitaraghị ozi)
@@ -312,3 +314,9 @@ help-publish-steps = Usoro: bido '.my.ma:discover' iji chọpụta ma nke mpagha
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

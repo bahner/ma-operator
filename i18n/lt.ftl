@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       išvalyti terminalą
 help-cmd-panic =   .panic                       paskutinė priemonė — naudokite, jei esate bėdoje
 help-cmd-history =   .history                     komandų istorija (nuoseklūs dublikatai sujungti)
 help-cmd-logout =   .logout                      atsijungti
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       rodyti išspręstą DID (joks pranešimas neišsiųstas)
 help-msg-send =   @alias[:verb] body           siųsti pranešimą / RPC dalyviui
@@ -305,3 +307,9 @@ help-publish-steps = Žingsniai: paleisk '.my.ma:discover' vietiniam ma aptikti,
 help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

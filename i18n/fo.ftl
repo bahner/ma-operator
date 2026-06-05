@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       reinsa terminalen
 help-cmd-panic =   .panic                       seinasti ráður — nýt um tú ert í vandræðum
 help-cmd-history =   .history                     skipanaferill (eftirfylgjandi endurtøkur samlagar)
 help-cmd-logout =   .logout                      rita út
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       vís leyst DID (einki boð sent)
 help-msg-send =   @alias[:verb] body           send boð / RPC til aktør
@@ -305,3 +307,9 @@ help-publish-steps = Steg: køyr '.my.ma:discover' fyri at finna lokalt ma, sí�
 help-publish-without = Uttan birting kunnu aðrir ikki ná til tín — jafnvel um tey kennu tín DID, kunnu tey ikki greina endepunkt tín.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

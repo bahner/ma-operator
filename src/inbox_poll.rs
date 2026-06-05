@@ -88,11 +88,7 @@ pub async fn run_inbox_poll(
 // ── Per-message filters ────────────────────────────────────────────────────
 
 /// Returns false (and pushes a "blocked" message) when the ACL denies.
-fn acl_gate(
-    incoming: &IncomingMessage,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) -> bool {
+fn acl_gate(incoming: &IncomingMessage, state: &AppState, config: RwSignal<EgoConfig>) -> bool {
     if incoming.reply_to.is_some() {
         return true; // replies are never filtered
     }
@@ -105,7 +101,10 @@ fn acl_gate(
     if crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
         return true;
     }
-    let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+    let (base, frag) = incoming
+        .from
+        .split_once('#')
+        .unwrap_or((&incoming.from, ""));
     let from_disp = match cfg.reverse_alias(base) {
         Some(a) if frag.is_empty() => format!("@{a}"),
         Some(a) => format!("@{a}#{frag}"),
@@ -138,7 +137,10 @@ fn handle_inbox_message(
     state.push_incoming(
         tf(
             "msg-new-message",
-            &[("from", from_display.as_str()), ("count", &count.to_string())],
+            &[
+                ("from", from_display.as_str()),
+                ("count", &count.to_string()),
+            ],
         ),
         None,
         false,
@@ -176,19 +178,23 @@ fn loopback_suppress(incoming: &IncomingMessage) -> bool {
 }
 
 /// Build the display string for an incoming message (alias substitution).
-fn format_display(
-    incoming: &IncomingMessage,
-    config: RwSignal<EgoConfig>,
-) -> String {
+fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
-    let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+    let (base, frag) = incoming
+        .from
+        .split_once('#')
+        .unwrap_or((&incoming.from, ""));
     let Some(alias) = cfg.reverse_alias(base) else {
         return incoming.display.clone();
     };
     let bare = incoming.message_type == ma_core::MESSAGE_TYPE_EMOTE
         || incoming.message_type == ma_core::MESSAGE_TYPE_CHAT;
     let replacement = if bare {
-        if frag.is_empty() { alias.to_string() } else { format!("{alias}#{frag}") }
+        if frag.is_empty() {
+            alias.to_string()
+        } else {
+            format!("{alias}#{frag}")
+        }
     } else if frag.is_empty() {
         format!("@{alias}")
     } else {
@@ -198,12 +204,12 @@ fn format_display(
 }
 
 /// Alias-resolved sender string for display in inbox notifications.
-fn display_sender(
-    incoming: &IncomingMessage,
-    config: RwSignal<EgoConfig>,
-) -> String {
+fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
-    let (base, frag) = incoming.from.split_once('#').unwrap_or((&incoming.from, ""));
+    let (base, frag) = incoming
+        .from
+        .split_once('#')
+        .unwrap_or((&incoming.from, ""));
     match cfg.reverse_alias(base) {
         Some(a) if frag.is_empty() => format!("@{a}"),
         Some(a) => format!("@{a}#{frag}"),
@@ -223,7 +229,9 @@ fn handle_ipfs_crud_reply(
     let pending = state.pending_ipfs_crud.get_untracked().get(msg_id).cloned();
     let Some(p) = pending else { return false };
     let (crud_target, crud_path, cmd_id_opt) = (p.target_did, p.crud_path, p.cmd_id);
-    state.pending_ipfs_crud.update(|m| { m.remove(msg_id); });
+    state.pending_ipfs_crud.update(|m| {
+        m.remove(msg_id);
+    });
     if incoming.is_error {
         if let Some(cid) = cmd_id_opt {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
@@ -244,9 +252,9 @@ fn handle_ipfs_crud_reply(
                 {
                     Ok(set_msg_id) => {
                         if let Some(original_cmd_id) = cmd_id_opt {
-                            state2
-                                .pending_crud_confirms
-                                .update(|m| { m.insert(set_msg_id, original_cmd_id); });
+                            state2.pending_crud_confirms.update(|m| {
+                                m.insert(set_msg_id, original_cmd_id);
+                            });
                         }
                     }
                     Err(e) => {
@@ -282,9 +290,9 @@ fn handle_ipfs_kind_reply(
         .cloned();
     let Some(p) = pending else { return false };
     let (kind_target, protocol_id, cmd_id_opt) = (p.target_did, p.protocol_id, p.cmd_id);
-    state
-        .pending_ipfs_kind_upserts
-        .update(|m| { m.remove(msg_id); });
+    state.pending_ipfs_kind_upserts.update(|m| {
+        m.remove(msg_id);
+    });
     if incoming.is_error {
         if let Some(cid) = cmd_id_opt {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
@@ -308,9 +316,9 @@ fn handle_ipfs_kind_reply(
                 {
                     Ok(set_msg_id) => {
                         if let Some(original_cmd_id) = cmd_id_opt {
-                            state2
-                                .pending_crud_confirms
-                                .update(|m| { m.insert(set_msg_id, original_cmd_id); });
+                            state2.pending_crud_confirms.update(|m| {
+                                m.insert(set_msg_id, original_cmd_id);
+                            });
                         }
                     }
                     Err(e) => {
@@ -346,7 +354,9 @@ fn handle_profile_publish_reply(
         .cloned();
     let Some(p) = pending else { return false };
     let (ma_did, cmd_id_opt) = (p.publisher_did, p.cmd_id);
-    state.pending_profile_publish.update(|m| { m.remove(msg_id); });
+    state.pending_profile_publish.update(|m| {
+        m.remove(msg_id);
+    });
     if incoming.is_error {
         if let Some(cid) = cmd_id_opt {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
@@ -408,14 +418,17 @@ fn handle_edit_open_reply(
     state: &AppState,
     show_editor: RwSignal<Option<EditorContext>>,
 ) -> bool {
-    let pending = state.pending_edit_opens.get_untracked().get(msg_id).cloned();
+    let pending = state
+        .pending_edit_opens
+        .get_untracked()
+        .get(msg_id)
+        .cloned();
     let Some(ctx) = pending else { return false };
-    state.pending_edit_opens.update(|m| { m.remove(msg_id); });
+    state.pending_edit_opens.update(|m| {
+        m.remove(msg_id);
+    });
     if incoming.is_error {
-        state.resolve_command_by_id(
-            ctx.cmd_id,
-            CommandStatus::Error(incoming.display.clone()),
-        );
+        state.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(incoming.display.clone()));
         state.push_error(incoming.display.clone());
         return true;
     }
@@ -425,7 +438,9 @@ fn handle_edit_open_reply(
     let state2 = state.clone();
     let resolved_cmd = ctx.cmd_id;
     let editor_mode = match ctx.editor_mode {
-        EditorMode::CrudEdit { target, crud_path, .. } => EditorMode::CrudEdit {
+        EditorMode::CrudEdit {
+            target, crud_path, ..
+        } => EditorMode::CrudEdit {
             target,
             crud_path,
             content_type: content_type.clone(),
@@ -472,20 +487,18 @@ fn handle_edit_open_reply(
                 }
             }
         }
-        "application/x-ma-term+cbor" => {
-            match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-                Ok(yaml) => show_editor.set(Some(
-                    EditorContext::new(doc_path, yaml)
-                        .with_language("yaml")
-                        .with_mode(editor_mode)
-                        .with_cmd_id(resolved_cmd),
-                )),
-                Err(e) => {
-                    state2.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
-                    state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
-                }
+        "application/x-ma-term+cbor" => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+            Ok(yaml) => show_editor.set(Some(
+                EditorContext::new(doc_path, yaml)
+                    .with_language("yaml")
+                    .with_mode(editor_mode)
+                    .with_cmd_id(resolved_cmd),
+            )),
+            Err(e) => {
+                state2.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
+                state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
             }
-        }
+        },
         "application/x-ma-term+yaml" => {
             match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
                 Ok(ciborium::Value::Text(yaml)) => show_editor.set(Some(
@@ -534,18 +547,11 @@ fn handle_edit_open_reply(
 }
 
 /// CID content-op reply: fetch the CID and apply the op (cat/head/tail/wc).
-fn handle_cid_op_reply(
-    msg_id: &str,
-    incoming: &IncomingMessage,
-    state: &AppState,
-) -> bool {
+fn handle_cid_op_reply(msg_id: &str, incoming: &IncomingMessage, state: &AppState) -> bool {
     let pending = state.pending_cid_ops.update_untracked(|m| m.remove(msg_id));
     let Some(ctx) = pending else { return false };
     if incoming.is_error {
-        state.resolve_command_by_id(
-            ctx.cmd_id,
-            CommandStatus::Error(incoming.display.clone()),
-        );
+        state.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(incoming.display.clone()));
         state.push_error(incoming.display.clone());
         return true;
     }
@@ -566,8 +572,7 @@ fn handle_cid_op_reply(
                         state2.resolve_command_by_id(ctx.cmd_id, CommandStatus::Done);
                     }
                     Err(e) => {
-                        state2
-                            .resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(e.clone()));
+                        state2.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(e.clone()));
                         state2.push_error(tf("cid-op-fetch-failed", &[("e", &e)]));
                     }
                 }
@@ -617,7 +622,13 @@ pub fn classify_reply(
         let reason = match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
             Ok(V::Array(items)) => items
                 .get(1)
-                .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
+                .and_then(|v| {
+                    if let V::Text(s) = v {
+                        Some(s.clone())
+                    } else {
+                        None
+                    }
+                })
                 .unwrap_or_else(|| fallback.to_string()),
             _ => fallback.to_string(),
         };
@@ -638,7 +649,13 @@ pub fn classify_reply(
             },
             (Some(V::Text(verb)), value) if verb == ":error" => {
                 let reason = value
-                    .and_then(|v| if let V::Text(s) = v { Some(s.clone()) } else { None })
+                    .and_then(|v| {
+                        if let V::Text(s) = v {
+                            Some(s.clone())
+                        } else {
+                            None
+                        }
+                    })
                     .unwrap_or_else(|| fallback.to_string());
                 (CommandStatus::Error(String::new()), Some(reason))
             }

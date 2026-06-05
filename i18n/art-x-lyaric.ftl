@@ -151,6 +151,8 @@ help-cmd-clear =   .clear                       clear di terminal
 help-cmd-panic =   .panic                       last resort — use if I-self find trouble in Babylon
 help-cmd-history =   .history                     I-command history (consecutive repeats mash inna one)
 help-cmd-logout =   .logout                      depart from Zion
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       echo di I-dentity DID (no message sent)
 help-msg-send =   @alias[:verb] body           send message / RPC to I-dren
 help-msg-fragment =   @alias#fragment[:verb] body  send to I-name wid explicit DID fragment
@@ -300,3 +302,9 @@ help-publish-steps = Steps: run '.my.ma:discover' fi find di local ma, den '.my.
 help-publish-without = Without publishing, odda ones cannot reach — even knowing di DID, dem cannot resolve di endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       șterge terminalul
 help-cmd-panic =   .panic                       ultima soluție — folosiți dacă aveți probleme
 help-cmd-history =   .history                     istoricul comenzilor (duplicate consecutive îmbinate)
 help-cmd-logout =   .logout                      deconectare
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       afișează DID rezolvat (niciun mesaj trimis)
 help-msg-send =   @alias[:verb] body           trimite mesaj / RPC actorului
@@ -305,3 +307,9 @@ help-publish-steps = Pași: rulează '.my.ma:discover' pentru a detecta ma-ul lo
 help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

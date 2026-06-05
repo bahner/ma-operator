@@ -20,8 +20,8 @@ async fn fetch_profile_blob(cid: &str) -> Result<(String, Vec<u8>), String> {
         .map_err(|e| tf("profile-fetch-failed", &[("e", &e)]))?;
     if let Ok(doc) = serde_json::from_slice::<ma_core::Document>(&bytes) {
         // DID document — pull the ma.agent blob CID and fetch that.
-        let blob_cid = crate::parser::verbs::doc_agent_cid(&doc)
-            .ok_or_else(|| t("profile-no-cid-in-doc"))?;
+        let blob_cid =
+            crate::parser::verbs::doc_agent_cid(&doc).ok_or_else(|| t("profile-no-cid-in-doc"))?;
         let blob_bytes = fetch_cid_bytes(&blob_cid)
             .await
             .map_err(|e| tf("profile-fetch-failed", &[("e", &e)]))?;
@@ -50,8 +50,7 @@ pub(crate) fn handle_profile_set(
         match fetch_profile_blob(&cid).await {
             Err(e) => state.push_error(e),
             Ok((blob_cid, profile_bytes)) => {
-                crate::state::SESSION_AGENT_CID
-                    .with(|c| *c.borrow_mut() = Some(blob_cid.clone()));
+                crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(blob_cid.clone()));
                 config.update(|c| c.set(&path, &blob_cid));
                 let n = config
                     .try_update(|cfg| cfg.merge_profile(&profile_bytes))
@@ -107,10 +106,7 @@ pub(crate) fn handle_profile_delete(
                 state.push_system(tf("profiles-deleted", &[("name", &target_name)]));
             }
         } else {
-            state.push_error(tf(
-                "profile-delete-error",
-                &[("e", &errors.join("; "))],
-            ));
+            state.push_error(tf("profile-delete-error", &[("e", &errors.join("; "))]));
         }
     });
 }

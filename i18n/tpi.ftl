@@ -149,6 +149,8 @@ help-cmd-clear =   .clear                       klinim terminal
 help-cmd-panic =   .panic                       las rot — yusim sapos yu bagarap
 help-cmd-history =   .history                     histri bilong komand (ol sem koman i stap wantaim)
 help-cmd-logout =   .logout                      autim
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       soim DID (noh mesej salim)
 help-msg-send =   @alias[:verb] body           salim mesej / RPC i go long aktor
 help-msg-fragment =   @alias#fragment[:verb] body  salim i go long alias wantaim DID fragment
@@ -298,3 +300,9 @@ help-publish-steps = Ol hap: ran '.my.ma:discover' bilong painim local ma, na '.
 help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       очистить термина�
 help-cmd-panic =   .panic                       последний resort — использовать при проблемах
 help-cmd-history =   .history                     история команд (последовательные дубликаты объединены)
 help-cmd-logout =   .logout                      выйти
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Справка — сообщения ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       вывести DID (без отправки)
@@ -311,3 +313,9 @@ help-publish-steps = Шаги: выполни '.my.ma:discover' для обна�
 help-publish-without = Без публикации другие не смогут тебя найти — даже зная твой DID, они не смогут определить твой endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

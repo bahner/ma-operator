@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       முனையம் அழி�
 help-cmd-panic =   .panic                       கடைசி வழி — சிக்கலில் பயன்படுத்தவும்
 help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
 help-cmd-logout =   .logout                      வெளியேறவும்
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID காட்டு (செய்தி இல்லை)
@@ -312,3 +314,9 @@ help-publish-steps = படிகள்: உள்ளூர் ma கண்ட�
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       ٹرمینل صاف کریں
 help-cmd-panic =   .panic                       آخری چارہ — مسئلہ ہونے پر استعمال کریں
 help-cmd-history =   .history                     کمانڈ ہسٹری (مسلسل تکرار ضم ہو گئی)
 help-cmd-logout =   .logout                      لاگ آؤٹ
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── مدد — پیغام رسانی ─────────────────────────────────────────────────────
 help-msg-echo =   @alias                       حل شدہ DID دکھائیں (پیغام نہیں بھیجا)
@@ -312,3 +314,9 @@ help-publish-steps = اقدامات: مقامی ma دریافت کرنے کے ل
 help-publish-without = اشاعت کے بغیر دوسرے آپ تک نہیں پہنچ سکتے — چاہے وہ آپ کا DID جانتے ہوں، وہ آپ کا endpoint حل نہیں کر سکتے۔
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

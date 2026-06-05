@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       terminál törlése
 help-cmd-panic =   .panic                       végső megoldás — ha bajban van, használja
 help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
 help-cmd-logout =   .logout                      kijelentkezés
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       feloldott DID megjelenítése (nem küld üzenetet)
 help-msg-send =   @alias[:verb] body           üzenet / RPC küldése szereplőnek
@@ -305,3 +307,9 @@ help-publish-steps = Lépések: futtasd '.my.ma:discover' a helyi ma megtalálá
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

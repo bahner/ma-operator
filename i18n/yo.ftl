@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       pa terminal mọ́
 help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò bí o bá rí ìṣòro
 help-cmd-history =   .history                     ìtàn àṣẹ (àwọn tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀)
 help-cmd-logout =   .logout                      jáde
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       ṣàfihàn DID tí a yanjú (kò sí ìfiránṣẹ́)
@@ -312,3 +314,9 @@ help-publish-steps = Àwọn ìgbésẹ̀: ṣe '.my.ma:discover' láti rí ma �
 help-publish-without = Láìsí títẹ jáde, àwọn mìíràn kò lè de ọ — bí wọ́n bá mọ DID rẹ pàápàá, wọn kò lè yanjú endpoint rẹ.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

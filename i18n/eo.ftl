@@ -149,6 +149,8 @@ help-cmd-clear =   .clear                       malplenigu terminalon
 help-cmd-panic =   .panic                       lasta rimedo — uzu se vi perdas sin
 help-cmd-history =   .history                     komanda historio (sinsekvaj duplikaĵoj kunfanditaj)
 help-cmd-logout =   .logout                      elsaluti
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       eĥigi solvitan DID (neniu mesaĝo sendita)
 help-msg-send =   @alias[:verb] body           sendi mesaĝon / RPC al aktoro
 help-msg-fragment =   @alias#fragment[:verb] body  sendi al alias kun eksplicita DID-fragmento
@@ -297,3 +299,9 @@ help-publish-steps = Paŝoj: rulu '.my.ma:discover' por detekti lokan ma, poste 
 help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -121,6 +121,48 @@ pub fn Terminal() -> impl IntoView {
                 return;
             }
 
+            // ── .batch:sync / .batch delimiter mode ──────────────────────
+            // `.batch:sync` starts collecting; `.batch` closes and runs.
+            if line == ".batch:sync" {
+                if state.batch_collecting.get_untracked().is_some() {
+                    state.push_error(crate::i18n::t("batch-already-collecting"));
+                } else {
+                    state.batch_collecting.set(Some(Vec::new()));
+                    state.push_system(crate::i18n::t("batch-collecting-started"));
+                }
+                return;
+            }
+            if state.batch_collecting.get_untracked().is_some() {
+                if line == ".batch" {
+                    // Close collection and start sequential execution.
+                    let collected = state
+                        .batch_collecting
+                        .update_untracked(|c| c.take().unwrap_or_default());
+                    state.batch_collecting.set(None);
+                    if collected.is_empty() {
+                        state.push_system(crate::i18n::t("batch-empty"));
+                        return;
+                    }
+                    let queue: std::collections::VecDeque<String> = collected.into_iter().collect();
+                    state.push_system(crate::i18n::t("batch-running"));
+                    state.start_batch(queue);
+                    if let Some(first) = state.next_batch_line() {
+                        state.batch_next_line.set(Some(first));
+                    }
+                } else {
+                    // Accumulate line (skip blank / comment lines).
+                    let trimmed = line.trim().to_string();
+                    if !trimmed.is_empty() && !trimmed.starts_with('#') {
+                        state.batch_collecting.update(|c| {
+                            if let Some(v) = c {
+                                v.push(trimmed);
+                            }
+                        });
+                    }
+                }
+                return;
+            }
+
             // History
             state.history.update(|h| {
                 if h.last().map(|s| s.as_str()) != Some(&line) {
@@ -214,7 +256,6 @@ fn OutputPane(state: AppState) -> impl IntoView {
     }
 }
 
-
 fn render_entry(entry: Entry) -> impl IntoView {
     match entry {
         Entry::Command(c) => {
@@ -262,7 +303,3 @@ fn render_entry(entry: Entry) -> impl IntoView {
 }
 
 // ── Command evaluator ──────────────────────────────────────────────────────
-
-
-
-

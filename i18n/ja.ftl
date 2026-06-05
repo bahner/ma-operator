@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       ターミナルをクリア
 help-cmd-panic =   .panic                       最後の手段 — 困ったときに使用
 help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       解決済み DID を表示 (メッセージは送信されない)
 help-msg-send =   @alias[:verb] body           アクターにメッセージ / RPC を送信
@@ -304,3 +306,9 @@ help-publish-steps = 手順：'.my.ma:discover'でローカルmaを検出し、'
 help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       yaltina terminal
 help-cmd-panic =   .panic                       laawol ɓurno — faala e nder nafoore
 help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
 help-cmd-logout =   .logout                      yalta
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hollu DID tuugniingal (koɗe nanndinkaaka)
@@ -312,3 +314,9 @@ help-publish-steps = Laaɓol: laato '.my.ma:discover' ngam yiyde ma laawol, ɓe 
 help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

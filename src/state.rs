@@ -140,7 +140,10 @@ pub struct AppState {
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
     /// Set at app startup, consumed once by InputBar after login.
     pub prefill_input: RwSignal<Option<String>>,
-    /// Pending lines for a synchronous batch (`:eval-sync`).
+    /// Lines being collected in `.batch:sync` mode.
+    /// `None` = not collecting; `Some(lines)` = collecting, `.batch` flushes.
+    pub batch_collecting: RwSignal<Option<Vec<String>>>,
+    /// Pending lines for a synchronous batch.
     /// Each entry is a raw command line. The queue is drained one line at a
     /// time: the next line is dispatched only after the previous command's
     /// status leaves `Sent` (i.e. `resolve_command*` is called for it).
@@ -174,6 +177,7 @@ impl AppState {
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
+            batch_collecting: RwSignal::new(None),
             batch_queue: RwSignal::new(None),
             batch_waiting_for: RwSignal::new(None),
             batch_next_line: RwSignal::new(None),

@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       tøm terminalen
 help-cmd-panic =   .panic                       siste utveg — bruk om du er i trøbbel
 help-cmd-history =   .history                     kommandohistorikk (etterfylgjande duplikatar vert samanslåtte)
 help-cmd-logout =   .logout                      logg ut
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Hjelptekst — meldingar ────────────────────────────────────────────────
 help-msg-echo =   @alias                       vis løyst DID (inkje melding sendt)
@@ -309,3 +311,9 @@ help-publish-steps = Steg: køyr '.my.ma:discover' for å oppdage din lokale ma,
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
 profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity:publish @ma' fyrst, deretter ':publish' profilen din
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

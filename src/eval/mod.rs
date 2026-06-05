@@ -238,6 +238,21 @@ fn eval_dot(
             }
             return;
         }
+        // Shorthand: `.batch` → `.my.doc.scratch:eval`  (parallel, fire-and-forget)
+        ".batch" => {
+            if let Err(e) = dispatch_verb(
+                ".my.doc.scratch",
+                "eval",
+                args,
+                state,
+                config,
+                show_editor,
+                on_eval,
+            ) {
+                state.push_error(e);
+            }
+            return;
+        }
         _ => {}
     }
 
@@ -263,7 +278,11 @@ fn eval_dot(
                     return;
                 }
                 profile::handle_profile_set(
-                    path.to_string(), value, username, config, state.clone(),
+                    path.to_string(),
+                    value,
+                    username,
+                    config,
+                    state.clone(),
                 );
                 return;
             }
@@ -329,9 +348,7 @@ fn eval_dot(
                     state.push_error(tf("profiles-not-found", &[("name", target_name)]));
                     return;
                 }
-                profile::handle_profile_delete(
-                    target_name.to_string(), username, state.clone(),
-                );
+                profile::handle_profile_delete(target_name.to_string(), username, state.clone());
                 return;
             }
 
@@ -372,7 +389,10 @@ fn eval_dot(
             if let Some(profile_name) = path.strip_prefix(".profiles.") {
                 if !profile_name.is_empty() && !profile_name.contains('.') {
                     profile::handle_profile_get(
-                        profile_name.to_string(), path.to_string(), config, state.clone(),
+                        profile_name.to_string(),
+                        path.to_string(),
+                        config,
+                        state.clone(),
                     );
                     return;
                 }
@@ -507,4 +527,3 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         &[("did", &resolved), ("prompt", &prompt)],
     ));
 }
-

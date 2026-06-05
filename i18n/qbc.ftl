@@ -149,6 +149,8 @@ help-cmd-clear =   .clear                       kel terminal
 help-cmd-panic =   .panic                       owkwa keting — du wit problem
 help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
 help-cmd-logout =   .logout                      tek-out
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       lit DID im (na showxa message)
@@ -314,3 +316,9 @@ help-publish-steps = Stap: run '.my.ma:discover' fo find local ma, den '.my.iden
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

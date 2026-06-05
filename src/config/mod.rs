@@ -493,7 +493,10 @@ mod tests {
         let bytes = source.serialize_profile_subtrees().unwrap();
 
         cfg.merge_profile(&bytes).unwrap();
-        assert!(cfg.get(".my.aliases.old").is_none(), "stale alias should be gone");
+        assert!(
+            cfg.get(".my.aliases.old").is_none(),
+            "stale alias should be gone"
+        );
         assert_eq!(cfg.get(".my.aliases.new"), Some("did:ma:new"));
     }
 

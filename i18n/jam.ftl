@@ -149,6 +149,8 @@ help-cmd-clear =   .clear                       wipe di terminal
 help-cmd-panic =   .panic                       last resort — use if yuh find yuhself inna trouble
 help-cmd-history =   .history                     command histri (consecutive duplicate dem merge)
 help-cmd-logout =   .logout                      log out
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       echo di resolved DID (nuh message sent)
 help-msg-send =   @alias[:verb] body           send message / RPC to actor
 help-msg-fragment =   @alias#fragment[:verb] body  send to alias wid explicit DID fragment
@@ -298,3 +300,9 @@ help-publish-steps = Steps: run '.my.ma:discover' fi find di local ma, den '.my.
 help-publish-without = Widout publishin, odda people kyaan reach yu — even if dem know yu DID, dem kyaan resolve yu endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

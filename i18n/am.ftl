@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       terminal ያጽዱ
 help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — ችግር ሲያጋጥምዎ ይጠቀሙ
 help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
 help-cmd-logout =   .logout                      ይውጡ
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       የተፈታ DID አሳይ (ምንም መልዕክት አልተላከም)
@@ -312,3 +314,9 @@ help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.my
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -206,8 +206,7 @@ pub(crate) async fn startup_load_config(
         // No preference stored yet — seed .my.i18n from the browser-detected language.
         let browser_lang = crate::i18n::lang();
         state.lang.set(browser_lang.clone());
-        crate::state::SESSION_LANG
-            .with(|l| *l.borrow_mut() = Some(browser_lang.clone()));
+        crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(browser_lang.clone()));
         let mut cfg = config.get_untracked();
         cfg.set(".my.i18n", &browser_lang);
         if let Err(e) = persist_config(&username, &cfg).await {
@@ -229,9 +228,7 @@ pub(crate) async fn startup_load_history(state: AppState, username: String) {
     match load_history(&username).await {
         Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
             Ok(hist) => state.history.set(hist),
-            Err(e) => {
-                state.push_error(tf("err-history-parse", &[("e", &e.to_string())]))
-            }
+            Err(e) => state.push_error(tf("err-history-parse", &[("e", &e.to_string())])),
         },
         Ok(None) => {}
         Err(e) => state.push_error(tf("err-history-load", &[("e", &e)])),
@@ -268,4 +265,3 @@ pub(crate) async fn startup_connect(
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }
 }
-

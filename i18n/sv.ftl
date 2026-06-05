@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       rensa terminalen
 help-cmd-panic =   .panic                       sista utvägen — använd om du är i trubbel
 help-cmd-history =   .history                     kommandohistorik (på varandra följande dubletter slås samman)
 help-cmd-logout =   .logout                      logga ut
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────
 help-msg-echo =   @alias                       visa löst DID (inget meddelande skickat)
@@ -311,3 +313,9 @@ help-publish-steps = Steg: kör '.my.ma:discover' för att hitta din lokala ma, 
 help-publish-without = Utan publicering kan andra inte nå dig — även om de känner ditt DID kan de inte slå upp din endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

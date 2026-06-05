@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       xóa terminal
 help-cmd-panic =   .panic                       phương án cuối cùng — dùng khi gặp sự cố
 help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
 help-cmd-logout =   .logout                      đăng xuất
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hiển thị DID đã phân giải (không gửi tin)
@@ -312,3 +314,9 @@ help-publish-steps = Các bước: chạy '.my.ma:discover' để phát hiện m
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

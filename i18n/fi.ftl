@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       tyhjennä terminaali
 help-cmd-panic =   .panic                       viimeinen keino — käytä jos olet pulassa
 help-cmd-history =   .history                     komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty)
 help-cmd-logout =   .logout                      kirjaudu ulos
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       näytä ratkaistu DID (ei viestiä lähetetty)
 help-msg-send =   @alias[:verb] body           lähetä viesti / RPC toimijalle
@@ -305,3 +307,9 @@ help-publish-steps = Vaiheet: aja '.my.ma:discover' paikallisen ma:n havaitsemis
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

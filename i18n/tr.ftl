@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       terminali temizle
 help-cmd-panic =   .panic                       son çare — sorun çıkarsa kullan
 help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID'yi göster (mesaj gönderilmez)
@@ -311,3 +313,9 @@ help-publish-steps = Adımlar: yerel ma'yı algılamak için '.my.ma:discover' �
 help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

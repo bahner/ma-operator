@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       εκκαθάριση τερμα�
 help-cmd-panic =   .panic                       τελευταία λύση — χρησιμοποιήστε αν αντιμετωπίζετε πρόβλημα
 help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
 help-cmd-logout =   .logout                      αποσύνδεση
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID (δεν αποστέλλεται μήνυμα)
 help-msg-send =   @alias[:verb] body           αποστολή μηνύματος / RPC σε ηθοποιό
@@ -305,3 +307,9 @@ help-publish-steps = Βήματα: εκτέλεσε '.my.ma:discover' για α�
 help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       wyczyść terminal
 help-cmd-panic =   .panic                       ostateczność — użyj gdy masz kłopoty
 help-cmd-history =   .history                     historia poleceń (kolejne duplikaty połączone)
 help-cmd-logout =   .logout                      wyloguj
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       pokaż rozwiązany DID (nie wysyła wiadomości)
 help-msg-send =   @alias[:verb] body           wyślij wiadomość / RPC do aktora
@@ -305,3 +307,9 @@ help-publish-steps = Kroki: uruchom '.my.ma:discover', aby wykryć lokalny ma, n
 help-publish-without = Bez publikacji inni nie mogą cię osiągnąć — nawet jeśli znają twój DID, nie są w stanie rozwiązać twojego endpointu.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

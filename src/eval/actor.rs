@@ -40,10 +40,10 @@ pub(crate) fn eval_actor(
 
     spawn_local(async move {
         let result = match verb.as_deref() {
-            Some("say")   => Some(transport::send_chat(&target, &body).await),
+            Some("say") => Some(transport::send_chat(&target, &body).await),
             Some("emote") => Some(transport::send_emote(&target, &body).await),
             Some(v) => dispatch_verb_to_transport(v, &target, &body, cmd_id, &state2, config).await,
-            None          => Some(transport::send_text(&target, &body).await),
+            None => Some(transport::send_text(&target, &body).await),
         };
         if let Some(r) = result {
             handle_send_result(r, verb.as_deref(), cmd_id, &state2);
@@ -84,9 +84,11 @@ async fn dispatch_verb_to_transport(
     }
 
     Some(match parse_crud_op(v, body) {
-        CrudOp::Get(path)        => transport::send_crud_get(target, &path).await,
-        CrudOp::Set(path, value) => transport::send_crud_set(target, &path, ciborium::Value::Text(value)).await,
-        CrudOp::Delete(path)     => transport::send_crud_delete(target, &path).await,
+        CrudOp::Get(path) => transport::send_crud_get(target, &path).await,
+        CrudOp::Set(path, value) => {
+            transport::send_crud_set(target, &path, ciborium::Value::Text(value)).await
+        }
+        CrudOp::Delete(path) => transport::send_crud_delete(target, &path).await,
     })
 }
 

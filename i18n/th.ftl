@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       ล้าง terminal
 help-cmd-panic =   .panic                       ทางเลือกสุดท้าย — ใช้เมื่อมีปัญหา
 help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID ที่แก้ไขแล้ว (ไม่ส่งข้อความ)
@@ -312,3 +314,9 @@ help-publish-steps = ขั้นตอน: รัน '.my.ma:discover' เพ�
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

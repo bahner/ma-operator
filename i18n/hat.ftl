@@ -149,6 +149,8 @@ help-cmd-clear =   .clear                       efase terminal
 help-cmd-panic =   .panic                       dènye rekous — itilize si ou pèdi
 help-cmd-history =   .history                     istwa kòmand (repetisyon konsekitif konbine)
 help-cmd-logout =   .logout                      dekonekte
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       montre DID rezoud la (pa voye mesaj)
 help-msg-send =   @alias[:verb] body           voye mesaj / RPC bay aktè
 help-msg-fragment =   @alias#fragment[:verb] body  voye ba alias avèk fragman DID eksplisit
@@ -298,3 +300,9 @@ help-publish-steps = Etap: kouri '.my.ma:discover' pou detekte ma lokal, epi '.m
 help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

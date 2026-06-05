@@ -146,6 +146,8 @@ help-cmd-clear =   .clear                       futa terminal
 help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa katika shida
 help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
 help-cmd-logout =   .logout                      toka
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       onyesha DID iliyotatuliwa (hakuna ujumbe unaotumwa)
 help-msg-send =   @alias[:verb] body           tuma ujumbe / RPC kwa muigizaji
@@ -305,3 +307,9 @@ help-publish-steps = Hatua: endesha '.my.ma:discover' kugundua ma ya ndani, kish
 help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

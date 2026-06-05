@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       مسح الطرفية
 help-cmd-panic =   .panic                       الملاذ الأخير — استخدم عند المشاكل
 help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
 help-cmd-logout =   .logout                      تسجيل الخروج
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       عرض DID المُحلَّل (لا رسالة مرسلة)
@@ -311,3 +313,9 @@ help-publish-steps = الخطوات: شغّل '.my.ma:discover' للكشف عن 
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

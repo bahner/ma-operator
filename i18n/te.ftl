@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       టెర్మినల్ క�
 help-cmd-panic =   .panic                       చివరి మార్గం — సమస్య వస్తే వాడండి
 help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
 help-cmd-logout =   .logout                      లాగ్ అవుట్
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID చూపించు (సందేశం పంపలేదు)
@@ -312,3 +314,9 @@ help-publish-steps = దశలు: స్థానిక ma కనుగొన�
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

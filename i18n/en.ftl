@@ -151,6 +151,8 @@ help-cmd-clear =   .clear                       clear terminal
 help-cmd-history =   .history                     command history (consecutive duplicates merged)
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
+help-cmd-batch =   .batch                       eval scratch document (parallel, fire-and-forget)
+help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
 
 # ── Help text — topics index ──────────────────────────────────────────────
 help-header-topics = ── topics — type .help.<topic> for details ────────────────────────────────
@@ -317,3 +319,9 @@ help-publish-intro = Publishing makes your identity findable on the network. Oth
 help-publish-ma = To publish, you need ma (local runtime) installed. It bridges ego to IPFS/IPNS on your behalf.
 help-publish-steps = Steps: run '.my.ma:discover' to detect your local ma, then '.my.identity:publish @ma'.
 help-publish-without = Without publishing, others cannot reach you — even if they know your DID, they cannot resolve your endpoint.
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

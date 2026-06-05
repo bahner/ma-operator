@@ -147,6 +147,8 @@ help-cmd-clear =   .clear                       清屏
 help-cmd-panic =   .panic                       最后手段 — 遇到问题时使用
 help-cmd-history =   .history                     命令历史（连续重复项已合并）
 help-cmd-logout =   .logout                      退出登录
+help-cmd-batch =   .batch                       eval scratch document (parallel)
+help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
 
 # ── 帮助文本 — 消息传递 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       回显已解析的 DID（不发送消息）
@@ -311,3 +313,9 @@ help-publish-steps = 步骤：运行 '.my.ma:discover' 检测本地 ma，然后 
 help-publish-without = 未发布时，其他人无法联系你 — 即使知道你的 DID，也无法解析你的 endpoint。
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
+
+# ── Batch mode ────────────────────────────────────────────────────────────
+batch-collecting-started = Collecting batch — type commands, end with .batch
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
+batch-running = Running batch sequentially…

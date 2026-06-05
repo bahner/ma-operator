@@ -346,7 +346,14 @@ pub fn EditorModal(
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(do_entity_field_publish(text, target, entity_name, field, cmd_id, state2));
+            leptos::task::spawn_local(do_entity_field_publish(
+                text,
+                target,
+                entity_name,
+                field,
+                cmd_id,
+                state2,
+            ));
         }
     };
 
@@ -390,7 +397,14 @@ pub fn EditorModal(
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
-            leptos::task::spawn_local(do_crud_save(text, target, crud_path, content_type, cmd_id, state2));
+            leptos::task::spawn_local(do_crud_save(
+                text,
+                target,
+                crud_path,
+                content_type,
+                cmd_id,
+                state2,
+            ));
         }
     };
 
@@ -590,10 +604,15 @@ async fn do_editor_reply(text: String, to: String, reply_to_id: String, state: A
         Ok(_) => state.push_system(t("msg-reply-sent")),
         Err(e) => state.push_error(tf("msg-reply-failed", &[("e", &e)])),
     }
-
 }
 
-async fn do_entity_publish(text: String, target: String, entity_name: String, cmd_id: Option<u64>, state: AppState) {
+async fn do_entity_publish(
+    text: String,
+    target: String,
+    entity_name: String,
+    cmd_id: Option<u64>,
+    state: AppState,
+) {
     let path = format!(":entities.{entity_name}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
@@ -605,12 +624,8 @@ async fn do_entity_publish(text: String, target: String, entity_name: String, cm
             return;
         }
     };
-    match crate::transport::send_ipfs_store(
-        &target,
-        cbor_bytes,
-        "application/vnd.ipld.dag-cbor",
-    )
-    .await
+    match crate::transport::send_ipfs_store(&target, cbor_bytes, "application/vnd.ipld.dag-cbor")
+        .await
     {
         Ok(msg_id) => {
             if let Some(cid) = cmd_id {
@@ -634,10 +649,16 @@ async fn do_entity_publish(text: String, target: String, entity_name: String, cm
             state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
         }
     }
-
 }
 
-async fn do_entity_field_publish(text: String, target: String, entity_name: String, field: String, cmd_id: Option<u64>, state: AppState) {
+async fn do_entity_field_publish(
+    text: String,
+    target: String,
+    entity_name: String,
+    field: String,
+    cmd_id: Option<u64>,
+    state: AppState,
+) {
     let path = format!(":entities.{entity_name}.{field}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
@@ -649,12 +670,8 @@ async fn do_entity_field_publish(text: String, target: String, entity_name: Stri
             return;
         }
     };
-    match crate::transport::send_ipfs_store(
-        &target,
-        cbor_bytes,
-        "application/vnd.ipld.dag-cbor",
-    )
-    .await
+    match crate::transport::send_ipfs_store(&target, cbor_bytes, "application/vnd.ipld.dag-cbor")
+        .await
     {
         Ok(msg_id) => {
             if let Some(cid) = cmd_id {
@@ -678,13 +695,10 @@ async fn do_entity_field_publish(text: String, target: String, entity_name: Stri
             state.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
         }
     }
-
 }
 
 async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state: AppState) {
-    match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/yaml")
-        .await
-    {
+    match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/yaml").await {
         Ok(msg_id) => {
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);
@@ -707,20 +721,23 @@ async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state
             state.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
         }
     }
-
 }
 
-async fn do_crud_save(text: String, target: String, crud_path: String, content_type: String, cmd_id: Option<u64>, state: AppState) {
+async fn do_crud_save(
+    text: String,
+    target: String,
+    crud_path: String,
+    content_type: String,
+    cmd_id: Option<u64>,
+    state: AppState,
+) {
     match content_type.as_str() {
         "application/x-ma-term+dag-cbor" => {
             let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
                 Ok(b) => b,
                 Err(e) => {
                     if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(
-                            cid,
-                            CommandStatus::Error(e.clone()),
-                        );
+                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                     }
                     state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
                     return;
@@ -750,10 +767,7 @@ async fn do_crud_save(text: String, target: String, crud_path: String, content_t
                 }
                 Err(e) => {
                     if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(
-                            cid,
-                            CommandStatus::Error(e.clone()),
-                        );
+                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                     }
                     state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
                 }
@@ -765,10 +779,7 @@ async fn do_crud_save(text: String, target: String, crud_path: String, content_t
                 Ok(v) => v,
                 Err(e) => {
                     if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(
-                            cid,
-                            CommandStatus::Error(e.clone()),
-                        );
+                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                     }
                     state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
                     return;
@@ -784,20 +795,22 @@ async fn do_crud_save(text: String, target: String, crud_path: String, content_t
                 }
                 Err(e) => {
                     if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(
-                            cid,
-                            CommandStatus::Error(e.clone()),
-                        );
+                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                     }
                     state.push_error(e);
                 }
             }
         }
     }
-
 }
 
-async fn do_kind_publish(text: String, target: String, protocol_id: String, cmd_id: Option<u64>, state: AppState) {
+async fn do_kind_publish(
+    text: String,
+    target: String,
+    protocol_id: String,
+    cmd_id: Option<u64>,
+    state: AppState,
+) {
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
         Err(e) => {
@@ -808,12 +821,8 @@ async fn do_kind_publish(text: String, target: String, protocol_id: String, cmd_
             return;
         }
     };
-    match crate::transport::send_ipfs_store(
-        &target,
-        cbor_bytes,
-        "application/vnd.ipld.dag-cbor",
-    )
-    .await
+    match crate::transport::send_ipfs_store(&target, cbor_bytes, "application/vnd.ipld.dag-cbor")
+        .await
     {
         Ok(msg_id) => {
             if let Some(cid) = cmd_id {
@@ -837,9 +846,7 @@ async fn do_kind_publish(text: String, target: String, protocol_id: String, cmd_
             state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
         }
     }
-
 }
-
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 

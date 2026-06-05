@@ -1,10 +1,10 @@
-use leptos::prelude::*;
+use super::MA_URL;
 use crate::config::EgoConfig;
 use crate::http::fetch_url_text;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::views::editor::EditorContext;
-use super::MA_URL;
+use leptos::prelude::*;
 
 pub(super) fn handle_ma(
     path: &str,
@@ -58,10 +58,7 @@ fn do_ma_discover(ma_base: String, config: RwSignal<EgoConfig>, state: AppState)
                 }
             });
         }
-        state2.push_system(tf(
-            "discover-success",
-            &[("url", &ma_base), ("did", &did)],
-        ));
+        state2.push_system(tf("discover-success", &[("url", &ma_base), ("did", &did)]));
     });
 }
 
@@ -91,8 +88,9 @@ fn do_ma_claim(ma_base: String, config: RwSignal<EgoConfig>, state: AppState) {
                 }
             }
             Ok(409) => state.push_error(t("claim-conflict")),
-            Ok(status) => state
-                .push_error(tf("claim-http-failed", &[("status", &status.to_string())])),
+            Ok(status) => {
+                state.push_error(tf("claim-http-failed", &[("status", &status.to_string())]))
+            }
             Err(e) => state.push_error(tf("claim-error", &[("e", &e)])),
         }
     });
