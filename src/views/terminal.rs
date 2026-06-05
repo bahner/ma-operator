@@ -7,12 +7,12 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
     core::{CommandStatus, Entry, SystemKind},
+    http::{fetch_cid_bytes, fetch_cid_text, fetch_url_text},
     i18n::{t, tf},
     identity::storage::{load_history, save_history},
     parser::command::{parse, Command, DotOp},
     parser::verbs::dispatch_verb,
     state::{AppState, CidOpCtx, EditOpenCtx, FocusMode},
-    http::{fetch_cid_bytes, fetch_cid_text, fetch_url_text},
     transport,
     views::editor::{EditorContext, EditorModal, EditorMode},
 };
@@ -70,6 +70,24 @@ async fn startup_profile_exists(
         Ok(b) => b,
         Err(_) => return,
     };
+    // Guard: only merge if the DID document is strictly newer than the last time
+    // this device published. This prevents IPNS propagation lag from overwriting
+    // freshly-published local state — after a publish the DID can still resolve
+    // to the previous document for some time, causing a spurious merge that
+    // restores deleted aliases.
+    // If `.my.profile.published_at` is absent (old install, first publish) we
+    // fall through and merge to stay backward-compatible.
+    let doc_updated_at = doc.updated_at.as_str();
+    let local_published_at = config
+        .get_untracked()
+        .get(EgoConfig::PROFILE_PUBLISHED_AT_KEY)
+        .map(|s| s.to_string());
+    if let Some(ref local) = local_published_at {
+        if doc_updated_at <= local.as_str() {
+            // DID doc is same age or older — remote blob is stale (IPNS lag).
+            return;
+        }
+    }
     crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
     let profile_key = format!(".profiles.{username}");
     config.update(|cfg| cfg.set(&profile_key, &remote_cid));
@@ -211,12 +229,8 @@ pub fn Terminal() -> impl IntoView {
                             }
                         }
                         // Seed SESSION_AGENT_CID from stored profile CID if present.
-                        if let Some(cid) = cfg
-                            .get(&new_profile_key)
-                            .map(|s| s.to_string())
-                        {
-                            crate::state::SESSION_AGENT_CID
-                                .with(|c| *c.borrow_mut() = Some(cid));
+                        if let Some(cid) = cfg.get(&new_profile_key).map(|s| s.to_string()) {
+                            crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid));
                         }
                         // Prune inbox entries that expired since last session.
                         let now = js_sys::Date::now() / 1000.0;
@@ -634,37 +648,45 @@ pub fn Terminal() -> impl IntoView {
                                 }
                                 match crate::messages::extract_ok_text(&incoming.content) {
                                     Ok(cid_str) => {
+                                        // Keep the in-memory CID up to date immediately so
+                                        // subsequent operations within this session see it.
                                         crate::state::SESSION_AGENT_CID
                                             .with(|c| *c.borrow_mut() = Some(cid_str.clone()));
-                                        // Store CID under .profiles.<username>
                                         let own_username = state2
                                             .session
                                             .get_untracked()
                                             .map(|s| s.username.clone())
                                             .unwrap_or_default();
-                                        let cid_key =
-                                            format!(".profiles.{own_username}");
-                                        config.update(|cfg| cfg.set(&cid_key, &cid_str));
-                                        if let Some(sess) = state2.session.get_untracked() {
-                                            let uname = sess.username.clone();
-                                            let cfg = config.get_untracked();
-                                            spawn_local(async move {
-                                                let _ = persist_config(&uname, &cfg).await;
-                                            });
-                                        }
-                                        // Now republish DID doc with updated ma.agent.
+                                        let cid_key = format!(".profiles.{own_username}");
+                                        // Republish DID doc with updated ma.agent.
+                                        // Only persist the new CID *after* the DID doc publish
+                                        // succeeds — if we persisted earlier and the publish
+                                        // failed, the local CID would differ from the one in the
+                                        // DID doc, causing startup_profile_exists to overwrite
+                                        // local changes (e.g. deleted aliases) with the old blob.
                                         // Retry once on transport timeout (stale iroh connection).
                                         let state3 = state2.clone();
                                         spawn_local(async move {
-                                            let result = transport::send_ipfs_publish(&ma_did).await;
+                                            let result =
+                                                transport::send_ipfs_publish(&ma_did).await;
                                             let result = match result {
-                                                Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
+                                                Err(ref e)
+                                                    if e.contains("timed out")
+                                                        || e.contains("connect failed") =>
+                                                {
                                                     transport::send_ipfs_publish(&ma_did).await
                                                 }
                                                 other => other,
                                             };
                                             match result {
                                                 Ok(msg_id2) => {
+                                                    // DID doc is live — now safe to record the
+                                                    // new CID so startup sync stays aligned.
+                                                    config
+                                                        .update(|cfg| cfg.set(&cid_key, &cid_str));
+                                                    let cfg = config.get_untracked();
+                                                    let _ =
+                                                        persist_config(&own_username, &cfg).await;
                                                     if let Some(cid) = cmd_id_opt {
                                                         state3.bind_message_id(cid, msg_id2);
                                                     }
@@ -691,10 +713,8 @@ pub fn Terminal() -> impl IntoView {
                                                 CommandStatus::Error(e.clone()),
                                             );
                                         }
-                                        state2.push_error(tf(
-                                            "err-ipfs-reply-decode",
-                                            &[("e", &e)],
-                                        ));
+                                        state2
+                                            .push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
                                     }
                                 }
                                 continue;
@@ -976,6 +996,41 @@ pub fn Terminal() -> impl IntoView {
         eval_input.set(Some(text));
     });
 
+    // Watch batch_next_line: when the batch machinery sets the next line,
+    // evaluate it and bind the resulting cmd_id so the batch can advance.
+    {
+        let state2 = state.clone();
+        Effect::new(move |_| {
+            let line = state2.batch_next_line.get();
+            let Some(line) = line else { return };
+            state2.batch_next_line.set(None);
+            let cfg = config.get_untracked();
+            let focus = state2.focus_actor.get_untracked();
+            match parse(&line, &cfg, focus.as_ref().map(|f| f.target.as_str())) {
+                Ok(cmd) => {
+                    let before_id = state2.peek_next_entry_id();
+                    eval(cmd, &line, &state2, config, show_editor, eval_lines);
+                    let after_id = state2.peek_next_entry_id();
+                    if after_id > before_id {
+                        state2.bind_batch_step(after_id - 1);
+                    } else {
+                        // Local/instant command — advance immediately.
+                        if let Some(next) = state2.next_batch_line() {
+                            state2.batch_next_line.set(Some(next));
+                        } else {
+                            state2.batch_queue.set(None);
+                        }
+                    }
+                }
+                Err(e) => {
+                    state2.push_error(format!("batch: '{line}': {e}"));
+                    state2.batch_queue.set(None);
+                    state2.batch_waiting_for.set(None);
+                }
+            }
+        });
+    }
+
     // Core input handler.
     let handle_input_fn: std::sync::Arc<dyn Fn(String) + Send + Sync> = {
         let state = state.clone();
@@ -1010,14 +1065,7 @@ pub fn Terminal() -> impl IntoView {
             let cfg = config.get_untracked();
 
             match parse(&line, &cfg, focus.as_ref().map(|item| item.target.as_str())) {
-                Ok(cmd) => eval(
-                    cmd,
-                    &line,
-                    &state,
-                    config,
-                    show_editor,
-                    eval_lines,
-                ),
+                Ok(cmd) => eval(cmd, &line, &state, config, show_editor, eval_lines),
                 Err(e) => state.push_error(format!("'{line}': {e}")),
             }
         })
@@ -1848,7 +1896,10 @@ fn eval_dot(
                                 if let Some(cid) = cfg.get(&path_owned) {
                                     state2.push_output(format!("{path_owned}: {cid}"));
                                 } else {
-                                    state2.push_output(format!("{path_owned}: (no CID — use :{name}:publish)", name = profile_name));
+                                    state2.push_output(format!(
+                                        "{path_owned}: (no CID — use :{name}:publish)",
+                                        name = profile_name
+                                    ));
                                 }
                             }
                         }

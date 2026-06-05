@@ -1,3 +1,4 @@
 /target/
 /dist/
 .cid
+.publish.sh

@@ -1,11 +1,3 @@
-/// Per-key local verb registry.
-///
-/// `:verb` invocations on local dot-paths (`.path:verb [args]`) are
-/// dispatched here. Each entry is `(path, verb)` and maps to an async
-/// handler. Unknown `(path, verb)` pairs are an error.
-use leptos::prelude::*;
-use ma_core::{DidDocumentResolver, Ipld};
-use wasm_bindgen::JsCast;
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::http::{fetch_cid_bytes, fetch_cid_text, fetch_url_text};
@@ -14,6 +6,15 @@ use crate::identity::load_identity;
 use crate::state::{AppState, ProfilePublishPending};
 use crate::transport;
 use crate::views::editor::EditorContext;
+use js_sys;
+/// Per-key local verb registry.
+///
+/// `:verb` invocations on local dot-paths (`.path:verb [args]`) are
+/// dispatched here. Each entry is `(path, verb)` and maps to an async
+/// handler. Unknown `(path, verb)` pairs are an error.
+use leptos::prelude::*;
+use ma_core::{DidDocumentResolver, Ipld};
+use wasm_bindgen::JsCast;
 
 /// Extract the `ma.agent` CID string from a resolved `Document`, if present.
 pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
@@ -483,18 +484,26 @@ pub fn dispatch_verb(
         let publisher = if let Some(arg) = args.first() {
             resolve_bare_did(arg, &config.get_untracked())?
         } else {
-            resolve_bare_did("@ma", &config.get_untracked())
-                .or_else(|_| {
-                    config
-                        .get_untracked()
-                        .get(".my.ma.did")
-                        .map(|s| s.to_string())
-                        .ok_or_else(|| t("profile-no-ma"))
-                })?
+            resolve_bare_did("@ma", &config.get_untracked()).or_else(|_| {
+                config
+                    .get_untracked()
+                    .get(".my.ma.did")
+                    .map(|s| s.to_string())
+                    .ok_or_else(|| t("profile-no-ma"))
+            })?
         };
         let path_owned = path.to_string();
         match verb {
             "publish" => {
+                // Record the publish time as an RFC3339 UTC string. On startup,
+                // startup_profile_exists compares this against doc.updated_at to
+                // detect IPNS propagation lag and skip merging when the resolved
+                // DID document is older than our last local publish.
+                let now_iso = js_sys::Date::new_0()
+                    .to_iso_string()
+                    .as_string()
+                    .unwrap_or_default();
+                config.update(|cfg| cfg.set(EgoConfig::PROFILE_PUBLISHED_AT_KEY, now_iso));
                 let cfg = config.get_untracked();
                 let cmd_id = state.push_command(format!("{path_owned}:publish"));
                 let state2 = state.clone();
@@ -508,15 +517,21 @@ pub fn dispatch_verb(
                 leptos::task::spawn_local(async move {
                     let profile_bytes = match cfg.serialize_profile_subtrees() {
                         Err(e) => {
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Error(e.clone()),
-                            );
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                             state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
                             return;
                         }
                         Ok(b) => b,
                     };
+                    // Step 1: publish DID doc so @ma caches our current ma.services.
+                    // Without this @ma cannot open an outbox back to us to deliver
+                    // the profile CID reply (connect_outbox needs the doc).
+                    // We must wait long enough for @ma's poll loop (default 100 ms)
+                    // to drain and process the DidDocumentPublish message before the
+                    // Store arrives — otherwise the cache miss causes the old
+                    // IPNS-lookup path which times out.
+                    let _ = crate::transport::send_ipfs_publish(&publisher).await;
+                    gloo_timers::future::TimeoutFuture::new(600).await;
                     // Try publish; on transport timeout, re-discover and retry once.
                     let result =
                         crate::transport::send_profile_store(&publisher, profile_bytes.clone())
@@ -524,14 +539,9 @@ pub fn dispatch_verb(
                     let result = match result {
                         Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
                             // Stale iroh connection — refresh endpoint_id and retry.
-                            if let Ok(new_publisher) =
-                                rediscover_ma(&ma_base, config).await
-                            {
-                                crate::transport::send_profile_store(
-                                    &new_publisher,
-                                    profile_bytes,
-                                )
-                                .await
+                            if let Ok(new_publisher) = rediscover_ma(&ma_base, config).await {
+                                crate::transport::send_profile_store(&new_publisher, profile_bytes)
+                                    .await
                             } else {
                                 result
                             }
@@ -541,17 +551,17 @@ pub fn dispatch_verb(
                     match result {
                         Ok(msg_id) => {
                             state2.pending_profile_publish.update(|m| {
-                                m.insert(msg_id, ProfilePublishPending {
-                                    publisher_did: publisher,
-                                    cmd_id: Some(cmd_id),
-                                });
+                                m.insert(
+                                    msg_id,
+                                    ProfilePublishPending {
+                                        publisher_did: publisher,
+                                        cmd_id: Some(cmd_id),
+                                    },
+                                );
                             });
                         }
                         Err(e) => {
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Error(e.clone()),
-                            );
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                             state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
                         }
                     }
@@ -570,8 +580,7 @@ pub fn dispatch_verb(
                 leptos::task::spawn_local(async move {
                     // Step 1: resolve DID document via SESSION_RESOLVER
                     // (handles CBOR, local gateway with cooldown, dweb.link + w3s.link fallback).
-                    let resolver = crate::state::SESSION_RESOLVER
-                        .with(|r| r.borrow().clone());
+                    let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
                     let doc = match resolver {
                         Some(r) => match (*r).resolve(&own_did).await {
                             Ok(d) => d,
@@ -607,10 +616,7 @@ pub fn dispatch_verb(
                     let cbor_bytes = match fetch_cid_bytes(&cid).await {
                         Ok(b) => b,
                         Err(e) => {
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Error(e.clone()),
-                            );
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
                             return;
                         }
@@ -619,16 +625,12 @@ pub fn dispatch_verb(
                     let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
                         Ok(b) => b,
                         Err(e) => {
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Error(e.clone()),
-                            );
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
                             return;
                         }
                     };
-                    crate::state::SESSION_AGENT_CID
-                        .with(|c| *c.borrow_mut() = Some(cid.clone()));
+                    crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid.clone()));
                     config.update(|cfg| cfg.set(&path_owned, &cid));
                     match config.try_update(|cfg| cfg.merge_profile(&json_bytes)) {
                         Some(Ok(n)) => {
@@ -642,20 +644,12 @@ pub fn dispatch_verb(
                                     state3.push_error(e);
                                 }
                             });
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Replied(cid.clone()),
-                            );
-                            state2.push_system(tf(
-                                "profile-fetch-done",
-                                &[("n", &n.to_string())],
-                            ));
+                            state2
+                                .resolve_command_by_id(cmd_id, CommandStatus::Replied(cid.clone()));
+                            state2.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
                         }
                         Some(Err(e)) => {
-                            state2.resolve_command_by_id(
-                                cmd_id,
-                                CommandStatus::Error(e.clone()),
-                            );
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                             state2.push_error(tf("profile-fetch-failed", &[("e", &e)]));
                         }
                         None => {}
@@ -731,6 +725,35 @@ pub fn dispatch_verb(
                 }
                 state.push_command_done(format!("{doc_path}:eval"));
                 on_eval.run(content);
+                Ok(())
+            }
+
+            // :eval-sync — same as :eval but dispatches lines sequentially:
+            // each line waits for the previous command to complete before
+            // the next is dispatched. Useful for multi-step publish flows.
+            "eval-sync" => {
+                let cfg = config.get_untracked();
+                let content = cfg
+                    .get(&format!("{doc_path}.content"))
+                    .unwrap_or_default()
+                    .to_string();
+                if content.is_empty() {
+                    return Err(tf("doc-content-empty", &[("path", &doc_path)]));
+                }
+                let lines: std::collections::VecDeque<String> = content
+                    .lines()
+                    .map(|l| l.trim().to_string())
+                    .filter(|l| !l.is_empty() && !l.starts_with('#'))
+                    .collect();
+                if lines.is_empty() {
+                    return Err(tf("doc-content-empty", &[("path", &doc_path)]));
+                }
+                state.push_command_done(format!("{doc_path}:eval-sync"));
+                state.start_batch(lines);
+                // Kick off the first line via batch_next_line signal.
+                if let Some(first) = state.next_batch_line() {
+                    state.batch_next_line.set(Some(first));
+                }
                 Ok(())
             }
 
@@ -944,11 +967,13 @@ fn lang_for_content_type(ct: &str) -> &'static str {
 /// Fetch fresh status from the local ma daemon, update config with the new
 /// endpoint_id, and return the ma DID.  Used to recover from stale iroh
 /// connections before retrying a publish.
-async fn rediscover_ma(ma_base: &str, config: leptos::prelude::RwSignal<crate::config::EgoConfig>) -> Result<String, String> {
+async fn rediscover_ma(
+    ma_base: &str,
+    config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+) -> Result<String, String> {
     let status_url = format!("{ma_base}/status.json");
     let json_str = fetch_url_text(&status_url).await?;
-    let json: serde_json::Value =
-        serde_json::from_str(&json_str).map_err(|e| e.to_string())?;
+    let json: serde_json::Value = serde_json::from_str(&json_str).map_err(|e| e.to_string())?;
     let did = json
         .get("did")
         .and_then(|v| v.as_str())
@@ -1030,8 +1055,6 @@ fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
         )
     }
 }
-
-
 
 /// POST a JSON string body to `url` and return the HTTP status code.
 async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {

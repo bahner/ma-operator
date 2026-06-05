@@ -233,7 +233,7 @@ profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' 
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys merged from IPFS
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identity already published — profile up to date
 

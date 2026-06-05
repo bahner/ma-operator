@@ -52,9 +52,18 @@ pub async fn init_from_browser() {
 pub async fn init(lang: &str) -> bool {
     let candidates = normalize(lang);
     let (code, ftl) = load_ftl(&candidates).await;
+    let map = parse(&ftl);
+    // Never replace a working translation table with an empty one.
+    // If the FTL fetch failed (network glitch, bad language code, Trunk
+    // hot-reload gap, etc.) load_ftl returns an empty string and parse
+    // produces an empty map.  Keep the current translations so that
+    // subsequent t()/tf() calls still return readable strings.
+    if map.is_empty() {
+        return false;
+    }
     let found = candidates.contains(&code);
     CURRENT_LANG.with(|l| *l.borrow_mut() = code);
-    MESSAGES.with(|m| *m.borrow_mut() = parse(&ftl));
+    MESSAGES.with(|m| *m.borrow_mut() = map);
     found
 }
 

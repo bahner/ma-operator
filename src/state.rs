@@ -2,7 +2,7 @@ use leptos::prelude::*;
 use ma_core::{Inbox, IpfsGatewayResolver, Message};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
-use std::collections::HashMap;
+use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
 use crate::config::EgoConfig;
@@ -140,6 +140,19 @@ pub struct AppState {
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
     /// Set at app startup, consumed once by InputBar after login.
     pub prefill_input: RwSignal<Option<String>>,
+    /// Pending lines for a synchronous batch (`:eval-sync`).
+    /// Each entry is a raw command line. The queue is drained one line at a
+    /// time: the next line is dispatched only after the previous command's
+    /// status leaves `Sent` (i.e. `resolve_command*` is called for it).
+    /// `None` means no batch is active; `Some(queue)` means one is running.
+    pub batch_queue: RwSignal<Option<VecDeque<String>>>,
+    /// The `CommandRecord.id` of the currently-in-flight batch step.
+    /// When `resolve_command_by_id` / `resolve_command` fires for this id,
+    /// `advance_batch` is called to dispatch the next line.
+    pub batch_waiting_for: RwSignal<Option<u64>>,
+    /// Set to `Some(line)` when the batch is ready to dispatch the next line.
+    /// A Leptos `Effect` in `terminal.rs` watches this and fires the dispatch.
+    pub batch_next_line: RwSignal<Option<String>>,
 }
 
 impl AppState {
@@ -161,13 +174,59 @@ impl AppState {
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
+            batch_queue: RwSignal::new(None),
+            batch_waiting_for: RwSignal::new(None),
+            batch_next_line: RwSignal::new(None),
         }
+    }
+
+    /// Start a synchronous batch: store the queue and dispatch the first line.
+    /// `dispatch` is called with each line in turn; it must call
+    /// `bind_batch_step` with the resulting `cmd_id` so the batch can advance.
+    pub fn start_batch(&self, lines: VecDeque<String>) {
+        self.batch_queue.set(Some(lines));
+        self.batch_waiting_for.set(None);
+    }
+
+    /// Record which `cmd_id` the batch is currently waiting for.
+    pub fn bind_batch_step(&self, cmd_id: u64) {
+        self.batch_waiting_for.set(Some(cmd_id));
+    }
+
+    /// Pop and return the next batch line, or `None` if the batch is done.
+    pub fn next_batch_line(&self) -> Option<String> {
+        self.batch_queue
+            .update_untracked(|q| q.as_mut().and_then(|vd| vd.pop_front()))
+    }
+
+    /// Called by `resolve_command_by_id` / `resolve_command` after a status
+    /// change. If the resolved id matches the one the batch is waiting for,
+    /// clears `batch_waiting_for` and returns the next line to dispatch
+    /// (caller must dispatch it and then call `bind_batch_step`).
+    pub fn advance_batch(&self, cmd_id: u64) -> Option<String> {
+        let waiting = self.batch_waiting_for.get_untracked();
+        if waiting != Some(cmd_id) {
+            return None;
+        }
+        self.batch_waiting_for.set(None);
+        let next = self.next_batch_line();
+        if next.is_none() {
+            // Batch finished — clear queue.
+            self.batch_queue.set(None);
+        }
+        next
     }
 
     fn next_id(&self) -> u64 {
         let id = self.entry_counter.get_untracked();
         self.entry_counter.set(id + 1);
         id
+    }
+
+    /// Peek at the next entry id without consuming it.
+    /// Used by the batch Effect in terminal.rs to detect newly-created entries.
+    pub fn peek_next_entry_id(&self) -> u64 {
+        self.entry_counter.get_untracked()
     }
 
     // ── System lines ──────────────────────────────────────────────────────
@@ -273,6 +332,10 @@ impl AppState {
                 });
             }
         }
+        // Advance a pending sync batch if this was the awaited step.
+        if let Some(next_line) = self.advance_batch(cmd_id) {
+            self.batch_next_line.set(Some(next_line));
+        }
     }
 
     /// Resolve a command by its `Message.id`. Returns the command id if
@@ -290,6 +353,10 @@ impl AppState {
             });
             if let Some(sig) = status_sig {
                 sig.set(status);
+            }
+            // Advance a pending sync batch if this was the awaited step.
+            if let Some(next_line) = self.advance_batch(cid) {
+                self.batch_next_line.set(Some(next_line));
             }
         }
         cmd_id

@@ -93,7 +93,7 @@ Makefile
 - [x] `.my.identity.*` — read-only DID + public keys
 - [x] `.my.aliases.*` — full CRUD via dot grammar
 - [x] `.my.inbox.*` — persistent inbox, prune expired on login
-- [x] `.my.documents.*` — edit / eval / publish / fetch / cid verbs
+- [x] `.my.doc.*` — edit / eval / publish / fetch / cid verbs
 - [x] `.config.*` — full CRUD configuration tree
 - [x] Editor — CodeMirror 6, modes: Standard / View / Reply
 - [x] Transport — iroh QUIC connect, inbox + RPC poll loop (500 ms)
@@ -103,8 +103,8 @@ Makefile
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
 - [x] `.my.ma:discover` — probes localhost:5003, creates `@ma` alias, persists config
-- [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.lang`
-- [x] Reactive UI language — landing page rerenders on profile switch / `.my.lang` change
+- [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.i18n`
+- [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
 
 ## Pending / not yet implemented
@@ -112,7 +112,7 @@ Makefile
 - [ ] `.use @actor [as @alias]` focus mode — pre-fills prompt
 - [ ] Alias colour rendering in input field
 - [ ] Function-call syntax `@actor:verb()` — async RPC with value substitution
-- [ ] `.my.documents.<name>:publish` — `application/x-ma-ipfs-store` protocol
+- [ ] `.my.doc.<name>:publish` — `application/x-ma-ipfs-store` protocol
 - [ ] `.my.home` — default actor context
 
 ---
@@ -230,24 +230,24 @@ Verbs dispatched in `parser/verbs.rs`:
 
 ---
 
-## Documents — `.my.documents.*`
+## Documents — `.my.doc.*`
 
 Stored in `EgoConfig`:
 
 ```
-.my.documents.<name>.content       text body
-.my.documents.<name>.content_type  text/plain | text/markdown | text/yaml
-.my.documents.<name>.cid           IPFS CID (set after :publish)
+.my.doc.<name>.content       text body
+.my.doc.<name>.content_type  text/plain | text/markdown | text/yaml
+.my.doc.<name>.cid           IPFS CID (set after :publish)
 ```
 
 Verbs:
-- `.my.documents.<name>:edit` — open editor with saved content (Standard mode)
-- `.my.documents.<name>:edit <cid>` — fetch CID, open for review (NOT auto-executed)
-- `.my.documents.<name>:eval` — execute saved `.content` line-by-line
-- `.my.documents.<name>:publish <publisher>` — send `application/x-ma-ipfs-store`
-- `.my.documents.<name>:cid` — print stored CID
-- `.my.documents.<name>:fetch <cid>` — import CID content (no editor, no execution)
-- `.my.documents.<name>:` — delete entire document subtree
+- `.my.doc.<name>:edit` — open editor with saved content (Standard mode)
+- `.my.doc.<name>:edit <cid>` — fetch CID, open for review (NOT auto-executed)
+- `.my.doc.<name>:eval` — execute saved `.content` line-by-line
+- `.my.doc.<name>:publish <publisher>` — send `application/x-ma-ipfs-store`
+- `.my.doc.<name>:cid` — print stored CID
+- `.my.doc.<name>:fetch <cid>` — import CID content (no editor, no execution)
+- `.my.doc.<name>:` — delete entire document subtree
 
 ---
 
@@ -331,12 +331,12 @@ The loader tries each candidate in order; falls back to `en` if none resolve.
 ### Language preference
 
 - `SESSION_LANG` thread-local holds the active code for the current session.
-- `.my.lang` in `EgoConfig` persists the preference per profile.
-- On login: reads `.my.lang`; if absent, seeds it from `navigator.language`
+- `.my.i18n` in `EgoConfig` persists the preference per profile.
+- On login: reads `.my.i18n`; if absent, seeds it from `navigator.language`
   and persists the config.
-- Profile click on landing page: reads `.my.lang` from the profile's config
+- Profile click on landing page: reads `.my.i18n` from the profile's config
   and calls `i18n::init()` immediately, then updates `AppState.lang` signal.
-- Setting `.my.lang: <tag>` in the terminal takes effect immediately.
+- Setting `.my.i18n: <tag>` in the terminal takes effect immediately.
 
 ### Reactivity in Leptos views
 
@@ -367,7 +367,7 @@ let lang = state.lang;
 
 Every `lang/*.ftl` file **must** contain a `lang-name` key whose value is the
 language's own name for itself (autonym), e.g. `lang-name = Norsk bokmål`.
-This is displayed by `.my.lang:list` and by `t("lang-name")` in the UI.
+This is displayed by `.my.i18n:list` and by `t("lang-name")` in the UI.
 
 ### Adding a new language
 
@@ -381,9 +381,9 @@ This is displayed by `.my.lang:list` and by `t("lang-name")` in the UI.
 `include!`-ed into `src/i18n.rs`. The list is kept sorted alphabetically
 by language code.
 
-### `.my.lang:list`
+### `.my.i18n:list`
 
-Dispatch lives in `src/parser/verbs.rs` at path `.my.lang`, verb `list`.
+Dispatch lives in `src/parser/verbs.rs` at path `.my.i18n`, verb `list`.
 It iterates `crate::i18n::SUPPORTED_LANGS` (auto-generated at build time)
 and prints each entry as `  <code padded to 20>  <autonym>`.
 The header line comes from `t("lang-list-header")`.
@@ -441,9 +441,9 @@ never written out again.
 .config.poll_interval_ms    inbox poll interval (default 500)
 ```
 
-`.my.lang` — BCP-47 language tag for this profile (e.g. `nb`, `zh-Hans`).
+`.my.i18n` — BCP-47 language tag for this profile (e.g. `nb`, `zh-Hans`).
 Auto-seeded from `navigator.language` on first login if absent.
-Changing it (`.my.lang: sv`) takes effect immediately and persists.
+Changing it (`.my.i18n: sv`) takes effect immediately and persists.
 Also included in the published DID document as `ma.lang`.
 
 ---

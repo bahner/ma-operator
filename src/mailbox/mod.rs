@@ -143,17 +143,23 @@ mod tests {
 
     #[test]
     fn is_link_value_did_ma() {
-        assert!(is_link_value("did:ma:k51qzi5uqu5dhl2je7b6t6j2qovwjhbmv2q3j9k"));
+        assert!(is_link_value(
+            "did:ma:k51qzi5uqu5dhl2je7b6t6j2qovwjhbmv2q3j9k"
+        ));
     }
 
     #[test]
     fn is_link_value_bafy_cid() {
-        assert!(is_link_value("bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"));
+        assert!(is_link_value(
+            "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
+        ));
     }
 
     #[test]
     fn is_link_value_qm_cid() {
-        assert!(is_link_value("QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"));
+        assert!(is_link_value(
+            "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
+        ));
     }
 
     #[test]
@@ -170,12 +176,16 @@ mod tests {
 
     #[test]
     fn is_probable_cid_bafy() {
-        assert!(is_probable_cid("bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"));
+        assert!(is_probable_cid(
+            "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
+        ));
     }
 
     #[test]
     fn is_probable_cid_qm() {
-        assert!(is_probable_cid("QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"));
+        assert!(is_probable_cid(
+            "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
+        ));
     }
 
     #[test]

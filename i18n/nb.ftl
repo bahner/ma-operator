@@ -247,7 +247,7 @@ profile-no-ma = ingen ma-kjøretid konfigurert — kjør '.my.ma:discover' førs
 profile-no-cid = ingen CID lagret for denne profilen — kjør ':publish' først
 profile-no-cid-in-doc = ingen profil-CID funnet i DID-dokument — kjør ':publish' først
 profile-publish-failed = profilpublisering mislyktes: { $e }
-profile-fetch-done = profil hentet — { $n } nøkler slått sammen fra IPFS
+profile-fetch-done = profil hentet — { $n } nøkler hentet fra IPFS
 profile-fetch-failed = profil-henting mislyktes: { $e }
 msg-identity-exists = identitet allerede publisert — profil-CID lastet fra lokal lagring
 

@@ -245,7 +245,7 @@ profile-no-ma = ingen ma-køyretid konfigurert — køyr '.my.ma:discover' fyrst
 profile-no-cid = ingen CID lagra for denne profilen — køyr ':publish' fyrst
 profile-no-cid-in-doc = ingen profil-CID funnen i DID-dokument — køyr ':publish' fyrst
 profile-publish-failed = profilpublisering mislukkast: { $e }
-profile-fetch-done = profil henta — { $n } nøklar slegne saman frå IPFS
+profile-fetch-done = profil henta — { $n } nøklar henta frå IPFS
 profile-fetch-failed = profil-henting mislukkast: { $e }
 msg-identity-exists = identitet alt publisert — profil-CID lasta frå lokal lagring
 

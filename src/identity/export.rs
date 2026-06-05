@@ -70,13 +70,11 @@ pub fn rekey_iroh(
     export_json: &str,
     passphrase: &str,
 ) -> Result<(String, UnlockedIdentity), String> {
-    let export =
-        BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
+    let export = BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
     let encrypted = export
         .encrypted_secret_bundle_bytes()
         .map_err(|e| e.to_string())?;
-    let mut bundle =
-        SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
+    let mut bundle = SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
     bundle.iroh_secret_key = SecretBundle::generate().iroh_secret_key;
     let new_encrypted = bundle.encrypt(passphrase).map_err(|e| e.to_string())?;
     let new_export = BrowserIdentityExport::new(export.config_yaml.clone(), &new_encrypted);
@@ -118,11 +116,26 @@ mod tests {
     fn rekey_iroh_preserves_identity_keys() {
         let (export_json, original) = make_export();
         let (_new_json, rekeyed) = rekey_iroh(&export_json, PASS).expect("rekey_iroh failed");
-        assert_eq!(original.ipns_secret_key, rekeyed.ipns_secret_key, "ipns_secret_key must not change");
-        assert_eq!(original.did_signing_key, rekeyed.did_signing_key, "did_signing_key must not change");
-        assert_eq!(original.did_encryption_key, rekeyed.did_encryption_key, "did_encryption_key must not change");
-        assert_eq!(original.sender_did, rekeyed.sender_did, "sender_did (DID identity) must not change");
-        assert_eq!(original.created_at, rekeyed.created_at, "created_at must not change");
+        assert_eq!(
+            original.ipns_secret_key, rekeyed.ipns_secret_key,
+            "ipns_secret_key must not change"
+        );
+        assert_eq!(
+            original.did_signing_key, rekeyed.did_signing_key,
+            "did_signing_key must not change"
+        );
+        assert_eq!(
+            original.did_encryption_key, rekeyed.did_encryption_key,
+            "did_encryption_key must not change"
+        );
+        assert_eq!(
+            original.sender_did, rekeyed.sender_did,
+            "sender_did (DID identity) must not change"
+        );
+        assert_eq!(
+            original.created_at, rekeyed.created_at,
+            "created_at must not change"
+        );
     }
 
     #[test]
@@ -146,7 +159,8 @@ mod tests {
         let (export_json, _) = make_export();
         let _ = rekey_iroh(&export_json, PASS).expect("rekey_iroh failed");
         // Original export must still be unlockable — rekey must not mutate the input.
-        let unlocked = unlock_identity(&export_json, PASS).expect("original export should still be valid");
+        let unlocked =
+            unlock_identity(&export_json, PASS).expect("original export should still be valid");
         assert!(!unlocked.sender_did.is_empty());
     }
 
@@ -155,16 +169,28 @@ mod tests {
     #[test]
     fn create_identity_returns_valid_did() {
         let (_, id) = create_identity("alice", PASS).expect("create_identity failed");
-        assert!(id.sender_did.starts_with("did:ma:"), "DID should start with did:ma:");
+        assert!(
+            id.sender_did.starts_with("did:ma:"),
+            "DID should start with did:ma:"
+        );
     }
 
     #[test]
     fn create_identity_keys_are_nonzero() {
         let (_, id) = create_identity("alice", PASS).expect("create_identity failed");
         assert_ne!(id.iroh_key, [0u8; 32], "iroh_key must not be all-zero");
-        assert_ne!(id.ipns_secret_key, [0u8; 32], "ipns_secret_key must not be all-zero");
-        assert_ne!(id.did_signing_key, [0u8; 32], "did_signing_key must not be all-zero");
-        assert_ne!(id.did_encryption_key, [0u8; 32], "did_encryption_key must not be all-zero");
+        assert_ne!(
+            id.ipns_secret_key, [0u8; 32],
+            "ipns_secret_key must not be all-zero"
+        );
+        assert_ne!(
+            id.did_signing_key, [0u8; 32],
+            "did_signing_key must not be all-zero"
+        );
+        assert_ne!(
+            id.did_encryption_key, [0u8; 32],
+            "did_encryption_key must not be all-zero"
+        );
     }
 
     #[test]
@@ -179,7 +205,10 @@ mod tests {
     fn create_two_identities_have_distinct_dids() {
         let (_, id1) = create_identity("alice", PASS).expect("first create failed");
         let (_, id2) = create_identity("bob", PASS).expect("second create failed");
-        assert_ne!(id1.sender_did, id2.sender_did, "two fresh identities must have distinct DIDs");
+        assert_ne!(
+            id1.sender_did, id2.sender_did,
+            "two fresh identities must have distinct DIDs"
+        );
     }
 
     // ── unlock_identity ───────────────────────────────────────────────────

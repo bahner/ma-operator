@@ -1,11 +1,10 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    IpfsGatewayResolver, Ipld, Message, SecretBundle,
-    SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID,
-    MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST,
-    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY,
-    RPC_PROTOCOL_ID,
+    IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
+    CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT,
+    MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE,
+    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 
 use crate::i18n::tf;
@@ -357,7 +356,13 @@ pub async fn send_profile_store(
     let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
         .map_err(|e| format!("cipher init failed: {e}"))?;
     let ciphertext = cipher
-        .encrypt(&nonce, Payload { msg: &profile_bytes, aad: &aad })
+        .encrypt(
+            &nonce,
+            Payload {
+                msg: &profile_bytes,
+                aad: &aad,
+            },
+        )
         .map_err(|e| format!("encryption failed: {e}"))?;
 
     let mut blob = Vec::with_capacity(24 + ciphertext.len());
@@ -388,7 +393,13 @@ pub fn decrypt_profile(blob: &[u8]) -> Result<Vec<u8>, String> {
     let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
         .map_err(|e| format!("cipher init failed: {e}"))?;
     cipher
-        .decrypt(nonce, Payload { msg: &blob[24..], aad: &aad })
+        .decrypt(
+            nonce,
+            Payload {
+                msg: &blob[24..],
+                aad: &aad,
+            },
+        )
         .map_err(|_| "profile decryption failed (wrong key or corrupted blob)".to_string())
 }
 

@@ -350,11 +350,14 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, IpfsCrudPending {
-                                target_did: target.clone(),
-                                crud_path: path.clone(),
-                                cmd_id,
-                            });
+                            m.insert(
+                                msg_id,
+                                IpfsCrudPending {
+                                    target_did: target.clone(),
+                                    crud_path: path.clone(),
+                                    cmd_id,
+                                },
+                            );
                         });
                     }
                     Err(e) => {
@@ -411,11 +414,14 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, IpfsCrudPending {
-                                target_did: target.clone(),
-                                crud_path: path.clone(),
-                                cmd_id,
-                            });
+                            m.insert(
+                                msg_id,
+                                IpfsCrudPending {
+                                    target_did: target.clone(),
+                                    crud_path: path.clone(),
+                                    cmd_id,
+                                },
+                            );
                         });
                     }
                     Err(e) => {
@@ -452,11 +458,14 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_crud.update(|m| {
-                            m.insert(msg_id, IpfsCrudPending {
-                                target_did: target.clone(),
-                                crud_path: ":acl".to_string(),
-                                cmd_id,
-                            });
+                            m.insert(
+                                msg_id,
+                                IpfsCrudPending {
+                                    target_did: target.clone(),
+                                    crud_path: ":acl".to_string(),
+                                    cmd_id,
+                                },
+                            );
                         });
                     }
                     Err(e) => {
@@ -520,11 +529,14 @@ pub fn EditorModal(
                                     state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                                 }
                                 state2.pending_ipfs_crud.update(|m| {
-                                    m.insert(msg_id, IpfsCrudPending {
-                                        target_did: target.clone(),
-                                        crud_path: crud_path.clone(),
-                                        cmd_id,
-                                    });
+                                    m.insert(
+                                        msg_id,
+                                        IpfsCrudPending {
+                                            target_did: target.clone(),
+                                            crud_path: crud_path.clone(),
+                                            cmd_id,
+                                        },
+                                    );
                                 });
                             }
                             Err(e) => {
@@ -619,11 +631,14 @@ pub fn EditorModal(
                             state2.resolve_command_by_id(cid, CommandStatus::Publishing);
                         }
                         state2.pending_ipfs_kind_upserts.update(|m| {
-                            m.insert(msg_id, IpfsKindUpsertPending {
-                                target_did: target.clone(),
-                                protocol_id: protocol_id.clone(),
-                                cmd_id,
-                            });
+                            m.insert(
+                                msg_id,
+                                IpfsKindUpsertPending {
+                                    target_did: target.clone(),
+                                    protocol_id: protocol_id.clone(),
+                                    cmd_id,
+                                },
+                            );
                         });
                     }
                     Err(e) => {

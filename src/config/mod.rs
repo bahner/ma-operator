@@ -189,7 +189,12 @@ impl EgoConfig {
         ".my.doc.",
         ".my.i18n",
         ".my.config.",
+        ".my.profile.",
     ];
+
+    /// The canonical key for the last profile publish timestamp (RFC3339 UTC string).
+    /// Compared against `Document.updated_at` on startup to detect IPNS staleness.
+    pub const PROFILE_PUBLISHED_AT_KEY: &'static str = ".my.profile.published_at";
 
     /// Serialize the portable profile subtrees to CBOR bytes.
     /// Only keys matching `PROFILE_PREFIXES` are included.

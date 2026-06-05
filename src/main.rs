@@ -1,9 +1,9 @@
 mod acl;
 mod app;
 mod cid_ops;
-mod http;
 mod config;
 mod core;
+mod http;
 mod i18n;
 mod identity;
 mod mailbox;
