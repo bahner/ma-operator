@@ -314,3 +314,8 @@ batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
 batch-step-timeout = batch step timed out
+
+batch-done = batch-done
+batch-done-error = batch-done-error
+msg-timeout = msg-timeout
+help-cmd-batch-async = help-cmd-batch-async

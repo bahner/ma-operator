@@ -22,6 +22,8 @@ use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
 
+// ── WASM iroh send serialiser ────────────────────────────────────────────────
+
 // ── Endpoint lifecycle ─────────────────────────────────────────────────────
 
 pub async fn connect(
@@ -39,7 +41,11 @@ pub async fn connect(
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
     let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
     let crud_inbox = endpoint.service(CRUD_PROTOCOL_ID);
-    let ep = Rc::from(endpoint);
+    let ep: Rc<dyn ma_core::MaEndpoint> = Rc::from(endpoint);
+    let endpoint_id = ep.id();
+    web_sys::console::info_1(
+        &format!("[iroh] endpoint up — id={endpoint_id} did={sender_did}").into(),
+    );
     ENDPOINT.with(|e| *e.borrow_mut() = Some(ep));
     SESSION_IROH_KEY.with(|k| *k.borrow_mut() = Some(iroh_key));
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = Some(ipns_secret_key));
@@ -78,6 +84,10 @@ pub fn disconnect() {
 
 pub fn is_connected() -> bool {
     ENDPOINT.with(|e| e.borrow().is_some())
+}
+
+pub fn get_endpoint_id() -> Option<String> {
+    ENDPOINT.with(|e| e.borrow().as_ref().map(|ep| ep.id()))
 }
 
 // ── Session helpers ────────────────────────────────────────────────────────
@@ -585,9 +595,7 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
 
-    log::debug!("send_message_on: resolving DID={target_did} protocol={protocol}");
-    // IpfsGatewayResolver::default() tries localhost:8080 first, then
-    // falls back to public gateways (dweb.link, w3s.link) automatically.
+    log::debug!("[send] → {target_did} [{protocol}]");
     let mut outbox = ep
         .outbox(resolver.as_ref(), target_did, protocol)
         .await
@@ -595,11 +603,14 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
             log::warn!("send_message_on: outbox failed for {target_did}: {e}");
             e.to_string()
         })?;
+
     log::debug!("send_message_on: outbox ready, sending msg id={}", msg.id);
-    outbox.send(&msg).await.map_err(|e| {
+    let result = outbox.send(&msg).await.map_err(|e| {
         log::warn!("send_message_on: send failed for {target_did}: {e}");
         e.to_string()
-    })
+    });
+    log::debug!("[send] done ok={}", result.is_ok());
+    result
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.

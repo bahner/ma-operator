@@ -3,6 +3,7 @@ mod app;
 mod cid_ops;
 mod config;
 mod core;
+mod dispatch;
 mod eval;
 mod help;
 mod http;

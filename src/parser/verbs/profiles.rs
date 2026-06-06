@@ -4,7 +4,7 @@ use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::http::fetch_cid_bytes;
 use crate::i18n::{t, tf};
-use crate::state::{AppState, ProfilePublishPending};
+use crate::state::{AppState, PendingKind};
 use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 use ma_core::DidDocumentResolver;
@@ -100,15 +100,14 @@ pub(super) fn handle_profiles(
                     };
                     match result {
                         Ok(msg_id) => {
-                            state2.pending_profile_publish.update(|m| {
-                                m.insert(
-                                    msg_id,
-                                    ProfilePublishPending {
-                                        publisher_did: publisher,
-                                        cmd_id: Some(cmd_id),
-                                    },
-                                );
-                            });
+                            state2.register_pending(
+                                msg_id,
+                                PendingKind::ProfilePublish {
+                                    publisher_did: publisher,
+                                    cmd_id: Some(cmd_id),
+                                },
+                                None,
+                            );
                         }
                         Err(e) => {
                             state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));

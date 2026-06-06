@@ -259,7 +259,8 @@ pub(crate) async fn startup_connect(
     .await
     {
         Ok(()) => {
-            state.push_system(t("msg-iroh-ready"));
+            let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
+            state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did, username, state, config).await;
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),

@@ -30,70 +30,154 @@ pub struct FocusMode {
     pub prompt: String,
 }
 
-// ── Pending CID content operations ──────────────────────────────────────────
+// ── Pending request kinds ─────────────────────────────────────────────────
 
-/// Tracks in-flight CRUD GET requests whose reply (a CID) should be fetched
-/// from IPFS and displayed inline using a text content operation.
+/// Unified tag for every in-flight outgoing message.  Keyed by
+/// `ma_core::Message.id`; stored in `AppState::pending_requests`.
 #[derive(Clone, Debug)]
-pub struct CidOpCtx {
-    /// Name of the operation to apply (e.g. `"cat"`, `"wc"`).
-    pub op: String,
-    /// Arguments to the operation (e.g. `["-l"]` for `wc -l`).
-    pub args: Vec<String>,
-    /// `CommandRecord.id` of the originating command entry.
-    pub cmd_id: u64,
+pub enum PendingKind {
+    /// One-shot send: just resolve the command status when the reply arrives.
+    Simple { cmd_id: u64 },
+    /// IPFS-store reply should trigger a CRUD SET (returned CID becomes the value).
+    IpfsCrud {
+        target_did: String,
+        crud_path: String,
+        cmd_id: Option<u64>,
+    },
+    /// Second-leg CRUD SET confirmation (end of IPFS-store → CRUD-SET flow).
+    CrudConfirm { cmd_id: u64 },
+    /// CRUD GET reply should fetch the returned CID and apply a text op.
+    CidOp {
+        op: String,
+        args: Vec<String>,
+        cmd_id: u64,
+    },
+    /// CRUD GET reply should open the editor with the received content.
+    EditOpen {
+        target: String,
+        crud_path: String,
+        editor_mode: EditorMode,
+        cmd_id: u64,
+    },
+    /// IPFS-store reply should register a new kind via CRUD SET on `.kinds`.
+    IpfsKindUpsert {
+        target_did: String,
+        protocol_id: String,
+        cmd_id: Option<u64>,
+    },
+    /// IPFS-store reply (profile blob) should trigger DID doc republish.
+    ProfilePublish {
+        publisher_did: String,
+        cmd_id: Option<u64>,
+    },
 }
 
-// ── Pending remote edit opens ─────────────────────────────────────────────
-
-/// Tracks in-flight CRUD GET requests that should open the editor on reply.
-/// Key: the `Message.id` of the GET.  Value: enough context to open the
-/// correct editor mode and populate it with the received content.
-#[derive(Clone, Debug)]
-pub struct EditOpenCtx {
-    /// DID of the remote runtime the GET was sent to.
-    pub target: String,
-    /// CRUD path that was fetched, e.g. `":acl"` or `":entities.ping"`.
-    pub crud_path: String,
-    /// Which editor mode to open (determines available toolbar buttons).
-    pub editor_mode: EditorMode,
-    /// `CommandRecord.id` of the originating command entry so the poll loop
-    /// can resolve it (success or error) once the editor is opened.
-    pub cmd_id: u64,
+impl PendingKind {
+    /// Return the `cmd_id` to fail when this pending request expires.
+    /// Returns `None` for variants where no command is associated.
+    pub fn cmd_id(&self) -> Option<u64> {
+        match self {
+            PendingKind::Simple { cmd_id } => Some(*cmd_id),
+            PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
+            PendingKind::CidOp { cmd_id, .. } => Some(*cmd_id),
+            PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
+            PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
+            PendingKind::IpfsKindUpsert { cmd_id, .. } => *cmd_id,
+            PendingKind::ProfilePublish { cmd_id, .. } => *cmd_id,
+        }
+    }
 }
 
-// ── Pending IPFS-store / CRUD contexts ────────────────────────────────────
+/// Default TTL for non-batch outgoing messages (milliseconds).
+pub const DEFAULT_TIMEOUT_MS: u32 = 60_000;
 
-/// Context for an in-flight IPFS store request that should trigger a CRUD SET
-/// on completion (the returned CID becomes the SET value).
+// ── Tracked request ───────────────────────────────────────────────────
+
+/// A `PendingKind` plus the id of the batch it belongs to (if any).
 #[derive(Clone, Debug)]
-pub struct IpfsCrudPending {
-    /// DID of the remote runtime to send the CRUD SET to.
-    pub target_did: String,
-    /// CRUD path for the SET, e.g. `":acl"` or `":entities.ping"`.
-    pub crud_path: String,
-    /// `CommandRecord.id` of the originating command entry, if any.
-    pub cmd_id: Option<u64>,
+pub struct TrackedRequest {
+    pub kind: PendingKind,
+    /// Batch this request belongs to, if any.
+    #[allow(dead_code)]
+    pub batch_id: Option<u64>,
+    /// `js_sys::Date::now()` when the request was registered (ms since epoch).
+    pub sent_at_ms: f64,
 }
 
-/// Context for an in-flight IPFS store request that registers a new kind.
-#[derive(Clone, Debug)]
-pub struct IpfsKindUpsertPending {
-    /// DID of the remote runtime that will receive the `:kinds` SET.
-    pub target_did: String,
-    /// Protocol ID string, e.g. `"/ma/my-kind/0.0.1"`.
-    pub protocol_id: String,
-    /// `CommandRecord.id` of the originating command entry, if any.
-    pub cmd_id: Option<u64>,
+// ── Batch types ─────────────────────────────────────────────────────────
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum BatchMode {
+    Sync,
+    Async,
 }
 
-/// Context for an in-flight IPFS store request that publishes a profile blob.
+#[derive(Clone, Debug, PartialEq)]
+pub enum OnError {
+    Break,
+    Continue,
+}
+
 #[derive(Clone, Debug)]
-pub struct ProfilePublishPending {
-    /// DID of the publisher runtime that will receive the DID document.
-    pub publisher_did: String,
-    /// `CommandRecord.id` of the originating command entry, if any.
-    pub cmd_id: Option<u64>,
+pub struct ActiveBatch {
+    #[allow(dead_code)]
+    pub id: u64,
+    pub mode: BatchMode,
+    /// Timeout per step (Sync) or per command (Async), in milliseconds.
+    pub timeout_ms: u32,
+    pub on_error: OnError,
+    /// `js_sys::Date::now()` when dispatch started (reset when `.batch` closes).
+    pub started_at_ms: f64,
+    /// Still accumulating lines (between `.batch:sync/async` and `.batch`).
+    pub collecting: bool,
+    /// Lines pending dispatch.
+    pub lines: VecDeque<String>,
+    /// Sync only: cmd_id currently being waited on; `None` = ready to advance.
+    pub sync_cmd_id: Option<u64>,
+    /// Whether any step has errored.
+    pub had_error: bool,
+    /// Terminal entry id for the `.batch:sync/async` header line.
+    pub header_cmd_id: u64,
+    /// Async only: number of still-unresolved steps.
+    pub async_pending: u32,
+    /// Total dispatched step count (for summary output).
+    pub step_count: u32,
+}
+
+// ── Outbox task queue ─────────────────────────────────────────────────────
+
+/// Every outgoing iroh send is wrapped in this enum and queued for
+/// serial execution by the dispatch loop.  This avoids concurrent
+/// `outbox()` calls on the WASM single-threaded runtime.
+#[derive(Clone, Debug)]
+pub enum OutboxTask {
+    /// A user-typed actor message (primary send from eval_actor).
+    Actor {
+        target: String,
+        verb: Option<String>,
+        body: String,
+        cmd_id: u64,
+        config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+    },
+    /// CRUD SET triggered by an incoming IPFS-store reply.
+    CrudSet {
+        target_did: String,
+        crud_path: String,
+        value: ciborium::Value,
+        /// `cmd_id` of the originating command, registered as `CrudConfirm` on success.
+        cmd_id: Option<u64>,
+    },
+    /// DID-document republish triggered by a profile-publish reply.
+    IpfsPublish {
+        ma_did: String,
+        cid_str: String,
+        cid_key: String,
+        own_username: String,
+        cmd_id: Option<u64>,
+        config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+    },
+    /// Auto-pong reply to an incoming `:ping`.
+    RpcPong { target: String, reply_to_id: String },
 }
 
 // ── App state (reactive) ───────────────────────────────────────────────────
@@ -106,33 +190,9 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub screensaver: RwSignal<bool>,
-    /// Maps `ma_core::Message.id` of an in-flight command to the
-    /// `CommandRecord.id` so replies can locate the originating entry.
-    pub pending_by_msg_id: RwSignal<HashMap<String, u64>>,
-    /// Tracks in-flight IPFS store requests that should trigger a CRUD set on
-    /// completion.  Key: ipfs_store `Message.id`.
-    /// Value: `(crud_target_did, crud_path, ipfs_prefix, cmd_id)` where
-    /// `ipfs_prefix` is `"/ipfs/"` for raw blobs or `"/ipld/"` for DAG-CBOR
-    /// nodes, and `cmd_id` is the originating command entry id (if any).
-    pub pending_ipfs_crud: RwSignal<HashMap<String, IpfsCrudPending>>,
-    /// Tracks in-flight CRUD SET requests that are the second leg of a
-    /// publish flow.  Key: CRUD SET `Message.id`.  Value: the originating
-    /// command entry id whose status should be updated on reply.
-    pub pending_crud_confirms: RwSignal<HashMap<String, u64>>,
-    /// Tracks in-flight CRUD GET requests that should fetch CID content inline.
-    /// Key: CRUD GET `Message.id`.  Value: content operation context.
-    pub pending_cid_ops: RwSignal<HashMap<String, CidOpCtx>>,
-    /// Tracks in-flight CRUD GET requests that should open the editor on reply.
-    /// Key: CRUD GET `Message.id`.  Value: editor open context.
-    pub pending_edit_opens: RwSignal<HashMap<String, EditOpenCtx>>,
-    /// Tracks in-flight IPFS store requests for kind upserts.
-    /// Key: ipfs_store `Message.id`.
-    /// Value: `(crud_target_did, protocol_id, cmd_id)`.
-    pub pending_ipfs_kind_upserts: RwSignal<HashMap<String, IpfsKindUpsertPending>>,
-    /// Tracks in-flight IPFS store requests for profile encryption.
-    /// Key: ipfs_store `Message.id`.
-    /// Value: `(publisher_did, cmd_id_opt)`.
-    pub pending_profile_publish: RwSignal<HashMap<String, ProfilePublishPending>>,
+    /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
+    /// Each entry describes what to do when the reply arrives.
+    pub pending_requests: RwSignal<HashMap<String, TrackedRequest>>,
     /// Cache of resolved DID documents and fetched CID contents.
     /// Key: DID string or CID string.  Value: parsed JSON document.
     pub doc_cache: RwSignal<HashMap<String, serde_json::Value>>,
@@ -141,28 +201,16 @@ pub struct AppState {
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
     /// Set at app startup, consumed once by InputBar after login.
     pub prefill_input: RwSignal<Option<String>>,
-    /// Lines being collected in `.batch:sync` mode.
-    /// `None` = not collecting; `Some(lines)` = collecting, `.batch` flushes.
-    pub batch_collecting: RwSignal<Option<Vec<String>>>,
-    /// cmd_id of the `.batch:sync` command entry, kept alive until batch completes.
-    pub batch_sync_cmd_id: RwSignal<Option<u64>>,
-    /// Set to true if any step in the current batch resolved with an error.
-    pub batch_had_error: RwSignal<bool>,
-    /// Per-step timeout in milliseconds (default 30 000). Set by `.batch:begin timeout=Xs`.
-    pub batch_timeout_ms: RwSignal<u32>,
-    /// Pending lines for a synchronous batch.
-    /// Each entry is a raw command line. The queue is drained one line at a
-    /// time: the next line is dispatched only after the previous command's
-    /// status leaves `Sent` (i.e. `resolve_command*` is called for it).
-    /// `None` means no batch is active; `Some(queue)` means one is running.
-    pub batch_queue: RwSignal<Option<VecDeque<String>>>,
-    /// The `CommandRecord.id` of the currently-in-flight batch step.
-    /// When `resolve_command_by_id` / `resolve_command` fires for this id,
-    /// `advance_batch` is called to dispatch the next line.
-    pub batch_waiting_for: RwSignal<Option<u64>>,
-    /// Set to `Some(line)` when the batch is ready to dispatch the next line.
-    /// A Leptos `Effect` in `terminal.rs` watches this and fires the dispatch.
-    pub batch_next_line: RwSignal<Option<String>>,
+    /// FIFO queue of raw input lines waiting to be dispatched.
+    pub input_queue: RwSignal<VecDeque<String>>,
+    /// All active batches, keyed by batch id.
+    pub batches: RwSignal<HashMap<u64, ActiveBatch>>,
+    /// Counter for generating unique batch ids.
+    pub batch_id_counter: RwSignal<u64>,
+    /// Maps cmd_id → batch_id for commands dispatched as batch steps.
+    pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
+    /// Queue of all outgoing iroh sends, drained each dispatch tick.
+    pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
 }
 
 impl AppState {
@@ -173,86 +221,24 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             screensaver: RwSignal::new(false),
-            pending_by_msg_id: RwSignal::new(HashMap::new()),
-            pending_ipfs_crud: RwSignal::new(HashMap::new()),
-            pending_crud_confirms: RwSignal::new(HashMap::new()),
-            pending_cid_ops: RwSignal::new(HashMap::new()),
-            pending_edit_opens: RwSignal::new(HashMap::new()),
-            pending_ipfs_kind_upserts: RwSignal::new(HashMap::new()),
-            pending_profile_publish: RwSignal::new(HashMap::new()),
+            pending_requests: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
-            batch_collecting: RwSignal::new(None),
-            batch_sync_cmd_id: RwSignal::new(None),
-            batch_had_error: RwSignal::new(false),
-            batch_timeout_ms: RwSignal::new(30_000),
-            batch_queue: RwSignal::new(None),
-            batch_waiting_for: RwSignal::new(None),
-            batch_next_line: RwSignal::new(None),
+            input_queue: RwSignal::new(VecDeque::new()),
+            batches: RwSignal::new(HashMap::new()),
+            batch_id_counter: RwSignal::new(0),
+            cmd_to_batch: RwSignal::new(HashMap::new()),
+            outbox_queue: RwSignal::new(VecDeque::new()),
         }
     }
 
-    /// Start a synchronous batch: store the queue and dispatch the first line.
-    /// `dispatch` is called with each line in turn; it must call
-    /// `bind_batch_step` with the resulting `cmd_id` so the batch can advance.
-    pub fn start_batch(&self, lines: VecDeque<String>) {
-        self.batch_queue.set(Some(lines));
-        self.batch_waiting_for.set(None);
-    }
-
-    /// Record which `cmd_id` the batch is currently waiting for.
-    pub fn bind_batch_step(&self, cmd_id: u64) {
-        self.batch_waiting_for.set(Some(cmd_id));
-    }
-
-    /// Pop and return the next batch line, or `None` if the batch is done.
-    pub fn next_batch_line(&self) -> Option<String> {
-        self.batch_queue
-            .update_untracked(|q| q.as_mut().and_then(|vd| vd.pop_front()))
-    }
-
-    /// Called by `resolve_command_by_id` / `resolve_command` after a status
-    /// change. If the resolved id matches the one the batch is waiting for,
-    /// clears `batch_waiting_for` and returns the next line to dispatch
-    /// (caller must dispatch it and then call `bind_batch_step`).
-    pub fn advance_batch(&self, cmd_id: u64) -> Option<String> {
-        let waiting = self.batch_waiting_for.get_untracked();
-        if waiting != Some(cmd_id) {
-            return None;
-        }
-        self.batch_waiting_for.set(None);
-        let next = self.next_batch_line();
-        if next.is_none() {
-            // Batch finished — clear queue and resolve the .batch:sync entry.
-            self.batch_queue.set(None);
-            self.finish_batch(false);
-        }
-        next
-    }
-
-    /// Resolve the `.batch:sync` command entry and reset batch error tracking.
-    pub fn finish_batch(&self, force_error: bool) {
-        let had_error = force_error || self.batch_had_error.get_untracked();
-        self.batch_had_error.set(false);
-        if let Some(cid) = self.batch_sync_cmd_id.update_untracked(|c| c.take()) {
-            let status = if had_error {
-                CommandStatus::Error(String::new())
-            } else {
-                CommandStatus::Done
-            };
-            self.entries.with_untracked(|v| {
-                for entry in v.iter() {
-                    if let Entry::Command(c) = entry {
-                        if c.id == cid {
-                            c.status.set(status);
-                            break;
-                        }
-                    }
-                }
-            });
-        }
+    /// Allocate a fresh unique batch id.
+    pub fn new_batch_id(&self) -> u64 {
+        let id = self.batch_id_counter.get_untracked();
+        self.batch_id_counter.set(id + 1);
+        id
     }
 
     fn next_id(&self) -> u64 {
@@ -262,7 +248,7 @@ impl AppState {
     }
 
     /// Peek at the next entry id without consuming it.
-    /// Used by the batch Effect in terminal.rs to detect newly-created entries.
+    /// Used by the dispatch loop to detect cmd_ids created by eval.
     pub fn peek_next_entry_id(&self) -> u64 {
         self.entry_counter.get_untracked()
     }
@@ -356,9 +342,8 @@ impl AppState {
 
     /// Record the `Message.id` returned by a successful send.
     pub fn bind_message_id(&self, cmd_id: u64, msg_id: String) {
-        self.pending_by_msg_id.update(|m| {
-            m.insert(msg_id.clone(), cmd_id);
-        });
+        let batch_id = self.cmd_to_batch.with_untracked(|m| m.get(&cmd_id).copied());
+        self.register_pending(msg_id.clone(), PendingKind::Simple { cmd_id }, batch_id);
         self.entries.update(|v| {
             if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cmd_id) {
                 c.message_id = Some(msg_id);
@@ -372,12 +357,6 @@ impl AppState {
     /// that `render_entry`'s reactive closure picks up the change without
     /// requiring Leptos `<For>` to re-render the item.
     pub fn resolve_command_by_id(&self, cmd_id: u64, status: CommandStatus) {
-        // If a batch is running and this step errored, mark it.
-        if matches!(status, CommandStatus::Error(_))
-            && self.batch_waiting_for.get_untracked() == Some(cmd_id)
-        {
-            self.batch_had_error.set(true);
-        }
         let found = self.entries.with_untracked(|v| {
             v.iter().find_map(|e| match e {
                 Entry::Command(c) if c.id == cmd_id => {
@@ -387,41 +366,78 @@ impl AppState {
             })
         });
         if let Some((status_sig, msg_id_opt)) = found {
-            status_sig.set(status);
+            status_sig.set(status.clone());
             if let Some(mid) = msg_id_opt {
-                self.pending_by_msg_id.update(|m| {
+                self.pending_requests.update(|m| {
                     m.remove(&mid);
                 });
             }
         }
-        // Advance a pending sync batch if this was the awaited step.
-        if let Some(next_line) = self.advance_batch(cmd_id) {
-            self.batch_next_line.set(Some(next_line));
+        // Update batch state on terminal statuses (Done / Replied / Error).
+        if matches!(
+            status,
+            CommandStatus::Done | CommandStatus::Replied(_) | CommandStatus::Error(_)
+        ) {
+            let batch_id = self.cmd_to_batch.update_untracked(|m| m.remove(&cmd_id));
+            if let Some(bid) = batch_id {
+                self.batches.update(|b| {
+                    if let Some(ab) = b.get_mut(&bid) {
+                        if matches!(status, CommandStatus::Error(_)) {
+                            ab.had_error = true;
+                        }
+                        if ab.mode == BatchMode::Sync {
+                            ab.sync_cmd_id = None; // signal dispatch loop to advance
+                        }
+                        if ab.mode == BatchMode::Async && ab.async_pending > 0 {
+                            ab.async_pending -= 1;
+                        }
+                    }
+                });
+            }
         }
     }
 
-    /// Resolve a command by its `Message.id`. Returns the command id if
-    /// the mapping existed.
-    pub fn resolve_command(&self, msg_id: &str, status: CommandStatus) -> Option<u64> {
-        let cmd_id = self
-            .pending_by_msg_id
-            .update_untracked(|m| m.remove(msg_id));
-        if let Some(cid) = cmd_id {
-            let status_sig = self.entries.with_untracked(|v| {
-                v.iter().find_map(|e| match e {
-                    Entry::Command(c) if c.id == cid => Some(c.status.clone()),
-                    _ => None,
-                })
-            });
-            if let Some(sig) = status_sig {
-                sig.set(status);
-            }
-            // Advance a pending sync batch if this was the awaited step.
-            if let Some(next_line) = self.advance_batch(cid) {
-                self.batch_next_line.set(Some(next_line));
-            }
+    // ── Pending request helpers ──────────────────────────────────────────
+
+    /// Register a pending request for the given outgoing message id.
+    pub fn register_pending(&self, msg_id: String, kind: PendingKind, batch_id: Option<u64>) {
+        let ttl_ms = batch_id
+            .and_then(|bid| {
+                self.batches
+                    .with_untracked(|b| b.get(&bid).map(|ab| ab.timeout_ms))
+            })
+            .unwrap_or(DEFAULT_TIMEOUT_MS);
+        log::debug!(
+            "[pending] register msg_id={} kind={:?} batch={:?} ttl={}ms",
+            msg_id,
+            kind,
+            batch_id,
+            ttl_ms
+        );
+        self.pending_requests.update(|m| {
+            m.insert(
+                msg_id,
+                TrackedRequest {
+                    kind,
+                    batch_id,
+                    sent_at_ms: js_sys::Date::now(),
+                },
+            );
+        });
+    }
+
+    /// Remove and return the pending kind for the given message id, if any.
+    pub fn take_pending(&self, msg_id: &str) -> Option<PendingKind> {
+        let result = self
+            .pending_requests
+            .update_untracked(|m| m.remove(msg_id))
+            .map(|tr| tr.kind);
+        if let Some(ref kind) = result {
+            log::debug!("[pending] matched reply msg_id={} kind={:?}", msg_id, kind);
+        } else {
+            log::debug!("[pending] no match for reply msg_id={} (already expired or unknown)", msg_id);
         }
-        cmd_id
+        result
     }
 
     // ── Incoming messages ────────────────────────────────────────────────

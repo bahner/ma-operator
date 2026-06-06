@@ -2,6 +2,9 @@
 //! config-to-DOM application, and lazy DID/CID link traversal.
 
 mod actor;
+pub(crate) mod actor_send {
+    pub(crate) use super::actor::execute_outbox_task;
+}
 mod profile;
 
 use leptos::prelude::*;

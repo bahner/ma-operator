@@ -12,7 +12,7 @@ use crate::{
     http::{fetch_cid_bytes, fetch_cid_text},
     i18n::{t, tf},
     messages::IncomingMessage,
-    state::AppState,
+    state::{AppState, OutboxTask, PendingKind},
     transport,
     views::editor::{EditorContext, EditorMode},
 };
@@ -51,30 +51,81 @@ pub async fn run_inbox_poll(
 
             match &incoming.reply_to {
                 Some(msg_id) => {
-                    if handle_ipfs_crud_reply(msg_id, &incoming, &state, config) {
-                        continue;
-                    }
-                    if handle_ipfs_kind_reply(msg_id, &incoming, &state, config) {
-                        continue;
-                    }
-                    if handle_profile_publish_reply(msg_id, &incoming, &state, config) {
-                        continue;
-                    }
-                    if handle_edit_open_reply(msg_id, &incoming, &state, show_editor) {
-                        continue;
-                    }
-                    if handle_cid_op_reply(msg_id, &incoming, &state) {
-                        continue;
-                    }
-                    if handle_crud_confirm(msg_id, &incoming, &state, &display) {
-                        continue;
-                    }
-                    // Generic reply — resolve the waiting command.
-                    let (status, push_opt) =
-                        classify_reply(&incoming.content, incoming.is_error, &display);
-                    let cmd_id = state.resolve_command(msg_id, status);
-                    if let Some(text) = push_opt {
-                        state.push_incoming(text, cmd_id, incoming.is_error);
+                    match state.take_pending(msg_id) {
+                        Some(PendingKind::IpfsCrud {
+                            target_did,
+                            crud_path,
+                            cmd_id,
+                        }) => {
+                            handle_ipfs_crud_reply(
+                                target_did, crud_path, cmd_id, &incoming, &state,
+                            );
+                        }
+                        Some(PendingKind::IpfsKindUpsert {
+                            target_did,
+                            protocol_id,
+                            cmd_id,
+                        }) => {
+                            handle_ipfs_kind_reply(
+                                target_did,
+                                protocol_id,
+                                cmd_id,
+                                &incoming,
+                                &state,
+                            );
+                        }
+                        Some(PendingKind::ProfilePublish {
+                            publisher_did,
+                            cmd_id,
+                        }) => {
+                            handle_profile_publish_reply(
+                                publisher_did,
+                                cmd_id,
+                                &incoming,
+                                &state,
+                                config,
+                            );
+                        }
+                        Some(PendingKind::EditOpen {
+                            target,
+                            crud_path,
+                            editor_mode,
+                            cmd_id,
+                        }) => {
+                            handle_edit_open_reply(
+                                target,
+                                crud_path,
+                                editor_mode,
+                                cmd_id,
+                                &incoming,
+                                &state,
+                                show_editor,
+                            );
+                        }
+                        Some(PendingKind::CidOp { op, args, cmd_id }) => {
+                            handle_cid_op_reply(op, args, cmd_id, &incoming, &state);
+                        }
+                        Some(PendingKind::CrudConfirm { cmd_id }) => {
+                            handle_crud_confirm(cmd_id, &incoming, &state, &display);
+                        }
+                        Some(PendingKind::Simple { cmd_id }) => {
+                            let (status, push_opt) =
+                                classify_reply(&incoming.content, incoming.is_error, &display);
+                            state.resolve_command_by_id(cmd_id, status);
+                            if let Some(text) = push_opt {
+                                state.push_incoming(text, Some(cmd_id), incoming.is_error);
+                            }
+                        }
+                        None => {
+                            // Stale or unexpected reply — no pending state found.
+                            // Drop silently; log so it's visible in devtools.
+                            web_sys::console::warn_1(
+                                &format!(
+                                    "[inbox] dropping stale reply (reply_to={msg_id}): {display}"
+                                )
+                                .into(),
+                            );
+                        }
                     }
                 }
                 None => {
@@ -159,8 +210,11 @@ fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool
         if atom == ":ping" {
             let pong_target = incoming.from.clone();
             let pong_reply_to = incoming.message_id.clone();
-            spawn_local(async move {
-                let _ = transport::send_rpc_pong(&pong_target, &pong_reply_to).await;
+            _state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::RpcPong {
+                    target: pong_target,
+                    reply_to_id: pong_reply_to,
+                });
             });
         }
     }
@@ -217,152 +271,97 @@ fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> St
     }
 }
 
-// ── Reply handlers — each returns true when it consumed the message ────────
+// ── Reply handlers ─────────────────────────────────────────────────────────
 
 /// IPFS-store reply → trigger a CRUD SET with the returned CID.
 fn handle_ipfs_crud_reply(
-    msg_id: &str,
+    target_did: String,
+    crud_path: String,
+    cmd_id: Option<u64>,
     incoming: &IncomingMessage,
     state: &AppState,
-    _config: RwSignal<EgoConfig>,
-) -> bool {
-    let pending = state.pending_ipfs_crud.get_untracked().get(msg_id).cloned();
-    let Some(p) = pending else { return false };
-    let (crud_target, crud_path, cmd_id_opt) = (p.target_did, p.crud_path, p.cmd_id);
-    state.pending_ipfs_crud.update(|m| {
-        m.remove(msg_id);
-    });
+) {
     if incoming.is_error {
-        if let Some(cid) = cmd_id_opt {
+        if let Some(cid) = cmd_id {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
         }
         state.push_error(incoming.display.clone());
-        return true;
+        return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
-            let state2 = state.clone();
-            spawn_local(async move {
-                match crate::transport::send_crud_set(
-                    &crud_target,
-                    &crud_path,
-                    ciborium::Value::Text(cid),
-                )
-                .await
-                {
-                    Ok(set_msg_id) => {
-                        if let Some(original_cmd_id) = cmd_id_opt {
-                            state2.pending_crud_confirms.update(|m| {
-                                m.insert(set_msg_id, original_cmd_id);
-                            });
-                        }
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id_opt {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(e);
-                    }
-                }
+            state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::CrudSet {
+                    target_did,
+                    crud_path,
+                    value: ciborium::Value::Text(cid),
+                    cmd_id,
+                });
             });
         }
         Err(e) => {
-            if let Some(cid) = cmd_id_opt {
+            if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
             state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
         }
     }
-    true
 }
 
 /// IPFS-store reply for a kind upsert → trigger a CRUD SET on `.kinds`.
 fn handle_ipfs_kind_reply(
-    msg_id: &str,
+    target_did: String,
+    protocol_id: String,
+    cmd_id: Option<u64>,
     incoming: &IncomingMessage,
     state: &AppState,
-    _config: RwSignal<EgoConfig>,
-) -> bool {
-    let pending = state
-        .pending_ipfs_kind_upserts
-        .get_untracked()
-        .get(msg_id)
-        .cloned();
-    let Some(p) = pending else { return false };
-    let (kind_target, protocol_id, cmd_id_opt) = (p.target_did, p.protocol_id, p.cmd_id);
-    state.pending_ipfs_kind_upserts.update(|m| {
-        m.remove(msg_id);
-    });
+) {
     if incoming.is_error {
-        if let Some(cid) = cmd_id_opt {
+        if let Some(cid) = cmd_id {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
         }
         state.push_error(incoming.display.clone());
-        return true;
+        return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
-            let state2 = state.clone();
-            spawn_local(async move {
-                match crate::transport::send_crud_set(
-                    &kind_target,
-                    ".kinds",
-                    ciborium::Value::Array(vec![
-                        ciborium::Value::Text(protocol_id.clone()),
+            state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::CrudSet {
+                    target_did,
+                    crud_path: ".kinds".to_string(),
+                    value: ciborium::Value::Array(vec![
+                        ciborium::Value::Text(protocol_id),
                         ciborium::Value::Text(cid),
                     ]),
-                )
-                .await
-                {
-                    Ok(set_msg_id) => {
-                        if let Some(original_cmd_id) = cmd_id_opt {
-                            state2.pending_crud_confirms.update(|m| {
-                                m.insert(set_msg_id, original_cmd_id);
-                            });
-                        }
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id_opt {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(e);
-                    }
-                }
+                    cmd_id,
+                });
             });
         }
         Err(e) => {
-            if let Some(cid) = cmd_id_opt {
+            if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
             state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
         }
     }
-    true
 }
 
 /// Profile-publish reply: the encrypted blob CID is now stored — republish DID doc.
 fn handle_profile_publish_reply(
-    msg_id: &str,
+    publisher_did: String,
+    cmd_id: Option<u64>,
     incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
-) -> bool {
-    let pending = state
-        .pending_profile_publish
-        .get_untracked()
-        .get(msg_id)
-        .cloned();
-    let Some(p) = pending else { return false };
-    let (ma_did, cmd_id_opt) = (p.publisher_did, p.cmd_id);
-    state.pending_profile_publish.update(|m| {
-        m.remove(msg_id);
-    });
+) {
+    let ma_did = publisher_did;
+    let cmd_id_opt = cmd_id;
     if incoming.is_error {
         if let Some(cid) = cmd_id_opt {
             state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
         }
         state.push_error(incoming.display.clone());
-        return true;
+        return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid_str) => {
@@ -373,32 +372,15 @@ fn handle_profile_publish_reply(
                 .map(|s| s.username.clone())
                 .unwrap_or_default();
             let cid_key = format!(".profiles.{own_username}");
-            let state2 = state.clone();
-            spawn_local(async move {
-                // Retry once on transient transport errors.
-                let result = transport::send_ipfs_publish(&ma_did).await;
-                let result = match result {
-                    Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
-                        transport::send_ipfs_publish(&ma_did).await
-                    }
-                    other => other,
-                };
-                match result {
-                    Ok(msg_id2) => {
-                        config.update(|cfg| cfg.set(&cid_key, &cid_str));
-                        let cfg = config.get_untracked();
-                        let _ = persist_config(&own_username, &cfg).await;
-                        if let Some(cid) = cmd_id_opt {
-                            state2.bind_message_id(cid, msg_id2);
-                        }
-                    }
-                    Err(e) => {
-                        if let Some(cid) = cmd_id_opt {
-                            state2.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(tf("profile-publish-failed", &[("e", &e)]));
-                    }
-                }
+            state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::IpfsPublish {
+                    ma_did,
+                    cid_str,
+                    cid_key,
+                    own_username,
+                    cmd_id: cmd_id_opt,
+                    config,
+                });
             });
         }
         Err(e) => {
@@ -408,36 +390,29 @@ fn handle_profile_publish_reply(
             state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
         }
     }
-    true
 }
 
 /// Edit-open reply: decode the CBOR payload and open the editor in the right mode.
 fn handle_edit_open_reply(
-    msg_id: &str,
+    target: String,
+    crud_path: String,
+    editor_mode: EditorMode,
+    cmd_id: u64,
     incoming: &IncomingMessage,
     state: &AppState,
     show_editor: RwSignal<Option<EditorContext>>,
-) -> bool {
-    let pending = state
-        .pending_edit_opens
-        .get_untracked()
-        .get(msg_id)
-        .cloned();
-    let Some(ctx) = pending else { return false };
-    state.pending_edit_opens.update(|m| {
-        m.remove(msg_id);
-    });
+) {
     if incoming.is_error {
-        state.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(incoming.display.clone()));
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
         state.push_error(incoming.display.clone());
-        return true;
+        return;
     }
     let content_bytes = incoming.content.clone();
     let content_type = incoming.content_type.clone();
-    let doc_path = format!("@{}{}", ctx.target, ctx.crud_path);
+    let doc_path = format!("@{}{}", target, crud_path);
     let state2 = state.clone();
-    let resolved_cmd = ctx.cmd_id;
-    let editor_mode = match ctx.editor_mode {
+    let resolved_cmd = cmd_id;
+    let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
             target, crud_path, ..
         } => EditorMode::CrudEdit {
@@ -543,17 +518,20 @@ fn handle_edit_open_reply(
             }
         }
     }
-    true
 }
 
 /// CID content-op reply: fetch the CID and apply the op (cat/head/tail/wc).
-fn handle_cid_op_reply(msg_id: &str, incoming: &IncomingMessage, state: &AppState) -> bool {
-    let pending = state.pending_cid_ops.update_untracked(|m| m.remove(msg_id));
-    let Some(ctx) = pending else { return false };
+fn handle_cid_op_reply(
+    op: String,
+    args: Vec<String>,
+    cmd_id: u64,
+    incoming: &IncomingMessage,
+    state: &AppState,
+) {
     if incoming.is_error {
-        state.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(incoming.display.clone()));
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
         state.push_error(incoming.display.clone());
-        return true;
+        return;
     }
     let content_bytes = incoming.content.clone();
     let fallback_display = incoming.display.clone();
@@ -565,14 +543,14 @@ fn handle_cid_op_reply(msg_id: &str, incoming: &IncomingMessage, state: &AppStat
             {
                 match fetch_cid_text(&cid).await {
                     Ok(text) => {
-                        let args_ref: Vec<&str> = ctx.args.iter().map(|s| s.as_str()).collect();
-                        for line in crate::cid_ops::apply(&ctx.op, &text, &args_ref) {
+                        let args_ref: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+                        for line in crate::cid_ops::apply(&op, &text, &args_ref) {
                             state2.push_output(line);
                         }
-                        state2.resolve_command_by_id(ctx.cmd_id, CommandStatus::Done);
+                        state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
                     }
                     Err(e) => {
-                        state2.resolve_command_by_id(ctx.cmd_id, CommandStatus::Error(e.clone()));
+                        state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                         state2.push_error(tf("cid-op-fetch-failed", &[("e", &e)]));
                     }
                 }
@@ -580,32 +558,19 @@ fn handle_cid_op_reply(msg_id: &str, incoming: &IncomingMessage, state: &AppStat
             _ => {
                 // Not a CID — display as plain text.
                 state2.push_output(fallback_display);
-                state2.resolve_command_by_id(ctx.cmd_id, CommandStatus::Done);
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
             }
         }
     });
-    true
 }
 
 /// CRUD SET confirmation (end of the IPFS-store → CRUD-SET publish flow).
-fn handle_crud_confirm(
-    msg_id: &str,
-    incoming: &IncomingMessage,
-    state: &AppState,
-    display: &str,
-) -> bool {
-    let Some(original_cmd_id) = state
-        .pending_crud_confirms
-        .update_untracked(|m| m.remove(msg_id))
-    else {
-        return false;
-    };
+fn handle_crud_confirm(cmd_id: u64, incoming: &IncomingMessage, state: &AppState, display: &str) {
     let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, display);
-    state.resolve_command_by_id(original_cmd_id, status);
+    state.resolve_command_by_id(cmd_id, status);
     if let Some(text) = push_opt {
-        state.push_incoming(text, Some(original_cmd_id), incoming.is_error);
+        state.push_incoming(text, Some(cmd_id), incoming.is_error);
     }
-    true
 }
 
 // ── Reply classifier ───────────────────────────────────────────────────────

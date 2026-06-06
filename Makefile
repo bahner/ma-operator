@@ -19,7 +19,7 @@ serve: dist
 	python3 -m http.server 8000 -d dist
 
 dev:
-	trunk serve --port 8088
+	trunk serve --port 8000
 
 clean:
 	cargo clean

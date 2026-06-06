@@ -20,7 +20,7 @@ use wasm_bindgen::prelude::*;
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
-use crate::state::{AppState, IpfsCrudPending, IpfsKindUpsertPending};
+use crate::state::{AppState, PendingKind};
 
 // ── JS bridge ─────────────────────────────────────────────────────────────
 
@@ -631,16 +631,15 @@ async fn do_entity_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);
             }
-            state.pending_ipfs_crud.update(|m| {
-                m.insert(
-                    msg_id,
-                    IpfsCrudPending {
-                        target_did: target.clone(),
-                        crud_path: path.clone(),
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::IpfsCrud {
+                    target_did: target.clone(),
+                    crud_path: path.clone(),
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => {
             if let Some(cid) = cmd_id {
@@ -677,16 +676,15 @@ async fn do_entity_field_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);
             }
-            state.pending_ipfs_crud.update(|m| {
-                m.insert(
-                    msg_id,
-                    IpfsCrudPending {
-                        target_did: target.clone(),
-                        crud_path: path.clone(),
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::IpfsCrud {
+                    target_did: target.clone(),
+                    crud_path: path.clone(),
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => {
             if let Some(cid) = cmd_id {
@@ -703,16 +701,15 @@ async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);
             }
-            state.pending_ipfs_crud.update(|m| {
-                m.insert(
-                    msg_id,
-                    IpfsCrudPending {
-                        target_did: target.clone(),
-                        crud_path: ":acl".to_string(),
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::IpfsCrud {
+                    target_did: target.clone(),
+                    crud_path: ":acl".to_string(),
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => {
             if let Some(cid) = cmd_id {
@@ -754,16 +751,15 @@ async fn do_crud_save(
                     if let Some(cid) = cmd_id {
                         state.resolve_command_by_id(cid, CommandStatus::Publishing);
                     }
-                    state.pending_ipfs_crud.update(|m| {
-                        m.insert(
-                            msg_id,
-                            IpfsCrudPending {
-                                target_did: target.clone(),
-                                crud_path: crud_path.clone(),
-                                cmd_id,
-                            },
-                        );
-                    });
+                    state.register_pending(
+                        msg_id,
+                        PendingKind::IpfsCrud {
+                            target_did: target.clone(),
+                            crud_path: crud_path.clone(),
+                            cmd_id,
+                        },
+                        None,
+                    );
                 }
                 Err(e) => {
                     if let Some(cid) = cmd_id {
@@ -788,9 +784,13 @@ async fn do_crud_save(
             match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
                 Ok(set_msg_id) => {
                     if let Some(original_cmd_id) = cmd_id {
-                        state.pending_crud_confirms.update(|m| {
-                            m.insert(set_msg_id, original_cmd_id);
-                        });
+                        state.register_pending(
+                            set_msg_id,
+                            PendingKind::CrudConfirm {
+                                cmd_id: original_cmd_id,
+                            },
+                            None,
+                        );
                     }
                 }
                 Err(e) => {
@@ -828,16 +828,15 @@ async fn do_kind_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);
             }
-            state.pending_ipfs_kind_upserts.update(|m| {
-                m.insert(
-                    msg_id,
-                    IpfsKindUpsertPending {
-                        target_did: target.clone(),
-                        protocol_id: protocol_id.clone(),
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::IpfsKindUpsert {
+                    target_did: target.clone(),
+                    protocol_id: protocol_id.clone(),
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => {
             if let Some(cid) = cmd_id {

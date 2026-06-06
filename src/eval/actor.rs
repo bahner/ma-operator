@@ -2,13 +2,12 @@
 //! with interceptors for `:kinds/`, `:path:edit`, and CID content operations.
 
 use leptos::prelude::*;
-use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::EgoConfig,
     core::CommandStatus,
     i18n::{t, tf},
-    state::{AppState, CidOpCtx, EditOpenCtx},
+    state::{AppState, OutboxTask, PendingKind},
     transport,
     views::editor::EditorMode,
 };
@@ -36,19 +35,117 @@ pub(crate) fn eval_actor(
         .unwrap_or_default();
     let display = format!("{focus_prefix}{raw}");
     let cmd_id = state.push_command(display);
-    let state2 = state.clone();
+    log::debug!("[actor] push_command id={cmd_id} target={target:?} verb={verb:?}");
 
-    spawn_local(async move {
-        let result = match verb.as_deref() {
-            Some("say") => Some(transport::send_chat(&target, &body).await),
-            Some("emote") => Some(transport::send_emote(&target, &body).await),
-            Some(v) => dispatch_verb_to_transport(v, &target, &body, cmd_id, &state2, config).await,
-            None => Some(transport::send_text(&target, &body).await),
-        };
-        if let Some(r) = result {
-            handle_send_result(r, verb.as_deref(), cmd_id, &state2);
-        }
+    // Push to the serial outbox queue — the dispatch loop executes one at a time.
+    state.outbox_queue.update(|q| {
+        q.push_back(OutboxTask::Actor {
+            target,
+            verb,
+            body,
+            cmd_id,
+            config,
+        });
     });
+}
+
+/// Execute one queued outbox task. Called serially from the dispatch loop.
+pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
+    match task {
+        OutboxTask::Actor {
+            target,
+            verb,
+            body,
+            cmd_id,
+            config,
+        } => {
+            log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
+            let result = match verb.as_deref() {
+                Some("say") => Some(transport::send_chat(&target, &body).await),
+                Some("emote") => Some(transport::send_emote(&target, &body).await),
+                Some(v) => {
+                    dispatch_verb_to_transport(v, &target, &body, cmd_id, state, config).await
+                }
+                None => Some(transport::send_text(&target, &body).await),
+            };
+            log::debug!(
+                "[outbox] Actor done cmd_id={cmd_id} result={:?}",
+                result.as_ref().map(|r| r.is_ok())
+            );
+            if let Some(r) = result {
+                handle_send_result(r, verb.as_deref(), cmd_id, state);
+            }
+        }
+
+        OutboxTask::CrudSet {
+            target_did,
+            crud_path,
+            value,
+            cmd_id,
+        } => match transport::send_crud_set(&target_did, &crud_path, value).await {
+            Ok(set_msg_id) => {
+                if let Some(original_cmd_id) = cmd_id {
+                    state.register_pending(
+                        set_msg_id,
+                        PendingKind::CrudConfirm {
+                            cmd_id: original_cmd_id,
+                        },
+                        None,
+                    );
+                }
+            }
+            Err(e) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, crate::core::CommandStatus::Error(e.clone()));
+                }
+                state.push_error(e);
+            }
+        },
+
+        OutboxTask::IpfsPublish {
+            ma_did,
+            cid_str,
+            cid_key,
+            own_username,
+            cmd_id,
+            config,
+        } => {
+            use crate::config::persist_config;
+            let result = transport::send_ipfs_publish(&ma_did).await;
+            let result = match result {
+                Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
+                    transport::send_ipfs_publish(&ma_did).await
+                }
+                other => other,
+            };
+            match result {
+                Ok(msg_id2) => {
+                    config.update(|cfg| cfg.set(&cid_key, &cid_str));
+                    let cfg = config.get_untracked();
+                    let _ = persist_config(&own_username, &cfg).await;
+                    if let Some(cid) = cmd_id {
+                        state.bind_message_id(cid, msg_id2);
+                    }
+                }
+                Err(e) => {
+                    if let Some(cid) = cmd_id {
+                        state.resolve_command_by_id(
+                            cid,
+                            crate::core::CommandStatus::Error(e.clone()),
+                        );
+                    }
+                    state.push_error(crate::i18n::tf("profile-publish-failed", &[("e", &e)]));
+                }
+            }
+        }
+
+        OutboxTask::RpcPong {
+            target,
+            reply_to_id,
+        } => {
+            let _ = transport::send_rpc_pong(&target, &reply_to_id).await;
+        }
+    }
 }
 
 // ── Internal dispatcher ───────────────────────────────────────────────────
@@ -127,20 +224,19 @@ async fn intercept_kinds(
             .await;
             match result {
                 Ok(msg_id) if op == "edit" => {
-                    state.pending_edit_opens.update(|m| {
-                        m.insert(
-                            msg_id,
-                            EditOpenCtx {
+                    state.register_pending(
+                        msg_id,
+                        PendingKind::EditOpen {
+                            target: target.to_string(),
+                            crud_path: ".kinds".to_string(),
+                            editor_mode: EditorMode::KindEdit {
                                 target: target.to_string(),
-                                crud_path: ".kinds".to_string(),
-                                editor_mode: EditorMode::KindEdit {
-                                    target: target.to_string(),
-                                    protocol_id: protocol_id.clone(),
-                                },
-                                cmd_id,
+                                protocol_id: protocol_id.clone(),
                             },
-                        );
-                    });
+                            cmd_id,
+                        },
+                        None,
+                    );
                 }
                 Ok(_) => {}
                 Err(e) => fail_cmd(e, cmd_id, state),
@@ -198,17 +294,16 @@ async fn intercept_edit(v_inner: &str, target: &str, cmd_id: u64, state: &AppSta
     };
     match transport::send_crud_get(target, &crud_path).await {
         Ok(msg_id) => {
-            state.pending_edit_opens.update(|m| {
-                m.insert(
-                    msg_id,
-                    EditOpenCtx {
-                        target: target.to_string(),
-                        crud_path,
-                        editor_mode,
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::EditOpen {
+                    target: target.to_string(),
+                    crud_path,
+                    editor_mode,
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => fail_cmd(e, cmd_id, state),
     }
@@ -233,16 +328,15 @@ async fn intercept_cid_op(
     let args: Vec<String> = body.split_whitespace().map(String::from).collect();
     match transport::send_crud_get(target, &crud_path).await {
         Ok(msg_id) => {
-            state.pending_cid_ops.update(|m| {
-                m.insert(
-                    msg_id,
-                    CidOpCtx {
-                        op: op_name.to_string(),
-                        args,
-                        cmd_id,
-                    },
-                );
-            });
+            state.register_pending(
+                msg_id,
+                PendingKind::CidOp {
+                    op: op_name.to_string(),
+                    args,
+                    cmd_id,
+                },
+                None,
+            );
         }
         Err(e) => fail_cmd(e, cmd_id, state),
     }
