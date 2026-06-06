@@ -1,15 +1,15 @@
 //! User-dispatched commands and their reply lifecycle.
 
-use leptos::prelude::RwSignal;
+use leptos::prelude::ArcRwSignal;
 
 /// A single user-issued command awaiting (or having received) a reply.
 ///
 /// The record is the source of truth for one dispatched action. Visual
 /// rendering is derived from this — never the other way around.
 ///
-/// `status` is a `RwSignal<CommandStatus>` so that `render_entry` can react
-/// to status changes without requiring Leptos `<For>` to re-render the
-/// entire item (keyed `<For>` keeps existing DOM nodes for unchanged keys).
+/// `status` is an `ArcRwSignal<CommandStatus>` (Arc-based, not arena-owned)
+/// so that `render_entry` can react to status changes without being disposed
+/// when a Leptos `Effect` that created the command re-runs.
 #[derive(Clone, Debug)]
 pub struct CommandRecord {
     /// Global sequence id, shared with the terminal entry counter so that
@@ -20,9 +20,9 @@ pub struct CommandRecord {
     /// The `ma_core::Message.id` once the send call returned successfully.
     /// `None` until the async dispatch completes.
     pub message_id: Option<String>,
-    /// Current lifecycle state.  A signal so `render_entry` updates
-    /// reactively when the status changes without a full `<For>` re-render.
-    pub status: RwSignal<CommandStatus>,
+    /// Current lifecycle state.  An Arc-based signal so the value is never
+    /// disposed by a reactive owner — safe to set from inbox-poll futures.
+    pub status: ArcRwSignal<CommandStatus>,
 }
 
 #[derive(Clone, Debug, PartialEq)]

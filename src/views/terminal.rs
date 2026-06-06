@@ -91,7 +91,8 @@ pub fn Terminal() -> impl IntoView {
                 if state.batch_collecting.get_untracked().is_some() {
                     state.push_error(crate::i18n::t("batch-already-collecting"));
                 } else {
-                    let timeout_ms = line.split_whitespace()
+                    let timeout_ms = line
+                        .split_whitespace()
                         .find_map(|tok| {
                             let v = tok.strip_prefix("timeout=")?;
                             if let Some(s) = v.strip_suffix("ms") {
@@ -130,7 +131,9 @@ pub fn Terminal() -> impl IntoView {
                     let trimmed = line.trim().to_string();
                     if !trimmed.is_empty() && !trimmed.starts_with('#') {
                         state.batch_collecting.update(|c| {
-                            if let Some(v) = c { v.push(trimmed); }
+                            if let Some(v) = c {
+                                v.push(trimmed);
+                            }
                         });
                     }
                 }
@@ -200,9 +203,7 @@ pub fn Terminal() -> impl IntoView {
                         state3.push_error(crate::i18n::t("batch-step-timeout"));
                         state3.resolve_command_by_id(
                             cmd_id_to_watch,
-                            crate::core::CommandStatus::Error(
-                                crate::i18n::t("batch-step-timeout"),
-                            ),
+                            crate::core::CommandStatus::Error(crate::i18n::t("batch-step-timeout")),
                         );
                         state3.batch_queue.set(None);
                         state3.batch_waiting_for.set(None);
@@ -285,16 +286,17 @@ fn render_entry(entry: Entry) -> impl IntoView {
             // The reactive closures below re-run whenever `status.set()` is
             // called, updating the DOM without requiring `<For>` to re-render
             // the entire item (keyed `<For>` keeps existing nodes for unchanged keys).
-            let status = c.status;
+            let status_cls = c.status.clone();
+            let status_text = c.status.clone();
             let raw = c.raw.clone();
-            let cls = move || match status.get() {
+            let cls = move || match status_cls.get() {
                 CommandStatus::Sent => "terminal-line line-pending",
                 CommandStatus::Done => "terminal-line line-dimmed",
                 CommandStatus::Replied(_) => "terminal-line line-replied",
                 CommandStatus::Publishing => "terminal-line line-publishing",
                 CommandStatus::Error(_) => "terminal-line line-error",
             };
-            let text = move || match status.get() {
+            let text = move || match status_text.get() {
                 CommandStatus::Publishing => {
                     format!("→ {}  {}…", raw, crate::i18n::t("status-publishing"))
                 }

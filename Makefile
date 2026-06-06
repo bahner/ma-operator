@@ -11,7 +11,7 @@ SRC		= $(shell find src -name '*.rs') \
 
 .PHONY: serve dev clean publish check dist twiggy twiggy-dom test
 
-dist: $(SRC)
+dist:
 	trunk build $(TRUNK_OPTS)
 
 #serve: TRUNK_OPTS=

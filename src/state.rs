@@ -8,6 +8,7 @@ use std::rc::Rc;
 use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 use crate::views::editor::EditorMode;
+use leptos::prelude::ArcRwSignal;
 // ── Session ────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, PartialEq)]
@@ -305,7 +306,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: RwSignal::new(CommandStatus::Sent),
+                status: ArcRwSignal::new(CommandStatus::Sent),
             }))
         });
         id
@@ -319,7 +320,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: RwSignal::new(CommandStatus::Done),
+                status: ArcRwSignal::new(CommandStatus::Done),
             }))
         });
     }
@@ -334,7 +335,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: RwSignal::new(CommandStatus::Done),
+                status: ArcRwSignal::new(CommandStatus::Done),
             }))
         });
         id
@@ -348,7 +349,7 @@ impl AppState {
                 id,
                 raw: raw.into(),
                 message_id: None,
-                status: RwSignal::new(CommandStatus::Replied(String::new())),
+                status: ArcRwSignal::new(CommandStatus::Replied(String::new())),
             }))
         });
     }
@@ -379,7 +380,9 @@ impl AppState {
         }
         let found = self.entries.with_untracked(|v| {
             v.iter().find_map(|e| match e {
-                Entry::Command(c) if c.id == cmd_id => Some((c.status, c.message_id.clone())),
+                Entry::Command(c) if c.id == cmd_id => {
+                    Some((c.status.clone(), c.message_id.clone()))
+                }
                 _ => None,
             })
         });
@@ -406,7 +409,7 @@ impl AppState {
         if let Some(cid) = cmd_id {
             let status_sig = self.entries.with_untracked(|v| {
                 v.iter().find_map(|e| match e {
-                    Entry::Command(c) if c.id == cid => Some(c.status),
+                    Entry::Command(c) if c.id == cid => Some(c.status.clone()),
                     _ => None,
                 })
             });
