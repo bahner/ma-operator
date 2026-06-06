@@ -30,16 +30,21 @@ pub fn InputBar(
     });
 
     // Process programmatic eval input exactly like a multi-line paste.
+    // eval_input is set from outside (editor Eval button or :eval verb).
+    // Use set_untracked so this Effect is not redundantly re-queued when
+    // we clear the signal, and call on_submit directly (same as paste).
     {
         let on_submit = on_submit.clone();
         Effect::new(move |_| {
             if let Some(text) = eval_input.get() {
-                eval_input.set(None);
-                for line in text.lines() {
-                    let line = line.trim().to_string();
-                    if !line.is_empty() && !line.starts_with('#') {
-                        on_submit(line);
-                    }
+                eval_input.update_untracked(|v| *v = None);
+                let lines: Vec<String> = text
+                    .lines()
+                    .map(|l| l.trim().to_string())
+                    .filter(|l| !l.is_empty() && !l.starts_with('#'))
+                    .collect();
+                for line in lines {
+                    on_submit(line);
                 }
             }
         });

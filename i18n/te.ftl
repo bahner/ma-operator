@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       చివరి మార్గ�
 help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
 help-cmd-logout =   .logout                      లాగ్ అవుట్
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID చూపించు (సందేశం పంపలేదు)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       síðasta úrræði — notaðu 
 help-cmd-history =   .history                     skipanasaga (samhliða endurtekningar sameinaðar)
 help-cmd-logout =   .logout                      skrá út
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       sýna leyst DID (engin skilaboð send)
 help-msg-send =   @alias[:verb] body           senda skilaboð / RPC til leikara
@@ -313,3 +313,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

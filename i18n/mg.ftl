@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       fanalana farany — ampiasao rah
 help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
 help-cmd-logout =   .logout                      mivoaka
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       asehoy DID nonadihina (tsy nalefa hafatra)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

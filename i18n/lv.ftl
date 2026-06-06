@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       pēdējais līdzeklis — izmant
 help-cmd-history =   .history                     komandu vēsture (secīgie dublikāti apvienoti)
 help-cmd-logout =   .logout                      atteikties
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       parādīt atrisināto DID (ziņojums nav nosūtīts)
 help-msg-send =   @alias[:verb] body           nosūtīt ziņojumu / RPC dalībniekam
@@ -313,3 +313,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

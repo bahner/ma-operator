@@ -238,8 +238,8 @@ fn eval_dot(
             }
             return;
         }
-        // Shorthand: `.batch` → `.my.doc.scratch:eval`  (parallel, fire-and-forget)
-        ".batch" => {
+        // Shorthand: `.batch:end` → `.my.doc.scratch:eval`  (parallel, fire-and-forget)
+        ".batch:end" => {
             if let Err(e) = dispatch_verb(
                 ".my.doc.scratch",
                 "eval",

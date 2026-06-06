@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       laawol ɓurno — faala e nder n
 help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
 help-cmd-logout =   .logout                      yalta
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hollu DID tuugniingal (koɗe nanndinkaaka)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

@@ -143,6 +143,12 @@ pub struct AppState {
     /// Lines being collected in `.batch:sync` mode.
     /// `None` = not collecting; `Some(lines)` = collecting, `.batch` flushes.
     pub batch_collecting: RwSignal<Option<Vec<String>>>,
+    /// cmd_id of the `.batch:sync` command entry, kept alive until batch completes.
+    pub batch_sync_cmd_id: RwSignal<Option<u64>>,
+    /// Set to true if any step in the current batch resolved with an error.
+    pub batch_had_error: RwSignal<bool>,
+    /// Per-step timeout in milliseconds (default 30 000). Set by `.batch:begin timeout=Xs`.
+    pub batch_timeout_ms: RwSignal<u32>,
     /// Pending lines for a synchronous batch.
     /// Each entry is a raw command line. The queue is drained one line at a
     /// time: the next line is dispatched only after the previous command's
@@ -178,6 +184,9 @@ impl AppState {
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
             batch_collecting: RwSignal::new(None),
+            batch_sync_cmd_id: RwSignal::new(None),
+            batch_had_error: RwSignal::new(false),
+            batch_timeout_ms: RwSignal::new(30_000),
             batch_queue: RwSignal::new(None),
             batch_waiting_for: RwSignal::new(None),
             batch_next_line: RwSignal::new(None),
@@ -215,10 +224,34 @@ impl AppState {
         self.batch_waiting_for.set(None);
         let next = self.next_batch_line();
         if next.is_none() {
-            // Batch finished — clear queue.
+            // Batch finished — clear queue and resolve the .batch:sync entry.
             self.batch_queue.set(None);
+            self.finish_batch(false);
         }
         next
+    }
+
+    /// Resolve the `.batch:sync` command entry and reset batch error tracking.
+    pub fn finish_batch(&self, force_error: bool) {
+        let had_error = force_error || self.batch_had_error.get_untracked();
+        self.batch_had_error.set(false);
+        if let Some(cid) = self.batch_sync_cmd_id.update_untracked(|c| c.take()) {
+            let status = if had_error {
+                CommandStatus::Error(String::new())
+            } else {
+                CommandStatus::Done
+            };
+            self.entries.with_untracked(|v| {
+                for entry in v.iter() {
+                    if let Entry::Command(c) = entry {
+                        if c.id == cid {
+                            c.status.set(status);
+                            break;
+                        }
+                    }
+                }
+            });
+        }
     }
 
     fn next_id(&self) -> u64 {
@@ -291,6 +324,22 @@ impl AppState {
         });
     }
 
+    /// Append a command already resolved as `Done` and return its id.
+    /// Use this when you need to track the entry (e.g. for `batch_sync_cmd_id`)
+    /// but don't want the `Sent` pulsing state.
+    pub fn push_command_done_id(&self, raw: impl Into<String>) -> u64 {
+        let id = self.next_id();
+        self.entries.update(|v| {
+            v.push(Entry::Command(CommandRecord {
+                id,
+                raw: raw.into(),
+                message_id: None,
+                status: RwSignal::new(CommandStatus::Done),
+            }))
+        });
+        id
+    }
+
     /// Append a command already resolved as `Replied` (bright green; success).
     pub fn push_command_ok(&self, raw: impl Into<String>) {
         let id = self.next_id();
@@ -322,6 +371,12 @@ impl AppState {
     /// that `render_entry`'s reactive closure picks up the change without
     /// requiring Leptos `<For>` to re-render the item.
     pub fn resolve_command_by_id(&self, cmd_id: u64, status: CommandStatus) {
+        // If a batch is running and this step errored, mark it.
+        if matches!(status, CommandStatus::Error(_))
+            && self.batch_waiting_for.get_untracked() == Some(cmd_id)
+        {
+            self.batch_had_error.set(true);
+        }
         let found = self.entries.with_untracked(|v| {
             v.iter().find_map(|e| match e {
                 Entry::Command(c) if c.id == cmd_id => Some((c.status, c.message_id.clone())),

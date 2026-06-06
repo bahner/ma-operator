@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       son çare — sorun çıkarsa ku
 help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID'yi göster (mesaj gönderilmez)
@@ -319,3 +319,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

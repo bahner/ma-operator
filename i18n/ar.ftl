@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       الملاذ الأخير — ا
 help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
 help-cmd-logout =   .logout                      تسجيل الخروج
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       عرض DID المُحلَّل (لا رسالة مرسلة)
@@ -319,3 +319,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

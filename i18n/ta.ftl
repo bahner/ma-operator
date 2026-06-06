@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       கடைசி வழி — �
 help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
 help-cmd-logout =   .logout                      வெளியேறவும்
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID காட்டு (செய்தி இல்லை)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

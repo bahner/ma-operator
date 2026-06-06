@@ -152,7 +152,7 @@ help-cmd-history =   .history                     command history (consecutive d
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
 help-cmd-batch =   .batch                       eval scratch document (parallel, fire-and-forget)
-help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
+help-cmd-batch-sync =   .batch:begin / .batch         run commands sequentially, one per line
 
 # ── Help text — topics index ──────────────────────────────────────────────
 help-header-topics = ── topics — type .help.<topic> for details ────────────────────────────────
@@ -325,3 +325,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

@@ -77,41 +77,6 @@ pub fn Terminal() -> impl IntoView {
         eval_input.set(Some(text));
     });
 
-    // Watch batch_next_line: when the batch machinery sets the next line,
-    // evaluate it and bind the resulting cmd_id so the batch can advance.
-    {
-        let state2 = state.clone();
-        Effect::new(move |_| {
-            let line = state2.batch_next_line.get();
-            let Some(line) = line else { return };
-            state2.batch_next_line.set(None);
-            let cfg = config.get_untracked();
-            let focus = state2.focus_actor.get_untracked();
-            match parse(&line, &cfg, focus.as_ref().map(|f| f.target.as_str())) {
-                Ok(cmd) => {
-                    let before_id = state2.peek_next_entry_id();
-                    eval(cmd, &line, &state2, config, show_editor, eval_lines);
-                    let after_id = state2.peek_next_entry_id();
-                    if after_id > before_id {
-                        state2.bind_batch_step(after_id - 1);
-                    } else {
-                        // Local/instant command — advance immediately.
-                        if let Some(next) = state2.next_batch_line() {
-                            state2.batch_next_line.set(Some(next));
-                        } else {
-                            state2.batch_queue.set(None);
-                        }
-                    }
-                }
-                Err(e) => {
-                    state2.push_error(format!("batch: '{line}': {e}"));
-                    state2.batch_queue.set(None);
-                    state2.batch_waiting_for.set(None);
-                }
-            }
-        });
-    }
-
     // Core input handler.
     let handle_input_fn: std::sync::Arc<dyn Fn(String) + Send + Sync> = {
         let state = state.clone();
@@ -121,42 +86,51 @@ pub fn Terminal() -> impl IntoView {
                 return;
             }
 
-            // ── .batch:sync / .batch delimiter mode ──────────────────────
-            // `.batch:sync` starts collecting; `.batch` closes and runs.
-            if line == ".batch:sync" {
+            // ── .batch:begin / .batch:end delimiter mode ──────────────────
+            if line.starts_with(".batch:begin") {
                 if state.batch_collecting.get_untracked().is_some() {
                     state.push_error(crate::i18n::t("batch-already-collecting"));
                 } else {
+                    let timeout_ms = line.split_whitespace()
+                        .find_map(|tok| {
+                            let v = tok.strip_prefix("timeout=")?;
+                            if let Some(s) = v.strip_suffix("ms") {
+                                s.parse::<u32>().ok()
+                            } else if let Some(s) = v.strip_suffix('s') {
+                                s.parse::<u32>().ok().map(|n| n * 1000)
+                            } else {
+                                v.parse::<u32>().ok()
+                            }
+                        })
+                        .unwrap_or(30_000);
+                    state.batch_timeout_ms.set(timeout_ms);
+                    let cmd_id = state.push_command_done_id(line.clone());
+                    state.batch_sync_cmd_id.set(Some(cmd_id));
+                    state.batch_had_error.set(false);
                     state.batch_collecting.set(Some(Vec::new()));
-                    state.push_system(crate::i18n::t("batch-collecting-started"));
                 }
                 return;
             }
             if state.batch_collecting.get_untracked().is_some() {
-                if line == ".batch" {
-                    // Close collection and start sequential execution.
+                if line == ".batch:end" {
                     let collected = state
                         .batch_collecting
                         .update_untracked(|c| c.take().unwrap_or_default());
                     state.batch_collecting.set(None);
-                    if collected.is_empty() {
-                        state.push_system(crate::i18n::t("batch-empty"));
-                        return;
-                    }
-                    let queue: std::collections::VecDeque<String> = collected.into_iter().collect();
-                    state.push_system(crate::i18n::t("batch-running"));
-                    state.start_batch(queue);
-                    if let Some(first) = state.next_batch_line() {
-                        state.batch_next_line.set(Some(first));
+                    if !collected.is_empty() {
+                        let queue: std::collections::VecDeque<String> =
+                            collected.into_iter().collect();
+                        state.start_batch(queue);
+                        if let Some(first) = state.next_batch_line() {
+                            state.batch_next_line.set(Some(first));
+                        }
                     }
                 } else {
-                    // Accumulate line (skip blank / comment lines).
+                    // Silently accumulate — will be submitted via on_submit when batch runs.
                     let trimmed = line.trim().to_string();
                     if !trimmed.is_empty() && !trimmed.starts_with('#') {
                         state.batch_collecting.update(|c| {
-                            if let Some(v) = c {
-                                v.push(trimmed);
-                            }
+                            if let Some(v) = c { v.push(trimmed); }
                         });
                     }
                 }
@@ -195,10 +169,58 @@ pub fn Terminal() -> impl IntoView {
     };
 
     // Thin wrapper satisfying InputBar's `impl Fn(String) + 'static` bound.
+    // Clone for the batch effect before the wrapper takes ownership.
+    let handle_input_for_batch = handle_input_fn.clone();
     let handle_input = {
         let f = handle_input_fn;
         move |line: String| f(line)
     };
+
+    // Watch batch_next_line: when the batch machinery sets the next line,
+    // submit it through handle_input_fn exactly as if typed by the user.
+    // We peek at entry_counter before/after to detect whether a new command
+    // entry was created, so we can bind it as the batch's current step.
+    {
+        let state2 = state.clone();
+        Effect::new(move |_| {
+            let line = state2.batch_next_line.get();
+            let Some(line) = line else { return };
+            state2.batch_next_line.set(None);
+            let before_id = state2.peek_next_entry_id();
+            handle_input_for_batch(line);
+            let after_id = state2.peek_next_entry_id();
+            if after_id > before_id {
+                state2.bind_batch_step(after_id - 1);
+                // Per-step timeout watchdog.
+                let timeout_ms = state2.batch_timeout_ms.get_untracked();
+                let cmd_id_to_watch = after_id - 1;
+                let state3 = state2.clone();
+                gloo_timers::callback::Timeout::new(timeout_ms, move || {
+                    if state3.batch_waiting_for.get_untracked() == Some(cmd_id_to_watch) {
+                        state3.push_error(crate::i18n::t("batch-step-timeout"));
+                        state3.resolve_command_by_id(
+                            cmd_id_to_watch,
+                            crate::core::CommandStatus::Error(
+                                crate::i18n::t("batch-step-timeout"),
+                            ),
+                        );
+                        state3.batch_queue.set(None);
+                        state3.batch_waiting_for.set(None);
+                        state3.finish_batch(true);
+                    }
+                })
+                .forget();
+            } else {
+                // Instant/local command — advance immediately.
+                if let Some(next) = state2.next_batch_line() {
+                    state2.batch_next_line.set(Some(next));
+                } else {
+                    state2.batch_queue.set(None);
+                    state2.finish_batch(false);
+                }
+            }
+        });
+    }
 
     view! {
         <div class="terminal"

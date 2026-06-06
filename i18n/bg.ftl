@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       последна мярка — 
 help-cmd-history =   .history                     история на командите (последователните дублирания се обединяват)
 help-cmd-logout =   .logout                      изход
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       показва разрешения DID (не изпраща съобщение)
 help-msg-send =   @alias[:verb] body           изпраща съобщение / RPC на актьор
@@ -313,3 +313,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

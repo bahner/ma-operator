@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       ทางเลือกสุ�
 help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID ที่แก้ไขแล้ว (ไม่ส่งข้อความ)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

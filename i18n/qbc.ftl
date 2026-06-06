@@ -150,7 +150,7 @@ help-cmd-panic =   .panic                       owkwa keting — du wit problem
 help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
 help-cmd-logout =   .logout                      tek-out
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       lit DID im (na showxa message)
@@ -322,3 +322,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

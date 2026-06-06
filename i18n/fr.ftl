@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       dernier recours — utilisez si 
 help-cmd-history =   .history                     historique des commandes (doublons consécutifs fusionnés)
 help-cmd-logout =   .logout                      se déconnecter
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       afficher le DID résolu (aucun message envoyé)
 help-msg-send =   @alias[:verb] body           envoyer un message / RPC à un acteur
@@ -312,3 +312,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

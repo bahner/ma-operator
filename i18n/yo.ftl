@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò b
 help-cmd-history =   .history                     ìtàn àṣẹ (àwọn tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀)
 help-cmd-logout =   .logout                      jáde
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       ṣàfihàn DID tí a yanjú (kò sí ìfiránṣẹ́)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

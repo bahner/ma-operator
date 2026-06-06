@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       最後の手段 — 困ったと
 help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       解決済み DID を表示 (メッセージは送信されない)
 help-msg-send =   @alias[:verb] body           アクターにメッセージ / RPC を送信
@@ -312,3 +312,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       শেষ অবলম্বন 
 help-cmd-history =   .history                     কমান্ড ইতিহাস (ক্রমাগত পুনরাবৃত্তি একত্রিত)
 help-cmd-logout =   .logout                      লগ আউট
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── সহায়তা — বার্তাপ্রেরণ ────────────────────────────────────────────────
 help-msg-echo =   @alias                       সমাধান করা DID দেখান (কোনো বার্তা পাঠানো হয় না)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

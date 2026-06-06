@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       최후 수단 — 문제 발생 
 help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
 help-cmd-logout =   .logout                      로그아웃
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       해석된 DID 표시 (메시지 전송 없음)
@@ -319,3 +319,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

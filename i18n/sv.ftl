@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       sista utvägen — använd om du
 help-cmd-history =   .history                     kommandohistorik (på varandra följande dubletter slås samman)
 help-cmd-logout =   .logout                      logga ut
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────
 help-msg-echo =   @alias                       visa löst DID (inget meddelande skickat)
@@ -319,3 +319,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

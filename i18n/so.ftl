@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticm
 help-cmd-history =   .history                     taariikhda amarrada (nuqulaha xiriirka biirtay)
 help-cmd-logout =   .logout                      ka bax
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Gargaarku — farriin diridda ───────────────────────────────────────────
 help-msg-echo =   @alias                       tus DID la xalliyay (farriin la dirin)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

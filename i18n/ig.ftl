@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mg
 help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID ezatara (ezitaraghị ozi)
@@ -320,3 +320,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

@@ -148,7 +148,7 @@ help-cmd-panic =   .panic                       最後手段 — 遇到問題時
 help-cmd-history =   .history                     命令歷史（連續重複項已合併）
 help-cmd-logout =   .logout                      登出
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 # ── 說明文字 — 訊息傳遞 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       回顯已解析的 DID（不傳送訊息）
@@ -319,3 +319,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

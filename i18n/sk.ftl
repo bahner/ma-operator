@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       posledná záchrana — použite
 help-cmd-history =   .history                     história príkazov (za sebou idúce duplikáty zlúčené)
 help-cmd-logout =   .logout                      odhlásiť
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       zobraziť preložený DID (žiadna správa sa neodošle)
 help-msg-send =   @alias[:verb] body           odoslať správu / RPC aktérovi
@@ -313,3 +313,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out

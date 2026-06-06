@@ -147,7 +147,7 @@ help-cmd-panic =   .panic                       laatste redmiddel — gebruik al
 help-cmd-history =   .history                     opdrachtgeschiedenis (opeenvolgende duplicaten samengevoegd)
 help-cmd-logout =   .logout                      afmelden
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       opgelost DID weergeven (geen bericht verzonden)
 help-msg-send =   @alias[:verb] body           bericht / RPC sturen naar actor
@@ -312,3 +312,4 @@ batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
 batch-running = Running batch sequentially…
+batch-step-timeout = batch step timed out
