@@ -29,6 +29,21 @@ pub async fn run_inbox_poll(
         if !transport::is_connected() {
             continue;
         }
+
+        // Drain gossip topics and push received broadcasts to the terminal.
+        for (alias, msg) in transport::gossip::drain_gossip_queue() {
+            let is_emote = msg.content_type == transport::gossip::CONTENT_TYPE_EMOTE;
+            let from_did = msg.from.clone();
+            let from_display = {
+                let cfg = config.get_untracked();
+                cfg.reverse_alias(&from_did)
+                    .unwrap_or(&from_did)
+                    .to_string()
+            };
+            let body = String::from_utf8_lossy(&msg.content).into_owned();
+            state.push_broadcast(alias, from_display, body, is_emote);
+        }
+
         for incoming in transport::drain_inbox()
             .into_iter()
             .chain(transport::drain_rpc_inbox())

@@ -11,6 +11,15 @@
 ///   @alias[.path[:verb]] [body]   → ActorMessage  (alias names must not contain '.')
 ///   @did:ma:<id>[:verb] [body]    → ActorMessage
 ///   \@literal text                → plain text (escaped @)
+///
+/// Topic grammar:
+///   #alias                → TopicMessage { verb: "status" }
+///   #alias:say body       → TopicMessage { verb: "say" }
+///   #alias:emote body     → TopicMessage { verb: "emote" }
+///   #alias:subscribe      → TopicMessage { verb: "subscribe" }
+///   #alias:unsubscribe    → TopicMessage { verb: "unsubscribe" }
+///   #alias:               → TopicMessage { verb: "" }  (delete/noop)
+///   ,body                 → TopicEmote  (topic from focus context)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -46,6 +55,17 @@ pub enum Command {
         /// Remaining arguments as a single string
         body: String,
     },
+    /// #alias[:verb [body]]  – message to a gossip topic
+    TopicMessage {
+        /// Local alias name (looked up in .my.topics.*)
+        topic: String,
+        /// Verb: "say" | "emote" | "subscribe" | "unsubscribe" | "status" | ""
+        verb: String,
+        /// Message body
+        body: String,
+    },
+    /// ,body  – emote to the current topic focus (only valid in .use #topic mode)
+    TopicEmote { body: String },
     /// Raw text (escaped \@, or just plain text)
     PlainText(String),
 }
@@ -65,6 +85,12 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
     // Escaped \@ → literal text
     if input.starts_with("\\@") {
         return Ok(Command::PlainText(input[1..].to_string()));
+    }
+
+    // Emote to current topic focus: ,body → TopicEmote
+    if let Some(body) = input.strip_prefix(',') {
+        let body = body.trim().to_string();
+        return Ok(Command::TopicEmote { body });
     }
 
     // Dot-command
@@ -114,14 +140,35 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
     // If we are in focus mode, prepend the focus actor so the user
     // just types ":verb args" or "body"
     let effective = if let Some(actor) = focus {
-        if input.starts_with(':') || !input.starts_with('@') {
-            format!("{actor} {input}")
+        if actor.starts_with('#') {
+            // Topic focus mode: expand bare text and : prefixes to topic commands.
+            // Pass through . @ # (dot-commands, p2p, explicit other topics)
+            // and , (TopicEmote, already returned above).
+            if input.starts_with('.') || input.starts_with('@') || input.starts_with('#') {
+                input.to_string()
+            } else if input.starts_with(':') {
+                // :verb body  →  #foo:verb body  |  :  →  #foo:
+                format!("{actor}{input}")
+            } else {
+                // Bare text  →  #foo:say text
+                format!("{actor}:say {input}")
+            }
         } else {
-            input.to_string()
+            // Actor focus mode (existing behaviour)
+            if input.starts_with(':') || !input.starts_with('@') {
+                format!("{actor} {input}")
+            } else {
+                input.to_string()
+            }
         }
     } else {
         input.to_string()
     };
+
+    // Topic message: #alias[:verb [body]]
+    if effective.starts_with('#') {
+        return parse_topic_message(&effective);
+    }
 
     if effective.starts_with('@') {
         let mut parts = effective.splitn(2, ' ');
@@ -217,6 +264,38 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
         }
     }
     (head, None)
+}
+
+/// Parse `#alias[:verb [body]]` into a [`Command::TopicMessage`].
+///
+/// The leading `#` must already be present in `input`.
+fn parse_topic_message(input: &str) -> Result<Command, String> {
+    // Strip leading '#'
+    let s = &input[1..];
+
+    // Split at first space to get head and body
+    let (head, body) = match s.split_once(' ') {
+        Some((h, b)) => (h, b.trim().to_string()),
+        None => (s, String::new()),
+    };
+
+    // Split head at first ':' to get topic and verb
+    let (topic, verb) = match head.split_once(':') {
+        None => (head.to_string(), "status".to_string()),
+        Some((t, v)) => (t.to_string(), v.to_string()),
+    };
+
+    if topic.is_empty() {
+        return Err("topic alias cannot be empty".to_string());
+    }
+
+    // Validate verb
+    match verb.as_str() {
+        "say" | "emote" | "subscribe" | "unsubscribe" | "status" | "" => {}
+        other => return Err(format!("unknown topic verb: {other}")),
+    }
+
+    Ok(Command::TopicMessage { topic, verb, body })
 }
 
 #[cfg(test)]

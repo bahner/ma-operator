@@ -390,6 +390,7 @@ html, body {
 .line-reply   { color: var(--colour-replied); }
 .line-error  { color: var(--colour-error); }
 .line-system { color: var(--colour-system); }
+.broadcast-entry { color: #87ceeb; }
 
 .line-alias  { color: var(--colour-alias); }
 

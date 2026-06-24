@@ -97,7 +97,7 @@ pub fn get_sender_did() -> Option<String> {
     SESSION_SENDER_DID.with(|d| d.borrow().clone())
 }
 
-fn get_session() -> Result<(String, SigningKey), String> {
+pub(crate) fn get_session_info() -> Result<(String, SigningKey), String> {
     let signing_key_bytes = SESSION_SIGNING_KEY
         .with(|k| *k.borrow())
         .ok_or_else(|| "not logged in".to_string())?;
@@ -114,7 +114,7 @@ fn get_session() -> Result<(String, SigningKey), String> {
 
 /// Send a plain-text message. Returns the dispatched `Message.id` on success.
 pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = Message::new(
         &sender_did,
         target_did,
@@ -132,7 +132,7 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
 /// Send an ephemeral chat message (`application/x-ma-chat`).
 /// Returns the dispatched `Message.id` on success.
 pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = Message::new(
         &sender_did,
         target_did,
@@ -150,7 +150,7 @@ pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
 /// Send an emote (`application/x-ma-emote`).
 /// Returns the dispatched `Message.id` on success.
 pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = Message::new(
         &sender_did,
         target_did,
@@ -167,7 +167,7 @@ pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> 
 
 /// Send an RPC message. Returns the dispatched `Message.id` on success.
 pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
         verb.to_string()
@@ -212,7 +212,7 @@ pub async fn send_rpc_bytes(
     verb: &str,
     payload: Vec<u8>,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
         verb.to_string()
@@ -249,7 +249,7 @@ pub async fn send_rpc_bytes(
 /// with `generate_ipfs_publish_request()` into an `application/x-ma-ipfs-request`
 /// CBOR envelope addressed to `publisher_did`.
 pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let ipns_key = SESSION_IPNS_KEY
         .with(|k| *k.borrow())
@@ -319,7 +319,7 @@ pub async fn send_ipfs_store(
     content: Vec<u8>,
     content_type: &str,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = generate_ipfs_store_request(
         &sender_did,
         publisher_did,
@@ -436,7 +436,7 @@ pub async fn send_text_reply(
     body: &str,
     reply_to_id: &str,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let mut msg = Message::new(
         &sender_did,
         target_did,
@@ -455,7 +455,7 @@ pub async fn send_text_reply(
 /// Send a `:pong` reply to a peer that sent `:ping`.
 /// `reply_to_id` is the `Message.id` of the incoming `:ping`.
 pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let mut pong = Vec::new();
     ciborium::ser::into_writer(&ciborium::Value::Text(":pong".to_string()), &mut pong)
         .map_err(|e| e.to_string())?;
@@ -500,7 +500,7 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
 /// Payload: CBOR `[":get", ".path"]`
 pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('.') {
         path.to_string()
     } else {
@@ -534,7 +534,7 @@ pub async fn send_crud_set(
     value: ciborium::Value,
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('.') {
         path.to_string()
     } else {
@@ -561,7 +561,7 @@ pub async fn send_crud_set(
 /// Payload: CBOR `[":delete", ".path"]`
 pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session()?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('.') {
         path.to_string()
     } else {

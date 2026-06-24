@@ -9,4 +9,4 @@ pub mod commands;
 pub mod entries;
 
 pub use commands::{CommandRecord, CommandStatus};
-pub use entries::{Entry, IncomingRecord, SystemKind, SystemRecord};
+pub use entries::{BroadcastRecord, Entry, IncomingRecord, SystemKind, SystemRecord};

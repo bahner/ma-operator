@@ -1,14 +1,39 @@
 use leptos::prelude::*;
-use ma_core::{Inbox, IpfsGatewayResolver, Message};
+use ma_core::{GossipReceiver, GossipSender, Inbox, IpfsGatewayResolver, Message, Topic};
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
 use crate::config::EgoConfig;
-use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
+use crate::core::{
+    BroadcastRecord, CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord,
+};
 use crate::views::editor::EditorMode;
 use leptos::prelude::ArcRwSignal;
+
+// ── Topic session entry ────────────────────────────────────────────────────
+
+/// Runtime state for a single gossip topic subscription.
+pub struct TopicSession {
+    /// Local alias name (the key in SESSION_TOPICS).
+    #[allow(dead_code)]
+    pub alias: String,
+    /// Human-readable topic string (stored in EgoConfig as .my.topics.alias).
+    #[allow(dead_code)]
+    pub topic_string: String,
+    /// BLAKE3 hash of `topic_string` — the actual iroh-gossip TopicId.
+    #[allow(dead_code)]
+    pub topic_id: [u8; 32],
+    /// Sender handle for broadcasting messages.
+    pub sender: GossipSender,
+    /// ma-core Topic for message validation and delivery.
+    pub topic: Topic,
+    /// Receiver is consumed by the background task; this field exists only
+    /// to hold it briefly until the task is spawned.
+    #[allow(dead_code)]
+    pub receiver: Option<GossipReceiver>,
+}
 // ── Session ────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, PartialEq)]
@@ -445,6 +470,28 @@ impl AppState {
         result
     }
 
+    // ── Broadcast (gossip topic) messages ────────────────────────────────
+
+    /// Append a message received from a gossip topic.
+    pub fn push_broadcast(
+        &self,
+        topic: impl Into<String>,
+        from_display: impl Into<String>,
+        display: impl Into<String>,
+        is_emote: bool,
+    ) {
+        let id = self.next_id();
+        self.entries.update(|v| {
+            v.push(Entry::Broadcast(BroadcastRecord {
+                id,
+                topic: topic.into(),
+                from_display: from_display.into(),
+                display: display.into(),
+                is_emote,
+            }))
+        });
+    }
+
     // ── Incoming messages ────────────────────────────────────────────────
 
     /// Append an incoming message. If `after_cmd_id` is `Some(_)`, the new
@@ -546,4 +593,9 @@ thread_local! {
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_ipfs_publish` to embed `ma.agent` in the DID document.
     pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
+    /// Active gossip topic subscriptions, keyed by local alias name.
+    pub static SESSION_TOPICS: RefCell<HashMap<String, TopicSession>> = RefCell::new(HashMap::new());
+    /// Delivery queue from gossip receiver tasks to the poll loop.
+    /// Each entry is `(alias_name, ma_core_message)`.
+    pub static SESSION_GOSSIP_QUEUE: RefCell<Vec<(String, Message)>> = const { RefCell::new(Vec::new()) };
 }

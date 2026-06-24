@@ -6,6 +6,7 @@ pub(crate) mod actor_send {
     pub(crate) use super::actor::execute_outbox_task;
 }
 mod profile;
+mod topic;
 
 use leptos::prelude::*;
 
@@ -164,6 +165,14 @@ pub(crate) fn eval(
 
         Command::ActorMessage { target, verb, body } => {
             actor::eval_actor(target, verb, body, raw, state, config);
+        }
+
+        Command::TopicMessage { topic, verb, body } => {
+            topic::eval_topic(topic, verb, body, state, config);
+        }
+
+        Command::TopicEmote { body } => {
+            topic::eval_topic_emote(body, state, config);
         }
     }
 }
@@ -345,6 +354,14 @@ fn eval_dot(
                 return;
             }
 
+            // ── .my.topics.<alias>: — delete alias + unsubscribe ─────────
+            if let Some(alias) = path.strip_prefix(".my.topics.") {
+                if !alias.is_empty() && !alias.contains('.') {
+                    crate::parser::verbs::topics::handle_topics_delete(alias, state, config);
+                    return;
+                }
+            }
+
             // ── .profiles.<name>: — delete a named profile ─────────────
             if let Some(target_name) = path.strip_prefix(".profiles.") {
                 if target_name.is_empty() || target_name.contains('.') {
@@ -397,6 +414,20 @@ fn eval_dot(
                         config,
                         state.clone(),
                     );
+                    return;
+                }
+            }
+            // ── .my.topics — list all defined topic aliases ──────────────
+            if path == ".my.topics" {
+                crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
+                    .unwrap_or_default();
+                return;
+            }
+            // ── .my.topics.<alias> — show blake3 hash + status ───────────
+            if let Some(alias) = path.strip_prefix(".my.topics.") {
+                if !alias.is_empty() && !alias.contains('.') {
+                    crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
+                        .unwrap_or_default();
                     return;
                 }
             }
@@ -494,6 +525,21 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         state.push_system(t("msg-focus-cleared"));
         return;
     }
+
+    // .use #topic — topic focus mode
+    if args[0].starts_with('#') {
+        let alias = args[0].clone();
+        state.focus_actor.set(Some(FocusMode {
+            target: alias.clone(),
+            prompt: format!("{alias}> "),
+        }));
+        state.push_system(tf(
+            "msg-focusing",
+            &[("did", &alias), ("prompt", &format!("{alias}> "))],
+        ));
+        return;
+    }
+
     let target = args[0].trim_start_matches('@').to_string();
     let cfg = config.get_untracked();
     let resolved = if target.starts_with("did:") {

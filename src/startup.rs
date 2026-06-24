@@ -261,7 +261,27 @@ pub(crate) async fn startup_connect(
         Ok(()) => {
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
-            startup_did_sync(sender_did, username, state, config).await;
+            startup_did_sync(sender_did, username, state.clone(), config).await;
+            // Auto-resubscribe to gossip topics stored in config.
+            let topics: Vec<(String, String)> = config
+                .get_untracked()
+                .list(".my.topics.")
+                .into_iter()
+                .filter_map(|(k, v)| {
+                    let alias = k.strip_prefix(".my.topics.")?;
+                    if alias.contains('.') {
+                        return None;
+                    }
+                    Some((alias.to_string(), v.to_string()))
+                })
+                .collect();
+            for (alias, topic_string) in topics {
+                if let Err(e) =
+                    crate::transport::gossip::subscribe_topic(&alias, &topic_string).await
+                {
+                    state.push_error(format!("auto-subscribe #{alias}: {e}"));
+                }
+            }
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }

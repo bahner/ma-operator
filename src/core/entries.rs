@@ -19,6 +19,20 @@ pub struct IncomingRecord {
     pub after_cmd_id: Option<u64>,
 }
 
+/// A broadcast message received from a gossip topic.
+#[derive(Clone, Debug, PartialEq)]
+pub struct BroadcastRecord {
+    pub id: u64,
+    /// Local alias name of the topic (e.g. "broadcast").
+    pub topic: String,
+    /// Resolved display name for the sender (alias or full DID).
+    pub from_display: String,
+    /// Message body text.
+    pub display: String,
+    /// Whether this is an emote rather than a regular say.
+    pub is_emote: bool,
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub enum SystemKind {
     Info,
@@ -39,6 +53,7 @@ pub struct SystemRecord {
 pub enum Entry {
     Command(CommandRecord),
     Incoming(IncomingRecord),
+    Broadcast(BroadcastRecord),
     System(SystemRecord),
 }
 
@@ -47,6 +62,7 @@ impl Entry {
         match self {
             Entry::Command(c) => c.id,
             Entry::Incoming(i) => i.id,
+            Entry::Broadcast(b) => b.id,
             Entry::System(s) => s.id,
         }
     }
