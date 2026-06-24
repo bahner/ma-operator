@@ -23,15 +23,13 @@ pub(crate) fn eval_topic(
             let cfg = config.get_untracked();
             let config_key = format!(".my.topics.{topic}");
             if let Some(topic_string) = cfg.get(&config_key) {
-                let hash = blake3_hex(topic_string);
                 let (subscribed, _) = gossip::topic_status(&topic);
                 let sub_text = if subscribed {
                     t("topic-status-subscribed")
                 } else {
                     t("topic-status-not-subscribed")
                 };
-                state.push_system(hash);
-                state.push_system(tf("topic-status-topic", &[("topic", &topic)]));
+                state.push_system(format!("{topic} → {topic_string}"));
                 state.push_system(sub_text);
             } else {
                 state.push_system(tf("topic-not-defined", &[("topic", &topic)]));
@@ -102,6 +100,9 @@ pub(crate) fn eval_topic(
                 state.push_error(tf("topic-send-not-subscribed", &[("topic", &topic)]));
                 return;
             }
+            // Echo own message immediately (gossip does not loop back to sender).
+            let own_display = own_alias(state, config);
+            state.push_broadcast(topic.clone(), own_display, body.clone(), false);
             let state = state.clone();
             let alias = topic.clone();
             spawn_local(async move {
@@ -121,6 +122,8 @@ pub(crate) fn eval_topic(
                 state.push_error(tf("topic-send-not-subscribed", &[("topic", &topic)]));
                 return;
             }
+            let own_display = own_alias(state, config);
+            state.push_broadcast(topic.clone(), own_display, body.clone(), true);
             let state = state.clone();
             let alias = topic.clone();
             spawn_local(async move {
@@ -137,7 +140,7 @@ pub(crate) fn eval_topic(
 }
 
 /// Dispatch a `Command::TopicEmote` — emote to the current topic focus.
-pub(crate) fn eval_topic_emote(body: String, state: &AppState, _config: RwSignal<EgoConfig>) {
+pub(crate) fn eval_topic_emote(body: String, state: &AppState, config: RwSignal<EgoConfig>) {
     let focus = state.focus_actor.get_untracked();
     let alias = match focus.as_ref().and_then(|f| f.target.strip_prefix('#')) {
         Some(a) => a.to_string(),
@@ -153,6 +156,9 @@ pub(crate) fn eval_topic_emote(body: String, state: &AppState, _config: RwSignal
         return;
     }
 
+    let own_display = own_alias(state, config);
+    state.push_broadcast(alias.clone(), own_display, body.clone(), true);
+
     let state = state.clone();
     spawn_local(async move {
         if let Err(e) = gossip::publish_to_topic(&alias, &body, CONTENT_TYPE_EMOTE).await {
@@ -161,8 +167,15 @@ pub(crate) fn eval_topic_emote(body: String, state: &AppState, _config: RwSignal
     });
 }
 
-/// Compute hex-encoded BLAKE3 hash of a string using ma-core's topic_id.
-fn blake3_hex(s: &str) -> String {
-    let hash = ma_core::topic::topic_id(s);
-    hash.iter().map(|b| format!("{b:02x}")).collect()
+/// Resolve the current user's display name for outgoing topic messages.
+/// Uses their alias if one maps back to their own DID, otherwise their username.
+fn own_alias(state: &AppState, config: RwSignal<EgoConfig>) -> String {
+    let sess = state.session.get_untracked();
+    let Some(sess) = sess else {
+        return String::new();
+    };
+    let cfg = config.get_untracked();
+    cfg.reverse_alias(&sess.sender_did)
+        .map(|a| a.to_string())
+        .unwrap_or(sess.username)
 }

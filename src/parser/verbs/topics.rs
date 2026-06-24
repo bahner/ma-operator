@@ -47,20 +47,18 @@ pub fn handle_topics(
         .ok_or_else(|| t("topic-unknown-verb"))?;
 
     match verb {
-        // Get: print blake3 hash
+        // Get: show topic string and subscription status
         "status" | "" => {
             let cfg = config.get_untracked();
             let config_key = format!(".my.topics.{alias}");
             if let Some(topic_string) = cfg.get(&config_key) {
-                let hash = blake3_hex(topic_string);
                 let (subscribed, _) = gossip::topic_status(alias);
                 let sub_text = if subscribed {
                     t("topic-status-subscribed")
                 } else {
                     t("topic-status-not-subscribed")
                 };
-                state.push_system(hash);
-                state.push_system(tf("topic-status-topic", &[("topic", alias)]));
+                state.push_system(format!("{alias} → {topic_string}"));
                 state.push_system(sub_text);
             } else {
                 state.push_system(tf("topic-not-defined", &[("topic", alias)]));
@@ -114,10 +112,4 @@ pub fn handle_topics_delete(alias: &str, state: &AppState, config: RwSignal<EgoC
         let _ = crate::config::persist_config(&username, &cfg_snap).await;
         state_clone.push_system(tf("topic-deleted", &[("topic", &alias_owned)]));
     });
-}
-
-/// Compute hex-encoded BLAKE3 hash of a topic string using ma-core's topic_id.
-fn blake3_hex(s: &str) -> String {
-    let hash = ma_core::topic::topic_id(s);
-    hash.iter().map(|b| format!("{b:02x}")).collect()
 }
