@@ -186,10 +186,13 @@ fn eval_dot(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
-    let session = state.session.get_untracked();
-    let username = session.map(|s| s.username).unwrap_or_default();
+    let username = state
+        .session
+        .get_untracked()
+        .map(|s| s.username)
+        .unwrap_or_default();
 
-    // ── .help / .help.* ──────────────────────────────────────────────────
+    // ── .help / .help.* ───────────────────────────────────────────────────
     if path == ".help" || path.starts_with(".help.") {
         let subtopic = path.strip_prefix(".help.").unwrap_or("");
         for line in crate::help::dispatch(subtopic) {
@@ -198,7 +201,7 @@ fn eval_dot(
         return;
     }
 
-    // ── Control commands (not config access) ─────────────────────────────
+    // ── Control commands ──────────────────────────────────────────────────
     match path {
         ".logout" => {
             transport::disconnect();
@@ -213,9 +216,12 @@ fn eval_dot(
             state.screensaver.set(true);
             return;
         }
+        ".ma" => {
+            state.push_output("間");
+            return;
+        }
         ".history" => {
             let hist = state.history.get_untracked();
-            // uniq-style filter: suppress consecutive identical entries.
             let mut n = 0usize;
             let mut last: Option<&str> = None;
             for entry in &hist {
@@ -227,15 +233,10 @@ fn eval_dot(
             }
             return;
         }
-        ".ma" => {
-            state.push_output("間");
-            return;
-        }
         ".use" => {
             eval_use(args, state, config);
             return;
         }
-        // Shorthand: `.edit [cid]` → `.my.doc.scratch:edit [cid]`
         ".edit" => {
             if let Err(e) = dispatch_verb(
                 ".my.doc.scratch",
@@ -250,7 +251,6 @@ fn eval_dot(
             }
             return;
         }
-        // Shorthand: `.batch:end` → `.my.doc.scratch:eval`  (parallel, fire-and-forget)
         ".batch:end" => {
             if let Err(e) = dispatch_verb(
                 ".my.doc.scratch",
@@ -268,7 +268,7 @@ fn eval_dot(
         _ => {}
     }
 
-    // ── Verb dispatch ────────────────────────────────────────────────────
+    // ── Verb dispatch ─────────────────────────────────────────────────────
     if let DotOp::Verb(verb) = &op {
         if let Err(e) = dispatch_verb(path, verb, args, state, config, show_editor, on_eval) {
             state.push_error(e);
@@ -276,247 +276,263 @@ fn eval_dot(
         return;
     }
 
-    // ── Generic CRUD on the dot tree ─────────────────────────────────────
+    // ── Generic CRUD ──────────────────────────────────────────────────────
     match op {
-        DotOp::Set(value) => {
-            // ── .profiles.<name>: <cid> — fetch+decrypt+merge from CID ──
-            if let Some(profile_name) = path.strip_prefix(".profiles.") {
-                if profile_name.contains('.') {
-                    state.push_error(t("profile-wrong-user"));
-                    return;
-                }
-                if profile_name != username.as_str() {
-                    state.push_error(tf("profile-wrong-user-name", &[("name", profile_name)]));
-                    return;
-                }
-                profile::handle_profile_set(
-                    path.to_string(),
-                    value,
-                    username,
-                    config,
-                    state.clone(),
-                );
-                return;
-            }
-            if EgoConfig::is_read_only(path) {
-                state.push_error(tf("msg-read-only", &[("path", path)]));
-                return;
-            }
-            if let Err(e) = validate_alias_set(path, &value) {
-                state.push_error(e);
-                return;
-            }
-            let (has_children, has_ancestor) = {
-                let cfg = config.get_untracked();
-                (cfg.has_children(path), cfg.has_leaf_ancestor(path))
-            };
-            if has_children {
-                state.push_error(tf("msg-subtree-set", &[("path", path)]));
-                return;
-            }
-            if has_ancestor {
-                state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
-                return;
-            }
-            config.update(|c| c.set(path, &value));
-            let cfg = config.get_untracked();
-            let uname = username.clone();
-            let state2 = state.clone();
-            let path_owned = path.to_string();
-            spawn_local(async move {
-                if let Err(e) = persist_config(&uname, &cfg).await {
-                    state2.push_error(e);
-                } else {
-                    apply_config_to_dom(&cfg);
-                    if path_owned == ".config.log.level" {
-                        crate::apply_log_level(&value);
-                    }
-                    if path_owned == ".my.config.ui.language" {
-                        let _ = crate::i18n::init(&value).await;
-                        state2.lang.set(crate::i18n::lang());
-                    }
-                    if path_owned == ".my.i18n" {
-                        let first = value.split(':').next().unwrap_or(&value).to_string();
-                        if !crate::i18n::init(&first).await {
-                            state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
-                        }
-                        state2.lang.set(crate::i18n::lang());
-                        crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
-                    }
-                    state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
-                }
-            });
-        }
-
-        DotOp::Delete => {
-            if EgoConfig::is_read_only(path) {
-                state.push_error(tf("msg-read-only", &[("path", path)]));
-                return;
-            }
-
-            // ── .my.topics.<alias>: — delete alias + unsubscribe ─────────
-            if let Some(alias) = path.strip_prefix(".my.topics.") {
-                if !alias.is_empty() && !alias.contains('.') {
-                    crate::parser::verbs::topics::handle_topics_delete(alias, state, config);
-                    return;
-                }
-            }
-
-            // ── .profiles.<name>: — delete a named profile ─────────────
-            if let Some(target_name) = path.strip_prefix(".profiles.") {
-                if target_name.is_empty() || target_name.contains('.') {
-                    state.push_error(tf("profiles-not-found", &[("name", target_name)]));
-                    return;
-                }
-                profile::handle_profile_delete(target_name.to_string(), username, state.clone());
-                return;
-            }
-
-            // ── .profiles: — ambiguous bare delete, require explicit name ─
-            if path == ".profiles" {
-                state.push_error(t("profile-delete-needs-name"));
-                return;
-            }
-
-            let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
-            if removed == 0 {
-                state.push_error(tf("msg-key-not-found", &[("path", path)]));
-                return;
-            }
-            let cfg = config.get_untracked();
-            let uname = username.clone();
-            let state2 = state.clone();
-            let path_owned = path.to_string();
-            spawn_local(async move {
-                if let Err(e) = persist_config(&uname, &cfg).await {
-                    state2.push_error(e);
-                } else {
-                    state2.push_system(tf(
-                        "msg-deleted",
-                        &[("path", &path_owned), ("count", &removed.to_string())],
-                    ));
-                }
-            });
-        }
-
-        DotOp::Get => {
-            // ── .profiles — virtual: list all IndexedDB profiles ────────
-            if path == ".profiles" {
-                profile::handle_profile_list(config, state.clone());
-                return;
-            }
-            // ── .profiles.<name> — show CID if stored ───────────────────
-            if let Some(profile_name) = path.strip_prefix(".profiles.") {
-                if !profile_name.is_empty() && !profile_name.contains('.') {
-                    profile::handle_profile_get(
-                        profile_name.to_string(),
-                        path.to_string(),
-                        config,
-                        state.clone(),
-                    );
-                    return;
-                }
-            }
-            // ── .my.topics — list all defined topic aliases ──────────────
-            if path == ".my.topics" {
-                crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
-                    .unwrap_or_default();
-                return;
-            }
-            // ── .my.topics.<alias> — show blake3 hash + status ───────────
-            if let Some(alias) = path.strip_prefix(".my.topics.") {
-                if !alias.is_empty() && !alias.contains('.') {
-                    crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
-                        .unwrap_or_default();
-                    return;
-                }
-            }
-
-            let cfg = config.get_untracked();
-            let query = if args.is_empty() {
-                None
-            } else {
-                Some(args.join(" "))
-            };
-
-            if cfg.is_leaf(path) {
-                let value = cfg.get(path).unwrap_or("");
-                match &query {
-                    None => state.push_output(format!("{path}: {value}")),
-                    Some(q) if value == q.as_str() => state.push_output(format!("{path}: {value}")),
-                    Some(_) => state.push_error(t("msg-no-match")),
-                }
-            } else if cfg.has_children(path) {
-                let prefix = format!("{path}.");
-                let prefix_len = prefix.len();
-                // Collect immediate child names (deduplicated, sorted).
-                let mut children: std::collections::BTreeSet<String> =
-                    std::collections::BTreeSet::new();
-                for (k, _) in cfg.list(&prefix) {
-                    let tail = &k[prefix_len..];
-                    let immediate = tail.split('.').next().unwrap_or(tail);
-                    children.insert(immediate.to_string());
-                }
-                state.push_output(format!("{path}:"));
-                let mut shown = 0usize;
-                for child in &children {
-                    let child_path = format!("{path}.{child}");
-                    if let Some(v) = cfg.get(&child_path) {
-                        // Immediate leaf — show `name: value`.
-                        if let Some(q) = &query {
-                            if v != q.as_str() {
-                                continue;
-                            }
-                        }
-                        state.push_output(format!("  {child}: {v}"));
-                        shown += 1;
-                    } else {
-                        // Sub-subtree — show relative child name, skip when value-querying.
-                        if query.is_some() {
-                            continue;
-                        }
-                        state.push_output(format!("  {child}"));
-                        shown += 1;
-                    }
-                }
-                if shown == 0 && query.is_some() {
-                    state.push_error(t("msg-no-match"));
-                }
-            } else {
-                // ── Lazy link traversal ───────────────────────────────────
-                // Check if any ancestor leaf holds a DID or CID link value.
-                // If so, resolve it and traverse the remaining sub-path.
-                let path_owned = path.to_string();
-                let mut found_link = false;
-                let mut split_pos = path_owned.len();
-                while let Some(dot) = path_owned[..split_pos].rfind('.') {
-                    split_pos = dot;
-                    let ancestor = &path_owned[..split_pos];
-                    if let Some(link_val) = cfg.get(ancestor) {
-                        if crate::mailbox::is_link_value(link_val) {
-                            let link = link_val.to_string();
-                            let subpath = path_owned[split_pos + 1..].to_string();
-                            let state2 = state.clone();
-                            let cache = state.doc_cache;
-                            spawn_local(async move {
-                                resolve_and_traverse(&link, &subpath, &state2, cache).await;
-                            });
-                            found_link = true;
-                            break;
-                        }
-                    }
-                    if split_pos == 0 {
-                        break;
-                    }
-                }
-                if !found_link {
-                    state.push_error(tf("msg-key-not-found", &[("path", path)]));
-                }
-            }
-        }
-
+        DotOp::Set(value) => handle_dot_set(path, value, &username, state, config),
+        DotOp::Delete => handle_dot_delete(path, &username, state, config),
+        DotOp::Get => handle_dot_get(path, args, state, config),
         DotOp::Verb(_) => unreachable!("handled above"),
     }
+}
+
+fn handle_dot_set(
+    path: &str,
+    value: String,
+    username: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    // ── .profiles.<name>: <cid> — fetch+decrypt+merge ─────────────────────
+    if let Some(profile_name) = path.strip_prefix(".profiles.") {
+        if profile_name.contains('.') {
+            state.push_error(t("profile-wrong-user"));
+            return;
+        }
+        if profile_name != username {
+            state.push_error(tf("profile-wrong-user-name", &[("name", profile_name)]));
+            return;
+        }
+        profile::handle_profile_set(
+            path.to_string(),
+            value,
+            username.to_string(),
+            config,
+            state.clone(),
+        );
+        return;
+    }
+    if EgoConfig::is_read_only(path) {
+        state.push_error(tf("msg-read-only", &[("path", path)]));
+        return;
+    }
+    if let Err(e) = validate_alias_set(path, &value) {
+        state.push_error(e);
+        return;
+    }
+    let (has_children, has_ancestor) = {
+        let cfg = config.get_untracked();
+        (cfg.has_children(path), cfg.has_leaf_ancestor(path))
+    };
+    if has_children {
+        state.push_error(tf("msg-subtree-set", &[("path", path)]));
+        return;
+    }
+    if has_ancestor {
+        state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
+        return;
+    }
+    config.update(|c| c.set(path, &value));
+    let cfg = config.get_untracked();
+    let uname = username.to_string();
+    let state2 = state.clone();
+    let path_owned = path.to_string();
+    spawn_local(async move {
+        if let Err(e) = persist_config(&uname, &cfg).await {
+            state2.push_error(e);
+            return;
+        }
+        apply_config_to_dom(&cfg);
+        if path_owned == ".config.log.level" {
+            crate::apply_log_level(&value);
+        }
+        if path_owned == ".my.config.ui.language" {
+            let _ = crate::i18n::init(&value).await;
+            state2.lang.set(crate::i18n::lang());
+        }
+        if path_owned == ".my.i18n" {
+            let first = value.split(':').next().unwrap_or(&value).to_string();
+            if !crate::i18n::init(&first).await {
+                state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
+            }
+            state2.lang.set(crate::i18n::lang());
+            crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
+        }
+        state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
+    });
+}
+
+fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSignal<EgoConfig>) {
+    if EgoConfig::is_read_only(path) {
+        state.push_error(tf("msg-read-only", &[("path", path)]));
+        return;
+    }
+    // ── .my.topics.<alias>: — delete alias + unsubscribe ─────────────────
+    if let Some(alias) = path.strip_prefix(".my.topics.") {
+        if !alias.is_empty() && !alias.contains('.') {
+            crate::parser::verbs::topics::handle_topics_delete(alias, state, config);
+            return;
+        }
+    }
+    // ── .profiles.<name>: — delete a named profile ───────────────────────
+    if let Some(target_name) = path.strip_prefix(".profiles.") {
+        if target_name.is_empty() || target_name.contains('.') {
+            state.push_error(tf("profiles-not-found", &[("name", target_name)]));
+            return;
+        }
+        profile::handle_profile_delete(
+            target_name.to_string(),
+            username.to_string(),
+            state.clone(),
+        );
+        return;
+    }
+    if path == ".profiles" {
+        state.push_error(t("profile-delete-needs-name"));
+        return;
+    }
+    let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
+    if removed == 0 {
+        state.push_error(tf("msg-key-not-found", &[("path", path)]));
+        return;
+    }
+    let cfg = config.get_untracked();
+    let uname = username.to_string();
+    let state2 = state.clone();
+    let path_owned = path.to_string();
+    spawn_local(async move {
+        if let Err(e) = persist_config(&uname, &cfg).await {
+            state2.push_error(e);
+        } else {
+            state2.push_system(tf(
+                "msg-deleted",
+                &[("path", &path_owned), ("count", &removed.to_string())],
+            ));
+        }
+    });
+}
+
+fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    // ── Virtual paths ─────────────────────────────────────────────────────
+    if path == ".profiles" {
+        profile::handle_profile_list(config, state.clone());
+        return;
+    }
+    if let Some(profile_name) = path.strip_prefix(".profiles.") {
+        if !profile_name.is_empty() && !profile_name.contains('.') {
+            profile::handle_profile_get(
+                profile_name.to_string(),
+                path.to_string(),
+                config,
+                state.clone(),
+            );
+            return;
+        }
+    }
+    if path == ".my.topics" {
+        crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
+            .unwrap_or_default();
+        return;
+    }
+    if let Some(alias) = path.strip_prefix(".my.topics.") {
+        if !alias.is_empty() && !alias.contains('.') {
+            crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
+                .unwrap_or_default();
+            return;
+        }
+    }
+
+    // ── Config tree read ──────────────────────────────────────────────────
+    let cfg = config.get_untracked();
+    let query = if args.is_empty() {
+        None
+    } else {
+        Some(args.join(" "))
+    };
+
+    if cfg.is_leaf(path) {
+        let value = cfg.get(path).unwrap_or("");
+        match &query {
+            None => state.push_output(format!("{path}: {value}")),
+            Some(q) if value == q.as_str() => state.push_output(format!("{path}: {value}")),
+            Some(_) => state.push_error(t("msg-no-match")),
+        }
+    } else if cfg.has_children(path) {
+        show_children(path, &query, &cfg, state);
+    } else {
+        lazy_link_traverse(path, &cfg, state, config);
+    }
+}
+
+/// List immediate children of `path`, optionally filtered by `query`.
+fn show_children(
+    path: &str,
+    query: &Option<String>,
+    cfg: &crate::config::EgoConfig,
+    state: &AppState,
+) {
+    let prefix = format!("{path}.");
+    let prefix_len = prefix.len();
+    let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    for (k, _) in cfg.list(&prefix) {
+        let tail = &k[prefix_len..];
+        let immediate = tail.split('.').next().unwrap_or(tail);
+        children.insert(immediate.to_string());
+    }
+    state.push_output(format!("{path}:"));
+    let mut shown = 0usize;
+    for child in &children {
+        let child_path = format!("{path}.{child}");
+        if let Some(v) = cfg.get(&child_path) {
+            if let Some(q) = query {
+                if v != q.as_str() {
+                    continue;
+                }
+            }
+            state.push_output(format!("  {child}: {v}"));
+            shown += 1;
+        } else {
+            if query.is_some() {
+                continue;
+            }
+            state.push_output(format!("  {child}"));
+            shown += 1;
+        }
+    }
+    if shown == 0 && query.is_some() {
+        state.push_error(t("msg-no-match"));
+    }
+}
+
+/// Walk ancestor paths looking for a DID/CID link value; resolve and traverse
+/// the remaining sub-path if found.
+fn lazy_link_traverse(
+    path: &str,
+    cfg: &crate::config::EgoConfig,
+    state: &AppState,
+    _config: RwSignal<EgoConfig>,
+) {
+    let path_owned = path.to_string();
+    let mut split_pos = path_owned.len();
+    while let Some(dot) = path_owned[..split_pos].rfind('.') {
+        split_pos = dot;
+        let ancestor = &path_owned[..split_pos];
+        if let Some(link_val) = cfg.get(ancestor) {
+            if crate::mailbox::is_link_value(link_val) {
+                let link = link_val.to_string();
+                let subpath = path_owned[split_pos + 1..].to_string();
+                let state2 = state.clone();
+                let cache = state.doc_cache;
+                spawn_local(async move {
+                    resolve_and_traverse(&link, &subpath, &state2, cache).await;
+                });
+                return;
+            }
+        }
+        if split_pos == 0 {
+            break;
+        }
+    }
+    state.push_error(tf("msg-key-not-found", &[("path", path)]));
 }
 
 fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {

@@ -29,123 +29,122 @@ pub async fn run_inbox_poll(
         if !transport::is_connected() {
             continue;
         }
-
-        // Drain gossip topics and push received broadcasts to the terminal.
-        for (alias, msg) in transport::gossip::drain_gossip_queue() {
-            let is_emote = msg.content_type == transport::gossip::CONTENT_TYPE_EMOTE;
-            let from_did = msg.from.clone();
-            let from_display = {
-                let cfg = config.get_untracked();
-                cfg.reverse_alias(&from_did)
-                    .unwrap_or(&from_did)
-                    .to_string()
-            };
-            let body = String::from_utf8_lossy(&msg.content).into_owned();
-            state.push_broadcast(alias, from_display, body, is_emote);
-        }
-
+        drain_gossip_topics(&state, config);
         for incoming in transport::drain_inbox()
             .into_iter()
             .chain(transport::drain_rpc_inbox())
             .chain(transport::drain_crud_inbox())
         {
-            if !acl_gate(&incoming, &state, config) {
-                continue;
-            }
-            if handle_inbox_message(&incoming, &state, config) {
-                continue;
-            }
-            if handle_unsolicited_rpc(&incoming, &state) {
-                continue;
-            }
-            if loopback_suppress(&incoming) {
-                continue;
-            }
+            route_incoming(incoming, &state, config, show_editor);
+        }
+    }
+}
 
-            let display = format_display(&incoming, config);
+/// Drain all pending gossip messages and push them to the terminal.
+fn drain_gossip_topics(state: &AppState, config: RwSignal<EgoConfig>) {
+    for (alias, msg) in transport::gossip::drain_gossip_queue() {
+        let is_emote = msg.content_type == transport::gossip::CONTENT_TYPE_EMOTE;
+        let from_did = msg.from.clone();
+        let from_display = {
+            let cfg = config.get_untracked();
+            cfg.reverse_alias(&from_did)
+                .unwrap_or(&from_did)
+                .to_string()
+        };
+        let body = String::from_utf8_lossy(&msg.content).into_owned();
+        state.push_broadcast(alias, from_display, body, is_emote);
+    }
+}
 
-            match &incoming.reply_to {
-                Some(msg_id) => {
-                    match state.take_pending(msg_id) {
-                        Some(PendingKind::IpfsCrud {
-                            target_did,
-                            crud_path,
-                            cmd_id,
-                        }) => {
-                            handle_ipfs_crud_reply(
-                                target_did, crud_path, cmd_id, &incoming, &state,
-                            );
-                        }
-                        Some(PendingKind::IpfsKindUpsert {
-                            target_did,
-                            protocol_id,
-                            cmd_id,
-                        }) => {
-                            handle_ipfs_kind_reply(
-                                target_did,
-                                protocol_id,
-                                cmd_id,
-                                &incoming,
-                                &state,
-                            );
-                        }
-                        Some(PendingKind::ProfilePublish {
-                            publisher_did,
-                            cmd_id,
-                        }) => {
-                            handle_profile_publish_reply(
-                                publisher_did,
-                                cmd_id,
-                                &incoming,
-                                &state,
-                                config,
-                            );
-                        }
-                        Some(PendingKind::EditOpen {
-                            target,
-                            crud_path,
-                            editor_mode,
-                            cmd_id,
-                        }) => {
-                            handle_edit_open_reply(
-                                target,
-                                crud_path,
-                                editor_mode,
-                                cmd_id,
-                                &incoming,
-                                &state,
-                                show_editor,
-                            );
-                        }
-                        Some(PendingKind::CidOp { op, args, cmd_id }) => {
-                            handle_cid_op_reply(op, args, cmd_id, &incoming, &state);
-                        }
-                        Some(PendingKind::CrudConfirm { cmd_id }) => {
-                            handle_crud_confirm(cmd_id, &incoming, &state, &display);
-                        }
-                        Some(PendingKind::Simple { cmd_id }) => {
-                            let (status, push_opt) =
-                                classify_reply(&incoming.content, incoming.is_error, &display);
-                            state.resolve_command_by_id(cmd_id, status);
-                            if let Some(text) = push_opt {
-                                state.push_incoming(text, Some(cmd_id), incoming.is_error);
-                            }
-                        }
-                        None => {
-                            // Stale or unexpected reply — no pending state found.
-                            // Drop silently; log so it's visible in devtools.
-                            web_sys::console::warn_1(
-                                &format!(
-                                    "[inbox] dropping stale reply (reply_to={msg_id}): {display}"
-                                )
-                                .into(),
-                            );
-                        }
-                    }
-                }
-                None => {
-                    state.push_incoming(display, None, incoming.is_error);
-                }
+/// Route a single incoming message: filter, classify, and dispatch.
+fn route_incoming(
+    incoming: IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+) {
+    if !acl_gate(&incoming, state, config) {
+        return;
+    }
+    if handle_inbox_message(&incoming, state, config) {
+        return;
+    }
+    if handle_unsolicited_rpc(&incoming, state) {
+        return;
+    }
+    if loopback_suppress(&incoming) {
+        return;
+    }
+    let display = format_display(&incoming, config);
+    match incoming.reply_to.clone() {
+        Some(msg_id) => dispatch_reply(&msg_id, incoming, display, state, config, show_editor),
+        None => state.push_incoming(display, None, incoming.is_error),
+    }
+}
+
+/// Dispatch a reply message by matching it against the pending-request table.
+fn dispatch_reply(
+    msg_id: &str,
+    incoming: IncomingMessage,
+    display: String,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+) {
+    let Some(kind) = state.take_pending(msg_id) else {
+        web_sys::console::warn_1(
+            &format!("[inbox] dropping stale reply (reply_to={msg_id}): {display}").into(),
+        );
+        return;
+    };
+    match kind {
+        PendingKind::IpfsCrud {
+            target_did,
+            crud_path,
+            cmd_id,
+        } => {
+            handle_ipfs_crud_reply(target_did, crud_path, cmd_id, &incoming, state);
+        }
+        PendingKind::IpfsKindUpsert {
+            target_did,
+            protocol_id,
+            cmd_id,
+        } => {
+            handle_ipfs_kind_reply(target_did, protocol_id, cmd_id, &incoming, state);
+        }
+        PendingKind::ProfilePublish {
+            publisher_did,
+            cmd_id,
+        } => {
+            handle_profile_publish_reply(publisher_did, cmd_id, &incoming, state, config);
+        }
+        PendingKind::EditOpen {
+            target,
+            crud_path,
+            editor_mode,
+            cmd_id,
+        } => {
+            handle_edit_open_reply(
+                target,
+                crud_path,
+                editor_mode,
+                cmd_id,
+                &incoming,
+                state,
+                show_editor,
+            );
+        }
+        PendingKind::CidOp { op, args, cmd_id } => {
+            handle_cid_op_reply(op, args, cmd_id, &incoming, state);
+        }
+        PendingKind::CrudConfirm { cmd_id } => {
+            handle_crud_confirm(cmd_id, &incoming, state, &display);
+        }
+        PendingKind::Simple { cmd_id } => {
+            let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+            state.resolve_command_by_id(cmd_id, status);
+            if let Some(text) = push_opt {
+                state.push_incoming(text, Some(cmd_id), incoming.is_error);
             }
         }
     }
@@ -426,7 +425,6 @@ fn handle_edit_open_reply(
     let content_type = incoming.content_type.clone();
     let doc_path = format!("@{}{}", target, crud_path);
     let state2 = state.clone();
-    let resolved_cmd = cmd_id;
     let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
             target, crud_path, ..
@@ -437,101 +435,112 @@ fn handle_edit_open_reply(
         },
         other => other,
     };
+
     match content_type.as_str() {
         "application/x-ma-term+dag-cbor" => {
-            match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
-                Ok(ciborium::Value::Text(cid)) => {
-                    spawn_local(async move {
-                        match fetch_cid_bytes(&cid).await {
-                            Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
-                                Ok(yaml) => show_editor.set(Some(
-                                    EditorContext::new(doc_path, yaml)
-                                        .with_language("yaml")
-                                        .with_mode(editor_mode)
-                                        .with_cmd_id(resolved_cmd),
-                                )),
-                                Err(e) => {
-                                    state2.resolve_command_by_id(
-                                        resolved_cmd,
-                                        CommandStatus::Error(e.clone()),
-                                    );
-                                    state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
-                                }
-                            },
-                            Err(e) => {
-                                state2.resolve_command_by_id(
-                                    resolved_cmd,
-                                    CommandStatus::Error(e.clone()),
-                                );
-                                state2.push_error(tf("err-edit-fetch-failed", &[("e", &e)]));
-                            }
-                        }
-                    });
-                }
-                Ok(_) | Err(_) => {
-                    state2.resolve_command_by_id(
-                        resolved_cmd,
-                        CommandStatus::Error(t("err-edit-cbor")),
-                    );
-                    state2.push_error(t("err-edit-cbor"));
-                }
-            }
+            open_editor_via_cid(
+                state2,
+                show_editor,
+                doc_path,
+                content_bytes,
+                editor_mode,
+                cmd_id,
+            );
         }
         "application/x-ma-term+cbor" => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-            Ok(yaml) => show_editor.set(Some(
-                EditorContext::new(doc_path, yaml)
-                    .with_language("yaml")
-                    .with_mode(editor_mode)
-                    .with_cmd_id(resolved_cmd),
-            )),
-            Err(e) => {
-                state2.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
-                state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
-            }
+            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+            Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
         },
         "application/x-ma-term+yaml" => {
-            match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
-                Ok(ciborium::Value::Text(yaml)) => show_editor.set(Some(
-                    EditorContext::new(doc_path, yaml)
-                        .with_language("yaml")
-                        .with_mode(editor_mode)
-                        .with_cmd_id(resolved_cmd),
-                )),
-                Ok(_) | Err(_) => {
-                    // Fallback: try raw CBOR → YAML.
-                    match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-                        Ok(yaml) => show_editor.set(Some(
-                            EditorContext::new(doc_path, yaml)
-                                .with_language("yaml")
-                                .with_mode(editor_mode)
-                                .with_cmd_id(resolved_cmd),
-                        )),
-                        Err(e) => {
-                            state2.resolve_command_by_id(
-                                resolved_cmd,
-                                CommandStatus::Error(e.clone()),
-                            );
-                            state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
-                        }
-                    }
-                }
-            }
+            open_editor_from_yaml_cbor(
+                state2,
+                show_editor,
+                doc_path,
+                content_bytes,
+                editor_mode,
+                cmd_id,
+            );
         }
         _ => {
             // Unknown / legacy content-type — best-effort CBOR → YAML.
             match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-                Ok(yaml) => show_editor.set(Some(
-                    EditorContext::new(doc_path, yaml)
-                        .with_language("yaml")
-                        .with_mode(editor_mode)
-                        .with_cmd_id(resolved_cmd),
-                )),
-                Err(e) => {
-                    state2.resolve_command_by_id(resolved_cmd, CommandStatus::Error(e.clone()));
-                    state2.push_error(tf("err-edit-decode-failed", &[("e", &e)]));
-                }
+                Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+                Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
             }
         }
+    }
+}
+
+/// Open the editor immediately with a known YAML string.
+fn open_editor(
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    yaml: String,
+    language: &str,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    show_editor.set(Some(
+        EditorContext::new(doc_path, yaml)
+            .with_language(language)
+            .with_mode(mode)
+            .with_cmd_id(cmd_id),
+    ));
+}
+
+/// Record an edit-open error on the command and push an error line.
+fn edit_error(state: &AppState, cmd_id: u64, i18n_key: &str, e: &str) {
+    state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.to_string()));
+    state.push_error(tf(i18n_key, &[("e", e)]));
+}
+
+/// For `application/x-ma-term+dag-cbor`: extract a CID from the payload,
+/// fetch it, convert to YAML, and open the editor.
+fn open_editor_via_cid(
+    state: AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    content_bytes: Vec<u8>,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+        Ok(ciborium::Value::Text(cid)) => {
+            spawn_local(async move {
+                match fetch_cid_bytes(&cid).await {
+                    Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                        Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+                        Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
+                    },
+                    Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
+                }
+            });
+        }
+        Ok(_) | Err(_) => {
+            state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("err-edit-cbor")));
+            state.push_error(t("err-edit-cbor"));
+        }
+    }
+}
+
+/// For `application/x-ma-term+yaml`: unwrap the CBOR text wrapper, or fall
+/// back to raw CBOR → YAML conversion.
+fn open_editor_from_yaml_cbor(
+    state: AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    content_bytes: Vec<u8>,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+        Ok(ciborium::Value::Text(yaml)) => {
+            open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id);
+        }
+        Ok(_) | Err(_) => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+            Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
+        },
     }
 }
 
