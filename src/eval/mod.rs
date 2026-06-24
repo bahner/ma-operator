@@ -319,7 +319,7 @@ fn eval_dot(
                     state2.push_error(e);
                 } else {
                     apply_config_to_dom(&cfg);
-                    if path_owned == ".my.config.log.level" {
+                    if path_owned == ".config.log.level" {
                         crate::apply_log_level(&value);
                     }
                     if path_owned == ".my.config.ui.language" {

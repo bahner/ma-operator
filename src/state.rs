@@ -342,7 +342,9 @@ impl AppState {
 
     /// Record the `Message.id` returned by a successful send.
     pub fn bind_message_id(&self, cmd_id: u64, msg_id: String) {
-        let batch_id = self.cmd_to_batch.with_untracked(|m| m.get(&cmd_id).copied());
+        let batch_id = self
+            .cmd_to_batch
+            .with_untracked(|m| m.get(&cmd_id).copied());
         self.register_pending(msg_id.clone(), PendingKind::Simple { cmd_id }, batch_id);
         self.entries.update(|v| {
             if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cmd_id) {
@@ -435,7 +437,10 @@ impl AppState {
         if let Some(ref kind) = result {
             log::debug!("[pending] matched reply msg_id={} kind={:?}", msg_id, kind);
         } else {
-            log::debug!("[pending] no match for reply msg_id={} (already expired or unknown)", msg_id);
+            log::debug!(
+                "[pending] no match for reply msg_id={} (already expired or unknown)",
+                msg_id
+            );
         }
         result
     }

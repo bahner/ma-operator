@@ -110,7 +110,10 @@ fn expire_pending_requests(state: &AppState) {
             state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("msg-timeout")));
             state.push_error(t("msg-timeout"));
         } else {
-            log::debug!("[pending] silently dropped expired entry msg_id={} (no cmd_id)", msg_id);
+            log::debug!(
+                "[pending] silently dropped expired entry msg_id={} (no cmd_id)",
+                msg_id
+            );
         }
     }
 }

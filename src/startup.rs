@@ -172,7 +172,7 @@ pub(crate) async fn startup_load_config(
             let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
             crate::eval::apply_config_to_dom(&cfg);
             // Apply log level from config if set.
-            if let Some(level) = cfg.get(".my.config.log.level") {
+            if let Some(level) = cfg.get(".config.log.level") {
                 crate::apply_log_level(level);
             }
             if pruned > 0 {
