@@ -312,3 +312,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Difuzãu:
+gossip-status-subscribed = Skribed
+gossip-status-not-subscribed = Ka ta skribed
+gossip-disabled = Gossip dezativadu. Por .my.gossip.enable: true.
+gossip-send-not-subscribed = Ka ta skribed na kanal di difuzãu. Uza .my.gossip:subscribe.
+gossip-focus-entered = Modu fokus difuzãu. Skrivi pa say, , pa emote, .use pa sai.
+gossip-unknown-verb = Komandu gossip diskonxedu: { $verb }

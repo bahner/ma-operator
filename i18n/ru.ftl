@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Трансляция:
+gossip-status-subscribed = Подписан
+gossip-status-not-subscribed = Не подписан
+gossip-disabled = Gossip отключён. Установите .my.gossip.enable: true.
+gossip-send-not-subscribed = Нет подписки на канал трансляции. Используйте .my.gossip:subscribe.
+gossip-focus-entered = Режим фокуса трансляции. Пишите для say, , для emote, .use для выхода.
+gossip-unknown-verb = Неизвестная команда gossip: { $verb }

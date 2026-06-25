@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Ergaa tamsa:
+gossip-status-subscribed = Galmaa'e
+gossip-status-not-subscribed = Hin galmaa'in
+gossip-disabled = Gossip dhaabame. .my.gossip.enable: true kaa.
+gossip-send-not-subscribed = Fuula tamsa keessa hin jirtu. .my.gossip:subscribe fayyadami.
+gossip-focus-entered = Haala xiyyeeffannaa tamsa. Barreessi say, , emote, .use baha.
+gossip-unknown-verb = Ajaja gossip hin beekamne: { $verb }

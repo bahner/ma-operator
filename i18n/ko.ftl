@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = 브로드캐스트:
+gossip-status-subscribed = 구독 중
+gossip-status-not-subscribed = 미구독
+gossip-disabled = 가십이 비활성화되었습니다. .my.gossip.enable: true 를 설정하세요.
+gossip-send-not-subscribed = 브로드캐스트 채널을 구독하지 않았습니다. .my.gossip:subscribe 를 사용하세요.
+gossip-focus-entered = 브로드캐스트 포커스 모드. say는 바로 입력, emote는 ,, 종료는 .use.
+gossip-unknown-verb = 알 수 없는 가십 명령: { $verb }

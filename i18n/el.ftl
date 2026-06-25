@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Εκπομπή:
+gossip-status-subscribed = Συνδρομητής
+gossip-status-not-subscribed = Όχι συνδρομητής
+gossip-disabled = Το gossip είναι απενεργοποιημένο. Ορίστε .my.gossip.enable: true.
+gossip-send-not-subscribed = Δεν είστε συνδρομητής στο κανάλι. Χρησιμοποιήστε .my.gossip:subscribe.
+gossip-focus-entered = Λειτουργία εστίασης broadcast. Πληκτρολογήστε για say, , για emote, .use για έξοδο.
+gossip-unknown-verb = Άγνωστη εντολή gossip: { $verb }

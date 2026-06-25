@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Phát sóng:
+gossip-status-subscribed = Đã đăng ký
+gossip-status-not-subscribed = Chưa đăng ký
+gossip-disabled = Gossip bị tắt. Đặt .my.gossip.enable: true.
+gossip-send-not-subscribed = Chưa đăng ký kênh phát sóng. Dùng .my.gossip:subscribe.
+gossip-focus-entered = Chế độ tập trung phát sóng. Gõ để say, , để emote, .use để thoát.
+gossip-unknown-verb = Lệnh gossip không xác định: { $verb }

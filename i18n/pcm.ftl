@@ -312,3 +312,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Broadcast:
+gossip-status-subscribed = Don join
+gossip-status-not-subscribed = Never join
+gossip-disabled = Gossip don off. Set .my.gossip.enable: true.
+gossip-send-not-subscribed = You no join broadcast channel. Use .my.gossip:subscribe.
+gossip-focus-entered = Broadcast focus mode. Type for say, , for emote, .use to comot.
+gossip-unknown-verb = No sabi dis gossip command: { $verb }

@@ -2,11 +2,11 @@
 
 mod acl;
 mod doc;
+pub(crate) mod gossip;
 mod identity;
 mod inbox;
 mod ma;
 mod profiles;
-pub mod topics;
 
 use crate::config::EgoConfig;
 use crate::i18n::tf;
@@ -77,8 +77,8 @@ pub fn dispatch_verb(
     if path.starts_with(".my.doc.") || (path == ".my.i18n" && verb == "list") {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.topics" || path.starts_with(".my.topics.") {
-        return topics::handle_topics(path, verb, args, state, config);
+    if path == ".my.gossip" || path.starts_with(".my.gossip.") {
+        return gossip::handle_gossip(path, verb, args, state, config);
     }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
 }

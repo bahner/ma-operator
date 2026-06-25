@@ -5,8 +5,8 @@ mod actor;
 pub(crate) mod actor_send {
     pub(crate) use super::actor::execute_outbox_task;
 }
+pub(crate) mod gossip;
 mod profile;
-mod topic;
 
 use leptos::prelude::*;
 
@@ -167,12 +167,16 @@ pub(crate) fn eval(
             actor::eval_actor(target, verb, body, raw, state, config);
         }
 
-        Command::TopicMessage { topic, verb, body } => {
-            topic::eval_topic(topic, verb, body, state, config);
+        Command::BroadcastStatus => {
+            gossip::eval_broadcast_status(state, config);
         }
 
-        Command::TopicEmote { body } => {
-            topic::eval_topic_emote(body, state, config);
+        Command::BroadcastSay { body } => {
+            gossip::eval_broadcast_say(body, state, config);
+        }
+
+        Command::BroadcastEmote { body } => {
+            gossip::eval_broadcast_emote(body, state, config);
         }
     }
 }
@@ -336,6 +340,19 @@ fn handle_dot_set(
     let uname = username.to_string();
     let state2 = state.clone();
     let path_owned = path.to_string();
+    // Side effects for .my.gossip.* keys.
+    if path == ".my.gossip.enable" && value == "false" {
+        crate::transport::gossip::unsubscribe();
+    }
+    if path == ".my.gossip.topic" && crate::transport::gossip::is_subscribed() {
+        let new_topic = value.clone();
+        let state3 = state.clone();
+        spawn_local(async move {
+            if let Err(e) = crate::transport::gossip::subscribe(&new_topic).await {
+                state3.push_error(e);
+            }
+        });
+    }
     spawn_local(async move {
         if let Err(e) = persist_config(&uname, &cfg).await {
             state2.push_error(e);
@@ -365,13 +382,6 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
     if EgoConfig::is_read_only(path) {
         state.push_error(tf("msg-read-only", &[("path", path)]));
         return;
-    }
-    // ── .my.topics.<alias>: — delete alias + unsubscribe ─────────────────
-    if let Some(alias) = path.strip_prefix(".my.topics.") {
-        if !alias.is_empty() && !alias.contains('.') {
-            crate::parser::verbs::topics::handle_topics_delete(alias, state, config);
-            return;
-        }
     }
     // ── .profiles.<name>: — delete a named profile ───────────────────────
     if let Some(target_name) = path.strip_prefix(".profiles.") {
@@ -428,17 +438,11 @@ fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSigna
             return;
         }
     }
-    if path == ".my.topics" {
-        crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
-            .unwrap_or_default();
+    // ── .config.gossip — removed (now .my.gossip) ───────────────────────
+    // ── .my.gossip — virtual: show gossip config with defaults ───────────
+    if path == ".my.gossip" {
+        crate::parser::verbs::gossip::show_gossip_config(state, config);
         return;
-    }
-    if let Some(alias) = path.strip_prefix(".my.topics.") {
-        if !alias.is_empty() && !alias.contains('.') {
-            crate::parser::verbs::topics::handle_topics(path, "status", &[], state, config)
-                .unwrap_or_default();
-            return;
-        }
     }
 
     // ── Config tree read ──────────────────────────────────────────────────
@@ -542,17 +546,13 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     }
 
-    // .use #topic — topic focus mode
-    if args[0].starts_with('#') {
-        let alias = args[0].clone();
+    // .use # — broadcast focus mode
+    if args[0] == "#" {
         state.focus_actor.set(Some(FocusMode {
-            target: alias.clone(),
-            prompt: format!("{alias}> "),
+            target: "#".to_string(),
+            prompt: "#> ".to_string(),
         }));
-        state.push_system(tf(
-            "msg-focusing",
-            &[("did", &alias), ("prompt", &format!("{alias}> "))],
-        ));
+        state.push_system(crate::i18n::t("gossip-focus-entered"));
         return;
     }
 

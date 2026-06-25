@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = 廣播：
+gossip-status-subscribed = 已訂閱
+gossip-status-not-subscribed = 未訂閱
+gossip-disabled = Gossip 已停用。請設定 .my.gossip.enable: true。
+gossip-send-not-subscribed = 未訂閱廣播頻道。請使用 .my.gossip:subscribe。
+gossip-focus-entered = 廣播焦點模式。直接輸入 say，, 傳送 emote，.use 離開。
+gossip-unknown-verb = 未知 gossip 指令：{ $verb }

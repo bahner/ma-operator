@@ -12,14 +12,12 @@
 ///   @did:ma:<id>[:verb] [body]    → ActorMessage
 ///   \@literal text                → plain text (escaped @)
 ///
-/// Topic grammar:
-///   #alias                → TopicMessage { verb: "status" }
-///   #alias:say body       → TopicMessage { verb: "say" }
-///   #alias:emote body     → TopicMessage { verb: "emote" }
-///   #alias:subscribe      → TopicMessage { verb: "subscribe" }
-///   #alias:unsubscribe    → TopicMessage { verb: "unsubscribe" }
-///   #alias:               → TopicMessage { verb: "" }  (delete/noop)
-///   ,body                 → TopicEmote  (topic from focus context)
+/// Broadcast grammar (single channel):
+///   #              → BroadcastStatus
+///   # text         → BroadcastSay
+///   #'text         → BroadcastSay (explicit)
+///   #: text        → BroadcastEmote
+///   ,body          → BroadcastEmote (in .use # focus mode)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -55,17 +53,12 @@ pub enum Command {
         /// Remaining arguments as a single string
         body: String,
     },
-    /// #alias[:verb [body]]  – message to a gossip topic
-    TopicMessage {
-        /// Local alias name (looked up in .my.topics.*)
-        topic: String,
-        /// Verb: "say" | "emote" | "subscribe" | "unsubscribe" | "status" | ""
-        verb: String,
-        /// Message body
-        body: String,
-    },
-    /// ,body  – emote to the current topic focus (only valid in .use #topic mode)
-    TopicEmote { body: String },
+    /// `#` alone — show broadcast status
+    BroadcastStatus,
+    /// `# text` or `#'text` — say to broadcast channel
+    BroadcastSay { body: String },
+    /// `#: text` — emote to broadcast channel
+    BroadcastEmote { body: String },
     /// Raw text (escaped \@, or just plain text)
     PlainText(String),
 }
@@ -87,10 +80,10 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
         return Ok(Command::PlainText(input[1..].to_string()));
     }
 
-    // Emote to current topic focus: ,body → TopicEmote
+    // Emote to broadcast: ,body (in .use # focus mode)
     if let Some(body) = input.strip_prefix(',') {
         let body = body.trim().to_string();
-        return Ok(Command::TopicEmote { body });
+        return Ok(Command::BroadcastEmote { body });
     }
 
     // Dot-command
@@ -136,22 +129,48 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
         return Ok(Command::DotCommand { path, op, args });
     }
 
+    // Broadcast channel: # (single channel, no alias)
+    // Handle BEFORE focus transform.
+    if input == "#" {
+        return Ok(Command::BroadcastStatus);
+    }
+    if let Some(rest) = input
+        .strip_prefix("#: ")
+        .or_else(|| input.strip_prefix("#:"))
+    {
+        return Ok(Command::BroadcastEmote {
+            body: rest.trim().to_string(),
+        });
+    }
+    if let Some(rest) = input.strip_prefix("# ") {
+        return Ok(Command::BroadcastSay {
+            body: rest.to_string(),
+        });
+    }
+    if let Some(rest) = input.strip_prefix("#'") {
+        return Ok(Command::BroadcastSay {
+            body: rest.trim().to_string(),
+        });
+    }
+
     // Actor message  @target[:verb] [body]
-    // If we are in focus mode, prepend the focus actor so the user
-    // just types ":verb args" or "body"
+    // In broadcast focus mode (.use #), transform bare text → # say,
+    // ,'body' → emote (already handled above), '  text → # text.
     let effective = if let Some(actor) = focus {
-        if actor.starts_with('#') {
-            // Topic focus mode: expand bare text and : prefixes to topic commands.
-            // Pass through . @ # (dot-commands, p2p, explicit other topics)
-            // and , (TopicEmote, already returned above).
-            if input.starts_with('.') || input.starts_with('@') || input.starts_with('#') {
+        if actor == "#" {
+            // Broadcast focus: pass through . @ # ,
+            if input.starts_with('.')
+                || input.starts_with('@')
+                || input.starts_with('#')
+                || input.starts_with(',')
+            {
                 input.to_string()
-            } else if input.starts_with(':') {
-                // :verb body  →  #foo:verb body  |  :  →  #foo:
-                format!("{actor}{input}")
+            } else if let Some(rest) = input.strip_prefix('\'') {
+                // 'text → # text (explicit say)
+                format!("# {}", rest.trim())
             } else {
-                // Bare text  →  #foo:say text
-                format!("{actor}:say {input}")
+                // Bare text → say
+                format!("# {input}")
             }
         } else {
             // Actor focus mode (existing behaviour)
@@ -165,9 +184,22 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
         input.to_string()
     };
 
-    // Topic message: #alias[:verb [body]]
-    if effective.starts_with('#') {
-        return parse_topic_message(&effective);
+    // Re-check broadcast after focus expansion.
+    if effective == "#" {
+        return Ok(Command::BroadcastStatus);
+    }
+    if let Some(rest) = effective
+        .strip_prefix("#: ")
+        .or_else(|| effective.strip_prefix("#:"))
+    {
+        return Ok(Command::BroadcastEmote {
+            body: rest.trim().to_string(),
+        });
+    }
+    if let Some(rest) = effective.strip_prefix("# ") {
+        return Ok(Command::BroadcastSay {
+            body: rest.to_string(),
+        });
     }
 
     if effective.starts_with('@') {
@@ -264,38 +296,6 @@ fn split_actor_head(head: &str) -> (&str, Option<String>) {
         }
     }
     (head, None)
-}
-
-/// Parse `#alias[:verb [body]]` into a [`Command::TopicMessage`].
-///
-/// The leading `#` must already be present in `input`.
-fn parse_topic_message(input: &str) -> Result<Command, String> {
-    // Strip leading '#'
-    let s = &input[1..];
-
-    // Split at first space to get head and body
-    let (head, body) = match s.split_once(' ') {
-        Some((h, b)) => (h, b.trim().to_string()),
-        None => (s, String::new()),
-    };
-
-    // Split head at first ':' to get topic and verb
-    let (topic, verb) = match head.split_once(':') {
-        None => (head.to_string(), "status".to_string()),
-        Some((t, v)) => (t.to_string(), v.to_string()),
-    };
-
-    if topic.is_empty() {
-        return Err("topic alias cannot be empty".to_string());
-    }
-
-    // Validate verb
-    match verb.as_str() {
-        "say" | "emote" | "subscribe" | "unsubscribe" | "status" | "" => {}
-        other => return Err(format!("unknown topic verb: {other}")),
-    }
-
-    Ok(Command::TopicMessage { topic, verb, body })
 }
 
 #[cfg(test)]

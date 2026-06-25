@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Adás:
+gossip-status-subscribed = Feliratkozott
+gossip-status-not-subscribed = Nincs feliratkozva
+gossip-disabled = A gossip le van tiltva. Állítsd be: .my.gossip.enable: true.
+gossip-send-not-subscribed = Nem iratkozott fel az adáscsatornára. Használd: .my.gossip:subscribe.
+gossip-focus-entered = Adás fókuszmód. Gépelj a say-hez, , az emote-hoz, .use a kilépéshez.
+gossip-unknown-verb = Ismeretlen gossip parancs: { $verb }

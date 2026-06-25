@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Baahinta:
+gossip-status-subscribed = La qoray
+gossip-status-not-subscribed = Lama qorin
+gossip-disabled = Gossip waa la joojiyay. Dhig .my.gossip.enable: true.
+gossip-send-not-subscribed = Lama qorin kanaalka baahinta. Isticmaal .my.gossip:subscribe.
+gossip-focus-entered = Hab diiwaangelinta baahinta. Qor say, , emote, .use si aad uga baxdo.
+gossip-unknown-verb = Amarro gossip aan la garanayn: { $verb }

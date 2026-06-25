@@ -19,12 +19,10 @@ pub struct IncomingRecord {
     pub after_cmd_id: Option<u64>,
 }
 
-/// A broadcast message received from a gossip topic.
+/// A broadcast message received from the gossip channel.
 #[derive(Clone, Debug, PartialEq)]
 pub struct BroadcastRecord {
     pub id: u64,
-    /// Local alias name of the topic (e.g. "broadcast").
-    pub topic: String,
     /// Resolved display name for the sender (alias or full DID).
     pub from_display: String,
     /// Message body text.

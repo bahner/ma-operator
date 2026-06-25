@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Ukusasazwa:
+gossip-status-subscribed = Ubhalisile
+gossip-status-not-subscribed = Awubhalisile
+gossip-disabled = I-gossip ivaliwe. Seta .my.gossip.enable: true.
+gossip-send-not-subscribed = Awubhalisile ekhanelini yokusasazwa. Sebenzisa .my.gossip:subscribe.
+gossip-focus-entered = Imode yokuqondisa yokusasazwa. Bhala say, , emote, .use ukuphuma.
+gossip-unknown-verb = Umyalelo gossip ongaziwa: { $verb }

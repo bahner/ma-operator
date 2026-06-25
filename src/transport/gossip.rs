@@ -1,115 +1,122 @@
-//! Gossip pub/sub transport helpers.
+//! Gossip broadcast transport — single channel implementation.
 //!
-//! Provides subscribe/unsubscribe/publish primitives that sit on top of the
-//! [`ma_core::MaEndpoint::gossip_subscribe`] API.  All state is kept in the
-//! thread-local [`SESSION_TOPICS`] and [`SESSION_GOSSIP_QUEUE`] tables so
-//! the poll loop can drain them without holding a borrow across await points.
+//! One broadcast channel per session, configured via `.my.gossip.topic`.
 
 use bytes::Bytes;
 use futures::StreamExt;
-use ma_core::{topic::topic_id, GossipEvent, Message, Topic, MESSAGE_TYPE_BROADCAST};
+use ma_core::{
+    topic::topic_id, GossipEvent, GossipReceiver, GossipSender, Message, Topic,
+    MESSAGE_TYPE_BROADCAST,
+};
 use wasm_bindgen_futures::spawn_local;
 
-use crate::i18n::t;
-use crate::state::{TopicSession, ENDPOINT, SESSION_GOSSIP_QUEUE, SESSION_TOPICS};
+use crate::state::{
+    GossipSession, ENDPOINT, SESSION_GOSSIP, SESSION_GOSSIP_QUEUE, SESSION_GOSSIP_SUBSCRIBING,
+};
 
-/// Content-type used for emote messages on gossip topics.
+/// Default broadcast topic string.
+pub const DEFAULT_BROADCAST_TOPIC: &str = "/ma/broadcast/0.0.1";
+/// Content-type for emote messages.
 pub const CONTENT_TYPE_EMOTE: &str = "text/x-ma-emote";
-/// Content-type used for plain-text say messages.
+/// Content-type for plain-text say messages.
 pub const CONTENT_TYPE_TEXT: &str = "text/plain";
 
 // ── Subscribe ─────────────────────────────────────────────────────────────
 
-/// Subscribe to a gossip topic identified by `alias`.
+/// Subscribe to the broadcast channel identified by `topic_string`.
 ///
-/// `topic_string` is the raw topic name (e.g. `"/ma/broadcast/0.0.1"` or
-/// `"general"`).  The BLAKE3 hash of that string becomes the iroh-gossip
-/// `TopicId`.
-///
-/// If the alias is already subscribed this is a no-op.
-/// Returns `Err` if the endpoint is not connected.
-pub async fn subscribe_topic(alias: &str, topic_string: &str) -> Result<(), String> {
-    let already = SESSION_TOPICS.with(|t| t.borrow().contains_key(alias));
-    if already {
+/// No-op if already subscribed to the same topic. Guards against concurrent
+/// calls racing across await points.
+pub async fn subscribe(topic_string: &str) -> Result<(), String> {
+    let already_same = SESSION_GOSSIP.with(|g| {
+        g.borrow()
+            .as_ref()
+            .map(|s| s.topic_string == topic_string)
+            .unwrap_or(false)
+    });
+    if already_same {
         return Ok(());
     }
+    if SESSION_GOSSIP_SUBSCRIBING.with(|s| *s.borrow()) {
+        return Ok(());
+    }
+    unsubscribe();
+    SESSION_GOSSIP_SUBSCRIBING.with(|s| *s.borrow_mut() = true);
 
     let tid = topic_id(topic_string);
+    let tid_hex: String = tid.iter().take(8).map(|b| format!("{b:02x}")).collect();
+    web_sys::console::info_1(
+        &format!("[gossip] joining '{topic_string}' (id: {tid_hex}...)").into(),
+    );
 
     let (sender, receiver) = ENDPOINT
         .with(|ep| {
             let borrow = ep.borrow();
-            let ep_ref = borrow.as_ref().ok_or_else(|| t("error-not-connected"))?;
-            // Safety: gossip_subscribe is async but we need to call it here.
-            // We return a Future and await it outside the borrow.
+            let ep_ref = borrow.as_ref().ok_or_else(|| "not connected".to_string())?;
             Ok::<_, String>(ep_ref.clone())
         })?
         .gossip_subscribe(tid, vec![])
         .await
-        .map_err(|e| e.to_string())?;
+        .map_err(|e| {
+            SESSION_GOSSIP_SUBSCRIBING.with(|s| *s.borrow_mut() = false);
+            e.to_string()
+        })?;
 
     let mut topic = Topic::new(topic_string);
     topic.subscribe();
 
-    let alias_owned = alias.to_string();
+    spawn_local(run_receiver(receiver));
 
-    // Spawn the receiver loop: convert raw gossip events → SESSION_GOSSIP_QUEUE.
-    spawn_local(async move {
-        let mut rx = receiver;
-        while let Some(event) = rx.next().await {
-            match event {
-                Ok(GossipEvent::Received(msg)) => {
-                    if let Ok(ma_msg) = Message::decode(&msg.content) {
-                        SESSION_GOSSIP_QUEUE
-                            .with(|q| q.borrow_mut().push((alias_owned.clone(), ma_msg)));
-                    }
-                }
-                Ok(_) => {} // NeighborUp / NeighborDown — ignore
-                Err(_) => break,
-            }
-        }
+    SESSION_GOSSIP.with(|g| {
+        *g.borrow_mut() = Some(GossipSession {
+            topic_string: topic_string.to_string(),
+            topic_id: tid,
+            sender,
+            topic,
+        });
     });
+    SESSION_GOSSIP_SUBSCRIBING.with(|s| *s.borrow_mut() = false);
 
-    SESSION_TOPICS.with(|t| {
-        t.borrow_mut().insert(
-            alias.to_string(),
-            TopicSession {
-                alias: alias.to_string(),
-                topic_string: topic_string.to_string(),
-                topic_id: tid,
-                sender,
-                topic,
-                receiver: None, // already consumed by spawn_local above
-            },
-        )
-    });
-
+    web_sys::console::info_1(&format!("[gossip] '{topic_string}' ready").into());
     Ok(())
+}
+
+async fn run_receiver(receiver: GossipReceiver) {
+    let mut rx = receiver;
+    while let Some(event) = rx.next().await {
+        match event {
+            Ok(GossipEvent::Received(msg)) => {
+                if let Ok(ma_msg) = Message::decode(&msg.content) {
+                    SESSION_GOSSIP_QUEUE.with(|q| q.borrow_mut().push(ma_msg));
+                }
+            }
+            Ok(_) => {}
+            Err(_) => break,
+        }
+    }
 }
 
 // ── Unsubscribe ───────────────────────────────────────────────────────────
 
-/// Remove the session subscription for `alias` (does not modify EgoConfig).
-pub fn unsubscribe_topic(alias: &str) {
-    SESSION_TOPICS.with(|t| t.borrow_mut().remove(alias));
+/// Drop the active subscription (session only — does not touch config).
+pub fn unsubscribe() {
+    SESSION_GOSSIP.with(|g| *g.borrow_mut() = None);
 }
 
 // ── Publish ───────────────────────────────────────────────────────────────
 
-/// Publish a message to the gossip topic identified by `alias`.
-///
-/// Returns `Err` if the alias is not subscribed or signing fails.
-pub async fn publish_to_topic(alias: &str, body: &str, content_type: &str) -> Result<(), String> {
-    let sender = SESSION_TOPICS
-        .with(|t| t.borrow().get(alias).map(|s| s.sender.clone()))
-        .ok_or_else(|| t("topic-send-not-subscribed"))?;
+/// Broadcast a message on the active gossip channel.
+pub async fn publish(body: &str, content_type: &str) -> Result<(), String> {
+    let sender: GossipSender = SESSION_GOSSIP
+        .with(|g| g.borrow().as_ref().map(|s| s.sender.clone()))
+        .ok_or_else(|| "not subscribed to broadcast channel".to_string())?;
 
     let (sender_did, signing_key) =
         crate::transport::connection::get_session_info().map_err(|e| e.to_string())?;
 
     let msg = Message::new(
         sender_did,
-        String::new(), // no recipient — broadcast
+        String::new(),
         MESSAGE_TYPE_BROADCAST,
         content_type,
         body.as_bytes(),
@@ -118,7 +125,6 @@ pub async fn publish_to_topic(alias: &str, body: &str, content_type: &str) -> Re
     .map_err(|e| e.to_string())?;
 
     let cbor = msg.encode().map_err(|e| e.to_string())?;
-
     sender
         .broadcast(Bytes::from(cbor))
         .await
@@ -127,48 +133,30 @@ pub async fn publish_to_topic(alias: &str, body: &str, content_type: &str) -> Re
 
 // ── Poll-loop drain ───────────────────────────────────────────────────────
 
-/// Take all pending gossip messages from the queue, validate them via
-/// `Topic::deliver`, and return the validated `(alias, Message)` pairs.
-pub fn drain_gossip_queue() -> Vec<(String, Message)> {
-    // Drain the raw queue first (no borrow overlap with SESSION_TOPICS).
-    let raw: Vec<(String, Message)> =
-        SESSION_GOSSIP_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
-
+/// Drain and validate all queued gossip messages.
+pub fn drain() -> Vec<Message> {
+    let raw: Vec<Message> = SESSION_GOSSIP_QUEUE.with(|q| q.borrow_mut().drain(..).collect());
     let mut out = Vec::new();
-    for (alias, msg) in raw {
-        SESSION_TOPICS.with(|t| {
-            if let Some(session) = t.borrow_mut().get_mut(&alias) {
+    SESSION_GOSSIP.with(|g| {
+        if let Some(session) = g.borrow_mut().as_mut() {
+            for msg in raw {
                 if session.topic.deliver(msg) {
-                    out.extend(
-                        session
-                            .topic
-                            .drain()
-                            .into_iter()
-                            .map(|m| (alias.clone(), m)),
-                    );
+                    out.extend(session.topic.drain());
                 }
             }
-        });
-    }
+        }
+    });
     out
 }
 
-// ── Status / list ──────────────────────────────────────────────────────────
+// ── Status ────────────────────────────────────────────────────────────────
 
-/// Returns `(is_subscribed, pending_count)` for `alias`.
-pub fn topic_status(alias: &str) -> (bool, usize) {
-    SESSION_TOPICS.with(|t| {
-        let borrow = t.borrow();
-        if let Some(session) = borrow.get(alias) {
-            (session.topic.is_subscribed(), 0)
-        } else {
-            (false, 0)
-        }
-    })
+/// Whether the broadcast channel is currently subscribed.
+pub fn is_subscribed() -> bool {
+    SESSION_GOSSIP.with(|g| g.borrow().is_some())
 }
 
-/// List all currently subscribed alias names.
-#[allow(dead_code)]
-pub fn list_subscribed() -> Vec<String> {
-    SESSION_TOPICS.with(|t| t.borrow().keys().cloned().collect())
+/// The topic string of the current subscription, if any.
+pub fn current_topic() -> Option<String> {
+    SESSION_GOSSIP.with(|g| g.borrow().as_ref().map(|s| s.topic_string.clone()))
 }

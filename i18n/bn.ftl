@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = ব্রডকাস্ট:
+gossip-status-subscribed = সাবস্ক্রাইব করা
+gossip-status-not-subscribed = সাবস্ক্রাইব নেই
+gossip-disabled = গসিপ বন্ধ। .my.gossip.enable: true সেট করুন।
+gossip-send-not-subscribed = ব্রডকাস্ট চ্যানেলে সাবস্ক্রাইব নেই। .my.gossip:subscribe ব্যবহার করুন।
+gossip-focus-entered = ব্রডকাস্ট ফোকাস মোড। বলতে টাইপ করুন, , ইমোটের জন্য, .use বাহির হতে।
+gossip-unknown-verb = অজানা গসিপ কমান্ড: { $verb }

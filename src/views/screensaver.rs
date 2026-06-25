@@ -257,6 +257,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
     #[allow(clippy::type_complexity)]
     let f: Rc<RefCell<Option<Closure<dyn FnMut()>>>> = Rc::new(RefCell::new(None));
     let f_clone = f.clone();
+    // Skip every other RAF call → ~30 fps, halves CPU usage
+    let skip_frame: Rc<RefCell<bool>> = Rc::new(RefCell::new(false));
 
     // Font size for the DID widget label row (px)
     let did_font_size = 11.0_f64;
@@ -264,6 +266,21 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
     let widget_h = 22.0_f64;
 
     *f.borrow_mut() = Some(Closure::new(move || {
+        // Throttle to ~30 fps
+        {
+            let mut skip = skip_frame.borrow_mut();
+            *skip = !*skip;
+            if *skip {
+                web_sys::window()
+                    .unwrap()
+                    .request_animation_frame(
+                        f_clone.borrow().as_ref().unwrap().as_ref().unchecked_ref(),
+                    )
+                    .unwrap();
+                return;
+            }
+        }
+
         let t = {
             let mut n = frame.borrow_mut();
             *n += 1.0;
@@ -276,7 +293,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
 
         // ── 2. DON'T PANIC watermark — large, centred, softly pulsing
         {
-            let pulse = 0.045 + 0.025 * (t / 90.0).sin();
+            let pulse = 0.09 + 0.05 * (t / 90.0).sin();
             let font_px = (wf / 7.0).max(60.0) as u32;
             ctx.save();
             ctx.set_global_alpha(pulse);

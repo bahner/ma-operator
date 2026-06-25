@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Apraide:
+gossip-status-subscribed = Abonēts
+gossip-status-not-subscribed = Nav abonēts
+gossip-disabled = Baumas atspējotas. Iestatiet .my.gossip.enable: true.
+gossip-send-not-subscribed = Nav abonēts apraides kanāls. Izmantojiet .my.gossip:subscribe.
+gossip-focus-entered = Apraides fokusa režīms. Rakstiet say, , emote, .use iziet.
+gossip-unknown-verb = Nezināma baumu komanda: { $verb }

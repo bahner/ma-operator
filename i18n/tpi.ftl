@@ -312,3 +312,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Broadcast:
+gossip-status-subscribed = Yu joinim
+gossip-status-not-subscribed = Yu no joinim
+gossip-disabled = Gossip i no wok. Putim .my.gossip.enable: true.
+gossip-send-not-subscribed = Yu no joinim broadcast channel. Yusim .my.gossip:subscribe.
+gossip-focus-entered = Broadcast fokus mod. Raitim say, , emote, .use pinis.
+gossip-unknown-verb = Gossip komand i no save: { $verb }

@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Lähetys:
+gossip-status-subscribed = Tilattu
+gossip-status-not-subscribed = Ei tilattu
+gossip-disabled = Gossip on poistettu käytöstä. Aseta .my.gossip.enable: true.
+gossip-send-not-subscribed = Ei tilattu broadcast-kanavaa. Käytä .my.gossip:subscribe.
+gossip-focus-entered = Broadcast-kohdistustila. Kirjoita say:ille, , emote:lle, .use poistuaksesi.
+gossip-unknown-verb = Tuntematon gossip-komento: { $verb }

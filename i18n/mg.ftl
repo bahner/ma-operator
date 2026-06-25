@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Fampiparitana:
+gossip-status-subscribed = Voasoratra
+gossip-status-not-subscribed = Tsy voasoratra
+gossip-disabled = Gossip tsy miasa. Apetraho .my.gossip.enable: true.
+gossip-send-not-subscribed = Tsy voasoratra amin'ny fantsona fampiparitana. Ampiasao .my.gossip:subscribe.
+gossip-focus-entered = Fomba tena fampiparitana. Soraty say, , emote, .use hivoaka.
+gossip-unknown-verb = Baiko gossip tsy fantatra: { $verb }

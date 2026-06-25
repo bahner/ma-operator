@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = ብሮድካስት፡
+gossip-status-subscribed = ተቀላቅለዋል
+gossip-status-not-subscribed = አልተቀላቅሉም
+gossip-disabled = Gossip ተሰናክሏል። .my.gossip.enable: true ያዘጋጁ።
+gossip-send-not-subscribed = ወደ broadcast channel አልተቀላቅሉም። .my.gossip:subscribe ይጠቀሙ።
+gossip-focus-entered = Broadcast focus mode። ጽሑፍ ይጻፉ ለ say፣ , ለ emote፣ .use ለ ውጣ።
+gossip-unknown-verb = ያልታወቀ gossip ትዕዛዝ፡ { $verb }

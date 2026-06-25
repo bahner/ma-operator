@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = प्रसारण:
+gossip-status-subscribed = सदस्यता ली
+gossip-status-not-subscribed = सदस्यता नहीं
+gossip-disabled = गॉसिप अक्षम है। .my.gossip.enable: true सेट करें।
+gossip-send-not-subscribed = प्रसारण चैनल की सदस्यता नहीं। .my.gossip:subscribe उपयोग करें।
+gossip-focus-entered = प्रसारण फ़ोकस मोड। say के लिए टाइप करें, , emote के लिए, .use बाहर निकलने के लिए।
+gossip-unknown-verb = अज्ञात गॉसिप आदेश: { $verb }

@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Излъчване:
+gossip-status-subscribed = Абониран
+gossip-status-not-subscribed = Не е абониран
+gossip-disabled = Gossip е деактивиран. Задайте .my.gossip.enable: true.
+gossip-send-not-subscribed = Не сте абонирани за broadcast канала. Използвайте .my.gossip:subscribe.
+gossip-focus-entered = Режим broadcast фокус. Пишете за say, , за emote, .use за изход.
+gossip-unknown-verb = Непознат gossip глагол: { $verb }

@@ -318,3 +318,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Broadcast:
+gossip-status-subscribed = Abonniert
+gossip-status-not-subscribed = Nicht abonniert
+gossip-disabled = Gossip ist deaktiviert. Setze .my.gossip.enable: true.
+gossip-send-not-subscribed = Nicht im Broadcast-Kanal. Verwende .my.gossip:subscribe.
+gossip-focus-entered = Broadcast-Fokusmodus. Tippe zum Sagen, , für Emote, .use zum Beenden.
+gossip-unknown-verb = Unbekannter Gossip-Befehl: { $verb }

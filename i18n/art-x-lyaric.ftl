@@ -314,3 +314,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Broadcast:
+gossip-status-subscribed = Inna it
+gossip-status-not-subscribed = Nah inna it
+gossip-disabled = Gossip off, seen. Set .my.gossip.enable: true.
+gossip-send-not-subscribed = Nah inna broadcast. Use .my.gossip:subscribe fos.
+gossip-focus-entered = Broadcast focus. Type fi say, , fi emote, .use fi lef.
+gossip-unknown-verb = Unknown gossip verb: { $verb }

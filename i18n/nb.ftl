@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Kringkasting:
+gossip-status-subscribed = Abonnert
+gossip-status-not-subscribed = Ikke abonnert
+gossip-disabled = Gossip er deaktivert. Sett .my.gossip.enable: true.
+gossip-send-not-subscribed = Ikke abonnert på kringkastingskanalen. Bruk .my.gossip:subscribe.
+gossip-focus-entered = Kringkastings-fokusmodus. Skriv for say, , for emote, .use for å avslutte.
+gossip-unknown-verb = Ukjent gossip-kommando: { $verb }

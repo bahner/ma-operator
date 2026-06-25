@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Ülekanne:
+gossip-status-subscribed = Tellitud
+gossip-status-not-subscribed = Ei ole tellitud
+gossip-disabled = Gossip on keelatud. Määra .my.gossip.enable: true.
+gossip-send-not-subscribed = Pole tellinud broadcast kanalit. Kasuta .my.gossip:subscribe.
+gossip-focus-entered = Broadcast fookusrežiim. Kirjuta say jaoks, , emote jaoks, .use väljumiseks.
+gossip-unknown-verb = Tundmatu gossip käsk: { $verb }

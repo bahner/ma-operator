@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Emitiranje:
+gossip-status-subscribed = Pretplaćen
+gossip-status-not-subscribed = Nije pretplaćen
+gossip-disabled = Gossip je onemogućen. Postavite .my.gossip.enable: true.
+gossip-send-not-subscribed = Niste pretplaćeni na kanal emitiranja. Koristite .my.gossip:subscribe.
+gossip-focus-entered = Način fokusa emitiranja. Tipkajte za say, , za emote, .use za izlaz.
+gossip-unknown-verb = Nepoznata gossip naredba: { $verb }

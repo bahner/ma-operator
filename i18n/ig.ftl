@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Mgbasa ozi:
+gossip-status-subscribed = Debanyere
+gossip-status-not-subscribed = Adebanyeghị
+gossip-disabled = Gossip agbanyụọla. Tọọ .my.gossip.enable: true.
+gossip-send-not-subscribed = Ị debanyeghị aha na ọwa mgbasa ozi. Jiri .my.gossip:subscribe.
+gossip-focus-entered = Ọnọdụ nleba anya mgbasa ozi. Dee maka say, , maka emote, .use ị pụọ.
+gossip-unknown-verb = Iwu gossip amaghị: { $verb }

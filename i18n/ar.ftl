@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = البث:
+gossip-status-subscribed = مشترك
+gossip-status-not-subscribed = غير مشترك
+gossip-disabled = البث معطّل. عيّن .my.gossip.enable: true للتفعيل.
+gossip-send-not-subscribed = غير مشترك في قناة البث. استخدم .my.gossip:subscribe أولاً.
+gossip-focus-entered = وضع تركيز البث. اكتب للقول، , للتمثيل، .use للخروج.
+gossip-unknown-verb = أمر بث غير معروف: { $verb }

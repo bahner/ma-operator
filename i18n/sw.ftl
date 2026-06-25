@@ -319,3 +319,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Utangazaji:
+gossip-status-subscribed = Umejiandikisha
+gossip-status-not-subscribed = Hujajiandikisha
+gossip-disabled = Gossipi imezimwa. Weka .my.gossip.enable: true.
+gossip-send-not-subscribed = Hujajiandikisha kwa chaneli ya utangazaji. Tumia .my.gossip:subscribe.
+gossip-focus-entered = Hali ya kuzingatia utangazaji. Andika say, , emote, .use kutoka.
+gossip-unknown-verb = Amri ya gossipi isiyojulikana: { $verb }

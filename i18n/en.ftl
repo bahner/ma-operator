@@ -332,16 +332,12 @@ msg-timeout = Message timed out (no reply in 60s)
 help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
 help-cmd-batch-async =   .batch:async / .batch        run commands in parallel
 
-# ── Gossip topics ─────────────────────────────────────────────────────────
-topic-subscribed = Subscribed to #{ $topic }
-topic-unsubscribed = Unsubscribed from #{ $topic } (session only — will re-subscribe on next login)
-topic-deleted = Removed topic alias #{ $topic }
-topic-not-defined = No topic string defined for '{ $topic }'. Use .my.topics.{ $topic }: <topic-string> first.
-topic-send-not-subscribed = Not subscribed to #{ $topic }. Use #{ $topic }:subscribe first.
-topic-status-subscribed = Subscribed
-topic-status-not-subscribed = Not subscribed
-topic-status-topic = Topic alias: { $topic }
-topic-list-header = Defined topic aliases:
-topic-list-empty = No topic aliases defined. Use .my.topics.<alias>: <topic-string> to add one.
-topic-emote-no-focus = No topic in focus. Use .use #topicname first.
-topic-unknown-verb = Unknown topic verb: { $verb }
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Broadcast:
+gossip-status-subscribed = subscribed
+gossip-status-not-subscribed = not subscribed
+gossip-disabled = Gossip is disabled. Set .my.gossip.enable: true to enable.
+gossip-send-not-subscribed = Not subscribed to broadcast channel. Use .my.gossip:subscribe first.
+gossip-focus-entered = Broadcast focus mode. Type to say, , to emote, .use to exit.
+gossip-unknown-verb = Unknown gossip verb: { $verb }

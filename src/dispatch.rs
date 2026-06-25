@@ -134,7 +134,8 @@ fn handle_input_line(
     });
 
     // Update history for non-comment, non-batch-delimiter lines.
-    let is_comment = line.trim_start().starts_with('#');
+    // A comment is '# text' (hash + space) — bare '#foo' is a topic command.
+    let is_comment = line.trim_start().starts_with("# ") || line.trim() == "#";
     let is_batch_delimiter = line.trim() == ".batch"
         || line.trim().starts_with(".batch:sync")
         || line.trim().starts_with(".batch:async");
@@ -161,7 +162,10 @@ fn handle_input_line(
     if let Some(batch_id) = collecting_id {
         if line.trim() == ".batch" {
             close_batch(batch_id, state, config, show_editor, on_eval);
-        } else if !line.trim_start().starts_with('#') && !line.trim().is_empty() {
+        } else if !line.trim_start().starts_with("# ")
+            && line.trim() != "#"
+            && !line.trim().is_empty()
+        {
             state.batches.update(|b| {
                 if let Some(ab) = b.get_mut(&batch_id) {
                     ab.lines.push_back(line);

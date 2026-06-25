@@ -202,9 +202,9 @@ fn render_entry(entry: Entry) -> impl IntoView {
         }
         Entry::Broadcast(b) => {
             let text = if b.is_emote {
-                format!("#{} {} {}", b.topic, b.from_display, b.display)
+                format!("@{} {}", b.from_display, b.display)
             } else {
-                format!("#{}@{}: {}", b.topic, b.from_display, b.display)
+                format!("@{}: {}", b.from_display, b.display)
             };
             view! { <div class="terminal-line broadcast-entry">{text}</div> }.into_any()
         }

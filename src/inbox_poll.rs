@@ -42,7 +42,7 @@ pub async fn run_inbox_poll(
 
 /// Drain all pending gossip messages and push them to the terminal.
 fn drain_gossip_topics(state: &AppState, config: RwSignal<EgoConfig>) {
-    for (alias, msg) in transport::gossip::drain_gossip_queue() {
+    for msg in transport::gossip::drain() {
         let is_emote = msg.content_type == transport::gossip::CONTENT_TYPE_EMOTE;
         let from_did = msg.from.clone();
         let from_display = {
@@ -52,7 +52,7 @@ fn drain_gossip_topics(state: &AppState, config: RwSignal<EgoConfig>) {
                 .to_string()
         };
         let body = String::from_utf8_lossy(&msg.content).into_owned();
-        state.push_broadcast(alias, from_display, body, is_emote);
+        state.push_broadcast(from_display, body, is_emote);
     }
 }
 

@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Fulo broadcast:
+gossip-status-subscribed = Sogi
+gossip-status-not-subscribed = Sogi alaa
+gossip-disabled = Gossip waaɗii. Hokku .my.gossip.enable: true.
+gossip-send-not-subscribed = Broadcast sogi alaa. Naa .my.gossip:subscribe adannde.
+gossip-focus-entered = Broadcast focus mode. Jango say, , jango emote, .use lootoo.
+gossip-unknown-verb = Broadcast koyon haaɗi: { $verb }

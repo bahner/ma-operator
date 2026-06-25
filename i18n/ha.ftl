@@ -326,3 +326,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Watsa:
+gossip-status-subscribed = An yi rijista
+gossip-status-not-subscribed = Ba a yi rijista ba
+gossip-disabled = Gossip an kashe. Saita .my.gossip.enable: true.
+gossip-send-not-subscribed = Ba a yi rijista zuwa tashar watsa ba. Yi amfani da .my.gossip:subscribe.
+gossip-focus-entered = Yanayin mai da hankali na watsa. Rubuta don say, , don emote, .use don fita.
+gossip-unknown-verb = Umarni gossip mara sani: { $verb }

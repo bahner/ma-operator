@@ -325,3 +325,13 @@ batch-done = batch-done
 batch-done-error = batch-done-error
 msg-timeout = msg-timeout
 help-cmd-batch-async = help-cmd-batch-async
+
+
+# ── Gossip broadcast ──────────────────────────────────────────────────────
+gossip-status-header = Yayın:
+gossip-status-subscribed = Abone
+gossip-status-not-subscribed = Abone değil
+gossip-disabled = Gossip devre dışı. .my.gossip.enable: true ayarlayın.
+gossip-send-not-subscribed = Yayın kanalına abone değilsiniz. .my.gossip:subscribe kullanın.
+gossip-focus-entered = Yayın odak modu. say için yazın, , emote için, .use çıkmak için.
+gossip-unknown-verb = Bilinmeyen gossip komutu: { $verb }
