@@ -1,5 +1,6 @@
 use leptos::prelude::*;
 
+use crate::config::EgoConfig;
 use crate::state::AppState;
 use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
 
@@ -38,6 +39,8 @@ fn url_prefill() -> Option<String> {
 pub fn App() -> impl IntoView {
     let state = AppState::new();
     provide_context(state.clone());
+    let config: RwSignal<EgoConfig> = RwSignal::new(EgoConfig::new());
+    provide_context(config);
 
     // Parse URL params once at startup. Stored in AppState so the value
     // survives the landing/login flow and is consumed by InputBar after login.

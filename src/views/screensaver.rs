@@ -103,6 +103,7 @@ struct Actor {
 #[component]
 pub fn Screensaver() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
+    let config = use_context::<RwSignal<crate::config::EgoConfig>>().expect("EgoConfig missing");
     let canvas_ref = NodeRef::<leptos::html::Canvas>::new();
 
     // Idle tracking
@@ -117,11 +118,7 @@ pub fn Screensaver() -> impl IntoView {
             if state2.screensaver.get_untracked() {
                 return;
             }
-            let timeout = state2
-                .session
-                .get_untracked()
-                .map(|_| 300u32) // default 300s; TODO use config
-                .unwrap_or(300);
+            let timeout = config.with_untracked(|c| c.screensaver_timeout_secs()) as u32;
             let now = now_secs();
             let elapsed = now - *la.borrow();
             if elapsed > timeout as f64 {

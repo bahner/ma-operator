@@ -17,8 +17,8 @@ use crate::{
 pub fn Terminal() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
 
-    // Per-session reactive config
-    let config: RwSignal<EgoConfig> = RwSignal::new(EgoConfig::new());
+    // Per-session reactive config — created at App level, shared via context
+    let config = use_context::<RwSignal<EgoConfig>>().expect("EgoConfig missing");
 
     // Editor modal signal — Some(EditorContext) opens the overlay
     let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
