@@ -66,10 +66,10 @@ impl EgoConfig {
         self.tree.insert(key.into(), value.into());
     }
 
-    /// Read-only keys may not be written via `.key: value`. Currently only
-    /// `.my.identity.did`, which is injected from the active session.
+    /// Read-only keys may not be written or deleted.
+    /// `.my` and `.my.identity` (including all children) are protected roots.
     pub fn is_read_only(key: &str) -> bool {
-        key == ".my.identity.did"
+        key == ".my" || key == ".my.identity" || key.starts_with(".my.identity.")
     }
 
     /// True if `key` is an exact leaf (a value is stored at that path).
@@ -305,14 +305,18 @@ mod tests {
     // ── is_read_only ──────────────────────────────────────────────────────
 
     #[test]
-    fn identity_did_is_read_only() {
+    fn protected_roots_are_read_only() {
+        assert!(EgoConfig::is_read_only(".my"));
+        assert!(EgoConfig::is_read_only(".my.identity"));
         assert!(EgoConfig::is_read_only(".my.identity.did"));
+        assert!(EgoConfig::is_read_only(".my.identity.signing_key"));
     }
 
     #[test]
     fn other_keys_not_read_only() {
         assert!(!EgoConfig::is_read_only(".my.aliases.alice"));
         assert!(!EgoConfig::is_read_only(".my.i18n"));
+        assert!(!EgoConfig::is_read_only(".my.gossip.topic"));
     }
 
     // ── is_leaf / has_children / has_leaf_ancestor ────────────────────────
