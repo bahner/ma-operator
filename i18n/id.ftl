@@ -329,10 +329,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Siaran:
-gossip-status-subscribed = Berlangganan
-gossip-status-not-subscribed = Tidak berlangganan
-gossip-disabled = Gossip dinonaktifkan. Setel .my.gossip.enable: true.
-gossip-send-not-subscribed = Belum berlangganan saluran siaran. Gunakan .my.gossip:subscribe.
-gossip-focus-entered = Mode fokus siaran. Ketik untuk say, , untuk emote, .use untuk keluar.
-gossip-unknown-verb = Perintah gossip tidak dikenal: { $verb }

@@ -321,10 +321,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Transmissão:
-gossip-status-subscribed = Inscrito
-gossip-status-not-subscribed = Não inscrito
-gossip-disabled = Gossip desativado. Defina .my.gossip.enable: true.
-gossip-send-not-subscribed = Não inscrito no canal de transmissão. Use .my.gossip:subscribe.
-gossip-focus-entered = Modo foco transmissão. Digite para say, , para emote, .use para sair.
-gossip-unknown-verb = Comando gossip desconhecido: { $verb }

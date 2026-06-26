@@ -322,10 +322,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Útsending:
-gossip-status-subscribed = Skráður
-gossip-status-not-subscribed = Ikki skráður
-gossip-disabled = Gossip er óvirkt. Set .my.gossip.enable: true.
-gossip-send-not-subscribed = Ikki skráður á broadcast-kanali. Nýt .my.gossip:subscribe.
-gossip-focus-entered = Broadcast fokus-stavn. Skriva fyri say, , fyri emote, .use fyri útgongu.
-gossip-unknown-verb = Ókennd gossip-boð: { $verb }

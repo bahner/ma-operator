@@ -245,6 +245,8 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
     match load_config(username).await? {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
+            cfg.tree
+                .retain(|k, _| k.starts_with(".my.") || k.starts_with(".profiles."));
             cfg.set_defaults();
             Ok(cfg)
         }

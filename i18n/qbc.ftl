@@ -331,10 +331,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Fulo broadcast:
-gossip-status-subscribed = Join
-gossip-status-not-subscribed = No join
-gossip-disabled = Gossip off, sésata. Set .my.gossip.enable: true.
-gossip-send-not-subscribed = Inyalowda no join broadcast. Usen .my.gossip:subscribe fos.
-gossip-focus-entered = Broadcast focus mode. Type fo say, , fo emote, .use fo lef.
-gossip-unknown-verb = Fulo koyon no savvy: { $verb }

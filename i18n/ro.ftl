@@ -322,10 +322,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Emisiune:
-gossip-status-subscribed = Abonat
-gossip-status-not-subscribed = Neabonat
-gossip-disabled = Gossip dezactivat. Setați .my.gossip.enable: true.
-gossip-send-not-subscribed = Nu ești abonat la canalul de emisiune. Utilizează .my.gossip:subscribe.
-gossip-focus-entered = Mod focus emisiune. Tastați pentru say, , pentru emote, .use pentru ieșire.
-gossip-unknown-verb = Comandă gossip necunoscută: { $verb }

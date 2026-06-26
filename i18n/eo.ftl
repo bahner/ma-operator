@@ -314,10 +314,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Elsendo:
-gossip-status-subscribed = Abonita
-gossip-status-not-subscribed = Ne abonita
-gossip-disabled = Klaĉo estas malaktiva. Agordu .my.gossip.enable: true.
-gossip-send-not-subscribed = Ne abonita al elsendkanalo. Uzu .my.gossip:subscribe.
-gossip-focus-entered = Reĝimo fokuso de elsendo. Tajpu por say, , por emote, .use por eliri.
-gossip-unknown-verb = Nekonata klaĉkomando: { $verb }

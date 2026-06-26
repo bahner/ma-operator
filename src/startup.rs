@@ -154,16 +154,8 @@ pub(crate) async fn startup_load_config(
             if cfg.get(".my.identity.auto-publish").is_none() {
                 cfg.set(".my.identity.auto-publish", "true");
             }
-            // One-time migration: move .my.profile.<username> → .profiles.<username>.
-            let old_profile_key = format!(".my.profile.{username}");
-            let new_profile_key = format!(".profiles.{username}");
-            if cfg.get(&new_profile_key).is_none() {
-                if let Some(cid) = cfg.get(&old_profile_key).map(|s| s.to_string()) {
-                    cfg.set(&new_profile_key, &cid);
-                    cfg.delete(&old_profile_key);
-                }
-            }
             // Seed SESSION_AGENT_CID from stored profile CID if present.
+            let new_profile_key = format!(".profiles.{username}");
             if let Some(cid) = cfg.get(&new_profile_key).map(|s| s.to_string()) {
                 crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid));
             }
@@ -172,7 +164,7 @@ pub(crate) async fn startup_load_config(
             let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
             crate::eval::apply_config_to_dom(&cfg);
             // Apply log level from config if set.
-            if let Some(level) = cfg.get(".config.log.level") {
+            if let Some(level) = cfg.get(".my.config.log.level") {
                 crate::apply_log_level(level);
             }
             if pruned > 0 {
@@ -192,14 +184,6 @@ pub(crate) async fn startup_load_config(
     {
         let first = lang.split(':').next().unwrap_or(&lang).to_string();
         crate::i18n::init(&first).await;
-        state.lang.set(crate::i18n::lang());
-        crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
-    } else if let Some(lang) = config
-        .get_untracked()
-        .get(".my.config.ui.language")
-        .map(|s| s.to_string())
-    {
-        crate::i18n::init(&lang).await;
         state.lang.set(crate::i18n::lang());
         crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
     } else {
@@ -262,22 +246,6 @@ pub(crate) async fn startup_connect(
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did, username, state.clone(), config).await;
-            // Auto-subscribe to gossip broadcast channel if enabled.
-            let enabled = config
-                .get_untracked()
-                .get(".my.gossip.enable")
-                .unwrap_or("true")
-                != "false";
-            if enabled {
-                let topic = config
-                    .get_untracked()
-                    .get(".my.gossip.topic")
-                    .unwrap_or(crate::transport::gossip::DEFAULT_BROADCAST_TOPIC)
-                    .to_string();
-                if let Err(e) = crate::transport::gossip::subscribe(&topic).await {
-                    state.push_error(format!("gossip auto-subscribe: {e}"));
-                }
-            }
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }

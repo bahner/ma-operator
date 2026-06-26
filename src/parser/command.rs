@@ -12,12 +12,6 @@
 ///   @did:ma:<id>[:verb] [body]    → ActorMessage
 ///   \@literal text                → plain text (escaped @)
 ///
-/// Broadcast grammar (single channel):
-///   #              → BroadcastStatus
-///   # text         → BroadcastSay
-///   #'text         → BroadcastSay (explicit)
-///   #: text        → BroadcastEmote
-///   ,body          → BroadcastEmote (in .use # focus mode)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -53,12 +47,6 @@ pub enum Command {
         /// Remaining arguments as a single string
         body: String,
     },
-    /// `#` alone — show broadcast status
-    BroadcastStatus,
-    /// `# text` or `#'text` — say to broadcast channel
-    BroadcastSay { body: String },
-    /// `#: text` — emote to broadcast channel
-    BroadcastEmote { body: String },
     /// Raw text (escaped \@, or just plain text)
     PlainText(String),
 }
@@ -78,12 +66,6 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
     // Escaped \@ → literal text
     if input.starts_with("\\@") {
         return Ok(Command::PlainText(input[1..].to_string()));
-    }
-
-    // Emote to broadcast: ,body (in .use # focus mode)
-    if let Some(body) = input.strip_prefix(',') {
-        let body = body.trim().to_string();
-        return Ok(Command::BroadcastEmote { body });
     }
 
     // Dot-command
@@ -131,76 +113,16 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
 
     // Broadcast channel: # (single channel, no alias)
     // Handle BEFORE focus transform.
-    if input == "#" {
-        return Ok(Command::BroadcastStatus);
-    }
-    if let Some(rest) = input
-        .strip_prefix("#: ")
-        .or_else(|| input.strip_prefix("#:"))
-    {
-        return Ok(Command::BroadcastEmote {
-            body: rest.trim().to_string(),
-        });
-    }
-    if let Some(rest) = input.strip_prefix("# ") {
-        return Ok(Command::BroadcastSay {
-            body: rest.to_string(),
-        });
-    }
-    if let Some(rest) = input.strip_prefix("#'") {
-        return Ok(Command::BroadcastSay {
-            body: rest.trim().to_string(),
-        });
-    }
-
     // Actor message  @target[:verb] [body]
-    // In broadcast focus mode (.use #), transform bare text → # say,
-    // ,'body' → emote (already handled above), '  text → # text.
     let effective = if let Some(actor) = focus {
-        if actor == "#" {
-            // Broadcast focus: pass through . @ # ,
-            if input.starts_with('.')
-                || input.starts_with('@')
-                || input.starts_with('#')
-                || input.starts_with(',')
-            {
-                input.to_string()
-            } else if let Some(rest) = input.strip_prefix('\'') {
-                // 'text → # text (explicit say)
-                format!("# {}", rest.trim())
-            } else {
-                // Bare text → say
-                format!("# {input}")
-            }
+        if input.starts_with(':') || !input.starts_with('@') {
+            format!("{actor} {input}")
         } else {
-            // Actor focus mode (existing behaviour)
-            if input.starts_with(':') || !input.starts_with('@') {
-                format!("{actor} {input}")
-            } else {
-                input.to_string()
-            }
+            input.to_string()
         }
     } else {
         input.to_string()
     };
-
-    // Re-check broadcast after focus expansion.
-    if effective == "#" {
-        return Ok(Command::BroadcastStatus);
-    }
-    if let Some(rest) = effective
-        .strip_prefix("#: ")
-        .or_else(|| effective.strip_prefix("#:"))
-    {
-        return Ok(Command::BroadcastEmote {
-            body: rest.trim().to_string(),
-        });
-    }
-    if let Some(rest) = effective.strip_prefix("# ") {
-        return Ok(Command::BroadcastSay {
-            body: rest.to_string(),
-        });
-    }
 
     if effective.starts_with('@') {
         let mut parts = effective.splitn(2, ' ');

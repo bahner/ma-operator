@@ -322,10 +322,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Vysílání:
-gossip-status-subscribed = Přihlášen
-gossip-status-not-subscribed = Není přihlášen
-gossip-disabled = Gossip je vypnut. Nastavte .my.gossip.enable: true.
-gossip-send-not-subscribed = Nejste přihlášeni ke kanálu vysílání. Použijte .my.gossip:subscribe.
-gossip-focus-entered = Režim zaměření vysílání. Pište pro say, , pro emote, .use pro odchod.
-gossip-unknown-verb = Neznámý příkaz gossip: { $verb }

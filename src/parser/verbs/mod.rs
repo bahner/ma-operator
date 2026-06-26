@@ -2,7 +2,6 @@
 
 mod acl;
 mod doc;
-pub(crate) mod gossip;
 mod identity;
 mod inbox;
 mod ma;
@@ -76,9 +75,6 @@ pub fn dispatch_verb(
     }
     if path.starts_with(".my.doc.") || (path == ".my.i18n" && verb == "list") {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
-    }
-    if path == ".my.gossip" || path.starts_with(".my.gossip.") {
-        return gossip::handle_gossip(path, verb, args, state, config);
     }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
 }

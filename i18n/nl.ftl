@@ -321,10 +321,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Uitzending:
-gossip-status-subscribed = Geabonneerd
-gossip-status-not-subscribed = Niet geabonneerd
-gossip-disabled = Gossip is uitgeschakeld. Stel .my.gossip.enable: true in.
-gossip-send-not-subscribed = Niet geabonneerd op het uitzendkanaal. Gebruik .my.gossip:subscribe.
-gossip-focus-entered = Uitzending-fokusmodus. Typ voor say, , voor emote, .use om te beëindigen.
-gossip-unknown-verb = Onbekende gossip-opdracht: { $verb }

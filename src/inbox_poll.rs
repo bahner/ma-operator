@@ -29,7 +29,6 @@ pub async fn run_inbox_poll(
         if !transport::is_connected() {
             continue;
         }
-        drain_gossip_topics(&state, config);
         for incoming in transport::drain_inbox()
             .into_iter()
             .chain(transport::drain_rpc_inbox())
@@ -37,22 +36,6 @@ pub async fn run_inbox_poll(
         {
             route_incoming(incoming, &state, config, show_editor);
         }
-    }
-}
-
-/// Drain all pending gossip messages and push them to the terminal.
-fn drain_gossip_topics(state: &AppState, config: RwSignal<EgoConfig>) {
-    for msg in transport::gossip::drain() {
-        let is_emote = msg.content_type == transport::gossip::CONTENT_TYPE_EMOTE;
-        let from_did = msg.from.clone();
-        let from_display = {
-            let cfg = config.get_untracked();
-            cfg.reverse_alias(&from_did)
-                .unwrap_or(&from_did)
-                .to_string()
-        };
-        let body = String::from_utf8_lossy(&msg.content).into_owned();
-        state.push_broadcast(from_display, body, is_emote);
     }
 }
 

@@ -322,10 +322,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Transliacijos:
-gossip-status-subscribed = Prenumeruojama
-gossip-status-not-subscribed = Neprenumeruojama
-gossip-disabled = Gandai išjungti. Nustatykite .my.gossip.enable: true.
-gossip-send-not-subscribed = Neprenumeruojamas transliacijos kanalas. Naudokite .my.gossip:subscribe.
-gossip-focus-entered = Transliacijos fokuso režimas. Rašykite say, , emote, .use išeiti.
-gossip-unknown-verb = Nežinoma gandų komanda: { $verb }

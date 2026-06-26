@@ -321,10 +321,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = ブロードキャスト:
-gossip-status-subscribed = 購読中
-gossip-status-not-subscribed = 未購読
-gossip-disabled = ゴシップが無効です。.my.gossip.enable: true を設定してください。
-gossip-send-not-subscribed = ブロードキャストチャンネルを購読していません。.my.gossip:subscribe を使用してください。
-gossip-focus-entered = ブロードキャストフォーカスモード。sayはそのまま入力、emoteは ,、終了は .use。
-gossip-unknown-verb = 不明なゴシップコマンド: { $verb }

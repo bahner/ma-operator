@@ -329,10 +329,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Ìgbọ̀ràn:
-gossip-status-subscribed = Forukọsilẹ
-gossip-status-not-subscribed = Kò forukọsilẹ
-gossip-disabled = Gossip ti paa. Ṣeto .my.gossip.enable: true.
-gossip-send-not-subscribed = O kò forukọsilẹ si ìgbọ̀ràn. Lo .my.gossip:subscribe.
-gossip-focus-entered = Ipo tókàn ìgbọ̀ràn. Tẹ say, , emote, .use jáde.
-gossip-unknown-verb = Àṣẹ gossip tí a kò mọ̀: { $verb }

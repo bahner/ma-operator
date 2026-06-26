@@ -315,10 +315,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Difizyon:
-gossip-status-subscribed = Abòne
-gossip-status-not-subscribed = Pa abòne
-gossip-disabled = Gossip dezaktive. Mete .my.gossip.enable: true.
-gossip-send-not-subscribed = Pa abòne nan kanal difizyon. Itilize .my.gossip:subscribe.
-gossip-focus-entered = Mòd fokis difizyon. Ekri pou say, , pou emote, .use pou soti.
-gossip-unknown-verb = Kòmand gossip enkoni: { $verb }

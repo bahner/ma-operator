@@ -5,7 +5,6 @@ mod actor;
 pub(crate) mod actor_send {
     pub(crate) use super::actor::execute_outbox_task;
 }
-pub(crate) mod gossip;
 mod profile;
 
 use leptos::prelude::*;
@@ -165,18 +164,6 @@ pub(crate) fn eval(
 
         Command::ActorMessage { target, verb, body } => {
             actor::eval_actor(target, verb, body, raw, state, config);
-        }
-
-        Command::BroadcastStatus => {
-            gossip::eval_broadcast_status(state, config);
-        }
-
-        Command::BroadcastSay { body } => {
-            gossip::eval_broadcast_say(body, state, config);
-        }
-
-        Command::BroadcastEmote { body } => {
-            gossip::eval_broadcast_emote(body, state, config);
         }
     }
 }
@@ -340,31 +327,14 @@ fn handle_dot_set(
     let uname = username.to_string();
     let state2 = state.clone();
     let path_owned = path.to_string();
-    // Side effects for .my.gossip.* keys.
-    if path == ".my.gossip.enable" && value == "false" {
-        crate::transport::gossip::unsubscribe();
-    }
-    if path == ".my.gossip.topic" && crate::transport::gossip::is_subscribed() {
-        let new_topic = value.clone();
-        let state3 = state.clone();
-        spawn_local(async move {
-            if let Err(e) = crate::transport::gossip::subscribe(&new_topic).await {
-                state3.push_error(e);
-            }
-        });
-    }
     spawn_local(async move {
         if let Err(e) = persist_config(&uname, &cfg).await {
             state2.push_error(e);
             return;
         }
         apply_config_to_dom(&cfg);
-        if path_owned == ".config.log.level" {
+        if path_owned == ".my.config.log.level" {
             crate::apply_log_level(&value);
-        }
-        if path_owned == ".my.config.ui.language" {
-            let _ = crate::i18n::init(&value).await;
-            state2.lang.set(crate::i18n::lang());
         }
         if path_owned == ".my.i18n" {
             let first = value.split(':').next().unwrap_or(&value).to_string();
@@ -438,13 +408,6 @@ fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSigna
             return;
         }
     }
-    // ── .config.gossip — removed (now .my.gossip) ───────────────────────
-    // ── .my.gossip — virtual: show gossip config with defaults ───────────
-    if path == ".my.gossip" {
-        crate::parser::verbs::gossip::show_gossip_config(state, config);
-        return;
-    }
-
     // ── Config tree read ──────────────────────────────────────────────────
     let cfg = config.get_untracked();
     let query = if args.is_empty() {
@@ -546,16 +509,7 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     }
 
-    // .use # — broadcast focus mode
-    if args[0] == "#" {
-        state.focus_actor.set(Some(FocusMode {
-            target: "#".to_string(),
-            prompt: "#> ".to_string(),
-        }));
-        state.push_system(crate::i18n::t("gossip-focus-entered"));
-        return;
-    }
-
+    // .use <target> [as @alias]
     let target = args[0].trim_start_matches('@').to_string();
     let cfg = config.get_untracked();
     let resolved = if target.starts_with("did:") {

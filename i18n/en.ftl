@@ -334,10 +334,3 @@ help-cmd-batch-async =   .batch:async / .batch        run commands in parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Broadcast:
-gossip-status-subscribed = subscribed
-gossip-status-not-subscribed = not subscribed
-gossip-disabled = Gossip is disabled. Set .my.gossip.enable: true to enable.
-gossip-send-not-subscribed = Not subscribed to broadcast channel. Use .my.gossip:subscribe first.
-gossip-focus-entered = Broadcast focus mode. Type to say, , to emote, .use to exit.
-gossip-unknown-verb = Unknown gossip verb: { $verb }

@@ -315,10 +315,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Broadcast:
-gossip-status-subscribed = Sain op
-gossip-status-not-subscribed = Nɔ sain op
-gossip-disabled = Gossip don off. Set .my.gossip.enable: true.
-gossip-send-not-subscribed = Yɔ nɔ sain op na broadcast. Yus .my.gossip:subscribe.
-gossip-focus-entered = Broadcast fokus mode. Taip pa say, , pa emote, .use pa go.
-gossip-unknown-verb = Gossip komand wey no sabi: { $verb }

@@ -322,10 +322,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Oddajanje:
-gossip-status-subscribed = Naročen
-gossip-status-not-subscribed = Ni naročen
-gossip-disabled = Gossip je onemogočen. Nastavite .my.gossip.enable: true.
-gossip-send-not-subscribed = Niste naročeni na oddajni kanal. Uporabite .my.gossip:subscribe.
-gossip-focus-entered = Način fokusa oddajanja. Tipkajte za say, , za emote, .use za izhod.
-gossip-unknown-verb = Neznana ukaz gossip: { $verb }

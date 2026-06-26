@@ -328,10 +328,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = 广播：
-gossip-status-subscribed = 已订阅
-gossip-status-not-subscribed = 未订阅
-gossip-disabled = Gossip 已禁用。请设置 .my.gossip.enable: true。
-gossip-send-not-subscribed = 未订阅广播频道。请使用 .my.gossip:subscribe。
-gossip-focus-entered = 广播焦点模式。直接输入 say，, 发送 emote，.use 退出。
-gossip-unknown-verb = 未知 gossip 命令：{ $verb }

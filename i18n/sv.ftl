@@ -328,10 +328,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = Sändning:
-gossip-status-subscribed = Prenumererar
-gossip-status-not-subscribed = Inte prenumerant
-gossip-disabled = Gossip inaktiverat. Ange .my.gossip.enable: true.
-gossip-send-not-subscribed = Inte prenumerant på sändningskanalen. Använd .my.gossip:subscribe.
-gossip-focus-entered = Sändnings-fokusläge. Skriv för say, , för emote, .use för att avsluta.
-gossip-unknown-verb = Okänt gossip-kommando: { $verb }

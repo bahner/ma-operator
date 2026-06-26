@@ -329,10 +329,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = ஒளிபரப்பு:
-gossip-status-subscribed = குழுசேர்ந்தீர்கள்
-gossip-status-not-subscribed = குழுசேரவில்லை
-gossip-disabled = Gossip முடக்கப்பட்டது. .my.gossip.enable: true அமைக்கவும்.
-gossip-send-not-subscribed = ஒளிபரப்பு சேனலில் குழுசேரவில்லை. .my.gossip:subscribe பயன்படுத்துங்கள்.
-gossip-focus-entered = ஒளிபரப்பு கவன முறை. say க்கு தட்டச்சு செய்யுங்கள், , emote க்கு, .use வெளியேற.
-gossip-unknown-verb = தெரியாத gossip கட்டளை: { $verb }

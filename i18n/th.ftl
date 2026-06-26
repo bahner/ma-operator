@@ -329,10 +329,3 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
-gossip-status-header = การแพร่ภาพ:
-gossip-status-subscribed = สมัครสมาชิกแล้ว
-gossip-status-not-subscribed = ยังไม่ได้สมัครสมาชิก
-gossip-disabled = Gossip ถูกปิดใช้งาน ตั้งค่า .my.gossip.enable: true
-gossip-send-not-subscribed = ยังไม่ได้สมัครช่องแพร่ภาพ ใช้ .my.gossip:subscribe
-gossip-focus-entered = โหมดโฟกัสแพร่ภาพ พิมพ์ say ตามปกติ , สำหรับ emote .use เพื่อออก
-gossip-unknown-verb = คำสั่ง gossip ที่ไม่รู้จัก: { $verb }
