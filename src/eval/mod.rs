@@ -327,6 +327,11 @@ fn handle_dot_set(
         return;
     }
     config.update(|c| c.set(path, &value));
+    // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
+    if path.starts_with(".my.ctx") {
+        let cfg = config.get_untracked();
+        apply_ctx_focus(&cfg, state);
+    }
     let cfg = config.get_untracked();
     let uname = username.to_string();
     let state2 = state.clone();
@@ -506,16 +511,70 @@ fn lazy_link_traverse(
     state.push_error(tf("msg-key-not-found", &[("path", path)]));
 }
 
-fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
-    if args.is_empty() {
+/// Build and apply a `FocusMode` from the current `.my.ctx.*` config values.
+///
+/// Called after any write to `.my.ctx.*` and at login to restore focus.
+/// If `.my.ctx.use` is not `"true"` or `.my.ctx.runtime` is absent,
+/// `focus_actor` is cleared.
+pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
+    let enabled = cfg.get(".my.ctx.use").map(|s| s == "true").unwrap_or(false);
+    if !enabled {
         state.focus_actor.set(None);
-        state.push_system(t("msg-focus-cleared"));
+        return;
+    }
+    let Some(runtime) = cfg.get(".my.ctx.runtime").map(|s| s.to_string()) else {
+        state.focus_actor.set(None);
+        return;
+    };
+    let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
+    let target = if room.is_empty() {
+        runtime.clone()
+    } else {
+        format!("{runtime}{room}") // room already carries '#' prefix
+    };
+    let prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
+        if room.is_empty() {
+            format!("@{alias}")
+        } else {
+            format!("@{alias}{room}")
+        }
+    } else if let Some(alias) = cfg.reverse_alias(&target) {
+        format!("@{alias}")
+    } else {
+        target.clone()
+    };
+    state.focus_actor.set(Some(FocusMode { target, prompt }));
+}
+
+fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    let cfg = config.get_untracked();
+
+    // Bare `.use` → toggle
+    if args.is_empty() {
+        if state.focus_actor.get_untracked().is_some() {
+            // Focus is active → deactivate, keep .my.ctx.runtime/.room intact
+            config.update(|c| c.set(".my.ctx.use", "false"));
+            state.focus_actor.set(None);
+            state.push_system(t("msg-focus-cleared"));
+        } else if cfg.get(".my.ctx.runtime").is_some() {
+            // Focus is off but context is stored → re-activate
+            config.update(|c| c.set(".my.ctx.use", "true"));
+            let cfg2 = config.get_untracked();
+            apply_ctx_focus(&cfg2, state);
+            if let Some(ref focus) = state.focus_actor.get_untracked() {
+                state.push_system(tf(
+                    "msg-focusing",
+                    &[("did", &focus.target), ("prompt", &focus.prompt)],
+                ));
+            }
+        } else {
+            state.push_system(t("msg-focus-cleared"));
+        }
         return;
     }
 
-    // .use <target> [as @alias]
+    // `.use <target> [as @alias]`
     let target = args[0].trim_start_matches('@').to_string();
-    let cfg = config.get_untracked();
     let resolved = if target.starts_with("did:") {
         target.clone()
     } else {
@@ -528,17 +587,41 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
     };
 
+    // Split into DID and optional fragment
+    let (did_part, frag) = resolved.split_once('#').unwrap_or((resolved.as_str(), ""));
+
+    // Write .my.ctx.*
+    config.update(|c| {
+        c.set(".my.ctx.runtime", did_part);
+        c.set(".my.ctx.use", "true");
+        if frag.is_empty() {
+            c.delete(".my.ctx.room");
+        } else {
+            c.set(".my.ctx.room", format!("#{frag}"));
+        }
+    });
+
+    // Build prompt (prefer user-supplied alias, else reverse-lookup)
     let prompt = if args.len() >= 3 && args[1] == "as" {
-        let alias = args[2].trim().to_string();
+        let alias = args[2].trim();
         if alias.starts_with('@') {
-            alias
+            alias.to_string()
         } else {
             format!("@{alias}")
         }
     } else if args[0].starts_with('@') {
         args[0].clone()
     } else {
-        format!("@{target}")
+        let cfg2 = config.get_untracked();
+        cfg2.reverse_alias(did_part)
+            .map(|a| {
+                if frag.is_empty() {
+                    format!("@{a}")
+                } else {
+                    format!("@{a}#{frag}")
+                }
+            })
+            .unwrap_or_else(|| format!("@{target}"))
     };
 
     state.focus_actor.set(Some(FocusMode {

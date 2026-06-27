@@ -163,6 +163,8 @@ pub(crate) async fn startup_load_config(
             let now = js_sys::Date::now() / 1000.0;
             let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
             crate::eval::apply_config_to_dom(&cfg);
+            // Restore focus context if .my.ctx.use was true last session.
+            crate::eval::apply_ctx_focus(&cfg, &state);
             // Apply log level from config if set.
             if let Some(level) = cfg.get(".my.config.log.level") {
                 crate::apply_log_level(level);

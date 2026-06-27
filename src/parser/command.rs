@@ -115,7 +115,10 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
     // Handle BEFORE focus transform.
     // Actor message  @target[:verb] [body]
     let effective = if let Some(actor) = focus {
-        if input.starts_with(':') || !input.starts_with('@') {
+        if input.starts_with(':') {
+            // :verb body → DID#frag:verb body (no space — verb attaches to target)
+            format!("{actor}{input}")
+        } else if !input.starts_with('@') && !input.starts_with('.') {
             format!("{actor} {input}")
         } else {
             input.to_string()

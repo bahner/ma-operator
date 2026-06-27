@@ -21,7 +21,7 @@
 use std::rc::Rc;
 
 use futures::future::LocalBoxFuture;
-use leptos::prelude::{GetUntracked, RwSignal, Update};
+use leptos::prelude::{GetUntracked, RwSignal, Set, Update};
 
 use crate::{
     config::EgoConfig,
@@ -318,6 +318,7 @@ fn is_builtin(name: &str) -> bool {
             | "err?"
             | "ok-val"
             | "err-msg"
+            | "use"
     )
 }
 
@@ -1297,6 +1298,54 @@ fn apply_builtin(
                         "err-msg: not an (:error reason) tuple".into(),
                     )),
                 }
+            }
+            // (use "did:ma:xyz#room") or (use "") → set/clear focus + .my.ctx
+            "use" => {
+                arity_min("use", &args, 0)?;
+                let target = args
+                    .first()
+                    .map(|v| v.to_splice_lossy())
+                    .unwrap_or_default();
+                if target.is_empty() {
+                    // Toggle off
+                    ctx.config.update(|c| c.set(".my.ctx.use", "false"));
+                    ctx.state.focus_actor.set(None);
+                } else {
+                    // Resolve alias if needed
+                    let cfg = ctx.config.get_untracked();
+                    let resolved = if target.starts_with("did:") {
+                        target.clone()
+                    } else {
+                        let bare = target.trim_start_matches('@');
+                        let (alias, frag) = bare.split_once('#').unwrap_or((bare, ""));
+                        match cfg.resolve_alias(alias) {
+                            Some(did) => {
+                                if frag.is_empty() {
+                                    did.to_string()
+                                } else {
+                                    format!("{did}#{frag}")
+                                }
+                            }
+                            None => {
+                                return Err(SchemeErr::MaError(format!("unknown alias: {alias}")))
+                            }
+                        }
+                    };
+                    let (did_part, frag) =
+                        resolved.split_once('#').unwrap_or((resolved.as_str(), ""));
+                    ctx.config.update(|c| {
+                        c.set(".my.ctx.runtime", did_part);
+                        c.set(".my.ctx.use", "true");
+                        if frag.is_empty() {
+                            c.delete(".my.ctx.room");
+                        } else {
+                            c.set(".my.ctx.room", format!("#{frag}"));
+                        }
+                    });
+                    let cfg2 = ctx.config.get_untracked();
+                    crate::eval::apply_ctx_focus(&cfg2, &ctx.state);
+                }
+                Ok(SchemeVal::Nil)
             }
             other => Err(SchemeErr::Undefined(other.to_string())),
         }
