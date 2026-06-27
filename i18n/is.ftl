@@ -228,6 +228,14 @@ rpc-error = villa
 rpc-error-detail = villa: { $detail }
 msg-new-message = ← [{ $from }] ný skilaboð — { $count } í pósthólfi
 msg-chat = { $sender } segir { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } segir { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } gengur inn.
+room-leave = * { $name } gengur út.
+room-drop  = * { $name } sleppir { $thing }.
+room-take  = * { $name } tekur { $thing }.
 err-edit-decode-failed = ritvinnsla: afkóðunarvilla: { $e }
 err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
 

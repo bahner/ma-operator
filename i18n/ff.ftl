@@ -235,6 +235,14 @@ rpc-error = juumre
 rpc-error-detail = juumre: { $detail }
 msg-new-message = ← [{ $from }] tinndi kesu — { $count } e ndema
 msg-chat = { $sender } wi'i { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } wi'i { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } wari e suudu.
+room-leave = * { $name } yalti suudu.
+room-drop  = * { $name } yolii { $thing }.
+room-take  = * { $name } heɓii { $thing }.
 err-edit-decode-failed = taƴre: juumre waɗde welngo: { $e }
 err-edit-fetch-failed = taƴre: juumre heɓde: { $e }
 

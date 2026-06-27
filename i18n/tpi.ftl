@@ -221,6 +221,14 @@ rpc-error = rong
 rpc-error-detail = rong: { $detail }
 msg-new-message = ← [{ $from }] nupela tok — { $count } long bokis bilong yu
 msg-chat = { $sender } i tok { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } i tok olsem { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } i kam insait.
+room-leave = * { $name } i lusim rum.
+room-drop  = * { $name } i droppim { $thing }.
+room-take  = * { $name } i kisim { $thing }.
 err-edit-decode-failed = senisim: rong long dekod: { $e }
 err-edit-fetch-failed = senisim: rong long kisim: { $e }
 

@@ -235,6 +235,14 @@ rpc-error = lỗi
 rpc-error-detail = lỗi: { $detail }
 msg-new-message = ← [{ $from }] tin nhắn mới — { $count } trong hộp thư
 msg-chat = { $sender } nói { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } nói { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } bước vào phòng.
+room-leave = * { $name } rời khỏi phòng.
+room-drop  = * { $name } làm rơi { $thing }.
+room-take  = * { $name } nhặt { $thing }.
 err-edit-decode-failed = chỉnh sửa: giải mã thất bại: { $e }
 err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
 

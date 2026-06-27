@@ -221,6 +221,14 @@ rpc-error = ɛrɔ
 rpc-error-detail = ɛrɔ: { $detail }
 msg-new-message = ← [{ $from }] new mesej — { $count } dey inbox
 msg-chat = { $sender } tok { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } tok say { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } enter di room.
+room-leave = * { $name } comot di room.
+room-drop  = * { $name } drop { $thing }.
+room-take  = * { $name } carry { $thing }.
 err-edit-decode-failed = edit: decode fail: { $e }
 err-edit-fetch-failed = edit: fetch fail: { $e }
 

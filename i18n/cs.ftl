@@ -228,6 +228,14 @@ rpc-error = chyba
 rpc-error-detail = chyba: { $detail }
 msg-new-message = ← [{ $from }] nová zpráva — { $count } v doručené poště
 msg-chat = { $sender } říká { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } říká { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } vstoupil do místnosti.
+room-leave = * { $name } opustil místnost.
+room-drop  = * { $name } upustil { $thing }.
+room-take  = * { $name } zvedl { $thing }.
 err-edit-decode-failed = chyba dekódování při úpravě: { $e }
 err-edit-fetch-failed = chyba načítání při úpravě: { $e }
 

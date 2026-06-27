@@ -235,6 +235,14 @@ rpc-error = àṣìṣe
 rpc-error-detail = àṣìṣe: { $detail }
 msg-new-message = ← [{ $from }] ifiranṣẹ tuntun — { $count } ninu apo
 msg-chat = { $sender } sọ { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } sọ pé { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } wọ inu yara.
+room-leave = * { $name } kúrò nínú yara.
+room-drop  = * { $name } jẹ́ { $thing } sílẹ̀.
+room-take  = * { $name } gba { $thing }.
 err-edit-decode-failed = ṣàtúnṣe: àṣìṣe ìtúpalẹ̀: { $e }
 err-edit-fetch-failed = ṣàtúnṣe: àṣìṣe gbígba: { $e }
 

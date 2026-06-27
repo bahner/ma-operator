@@ -235,6 +235,14 @@ rpc-error = feil
 rpc-error-detail = feil: { $detail }
 msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
 msg-chat = { $sender } seier { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } seier { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } kjem inn.
+room-leave = * { $name } går ut.
+room-drop  = * { $name } slepper { $thing }.
+room-take  = * { $name } plukkar opp { $thing }.
 err-edit-decode-failed = redigering: dekodingsfeil: { $e }
 err-edit-fetch-failed = redigering: hentingsfeil: { $e }
 

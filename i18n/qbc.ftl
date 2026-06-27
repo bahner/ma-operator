@@ -237,6 +237,14 @@ rpc-error = fot
 rpc-error-detail = fot: { $detail }
 msg-new-message = ← [{ $from }] nyú mesej — { $count } in de boks
 msg-chat = { $sender } sa { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } go sabe { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } kopeng insid.
+room-leave = * { $name } go owt.
+room-drop  = * { $name } drip { $thing }.
+room-take  = * { $name } pick up { $thing }.
 err-edit-decode-failed = edit: fot decode: { $e }
 err-edit-fetch-failed = edit: fot fetch: { $e }
 

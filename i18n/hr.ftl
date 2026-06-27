@@ -228,6 +228,14 @@ rpc-error = greška
 rpc-error-detail = greška: { $detail }
 msg-new-message = ← [{ $from }] nova poruka — { $count } u pristigloj pošti
 msg-chat = { $sender } kaže { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } kaže { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ulazi u sobu.
+room-leave = * { $name } napušta sobu.
+room-drop  = * { $name } ispušta { $thing }.
+room-take  = * { $name } podiže { $thing }.
 err-edit-decode-failed = uređivanje: pogreška dekodiranja: { $e }
 err-edit-fetch-failed = uređivanje: pogreška dohvata: { $e }
 

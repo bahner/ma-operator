@@ -235,6 +235,14 @@ rpc-error = خطا
 rpc-error-detail = خطا: { $detail }
 msg-new-message = ← [{ $from }] نئی پیغام — { $count } ان باکس میں
 msg-chat = { $sender } کہتا ہے { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } کہتے ہیں { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } کمرے میں داخل ہوئے۔
+room-leave = * { $name } کمرے سے نکل گئے۔
+room-drop  = * { $name } نے { $thing } گرا دیا۔
+room-take  = * { $name } نے { $thing } اٹھایا۔
 err-edit-decode-failed = ترمیم: ڈی کوڈ ناکام: { $e }
 err-edit-fetch-failed = ترمیم: حاصل کرنا ناکام: { $e }
 

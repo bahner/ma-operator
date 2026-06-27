@@ -235,6 +235,14 @@ rpc-error = خطأ
 rpc-error-detail = خطأ: { $detail }
 msg-new-message = ← [{ $from }] رسالة جديدة — { $count } في البريد الوارد
 msg-chat = { $sender } يقول { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } يقول { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } دخل الغرفة.
+room-leave = * { $name } غادر الغرفة.
+room-drop  = * { $name } يلقي { $thing }.
+room-take  = * { $name } يلتقط { $thing }.
 err-edit-decode-failed = فشل فك ترميز التحرير: { $e }
 err-edit-fetch-failed = فشل جلب التحرير: { $e }
 

@@ -228,6 +228,14 @@ rpc-error = klaida
 rpc-error-detail = klaida: { $detail }
 msg-new-message = ← [{ $from }] naujas pranešimas — { $count } gautuosiuose
 msg-chat = { $sender } sako { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } sako { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } įeina į kambarį.
+room-leave = * { $name } išeina iš kambario.
+room-drop  = * { $name } numeta { $thing }.
+room-take  = * { $name } paima { $thing }.
 err-edit-decode-failed = redagavimas: dekodaravimo klaida: { $e }
 err-edit-fetch-failed = redagavimas: gavimo klaida: { $e }
 

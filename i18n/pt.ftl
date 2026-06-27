@@ -228,6 +228,14 @@ rpc-error = erro
 rpc-error-detail = erro: { $detail }
 msg-new-message = ← [{ $from }] nova mensagem — { $count } na caixa de entrada
 msg-chat = { $sender } diz { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } diz { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } entra na sala.
+room-leave = * { $name } sai da sala.
+room-drop  = * { $name } larga { $thing }.
+room-take  = * { $name } apanha { $thing }.
 err-edit-decode-failed = edição: falha na decodificação: { $e }
 err-edit-fetch-failed = edição: falha no carregamento: { $e }
 

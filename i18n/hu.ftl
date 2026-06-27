@@ -228,6 +228,14 @@ rpc-error = hiba
 rpc-error-detail = hiba: { $detail }
 msg-new-message = ← [{ $from }] új üzenet — { $count } a beérkező levelekben
 msg-chat = { $sender } mondja { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } mondja { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } belép a szobába.
+room-leave = * { $name } elhagyja a szobát.
+room-drop  = * { $name } elejtette { $thing }.
+room-take  = * { $name } felvette { $thing }.
 err-edit-decode-failed = szerkesztés: dekódolási hiba: { $e }
 err-edit-fetch-failed = szerkesztés: betöltési hiba: { $e }
 

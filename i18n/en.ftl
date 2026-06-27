@@ -233,6 +233,14 @@ msg-not-logged-in = not logged in
 msg-new-message = ← [{ $from }] new message — { $count } in inbox
 msg-chat = { $sender } says { $body }
 
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } says { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } enters the room.
+room-leave = * { $name } leaves the room.
+room-drop  = * { $name } drops { $thing }.
+room-take  = * { $name } picks up { $thing }.
+
 # ── RPC reply display ─────────────────────────────────────────────────────
 rpc-error = error
 rpc-error-detail = error: { $detail }

@@ -235,6 +235,14 @@ rpc-error = iphutha
 rpc-error-detail = iphutha: { $detail }
 msg-new-message = ← [{ $from }] umlayezo omutsha — { $count } ebhokisini
 msg-chat = { $sender } uthi { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } athi { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ungene ekamelweni.
+room-leave = * { $name } uphume ekamelweni.
+room-drop  = * { $name } uwise { $thing }.
+room-take  = * { $name } uthatha { $thing }.
 err-edit-decode-failed = ukuhlelwa: ukuhumusha kwehlulekile: { $e }
 err-edit-fetch-failed = ukuhlelwa: ukuthola kwehlulekile: { $e }
 

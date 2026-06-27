@@ -235,6 +235,14 @@ rpc-error = hata
 rpc-error-detail = hata: { $detail }
 msg-new-message = ← [{ $from }] yeni mesaj — { $count } gelen kutusunda
 msg-chat = { $sender } diyor { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } diyor { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } odaya giriyor.
+room-leave = * { $name } odadan çıkıyor.
+room-drop  = * { $name } { $thing } düşürüyor.
+room-take  = * { $name } { $thing } alıyor.
 err-edit-decode-failed = düzenleme: kod çözme hatası: { $e }
 err-edit-fetch-failed = düzenleme: getirme hatası: { $e }
 

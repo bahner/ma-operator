@@ -221,6 +221,14 @@ rpc-error = erra
 rpc-error-detail = erra: { $detail }
 msg-new-message = ← [{ $from }] new mesij — { $count } inna inbox
 msg-chat = { $sender } seh { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } seh { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } come een.
+room-leave = * { $name } lef di room.
+room-drop  = * { $name } drop { $thing }.
+room-take  = * { $name } pick up { $thing }.
 err-edit-decode-failed = edit decode fail: { $e }
 err-edit-fetch-failed = edit fetch fail: { $e }
 

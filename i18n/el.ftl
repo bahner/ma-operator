@@ -228,6 +228,14 @@ rpc-error = σφάλμα
 rpc-error-detail = σφάλμα: { $detail }
 msg-new-message = ← [{ $from }] νέο μήνυμα — { $count } στα εισερχόμενα
 msg-chat = { $sender } λέει { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } λέει { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } μπαίνει στο δωμάτιο.
+room-leave = * { $name } φεύγει από το δωμάτιο.
+room-drop  = * { $name } ρίχνει { $thing }.
+room-take  = * { $name } μαζεύει { $thing }.
 err-edit-decode-failed = αποτυχία αποκωδικοποίησης επεξεργασίας: { $e }
 err-edit-fetch-failed = αποτυχία ανάκτησης επεξεργασίας: { $e }
 

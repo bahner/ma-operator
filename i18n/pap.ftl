@@ -221,6 +221,14 @@ rpc-error = fout
 rpc-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] mesashi nobo — { $count } den inbox
 msg-chat = { $sender } bisa { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } ta bisa { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ta drenta.
+room-leave = * { $name } ta sali.
+room-drop  = * { $name } ta laga kèi { $thing }.
+room-take  = * { $name } ta piki { $thing } riba.
 err-edit-decode-failed = edishon: faya di dekoifikashon: { $e }
 err-edit-fetch-failed = edishon: faya di karga: { $e }
 

@@ -228,6 +228,14 @@ rpc-error = kļūda
 rpc-error-detail = kļūda: { $detail }
 msg-new-message = ← [{ $from }] jauna ziņa — { $count } iesūtnē
 msg-chat = { $sender } saka { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } saka { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ienāk istabā.
+room-leave = * { $name } iziet no istabas.
+room-drop  = * { $name } nometat { $thing }.
+room-take  = * { $name } paņem { $thing }.
 err-edit-decode-failed = rediģēšana: atšifrēšanas kļūda: { $e }
 err-edit-fetch-failed = rediģēšana: iegūšanas kļūda: { $e }
 

@@ -235,6 +235,14 @@ rpc-error = dogoggora
 rpc-error-detail = dogoggora: { $detail }
 msg-new-message = ← [{ $from }] ergaa haaraa — { $count } sanduuqa
 msg-chat = { $sender } jedha { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } jedha { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } gara kutaa seene.
+room-leave = * { $name } kutaa gadhiise.
+room-drop  = * { $name } { $thing } harkaa buuse.
+room-take  = * { $name } { $thing } fudhate.
 err-edit-decode-failed = gulaala: dogoggora hiikuu: { $e }
 err-edit-fetch-failed = gulaala: dogoggora fida: { $e }
 

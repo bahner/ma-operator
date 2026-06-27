@@ -201,6 +201,10 @@ fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool
     if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
         return false;
     }
+    // Room events are broadcast unsolicited RPC — let them through to display.
+    if incoming.content_type == "application/x-ma-room-event" {
+        return false;
+    }
     if let Ok(ciborium::Value::Text(atom)) =
         ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
     {
@@ -617,7 +621,11 @@ pub fn classify_reply(
         Ok(V::Array(items)) => match (items.first(), items.get(1)) {
             (Some(V::Text(verb)), value) if verb == ":ok" => match value {
                 Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
-                Some(_) | None => (CommandStatus::Replied(String::new()), None),
+                Some(_) => (
+                    CommandStatus::Replied(String::new()),
+                    Some(fallback.to_string()),
+                ),
+                None => (CommandStatus::Replied(String::new()), None),
             },
             (Some(V::Text(verb)), value) if verb == ":error" => {
                 let reason = value

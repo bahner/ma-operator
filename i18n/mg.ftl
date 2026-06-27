@@ -235,6 +235,14 @@ rpc-error = hadisoana
 rpc-error-detail = hadisoana: { $detail }
 msg-new-message = ← [{ $from }] hafatra vaovao — { $count } ao amin'ny boaty
 msg-chat = { $sender } milaza { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } miteny { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } miditra ao amin'ny efi-trano.
+room-leave = * { $name } mivoaka.
+room-drop  = * { $name } mamela { $thing } ho lavo.
+room-take  = * { $name } mandray { $thing }.
 err-edit-decode-failed = fanandramana: tsy nahomby ny fanakambanana: { $e }
 err-edit-fetch-failed = fanandramana: tsy nahomby ny faka: { $e }
 

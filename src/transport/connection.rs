@@ -624,9 +624,58 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
     })
 }
 
+/// Decode an `application/x-ma-room-event` CBOR payload into a display string.
+/// Format: [:verb, avatar_id, name_or_null, ...args]
+fn decode_room_event(payload: Vec<u8>) -> String {
+    let val = match ciborium::de::from_reader::<ciborium::Value, _>(payload.as_slice()) {
+        Ok(v) => v,
+        Err(_) => return "[room event: parse error]".to_string(),
+    };
+    let items = match val {
+        ciborium::Value::Array(a) => a,
+        _ => return "[room event: expected array]".to_string(),
+    };
+    let text_at = |i: usize| -> &str {
+        items
+            .get(i)
+            .and_then(|v| {
+                if let ciborium::Value::Text(s) = v {
+                    Some(s.as_str())
+                } else {
+                    None
+                }
+            })
+            .unwrap_or("")
+    };
+    let verb = text_at(0);
+    let aid = text_at(1);
+    let raw_name = items.get(2).and_then(|v| {
+        if let ciborium::Value::Text(s) = v {
+            Some(s.as_str())
+        } else {
+            None
+        }
+    });
+    let name = raw_name.unwrap_or(aid);
+    match verb {
+        ":say" => tf("room-say", &[("name", name), ("text", text_at(3))]),
+        ":emote" => tf("room-emote", &[("name", name), ("text", text_at(3))]),
+        ":enter" => tf("room-enter", &[("name", name)]),
+        ":leave" => tf("room-leave", &[("name", name)]),
+        ":drop" => tf("room-drop", &[("name", name), ("thing", text_at(4))]),
+        ":take" => tf("room-take", &[("name", name), ("thing", text_at(4))]),
+        other => format!("* {name} [{other}]"),
+    }
+}
+
 fn decode_incoming(msg: Message) -> IncomingMessage {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (display, is_error) = match msg.message_type.as_str() {
+        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY
+            if msg.content_type == "application/x-ma-room-event" =>
+        {
+            (decode_room_event(msg.payload()), false)
+        }
         MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY => {
             let (term, err) = format_rpc_reply(&msg.payload());
             (format!("\u{2190} {} {}", msg.from, term), err)

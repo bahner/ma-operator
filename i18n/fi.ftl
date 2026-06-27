@@ -228,6 +228,14 @@ rpc-error = virhe
 rpc-error-detail = virhe: { $detail }
 msg-new-message = ← [{ $from }] uusi viesti — { $count } saapuneissa
 msg-chat = { $sender } sanoo { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } sanoo { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } astuu huoneeseen.
+room-leave = * { $name } poistuu huoneesta.
+room-drop  = * { $name } pudottaa { $thing }.
+room-take  = * { $name } nostaa { $thing }.
 err-edit-decode-failed = muokkaus: purku epäonnistui: { $e }
 err-edit-fetch-failed = muokkaus: haku epäonnistui: { $e }
 

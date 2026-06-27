@@ -228,6 +228,14 @@ rpc-error = エラー
 rpc-error-detail = エラー: { $detail }
 msg-new-message = ← [{ $from }] 新しいメッセージ — 受信トレイに { $count } 件
 msg-chat = { $sender }「{ $body }」
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } が言う { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } が入室しました。
+room-leave = * { $name } が退室しました。
+room-drop  = * { $name } が { $thing } を落とした。
+room-take  = * { $name } が { $thing } を拾った。
 err-edit-decode-failed = 編集: デコード失敗: { $e }
 err-edit-fetch-failed = 編集: 取得失敗: { $e }
 

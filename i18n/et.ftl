@@ -228,6 +228,14 @@ rpc-error = viga
 rpc-error-detail = viga: { $detail }
 msg-new-message = ← [{ $from }] uus sõnum — { $count } postkastis
 msg-chat = { $sender } ütleb { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } ütleb { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } siseneb ruumi.
+room-leave = * { $name } lahkub ruumist.
+room-drop  = * { $name } viskab { $thing }.
+room-take  = * { $name } võtab { $thing }.
 err-edit-decode-failed = redigeerimine: dekodeerimistõrge: { $e }
 err-edit-fetch-failed = redigeerimine: laadimistõrge: { $e }
 

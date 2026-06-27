@@ -235,6 +235,14 @@ rpc-error = ስህተት
 rpc-error-detail = ስህተት: { $detail }
 msg-new-message = ← [{ $from }] አዲስ መልዕክት — { $count } ወደ ሳጥን ደረሰ
 msg-chat = { $sender } ይላል { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } ይላሉ { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ወደ ክፍሉ ገቡ።
+room-leave = * { $name } ወጡ።
+room-drop  = * { $name } { $thing } ጣሉ።
+room-take  = * { $name } { $thing } አነሱ።
 err-edit-decode-failed = ማርትዕ: ዲኮድ አልተሳካም: { $e }
 err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
 

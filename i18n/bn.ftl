@@ -235,6 +235,14 @@ rpc-error = ত্রুটি
 rpc-error-detail = ত্রুটি: { $detail }
 msg-new-message = ← [{ $from }] নতুন বার্তা — { $count } ইনবক্সে
 msg-chat = { $sender } বলে { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } বলে { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ঘরে ঢুকল।
+room-leave = * { $name } ঘর ছেড়ে গেল।
+room-drop  = * { $name } { $thing } ফেলল।
+room-take  = * { $name } { $thing } তুলল।
 err-edit-decode-failed = সম্পাদনা ডিকোড ব্যর্থ: { $e }
 err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্থ: { $e }
 

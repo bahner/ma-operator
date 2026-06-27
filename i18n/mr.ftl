@@ -235,6 +235,14 @@ rpc-error = त्रुटी
 rpc-error-detail = त्रुटी: { $detail }
 msg-new-message = ← [{ $from }] नवीन संदेश — { $count } इनबॉक्समध्ये
 msg-chat = { $sender } म्हणतो { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } म्हणतो { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } खोलीत आले।
+room-leave = * { $name } खोलीतून गेले।
+room-drop  = * { $name } ने { $thing } टाकले।
+room-take  = * { $name } ने { $thing } उचलले।
 err-edit-decode-failed = संपादन: डीकोड अयशस्वी: { $e }
 err-edit-fetch-failed = संपादन: आणणे अयशस्वी: { $e }
 

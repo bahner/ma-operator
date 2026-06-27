@@ -228,6 +228,14 @@ rpc-error = napaka
 rpc-error-detail = napaka: { $detail }
 msg-new-message = ← [{ $from }] novo sporočilo — { $count } v dohodnem predalu
 msg-chat = { $sender } pravi { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } pravi { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } vstopi v sobo.
+room-leave = * { $name } zapusti sobo.
+room-drop  = * { $name } spusti { $thing }.
+room-take  = * { $name } dvigne { $thing }.
 err-edit-decode-failed = urejanje: napaka pri dekodiranju: { $e }
 err-edit-fetch-failed = urejanje: napaka pri nalaganju: { $e }
 

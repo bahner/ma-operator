@@ -235,6 +235,14 @@ rpc-error = khalad
 rpc-error-detail = khalad: { $detail }
 msg-new-message = ← [{ $from }] fariin cusub — { $count } sanduuqa
 msg-chat = { $sender } yiri { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } yidhi { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } wuxuu galay qolka.
+room-leave = * { $name } wuxuu ka baxay qolka.
+room-drop  = * { $name } wuu dhigay { $thing }.
+room-take  = * { $name } wuu qaatay { $thing }.
 err-edit-decode-failed = tafatirka: khalad sharraxaad: { $e }
 err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
 

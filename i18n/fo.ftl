@@ -228,6 +228,14 @@ rpc-error = feilur
 rpc-error-detail = feilur: { $detail }
 msg-new-message = ← [{ $from }] nýtt boð — { $count } í innposti
 msg-chat = { $sender } sigur { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } sigur { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } gongur inn.
+room-leave = * { $name } gongur út.
+room-drop  = * { $name } slepper { $thing }.
+room-take  = * { $name } tekur { $thing }.
 err-edit-decode-failed = redigering: avkódingsfeilur: { $e }
 err-edit-fetch-failed = redigering: heintingsfeilur: { $e }
 

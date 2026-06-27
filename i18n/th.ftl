@@ -235,6 +235,14 @@ rpc-error = ข้อผิดพลาด
 rpc-error-detail = ข้อผิดพลาด: { $detail }
 msg-new-message = ← [{ $from }] ข้อความใหม่ — { $count } ในกล่องขาเข้า
 msg-chat = { $sender } พูดว่า { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } พูดว่า { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } เข้ามาในห้อง
+room-leave = * { $name } ออกจากห้อง
+room-drop  = * { $name } วาง { $thing }
+room-take  = * { $name } หยิบ { $thing }
 err-edit-decode-failed = แก้ไข: ถอดรหัสล้มเหลว: { $e }
 err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเหลว: { $e }
 

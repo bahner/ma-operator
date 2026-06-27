@@ -228,6 +228,14 @@ rpc-error = fout
 rpc-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] nieuw bericht — { $count } in inbox
 msg-chat = { $sender } zegt { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } zegt { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } betreedt de kamer.
+room-leave = * { $name } verlaat de kamer.
+room-drop  = * { $name } laat { $thing } vallen.
+room-take  = * { $name } pakt { $thing } op.
 err-edit-decode-failed = bewerking: decodering mislukt: { $e }
 err-edit-fetch-failed = bewerking: ophalen mislukt: { $e }
 

@@ -235,6 +235,14 @@ rpc-error = లోపం
 rpc-error-detail = లోపం: { $detail }
 msg-new-message = ← [{ $from }] కొత్త సందేశం — { $count } ఇన్‌బాక్స్‌లో
 msg-chat = { $sender } అంటారు { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } అంటున్నారు { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } గదిలోకి వచ్చారు.
+room-leave = * { $name } గది వదిలి వెళ్ళారు.
+room-drop  = * { $name } { $thing } వదిలారు.
+room-take  = * { $name } { $thing } తీసారు.
 err-edit-decode-failed = సవరణ: డీకోడ్ విఫలమైంది: { $e }
 err-edit-fetch-failed = సవరణ: పొందడం విఫలమైంది: { $e }
 

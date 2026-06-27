@@ -235,6 +235,14 @@ rpc-error = 오류
 rpc-error-detail = 오류: { $detail }
 msg-new-message = ← [{ $from }] 새 메시지 — 받은 편지함에 { $count } 개
 msg-chat = { $sender } 말한다 { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } 라고 말한다 { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } 이(가) 입장했습니다.
+room-leave = * { $name } 이(가) 퇴장했습니다.
+room-drop  = * { $name } 이(가) { $thing } 을(를) 떨어뜨렸다.
+room-take  = * { $name } 이(가) { $thing } 을(를) 집었다.
 err-edit-decode-failed = 편집: 디코딩 실패: { $e }
 err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
 

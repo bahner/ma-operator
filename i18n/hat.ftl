@@ -221,6 +221,14 @@ rpc-error = erè
 rpc-error-detail = erè: { $detail }
 msg-new-message = ← [{ $from }] nouvo mesaj — { $count } nan bwat resepsyon
 msg-chat = { $sender } di { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } di { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } antre nan chanm lan.
+room-leave = * { $name } kite chanm lan.
+room-drop  = * { $name } kite { $thing } tonbe.
+room-take  = * { $name } ranmase { $thing }.
 err-edit-decode-failed = edisyon: echèk dekodaj: { $e }
 err-edit-fetch-failed = edisyon: echèk chajman: { $e }
 

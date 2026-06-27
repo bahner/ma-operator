@@ -221,6 +221,14 @@ rpc-error = érru
 rpc-error-detail = érru: { $detail }
 msg-new-message = ← [{ $from }] mensajen novu — { $count } na kaixa di entrada
 msg-chat = { $sender } fala { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } ta fla { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } entra na sala.
+room-leave = * { $name } sai di sala.
+room-drop  = * { $name } larga { $thing }.
+room-take  = * { $name } panha { $thing }.
 err-edit-decode-failed = edisaun: falta di decodifikasaun: { $e }
 err-edit-fetch-failed = edisaun: falta di karregamentu: { $e }
 

@@ -228,6 +228,14 @@ rpc-error = hitilafu
 rpc-error-detail = hitilafu: { $detail }
 msg-new-message = ← [{ $from }] ujumbe mpya — { $count } kwenye kisanduku
 msg-chat = { $sender } anasema { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } anasema { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ameingia chumbani.
+room-leave = * { $name } ametoka chumbani.
+room-drop  = * { $name } amemwaga { $thing }.
+room-take  = * { $name } amechukua { $thing }.
 err-edit-decode-failed = kuhariri: hitilafu ya usimbaji: { $e }
 err-edit-fetch-failed = kuhariri: hitilafu ya kupata: { $e }
 

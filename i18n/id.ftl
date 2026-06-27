@@ -235,6 +235,14 @@ rpc-error = kesalahan
 rpc-error-detail = kesalahan: { $detail }
 msg-new-message = ← [{ $from }] pesan baru — { $count } di kotak masuk
 msg-chat = { $sender } bilang { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } berkata { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } memasuki ruangan.
+room-leave = * { $name } meninggalkan ruangan.
+room-drop  = * { $name } menjatuhkan { $thing }.
+room-take  = * { $name } mengambil { $thing }.
 err-edit-decode-failed = pengeditan: gagal mendekode: { $e }
 err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
 

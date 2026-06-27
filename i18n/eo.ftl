@@ -221,6 +221,14 @@ rpc-error = eraro
 rpc-error-detail = eraro: { $detail }
 msg-new-message = ← [{ $from }] nova mesaĝo — { $count } en ricevujo
 msg-chat = { $sender } diras { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } diras { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } eniras la ĉambron.
+room-leave = * { $name } foriras el la ĉambro.
+room-drop  = * { $name } faligis { $thing }.
+room-take  = * { $name } prenis { $thing }.
 err-edit-decode-failed = redaktado: malĉifrada eraro: { $e }
 err-edit-fetch-failed = redaktado: prena eraro: { $e }
 

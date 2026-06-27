@@ -235,6 +235,14 @@ rpc-error = kuskure
 rpc-error-detail = kuskure: { $detail }
 msg-new-message = ← [{ $from }] saƙo sabon — { $count } a akwatin karɓa
 msg-chat = { $sender } yana cewa { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } ya ce { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } ya shiga daki.
+room-leave = * { $name } ya bar daki.
+room-drop  = * { $name } ya jefa { $thing }.
+room-take  = * { $name } ya ɗauki { $thing }.
 err-edit-decode-failed = gyara: kuskuren fassara: { $e }
 err-edit-fetch-failed = gyara: kuskuren nemo: { $e }
 

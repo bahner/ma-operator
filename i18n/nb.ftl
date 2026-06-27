@@ -211,6 +211,14 @@ msg-not-logged-in = ikke innlogget
 msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
 msg-chat = { $sender } sier { $body }
 
+# ── Romhendelser ──────────────────────────────────────────────────────────
+room-say   = { $name } sier { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } kommer inn.
+room-leave = * { $name } går ut.
+room-drop  = * { $name } slipper { $thing }.
+room-take  = * { $name } plukker opp { $thing }.
+
 # ── RPC-svardisplay ───────────────────────────────────────────────────────
 rpc-error = feil
 rpc-error-detail = feil: { $detail }

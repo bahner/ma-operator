@@ -61,8 +61,14 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
         } => {
             log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
             let result = match verb.as_deref() {
-                Some("say") => Some(transport::send_chat(&target, &body).await),
-                Some("emote") => Some(transport::send_emote(&target, &body).await),
+                // :say and :emote to a #fragment target are RPC to a room entity,
+                // not direct inbox messages. Fall through to dispatch_verb_to_transport.
+                Some("say") if !target.contains('#') => {
+                    Some(transport::send_chat(&target, &body).await)
+                }
+                Some("emote") if !target.contains('#') => {
+                    Some(transport::send_emote(&target, &body).await)
+                }
                 Some(v) => {
                     dispatch_verb_to_transport(v, &target, &body, cmd_id, state, config).await
                 }
@@ -73,7 +79,16 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                 result.as_ref().map(|r| r.is_ok())
             );
             if let Some(r) = result {
-                handle_send_result(r, verb.as_deref(), cmd_id, state);
+                // For :say/:emote to a #fragment target, these are RPCs that get a reply.
+                // Bind the message_id so the :ok reply is matched and silently resolved.
+                let effective_verb = if matches!(verb.as_deref(), Some("say") | Some("emote"))
+                    && target.contains('#')
+                {
+                    None // treat like a normal RPC (bind message_id)
+                } else {
+                    verb.as_deref()
+                };
+                handle_send_result(r, effective_verb, cmd_id, state);
             }
         }
 

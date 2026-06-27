@@ -223,6 +223,14 @@ rpc-error = iration failin
 rpc-error-detail = iration failin: { $detail }
 msg-new-message = ← [{ $from }] new word come — { $count } inna di box
 msg-chat = { $sender } seh { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } seh { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } enter di room.
+room-leave = * { $name } lef di room.
+room-drop  = * { $name } drop { $thing }.
+room-take  = * { $name } pick up { $thing }.
 err-edit-decode-failed = edit decode fail: { $e }
 err-edit-fetch-failed = edit fetch fail: { $e }
 

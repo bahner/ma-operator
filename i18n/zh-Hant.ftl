@@ -235,6 +235,14 @@ rpc-error = 錯誤
 rpc-error-detail = 錯誤: { $detail }
 msg-new-message = ← [{ $from }] 新訊息 — 收件匣中 { $count } 則
 msg-chat = { $sender } 說 { $body }
+
+# ── Room events ───────────────────────────────────────────────────────────
+room-say   = { $name } 說 { $text }
+room-emote = * { $name } { $text }
+room-enter = * { $name } 進入了房間。
+room-leave = * { $name } 離開了房間。
+room-drop  = * { $name } 丟下了 { $thing }。
+room-take  = * { $name } 拾起了 { $thing }。
 err-edit-decode-failed = 編輯: 解碼失敗: { $e }
 err-edit-fetch-failed = 編輯: 取得失敗: { $e }
 
