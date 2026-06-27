@@ -74,6 +74,18 @@ fn dispatch_reply(
     config: RwSignal<EgoConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
+    // Scheme-initiated RPC: route the reply directly to the waiting evaluator.
+    if let Some(sender) = state.take_scheme_sender(msg_id) {
+        let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+        let result = if incoming.is_error {
+            Err(text_opt.unwrap_or_else(|| display.clone()))
+        } else {
+            Ok(text_opt.unwrap_or_default())
+        };
+        let _ = sender.send(result);
+        return;
+    }
+
     let Some(kind) = state.take_pending(msg_id) else {
         web_sys::console::warn_1(
             &format!("[inbox] dropping stale reply (reply_to={msg_id}): {display}").into(),

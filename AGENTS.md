@@ -49,8 +49,13 @@ src/
   parser/
     mod.rs              — top-level parse: DotOp | Send | Rpc | Escape
     alias.rs            — alias expansion + \@ escape
-    command.rs          — DotOp parser (get / set / delete / verb)
+    command.rs          — DotOp parser (get / set / delete / verb); bare DID actor support
     verbs.rs            — dispatch_verb: all .path:verb implementations
+  scheme/
+    mod.rs              — public API: needs_expansion(), expand(), init/reset_session_env()
+    parser.rs           — S-expression lexer + parser → SchemeExpr AST
+    eval.rs             — async evaluator: special forms, builtins, ma primitives
+    value.rs            — SchemeVal enum, Env (lexically-scoped environment)
   transport/
     mod.rs              — re-exports
     connection.rs       — connect/disconnect, inbox poll loop,
@@ -106,14 +111,80 @@ Makefile
 - [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.i18n`
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
+- [x] Embedded Scheme evaluator — `(…)` expressions in any command line
 
 ## Pending / not yet implemented
 
 - [ ] `.use @actor [as @alias]` focus mode — pre-fills prompt
 - [ ] Alias colour rendering in input field
-- [ ] Function-call syntax `@actor:verb()` — async RPC with value substitution
 - [ ] `.my.doc.<name>:publish` — `application/x-ma-ipfs-store` protocol
 - [ ] `.my.home` — default actor context
+- [ ] Scheme expressions inside sync batches (currently fire-and-forget)
+
+---
+
+## Scheme evaluator — `src/scheme/`
+
+Any command line containing `(…)` is pre-processed before normal parsing.
+Each top-level `(…)` span is evaluated as a Scheme expression and the result
+is spliced back into the line as a plain string.  The final expanded line is
+then dispatched through the normal parser.
+
+### ma primitives (no new function names)
+
+| Form | What it does |
+|---|---|
+| `(.my.aliases.sky)` | dot-path get — returns the config value |
+| `(.my.config.k: "v")` | dot-path set — writes config, returns nil |
+| `(@ma#house:enter #room)` | actor RPC — sends, awaits reply string |
+| `(did:ma:abc#room:enter ticket)` | same, DID directly in function position |
+
+The head character determines dispatch:
+- starts with `.` → ma dot-command (synchronous)
+- starts with `@` or evaluates to a `did:` string → ma actor message (async RPC)
+- anything else → standard Scheme form or lambda call
+
+### Example
+
+```
+@(.my.aliases.sky)#room:enter ((.my.aliases.ms)#house:enter #room)
+```
+
+Evaluation:
+1. `(.my.aliases.ms)` → `did:ma:abc` (sync config lookup)
+2. `(did:ma:abc#house:enter #room)` → RPC, awaits reply `"ticket-xyz"` (async)
+3. `(.my.aliases.sky)` → `did:ma:def` (sync)
+4. Expanded line: `@did:ma:def#room:enter ticket-xyz`
+5. Dispatched as a normal actor message
+
+### Scheme features
+
+Special forms: `define`, `lambda`, `let`, `let*`, `letrec`, `if`, `cond`,
+`begin`, `and`, `or`, `when`, `unless`, `set!`, `quote`.
+
+Builtins: arithmetic (`+` `-` `*` `/` `mod`), comparison (`=` `<` `>` …),
+list ops (`cons` `car` `cdr` `map` `filter` `fold` `append` `reverse` …),
+string ops (`string-append` `substring` `string-contains` …), predicates,
+`display` (writes to terminal), `error`, `assert`.
+
+### Session environment
+
+`(define …)` bindings persist for the login session.  The environment is
+created on login (`init_session_env()`) and cleared on logout
+(`reset_session_env()`).
+
+### Integration points
+
+- `src/scheme/mod.rs` — `needs_expansion(line)`, `expand(line, state, config)`
+- `src/dispatch.rs` — `handle_input_line` calls `expand` when `(` is detected
+- `src/inbox_poll.rs` — `dispatch_reply` routes replies to scheme senders
+- `src/state.rs` — `AppState.scheme_senders` (oneshot channels keyed by msg_id)
+
+### Limitation
+
+Scheme expressions inside **sync batches** are evaluated asynchronously and
+do not block the batch step counter.  They re-queue the expanded line into
+`input_queue`, which may arrive after the batch has already advanced.
 
 ---
 

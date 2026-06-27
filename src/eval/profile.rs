@@ -101,6 +101,7 @@ pub(crate) fn handle_profile_delete(
         if errors.is_empty() {
             if target_name == current_username {
                 crate::transport::disconnect();
+                crate::scheme::reset_session_env();
                 state.session.set(None);
             } else {
                 state.push_system(tf("profiles-deleted", &[("name", &target_name)]));

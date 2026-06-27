@@ -182,6 +182,23 @@ fn handle_input_line(
         return;
     }
 
+    // Scheme expansion: pre-process `(…)` spans before normal dispatch.
+    if crate::scheme::needs_expansion(trimmed) {
+        let state2 = state.clone();
+        let line_owned = trimmed.to_string();
+        wasm_bindgen_futures::spawn_local(async move {
+            match crate::scheme::expand(&line_owned, &state2, config).await {
+                Ok(expanded) => {
+                    state2.input_queue.update(|q| q.push_back(expanded));
+                }
+                Err(e) => {
+                    state2.push_error(format!("scheme: {e}"));
+                }
+            }
+        });
+        return;
+    }
+
     // Regular (non-batch) dispatch.
     dispatch_eval_line(trimmed, state, config, show_editor, on_eval, None);
 }

@@ -45,6 +45,7 @@ pub fn Terminal() -> impl IntoView {
 
     // Load config from IndexedDB on mount
     if let Some(sess) = state.session.get_untracked() {
+        crate::scheme::init_session_env();
         spawn_local(startup_load_config(
             state.clone(),
             config,

@@ -1,3 +1,4 @@
+use futures::channel::oneshot;
 use leptos::prelude::*;
 use ma_core::{Inbox, IpfsGatewayResolver, Message};
 use serde::{Deserialize, Serialize};
@@ -212,6 +213,9 @@ pub struct AppState {
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
+    /// Oneshot senders for in-flight Scheme RPC calls, keyed by `Message.id`.
+    /// Registered by `scheme::eval_ma_actor`; resolved by `inbox_poll::dispatch_reply`.
+    pub scheme_senders: RwSignal<HashMap<String, oneshot::Sender<Result<String, String>>>>,
 }
 
 impl AppState {
@@ -232,6 +236,7 @@ impl AppState {
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
             outbox_queue: RwSignal::new(VecDeque::new()),
+            scheme_senders: RwSignal::new(HashMap::new()),
         }
     }
 
@@ -444,6 +449,27 @@ impl AppState {
             );
         }
         result
+    }
+
+    // ── Scheme RPC helpers ────────────────────────────────────────────────
+
+    /// Register a oneshot sender for a Scheme-initiated RPC reply.
+    pub fn register_scheme_sender(
+        &self,
+        msg_id: String,
+        sender: oneshot::Sender<Result<String, String>>,
+    ) {
+        self.scheme_senders.update(|m| {
+            m.insert(msg_id, sender);
+        });
+    }
+
+    /// Remove and return the sender for `msg_id`, if any.
+    pub fn take_scheme_sender(
+        &self,
+        msg_id: &str,
+    ) -> Option<oneshot::Sender<Result<String, String>>> {
+        self.scheme_senders.update_untracked(|m| m.remove(msg_id))
     }
 
     // ── Incoming messages ────────────────────────────────────────────────

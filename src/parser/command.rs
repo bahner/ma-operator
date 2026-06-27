@@ -124,6 +124,20 @@ pub fn parse(input: &str, cfg: &EgoConfig, focus: Option<&str>) -> Result<Comman
         input.to_string()
     };
 
+    // Bare DID (result of scheme expansion): treat like @DID.
+    if effective.starts_with("did:") {
+        let mut parts = effective.splitn(2, ' ');
+        let head = parts.next().unwrap_or("");
+        let body = parts.next().unwrap_or("").trim().to_string();
+        let (target_part, verb) = split_actor_head(head);
+        let body = resolve_targets(&body, cfg)?;
+        return Ok(Command::ActorMessage {
+            target: target_part.to_string(),
+            verb,
+            body,
+        });
+    }
+
     if effective.starts_with('@') {
         let mut parts = effective.splitn(2, ' ');
         let head = parts.next().unwrap_or("").trim_start_matches('@');
