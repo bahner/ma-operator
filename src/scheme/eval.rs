@@ -1045,10 +1045,12 @@ fn apply_builtin(
             "string-index" => {
                 arity("string-index", &args, 2)?;
                 match (&args[0], &args[1]) {
-                    (SchemeVal::Str(hay), SchemeVal::Str(needle)) => Ok(match hay.find(needle.as_str()) {
-                        Some(i) => SchemeVal::Int(i as i64),
-                        None    => SchemeVal::Bool(false),
-                    }),
+                    (SchemeVal::Str(hay), SchemeVal::Str(needle)) => {
+                        Ok(match hay.find(needle.as_str()) {
+                            Some(i) => SchemeVal::Int(i as i64),
+                            None => SchemeVal::Bool(false),
+                        })
+                    }
                     _ => Err(SchemeErr::Runtime("string-index: not strings".into())),
                 }
             }
@@ -1246,8 +1248,10 @@ fn apply_builtin(
             // Sends an RPC and blocks until the reply arrives.
             "rpc-send" => {
                 arity_min("rpc-send", &args, 2)?;
-                let target = str_arg(&args[0], "rpc-send")?;
+                let raw = str_arg(&args[0], "rpc-send")?;
                 let verb = str_arg(&args[1], "rpc-send")?;
+                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
+                    .map_err(SchemeErr::MaError)?;
                 let extra: Vec<String> = args[2..].iter().map(|v| v.to_splice_lossy()).collect();
                 let extra_refs: Vec<&str> = extra.iter().map(|s| s.as_str()).collect();
 
@@ -1270,8 +1274,10 @@ fn apply_builtin(
             // Sends a plain-text inbox message (fire-and-forget after send).
             "msg-send" => {
                 arity("msg-send", &args, 2)?;
-                let target = str_arg(&args[0], "msg-send")?;
+                let raw = str_arg(&args[0], "msg-send")?;
                 let body = str_arg(&args[1], "msg-send")?;
+                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
+                    .map_err(SchemeErr::MaError)?;
                 match transport::send_text(&target, &body).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1280,8 +1286,10 @@ fn apply_builtin(
             // (chat-send target text) → (:ok msg-id) | (:error reason)
             "chat-send" => {
                 arity("chat-send", &args, 2)?;
-                let target = str_arg(&args[0], "chat-send")?;
+                let raw = str_arg(&args[0], "chat-send")?;
                 let text = str_arg(&args[1], "chat-send")?;
+                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
+                    .map_err(SchemeErr::MaError)?;
                 match transport::send_chat(&target, &text).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1290,8 +1298,10 @@ fn apply_builtin(
             // (emote-send target text) → (:ok msg-id) | (:error reason)
             "emote-send" => {
                 arity("emote-send", &args, 2)?;
-                let target = str_arg(&args[0], "emote-send")?;
+                let raw = str_arg(&args[0], "emote-send")?;
                 let text = str_arg(&args[1], "emote-send")?;
+                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
+                    .map_err(SchemeErr::MaError)?;
                 match transport::send_emote(&target, &text).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1586,4 +1596,14 @@ fn str_arg(v: &SchemeVal, name: &str) -> Result<String, SchemeErr> {
             other.display()
         ))),
     }
+}
+
+/// Resolve a send-target string to a bare DID-URL suitable for the transport layer.
+///
+/// Accepts `@alias`, `@alias#fragment`, `@did:ma:…`, `@did:ma:…#fragment`, and
+/// bare `did:ma:…` forms.  Strips the leading `@` if present, then delegates to
+/// the parser's `resolve_target` which handles alias lookup and DID pass-through.
+fn resolve_send_target(raw: &str, cfg: &crate::config::EgoConfig) -> Result<String, String> {
+    let stripped = raw.trim_start_matches('@');
+    crate::parser::command::resolve_target(stripped, cfg)
 }
