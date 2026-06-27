@@ -36,14 +36,27 @@ fn url_prefill() -> Option<String> {
 }
 
 /// Read `?ctx=` from the URL — a DID-URL to auto-focus after login.
-/// Accepts `@alias#fragment` or bare `did:ma:…#fragment` forms.
+/// Accepts `@alias#fragment`, `@alias`, `did:ma:…#fragment` forms.
+///
+/// The `#fragment` part of a ctx value is a URL fragment and is
+/// stripped by the browser from `location.search`.  We recover it
+/// from `location.hash` and re-attach it when the ctx value does not
+/// already contain a `#`.  This means both
+///   `?ctx=@sky%23room`   (percent-encoded, explicit)
+///   `?ctx=@sky#room`     (natural, fragment split by browser)
+/// produce the same result: `"@sky#room"`.
 fn url_ctx() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;
+    let hash = window.location().hash().ok().unwrap_or_default();
     let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
     let target = params.get("ctx")?.trim().to_string();
     if target.is_empty() {
-        None
+        return None;
+    }
+    // If ctx has no '#' but the URL hash has one, the browser split it.
+    if !target.contains('#') && hash.starts_with('#') {
+        Some(format!("{target}{hash}"))
     } else {
         Some(target)
     }

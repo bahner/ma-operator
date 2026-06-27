@@ -116,6 +116,9 @@ fn expire_pending_requests(state: &AppState) {
             );
         }
     }
+    // Also expire stuck Scheme RPC senders so awaiting evaluator tasks can
+    // return (:timeout) rather than blocking forever.
+    state.expire_scheme_senders(DEFAULT_TIMEOUT_MS as f64);
 }
 
 // ── Per-line handler ───────────────────────────────────────────────────────
@@ -527,7 +530,26 @@ fn dispatch_eval_line(
     let focus = state.focus_actor.get_untracked();
     let cfg = config.get_untracked();
 
-    match parse(line, &cfg, focus.as_ref().map(|f| f.target.as_str())) {
+    // Expand focus prefix before parsing so parse() needs no special-casing.
+    let expanded = if let Some(ref f) = focus {
+        let t = &f.target;
+        if line.starts_with(':') {
+            // :verb body → target:verb body (overrides sticky verb)
+            format!("{t}{line}")
+        } else if !line.starts_with('@') && !line.starts_with('.') && !line.starts_with('(') {
+            // bare text → use sticky verb if set, else send as body
+            match &f.default_verb {
+                Some(v) => format!("{t}:{v} {line}"),
+                None => format!("{t} {line}"),
+            }
+        } else {
+            line.to_string()
+        }
+    } else {
+        line.to_string()
+    };
+
+    match parse(&expanded, &cfg) {
         Ok(cmd) => {
             let is_actor = matches!(cmd, crate::parser::command::Command::ActorMessage { .. });
             let before = state.peek_next_entry_id();

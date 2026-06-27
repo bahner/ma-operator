@@ -8,6 +8,14 @@ use crate::transport;
 use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 
+/// Collect all distinct numeric inbox indices in sorted order.
+fn inbox_indices(cfg: &EgoConfig) -> std::collections::BTreeSet<usize> {
+    cfg.list(".my.inbox.")
+        .into_iter()
+        .filter_map(|(k, _)| k[".my.inbox.".len()..].split('.').next()?.parse().ok())
+        .collect()
+}
+
 pub(super) fn handle_inbox(
     path: &str,
     verb: &str,
@@ -21,17 +29,7 @@ pub(super) fn handle_inbox(
     // Flush: .my.inbox:flush — print all entries to terminal in order.
     if path == ".my.inbox" && verb == "flush" {
         let cfg = config.get_untracked();
-        let entries = cfg.list(".my.inbox.");
-        // Collect distinct numeric indices (sorted).
-        let mut indices: std::collections::BTreeSet<usize> = std::collections::BTreeSet::new();
-        for (k, _) in &entries {
-            let tail = &k[".my.inbox.".len()..];
-            if let Some(idx_str) = tail.split('.').next() {
-                if let Ok(n) = idx_str.parse::<usize>() {
-                    indices.insert(n);
-                }
-            }
-        }
+        let indices = inbox_indices(&cfg);
         if indices.is_empty() {
             state.push_system(t("inbox-empty"));
         }
@@ -59,16 +57,7 @@ pub(super) fn handle_inbox(
         let raw_arg = args.first().ok_or_else(|| t("inbox-filter-no-arg"))?;
         let cfg = config.get_untracked();
         let target_did = resolve_bare_did(raw_arg, &cfg)?;
-        let entries = cfg.list(".my.inbox.");
-        let mut indices: std::collections::BTreeSet<usize> = std::collections::BTreeSet::new();
-        for (k, _) in &entries {
-            let tail = &k[".my.inbox.".len()..];
-            if let Some(idx_str) = tail.split('.').next() {
-                if let Ok(n) = idx_str.parse::<usize>() {
-                    indices.insert(n);
-                }
-            }
-        }
+        let indices = inbox_indices(&cfg);
         let mut found = false;
         for n in &indices {
             let base = format!(".my.inbox.{n}");

@@ -95,6 +95,28 @@ fn doc_eval(
     Ok(())
 }
 
+/// Validate publish args, resolve publisher DID, and read content.
+/// Returns `(publisher_did, content_str)` or a user-facing error.
+fn read_publish_args(
+    path: &str,
+    args: &[String],
+    usage_err_key: &str,
+    cfg: &EgoConfig,
+) -> Result<(String, String), String> {
+    if args.len() != 1 {
+        return Err(t(usage_err_key));
+    }
+    let publisher = resolve_bare_did(&args[0], cfg)?;
+    let content = cfg
+        .get(&format!("{path}.content"))
+        .unwrap_or_default()
+        .to_string();
+    if content.is_empty() {
+        return Err(tf("doc-save-first", &[("path", path)]));
+    }
+    Ok((publisher, content))
+}
+
 /// `:publish <publisher>` — store content as a plain IPFS blob.
 fn doc_publish(
     path: &str,
@@ -102,18 +124,8 @@ fn doc_publish(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> Result<(), String> {
-    if args.len() != 1 {
-        return Err(t("doc-publish-usage"));
-    }
     let cfg = config.get_untracked();
-    let publisher = resolve_bare_did(&args[0], &cfg)?;
-    let content_str = cfg
-        .get(&format!("{path}.content"))
-        .unwrap_or_default()
-        .to_string();
-    if content_str.is_empty() {
-        return Err(tf("doc-save-first", &[("path", path)]));
-    }
+    let (publisher, content_str) = read_publish_args(path, args, "doc-publish-usage", &cfg)?;
     let content_type = cfg
         .get(&format!("{path}.content_type"))
         .unwrap_or("text/plain")
@@ -144,18 +156,8 @@ fn doc_publish_ipld(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> Result<(), String> {
-    if args.len() != 1 {
-        return Err(t("doc-publish-ipld-usage"));
-    }
     let cfg = config.get_untracked();
-    let publisher = resolve_bare_did(&args[0], &cfg)?;
-    let content_str = cfg
-        .get(&format!("{path}.content"))
-        .unwrap_or_default()
-        .to_string();
-    if content_str.is_empty() {
-        return Err(tf("doc-save-first", &[("path", path)]));
-    }
+    let (publisher, content_str) = read_publish_args(path, args, "doc-publish-ipld-usage", &cfg)?;
     let dag_cbor = crate::messages::yaml_to_dag_cbor(&content_str)
         .map_err(|e| tf("doc-publish-ipld-error", &[("e", &e)]))?;
     let state2 = state.clone();

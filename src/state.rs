@@ -6,6 +6,9 @@ use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
+/// (sender, sent_at_ms) for Scheme RPC reply channels.
+type SchemeSender = (oneshot::Sender<Result<String, String>>, f64);
+
 use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 use crate::views::editor::EditorMode;
@@ -30,6 +33,9 @@ pub struct SessionState {
 pub struct FocusMode {
     pub target: String,
     pub prompt: String,
+    /// Optional sticky verb applied to bare-text input (e.g. "say").
+    /// Set via `.use @sky#room:say` — every plain line becomes `:say line`.
+    pub default_verb: Option<String>,
 }
 
 // ── Pending request kinds ─────────────────────────────────────────────────
@@ -218,7 +224,7 @@ pub struct AppState {
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
     /// Oneshot senders for in-flight Scheme RPC calls, keyed by `Message.id`.
     /// Registered by `scheme::eval_ma_actor`; resolved by `inbox_poll::dispatch_reply`.
-    pub scheme_senders: RwSignal<HashMap<String, oneshot::Sender<Result<String, String>>>>,
+    pub scheme_senders: RwSignal<HashMap<String, SchemeSender>>,
 }
 
 impl AppState {
@@ -463,8 +469,9 @@ impl AppState {
         msg_id: String,
         sender: oneshot::Sender<Result<String, String>>,
     ) {
+        let now = js_sys::Date::now();
         self.scheme_senders.update(|m| {
-            m.insert(msg_id, sender);
+            m.insert(msg_id, (sender, now));
         });
     }
 
@@ -473,7 +480,26 @@ impl AppState {
         &self,
         msg_id: &str,
     ) -> Option<oneshot::Sender<Result<String, String>>> {
-        self.scheme_senders.update_untracked(|m| m.remove(msg_id))
+        self.scheme_senders
+            .update_untracked(|m| m.remove(msg_id))
+            .map(|(s, _)| s)
+    }
+
+    /// Expire scheme senders that have waited longer than `timeout_ms`.
+    /// Dropping the sender causes the awaiting `receiver.await` to return `Err(_)`
+    /// which the evaluator maps to `(:timeout)`.
+    pub fn expire_scheme_senders(&self, timeout_ms: f64) {
+        let now = js_sys::Date::now();
+        let expired: Vec<String> = self.scheme_senders.with_untracked(|m| {
+            m.iter()
+                .filter(|(_, (_, sent_at))| now - sent_at > timeout_ms)
+                .map(|(id, _)| id.clone())
+                .collect()
+        });
+        for id in expired {
+            // Dropping the sender unblocks the awaiting evaluator task.
+            self.scheme_senders.update_untracked(|m| m.remove(&id));
+        }
     }
 
     // ── Incoming messages ────────────────────────────────────────────────

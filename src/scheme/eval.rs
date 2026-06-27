@@ -661,7 +661,7 @@ fn reconstruct_actor_command(target: &str, args: &[SchemeVal]) -> String {
 fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
     let cfg = ctx.config.get_untracked();
 
-    match parse(command, &cfg, None) {
+    match parse(command, &cfg) {
         Err(e) => Err(SchemeErr::MaError(e)),
         Ok(Command::DotCommand { path, op, .. }) => match op {
             DotOp::Get => {
@@ -717,7 +717,7 @@ async fn eval_ma_actor(command: &str, ctx: Ctx) -> Result<SchemeVal, SchemeErr> 
     };
 
     let cfg = ctx.config.get_untracked();
-    let parsed = parse(&effective, &cfg, None).map_err(SchemeErr::MaError)?;
+    let parsed = parse(&effective, &cfg).map_err(SchemeErr::MaError)?;
 
     let (target, verb, body) = match parsed {
         Command::ActorMessage { target, verb, body } => (target, verb, body),
@@ -1251,8 +1251,9 @@ fn apply_builtin(
                 arity_min("rpc-send", &args, 2)?;
                 let raw = str_arg(&args[0], "rpc-send")?;
                 let verb = str_arg(&args[1], "rpc-send")?;
-                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
-                    .map_err(SchemeErr::MaError)?;
+                let target =
+                    crate::parser::command::resolve_target(&raw, &ctx.config.get_untracked())
+                        .map_err(SchemeErr::MaError)?;
                 let extra: Vec<String> = args[2..].iter().map(|v| v.to_splice_lossy()).collect();
                 let extra_refs: Vec<&str> = extra.iter().map(|s| s.as_str()).collect();
 
@@ -1277,8 +1278,9 @@ fn apply_builtin(
                 arity("msg-send", &args, 2)?;
                 let raw = str_arg(&args[0], "msg-send")?;
                 let body = str_arg(&args[1], "msg-send")?;
-                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
-                    .map_err(SchemeErr::MaError)?;
+                let target =
+                    crate::parser::command::resolve_target(&raw, &ctx.config.get_untracked())
+                        .map_err(SchemeErr::MaError)?;
                 match transport::send_text(&target, &body).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1289,8 +1291,9 @@ fn apply_builtin(
                 arity("chat-send", &args, 2)?;
                 let raw = str_arg(&args[0], "chat-send")?;
                 let text = str_arg(&args[1], "chat-send")?;
-                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
-                    .map_err(SchemeErr::MaError)?;
+                let target =
+                    crate::parser::command::resolve_target(&raw, &ctx.config.get_untracked())
+                        .map_err(SchemeErr::MaError)?;
                 match transport::send_chat(&target, &text).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1301,8 +1304,9 @@ fn apply_builtin(
                 arity("emote-send", &args, 2)?;
                 let raw = str_arg(&args[0], "emote-send")?;
                 let text = str_arg(&args[1], "emote-send")?;
-                let target = resolve_send_target(&raw, &ctx.config.get_untracked())
-                    .map_err(SchemeErr::MaError)?;
+                let target =
+                    crate::parser::command::resolve_target(&raw, &ctx.config.get_untracked())
+                        .map_err(SchemeErr::MaError)?;
                 match transport::send_emote(&target, &text).await {
                     Ok(msg_id) => Ok(ok_tuple(msg_id)),
                     Err(e) => Ok(err_tuple(e)),
@@ -1395,11 +1399,23 @@ fn apply_builtin(
                 }
                 Ok(SchemeVal::Nil)
             }
-            // (include ".my.doc.stdlib.ma") — evaluate all forms in path.content
-            // in the current session environment.
+            // (include ".my.doc.stdlib.ma") or (include .my.doc.stdlib.ma)
+            // — evaluate all forms in path.content in the session environment.
             "include" => {
                 arity("include", &args, 1)?;
-                let path = str_arg(&args[0], "include")?;
+                // Accept both a quoted string and a bare MaPath atom so that
+                // both (include ".my.doc.stdlib.ma") and
+                //      (include .my.doc.stdlib.ma)  are valid.
+                let path = match &args[0] {
+                    SchemeVal::Str(s) => s.clone(),
+                    SchemeVal::MaPath(p) => p.clone(),
+                    other => {
+                        return Err(SchemeErr::Runtime(format!(
+                            "include: expected a path string or .dot-path, got {}",
+                            other.display()
+                        )))
+                    }
+                };
                 let content = ctx
                     .config
                     .get_untracked()
@@ -1621,14 +1637,4 @@ fn str_arg(v: &SchemeVal, name: &str) -> Result<String, SchemeErr> {
             other.display()
         ))),
     }
-}
-
-/// Resolve a send-target string to a bare DID-URL suitable for the transport layer.
-///
-/// Accepts `@alias`, `@alias#fragment`, `@did:ma:…`, `@did:ma:…#fragment`, and
-/// bare `did:ma:…` forms.  Strips the leading `@` if present, then delegates to
-/// the parser's `resolve_target` which handles alias lookup and DID pass-through.
-fn resolve_send_target(raw: &str, cfg: &crate::config::EgoConfig) -> Result<String, String> {
-    let stripped = raw.trim_start_matches('@');
-    crate::parser::command::resolve_target(stripped, cfg)
 }
