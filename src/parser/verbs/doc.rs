@@ -16,29 +16,23 @@ pub(super) fn handle_doc(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    if let Some(doc_name) = path.strip_prefix(".my.doc.") {
-        if doc_name.is_empty() {
-            return Err(t("doc-missing-name"));
-        }
-        match verb {
-            "edit" => doc_edit(path, args, state, config, show_editor),
-            "eval" => doc_eval(path, state, config, on_eval),
-            "publish" => doc_publish(path, args, state, config),
-            "publish-ipld" => doc_publish_ipld(path, args, state, config),
-            "cid" => doc_cid(path, state, config),
-            "fetch" => doc_fetch(path, args, state, config),
-            "cat" | "head" | "tail" | "wc" => doc_view(path, verb, args, state, config),
-            other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
-        }
-    } else if path == ".my.i18n" && verb == "list" {
+    if path == ".my.i18n" && verb == "list" {
         let mut lines = vec![t("lang-list-header")];
         for (code, name) in crate::i18n::SUPPORTED_LANGS {
             lines.push(format!("  {code:<20} {name}"));
         }
         state.push_system(lines.join("\n"));
-        Ok(())
-    } else {
-        Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
+        return Ok(());
+    }
+    match verb {
+        "edit" => doc_edit(path, args, state, config, show_editor),
+        "eval" => doc_eval(path, state, config, on_eval),
+        "publish" => doc_publish(path, args, state, config),
+        "publish-ipld" => doc_publish_ipld(path, args, state, config),
+        "cid" => doc_cid(path, state, config),
+        "fetch" => doc_fetch(path, args, state, config),
+        "cat" | "head" | "tail" | "wc" => doc_view(path, verb, args, state, config),
+        other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
     }
 }
 

@@ -73,21 +73,31 @@ pub fn dispatch_verb(
     if path.starts_with(".profiles.") {
         return profiles::handle_profiles(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path.starts_with(".my.doc.") || (path == ".my.i18n" && verb == "list") {
+    if path == ".my.i18n" && verb == "list" {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
-    // Universal Scheme fallback: if .path.content exists and the verb is not
-    // a reserved word, evaluate the content then call (verb arg…).
+    // Universal Scheme fallback: if .path.content exists, handle edit/eval
+    // as generic doc operations, and any other verb as a Scheme function call.
+    let content_key = format!("{path}.content");
     let content = config
         .get_untracked()
-        .get(&format!("{path}.content"))
+        .get(&content_key)
         .map(|s| s.to_string());
+    if content.is_some() || verb == "edit" {
+        match verb {
+            "edit" => {
+                return doc::handle_doc(path, "edit", args, state, config, show_editor, on_eval)
+            }
+            "eval" => {
+                return doc::handle_doc(path, "eval", args, state, config, show_editor, on_eval)
+            }
+            _ => {}
+        }
+    }
     if let Some(content) = content {
-        let reserved = matches!(
+        let skip = matches!(
             verb,
-            "edit"
-                | "eval"
-                | "publish"
+            "publish"
                 | "publish-ipld"
                 | "cid"
                 | "fetch"
@@ -98,7 +108,7 @@ pub fn dispatch_verb(
                 | "reply"
                 | "open"
         );
-        if !reserved {
+        if !skip {
             let verb = verb.to_string();
             let args = args.to_vec();
             let state2 = state.clone();
