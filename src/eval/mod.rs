@@ -590,47 +590,45 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     }
 
     // `.use <target> [as @alias]`
-    // Target may include an optional sticky verb: "@sky#room:say" or "alice@sky#room:say"
+    // Accepts: "alice@sky#room:say", "@sky#room:say", "@sky#room", "did:ma:…#room"
     let raw = args[0].as_str();
 
-    // Extract optional avatar prefix: "alice@sky#room" → avatar="alice", rest="@sky#room"
-    let (avatar, rest) = if let Some(at_pos) = raw.find('@') {
-        let pre = &raw[..at_pos];
-        let post = &raw[at_pos..];
+    // Strip optional avatar prefix: "alice@sky#room" → avatar="alice", rest="@sky#room"
+    let (avatar, actor_str) = {
+        let at = raw.find('@').unwrap_or(raw.len());
+        let pre = &raw[..at];
         if !pre.is_empty()
             && pre
                 .chars()
                 .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
         {
-            (pre.to_string(), post.to_string())
+            (pre.to_string(), raw[at..].to_string())
         } else {
             (String::new(), raw.to_string())
         }
-    } else {
-        (String::new(), raw.to_string())
     };
 
-    // Extract sticky verb: "@sky#room:say" → base="@sky#room", verb=Some("say")
-    let stripped = rest.trim_start_matches('@');
-    let (base_target, sticky_verb) = crate::parser::command::split_actor_head(stripped);
-
-    let target = base_target.to_string();
-    let resolved = if target.starts_with("did:") {
-        target.clone()
+    // Prefix @  if needed, then let parse() do all alias resolution and verb extraction.
+    let actor_input = if actor_str.starts_with('@') || actor_str.starts_with("did:") {
+        actor_str.clone()
     } else {
-        match cfg.resolve_alias(&target) {
-            Some(did) => did.to_string(),
-            None => {
-                state.push_error(tf("err-unknown-alias", &[("name", &target)]));
-                return;
-            }
+        format!("@{actor_str}")
+    };
+
+    let (resolved, sticky_verb) = match crate::parser::command::parse(&actor_input, &cfg) {
+        Ok(crate::parser::command::Command::ActorMessage { target, verb, .. }) => (target, verb),
+        Ok(_) => {
+            state.push_error(format!("not an actor address: {actor_str}"));
+            return;
+        }
+        Err(e) => {
+            state.push_error(e);
+            return;
         }
     };
 
-    // Split into DID and optional fragment
     let (did_part, frag) = resolved.split_once('#').unwrap_or((resolved.as_str(), ""));
 
-    // Write .my.ctx.*
     config.update(|c| {
         c.set(".my.ctx.runtime", did_part);
         c.set(".my.ctx.use", "true");
@@ -639,8 +637,8 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         } else {
             c.set(".my.ctx.room", format!("#{frag}"));
         }
-        match &sticky_verb {
-            Some(v) => c.set(".my.ctx.verb", v.as_str()),
+        match sticky_verb.as_deref() {
+            Some(v) => c.set(".my.ctx.verb", v),
             None => {
                 c.delete(".my.ctx.verb");
             }
@@ -653,56 +651,13 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
     });
 
-    // Build prompt: explicit `as` override > reverse alias lookup > raw
+    // apply_ctx_focus builds the full prompt from .my.ctx.* — no duplicate logic.
     let cfg2 = config.get_untracked();
-    let base_prompt = if args.len() >= 3 && args[1] == "as" {
-        let alias = args[2].trim();
-        if alias.starts_with('@') {
-            alias.to_string()
-        } else {
-            format!("@{alias}")
-        }
-    } else {
-        cfg2.reverse_alias(did_part)
-            .map(|a| {
-                if frag.is_empty() {
-                    format!("@{a}")
-                } else {
-                    format!("@{a}#{frag}")
-                }
-            })
-            .unwrap_or_else(|| {
-                if rest.starts_with('@') {
-                    rest.clone()
-                } else {
-                    format!("@{target}")
-                }
-            })
-    };
-
-    // Prepend avatar and append sticky verb to prompt
-    let avatar_str = if avatar.is_empty() {
-        cfg2.get(".my.ctx.alias").unwrap_or("").to_string()
-    } else {
-        avatar
-    };
-    let prompt_with_avatar = if avatar_str.is_empty() {
-        base_prompt
-    } else {
-        format!("{avatar_str}{base_prompt}")
-    };
-    let prompt = match &sticky_verb {
-        Some(v) => format!("{prompt_with_avatar}:{v}"),
-        None => prompt_with_avatar,
-    };
-
-    state.focus_actor.set(Some(FocusMode {
-        target: resolved.clone(),
-        prompt: prompt.clone(),
-        default_verb: sticky_verb.clone(),
-    }));
-    state.push_system(tf(
-        "msg-focusing",
-        &[("did", &resolved), ("prompt", &prompt)],
-    ));
+    apply_ctx_focus(&cfg2, state);
+    if let Some(ref focus) = state.focus_actor.get_untracked() {
+        state.push_system(tf(
+            "msg-focusing",
+            &[("did", &resolved), ("prompt", &focus.prompt)],
+        ));
+    }
 }
