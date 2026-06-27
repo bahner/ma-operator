@@ -156,7 +156,11 @@ pub(crate) fn eval(
     on_eval: Callback<String>,
 ) {
     match cmd {
-        Command::PlainText(_) => {}
+        Command::PlainText(text) => {
+            if !text.is_empty() {
+                state.push_system(text);
+            }
+        }
 
         Command::DotCommand { path, op, args } => {
             eval_dot(&path, op, &args, state, config, show_editor, on_eval);
