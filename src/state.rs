@@ -203,6 +203,9 @@ pub struct AppState {
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
     /// Set at app startup, consumed once by InputBar after login.
     pub prefill_input: RwSignal<Option<String>>,
+    /// Context target from `?ctx=` URL param — e.g. `did:ma:xyz#room`.
+    /// Consumed once by `startup_load_config` to call `.use` after login.
+    pub startup_ctx: RwSignal<Option<String>>,
     /// FIFO queue of raw input lines waiting to be dispatched.
     pub input_queue: RwSignal<VecDeque<String>>,
     /// All active batches, keyed by batch id.
@@ -231,6 +234,7 @@ impl AppState {
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
+            startup_ctx: RwSignal::new(None),
             input_queue: RwSignal::new(VecDeque::new()),
             batches: RwSignal::new(HashMap::new()),
             batch_id_counter: RwSignal::new(0),

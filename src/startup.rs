@@ -208,6 +208,12 @@ pub(crate) async fn startup_load_config(
         ],
     ));
     state.push_system(t("msg-type-help"));
+    // Apply ?ctx= URL param: auto-focus the specified target.
+    if let Some(ctx_target) = state.startup_ctx.update_untracked(|v| v.take()) {
+        state
+            .input_queue
+            .update(|q| q.push_back(format!(".use {ctx_target}")));
+    }
 }
 
 pub(crate) async fn startup_load_history(state: AppState, username: String) {
