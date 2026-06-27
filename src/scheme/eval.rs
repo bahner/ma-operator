@@ -283,6 +283,7 @@ fn is_builtin(name: &str) -> bool {
             | "string-length"
             | "substring"
             | "string-contains"
+            | "string-index"
             | "string-upcase"
             | "string-downcase"
             | "number->string"
@@ -319,6 +320,9 @@ fn is_builtin(name: &str) -> bool {
             | "ok-val"
             | "err-msg"
             | "use"
+            | "cadr"
+            | "caddr"
+            | "cadddr"
     )
 }
 
@@ -1035,6 +1039,39 @@ fn apply_builtin(
                         Ok(SchemeVal::Bool(hay.contains(needle.as_str())))
                     }
                     _ => Err(SchemeErr::Runtime("string-contains: not strings".into())),
+                }
+            }
+            // string-index: return index of first occurrence or #f
+            "string-index" => {
+                arity("string-index", &args, 2)?;
+                match (&args[0], &args[1]) {
+                    (SchemeVal::Str(hay), SchemeVal::Str(needle)) => Ok(match hay.find(needle.as_str()) {
+                        Some(i) => SchemeVal::Int(i as i64),
+                        None    => SchemeVal::Bool(false),
+                    }),
+                    _ => Err(SchemeErr::Runtime("string-index: not strings".into())),
+                }
+            }
+            // cXXr conveniences
+            "cadr" => {
+                arity("cadr", &args, 1)?;
+                match &args[0] {
+                    SchemeVal::List(v) if v.len() >= 2 => Ok(v[1].clone()),
+                    _ => Err(SchemeErr::Runtime("cadr: list too short".into())),
+                }
+            }
+            "caddr" => {
+                arity("caddr", &args, 1)?;
+                match &args[0] {
+                    SchemeVal::List(v) if v.len() >= 3 => Ok(v[2].clone()),
+                    _ => Err(SchemeErr::Runtime("caddr: list too short".into())),
+                }
+            }
+            "cadddr" => {
+                arity("cadddr", &args, 1)?;
+                match &args[0] {
+                    SchemeVal::List(v) if v.len() >= 4 => Ok(v[3].clone()),
+                    _ => Err(SchemeErr::Runtime("cadddr: list too short".into())),
                 }
             }
             "string-upcase" => {
