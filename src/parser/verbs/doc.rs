@@ -52,7 +52,8 @@ fn doc_edit(
             .get(&format!("{path}.content"))
             .unwrap_or_default()
             .to_string();
-        let lang = lang_for_content_type(
+        let lang = lang_for_path(
+            path,
             cfg.get(&format!("{path}.content_type"))
                 .unwrap_or("text/plain"),
         );
@@ -247,6 +248,16 @@ pub(super) fn lang_for_content_type(ct: &str) -> &'static str {
         "yaml"
     } else {
         "plain"
+    }
+}
+
+/// Infer the CodeMirror language from a doc path.
+/// `.ma`-suffixed paths are ma-scheme source files.
+pub(super) fn lang_for_path(path: &str, ct: &str) -> &'static str {
+    if path.ends_with(".ma") {
+        "scheme"
+    } else {
+        lang_for_content_type(ct)
     }
 }
 

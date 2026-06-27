@@ -76,45 +76,45 @@ pub fn dispatch_verb(
     if path == ".my.i18n" && verb == "list" {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
-    // Universal Scheme fallback: if .path.content exists, handle edit/eval
-    // as generic doc operations, and any other verb as a Scheme function call.
-    let content_key = format!("{path}.content");
-    let content = config
+    // Content-management verbs work on any non-read-only path.
+    if matches!(verb, "publish" | "publish-ipld" | "cid" | "fetch") {
+        return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
+    }
+    // Universal content-based verb routing: works on any path with .content.
+    let has_content = config
         .get_untracked()
-        .get(&content_key)
-        .map(|s| s.to_string());
-    if content.is_some() || verb == "edit" {
+        .get(&format!("{path}.content"))
+        .is_some();
+    if has_content || verb == "edit" {
         match verb {
-            "edit" => {
-                return doc::handle_doc(path, "edit", args, state, config, show_editor, on_eval)
-            }
-            "eval" => {
-                return doc::handle_doc(path, "eval", args, state, config, show_editor, on_eval)
+            "edit" | "eval" | "cat" | "head" | "tail" | "wc" => {
+                return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
             }
             _ => {}
         }
     }
+    // Scheme function call fallback: any other verb on a path with .content.
+    let content = if has_content {
+        config
+            .get_untracked()
+            .get(&format!("{path}.content"))
+            .map(|s| s.to_string())
+    } else {
+        None
+    };
     if let Some(content) = content {
-        let skip = matches!(
-            verb,
-            "publish"
-                | "publish-ipld"
-                | "cid"
-                | "fetch"
-                | "cat"
-                | "head"
-                | "tail"
-                | "wc"
-                | "reply"
-                | "open"
-        );
-        if !skip {
+        {
             let verb = verb.to_string();
             let args = args.to_vec();
             let state2 = state.clone();
             let path2 = path.to_string();
             wasm_bindgen_futures::spawn_local(async move {
-                state2.push_command_done(format!("{path2}:{verb}"));
+                let display = if args.is_empty() {
+                    format!("{path2}:{verb}")
+                } else {
+                    format!("{path2}:{verb} {}", args.join(" "))
+                };
+                state2.push_command_done(display);
                 match crate::scheme::call_content(&content, &verb, &args, &state2, config).await {
                     Ok(val) => {
                         let s = val.to_splice_lossy();

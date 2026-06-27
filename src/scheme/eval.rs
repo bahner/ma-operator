@@ -320,6 +320,7 @@ fn is_builtin(name: &str) -> bool {
             | "ok-val"
             | "err-msg"
             | "use"
+            | "include"
             | "cadr"
             | "caddr"
             | "cadddr"
@@ -1393,6 +1394,30 @@ fn apply_builtin(
                     crate::eval::apply_ctx_focus(&cfg2, &ctx.state);
                 }
                 Ok(SchemeVal::Nil)
+            }
+            // (include ".my.doc.stdlib.ma") — evaluate all forms in path.content
+            // in the current session environment.
+            "include" => {
+                arity("include", &args, 1)?;
+                let path = str_arg(&args[0], "include")?;
+                let content = ctx
+                    .config
+                    .get_untracked()
+                    .get(&format!("{path}.content"))
+                    .map(|s| s.to_string())
+                    .ok_or_else(|| SchemeErr::MaError(format!("{path}: no content")))?;
+                let env = crate::scheme::get_env();
+                let tokens = crate::scheme::parser::tokenize(&content)
+                    .map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                let mut pos = 0;
+                let mut last = SchemeVal::Nil;
+                while pos < tokens.len() {
+                    let (expr, next_pos) = crate::scheme::parser::parse_expr(&tokens, pos)
+                        .map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                    last = eval(expr, env.clone(), ctx.clone()).await?;
+                    pos = next_pos;
+                }
+                Ok(last)
             }
             other => Err(SchemeErr::Undefined(other.to_string())),
         }
