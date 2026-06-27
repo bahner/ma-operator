@@ -64,7 +64,7 @@ pub fn reset_session_env() {
 }
 
 /// Return the current session environment, creating one if needed.
-fn get_env() -> Env {
+pub(crate) fn get_env() -> Env {
     SESSION_ENV.with(|e| {
         let mut inner = e.borrow_mut();
         if inner.is_none() {
@@ -139,6 +139,49 @@ pub async fn expand(
     }
 
     Ok(result)
+}
+
+/// Evaluate all top-level Scheme forms in `content` (typically `define`
+/// statements), then call `(verb arg…)` in the same session environment.
+///
+/// Runs sequentially in a single async task — no race condition with the
+/// dispatch queue.  Arguments are passed as Scheme string literals.
+pub async fn call_content(
+    content: &str,
+    verb: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<SchemeVal, String> {
+    let env = get_env();
+    let ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    // Evaluate each top-level form in the content (defines, lambdas, …)
+    let tokens = parser::tokenize(content).map_err(|e| e.to_string())?;
+    let mut pos = 0;
+    while pos < tokens.len() {
+        let (expr, next) = parser::parse_expr(&tokens, pos).map_err(|e| e.to_string())?;
+        eval::eval(expr, env.clone(), ctx.clone())
+            .await
+            .map_err(|e| e.to_string())?;
+        pos = next;
+    }
+    // Build and evaluate (verb "arg1" "arg2" …)
+    eval_span(&build_call_str(verb, args), env, ctx).await
+}
+
+/// Build a Scheme function-call string: `(verb "arg1" "arg2" …)`.
+/// Arguments are shell-split tokens from the command line; each is
+/// passed as a Scheme string literal (double-quoted).
+fn build_call_str(verb: &str, args: &[String]) -> String {
+    if args.is_empty() {
+        format!("({verb})")
+    } else {
+        let quoted: Vec<String> = args.iter().map(|a| format!("{a:?}")).collect();
+        format!("({verb} {})", quoted.join(" "))
+    }
 }
 
 // ── Internal helpers ───────────────────────────────────────────────────────

@@ -76,5 +76,47 @@ pub fn dispatch_verb(
     if path.starts_with(".my.doc.") || (path == ".my.i18n" && verb == "list") {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
+    // Universal Scheme fallback: if .path.content exists and the verb is not
+    // a reserved word, evaluate the content then call (verb arg…).
+    let content = config
+        .get_untracked()
+        .get(&format!("{path}.content"))
+        .map(|s| s.to_string());
+    if let Some(content) = content {
+        let reserved = matches!(
+            verb,
+            "edit"
+                | "eval"
+                | "publish"
+                | "publish-ipld"
+                | "cid"
+                | "fetch"
+                | "cat"
+                | "head"
+                | "tail"
+                | "wc"
+                | "reply"
+                | "open"
+        );
+        if !reserved {
+            let verb = verb.to_string();
+            let args = args.to_vec();
+            let state2 = state.clone();
+            let path2 = path.to_string();
+            wasm_bindgen_futures::spawn_local(async move {
+                state2.push_command_done(format!("{path2}:{verb}"));
+                match crate::scheme::call_content(&content, &verb, &args, &state2, config).await {
+                    Ok(val) => {
+                        let s = val.to_splice_lossy();
+                        if !s.is_empty() {
+                            state2.push_system(s);
+                        }
+                    }
+                    Err(e) => state2.push_error(format!("{path2}:{verb}: {e}")),
+                }
+            });
+            return Ok(());
+        }
+    }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
 }
