@@ -144,7 +144,17 @@ pub fn InputBar(
     let prompt_text = move || {
         focus_actor
             .get()
-            .map(|focus| format!("{} › ", focus.prompt))
+            .map(|focus| {
+                // With sticky verb (e.g. "alice@sky#room:say"): trailing space
+                // so plain text flows naturally:  "alice@sky#room:say hei"
+                // Without sticky verb ("@sky#room"): no space so ":say" attaches
+                // directly:  "@sky#room:say"
+                if focus.default_verb.is_some() {
+                    format!("{} › ", focus.prompt)
+                } else {
+                    format!("{}› ", focus.prompt)
+                }
+            })
             .unwrap_or_else(|| "› ".to_string())
     };
 
