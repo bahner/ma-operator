@@ -54,6 +54,11 @@ impl Env {
         self.0.borrow_mut().vars.insert(name.into(), val);
     }
 
+    /// Collect all bindings in this frame (not parent frames).
+    pub fn own_bindings(&self) -> Vec<(String, SchemeVal)> {
+        self.0.borrow().vars.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
+    }
+
     /// Mutate an existing binding anywhere in the chain (Scheme `set!`).
     /// Returns `Some(())` if found; `None` if the name is not bound.
     pub fn set_existing(&self, name: &str, val: SchemeVal) -> Option<()> {

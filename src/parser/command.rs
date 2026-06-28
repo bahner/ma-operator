@@ -5,7 +5,8 @@
 ///   .path value          → DotOp::Get  (args carry match query)
 ///   .path: value         → DotOp::Set
 ///   .path:               → DotOp::Delete
-///   .path:verb [args]    → DotOp::Verb
+///   .path!verb [args]    → DotOp::Meta  (system/side-effect operation)
+///   .path:verb [args]    → DotOp::Verb  (user Scheme function call)
 ///   @alias[:verb] [body] → ActorMessage
 ///   @did:ma:<id>[:verb]  → ActorMessage
 ///   did:ma:<id>[:verb]   → ActorMessage  (bare DID from expansion)
@@ -20,7 +21,10 @@ pub enum DotOp {
     Get,
     Set(String),
     Delete,
+    /// `:verb` — user Scheme function call (dispatches to .content)
     Verb(String),
+    /// `!verb` — system/side-effect operation (edit, eval, publish, save, …)
+    Meta(String),
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -56,6 +60,12 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
 
 fn parse_dot(input: &str) -> Result<Command, String> {
     let (head, rest) = split_head_rest(input);
+    // `!verb` — meta/side-effect operation; check before `:` split.
+    if let Some(bang) = head.find('!') {
+        let path = head[..bang].to_string();
+        let meta_verb = head[bang + 1..].to_string();
+        return Ok(Command::DotCommand { path, op: DotOp::Meta(meta_verb), args: shell_split(&rest) });
+    }
     let (path, op) = dot_path_and_op(&head, &rest);
     let args = match &op {
         DotOp::Set(_) => vec![],

@@ -17,7 +17,7 @@ use crate::{
     http::fetch_cid_text,
     i18n::{t, tf},
     parser::command::{Command, DotOp},
-    parser::verbs::dispatch_verb,
+    parser::verbs::{dispatch_meta, dispatch_verb},
     state::{AppState, FocusMode},
     transport,
     views::editor::EditorContext,
@@ -271,12 +271,19 @@ fn eval_dot(
         return;
     }
 
-    // ── Generic CRUD ──────────────────────────────────────────────────────
+    if let DotOp::Meta(verb) = &op {
+        if let Err(e) = dispatch_meta(path, verb, args, state, config, show_editor, on_eval) {
+            state.push_error(e);
+        }
+        return;
+    }
+
+    // ── Generic CRUD ───────────────────────────────────────────────────
     match op {
         DotOp::Set(value) => handle_dot_set(path, value, &username, state, config),
         DotOp::Delete => handle_dot_delete(path, &username, state, config),
         DotOp::Get => handle_dot_get(path, args, state, config),
-        DotOp::Verb(_) => unreachable!("handled above"),
+        DotOp::Verb(_) | DotOp::Meta(_) => unreachable!("handled above"),
     }
 }
 

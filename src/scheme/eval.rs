@@ -769,8 +769,8 @@ fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
                 });
                 Ok(SchemeVal::Nil)
             }
-            DotOp::Verb(_) => Err(SchemeErr::MaError(format!(
-                "dot-path verbs are not supported inside Scheme expressions: {command}"
+            DotOp::Verb(_) | DotOp::Meta(_) => Err(SchemeErr::MaError(format!(
+                "dot-path verbs (!verb / :verb) are not callable from Scheme: {command}"
             ))),
         },
         Ok(_) => Err(SchemeErr::MaError(format!(

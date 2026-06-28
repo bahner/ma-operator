@@ -1,4 +1,7 @@
-//! Verb dispatch for local dot-path commands (`.path:verb`).
+//! Verb dispatch for local dot-path commands.
+//!
+//! `.path:verb` — user Scheme function call
+//! `.path!verb` — system/side-effect operation (dispatched via `dispatch_meta`)
 
 mod acl;
 mod doc;
@@ -6,6 +9,7 @@ mod identity;
 mod inbox;
 mod ma;
 mod profiles;
+mod scheme;
 
 use crate::config::EgoConfig;
 use crate::i18n::tf;
@@ -129,4 +133,23 @@ pub fn dispatch_verb(
         }
     }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
+}
+
+/// Dispatch `.path!verb` — system/side-effect operations.
+/// These are never Scheme function calls; they always have well-defined behaviour.
+pub fn dispatch_meta(
+    path: &str,
+    verb: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
+) -> Result<(), String> {
+    // .my.scheme — session environment image
+    if path == ".my.scheme" || path.starts_with(".my.scheme.") {
+        return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
+    }
+    // All other paths: route to doc handler (edit, eval, publish, cid, fetch, …)
+    doc::handle_doc(path, verb, args, state, config, show_editor, on_eval)
 }
