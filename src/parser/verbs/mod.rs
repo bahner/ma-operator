@@ -87,7 +87,7 @@ pub fn dispatch_verb(
         .is_some();
     if has_content || verb == "edit" {
         match verb {
-            "edit" | "eval" | "cat" | "head" | "tail" | "wc" => {
+            "edit" | "eval" => {
                 return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
             }
             _ => {}

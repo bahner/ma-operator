@@ -31,7 +31,6 @@ pub(super) fn handle_doc(
         "publish-ipld" => doc_publish_ipld(path, args, state, config),
         "cid" => doc_cid(path, state, config),
         "fetch" => doc_fetch(path, args, state, config),
-        "cat" | "head" | "tail" | "wc" => doc_view(path, verb, args, state, config),
         other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
     }
 }
@@ -218,28 +217,6 @@ fn doc_fetch(
     Ok(())
 }
 
-/// `:cat` / `:head` / `:tail` / `:wc` — view stored content inline.
-fn doc_view(
-    path: &str,
-    verb: &str,
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) -> Result<(), String> {
-    let content = config
-        .get_untracked()
-        .get(&format!("{path}.content"))
-        .unwrap_or_default()
-        .to_string();
-    if content.is_empty() {
-        return Err(tf("doc-content-empty", &[("path", path)]));
-    }
-    let str_args: Vec<&str> = args.iter().map(String::as_str).collect();
-    for line in crate::cid_ops::apply(verb, &content, &str_args) {
-        state.push_output(line);
-    }
-    Ok(())
-}
 
 // ── Helpers ───────────────────────────────────────────────────────────────
 

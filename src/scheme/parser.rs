@@ -93,6 +93,11 @@ pub fn tokenize(input: &str) -> Result<Vec<String>, LexError> {
             }
             // Line comment
             ';' => while chars.next().map(|c| c != '\n').unwrap_or(false) {},
+            // Pipe / threading operator  val | (f arg) | g
+            '|' => {
+                chars.next();
+                tokens.push("|".to_string());
+            }
             // Quote shorthand: 'expr → (quote expr)
             // Emits a sentinel token; parse_expr wraps the next expression.
             '\'' => {
@@ -110,6 +115,7 @@ pub fn tokenize(input: &str) -> Result<Vec<String>, LexError> {
                         || c == '('
                         || c == ')'
                         || c == ';'
+                        || c == '|'
                     {
                         break;
                     }

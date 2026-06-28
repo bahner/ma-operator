@@ -181,6 +181,14 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
                 }
             }
 
+            // ── Pipe threading: (val | (f arg) | g) ───────────────────────
+            // | splits the list into stages; each stage threads the
+            // accumulated value through as the first argument unless an
+            // explicit _ placeholder is present.
+            if forms.iter().skip(1).any(|f| matches!(f, SchemeExpr::Atom(s) if s == "|")) {
+                return eval_pipe(forms, env, ctx).await;
+            }
+
             // ── Application ────────────────────────────────────────────────
             let head_val = eval(forms[0].clone(), env.clone(), ctx.clone()).await?;
 
@@ -507,6 +515,75 @@ async fn eval_cond(forms: Vec<SchemeExpr>, env: Env, ctx: Ctx) -> Result<SchemeV
         }
     }
     Ok(SchemeVal::Nil)
+}
+
+// ── Pipe threading ────────────────────────────────────────────────────────
+
+/// Evaluates a pipe expression: `(val | (f arg) | g)`.
+///
+/// Splits on `|` into stages. The accumulated value is threaded as the
+/// **first argument** of each stage unless `_` appears explicitly in the
+/// stage — in that case `_` is bound to the accumulated value in scope.
+fn eval_pipe(
+    forms: Vec<SchemeExpr>,
+    env: Env,
+    ctx: Ctx,
+) -> LocalBoxFuture<'static, Result<SchemeVal, SchemeErr>> {
+    Box::pin(async move {
+        // Split on | into stages
+        let mut stages: Vec<Vec<SchemeExpr>> = vec![vec![]];
+        for form in forms {
+            if matches!(&form, SchemeExpr::Atom(s) if s == "|") {
+                stages.push(vec![]);
+            } else {
+                stages.last_mut().unwrap().push(form);
+            }
+        }
+
+        // Evaluate first stage as the initial value
+        let first = stages.remove(0);
+        let mut acc = if first.len() == 1 {
+            eval(first[0].clone(), env.clone(), ctx.clone()).await?
+        } else {
+            let h = eval(first[0].clone(), env.clone(), ctx.clone()).await?;
+            let mut a = Vec::with_capacity(first.len() - 1);
+            for f in &first[1..] {
+                a.push(eval(f.clone(), env.clone(), ctx.clone()).await?);
+            }
+            apply(h, a, ctx.clone()).await?
+        };
+
+        // Thread through remaining stages
+        for stage in stages {
+            if stage.is_empty() {
+                continue;
+            }
+            // Bind _ to the accumulated value in a child env.
+            let stage_env = Env::extend(&env);
+            stage_env.define("_", acc.clone());
+
+            let has_placeholder = stage
+                .iter()
+                .any(|f| matches!(f, SchemeExpr::Atom(s) if s == "_"));
+
+            let f = eval(stage[0].clone(), stage_env.clone(), ctx.clone()).await?;
+
+            let mut args = if has_placeholder {
+                // User placed _ explicitly — don't prepend as first arg.
+                Vec::with_capacity(stage.len() - 1)
+            } else {
+                // Thread-first: prepend accumulated value.
+                vec![acc]
+            };
+            for form in &stage[1..] {
+                args.push(eval(form.clone(), stage_env.clone(), ctx.clone()).await?);
+            }
+
+            acc = apply(f, args, ctx.clone()).await?;
+        }
+
+        Ok(acc)
+    })
 }
 
 fn eval_begin(
