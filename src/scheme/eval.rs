@@ -185,7 +185,11 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
             // | splits the list into stages; each stage threads the
             // accumulated value through as the first argument unless an
             // explicit _ placeholder is present.
-            if forms.iter().skip(1).any(|f| matches!(f, SchemeExpr::Atom(s) if s == "|")) {
+            if forms
+                .iter()
+                .skip(1)
+                .any(|f| matches!(f, SchemeExpr::Atom(s) if s == "|"))
+            {
                 return eval_pipe(forms, env, ctx).await;
             }
 

@@ -493,6 +493,7 @@ pub fn EditorModal(
                         <option value="plain">"plain"</option>
                         <option value="markdown">"markdown"</option>
                         <option value="yaml">"yaml"</option>
+                        <option value="scheme">"scheme"</option>
                     </select>
                     // Save — Standard only
                     <button

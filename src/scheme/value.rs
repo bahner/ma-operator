@@ -56,7 +56,12 @@ impl Env {
 
     /// Collect all bindings in this frame (not parent frames).
     pub fn own_bindings(&self) -> Vec<(String, SchemeVal)> {
-        self.0.borrow().vars.iter().map(|(k, v)| (k.clone(), v.clone())).collect()
+        self.0
+            .borrow()
+            .vars
+            .iter()
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect()
     }
 
     /// Mutate an existing binding anywhere in the chain (Scheme `set!`).

@@ -217,7 +217,6 @@ fn doc_fetch(
     Ok(())
 }
 
-
 // ── Helpers ───────────────────────────────────────────────────────────────
 
 pub(super) fn lang_for_content_type(ct: &str) -> &'static str {

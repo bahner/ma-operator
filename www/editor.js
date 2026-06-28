@@ -33,7 +33,8 @@ window.maEditor = {
         await import("https://esm.sh/@codemirror/commands@6");
     const { markdown } = await import("https://esm.sh/@codemirror/lang-markdown@6");
     const { StreamLanguage } = await import("https://esm.sh/@codemirror/language@6");
-    const { yaml } = await import("https://esm.sh/@codemirror/legacy-modes/mode/yaml");
+    const { yaml }   = await import("https://esm.sh/@codemirror/legacy-modes/mode/yaml");
+    const { scheme } = await import("https://esm.sh/@codemirror/legacy-modes/mode/scheme");
 
     /** Map of elId → EditorView */
     const _editors = {};
@@ -42,6 +43,7 @@ window.maEditor = {
         switch (lang) {
             case "markdown": return [markdown()];
             case "yaml":     return [StreamLanguage.define(yaml)];
+            case "scheme":   return [StreamLanguage.define(scheme)];
             default:         return [];   // plain text — no lang extension
         }
     }

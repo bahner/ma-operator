@@ -64,7 +64,11 @@ fn parse_dot(input: &str) -> Result<Command, String> {
     if let Some(bang) = head.find('!') {
         let path = head[..bang].to_string();
         let meta_verb = head[bang + 1..].to_string();
-        return Ok(Command::DotCommand { path, op: DotOp::Meta(meta_verb), args: shell_split(&rest) });
+        return Ok(Command::DotCommand {
+            path,
+            op: DotOp::Meta(meta_verb),
+            args: shell_split(&rest),
+        });
     }
     let (path, op) = dot_path_and_op(&head, &rest);
     let args = match &op {
