@@ -1,0 +1,11 @@
+Kan vi legge til en liten detalj for promptet. Hvis det ender i et fragment, eg. @sky#room så skal det ikke postfixes med et mellomrom, men hvis det ender i et :verb, eg. alice@sky#room:say så skal det legges til et mellomrom?
+
+/cid og slikt mangler. det er fortsatt :cid og :fetch
+
+La oss dropepe /command|s. Isiedetfor la (evaluator) ta stdin som input, hvis den prefixes a en |, eg:
+
+.my.friends|(string-lines -) istedet for :wc -l eller /wc -. Er ikke det en god idé?
+
+#sky#room:say jeg har (.my.friends|(string-lines -)) venner
+
+Usikker på om man trenger - placeholder eller om man "bare" kan appende det
