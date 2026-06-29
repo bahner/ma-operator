@@ -5967,6 +5967,7 @@ dependencies = [
  "bytes",
  "chacha20poly1305",
  "ciborium",
+ "cid",
  "console_error_panic_hook",
  "console_log",
  "env_logger",

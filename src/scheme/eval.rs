@@ -113,7 +113,7 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
         SchemeExpr::Nil => Ok(SchemeVal::Nil),
         SchemeExpr::Str(s) => Ok(SchemeVal::Str(s)),
         SchemeExpr::Atom(s) => {
-            // CID literal: <bafy…> or <Qm…> — fetch from IPFS, return content as string.
+            // CID literal: <bafy…>, <bafkrei…>, <Qm…>, etc. — fetch from IPFS, return content as string.
             if s.starts_with('<') && s.ends_with('>') && s.len() > 2 {
                 let inner = s[1..s.len() - 1].to_string();
                 return if crate::mailbox::is_link_value(&inner) {

@@ -118,17 +118,13 @@ pub fn now_unix_secs() -> f64 {
 /// True if `value` looks like an IPFS CID or a `did:ma:` DID — i.e. a
 /// link-leaf that supports lazy sub-path traversal.
 pub fn is_link_value(value: &str) -> bool {
-    value.starts_with("did:ma:")
-        || (value.starts_with("bafy") && value.len() >= 20)
-        || (value.starts_with("Qm") && value.len() >= 20)
+    value.starts_with("did:ma:") || value.parse::<cid::Cid>().is_ok()
 }
 
-/// True if `token` is probably a bare CID (not prefixed with a scheme).
+/// True if `token` is a valid bare CID (CIDv0 or CIDv1, any codec).
 #[allow(dead_code)]
 pub fn is_probable_cid(token: &str) -> bool {
-    (token.starts_with("bafy") || token.starts_with("Qm"))
-        && token.len() >= 20
-        && token.chars().all(|c| c.is_ascii_alphanumeric())
+    token.parse::<cid::Cid>().is_ok()
 }
 
 #[cfg(test)]
@@ -149,14 +145,21 @@ mod tests {
     }
 
     #[test]
-    fn is_link_value_bafy_cid() {
+    fn is_link_value_cidv1_bafy() {
         assert!(is_link_value(
             "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
         ));
     }
 
     #[test]
-    fn is_link_value_qm_cid() {
+    fn is_link_value_cidv1_bafkrei() {
+        assert!(is_link_value(
+            "bafkreiajw63hfajj5r2vonnzd46v2gyk5ppaklusvyay45x7jf25bm2igm"
+        ));
+    }
+
+    #[test]
+    fn is_link_value_cidv0_qm() {
         assert!(is_link_value(
             "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
         ));
@@ -175,14 +178,21 @@ mod tests {
     // ── is_probable_cid ───────────────────────────────────────────────────
 
     #[test]
-    fn is_probable_cid_bafy() {
+    fn is_probable_cid_cidv1_bafy() {
         assert!(is_probable_cid(
             "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
         ));
     }
 
     #[test]
-    fn is_probable_cid_qm() {
+    fn is_probable_cid_cidv1_bafkrei() {
+        assert!(is_probable_cid(
+            "bafkreiajw63hfajj5r2vonnzd46v2gyk5ppaklusvyay45x7jf25bm2igm"
+        ));
+    }
+
+    #[test]
+    fn is_probable_cid_cidv0_qm() {
         assert!(is_probable_cid(
             "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
         ));

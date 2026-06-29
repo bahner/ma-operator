@@ -67,6 +67,7 @@ base64 = "0.22"
 getrandom = { version = "0.4", features = ["wasm_js"] }
 gloo-timers = { version = "0.4", features = ["futures"] }
 console_error_panic_hook = "0.1"
+cid = "0.11"
 ciborium = "0.2"
 log = "0.4"
 env_logger = "0.11"
