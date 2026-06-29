@@ -337,3 +337,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Keenista CID { $cid } ku guuldarreysatay: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = CID aan saxnayn: { $value }

@@ -337,3 +337,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = CID { $cid } తీసుకురావడం విఫలమైంది: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = చెల్లని CID: { $value }

@@ -323,3 +323,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Ka falla busca CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = CID ka ta válidu: { $value }

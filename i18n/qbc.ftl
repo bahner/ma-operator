@@ -339,3 +339,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Pensa CID { $cid } na kang: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Dat na proper CID: { $value }

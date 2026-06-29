@@ -112,7 +112,21 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
     match expr {
         SchemeExpr::Nil => Ok(SchemeVal::Nil),
         SchemeExpr::Str(s) => Ok(SchemeVal::Str(s)),
-        SchemeExpr::Atom(s) => eval_atom(&s, &env),
+        SchemeExpr::Atom(s) => {
+            // CID literal: <bafy…> or <Qm…> — fetch from IPFS, return content as string.
+            if s.starts_with('<') && s.ends_with('>') && s.len() > 2 {
+                let inner = s[1..s.len() - 1].to_string();
+                return if crate::mailbox::is_link_value(&inner) {
+                    crate::http::fetch_cid_text(&inner)
+                        .await
+                        .map(SchemeVal::Str)
+                        .map_err(SchemeErr::MaError)
+                } else {
+                    Err(SchemeErr::Runtime(format!("not a valid CID: {inner}")))
+                };
+            }
+            eval_atom(&s, &env)
+        }
         SchemeExpr::List(forms) => {
             if forms.is_empty() {
                 return Ok(SchemeVal::Nil);
@@ -1480,29 +1494,40 @@ fn apply_builtin(
                 }
                 Ok(SchemeVal::Nil)
             }
-            // (include ".my.doc.stdlib.ma") or (include .my.doc.stdlib.ma)
-            // — evaluate all forms in path.content in the session environment.
+            // (include ".my.scheme.stdlib.ma") — look up value at that config path
+            // (include "bafy…")               — fetch CID from IPFS
+            // (include <bafy…>)               — <bafy…> already evaluated to content string
+            // — evaluate all forms in the session environment.
             "include" => {
                 arity("include", &args, 1)?;
                 // Accept both a quoted string and a bare MaPath atom so that
-                // both (include ".my.doc.stdlib.ma") and
-                //      (include .my.doc.stdlib.ma)  are valid.
+                // both (include ".my.scheme.stdlib.ma") and
+                //      (include .my.scheme.stdlib.ma)  are valid.
                 let path = match &args[0] {
                     SchemeVal::Str(s) => s.clone(),
                     SchemeVal::MaPath(p) => p.clone(),
                     other => {
                         return Err(SchemeErr::Runtime(format!(
-                            "include: expected a path string or .dot-path, got {}",
+                            "include: expected a path string or CID, got {}",
                             other.display()
                         )))
                     }
                 };
-                let content = ctx
-                    .config
-                    .get_untracked()
-                    .get(&format!("{path}.content"))
-                    .map(|s| s.to_string())
-                    .ok_or_else(|| SchemeErr::MaError(format!("{path}: no content")))?;
+                // Resolve the content: dot-path → direct config lookup;
+                // CID string → IPFS fetch; anything else → treat as literal code.
+                let content = if path.starts_with('.') {
+                    ctx.config
+                        .get_untracked()
+                        .get(&path)
+                        .map(|s| s.to_string())
+                        .ok_or_else(|| SchemeErr::MaError(format!("include: no value at {path}")))?
+                } else if crate::mailbox::is_link_value(&path) {
+                    crate::http::fetch_cid_text(&path)
+                        .await
+                        .map_err(SchemeErr::MaError)?
+                } else {
+                    path.clone()
+                };
                 let env = crate::scheme::get_env();
                 let tokens = crate::scheme::parser::tokenize(&content)
                     .map_err(|e| SchemeErr::ParseError(e.to_string()))?;

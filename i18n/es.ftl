@@ -329,3 +329,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Error al obtener CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = CID no válido: { $value }

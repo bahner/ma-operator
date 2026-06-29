@@ -330,3 +330,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Tókst ekki að sækja CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Ógilt CID: { $value }

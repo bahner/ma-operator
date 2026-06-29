@@ -322,3 +322,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Malsukcesis preni CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Nevalida CID: { $value }

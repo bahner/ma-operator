@@ -323,3 +323,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = No bin ebl fo get CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Dat no bin valid CID: { $value }

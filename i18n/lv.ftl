@@ -330,3 +330,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Neizdevās ielādēt CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Nederīgs CID: { $value }

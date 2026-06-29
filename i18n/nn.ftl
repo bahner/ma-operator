@@ -334,3 +334,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Klarte ikkje henta CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Ugyldig CID: { $value }

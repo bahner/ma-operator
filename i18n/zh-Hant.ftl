@@ -336,3 +336,8 @@ help-cmd-batch-async = help-cmd-batch-async
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = 獲取 CID { $cid } 失敗：{ $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = 無效的 CID：{ $value }

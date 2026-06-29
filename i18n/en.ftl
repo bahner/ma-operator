@@ -342,3 +342,8 @@ help-cmd-batch-async =   .batch:async / .batch        run commands in parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
+
+# ── Scheme ────────────────────────────────────────────────────────────────
+scheme-cid-fetch-error = Failed to fetch CID { $cid }: { $reason }
+scheme-include-error = include: { $reason }
+scheme-not-a-cid = Not a valid CID: { $value }
