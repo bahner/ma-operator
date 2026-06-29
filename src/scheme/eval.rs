@@ -2,15 +2,15 @@
 ///
 /// # ma-specific primitives
 ///
-/// The evaluator recognises two classes of ma expressions based on the
-/// head character of a list form:
-///
-/// | Head starts with | Meaning |
+/// | Form | Meaning |
 /// |---|---|
-/// | `.` | ma dot-path command (config get/set/delete) |
-/// | `@` or `did:` | ma actor message / RPC call |
-///
-/// These use the *existing* ma grammar — no new function names needed.
+/// | `(.my.path)` | config get — returns string or list |
+/// | `(.my.path: "val")` | config set — returns nil |
+/// | `(.my.path "")` | config delete — returns nil |
+/// | `(.my.path!verb arg…)` | side-effect verb — queued, returns nil |
+/// | `(.my.path: <bafy…>)` | set to CID content (CID fetched by `eval_atom`) |
+/// | `(@alias#frag:verb arg)` | actor RPC — awaits reply |
+/// | `(did:ma:…#frag:verb arg)` | same, bare DID in function position |
 ///
 /// # Async RPC
 ///
@@ -686,9 +686,18 @@ fn apply(
 
             SchemeVal::Builtin(name) => apply_builtin(name, args, ctx).await,
 
-            // ma dot-path in function position: (.my.aliases.sky) or (.path arg…)
+            // ma dot-path in function position.
+            //
+            // (.my.path)         → Get
+            // (.my.path "")      → Delete  (empty string arg)
+            // (.my.path: "val")  → Set     (colon in atom name)
+            // (.my.path!verb …)  → side-effect, queued to input_queue
             SchemeVal::MaPath(path) => {
-                let command = if args.is_empty() {
+                let command = if args.len() == 1 && args[0].to_splice_lossy().is_empty() {
+                    // Empty arg → delete: strip any trailing colon, append ':'
+                    let clean = path.trim_end_matches(':');
+                    format!("{clean}:")
+                } else if args.is_empty() {
                     path.clone()
                 } else {
                     let args_str = args
@@ -724,10 +733,6 @@ fn apply(
 
 // ── ma-specific dispatch ───────────────────────────────────────────────────
 
-/// Reconstruct an actor command string from a target and argument values.
-///
-/// Handles fragment concatenation: `"did:ma:abc"` + `["#house:enter", "#room"]`
-/// → `"did:ma:abc#house:enter #room"`.
 fn reconstruct_actor_command(target: &str, args: &[SchemeVal]) -> String {
     let mut result = target.to_string();
     let mut iter = args.iter();
@@ -751,11 +756,12 @@ fn reconstruct_actor_command(target: &str, args: &[SchemeVal]) -> String {
 
 /// Evaluate a ma dot-path command and return the result as a `SchemeVal`.
 ///
-/// Supported: `Get` → `Str` (or `List` of child paths), `Set` → `Nil`,
-/// `Delete` → `Nil`.  Verbs are not supported inside Scheme expressions.
+/// - `Get`  → `Str` (leaf) or `List` of child-path strings (subtree)
+/// - `Set`  → `Nil`
+/// - `Delete` → `Nil`
+/// - `Meta` / `Verb` → command is queued to `input_queue`; returns `Nil`
 fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
     let cfg = ctx.config.get_untracked();
-
     match parse(command, &cfg) {
         Err(e) => Err(SchemeErr::MaError(e)),
         Ok(Command::DotCommand { path, op, .. }) => match op {
@@ -767,7 +773,6 @@ fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
                     if pairs.is_empty() {
                         Err(SchemeErr::MaError(format!("no value at {path}")))
                     } else {
-                        // Return child paths as a list of strings.
                         Ok(SchemeVal::List(
                             pairs
                                 .into_iter()
@@ -787,9 +792,13 @@ fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
                 });
                 Ok(SchemeVal::Nil)
             }
-            DotOp::Verb(_) | DotOp::Meta(_) => Err(SchemeErr::MaError(format!(
-                "dot-path verbs (!verb / :verb) are not callable from Scheme: {command}"
-            ))),
+            // Side-effect verbs: queue to terminal input_queue, return nil.
+            DotOp::Verb(_) | DotOp::Meta(_) => {
+                ctx.state
+                    .input_queue
+                    .update(|q| q.push_back(command.to_string()));
+                Ok(SchemeVal::Nil)
+            }
         },
         Ok(_) => Err(SchemeErr::MaError(format!(
             "expected a dot-path command, got: {command}"
@@ -1505,7 +1514,6 @@ fn apply_builtin(
                 //      (include .my.scheme.stdlib.ma)  are valid.
                 let path = match &args[0] {
                     SchemeVal::Str(s) => s.clone(),
-                    SchemeVal::MaPath(p) => p.clone(),
                     other => {
                         return Err(SchemeErr::Runtime(format!(
                             "include: expected a path string or CID, got {}",

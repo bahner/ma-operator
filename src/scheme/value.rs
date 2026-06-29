@@ -93,7 +93,7 @@ pub enum SchemeVal {
     Nil,
     /// A proper list.
     List(Vec<SchemeVal>),
-    /// A ma dot-path reference: `.my.aliases.sky`, `.my.config.k: v`, etc.
+    /// A ma dot-path reference: `.my.aliases.sky`, `.my.doc.poem!publish`, etc.
     MaPath(String),
     /// A ma actor target: `@ma#house:enter`, `did:ma:abc#room:enter`, etc.
     MaActor(String),

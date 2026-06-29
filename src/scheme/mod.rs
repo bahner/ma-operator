@@ -8,13 +8,13 @@
 ///
 /// ## ma primitives
 ///
-/// Inside a Scheme expression the *existing* ma grammar is available as
-/// first-class primitives — no new function names:
-///
 /// | Scheme form | What it does |
 /// |---|---|
-/// | `(.my.aliases.sky)` | dot-path get (sync, returns string) |
-/// | `(.my.config.k: "v")` | dot-path set (sync, returns nil) |
+/// | `(.my.path)` | dot-path get (sync, returns string or child list) |
+/// | `(.my.path: "val")` | dot-path set (sync, returns nil) |
+/// | `(.my.path "")` | dot-path delete (sync, returns nil) |
+/// | `(.my.path!verb arg…)` | side-effect verb, queued (returns nil) |
+/// | `(.my.path: <bafy…>)` | set to CID content (`<cid>` fetched by eval) |
 /// | `(@ma#house:enter #room)` | actor RPC (async, returns reply string) |
 /// | `(did:ma:abc#room:enter ticket)` | same, DID in function position |
 ///

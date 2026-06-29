@@ -333,6 +333,36 @@ fn handle_dot_set(
         state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
         return;
     }
+    // ── <cid> explicit fetch ───────────────────────────────────────────────
+    // `.my.path: <bafy…>` — fetch the CID content and store it as the value.
+    // Plain `bafy…` (without angle brackets) is stored as a literal string.
+    if value.starts_with('<') && value.ends_with('>') && value.len() > 2 {
+        let inner = value[1..value.len() - 1].to_string();
+        if crate::mailbox::is_link_value(&inner) {
+            let path_owned = path.to_string();
+            let uname = username.to_string();
+            let state2 = state.clone();
+            spawn_local(async move {
+                match fetch_cid_text(&inner).await {
+                    Ok(content) => {
+                        config.update(|c| c.set(&path_owned, &content));
+                        let cfg = config.get_untracked();
+                        if let Err(e) = persist_config(&uname, &cfg).await {
+                            state2.push_error(e);
+                            return;
+                        }
+                        apply_config_to_dom(&cfg);
+                        state2.push_system(tf(
+                            "msg-set",
+                            &[("path", &path_owned), ("value", &content)],
+                        ));
+                    }
+                    Err(e) => state2.push_error(e),
+                }
+            });
+            return;
+        }
+    }
     config.update(|c| c.set(path, &value));
     // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
     if path.starts_with(".my.ctx") {
