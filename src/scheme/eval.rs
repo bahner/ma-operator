@@ -125,6 +125,11 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
                     Err(SchemeErr::Runtime(format!("not a valid CID: {inner}")))
                 };
             }
+            // ma dot-path in argument/value position: resolve immediately.
+            // (.my.path …) in head position is handled by the list branch below.
+            if s.starts_with('.') {
+                return eval_ma_dot(&s, &ctx);
+            }
             eval_atom(&s, &env)
         }
         SchemeExpr::List(forms) => {
@@ -205,6 +210,21 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
                 .any(|f| matches!(f, SchemeExpr::Atom(s) if s == "|"))
             {
                 return eval_pipe(forms, env, ctx).await;
+            }
+
+            // ── ma dot-path in head position ────────────────────────────────
+            // Keep as MaPath so apply() handles Get / Set / Delete / Verb.
+            // (Without this guard the Atom branch above would resolve the path
+            // to its value, making (.my.path) try to call a string.)
+            if let SchemeExpr::Atom(head) = &forms[0] {
+                if head.starts_with('.') {
+                    let path = SchemeVal::MaPath(head.clone());
+                    let mut args = Vec::with_capacity(forms.len() - 1);
+                    for form in &forms[1..] {
+                        args.push(eval(form.clone(), env.clone(), ctx.clone()).await?);
+                    }
+                    return apply(path, args, ctx).await;
+                }
             }
 
             // ── Application ────────────────────────────────────────────────
