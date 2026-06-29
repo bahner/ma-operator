@@ -35,8 +35,32 @@ pub fn Landing() -> impl IntoView {
     let state_import = state.clone();
     let lang = state.lang;
 
+    // Background music: play while on the landing page, stop when login succeeds.
+    // window._bgMusic persists the Audio object across reactive re-renders.
+    Effect::new(move |_| {
+        let _ = js_sys::eval(
+            "if(!window._bgMusic){\
+                window._bgMusic=new Audio('/hh.ogg');\
+                window._bgMusic.loop=true;\
+                window._bgMusic.volume=0.4;\
+            }\
+            window._bgMusic.play().catch(function(){});",
+        );
+    });
+
+    on_cleanup(|| {
+        let _ = js_sys::eval(
+            "if(window._bgMusic){window._bgMusic.pause();window._bgMusic.currentTime=0;}",
+        );
+    });
+
     view! {
-        <div class="landing">
+        <div class="landing" on:click=move |_| {
+            // Retry after first user gesture to satisfy browser autoplay policy.
+            let _ = js_sys::eval(
+                "if(window._bgMusic)window._bgMusic.play().catch(function(){});",
+            );
+        }>
             <div class="landing-box">
                 <div class="landing-tabs">
                     <button
