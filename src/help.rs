@@ -84,7 +84,6 @@ fn my() -> Vec<String> {
         t("help-aliases-del"),
         String::new(),
         t("help-runtime-discover"),
-        t("help-runtime-claim"),
         String::new(),
         t("help-identity"),
         t("help-identity-did"),

@@ -6,6 +6,22 @@ use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
+/// Oneshot sender for a plain-text reply.
+pub type ReplySender = oneshot::Sender<String>;
+
+thread_local! {
+    pub static AWAITING_REPLIES: RefCell<HashMap<String, ReplySender>> =
+        RefCell::new(HashMap::new());
+}
+
+/// Helper for registering and taking one-shot reply channels.
+pub struct AwaitingReply;
+impl AwaitingReply {
+    pub fn take(msg_id: &str) -> Option<ReplySender> {
+        AWAITING_REPLIES.with(|m| m.borrow_mut().remove(msg_id))
+    }
+}
+
 /// (sender, sent_at_ms) for Scheme RPC reply channels.
 type SchemeSender = (oneshot::Sender<Result<String, String>>, f64);
 
@@ -174,15 +190,6 @@ pub enum OutboxTask {
         value: ciborium::Value,
         /// `cmd_id` of the originating command, registered as `CrudConfirm` on success.
         cmd_id: Option<u64>,
-    },
-    /// DID-document republish triggered by a profile-publish reply.
-    IpfsPublish {
-        ma_did: String,
-        cid_str: String,
-        cid_key: String,
-        own_username: String,
-        cmd_id: Option<u64>,
-        config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
     },
     /// Auto-pong reply to an incoming `:ping`.
     RpcPong { target: String, reply_to_id: String },
@@ -603,4 +610,7 @@ thread_local! {
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_ipfs_publish` to embed `ma.agent` in the DID document.
     pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
+    /// Profile encryption key for the current session.
+    /// Derived from the passphrase at login via PBKDF2; never stored to disk.
+    pub static SESSION_PROFILE_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
 }

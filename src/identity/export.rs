@@ -39,7 +39,9 @@ pub struct UnlockedIdentity {
 }
 
 /// Create a brand-new identity: generate keys, encrypt with passphrase,
-/// store the export JSON, and return the key material.
+/// store the export JSON, and return the key material.  Only used in tests;
+/// production code uses `create_identity_did_named`.
+#[cfg(test)]
 pub fn create_identity(
     username: &str,
     passphrase: &str,
@@ -53,6 +55,23 @@ pub fn create_identity(
     let export = BrowserIdentityExport::new(config_yaml, &encrypted);
     let json = export.to_json_string().map_err(|e| e.to_string())?;
     Ok((json, unlocked))
+}
+
+/// Create a new identity whose username is derived from its own DID (the
+/// IPNS portion after `did:ma:`).  Returns `(did, export_json, unlocked)`.
+pub fn create_identity_did_named(
+    passphrase: &str,
+) -> Result<(String, String, UnlockedIdentity), String> {
+    let bundle = SecretBundle::generate();
+    let unlocked = bundle_to_unlocked(&bundle)?;
+    let did = unlocked.sender_did.clone();
+    let username = did.strip_prefix("did:ma:").unwrap_or(&did).to_string();
+    let encrypted = bundle.encrypt(passphrase).map_err(|e| e.to_string())?;
+    let config = Config::new_for_storage(&username);
+    let config_yaml = config.to_yaml_string().map_err(|e| e.to_string())?;
+    let export = BrowserIdentityExport::new(config_yaml, &encrypted);
+    let json = export.to_json_string().map_err(|e| e.to_string())?;
+    Ok((did, json, unlocked))
 }
 
 /// Unlock an existing identity: decrypt the bundle and return key material.
@@ -102,6 +121,7 @@ pub fn export_for_download(
 /// Replace the iroh transport key in an existing encrypted bundle with a freshly
 /// generated one, re-encrypt with the same passphrase, and return the new export
 /// JSON together with the unlocked session key material ready for login.
+#[cfg(test)]
 pub fn rekey_iroh(
     export_json: &str,
     passphrase: &str,

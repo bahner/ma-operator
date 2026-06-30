@@ -4,7 +4,7 @@
 ///   store "identities": out-of-line key (username string) -> JSON string
 ///   store "configs":    out-of-line key (username string) -> JSON string
 ///   store "histories":  out-of-line key (username string) -> JSON string
-use js_sys::{Array, Promise};
+use js_sys::Promise;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -131,68 +131,6 @@ pub async fn load_identity(username: &str) -> Result<Option<StoredIdentity>, Str
         .ok_or_else(|| "invalid value in IndexedDB".to_string())?;
     let identity: StoredIdentity = serde_json::from_str(&json).map_err(|e| e.to_string())?;
     Ok(Some(identity))
-}
-
-pub async fn list_usernames() -> Result<Vec<String>, String> {
-    let db = open_db().await?;
-    let tx = db
-        .transaction_with_str(STORE_IDENTITIES)
-        .map_err(|e| format!("{e:?}"))?;
-    let store = tx
-        .object_store(STORE_IDENTITIES)
-        .map_err(|e| format!("{e:?}"))?;
-    let req = store.get_all_keys().map_err(|e| format!("{e:?}"))?;
-    let val = req_to_future(req.as_ref()).await?;
-    let arr: Array = val.unchecked_into();
-
-    let mut names: Vec<String> = arr.iter().filter_map(|v| v.as_string()).collect();
-    names.sort();
-    Ok(names)
-}
-
-pub async fn delete_identity(username: &str) -> Result<(), String> {
-    let db = open_db().await?;
-    let tx = db
-        .transaction_with_str_and_mode(STORE_IDENTITIES, IdbTransactionMode::Readwrite)
-        .map_err(|e| format!("{e:?}"))?;
-    let store = tx
-        .object_store(STORE_IDENTITIES)
-        .map_err(|e| format!("{e:?}"))?;
-    let req = store
-        .delete(&JsValue::from_str(username))
-        .map_err(|e| format!("{e:?}"))?;
-    let _ = req_to_future(req.as_ref()).await?;
-    Ok(())
-}
-
-pub async fn delete_config(username: &str) -> Result<(), String> {
-    let db = open_db().await?;
-    let tx = db
-        .transaction_with_str_and_mode(STORE_CONFIGS, IdbTransactionMode::Readwrite)
-        .map_err(|e| format!("{e:?}"))?;
-    let store = tx
-        .object_store(STORE_CONFIGS)
-        .map_err(|e| format!("{e:?}"))?;
-    let req = store
-        .delete(&JsValue::from_str(username))
-        .map_err(|e| format!("{e:?}"))?;
-    let _ = req_to_future(req.as_ref()).await?;
-    Ok(())
-}
-
-pub async fn delete_history(username: &str) -> Result<(), String> {
-    let db = open_db().await?;
-    let tx = db
-        .transaction_with_str_and_mode(STORE_HISTORIES, IdbTransactionMode::Readwrite)
-        .map_err(|e| format!("{e:?}"))?;
-    let store = tx
-        .object_store(STORE_HISTORIES)
-        .map_err(|e| format!("{e:?}"))?;
-    let req = store
-        .delete(&JsValue::from_str(username))
-        .map_err(|e| format!("{e:?}"))?;
-    let _ = req_to_future(req.as_ref()).await?;
-    Ok(())
 }
 
 pub async fn save_config(username: &str, config_json: &str) -> Result<(), String> {

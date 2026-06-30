@@ -181,66 +181,50 @@ impl EgoConfig {
 
     // ── Profile serialization / merge ─────────────────────────────────────
 
-    /// Prefixes included when serialising the portable profile blob.
-    /// Explicitly excluded: .ma.* (local daemon discovery, device-specific),
-    /// .profiles.* (local CID index, ephemeral).
-    const PROFILE_PREFIXES: &'static [&'static str] = &[
-        ".my.aliases.",
-        ".my.doc.",
-        ".my.i18n",
-        ".my.config.",
-        ".my.profile.",
-    ];
+    /// Returns true if a key should be included in the profile blob.
+    /// Profile is all of `.my.*` — no exceptions.
+    fn is_profile_key(k: &str) -> bool {
+        k == ".my" || k.starts_with(".my.")
+    }
 
     /// The canonical key for the last profile publish timestamp (RFC3339 UTC string).
     /// Compared against `Document.updated_at` on startup to detect IPNS staleness.
     pub const PROFILE_PUBLISHED_AT_KEY: &'static str = ".my.profile.published_at";
 
-    /// Serialize the portable profile subtrees to CBOR bytes.
-    /// Only keys matching `PROFILE_PREFIXES` are included.
-    pub fn serialize_profile_subtrees(&self) -> Result<Vec<u8>, String> {
-        let selected: HashMap<&str, &str> = self
-            .tree
-            .iter()
-            .filter(|(k, _)| {
-                Self::PROFILE_PREFIXES
-                    .iter()
-                    .any(|prefix| k.as_str() == *prefix || k.starts_with(prefix))
-            })
-            .map(|(k, v)| (k.as_str(), v.as_str()))
-            .collect();
-        serde_ipld_dagcbor::to_vec(&selected).map_err(|e| e.to_string())
-    }
+    /// Key used to embed the username in the profile blob.
+    pub const META_USERNAME_KEY: &'static str = ".meta.username";
 
     /// Replace the profile subtrees in this config with data from a remote profile blob.
-    /// All local keys matching `PROFILE_PREFIXES` are removed first, then the remote
-    /// keys are inserted wholesale — preventing buildup of stale aliases, inbox entries,
-    /// and other profile data.
-    pub fn merge_profile(&mut self, cbor_bytes: &[u8]) -> Result<usize, String> {
+    /// Extracts and returns the embedded username (`.meta.username`).
+    /// All local profile keys are removed first, then the remote keys are inserted
+    /// wholesale — preventing buildup of stale data.
+    pub fn merge_profile(&mut self, cbor_bytes: &[u8]) -> Result<(usize, String), String> {
         let map: HashMap<String, String> =
             serde_ipld_dagcbor::from_slice(cbor_bytes).map_err(|e| e.to_string())?;
-        // Remove all local keys covered by the profile prefixes so that old aliases
-        // and similar data do not accumulate across profile fetches.
-        self.tree.retain(|k, _| {
-            !Self::PROFILE_PREFIXES
-                .iter()
-                .any(|prefix| k == *prefix || k.starts_with(prefix))
-        });
-        let count = map.len();
+        let username = map
+            .get(Self::META_USERNAME_KEY)
+            .cloned()
+            .unwrap_or_default();
+        self.tree.retain(|k, _| !Self::is_profile_key(k.as_str()));
+        let count = map
+            .iter()
+            .filter(|(k, _)| k.as_str() != Self::META_USERNAME_KEY)
+            .count();
         for (k, v) in map {
-            self.tree.insert(k, v);
+            if k != Self::META_USERNAME_KEY {
+                self.tree.insert(k, v);
+            }
         }
-        Ok(count)
+        Ok((count, username))
     }
 
     /// Return a copy of this config suitable for file export.
-    /// Excludes `.ma.*` (device-specific daemon discovery state).
-    /// Everything else — aliases, docs, config, i18n, inbox, acl, identity — is included.
+    /// Excludes `.ctx.ma.*` (device-specific runtime state).
     pub fn for_export(&self) -> Self {
         let tree = self
             .tree
             .iter()
-            .filter(|(k, _)| !k.starts_with(".ma."))
+            .filter(|(k, _)| !k.starts_with(".ctx.ma."))
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
         Self { tree }
@@ -259,7 +243,7 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
             cfg.tree.retain(|k, _| {
-                k.starts_with(".my.") || k.starts_with(".profiles.") || k.starts_with(".ma.")
+                k.starts_with(".my.") || k.starts_with(".ctx.") || k.starts_with(".ma.")
             });
             cfg.set_defaults();
             Ok(cfg)
@@ -478,50 +462,5 @@ mod tests {
     #[test]
     fn from_json_invalid_fails() {
         assert!(EgoConfig::from_json("not json").is_err());
-    }
-
-    // ── serialize_profile_subtrees / merge_profile ─────────────────────────
-
-    #[test]
-    fn profile_roundtrip_keeps_aliases_and_config() {
-        let mut cfg = bare();
-        cfg.set(".my.aliases.alice", "did:ma:abc");
-        cfg.set(".my.i18n", "nb");
-        cfg.set(".my.config.colour.text", "#112233");
-        // inbox should NOT be included
-        cfg.set(".my.inbox.0.from", "did:ma:xyz");
-
-        let bytes = cfg.serialize_profile_subtrees().unwrap();
-
-        let mut target = bare();
-        let n = target.merge_profile(&bytes).unwrap();
-        assert!(n >= 3);
-        assert_eq!(target.get(".my.aliases.alice"), Some("did:ma:abc"));
-        assert_eq!(target.get(".my.i18n"), Some("nb"));
-        assert_eq!(target.get(".my.config.colour.text"), Some("#112233"));
-        assert!(target.get(".my.inbox.0.from").is_none());
-    }
-
-    #[test]
-    fn merge_profile_replaces_old_aliases() {
-        let mut cfg = bare();
-        cfg.set(".my.aliases.old", "did:ma:old");
-
-        // Profile blob has only a new alias
-        let mut source = bare();
-        source.set(".my.aliases.new", "did:ma:new");
-        let bytes = source.serialize_profile_subtrees().unwrap();
-
-        cfg.merge_profile(&bytes).unwrap();
-        assert!(
-            cfg.get(".my.aliases.old").is_none(),
-            "stale alias should be gone"
-        );
-        assert_eq!(cfg.get(".my.aliases.new"), Some("did:ma:new"));
-    }
-
-    #[test]
-    fn merge_profile_invalid_cbor_fails() {
-        assert!(bare().merge_profile(b"not cbor").is_err());
     }
 }

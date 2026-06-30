@@ -1,8 +1,6 @@
 //! Actor message evaluator: routes `@target:verb` commands to transport,
 //! with interceptors for `:kinds/`, `:path:edit`, and CID content operations.
 
-use leptos::prelude::*;
-
 use crate::{
     config::EgoConfig,
     core::CommandStatus,
@@ -11,6 +9,7 @@ use crate::{
     transport,
     views::editor::EditorMode,
 };
+use leptos::prelude::*;
 
 // ── Public entry point ────────────────────────────────────────────────────
 
@@ -22,22 +21,7 @@ pub(crate) fn eval_actor(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    // Bare `@alias` with no verb and empty body → echo the resolved DID.
-    if verb.is_none() && body.trim().is_empty() {
-        state.push_output(target);
-        return;
-    }
-
-    let focus_prefix = state
-        .focus_actor
-        .get_untracked()
-        .map(|f| format!("{} ", f.prompt))
-        .unwrap_or_default();
-    let display = format!("{focus_prefix}{raw}");
-    let cmd_id = state.push_command(display);
-    log::debug!("[actor] push_command id={cmd_id} target={target:?} verb={verb:?}");
-
-    // Push to the serial outbox queue — the dispatch loop executes one at a time.
+    let cmd_id = state.push_command(raw);
     state.outbox_queue.update(|q| {
         q.push_back(OutboxTask::Actor {
             target,
@@ -45,7 +29,7 @@ pub(crate) fn eval_actor(
             body,
             cmd_id,
             config,
-        });
+        })
     });
 }
 
@@ -116,43 +100,6 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                 state.push_error(e);
             }
         },
-
-        OutboxTask::IpfsPublish {
-            ma_did,
-            cid_str,
-            cid_key,
-            own_username,
-            cmd_id,
-            config,
-        } => {
-            use crate::config::persist_config;
-            let result = transport::send_ipfs_publish(&ma_did).await;
-            let result = match result {
-                Err(ref e) if e.contains("timed out") || e.contains("connect failed") => {
-                    transport::send_ipfs_publish(&ma_did).await
-                }
-                other => other,
-            };
-            match result {
-                Ok(msg_id2) => {
-                    config.update(|cfg| cfg.set(&cid_key, &cid_str));
-                    let cfg = config.get_untracked();
-                    let _ = persist_config(&own_username, &cfg).await;
-                    if let Some(cid) = cmd_id {
-                        state.bind_message_id(cid, msg_id2);
-                    }
-                }
-                Err(e) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(
-                            cid,
-                            crate::core::CommandStatus::Error(e.clone()),
-                        );
-                    }
-                    state.push_error(crate::i18n::tf("profile-publish-failed", &[("e", &e)]));
-                }
-            }
-        }
 
         OutboxTask::RpcPong {
             target,

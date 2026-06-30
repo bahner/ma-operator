@@ -18,14 +18,11 @@ pub(crate) async fn startup_profile_exists(
     state: AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    let remote_cid = match crate::parser::verbs::doc_agent_cid(&doc) {
+    let remote_cid = match crate::parser::verbs::doc_profile_cid(&doc) {
         Some(c) => c,
         None => return, // No ma.agent — nothing to merge.
     };
-    let local_cid = config
-        .get_untracked()
-        .get(&format!(".profiles.{username}"))
-        .map(|s| s.to_string());
+    let local_cid = crate::state::SESSION_AGENT_CID.with(|c| c.borrow().clone());
     if local_cid.as_deref() == Some(remote_cid.as_str()) {
         return; // Already up to date — silent.
     }
@@ -56,11 +53,10 @@ pub(crate) async fn startup_profile_exists(
         }
     }
     crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
-    let profile_key = format!(".profiles.{username}");
-    config.update(|cfg| cfg.set(&profile_key, &remote_cid));
     let n = config
         .try_update(|cfg| cfg.merge_profile(&json_bytes))
         .and_then(|r| r.ok())
+        .map(|(count, _)| count)
         .unwrap_or(0);
     state.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
     let cfg = config.get_untracked();
@@ -70,7 +66,7 @@ pub(crate) async fn startup_profile_exists(
 pub(crate) async fn startup_no_document(state: AppState, config: RwSignal<EgoConfig>) {
     let ma_url = {
         let cfg = config.get_untracked();
-        cfg.get(".ma.url")
+        cfg.get(".ctx.ma.url")
             .unwrap_or("http://localhost:5003")
             .trim_end_matches('/')
             .to_string()
@@ -98,9 +94,9 @@ pub(crate) async fn startup_no_document(state: AppState, config: RwSignal<EgoCon
         .unwrap_or("")
         .to_string();
     config.update(|cfg| {
-        cfg.set(".ma.did", &ma_did);
+        cfg.set(".ctx.ma.did", &ma_did);
         if !endpoint_id.is_empty() {
-            cfg.set(".ma.endpoint_id", &endpoint_id);
+            cfg.set(".ctx.ma.endpoint_id", &endpoint_id);
         }
         cfg.set(".my.aliases.ma", &ma_did);
     });
@@ -124,13 +120,9 @@ pub(crate) async fn startup_did_sync(
     match (*resolver).resolve(&own_did).await {
         Ok(doc) => startup_profile_exists(doc, username, state, config).await,
         Err(_) => {
-            // Only publish if no CID is stored locally — meaning the document
-            // was never published from this device. Any error when a CID exists
-            // (504, timeout, etc.) is transient and should not trigger a publish.
-            let has_local_cid = config
-                .get_untracked()
-                .get(&format!(".profiles.{username}"))
-                .is_some();
+            // Only publish if SESSION_AGENT_CID is not yet set, meaning the
+            // document was never published from this device.
+            let has_local_cid = crate::state::SESSION_AGENT_CID.with(|c| c.borrow().is_some());
             if !has_local_cid {
                 startup_no_document(state, config).await;
             }
@@ -153,11 +145,6 @@ pub(crate) async fn startup_load_config(
             // Seed auto-publish with default "true" if not already set.
             if cfg.get(".my.identity.auto-publish").is_none() {
                 cfg.set(".my.identity.auto-publish", "true");
-            }
-            // Seed SESSION_AGENT_CID from stored profile CID if present.
-            let new_profile_key = format!(".profiles.{username}");
-            if let Some(cid) = cfg.get(&new_profile_key).map(|s| s.to_string()) {
-                crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid));
             }
             // Prune inbox entries that expired since last session.
             let now = js_sys::Date::now() / 1000.0;

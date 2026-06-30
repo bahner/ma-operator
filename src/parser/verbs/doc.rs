@@ -89,7 +89,7 @@ fn doc_eval(
     if content.is_empty() {
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
-    state.push_command_done(format!("{path}:eval"));
+    state.push_command_done(format!("{path}!eval"));
     on_eval.run(content);
     Ok(())
 }

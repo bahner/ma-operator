@@ -17,10 +17,10 @@ use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 use ma_core::Ipld;
 
-/// Extract the `ma.agent` CID string from a resolved `Document`, if present.
-pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
+/// Extract the `ma.profile` CID string from a resolved `Document`, if present.
+pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     match &doc.ma {
-        Some(Ipld::Map(map)) => match map.get("agent") {
+        Some(Ipld::Map(map)) => match map.get("profile") {
             Some(Ipld::String(s)) => Some(s.clone()),
             _ => None,
         },
@@ -29,7 +29,7 @@ pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
 }
 
 /// Default base URL for the local `ma` daemon.
-/// Override per-profile with `.ma.url: http://host:port`.
+/// Override with `.ctx.ma.url: http://host:port` or pass port as argument to `.ma`.
 pub(super) const MA_URL: &str = "http://localhost:5003";
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
@@ -74,8 +74,8 @@ pub fn dispatch_meta(
     if path == ".my.identity" || path.starts_with(".my.identity.") {
         return identity::handle_identity(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path.starts_with(".profiles.") {
-        return profiles::handle_profiles(path, verb, args, state, config, show_editor, on_eval);
+    if path == ".my.profile" {
+        return profiles::handle_my_profile(verb, args, state, config);
     }
     if path == ".my.i18n" && verb == "list" {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);

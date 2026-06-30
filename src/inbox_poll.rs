@@ -60,7 +60,7 @@ fn route_incoming(
     }
     let display = format_display(&incoming, config);
     match incoming.reply_to.clone() {
-        Some(msg_id) => dispatch_reply(&msg_id, incoming, display, state, config, show_editor),
+        Some(msg_id) => dispatch_reply(&msg_id, incoming, display, state, show_editor),
         None => state.push_incoming(display, None, incoming.is_error),
     }
 }
@@ -71,7 +71,6 @@ fn dispatch_reply(
     incoming: IncomingMessage,
     display: String,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
     // Scheme-initiated RPC: route the reply directly to the waiting evaluator.
@@ -81,6 +80,18 @@ fn dispatch_reply(
             Err(text_opt.unwrap_or_else(|| display.clone()))
         } else {
             Ok(text_opt.unwrap_or_default())
+        };
+        let _ = sender.send(result);
+        return;
+    }
+
+    // One-shot RPC from `send_rpc_and_wait`: route reply to the oneshot channel.
+    if let Some(sender) = crate::state::AwaitingReply::take(msg_id) {
+        let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+        let result = if incoming.is_error {
+            text_opt.unwrap_or_else(|| display.clone())
+        } else {
+            text_opt.unwrap_or_default()
         };
         let _ = sender.send(result);
         return;
@@ -111,7 +122,7 @@ fn dispatch_reply(
             publisher_did,
             cmd_id,
         } => {
-            handle_profile_publish_reply(publisher_did, cmd_id, &incoming, state, config);
+            handle_profile_publish_reply(publisher_did, cmd_id, &incoming, state);
         }
         PendingKind::EditOpen {
             target,
@@ -136,9 +147,9 @@ fn dispatch_reply(
             handle_crud_confirm(cmd_id, &incoming, state, &display);
         }
         PendingKind::Simple { cmd_id } => {
-            let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+            let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             state.resolve_command_by_id(cmd_id, status);
-            if let Some(text) = push_opt {
+            if let Some(text) = text_opt {
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
             }
         }
@@ -365,40 +376,31 @@ fn handle_profile_publish_reply(
     cmd_id: Option<u64>,
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
 ) {
-    let ma_did = publisher_did;
-    let cmd_id_opt = cmd_id;
     if incoming.is_error {
-        if let Some(cid) = cmd_id_opt {
-            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
+        if let Some(id) = cmd_id {
+            state.resolve_command_by_id(id, CommandStatus::Error(incoming.display.clone()));
         }
         state.push_error(incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid_str) => {
+            // Store profile CID in session — it will be embedded in the next DID publish.
             crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid_str.clone()));
-            let own_username = state
-                .session
-                .get_untracked()
-                .map(|s| s.username.clone())
-                .unwrap_or_default();
-            let cid_key = format!(".profiles.{own_username}");
-            state.outbox_queue.update(|q| {
-                q.push_back(OutboxTask::IpfsPublish {
-                    ma_did,
-                    cid_str,
-                    cid_key,
-                    own_username,
-                    cmd_id: cmd_id_opt,
-                    config,
-                });
+            if let Some(id) = cmd_id {
+                state.resolve_command_by_id(id, CommandStatus::Replied(cid_str.clone()));
+                state.push_incoming(cid_str, Some(id), false);
+            }
+            // Re-publish DID document so ma.profile is updated (fire-and-forget).
+            let publisher_did2 = publisher_did.clone();
+            leptos::task::spawn_local(async move {
+                let _ = crate::transport::send_ipfs_publish(&publisher_did2).await;
             });
         }
         Err(e) => {
-            if let Some(cid) = cmd_id_opt {
-                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            if let Some(id) = cmd_id {
+                state.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
             }
             state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
         }

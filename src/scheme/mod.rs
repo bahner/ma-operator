@@ -58,11 +58,6 @@ pub fn init_session_env() {
     SESSION_ENV.with(|e| *e.borrow_mut() = Some(Env::new_root()));
 }
 
-/// Clear the session environment. Called at logout.
-pub fn reset_session_env() {
-    SESSION_ENV.with(|e| *e.borrow_mut() = None);
-}
-
 /// Return the current session environment, creating one if needed.
 pub(crate) fn get_env() -> Env {
     SESSION_ENV.with(|e| {

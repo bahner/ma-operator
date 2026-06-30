@@ -13,6 +13,7 @@ mod inbox_poll;
 mod mailbox;
 mod messages;
 mod parser;
+mod profile_crypto;
 mod scheme;
 mod startup;
 mod state;

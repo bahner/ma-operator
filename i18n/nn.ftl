@@ -4,25 +4,38 @@ lang-name = Nynorsk
 # ── Innloggingsside ───────────────────────────────────────────────────────
 tab-login = logg inn
 tab-new-identity = ny identitet
-tab-import = importer
+tab-import-profile = importer profil
 label-passphrase = passfrase
 label-username = brukarnamn
 label-confirm-passphrase = stadfest passfrase
+label-did = DID
+label-profile-cid = profil-CID
+label-or-file = eller fil
 btn-login = logg inn
 btn-export = eksporter
 btn-generate = generer
 btn-new-endpoint = nytt endepunkt
+btn-import-profile = importer profil
 passphrase-warning = Mist passfrase = mist identitet. Det finst ingen atterhenting.
-import-help = Vel ei eksportert .zion.json-fil. Pakka forblir kryptert.
+import-profile-help = Importer ein profil via CID eller fil. Du treng den same passfrasen som vart brukt ved publisering.
+import-profile-detected-user = Profil tilhøyrer: { $name }
 status-unlocking = låser opp...
 status-generating = genererer identitet...
 status-reading-file = les fil...
+status-fetching-profile = hentar profil frå IPFS...
 status-imported = importerte '{ $name }' — byt til fana Logg inn
+status-importing-profile = importerer profil...
+profile-import-done = profil importert for '{ $name }' — { $n } nøklar lasta
 error-wrong-passphrase = feil passfrase: { $e }
 error-identity-not-found = identiteten '{ $name }' vart ikkje funnen
 error-username-required = brukarnamn er påkravd
 error-passphrase-required = passfrase er påkravd
 error-passphrases-no-match = passfraser stemmer ikkje overeins
+error-profile-source-required = oppgi ein CID eller last opp ein fil
+error-did-required = skriv inn ditt DID
+error-profile-fetch = klarte ikkje hente profil: { $e }
+error-profile-no-username = profilen inneheld ikkje eit brukarnamn
+error-profile-no-identity = identiteten '{ $name }' ikkje funnen — importer identiteten fyrst
 
 # ── Terminalsystemmeldingar ───────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logga inn som { $username }
@@ -31,7 +44,7 @@ msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publisert via lokal ma ({ $url })
-msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.ma!discover' og deretter '.my.identity:publish @ma'. Skriv '.help.publish' for detaljar.
+msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.ma [port]' og deretter '.my.identity!publish @ma'. Skriv '.help.publish' for detaljar.
 msg-blocked = ⊗ blokkert [{ $cap }]: { $from }
 msg-focus-cleared = fokus tømt
 msg-focusing = fokuserer { $did } som { $prompt }
@@ -95,7 +108,7 @@ discover-invalid-did = oppdaging mislykkast: forventa `did` byrjar med did:ma:, 
 discover-no-endpoint = oppdagingsåtvaring: `endpoint_id` manglar i status.json; lagra berre DID
 discover-success = ma oppdaga ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma oppretta — køyr '.my.identity:publish @ma' for å publisere identiteten din.
+discover-alias-hint =   alias @ma oppretta — køyr '.my.identity!publish @ma' for å publisere identiteten din.
 claim-success = Køyretid gjort krav på for { $did }
 claim-conflict = Køyretid allereie gjort krav på av ein annan identitet
 claim-http-failed = krav mislykkast: HTTP { $status }
@@ -109,7 +122,7 @@ acl-persist-error = lagringsfeil: { $e }
 acl-no-verb = inkje verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
-publish-usage = bruk: .my.identity:publish <did-eller-alias>
+publish-usage = bruk: .my.identity!publish <did-eller-alias>
 identity-exported = Bundle lasta ned som { $filename }
 identity-export-failed = Eksport mislukkast: { $e }
 
@@ -165,31 +178,31 @@ help-config-get =   .path                        hent lauv-verdi eller list unde
 help-config-filter =   .path value                  søkefilter (filtrer etter verdi)
 help-config-set =   .path: value                 set lauv
 help-config-delete =   .path:                       slett lauv eller undertre
-help-config-verb =   .path:verb [args]            køyr lokalt verb
+help-config-verb =   .path!verb [args]            køyr lokalt verb
 
 # ── Hjelptekst — vanlege stiar ───────────────────────────────────────────
 help-my =   .my                          vis all personleg konfigurasjon
 help-aliases =   .my.aliases                  list alias
 help-aliases-set =   .my.aliases.<name>: <did>    legg til/oppdater alias (bart DID, inkje #fragment)
 help-aliases-del =   .my.aliases.<name>:          fjern alias
-help-runtime-discover =   .ma!discover          oppdag lokal køyretid og opprett @ma-alias
-help-runtime-claim =   .ma!claim             gjer krav på køyretid med din DID
+help-runtime-discover =   .ma [port]          oppdag lokal køyretid og opprett @ma-alias
+help-runtime-claim =   .ma [port]             gjer krav på køyretid med din DID
 help-identity =   .my.identity                 vis identitetskonfigurasjon
 help-identity-did =   .my.identity.did             vis eige DID (skriveverna)
-help-identity-publish =   .my.identity:publish @pub    publiser eige DID via utgjevar-teneste
-help-identity-export =   .my.identity:export          last ned eigen identitetspakke
+help-identity-publish =   .my.identity!publish @pub    publiser eige DID via utgjevar-teneste
+help-identity-export =   .my.identity!export          last ned eigen identitetspakke
 help-config-path =   .config                      vis alle .config.*-postar
 
 # ── Hjelptekst — innboks ──────────────────────────────────────────────────
 help-inbox =   .my.inbox                    list innboks (undertre-visning)
 help-inbox-n =   .my.inbox.N                  vis post N sine felt
 help-inbox-from =   .my.inbox.N.from             avsendar-DID for post N
-help-inbox-reply =   .my.inbox.N:reply [body]     send svar (opnar redigeringsprogram utan body)
-help-inbox-open =   .my.inbox.N:open             opna innhald i skriveverna redigeringsprogram
+help-inbox-reply =   .my.inbox.N!reply [body]     send svar (opnar redigeringsprogram utan body)
+help-inbox-open =   .my.inbox.N!open             opna innhald i skriveverna redigeringsprogram
 help-inbox-del =   .my.inbox.N:                 slett post N
 help-inbox-delall =   .my.inbox:                   slett alle innbokspostar
-help-inbox-flush =   .my.inbox:flush              skriv alle postar til terminalen
-help-inbox-filter =   .my.inbox:filter @who        vis berre oppføringar frå @who
+help-inbox-flush =   .my.inbox!flush              skriv alle postar til terminalen
+help-inbox-filter =   .my.inbox!filter @who        vis berre oppføringar frå @who
 help-inbox-traverse =   .my.inbox.N.sender.<felt>   traverser avsendar sitt DID-dokument latent
 
 # ── Hjelptekst — dokument ─────────────────────────────────────────────────
@@ -251,7 +264,7 @@ profile-delete-no-session = ingen aktiv økt — profilen kan ikkje slettast
 profile-delete-error = sletting av profil mislukkast: { $e }
 profile-wrong-user = kan ikkje setje CID for ein annan profil — berre din eigen
 profile-wrong-user-name = kan ikkje setje CID for '{ $name }' — berre din eigen profil
-profile-no-ma = ingen ma-køyretid konfigurert — køyr '.ma!discover' fyrst
+profile-no-ma = ingen ma-køyretid konfigurert — køyr '.ma [port]' fyrst
 profile-no-cid = ingen CID lagra for denne profilen — køyr ':publish' fyrst
 profile-no-cid-in-doc = ingen profil-CID funnen i DID-dokument — køyr ':publish' fyrst
 profile-publish-failed = profilpublisering mislukkast: { $e }
@@ -288,15 +301,15 @@ help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor:entities              list entities
-help-actor-entities-get =   @actor:entities.<n>          get entity
-help-actor-entities-set =   @actor:entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor:entities.<n>:edit     edit entity
-help-actor-entities-del =   @actor:entities.<n>:         delete entity
-help-actor-config-get =   @actor:config.<key>          get config value
-help-actor-config-set =   @actor:config.<key>: val     set config value
-help-actor-acl =   @actor:acl                   get ACL
-help-actor-acl-edit =   @actor:acl:edit              edit ACL
+help-actor-entities =   @actor.entities              list entities
+help-actor-entities-get =   @actor.entities.<n>          get entity
+help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities.<n>:         delete entity
+help-actor-config-get =   @actor.config.<key>          get config value
+help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-acl =   @actor.acl                   get ACL
+help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -317,9 +330,9 @@ help-topic-publish =   .help.publish                publisere identiteten din ti
 help-header-publish = ── publisering av identitet ─────────────────────────────────────────────────
 help-publish-intro = Publisering gjer identiteten din synleg på nettverket. Andre kan slå opp din DID for å nå deg.
 help-publish-ma = For å publisere treng du ma (lokal køyretid) installert. Han koplar ego til IPFS/IPNS på dine vegner.
-help-publish-steps = Steg: køyr '.ma!discover' for å oppdage din lokale ma, deretter '.my.identity:publish @ma'.
+help-publish-steps = Steg: køyr '.ma [port]' for å oppdage din lokale ma, deretter '.my.identity!publish @ma'.
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
-profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity:publish @ma' fyrst, deretter ':publish' profilen din
+profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity!publish @ma' fyrst, deretter ':publish' profilen din
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

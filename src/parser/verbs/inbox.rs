@@ -125,7 +125,7 @@ pub(super) fn handle_inbox(
                     let body = args.join(" ");
                     let to = from.clone();
                     let state2 = state.clone();
-                    let cmd_id = state.push_command(format!("{path}:reply {body}"));
+                    let cmd_id = state.push_command(format!("{path}!reply {body}"));
                     leptos::task::spawn_local(async move {
                         match transport::send_text_reply(&to, &body, &reply_to_id).await {
                             Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),

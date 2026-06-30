@@ -5,7 +5,6 @@ mod actor;
 pub(crate) mod actor_send {
     pub(crate) use super::actor::execute_outbox_task;
 }
-mod profile;
 
 use leptos::prelude::*;
 
@@ -213,6 +212,11 @@ fn eval_dot(
         }
         ".ma" => {
             state.push_output("間");
+            if let Err(e) =
+                dispatch_meta(".ma", "connect", args, state, config, show_editor, on_eval)
+            {
+                state.push_error(e);
+            }
             return;
         }
         ".history" => {
@@ -287,25 +291,6 @@ fn handle_dot_set(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    // ── .profiles.<name>: <cid> — fetch+decrypt+merge ─────────────────────
-    if let Some(profile_name) = path.strip_prefix(".profiles.") {
-        if profile_name.contains('.') {
-            state.push_error(t("profile-wrong-user"));
-            return;
-        }
-        if profile_name != username {
-            state.push_error(tf("profile-wrong-user-name", &[("name", profile_name)]));
-            return;
-        }
-        profile::handle_profile_set(
-            path.to_string(),
-            value,
-            username.to_string(),
-            config,
-            state.clone(),
-        );
-        return;
-    }
     if EgoConfig::is_read_only(path) {
         state.push_error(tf("msg-read-only", &[("path", path)]));
         return;
@@ -392,23 +377,6 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
         state.push_error(tf("msg-read-only", &[("path", path)]));
         return;
     }
-    // ── .profiles.<name>: — delete a named profile ───────────────────────
-    if let Some(target_name) = path.strip_prefix(".profiles.") {
-        if target_name.is_empty() || target_name.contains('.') {
-            state.push_error(tf("profiles-not-found", &[("name", target_name)]));
-            return;
-        }
-        profile::handle_profile_delete(
-            target_name.to_string(),
-            username.to_string(),
-            state.clone(),
-        );
-        return;
-    }
-    if path == ".profiles" {
-        state.push_error(t("profile-delete-needs-name"));
-        return;
-    }
     let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
     if removed == 0 {
         state.push_error(tf("msg-key-not-found", &[("path", path)]));
@@ -431,22 +399,6 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
 }
 
 fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
-    // ── Virtual paths ─────────────────────────────────────────────────────
-    if path == ".profiles" {
-        profile::handle_profile_list(config, state.clone());
-        return;
-    }
-    if let Some(profile_name) = path.strip_prefix(".profiles.") {
-        if !profile_name.is_empty() && !profile_name.contains('.') {
-            profile::handle_profile_get(
-                profile_name.to_string(),
-                path.to_string(),
-                config,
-                state.clone(),
-            );
-            return;
-        }
-    }
     // ── Config tree read ──────────────────────────────────────────────────
     let cfg = config.get_untracked();
     let query = if args.is_empty() {

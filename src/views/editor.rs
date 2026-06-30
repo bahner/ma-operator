@@ -113,34 +113,32 @@ pub enum EditorMode {
 /// All the state needed to open an editor session for a document.
 #[derive(Clone, Debug)]
 pub struct EditorContext {
-    /// Dot-path key for the document, e.g. `.my.doc.readme`.
+    /// The document path being edited (e.g. `.my.doc.foo`).
     pub doc_path: String,
-    /// Content to pre-fill the editor (may be empty for a new doc).
+    /// Initial content to load into the editor.
     pub initial: String,
-    /// Language mode: `"plain"` | `"markdown"` | `"yaml"`.
+    /// Language mode for CodeMirror (e.g. "markdown", "yaml").
     pub language: String,
-    /// Editor button / behaviour mode.
+    /// Determines which toolbar buttons are shown.
     pub mode: EditorMode,
-    /// Command entry id of the originating `:edit` command, if any.
-    /// Used to transition the command through Publishing → Replied/Error.
+    /// The command entry id that opened the editor, if any.
+    /// Used to resolve the command status when the editor closes.
     pub cmd_id: Option<u64>,
 }
 
 impl EditorContext {
     pub fn new(doc_path: impl Into<String>, initial: impl Into<String>) -> Self {
-        let initial = initial.into();
-        // Infer language from existing content_type if we can, otherwise plain.
         Self {
             doc_path: doc_path.into(),
-            initial,
-            language: "plain".into(),
+            initial: initial.into(),
+            language: "markdown".to_string(),
             mode: EditorMode::Standard,
             cmd_id: None,
         }
     }
 
-    pub fn with_language(mut self, lang: impl Into<String>) -> Self {
-        self.language = lang.into();
+    pub fn with_language(mut self, language: impl Into<String>) -> Self {
+        self.language = language.into();
         self
     }
 

@@ -268,7 +268,7 @@ mod tests {
             Command::ActorMessage {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
-                verb: Some("ping".to_string()),
+                verb: Some(".ping".to_string()),
                 body: String::new(),
             }
         );
@@ -290,7 +290,7 @@ mod tests {
                 target:
                     "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#fortune"
                         .to_string(),
-                verb: Some("ping".to_string()),
+                verb: Some(".ping".to_string()),
                 body: String::new(),
             }
         );

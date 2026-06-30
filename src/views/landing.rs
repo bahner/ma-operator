@@ -1,42 +1,62 @@
-/// Landing page: create / login / import / export identities.
+/// Landing page — single panel with mode-selector buttons.
 use leptos::prelude::*;
-use std::rc::Rc;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
 use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 
 use crate::{
-    config::restore_config,
     i18n::{t, tf},
     identity::{
-        create_identity, export_for_download, import_from_bytes, list_usernames, load_identity,
-        rekey_iroh, save_config, save_identity, unlock_identity,
+        create_identity_did_named, export_for_download, import_from_bytes, load_identity,
+        save_config, save_identity, storage::load_config, unlock_identity,
     },
     state::{AppState, SessionState},
+    transport::connection::LOCAL_GATEWAY_URL,
 };
 
-#[derive(Clone, PartialEq)]
-enum Tab {
+const LAST_DID_KEY: &str = "zion_last_did";
+
+fn save_last_did(did: &str) {
+    let _ = web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .map(|s| s.set_item(LAST_DID_KEY, did));
+}
+
+fn load_last_did() -> Option<String> {
+    web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .and_then(|s| s.get_item(LAST_DID_KEY).ok().flatten())
+        .filter(|s| !s.is_empty())
+}
+
+/// Derive the IndexedDB storage key from a DID.
+fn username_from_did(did: &str) -> String {
+    did.strip_prefix("did:ma:").unwrap_or(did).to_string()
+}
+
+#[derive(Clone, Copy, PartialEq)]
+enum Mode {
     Login,
-    Create,
+    New,
     Import,
+    Export,
 }
 
 #[component]
 pub fn Landing() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
-    let tab = RwSignal::new(Tab::Login);
-    let status = RwSignal::new(String::new());
-    let error = RwSignal::new(String::new());
-
-    // Pre-clone so each Show closure can capture its own copy
-    let state_login = state.clone();
-    let state_create = state.clone();
-    let state_import = state.clone();
     let lang = state.lang;
 
-    // Background music: play while on the landing page, stop when login succeeds.
-    // window._bgMusic persists the Audio object across reactive re-renders.
+    let mode = RwSignal::new(Mode::Login);
+    let did_input = RwSignal::new(load_last_did().unwrap_or_default());
+    let password = RwSignal::new(String::new());
+    let confirm_password = RwSignal::new(String::new());
+    let status = RwSignal::new(String::new());
+    let error = RwSignal::new(String::new());
+    // For Import mode: pre-parsed (username, identity_json, config_json).
+    let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
+
+    // Background music.
     Effect::new(move |_| {
         let _ = js_sys::eval(
             "if(!window._bgMusic){\
@@ -47,115 +67,253 @@ pub fn Landing() -> impl IntoView {
             window._bgMusic.play().catch(function(){});",
         );
     });
-
     on_cleanup(|| {
         let _ = js_sys::eval(
             "if(window._bgMusic){window._bgMusic.pause();window._bgMusic.currentTime=0;}",
         );
     });
 
-    view! {
-        <div class="landing" on:click=move |_| {
-            // Retry after first user gesture to satisfy browser autoplay policy.
-            let _ = js_sys::eval(
-                "if(window._bgMusic)window._bgMusic.play().catch(function(){});",
-            );
-        }>
-            <div class="landing-box">
-                <div class="landing-tabs">
-                    <button
-                        class=move || if tab.get() == Tab::Login { "landing-tab active" } else { "landing-tab" }
-                        on:click=move |_| tab.set(Tab::Login)
-                    >{move || { let _ = lang.get(); t("tab-login") }}</button>
-                    <button
-                        class=move || if tab.get() == Tab::Create { "landing-tab active" } else { "landing-tab" }
-                        on:click=move |_| tab.set(Tab::Create)
-                    >{move || { let _ = lang.get(); t("tab-new-identity") }}</button>
-                    <button
-                        class=move || if tab.get() == Tab::Import { "landing-tab active" } else { "landing-tab" }
-                        on:click=move |_| tab.set(Tab::Import)
-                    >{move || { let _ = lang.get(); t("tab-import") }}</button>
-                </div>
-
-                <Show when=move || tab.get() == Tab::Login>
-                    <LoginPanel state=state_login.clone() status=status error=error/>
-                </Show>
-                <Show when=move || tab.get() == Tab::Create>
-                    <CreatePanel state=state_create.clone() status=status error=error/>
-                </Show>
-                <Show when=move || tab.get() == Tab::Import>
-                    <ImportPanel state=state_import.clone() status=status error=error/>
-                </Show>
-
-                <Show when=move || !error.get().is_empty()>
-                    <p class="landing-error">{move || error.get()}</p>
-                </Show>
-                <Show when=move || !status.get().is_empty()>
-                    <p class="landing-status">{move || status.get()}</p>
-                </Show>
-            </div>
-        </div>
-    }
-}
-
-// ── Login panel ────────────────────────────────────────────────────────────
-
-#[component]
-fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>) -> impl IntoView {
-    let usernames: RwSignal<Vec<String>> = RwSignal::new(vec![]);
-    let selected = RwSignal::new(String::new());
-    let password = RwSignal::new(String::new());
-
-    // Load usernames on mount
-    {
+    // When the DID field has a value, try to load the user's language
+    // preference from IndexedDB so the landing page is shown in their language.
+    let state_lang = state.clone();
+    Effect::new(move |_| {
+        let did = did_input.get();
+        if did.trim().is_empty() {
+            return;
+        }
+        let uname = username_from_did(did.trim());
+        let state2 = state_lang.clone();
         spawn_local(async move {
-            match list_usernames().await {
-                Ok(names) => {
-                    if let Some(first) = names.first() {
-                        selected.set(first.clone());
-                    }
-                    usernames.set(names);
-                }
-                Err(e) => error.set(e),
-            }
-        });
-    }
-
-    let do_login: Rc<dyn Fn()> = Rc::new({
-        let state = state.clone();
-        move || {
-            let uname = selected.get_untracked();
-            let pass = password.get_untracked();
-            error.set(String::new());
-            status.set(t("status-unlocking"));
-            let state = state.clone();
-            spawn_local(async move {
-                match load_identity(&uname).await {
-                    Ok(Some(stored)) => {
-                        match unlock_identity(&stored.export_json, &pass) {
-                            Ok(id) => {
-                                // Restore config
-                                let _ = restore_config(&uname).await;
-                                status.set(String::new());
-                                state.session.set(Some(SessionState {
-                                    username: uname,
-                                    iroh_key: id.iroh_key,
-                                    ipns_secret_key: id.ipns_secret_key,
-                                    did_signing_key: id.did_signing_key,
-                                    did_encryption_key: id.did_encryption_key,
-                                    sender_did: id.sender_did,
-                                    created_at: id.created_at,
-                                }));
-                            }
-                            Err(e) => {
-                                status.set(String::new());
-                                error.set(tf("error-wrong-passphrase", &[("e", &e)]));
-                            }
+            if let Ok(Some(cfg_json)) = crate::identity::storage::load_config(&uname).await {
+                if let Ok(cfg) = crate::config::EgoConfig::from_json(&cfg_json) {
+                    if let Some(lang_tag) = cfg.get(".my.i18n") {
+                        if crate::i18n::init(lang_tag).await {
+                            state2.lang.set(crate::i18n::lang());
                         }
                     }
+                }
+            }
+        });
+    });
+
+    // ── Mode selector ─────────────────────────────────────────────────────
+    let set_mode = move |m: Mode| {
+        mode.set(m);
+        password.set(String::new());
+        confirm_password.set(String::new());
+        error.set(String::new());
+        status.set(String::new());
+        parsed.set(None);
+        if m == Mode::New {
+            did_input.set(String::new());
+        }
+    };
+
+    // ── Finalise login: derive profile key, save DID, set session ─────────
+    // Free function so it can be called from multiple spawn_local blocks.
+    fn finish_login(
+        id: crate::identity::UnlockedIdentity,
+        uname: String,
+        pass: String,
+        state: AppState,
+    ) {
+        let profile_key = crate::profile_crypto::derive_key(&pass);
+        crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = Some(profile_key));
+        save_last_did(&id.sender_did);
+        state.session.set(Some(SessionState {
+            username: uname,
+            iroh_key: id.iroh_key,
+            ipns_secret_key: id.ipns_secret_key,
+            did_signing_key: id.did_signing_key,
+            did_encryption_key: id.did_encryption_key,
+            sender_did: id.sender_did,
+            created_at: id.created_at,
+        }));
+    }
+
+    // ── Login / Ny / Import action ────────────────────────────────────────
+    let do_login = {
+        let state = state.clone();
+        move || {
+            let state = state.clone(); // fresh clone each call → Fn not FnOnce
+            let current_mode = mode.get_untracked();
+            let did = did_input.get_untracked().trim().to_string();
+            let pass = password.get_untracked();
+            let confirm = confirm_password.get_untracked();
+            error.set(String::new());
+
+            // ── Ny ────────────────────────────────────────────────────────
+            if current_mode == Mode::New {
+                if pass.is_empty() {
+                    error.set(t("error-passphrase-required"));
+                    return;
+                }
+                if pass != confirm {
+                    error.set(t("error-passphrases-no-match"));
+                    return;
+                }
+                status.set(t("status-generating"));
+                let state2 = state.clone();
+                spawn_local(async move {
+                    match create_identity_did_named(&pass) {
+                        Ok((new_did, export_json, id)) => {
+                            let uname = username_from_did(&new_did);
+                            match save_identity(&uname, &export_json).await {
+                                Ok(()) => {
+                                    status.set(String::new());
+                                    did_input.set(new_did);
+                                    finish_login(id, uname, pass, state2);
+                                }
+                                Err(e) => {
+                                    status.set(String::new());
+                                    error.set(e);
+                                }
+                            }
+                        }
+                        Err(e) => {
+                            status.set(String::new());
+                            error.set(e);
+                        }
+                    }
+                });
+                return;
+            }
+
+            // ── Import ────────────────────────────────────────────────────
+            if current_mode == Mode::Import {
+                let p = match parsed.get_untracked() {
+                    Some(p) => p,
+                    None => {
+                        error.set(t("error-profile-source-required"));
+                        return;
+                    }
+                };
+                if pass.is_empty() {
+                    error.set(t("error-passphrase-required"));
+                    return;
+                }
+                let (uname, id_json, cfg_opt) = p;
+                let state2 = state.clone();
+                spawn_local(async move {
+                    match unlock_identity(&id_json, &pass) {
+                        Ok(id) => match save_identity(&uname, &id_json).await {
+                            Ok(()) => {
+                                if let Some(cfg_json) = cfg_opt {
+                                    let _ = save_config(&uname, &cfg_json).await;
+                                }
+                                finish_login(id, uname, pass, state2);
+                            }
+                            Err(e) => error.set(e),
+                        },
+                        Err(e) => error.set(tf("error-wrong-passphrase", &[("e", &e)])),
+                    }
+                });
+                return;
+            }
+
+            // ── Login ─────────────────────────────────────────────────────
+            if did.is_empty() {
+                error.set(t("error-did-required"));
+                return;
+            }
+            if pass.is_empty() {
+                error.set(t("error-passphrase-required"));
+                return;
+            }
+            let uname = username_from_did(&did);
+            status.set(t("status-unlocking"));
+            let state2 = state.clone();
+            spawn_local(async move {
+                match load_identity(&uname).await {
+                    Ok(Some(stored)) => match unlock_identity(&stored.export_json, &pass) {
+                        Ok(id) => {
+                            status.set(String::new());
+                            finish_login(id, uname, pass, state2);
+                        }
+                        Err(e) => {
+                            status.set(String::new());
+                            error.set(tf("error-wrong-passphrase", &[("e", &e)]));
+                        }
+                    },
                     Ok(None) => {
-                        status.set(String::new());
-                        error.set(tf("error-identity-not-found", &[("name", &uname)]));
+                        // Not in IndexedDB — try resolving from IPFS.
+                        status.set(t("status-fetching-profile"));
+                        let ipns = uname.clone();
+                        let url = format!(
+                            "{}ipns/{}?format=dag-json",
+                            LOCAL_GATEWAY_URL.trim_end_matches('/'),
+                            ipns
+                        );
+                        match crate::http::fetch_url_text(&url).await {
+                            Ok(doc_json) => {
+                                let result = serde_json::from_str::<ma_core::Document>(&doc_json)
+                                    .ok()
+                                    .and_then(|doc| crate::parser::verbs::doc_profile_cid(&doc));
+                                match result {
+                                    Some(profile_cid) => {
+                                        match crate::http::fetch_cid_bytes(&profile_cid).await {
+                                            Ok(cbor) => {
+                                                let parsed_opt = serde_ipld_dagcbor::from_slice::<
+                                                    serde_json::Value,
+                                                >(
+                                                    &cbor
+                                                )
+                                                .ok()
+                                                .and_then(|v| serde_json::to_string(&v).ok())
+                                                .and_then(|s| import_from_bytes(s.as_bytes()).ok());
+                                                match parsed_opt {
+                                                    Some((pname, id_json, cfg_opt)) => {
+                                                        match unlock_identity(&id_json, &pass) {
+                                                            Ok(id) => {
+                                                                let _ =
+                                                                    save_identity(&pname, &id_json)
+                                                                        .await;
+                                                                if let Some(cfg) = cfg_opt {
+                                                                    let _ =
+                                                                        save_config(&pname, &cfg)
+                                                                            .await;
+                                                                }
+                                                                status.set(String::new());
+                                                                finish_login(
+                                                                    id, pname, pass, state2,
+                                                                );
+                                                            }
+                                                            Err(e) => {
+                                                                status.set(String::new());
+                                                                error.set(tf(
+                                                                    "error-wrong-passphrase",
+                                                                    &[("e", &e)],
+                                                                ));
+                                                            }
+                                                        }
+                                                    }
+                                                    None => {
+                                                        status.set(String::new());
+                                                        error.set(t("profile-no-cid-in-doc"));
+                                                    }
+                                                }
+                                            }
+                                            Err(e) => {
+                                                status.set(String::new());
+                                                error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                            }
+                                        }
+                                    }
+                                    None => {
+                                        status.set(String::new());
+                                        error.set(tf(
+                                            "error-identity-not-found",
+                                            &[("name", &uname)],
+                                        ));
+                                    }
+                                }
+                            }
+                            Err(_) => {
+                                // IPFS not reachable — guide user to Import.
+                                status.set(String::new());
+                                error.set(tf("error-identity-not-found", &[("name", &uname)]));
+                            }
+                        }
                     }
                     Err(e) => {
                         status.set(String::new());
@@ -164,36 +322,23 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
                 }
             });
         }
-    });
-
-    let on_login = {
-        let do_login = Rc::clone(&do_login);
-        move |_: MouseEvent| do_login()
     };
-    let on_login_key = {
-        let do_login = Rc::clone(&do_login);
-        move |ev: KeyboardEvent| {
-            if ev.key() == "Enter" {
-                do_login();
-            }
+
+    // ── Export action ─────────────────────────────────────────────────────
+    let do_export = move |_: MouseEvent| {
+        let did = did_input.get_untracked().trim().to_string();
+        if did.is_empty() {
+            error.set(t("error-did-required"));
+            return;
         }
-    };
-
-    // Export selected identity
-    let lang = state.lang;
-    let on_export = move |_| {
-        let uname = selected.get_untracked();
-        error.set(String::new());
+        let uname = username_from_did(&did);
         spawn_local(async move {
             match load_identity(&uname).await {
                 Ok(Some(stored)) => {
-                    let ego_cfg_json = restore_config(&uname)
-                        .await
-                        .ok()
-                        .and_then(|cfg| cfg.for_export().to_json().ok());
-                    let content =
-                        export_for_download(&stored.export_json, &uname, ego_cfg_json.as_deref());
-                    trigger_download(&format!("{uname}.zion.json"), &content);
+                    let cfg_json = load_config(&uname).await.ok().flatten();
+                    let json =
+                        export_for_download(&stored.export_json, &uname, cfg_json.as_deref());
+                    trigger_download(&format!("{uname}.zion.json"), &json);
                 }
                 Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
                 Err(e) => error.set(e),
@@ -201,258 +346,29 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
         });
     };
 
-    let session = state.session;
-    let on_new_endpoint = move |_: MouseEvent| {
-        let uname = selected.get_untracked();
-        let pass = password.get_untracked();
-        error.set(String::new());
-        status.set(t("status-unlocking"));
-        spawn_local(async move {
-            match load_identity(&uname).await {
-                Ok(Some(stored)) => match rekey_iroh(&stored.export_json, &pass) {
-                    Ok((new_json, id)) => match save_identity(&uname, &new_json).await {
-                        Ok(()) => {
-                            let _ = restore_config(&uname).await;
-                            status.set(String::new());
-                            session.set(Some(SessionState {
-                                username: uname,
-                                iroh_key: id.iroh_key,
-                                ipns_secret_key: id.ipns_secret_key,
-                                did_signing_key: id.did_signing_key,
-                                did_encryption_key: id.did_encryption_key,
-                                sender_did: id.sender_did,
-                                created_at: id.created_at,
-                            }));
-                        }
-                        Err(e) => {
-                            status.set(String::new());
-                            error.set(e);
-                        }
-                    },
-                    Err(e) => {
-                        status.set(String::new());
-                        error.set(tf("error-wrong-passphrase", &[("e", &e)]));
-                    }
-                },
-                Ok(None) => {
-                    status.set(String::new());
-                    error.set(tf("error-identity-not-found", &[("name", &uname)]));
-                }
-                Err(e) => {
-                    status.set(String::new());
-                    error.set(e);
-                }
-            }
-        });
-    };
-
-    view! {
-        <ul class="identity-list">
-            <For
-                each=move || usernames.get()
-                key=|u| u.clone()
-                children=move |u| {
-                    let u2 = u.clone();
-                    let u3 = u.clone();
-                    view! {
-                        <li
-                            class=move || if selected.get() == u2 { "selected" } else { "" }
-                            on:click={
-                                move |_| {
-                                    let uname = u3.clone();
-                                    selected.set(uname.clone());
-                                    spawn_local(async move {
-                                        if let Ok(cfg) = restore_config(&uname).await {
-                                            let lang_code = cfg.get(".my.i18n")
-                                                .or_else(|| cfg.get(".my.lang"))
-                                                .map(|s| s.to_string());
-                                            if let Some(lang_code) = lang_code {
-                                                crate::i18n::init(&lang_code).await;
-                                                lang.set(crate::i18n::lang());
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        >{u.clone()}</li>
-                    }
-                }
-            />
-        </ul>
-        <div class="form-row">
-            <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
-            <input
-                type="password"
-                placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
-                on:input=move |ev| {
-                    let target = ev.target().unwrap();
-                    let input = target.unchecked_into::<HtmlInputElement>();
-                    password.set(input.value());
-                }
-                on:keydown=on_login_key
-            />
-        </div>
-        <div class="btn-row">
-            <button class="btn" on:click=on_login>{move || { let _ = lang.get(); t("btn-login") }}</button>
-            <button class="btn btn-sm" on:click=on_new_endpoint>{move || { let _ = lang.get(); t("btn-new-endpoint") }}</button>
-            <button class="btn btn-sm" on:click=on_export>{move || { let _ = lang.get(); t("btn-export") }}</button>
-        </div>
-    }
-}
-
-// ── Create panel ───────────────────────────────────────────────────────────
-
-#[component]
-fn CreatePanel(
-    state: AppState,
-    status: RwSignal<String>,
-    error: RwSignal<String>,
-) -> impl IntoView {
-    let username = RwSignal::new(String::new());
-    let password = RwSignal::new(String::new());
-    let password2 = RwSignal::new(String::new());
-    let lang = state.lang;
-
-    let on_create = move |_| {
-        let uname = username.get_untracked();
-        let pass = password.get_untracked();
-        let pass2 = password2.get_untracked();
-        error.set(String::new());
-
-        if uname.is_empty() {
-            error.set(t("error-username-required"));
-            return;
-        }
-        if pass.is_empty() {
-            error.set(t("error-passphrase-required"));
-            return;
-        }
-        if pass != pass2 {
-            error.set(t("error-passphrases-no-match"));
-            return;
-        }
-
-        status.set(t("status-generating"));
-        let state = state.clone();
-        spawn_local(async move {
-            match create_identity(&uname, &pass) {
-                Ok((export_json, id)) => match save_identity(&uname, &export_json).await {
-                    Ok(()) => {
-                        status.set(String::new());
-                        state.session.set(Some(SessionState {
-                            username: uname,
-                            iroh_key: id.iroh_key,
-                            ipns_secret_key: id.ipns_secret_key,
-                            did_signing_key: id.did_signing_key,
-                            did_encryption_key: id.did_encryption_key,
-                            sender_did: id.sender_did,
-                            created_at: id.created_at,
-                        }));
-                    }
-                    Err(e) => {
-                        status.set(String::new());
-                        error.set(e);
-                    }
-                },
-                Err(e) => {
-                    status.set(String::new());
-                    error.set(e);
-                }
-            }
-        });
-    };
-
-    view! {
-        <div class="form-row">
-            <label>{move || { let _ = lang.get(); t("label-username") }}</label>
-            <input
-                type="text"
-                placeholder="alice"
-                on:input=move |ev| {
-                    let target = ev.target().unwrap();
-                    let input = target.unchecked_into::<HtmlInputElement>();
-                    username.set(input.value());
-                }
-            />
-        </div>
-        <div class="form-row">
-            <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
-            <input
-                type="password"
-                placeholder="\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}\u{2022}"
-                on:input=move |ev| {
-                    let target = ev.target().unwrap();
-                    let input = target.unchecked_into::<HtmlInputElement>();
-                    password.set(input.value());
-                }
-            />
-        </div>
-        <div class="form-row">
-            <label>{move || { let _ = lang.get(); t("label-confirm-passphrase") }}</label>
-            <input
-                type="password"
-                placeholder="••••••••"
-                on:input=move |ev| {
-                    let target = ev.target().unwrap();
-                    let input = target.unchecked_into::<HtmlInputElement>();
-                    password2.set(input.value());
-                }
-            />
-        </div>
-        <p class="dimmed" style="font-size:0.8rem">
-            {move || { let _ = lang.get(); t("passphrase-warning") }}
-        </p>
-        <div class="btn-row">
-            <button class="btn" on:click=on_create>{move || { let _ = lang.get(); t("btn-generate") }}</button>
-        </div>
-    }
-}
-
-// ── Import panel ───────────────────────────────────────────────────────────
-
-#[component]
-fn ImportPanel(
-    state: AppState,
-    status: RwSignal<String>,
-    error: RwSignal<String>,
-) -> impl IntoView {
-    let lang = state.lang;
-
+    // ── File selection (Import mode) ──────────────────────────────────────
     let on_file_change = move |ev: web_sys::Event| {
         let target = ev.target().unwrap();
         let input = target.unchecked_into::<HtmlInputElement>();
         if let Some(files) = input.files() {
             if let Some(file) = files.get(0) {
-                status.set(t("status-reading-file"));
-                error.set(String::new());
                 let reader = FileReader::new().unwrap();
                 let reader2 = reader.clone();
                 let onload =
                     wasm_bindgen::closure::Closure::wrap(Box::new(move |_: web_sys::Event| {
                         let result = reader2.result().unwrap();
                         if let Some(text) = result.as_string() {
-                            match import_from_bytes(text.as_bytes()) {
-                                Ok((username, identity_json, ego_config_json)) => {
-                                    let un = username.clone();
-                                    let ij = identity_json.clone();
-                                    status.set(String::new());
-                                    spawn_local(async move {
-                                        match save_identity(&un, &ij).await {
-                                            Ok(()) => {
-                                                if let Some(cfg_json) = ego_config_json {
-                                                    let _ = save_config(&un, &cfg_json).await;
-                                                }
-                                                status.set(tf("status-imported", &[("name", &un)]))
-                                            }
-                                            Err(e) => error.set(e),
-                                        }
-                                    });
+                            let raw = text.into_bytes();
+                            spawn_local(async move {
+                                match import_from_bytes(&raw) {
+                                    Ok((uname, id_json, cfg_opt)) => {
+                                        did_input.set(format!("did:ma:{uname}"));
+                                        parsed.set(Some((uname, id_json, cfg_opt)));
+                                        error.set(String::new());
+                                    }
+                                    Err(e) => error.set(e),
                                 }
-                                Err(e) => {
-                                    status.set(String::new());
-                                    error.set(e);
-                                }
-                            }
+                            });
                         }
                     })
                         as Box<dyn FnMut(_)>);
@@ -463,16 +379,135 @@ fn ImportPanel(
         }
     };
 
+    // Enter key triggers the action.
+    let do_login_key = do_login.clone();
+    let on_keydown = move |ev: KeyboardEvent| {
+        if ev.key() == "Enter" && mode.get_untracked() != Mode::Export {
+            do_login_key();
+        }
+    };
+    // Single action button — branches on mode at runtime.
+    let do_login_click_rc = std::rc::Rc::new(do_login);
+    let do_login_click2 = do_login_click_rc.clone();
+    let do_action = move |ev: MouseEvent| {
+        if mode.get_untracked() == Mode::Export {
+            do_export(ev);
+        } else {
+            do_login_click_rc();
+        }
+    };
+    let _ = do_login_click2; // keep for keydown
+
     view! {
-        <p class="dimmed" style="font-size:0.85rem;margin-bottom:1rem">
-            {move || { let _ = lang.get(); t("import-help") }}
-        </p>
-        <input
-            type="file"
-            accept=".json,.zion.json"
-            style="color:var(--colour-text);font-family:var(--font-family)"
-            on:change=on_file_change
-        />
+        <div
+            class="landing"
+            on:click=move |_| {
+                let _ = js_sys::eval(
+                    "if(window._bgMusic)window._bgMusic.play().catch(function(){});",
+                );
+            }
+            on:keydown=on_keydown
+        >
+            <div class="landing-box">
+                // ── Mode selector (top) ───────────────────────────────────
+                <div class="landing-tabs">
+                    <button
+                        class=move || if mode.get() == Mode::New { "landing-tab active" } else { "landing-tab" }
+                        on:click=move |_| set_mode(Mode::New)
+                    >{move || { let _ = lang.get(); t("tab-new-identity") }}</button>
+                    <button
+                        class=move || if mode.get() == Mode::Export { "landing-tab active" } else { "landing-tab" }
+                        on:click=move |_| set_mode(Mode::Export)
+                    >{move || { let _ = lang.get(); t("btn-export") }}</button>
+                    <button
+                        class=move || if mode.get() == Mode::Import { "landing-tab active" } else { "landing-tab" }
+                        on:click=move |_| set_mode(Mode::Import)
+                    >{move || { let _ = lang.get(); t("tab-import-profile") }}</button>
+                </div>
+
+                // ── DID field (always shown) ──────────────────────────────
+                <div class="form-row">
+                    <label>{move || { let _ = lang.get(); t("label-did") }}</label>
+                    <input
+                        type="text"
+                        prop:value=move || did_input.get()
+                        prop:readOnly=move || mode.get() == Mode::New
+                        placeholder="did:ma:..."
+                        on:input=move |ev| {
+                            let target = ev.target().unwrap();
+                            let input = target.unchecked_into::<HtmlInputElement>();
+                            did_input.set(input.value());
+                        }
+                    />
+                </div>
+
+                // ── Import: file picker until file is loaded ──────────────
+                <Show when=move || mode.get() == Mode::Import && parsed.get().is_none()>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-or-file") }}</label>
+                        <input
+                            type="file"
+                            accept=".json,.zion.json"
+                            style="color:var(--colour-text);font-family:var(--font-family)"
+                            on:change=on_file_change
+                        />
+                    </div>
+                </Show>
+
+                // ── Password field: all modes except Export, and not Import-before-file
+                <Show when=move || {
+                    let m = mode.get();
+                    m != Mode::Export && !(m == Mode::Import && parsed.get().is_none())
+                }>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            on:input=move |ev| {
+                                let target = ev.target().unwrap();
+                                let input = target.unchecked_into::<HtmlInputElement>();
+                                password.set(input.value());
+                            }
+                        />
+                    </div>
+                </Show>
+
+                // ── Confirm passphrase: Ny mode only ──────────────────────
+                <Show when=move || mode.get() == Mode::New>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-confirm-passphrase") }}</label>
+                        <input
+                            type="password"
+                            placeholder="••••••••"
+                            on:input=move |ev| {
+                                let target = ev.target().unwrap();
+                                let input = target.unchecked_into::<HtmlInputElement>();
+                                confirm_password.set(input.value());
+                            }
+                        />
+                    </div>
+                </Show>
+
+                // ── Action button ─────────────────────────────────────────
+                <div class="btn-row">
+                    <button class="btn" on:click=do_action>
+                        {move || {
+                            let _ = lang.get();
+                            if mode.get() == Mode::Export { t("btn-export") } else { t("btn-login") }
+                        }}
+                    </button>
+                </div>
+
+                // ── Status / Error ────────────────────────────────────────
+                <Show when=move || !error.get().is_empty()>
+                    <p class="landing-error">{move || error.get()}</p>
+                </Show>
+                <Show when=move || !status.get().is_empty()>
+                    <p class="landing-status">{move || status.get()}</p>
+                </Show>
+            </div>
+        </div>
     }
 }
 

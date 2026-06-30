@@ -80,6 +80,8 @@ pub fn disconnect() {
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
+    crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
+    crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
 }
 
 pub fn is_connected() -> bool {
@@ -287,7 +289,7 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
     };
     // Inject encrypted profile CID if available.
     let ma_ext = match SESSION_AGENT_CID.with(|c| c.borrow().clone()) {
-        Some(cid) if !cid.is_empty() => ma_ext.extra("agent", Ipld::String(cid)),
+        Some(cid) if !cid.is_empty() => ma_ext.extra("profile", Ipld::String(cid)),
         _ => ma_ext,
     };
     let document = bundle
@@ -333,99 +335,13 @@ pub async fn send_ipfs_store(
     Ok(msg_id)
 }
 
-/// Protocol string used as AAD context for profile blobs.
-const PROFILE_PROTOCOL: &str = "/ma/profile/0.0.1";
-
-/// Encrypt the portable profile subtrees for self, then send to IPFS for
-/// storage.  Returns the dispatched `Message.id`; the CID arrives later
-/// via an RPC reply keyed on that id.
-///
-/// Format stored on IPFS: `nonce(24 bytes) || ciphertext+tag`
-/// Algorithm: XChaCha20-Poly1305, key = `did_encryption_key` (`#enc`).
-/// AAD: `["/ma/profile/0.0.1", "did:ma:...#enc"]`
-/// Plaintext: CBOR-serialised profile key/value map.
-pub async fn send_profile_store(
-    publisher_did: &str,
-    profile_bytes: Vec<u8>,
-) -> Result<String, String> {
-    use chacha20poly1305::{aead::Aead, aead::Payload, KeyInit, XChaCha20Poly1305, XNonce};
-
-    let enc_key_bytes = SESSION_ENCRYPTION_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let sender_did = SESSION_SENDER_DID
-        .with(|d| d.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-
-    let aad = build_profile_aad(&sender_did)?;
-
-    let mut nonce_bytes = [0u8; 24];
-    getrandom::fill(&mut nonce_bytes).map_err(|e| e.to_string())?;
-    let nonce = XNonce::from(nonce_bytes);
-
-    let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
-        .map_err(|e| format!("cipher init failed: {e}"))?;
-    let ciphertext = cipher
-        .encrypt(
-            &nonce,
-            Payload {
-                msg: &profile_bytes,
-                aad: &aad,
-            },
-        )
-        .map_err(|e| format!("encryption failed: {e}"))?;
-
-    let mut blob = Vec::with_capacity(24 + ciphertext.len());
-    blob.extend_from_slice(&nonce_bytes);
-    blob.extend_from_slice(&ciphertext);
-
-    send_ipfs_store(publisher_did, blob, "application/octet-stream").await
-}
-
-/// Decrypt a profile blob fetched from IPFS.  Returns raw CBOR profile bytes.
-///
-/// Expected format: `nonce(24 bytes) || ciphertext+tag`
+/// Decrypt a profile blob fetched from IPFS.
+/// Uses a session-derived key (PBKDF2 from login passphrase).
 pub fn decrypt_profile(blob: &[u8]) -> Result<Vec<u8>, String> {
-    use chacha20poly1305::{aead::Aead, aead::Payload, KeyInit, XChaCha20Poly1305, XNonce};
-
-    if blob.len() < 25 {
-        return Err(format!("profile blob too short ({} bytes)", blob.len()));
-    }
-    let enc_key_bytes = SESSION_ENCRYPTION_KEY
+    let key = crate::state::SESSION_PROFILE_KEY
         .with(|k| *k.borrow())
         .ok_or_else(|| "not logged in".to_string())?;
-    let sender_did = SESSION_SENDER_DID
-        .with(|d| d.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-
-    let aad = build_profile_aad(&sender_did)?;
-    let nonce = XNonce::from_slice(&blob[..24]);
-    let cipher = XChaCha20Poly1305::new_from_slice(&enc_key_bytes)
-        .map_err(|e| format!("cipher init failed: {e}"))?;
-    cipher
-        .decrypt(
-            nonce,
-            Payload {
-                msg: &blob[24..],
-                aad: &aad,
-            },
-        )
-        .map_err(|_| "profile decryption failed (wrong key or corrupted blob)".to_string())
-}
-
-/// Build the AAD for profile blobs: CBOR(["/ma/profile/0.0.1", "did:ma:...#enc"]).
-fn build_profile_aad(sender_did: &str) -> Result<Vec<u8>, String> {
-    let kid = format!("{sender_did}#enc");
-    let mut out = Vec::new();
-    ciborium::ser::into_writer(
-        &ciborium::Value::Array(vec![
-            ciborium::Value::Text(PROFILE_PROTOCOL.to_string()),
-            ciborium::Value::Text(kid),
-        ]),
-        &mut out,
-    )
-    .map_err(|e| format!("aad encode failed: {e}"))?;
-    Ok(out)
+    crate::profile_crypto::decrypt_with_key(blob, &key)
 }
 
 /// Send a plain-text reply to a message.
@@ -497,7 +413,7 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
 }
 
 /// CRUD get — read a value at `path` (e.g. `.config.i18n`).
-/// Payload: CBOR `[":get", ".path"]`
+/// Payload: CBOR `[".path"]`
 pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
@@ -506,10 +422,7 @@ pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, Strin
     } else {
         format!(".{path}")
     };
-    let cbor_val = ciborium::Value::Array(vec![
-        ciborium::Value::Text(":get".to_string()),
-        ciborium::Value::Text(atom),
-    ]);
+    let cbor_val = ciborium::Value::Array(vec![ciborium::Value::Text(atom)]);
     let mut body = Vec::new();
     ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
     let msg = Message::new(
@@ -558,7 +471,7 @@ pub async fn send_crud_set(
 }
 
 /// CRUD delete — remove the subtree at `path`.
-/// Payload: CBOR `[":delete", ".path"]`
+/// Payload: CBOR `[".path", ""]`
 pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
@@ -568,8 +481,8 @@ pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, St
         format!(".{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![
-        ciborium::Value::Text(":delete".to_string()),
         ciborium::Value::Text(atom),
+        ciborium::Value::Text(String::new()),
     ]);
     let mut body = Vec::new();
     ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
