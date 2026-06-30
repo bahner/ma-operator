@@ -230,7 +230,7 @@ pub(super) fn lang_for_content_type(ct: &str) -> &'static str {
 }
 
 /// Infer the CodeMirror language from a doc path.
-/// `.ma`-suffixed paths are ma-scheme source files.
+/// `.ma`-suffixed paths are zscheme source files.
 pub(super) fn lang_for_path(path: &str, ct: &str) -> &'static str {
     if path.ends_with(".ma") {
         "scheme"

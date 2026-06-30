@@ -31,7 +31,7 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published via local ma ({ $url })
-msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.my.ma:discover' then '.my.identity:publish @ma'. Type '.help.publish' for details.
+msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.ma!discover' then '.my.identity:publish @ma'. Type '.help.publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -188,8 +188,8 @@ help-my =   .my                          show all personal config
 help-aliases =   .my.aliases                  list aliases
 help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)
 help-aliases-del =   .my.aliases.<name>:          remove alias
-help-runtime-discover =   .my.ma:discover          discover local runtime and create @ma alias
-help-runtime-claim =   .my.ma:claim             claim runtime ownership with your DID
+help-runtime-discover =   .ma!discover             discover local runtime and create @ma alias
+help-runtime-claim =   .ma!claim                claim runtime ownership with your DID
 help-identity =   .my.identity                 show identity config
 help-identity-did =   .my.identity.did             show own DID (read-only)
 help-identity-publish =   .my.identity:publish @pub    publish own DID via publisher service
@@ -279,7 +279,7 @@ profiles-deleted = profile { $name } deleted
 profiles-not-found = profile not found: { $name }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.my.ma:discover' first
+profile-no-ma = no ma runtime configured — run '.ma!discover' first
 profile-no-cid = no CID stored for this profile — run ':publish' first
 profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
@@ -290,6 +290,8 @@ profile-fetch-failed = profile fetch failed: { $e }
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity:publish @ma' first, then ':publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 msg-identity-exists = identity already published — profile up to date
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # ── CID content operations ────────────────────────────────────────────────
 cid-op-binary = binary content (not displayed)
@@ -325,7 +327,7 @@ help-topic-publish =   .help.publish                publishing your identity to 
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────
 help-publish-intro = Publishing makes your identity findable on the network. Others can look up your DID to reach you.
 help-publish-ma = To publish, you need ma (local runtime) installed. It bridges ego to IPFS/IPNS on your behalf.
-help-publish-steps = Steps: run '.my.ma:discover' to detect your local ma, then '.my.identity:publish @ma'.
+help-publish-steps = Steps: run '.ma!discover' to detect your local ma, then '.my.identity:publish @ma'.
 help-publish-without = Without publishing, others cannot reach you — even if they know your DID, they cannot resolve your endpoint.
 
 # ── Batch mode ────────────────────────────────────────────────────────────

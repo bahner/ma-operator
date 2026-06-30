@@ -15,12 +15,12 @@ pub(super) fn handle_ma(
     _show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
-    if path != ".my.ma" {
+    if path != ".ma" {
         return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
     }
     let ma_base = {
         let cfg = config.get_untracked();
-        cfg.get(".my.ma.url")
+        cfg.get(".ma.url")
             .unwrap_or(MA_URL)
             .trim_end_matches('/')
             .to_string()
@@ -76,7 +76,7 @@ fn do_ma_claim(ma_base: String, config: RwSignal<EgoConfig>, state: AppState) {
         match fetch_post_json(&claim_url, &body).await {
             Ok(200) => {
                 state.push_system(tf("claim-success", &[("did", &our_did)]));
-                // Fetch status to update .my.ma.did / .my.aliases.ma.
+                // Fetch status to update .ma.did / .my.aliases.ma.
                 if rediscover_ma(&ma_base, config).await.is_ok() {
                     if let Some(sess) = state.session.get_untracked() {
                         let username = sess.username.clone();
@@ -115,9 +115,9 @@ pub(super) async fn rediscover_ma(
         .unwrap_or("")
         .to_string();
     config.update(|cfg| {
-        cfg.set(".my.ma.did", &did);
+        cfg.set(".ma.did", &did);
         if !endpoint_id.is_empty() {
-            cfg.set(".my.ma.endpoint_id", &endpoint_id);
+            cfg.set(".ma.endpoint_id", &endpoint_id);
         }
         cfg.set(".my.aliases.ma", &did);
     });
@@ -132,7 +132,7 @@ pub(super) fn discover_fetch_hint(err: &str) -> &'static str {
     } else if err.contains("TypeError") || err.contains("Failed to fetch") {
         "Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser."
     } else {
-        "Hint: verify `ma` and IPFS Desktop are running, then retry `.my.ma:discover`."
+        "Hint: verify `ma` and IPFS Desktop are running, then retry `.ma:discover`."
     }
 }
 

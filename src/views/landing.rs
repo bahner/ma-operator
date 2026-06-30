@@ -10,7 +10,7 @@ use crate::{
     i18n::{t, tf},
     identity::{
         create_identity, export_for_download, import_from_bytes, list_usernames, load_identity,
-        rekey_iroh, save_identity, unlock_identity,
+        rekey_iroh, save_config, save_identity, unlock_identity,
     },
     state::{AppState, SessionState},
 };
@@ -187,7 +187,12 @@ fn LoginPanel(state: AppState, status: RwSignal<String>, error: RwSignal<String>
         spawn_local(async move {
             match load_identity(&uname).await {
                 Ok(Some(stored)) => {
-                    let content = export_for_download(&stored.export_json);
+                    let ego_cfg_json = restore_config(&uname)
+                        .await
+                        .ok()
+                        .and_then(|cfg| cfg.for_export().to_json().ok());
+                    let content =
+                        export_for_download(&stored.export_json, &uname, ego_cfg_json.as_deref());
                     trigger_download(&format!("{uname}.zion.json"), &content);
                 }
                 Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
@@ -427,13 +432,16 @@ fn ImportPanel(
                         let result = reader2.result().unwrap();
                         if let Some(text) = result.as_string() {
                             match import_from_bytes(text.as_bytes()) {
-                                Ok((username, export_json)) => {
+                                Ok((username, identity_json, ego_config_json)) => {
                                     let un = username.clone();
-                                    let ej = export_json.clone();
+                                    let ij = identity_json.clone();
                                     status.set(String::new());
                                     spawn_local(async move {
-                                        match save_identity(&un, &ej).await {
+                                        match save_identity(&un, &ij).await {
                                             Ok(()) => {
+                                                if let Some(cfg_json) = ego_config_json {
+                                                    let _ = save_config(&un, &cfg_json).await;
+                                                }
                                                 status.set(tf("status-imported", &[("name", &un)]))
                                             }
                                             Err(e) => error.set(e),

@@ -28,11 +28,17 @@ pub(super) fn handle_identity(
             .ok_or_else(|| t("msg-not-logged-in"))?;
         let username = session.username.clone();
         let state2 = state.clone();
+        let ego_cfg_json = config.get_untracked().for_export().to_json().ok();
         leptos::task::spawn_local(async move {
             match load_identity(&username).await {
                 Ok(Some(stored)) => {
                     let filename = format!("{username}.zion.json");
-                    trigger_download(&filename, &stored.export_json);
+                    let content = crate::identity::export_for_download(
+                        &stored.export_json,
+                        &username,
+                        ego_cfg_json.as_deref(),
+                    );
+                    trigger_download(&filename, &content);
                     state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));
                 }
                 Ok(None) => {

@@ -21,10 +21,7 @@ pub(super) fn handle_scheme(
             let count = source.lines().filter(|l| l.starts_with("(define")).count();
             config.update(|c| {
                 c.set(format!("{path}.content"), source.clone());
-                c.set(
-                    format!("{path}.content_type"),
-                    "text/x-ma-scheme".to_string(),
-                );
+                c.set(format!("{path}.content_type"), "text/x-zscheme".to_string());
             });
             let username = state
                 .session

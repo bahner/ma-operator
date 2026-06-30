@@ -1,7 +1,6 @@
 //! Verb dispatch for local dot-path commands.
 //!
-//! `.path:verb` — user Scheme function call
-//! `.path!verb` — system/side-effect operation (dispatched via `dispatch_meta`)
+//! `.path!verb` — side-effect / system operation
 
 mod acl;
 mod doc;
@@ -30,7 +29,7 @@ pub(crate) fn doc_agent_cid(doc: &ma_core::Document) -> Option<String> {
 }
 
 /// Default base URL for the local `ma` daemon.
-/// Override per-profile with `.my.ma.url: http://host:port`.
+/// Override per-profile with `.ma.url: http://host:port`.
 pub(super) const MA_URL: &str = "http://localhost:5003";
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
@@ -50,22 +49,23 @@ fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
     Ok(resolved)
 }
 
-/// Dispatch `.path:verb args…`. Returns `Ok(())` if the verb was handled
-/// (even if the underlying work is async and continues in the background).
-pub fn dispatch_verb(
+/// Dispatch `.path!verb` — all verb / side-effect operations.
+pub fn dispatch_meta(
     path: &str,
     verb: &str,
     args: &[String],
     state: &AppState,
     config: RwSignal<EgoConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
-    // Eval callback: runs a multi-line string through the terminal evaluator.
     on_eval: Callback<String>,
 ) -> Result<(), String> {
+    if path == ".my.scheme" || path.starts_with(".my.scheme.") {
+        return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
+    }
     if path == ".my.inbox" || path.starts_with(".my.inbox.") {
         return inbox::handle_inbox(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.ma" || path.starts_with(".my.ma.") {
+    if path == ".ma" || path.starts_with(".ma.") {
         return ma::handle_ma(path, verb, args, state, config, show_editor, on_eval);
     }
     if path == ".my.acl" || path.starts_with(".my.acl.") {
@@ -97,7 +97,7 @@ pub fn dispatch_verb(
             _ => {}
         }
     }
-    // Scheme function call fallback: any other verb on a path with .content.
+    // Scheme function call: any other verb on a path with .content.
     let content = if has_content {
         config
             .get_untracked()
@@ -107,49 +107,28 @@ pub fn dispatch_verb(
         None
     };
     if let Some(content) = content {
-        {
-            let verb = verb.to_string();
-            let args = args.to_vec();
-            let state2 = state.clone();
-            let path2 = path.to_string();
-            wasm_bindgen_futures::spawn_local(async move {
-                let display = if args.is_empty() {
-                    format!("{path2}:{verb}")
-                } else {
-                    format!("{path2}:{verb} {}", args.join(" "))
-                };
-                state2.push_command_done(display);
-                match crate::scheme::call_content(&content, &verb, &args, &state2, config).await {
-                    Ok(val) => {
-                        let s = val.to_splice_lossy();
-                        if !s.is_empty() {
-                            state2.push_system(s);
-                        }
+        let verb = verb.to_string();
+        let args = args.to_vec();
+        let state2 = state.clone();
+        let path2 = path.to_string();
+        wasm_bindgen_futures::spawn_local(async move {
+            let display = if args.is_empty() {
+                format!("{path2}!{verb}")
+            } else {
+                format!("{path2}!{verb} {}", args.join(" "))
+            };
+            state2.push_command_done(display);
+            match crate::scheme::call_content(&content, &verb, &args, &state2, config).await {
+                Ok(val) => {
+                    let s = val.to_splice_lossy();
+                    if !s.is_empty() {
+                        state2.push_system(s);
                     }
-                    Err(e) => state2.push_error(format!("{path2}:{verb}: {e}")),
                 }
-            });
-            return Ok(());
-        }
+                Err(e) => state2.push_error(format!("{path2}!{verb}: {e}")),
+            }
+        });
+        return Ok(());
     }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
-}
-
-/// Dispatch `.path!verb` — system/side-effect operations.
-/// These are never Scheme function calls; they always have well-defined behaviour.
-pub fn dispatch_meta(
-    path: &str,
-    verb: &str,
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-    show_editor: RwSignal<Option<EditorContext>>,
-    on_eval: Callback<String>,
-) -> Result<(), String> {
-    // .my.scheme — session environment image
-    if path == ".my.scheme" || path.starts_with(".my.scheme.") {
-        return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
-    }
-    // All other paths: route to doc handler (edit, eval, publish, cid, fetch, …)
-    doc::handle_doc(path, verb, args, state, config, show_editor, on_eval)
 }

@@ -182,8 +182,8 @@ impl EgoConfig {
     // ── Profile serialization / merge ─────────────────────────────────────
 
     /// Prefixes included when serialising the portable profile blob.
-    /// Explicitly excluded: .my.inbox.*, .my.identity.*, .my.ma.*,
-    /// .profiles.* (local CID index, ephemeral), .my.acl (security-sensitive).
+    /// Explicitly excluded: .ma.* (local daemon discovery, device-specific),
+    /// .profiles.* (local CID index, ephemeral).
     const PROFILE_PREFIXES: &'static [&'static str] = &[
         ".my.aliases.",
         ".my.doc.",
@@ -232,6 +232,19 @@ impl EgoConfig {
         }
         Ok(count)
     }
+
+    /// Return a copy of this config suitable for file export.
+    /// Excludes `.ma.*` (device-specific daemon discovery state).
+    /// Everything else — aliases, docs, config, i18n, inbox, acl, identity — is included.
+    pub fn for_export(&self) -> Self {
+        let tree = self
+            .tree
+            .iter()
+            .filter(|(k, _)| !k.starts_with(".ma."))
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect();
+        Self { tree }
+    }
 }
 
 // ── Persistence ────────────────────────────────────────────────────────────
@@ -245,8 +258,9 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
     match load_config(username).await? {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
-            cfg.tree
-                .retain(|k, _| k.starts_with(".my.") || k.starts_with(".profiles."));
+            cfg.tree.retain(|k, _| {
+                k.starts_with(".my.") || k.starts_with(".profiles.") || k.starts_with(".ma.")
+            });
             cfg.set_defaults();
             Ok(cfg)
         }

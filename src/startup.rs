@@ -70,7 +70,7 @@ pub(crate) async fn startup_profile_exists(
 pub(crate) async fn startup_no_document(state: AppState, config: RwSignal<EgoConfig>) {
     let ma_url = {
         let cfg = config.get_untracked();
-        cfg.get(".my.ma.url")
+        cfg.get(".ma.url")
             .unwrap_or("http://localhost:5003")
             .trim_end_matches('/')
             .to_string()
@@ -98,9 +98,9 @@ pub(crate) async fn startup_no_document(state: AppState, config: RwSignal<EgoCon
         .unwrap_or("")
         .to_string();
     config.update(|cfg| {
-        cfg.set(".my.ma.did", &ma_did);
+        cfg.set(".ma.did", &ma_did);
         if !endpoint_id.is_empty() {
-            cfg.set(".my.ma.endpoint_id", &endpoint_id);
+            cfg.set(".ma.endpoint_id", &endpoint_id);
         }
         cfg.set(".my.aliases.ma", &ma_did);
     });

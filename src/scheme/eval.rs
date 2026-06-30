@@ -213,11 +213,26 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
             }
 
             // ── ma dot-path in head position ────────────────────────────────
-            // Keep as MaPath so apply() handles Get / Set / Delete / Verb.
-            // (Without this guard the Atom branch above would resolve the path
-            // to its value, making (.my.path) try to call a string.)
+            // Zero-arg call (.my.path): get the value, and if it starts with
+            // '(' evaluate it as a Scheme expression in the current env.
+            // Errors propagate — there is no silent fallback to the raw string.
+            // Values that don't look like Scheme are returned as-is.
+            // Non-zero-arg calls delegate to apply() for Set / Delete / Verb.
             if let SchemeExpr::Atom(head) = &forms[0] {
                 if head.starts_with('.') {
+                    if forms.len() == 1 {
+                        let val = eval_ma_dot(head, &ctx)?;
+                        if let SchemeVal::Str(ref s) = val {
+                            if s.trim_start().starts_with('(') {
+                                let tokens = tokenize(s)
+                                    .map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                                let (expr, _) = parse_expr(&tokens, 0)
+                                    .map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                                return eval(expr, env.clone(), ctx.clone()).await;
+                            }
+                        }
+                        return Ok(val);
+                    }
                     let path = SchemeVal::MaPath(head.clone());
                     let mut args = Vec::with_capacity(forms.len() - 1);
                     for form in &forms[1..] {
@@ -813,7 +828,7 @@ fn eval_ma_dot(command: &str, ctx: &EvalCtx) -> Result<SchemeVal, SchemeErr> {
                 Ok(SchemeVal::Nil)
             }
             // Side-effect verbs: queue to terminal input_queue, return nil.
-            DotOp::Verb(_) | DotOp::Meta(_) => {
+            DotOp::Meta(_) => {
                 ctx.state
                     .input_queue
                     .update(|q| q.push_back(command.to_string()));

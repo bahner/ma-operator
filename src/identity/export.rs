@@ -1,5 +1,26 @@
 /// Helpers for creating and unlocking identities using ma-core types.
 use ma_core::{BrowserIdentityExport, Config, SecretBundle};
+use serde::{Deserialize, Serialize};
+
+// ── ZionExport ─────────────────────────────────────────────────────────────
+
+/// Versioned wrapper that bundles a `BrowserIdentityExport` JSON together with
+/// an optional `EgoConfig` JSON snapshot for portable full-profile export.
+///
+/// - `version: 1` — the only currently supported format.
+/// - `username` — the profile name (slug). Carried explicitly because
+///   `Config::to_yaml_string` intentionally omits the slug field.
+/// - `identity` — the raw `BrowserIdentityExport` JSON string (encrypted keys + username).
+/// - `ego_config` — optional `EgoConfig` JSON (aliases, docs, settings, etc.).
+///   Absent in old exports; ignored on import when missing.
+#[derive(Serialize, Deserialize)]
+pub struct ZionExport {
+    pub version: u8,
+    pub username: String,
+    pub identity: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub ego_config: Option<String>,
+}
 
 /// Key material extracted from a decrypted [`SecretBundle`].
 ///
@@ -58,9 +79,24 @@ fn bundle_to_unlocked(bundle: &SecretBundle) -> Result<UnlockedIdentity, String>
     })
 }
 
-/// Wrap a raw export JSON for file download (the bundle is already encrypted).
-pub fn export_for_download(export_json: &str) -> String {
-    export_json.to_string()
+/// Bundle an identity export and optional EgoConfig snapshot into a `ZionExport`
+/// JSON string ready for file download.
+///
+/// `username` is stored explicitly since `Config::to_yaml_string` omits the slug.
+/// `ego_config_json` should come from `EgoConfig::for_export().to_json()`.
+/// Pass `None` to produce a keys-only export (backward-compatible with old importers).
+pub fn export_for_download(
+    identity_json: &str,
+    username: &str,
+    ego_config_json: Option<&str>,
+) -> String {
+    let export = ZionExport {
+        version: 1,
+        username: username.to_string(),
+        identity: identity_json.to_string(),
+        ego_config: ego_config_json.map(|s| s.to_string()),
+    };
+    serde_json::to_string(&export).unwrap_or_else(|_| identity_json.to_string())
 }
 
 /// Replace the iroh transport key in an existing encrypted bundle with a freshly
@@ -83,13 +119,25 @@ pub fn rekey_iroh(
     Ok((new_json, unlocked))
 }
 
-/// Parse an imported file's bytes as a BrowserIdentityExport JSON.
-/// Returns `(username, validated_json)`.
-pub fn import_from_bytes(bytes: &[u8]) -> Result<(String, String), String> {
+/// Parse an imported file's bytes as either a `ZionExport` (new format) or a
+/// bare `BrowserIdentityExport` JSON (old format, backward-compatible).
+///
+/// Returns `(username, identity_json, Option<ego_config_json>)`.
+pub fn import_from_bytes(bytes: &[u8]) -> Result<(String, String, Option<String>), String> {
     let json = std::str::from_utf8(bytes).map_err(|e| e.to_string())?;
+
+    // Try new ZionExport format first.
+    if let Ok(zion) = serde_json::from_str::<ZionExport>(json) {
+        // Validate the embedded BrowserIdentityExport is well-formed.
+        let _ = BrowserIdentityExport::from_json_str(&zion.identity).map_err(|e| e.to_string())?;
+        return Ok((zion.username, zion.identity, zion.ego_config));
+    }
+
+    // Fallback: bare BrowserIdentityExport (old format).
+    // Note: slug is not stored in config YAML, so it defaults to "ma".
     let export = BrowserIdentityExport::from_json_str(json).map_err(|e| e.to_string())?;
     let config = Config::from_yaml_str(&export.config_yaml).map_err(|e| e.to_string())?;
-    Ok((config.slug.clone(), json.to_string()))
+    Ok((config.slug.clone(), json.to_string(), None))
 }
 
 #[cfg(test)]
@@ -243,9 +291,10 @@ mod tests {
     #[test]
     fn import_from_bytes_roundtrip() {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
-        let (_, validated) = import_from_bytes(json.as_bytes()).expect("import failed");
-        // Validated JSON must still be unlockable regardless of slug.
-        let _ = unlock_identity(&validated, PASS).expect("unlock after import failed");
+        let (_, identity_json, ego_config) =
+            import_from_bytes(json.as_bytes()).expect("import failed");
+        assert!(ego_config.is_none(), "bare identity has no ego_config");
+        let _ = unlock_identity(&identity_json, PASS).expect("unlock after import failed");
     }
 
     #[test]
@@ -260,11 +309,50 @@ mod tests {
         assert!(result.is_err());
     }
 
+    #[test]
+    fn import_from_bytes_new_format_roundtrip() {
+        let (json, _) = create_identity("alice", PASS).expect("create failed");
+        let bundled = export_for_download(&json, "alice", Some(r#"{"tree":{"key":"val"}}"#));
+        let (username, identity_json, ego_config) =
+            import_from_bytes(bundled.as_bytes()).expect("import new format failed");
+        assert_eq!(username, "alice");
+        let _ = unlock_identity(&identity_json, PASS).expect("unlock failed");
+        assert_eq!(ego_config.as_deref(), Some(r#"{"tree":{"key":"val"}}"#));
+    }
+
+    #[test]
+    fn import_from_bytes_old_format_still_works() {
+        // A bare BrowserIdentityExport (no ZionExport wrapper) must still import cleanly.
+        // Note: slug is not stored in config YAML so username defaults to "ma".
+        let (json, _) = create_identity("alice", PASS).expect("create failed");
+        let (username, identity_json, ego_config) =
+            import_from_bytes(json.as_bytes()).expect("import old format failed");
+        assert_eq!(username, "ma", "old format slug always defaults to 'ma'");
+        let _ = unlock_identity(&identity_json, PASS).expect("unlock failed");
+        assert!(ego_config.is_none());
+    }
+
     // ── export_for_download ───────────────────────────────────────────────
 
     #[test]
-    fn export_for_download_is_identity() {
-        let json = r#"{"x":1}"#;
-        assert_eq!(export_for_download(json), json);
+    fn export_for_download_without_config() {
+        let (json, _) = create_identity("alice", PASS).expect("create failed");
+        let exported = export_for_download(&json, "alice", None);
+        let zion: ZionExport = serde_json::from_str(&exported).expect("must parse as ZionExport");
+        assert_eq!(zion.version, 1);
+        assert_eq!(zion.username, "alice");
+        assert_eq!(zion.identity, json);
+        assert!(zion.ego_config.is_none());
+    }
+
+    #[test]
+    fn export_for_download_with_config() {
+        let (json, _) = create_identity("alice", PASS).expect("create failed");
+        let cfg_json = r#"{"tree":{".my.i18n":"nb"}}"#;
+        let exported = export_for_download(&json, "alice", Some(cfg_json));
+        let zion: ZionExport = serde_json::from_str(&exported).expect("must parse as ZionExport");
+        assert_eq!(zion.version, 1);
+        assert_eq!(zion.username, "alice");
+        assert_eq!(zion.ego_config.as_deref(), Some(cfg_json));
     }
 }

@@ -49,8 +49,8 @@ src/
   parser/
     mod.rs              — top-level parse: DotOp | Send | Rpc | Escape
     alias.rs            — alias expansion + \@ escape
-    command.rs          — DotOp parser (get / set / delete / verb); bare DID actor support
-    verbs.rs            — dispatch_verb: all .path:verb implementations
+    command.rs          — DotOp parser (get / set / delete / meta-verb); bare DID actor support
+    verbs/              — dispatch_meta: all .path!verb implementations
   scheme/
     mod.rs              — public API: needs_expansion(), expand(), init/reset_session_env()
     parser.rs           — S-expression lexer + parser → SchemeExpr AST
@@ -103,11 +103,11 @@ Makefile
 - [x] Editor — CodeMirror 6, modes: Standard / View / Reply
 - [x] Transport — iroh QUIC connect, inbox + RPC poll loop (500 ms)
 - [x] Send text message (`@target body`)
-- [x] Send RPC verb (`@target:verb [args]`)
-- [x] Send reply (`.my.inbox.N:reply [body]`)
+- [x] Send RPC verb (`@target!verb [args]`)
+- [x] Send reply (`.my.inbox.N!reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
-- [x] `.my.ma:discover` — probes localhost:5003, creates `@ma` alias, persists config
+- [x] `.ma!discover` — probes localhost:5003, creates `@ma` alias, persists config
 - [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.i18n`
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
@@ -117,7 +117,7 @@ Makefile
 
 - [ ] `.use @actor [as @alias]` focus mode — pre-fills prompt
 - [ ] Alias colour rendering in input field
-- [ ] `.my.doc.<name>:publish` — `application/x-ma-ipfs-store` protocol
+- [ ] `.my.doc.<name>!publish` — `application/x-ma-ipfs-store` protocol
 - [ ] `.my.home` — default actor context
 - [ ] Scheme expressions inside sync batches (currently fire-and-forget)
 
@@ -136,6 +136,7 @@ then dispatched through the normal parser.
 |---|---|
 | `(.my.aliases.sky)` | dot-path get — returns the config value |
 | `(.my.config.k: "v")` | dot-path set — writes config, returns nil |
+| `(.my.path!verb …)` | side-effect verb — queued to input_queue, returns nil |
 | `(@ma#house:enter #room)` | actor RPC — sends, awaits reply string |
 | `(did:ma:abc#room:enter ticket)` | same, DID directly in function position |
 
@@ -191,18 +192,19 @@ do not block the batch step counter.  They re-queue the expanded line into
 ## Dot-command grammar
 
 | Syntax | Meaning |
-|--------|---------|
+|--------|----------|
 | `.path` | get — print leaf value or subtree listing |
 | `.path query` | filter — subtree listing matching `query` |
 | `.path: value` | set leaf |
 | `.path:` | delete subtree (or leaf) |
-| `.path:verb [args]` | local verb dispatch |
+| `.path!verb [args]` | side-effect / system operation |
 
 **Rules:**
 - Read-only keys enforced in `EgoConfig::is_read_only()`.
   Currently: anything under `.my.identity.*`.
 - A key cannot be both a leaf and a parent node simultaneously.
-- Verbs dispatch to `parser/verbs.rs::dispatch_verb`.
+- `:` is **only** a setter. Verbs always use `!`.
+- Verbs dispatch to `parser/verbs/mod.rs::dispatch_meta`.
 
 ---
 
@@ -241,25 +243,25 @@ It is set once via `:discover` and then used as the publish target.
 
 Leaves written by `:discover`:
 ```
-.my.ma.did          DID of the local ma runtime
-.my.ma.endpoint_id  iroh endpoint ID (from status.json)
+.ma.did          DID of the local ma runtime
+.ma.endpoint_id  iroh endpoint ID (from status.json)
 ```
-The alias `.my.aliases.ma` is also created, pointing to `.my.ma.did`.
+The alias `.my.aliases.ma` is also created, pointing to `.ma.did`.
 
 Configurable leaf:
 ```
-.my.ma.url          base URL of the ma daemon (default: http://localhost:5003)
+.ma.url          base URL of the ma daemon (default: http://localhost:5003)
 ```
-Set this if `ma` runs on a non-default port: `.my.ma.url: http://localhost:1234`
+Set this if `ma` runs on a non-default port: `.ma.url: http://localhost:1234`
 
 Verb:
-- `.my.ma:discover` — fetches `<.my.ma.url>/status.json`, reads `did`
+- `.ma!discover` — fetches `<.ma.url>/status.json`, reads `did`
   and `endpoint_id`, writes the above leaves, creates alias `@ma`, persists config.
   Reports an actionable error if `ma` is not running.
 
 After discovery:
 ```
-.my.identity:publish @ma
+.my.identity!publish @ma
 ```
 
 Prerequisites for publish to work:
@@ -290,14 +292,14 @@ Key helpers in `mailbox/mod.rs`:
 - `prune_inbox_expired(cfg, now_secs)` — removes expired entries
 - `is_link_value(value)` — true for `did:ma:…`, `bafy…`, `Qm…`
 
-Verbs dispatched in `parser/verbs.rs`:
+Verbs dispatched in `parser/verbs/mod.rs`:
 - `.my.inbox` — list all entries
 - `.my.inbox.N` — show all leaves of entry N
-- `.my.inbox.N:reply [body]` — immediate send (no args → editor in Reply mode)
-- `.my.inbox.N:open` — open content read-only in editor (View mode)
+- `.my.inbox.N!reply [body]` — immediate send (no args → editor in Reply mode)
+- `.my.inbox.N!open` — open content read-only in editor (View mode)
 - `.my.inbox.N:` — delete entry
 - `.my.inbox:` — delete all entries
-- `.my.inbox:flush` — print all entries to terminal
+- `.my.inbox!flush` — print all entries to terminal
 
 ---
 
@@ -312,12 +314,12 @@ Stored in `EgoConfig`:
 ```
 
 Verbs:
-- `.my.doc.<name>:edit` — open editor with saved content (Standard mode)
-- `.my.doc.<name>:edit <cid>` — fetch CID, open for review (NOT auto-executed)
-- `.my.doc.<name>:eval` — execute saved `.content` line-by-line
-- `.my.doc.<name>:publish <publisher>` — send `application/x-ma-ipfs-store`
-- `.my.doc.<name>:cid` — print stored CID
-- `.my.doc.<name>:fetch <cid>` — import CID content (no editor, no execution)
+- `.my.doc.<name>!edit` — open editor with saved content (Standard mode)
+- `.my.doc.<name>!edit <cid>` — fetch CID, open for review (NOT auto-executed)
+- `.my.doc.<name>!eval` — execute saved `.content` line-by-line
+- `.my.doc.<name>!publish <publisher>` — send `application/x-ma-ipfs-store`
+- `.my.doc.<name>!cid` — print stored CID
+- `.my.doc.<name>!fetch <cid>` — import CID content (no editor, no execution)
 - `.my.doc.<name>:` — delete entire document subtree
 
 ---
@@ -452,9 +454,9 @@ This is displayed by `.my.i18n:list` and by `t("lang-name")` in the UI.
 `include!`-ed into `src/i18n.rs`. The list is kept sorted alphabetically
 by language code.
 
-### `.my.i18n:list`
+### `.my.i18n!list`
 
-Dispatch lives in `src/parser/verbs.rs` at path `.my.i18n`, verb `list`.
+Dispatch lives in `src/parser/verbs/mod.rs` at path `.my.i18n`, verb `list`.
 It iterates `crate::i18n::SUPPORTED_LANGS` (auto-generated at build time)
 and prints each entry as `  <code padded to 20>  <autonym>`.
 The header line comes from `t("lang-list-header")`.
@@ -492,8 +494,8 @@ ancestor paths backward. If any ancestor leaf `is_link_value`, it calls
 ## Security rules
 
 **NEVER execute content fetched from a CID automatically.**
-`:edit <cid>` MUST open the editor for human review first.
-Only `:eval` (on saved `.content`) and the **Eval** editor button
+`!edit <cid>` MUST open the editor for human review first.
+Only `!eval` (on saved `.content`) and the **Eval** editor button
 may trigger execution. This must never be bypassed.
 
 All secret key material lives in `SecretBundle`, encrypted with the
@@ -601,7 +603,7 @@ by message ID, not filtered by sender.
 
 ### Editing
 
-`.my.acl:edit` opens `EditorMode::ConfigEdit { key: ACL_KEY.to_string() }`
+`.my.acl!edit` opens `EditorMode::ConfigEdit { key: ACL_KEY.to_string() }`
 in YAML mode. On save the value is written directly to `EgoConfig` (not via
 the document `.content` path). Takes effect on the next poll tick.
 

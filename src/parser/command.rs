@@ -5,11 +5,10 @@
 ///   .path value          → DotOp::Get  (args carry match query)
 ///   .path: value         → DotOp::Set
 ///   .path:               → DotOp::Delete
-///   .path!verb [args]    → DotOp::Meta  (system/side-effect operation)
-///   .path:verb [args]    → DotOp::Verb  (user Scheme function call)
-///   @alias[:verb] [body] → ActorMessage
-///   @did:ma:<id>[:verb]  → ActorMessage
-///   did:ma:<id>[:verb]   → ActorMessage  (bare DID from expansion)
+///   .path!verb [args]    → DotOp::Meta  (side-effect / system operation)
+///   @alias[!verb] [body] → ActorMessage
+///   @did:ma:<id>[!verb]  → ActorMessage
+///   did:ma:<id>[!verb]   → ActorMessage  (bare DID from expansion)
 ///   \@literal text       → PlainText
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
@@ -21,9 +20,7 @@ pub enum DotOp {
     Get,
     Set(String),
     Delete,
-    /// `:verb` — user Scheme function call (dispatches to .content)
-    Verb(String),
-    /// `!verb` — system/side-effect operation (edit, eval, publish, save, …)
+    /// `!verb` — side-effect / system operation (edit, eval, publish, fetch, …)
     Meta(String),
 }
 
@@ -70,7 +67,7 @@ fn parse_dot(input: &str) -> Result<Command, String> {
             args: shell_split(&rest),
         });
     }
-    let (path, op) = dot_path_and_op(&head, &rest);
+    let (path, op) = dot_path_and_op(&head, &rest)?;
     let args = match &op {
         DotOp::Set(_) => vec![],
         _ => shell_split(&rest),
@@ -78,13 +75,18 @@ fn parse_dot(input: &str) -> Result<Command, String> {
     Ok(Command::DotCommand { path, op, args })
 }
 
-fn dot_path_and_op(head: &str, rest: &str) -> (String, DotOp) {
-    match head.split_once(':') {
+fn dot_path_and_op(head: &str, rest: &str) -> Result<(String, DotOp), String> {
+    let result = match head.split_once(':') {
         None => (head.to_string(), DotOp::Get),
         Some((path, "")) if rest.is_empty() => (path.to_string(), DotOp::Delete),
         Some((path, "")) => (path.to_string(), DotOp::Set(rest.to_string())),
-        Some((path, verb)) => (path.to_string(), DotOp::Verb(verb.to_string())),
-    }
+        Some((path, verb)) => {
+            return Err(format!(
+                "unknown syntax ‘{path}:{verb}’ — use ‘{path}!{verb}’ for commands"
+            ));
+        }
+    };
+    Ok(result)
 }
 
 // ── Actor message ──────────────────────────────────────────────────────────
@@ -153,6 +155,16 @@ pub(crate) fn split_actor_head(head: &str) -> (&str, Option<String>) {
         }
         return (head, None);
     }
+
+    // NEW: Handle remote dot-path GET operations like `@sky.entities`
+    if !head.contains(':') {
+        if let Some(dot_pos) = head.find('.') {
+            let target = &head[..dot_pos];
+            let path = &head[dot_pos..]; // Keep the leading dot
+            return (target, Some(path.to_string()));
+        }
+    }
+
     if let Some((before, verb)) = head.rsplit_once(':') {
         if !verb.is_empty() {
             let alias = before.find('.').map(|p| &before[..p]).unwrap_or(before);
