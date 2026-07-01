@@ -225,9 +225,15 @@ async fn intercept_kinds(
 ///
 /// Returns `true` when the request was handled.
 async fn intercept_edit(v_inner: &str, target: &str, cmd_id: u64, state: &AppState) -> bool {
-    let Some(path_part) = v_inner.strip_suffix(":edit") else {
+    let path_part = if let Some(p) = v_inner.strip_suffix(":edit") {
+        p.to_string()
+    } else if let Some(p) = v_inner.strip_suffix("!edit") {
+        // `@alias.path!edit` parses with a leading dot on the path segment
+        p.strip_prefix('.').unwrap_or(p).to_string()
+    } else {
         return false;
     };
+    let path_part = path_part.as_str();
     let crud_path = format!(".{path_part}");
     let editor_mode = match path_part {
         "acl" => EditorMode::RuntimeAclEdit {
