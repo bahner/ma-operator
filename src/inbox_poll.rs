@@ -314,11 +314,12 @@ fn handle_ipfs_crud_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
+            let bracketed = format!("<{cid}>");
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
                     crud_path,
-                    value: ciborium::Value::Text(cid),
+                    value: ciborium::Value::Text(bracketed),
                     cmd_id,
                 });
             });
@@ -349,13 +350,14 @@ fn handle_ipfs_kind_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
+            let bracketed = format!("<{cid}>");
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
                     crud_path: ".kinds".to_string(),
                     value: ciborium::Value::Array(vec![
                         ciborium::Value::Text(protocol_id),
-                        ciborium::Value::Text(cid),
+                        ciborium::Value::Text(bracketed),
                     ]),
                     cmd_id,
                 });
