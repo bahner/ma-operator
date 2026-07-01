@@ -265,8 +265,8 @@ profile-delete-error = প্রোফাইল মুছতে ব্যর্�
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -335,7 +335,7 @@ help-publish-intro = প্রকাশ করলে আপনার পরি�
 help-publish-ma = প্রকাশ করতে ma (স্থানীয় রানটাইম) ইনস্টল করা দরকার। এটি আপনার হয়ে ego-কে IPFS/IPNS-এর সাথে সংযুক্ত করে।
 help-publish-steps = ধাপ: স্থানীয় ma সনাক্ত করতে '.ma [port]' চালান, তারপর '.my.identity!publish @ma'।
 help-publish-without = প্রকাশ না করলে অন্যরা আপনার কাছে পৌঁছাতে পারবে না — DID জানলেও তারা আপনার endpoint খুঁজে বের করতে পারবে না।
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

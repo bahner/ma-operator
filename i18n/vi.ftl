@@ -265,8 +265,8 @@ profile-delete-error = xóa hồ sơ thất bại: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -335,7 +335,7 @@ help-publish-intro = Xuất bản giúp danh tính của bạn được tìm th�
 help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
 help-publish-steps = Các bước: chạy '.ma [port]' để phát hiện ma cục bộ, sau đó '.my.identity!publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

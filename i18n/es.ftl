@@ -258,8 +258,8 @@ profile-delete-error = error al eliminar el perfil: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -327,7 +327,7 @@ help-publish-intro = Publicar hace que tu identidad sea localizable en la red. O
 help-publish-ma = Para publicar necesitas ma (runtime local) instalado. Conecta ego con IPFS/IPNS en tu nombre.
 help-publish-steps = Pasos: ejecuta '.ma [port]' para detectar tu ma local, luego '.my.identity!publish @ma'.
 help-publish-without = Sin publicar, otros no pueden alcanzarte — aunque conozcan tu DID, no pueden resolver tu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

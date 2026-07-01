@@ -80,8 +80,6 @@ pub fn disconnect() {
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
-    crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
-    crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
 }
 
 pub fn is_connected() -> bool {
@@ -287,9 +285,17 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
         Some(lang) if !lang.is_empty() => ma_ext.extra("lang", Ipld::String(lang)),
         _ => ma_ext,
     };
-    // Inject encrypted profile CID if available.
+    // Inject profile CID as a DAG-JSON link ({"/": "bafy..."}) so dag-get
+    // traversal works. serde_json serialises Ipld::Link as raw bytes, so we
+    // use Ipld::Map with the DAG-JSON link convention instead.
     let ma_ext = match SESSION_AGENT_CID.with(|c| c.borrow().clone()) {
-        Some(cid) if !cid.is_empty() => ma_ext.extra("profile", Ipld::String(cid)),
+        Some(cid) if !cid.is_empty() => {
+            let link = Ipld::Map(std::collections::BTreeMap::from([(
+                "/".to_string(),
+                Ipld::String(cid),
+            )]));
+            ma_ext.extra("profile", link)
+        }
         _ => ma_ext,
     };
     let document = bundle
@@ -333,15 +339,6 @@ pub async fn send_ipfs_store(
     let msg_id = msg.id.clone();
     send_message_on(publisher_did, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
-}
-
-/// Decrypt a profile blob fetched from IPFS.
-/// Uses a session-derived key (PBKDF2 from login passphrase).
-pub fn decrypt_profile(blob: &[u8]) -> Result<Vec<u8>, String> {
-    let key = crate::state::SESSION_PROFILE_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    crate::profile_crypto::decrypt_with_key(blob, &key)
 }
 
 /// Send a plain-text reply to a message.

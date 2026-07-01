@@ -267,8 +267,8 @@ profile-delete-error = sletting av profil mislyktes: { $e }
 profile-wrong-user = kan ikke sette CID for en annen profil — bare din egen
 profile-wrong-user-name = kan ikke sette CID for '{ $name }' — bare din egen profil
 profile-no-ma = ingen ma-kjøretid konfigurert — kjør '.ma [port]' først
-profile-no-cid = ingen CID lagret for denne profilen — kjør ':publish' først
-profile-no-cid-in-doc = ingen profil-CID funnet i DID-dokument — kjør ':publish' først
+profile-no-cid = ingen CID lagret for denne profilen — kjør '!publish' først
+profile-no-cid-in-doc = ingen profil-CID funnet i DID-dokument — kjør '!publish' først
 profile-publish-failed = profilpublisering mislyktes: { $e }
 profile-fetch-done = profil hentet — { $n } nøkler hentet fra IPFS
 profile-fetch-failed = profil-henting mislyktes: { $e }
@@ -334,7 +334,7 @@ help-publish-intro = Publisering gjør identiteten din synlig på nettverket. An
 help-publish-ma = For å publisere trenger du ma (lokal kjøretid) installert. Den kobler ego til IPFS/IPNS på dine vegne.
 help-publish-steps = Steg: kjør '.ma [port]' for å oppdage din lokale ma, deretter '.my.identity!publish @ma'.
 help-publish-without = Uten publisering kan ikke andre nå deg — selv om de kjenner din DID, kan de ikke løse opp endepunktet ditt.
-profile-fetch-did-resolve-failed = DID ikke publisert ennå — kjør '.my.identity!publish @ma' først, deretter ':publish' profilen din
+profile-fetch-did-resolve-failed = DID ikke publisert ennå — kjør '.my.identity!publish @ma' først, deretter '!publish' profilen din
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

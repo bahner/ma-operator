@@ -386,17 +386,23 @@ fn handle_profile_publish_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid_str) => {
-            // Store profile CID in session — it will be embedded in the next DID publish.
+            // Store profile CID in session — embedded in the DID document on next publish.
             crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid_str.clone()));
-            if let Some(id) = cmd_id {
-                state.resolve_command_by_id(id, CommandStatus::Replied(cid_str.clone()));
-                state.push_incoming(cid_str, Some(id), false);
-            }
-            // Re-publish DID document so ma.profile is updated (fire-and-forget).
-            let publisher_did2 = publisher_did.clone();
+            // Republish DID document with ma.profile = cid in the background.
+            let state2 = state.clone();
             leptos::task::spawn_local(async move {
-                let _ = crate::transport::send_ipfs_publish(&publisher_did2).await;
+                let _ = crate::transport::send_ipfs_publish(&publisher_did).await;
+                if let Some(id) = cmd_id {
+                    // Tracked command (.my.identity!publish): show CID on completion.
+                    state2.resolve_command_by_id(id, CommandStatus::Replied(cid_str.clone()));
+                    state2.push_incoming(cid_str, Some(id), false);
+                }
             });
+            // Untracked command (.ma): 間 as soon as the profile CID is stored —
+            // the DID republish continues in the background.
+            if cmd_id.is_none() {
+                state.push_output("間");
+            }
         }
         Err(e) => {
             if let Some(id) = cmd_id {

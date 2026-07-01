@@ -7,7 +7,6 @@ mod doc;
 mod identity;
 mod inbox;
 mod ma;
-mod profiles;
 mod scheme;
 
 use crate::config::EgoConfig;
@@ -21,6 +20,7 @@ use ma_core::Ipld;
 pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     match &doc.ma {
         Some(Ipld::Map(map)) => match map.get("profile") {
+            Some(Ipld::Link(c)) => Some(c.to_string()),
             Some(Ipld::String(s)) => Some(s.clone()),
             _ => None,
         },
@@ -73,9 +73,6 @@ pub fn dispatch_meta(
     }
     if path == ".my.identity" || path.starts_with(".my.identity.") {
         return identity::handle_identity(path, verb, args, state, config, show_editor, on_eval);
-    }
-    if path == ".my.profile" {
-        return profiles::handle_my_profile(verb, args, state, config);
     }
     if path == ".my.i18n" && verb == "list" {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);

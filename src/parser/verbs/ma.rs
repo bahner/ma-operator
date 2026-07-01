@@ -1,9 +1,11 @@
-use super::MA_URL;
+use super::{resolve_bare_did, MA_URL};
 use crate::config::EgoConfig;
 use crate::http::fetch_url_text;
 use crate::i18n::{t, tf};
-use crate::state::AppState;
+use crate::identity::load_identity;
+use crate::state::{AppState, PendingKind};
 use crate::views::editor::EditorContext;
+use futures::FutureExt as _;
 use leptos::prelude::*;
 
 pub(super) fn handle_ma(
@@ -21,13 +23,29 @@ pub(super) fn handle_ma(
     if verb != "connect" {
         return Err(tf("runtime-no-verb", &[("verb", verb), ("path", path)]));
     }
+    state
+        .session
+        .get_untracked()
+        .ok_or_else(|| t("msg-not-logged-in"))?;
+
+    let raw = args.first().map(|s| s.as_str()).unwrap_or("");
+    // @alias or did: → publish directly to that runtime, skip discover.
+    if raw.starts_with('@') || raw.starts_with("did:") {
+        let publisher = resolve_bare_did(raw, &config.get_untracked())?;
+        let state2 = state.clone();
+        leptos::task::spawn_local(async move {
+            do_publish(publisher, config, &state2).await;
+        });
+        return Ok(());
+    }
+    // No arg or port number → discover then publish.
+    let port = args.first().and_then(|s| s.parse::<u16>().ok());
+    let ma_base = ma_base_from_port(port, &config.get_untracked());
     let our_did = state
         .session
         .get_untracked()
         .map(|s| s.sender_did.clone())
-        .ok_or_else(|| t("msg-not-logged-in"))?;
-    let port = args.first().and_then(|s| s.parse::<u16>().ok());
-    let ma_base = ma_base_from_port(port, &config.get_untracked());
+        .unwrap_or_default();
     do_ma_connect(ma_base, our_did, config, state.clone());
     Ok(())
 }
@@ -44,31 +62,27 @@ fn ma_base_from_port(port: Option<u16>, cfg: &EgoConfig) -> String {
 
 fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, state: AppState) {
     leptos::task::spawn_local(async move {
-        // Try to claim — 200 = claimed now, 409 = already owned, error = skip
+        // Claim (200 = new, 409 = already owned; errors silently skipped).
         let claim_url = format!("{ma_base}/claim");
         let body = format!(r#"{{"owner":"{}"}}"#, our_did);
         match fetch_post_json(&claim_url, &body).await {
-            Ok(200) => state.push_system(tf("claim-success", &[("did", &our_did)])),
-            Ok(409) => {} // already claimed — continue to discover
+            Ok(200) | Ok(409) | Err(_) => {}
             Ok(status) => {
                 state.push_error(tf("claim-http-failed", &[("status", &status.to_string())]));
                 return;
             }
-            Err(_) => {} // claim endpoint unavailable — continue to discover
         }
-        // Discover — populate .ctx.ma.* from status.json
-        match rediscover_ma(&ma_base, config).await {
+        // Discover — populate .ctx.ma.* and .my.aliases.ma.
+        let did = match rediscover_ma(&ma_base, config).await {
             Ok(did) => {
                 if let Some(sess) = state.session.get_untracked() {
                     let username = sess.username.clone();
                     let cfg = config.get_untracked();
                     leptos::task::spawn_local(async move {
-                        if let Err(e) = crate::config::persist_config(&username, &cfg).await {
-                            web_sys::console::error_1(&format!("persist error: {e}").into());
-                        }
+                        let _ = crate::config::persist_config(&username, &cfg).await;
                     });
                 }
-                state.push_system(tf("discover-success", &[("url", &ma_base), ("did", &did)]));
+                did
             }
             Err(e) => {
                 let status_url = format!("{ma_base}/status.json");
@@ -77,9 +91,92 @@ fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, 
                     &[("url", &status_url), ("e", &e)],
                 ));
                 state.push_error(discover_fetch_hint(&e));
+                return;
             }
-        }
+        };
+        // Publish profile + DID. 間 arrives via inbox reply when done.
+        do_publish(did, config, &state).await;
     });
+}
+
+/// Build and upload the profile blob to IPFS, then queue the DID republish.
+/// Returns `true` if the request was sent, `false` if an error was pushed.
+async fn do_publish(publisher: String, config: RwSignal<EgoConfig>, state: &AppState) -> bool {
+    let username = match state.session.get_untracked().map(|s| s.username.clone()) {
+        Some(u) => u,
+        None => {
+            state.push_error(t("msg-not-logged-in"));
+            return false;
+        }
+    };
+    // Step 1: Publish DID document (without profile) so the runtime caches our
+    // current iroh endpoint.  Register a reply channel and wait for the ack
+    // before sending the store — this guarantees the runtime has our endpoint
+    // in doc_cache when the store reply needs to be delivered.
+    let did_pub_rx = match crate::transport::send_ipfs_publish(&publisher).await {
+        Ok(msg_id) => Some(crate::state::AwaitingReply::register(msg_id)),
+        Err(_) => None,
+    };
+    if let Some(rx) = did_pub_rx {
+        // Wait up to 60 s for the DID publish ack — timeout is fine, the
+        // important thing is we don't race the store.
+        futures::select! {
+            _ = rx.fuse() => {},
+            _ = gloo_timers::future::TimeoutFuture::new(60_000).fuse() => {},
+        }
+    }
+    let identity_json = match load_identity(&username).await {
+        Ok(Some(s)) => s.export_json,
+        Ok(None) => {
+            state.push_error(tf("error-identity-not-found", &[("name", &username)]));
+            return false;
+        }
+        Err(e) => {
+            state.push_error(e);
+            return false;
+        }
+    };
+    let identity_val: serde_json::Value =
+        serde_json::from_str(&identity_json).unwrap_or(serde_json::Value::String(identity_json));
+    let my_nested = config
+        .get_untracked()
+        .for_profile()
+        .profile_to_nested_json();
+    let profile_val = serde_json::json!({
+        "username": username,
+        "identity": identity_val,
+        "my": my_nested,
+    });
+    let profile_bytes = match serde_ipld_dagcbor::to_vec(&profile_val) {
+        Ok(b) => b,
+        Err(e) => {
+            state.push_error(tf("profile-publish-failed", &[("e", &e.to_string())]));
+            return false;
+        }
+    };
+    match crate::transport::send_ipfs_store(
+        &publisher,
+        profile_bytes,
+        "application/vnd.ipld.dag-cbor",
+    )
+    .await
+    {
+        Ok(msg_id) => {
+            state.register_pending(
+                msg_id,
+                PendingKind::ProfilePublish {
+                    publisher_did: publisher,
+                    cmd_id: None,
+                },
+                None,
+            );
+            true
+        }
+        Err(e) => {
+            state.push_error(tf("profile-publish-failed", &[("e", &e)]));
+            false
+        }
+    }
 }
 
 pub(super) async fn rediscover_ma(
@@ -141,6 +238,7 @@ pub(super) async fn rediscover_ma(
         .unwrap_or_default();
 
     config.update(|cfg| {
+        cfg.set(".ctx.ma.url", ma_base.trim_end_matches('/'));
         cfg.set(".ctx.ma.did", &did);
         if !endpoint_id.is_empty() {
             cfg.set(".ctx.ma.endpoint_id", &endpoint_id);

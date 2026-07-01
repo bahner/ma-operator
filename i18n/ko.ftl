@@ -265,8 +265,8 @@ profile-delete-error = 프로필 삭제 실패: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -334,7 +334,7 @@ help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습
 help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.
 help-publish-steps = 단계: '.ma [port]'로 로컬 ma를 감지한 후 '.my.identity!publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

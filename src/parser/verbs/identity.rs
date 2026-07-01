@@ -1,11 +1,9 @@
-use super::doc::format_publish_error;
 use super::resolve_bare_did;
 use crate::config::EgoConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::AppState;
-use crate::transport;
 use crate::views::editor::EditorContext;
 use js_sys;
 use leptos::prelude::*;
@@ -60,10 +58,10 @@ pub(super) fn handle_identity(
         let cmd_id = state.push_command(format!(".my.identity!publish {publisher_disp}"));
         let state2 = state.clone();
         leptos::task::spawn_local(async move {
-            match transport::send_ipfs_publish(&publisher).await {
+            match crate::transport::send_ipfs_publish(&publisher).await {
                 Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
                 Err(e) => {
-                    let mapped = format_publish_error(&e);
+                    let mapped = crate::parser::verbs::doc::format_publish_error(&e);
                     state2.resolve_command_by_id(cmd_id, CommandStatus::Error(mapped.clone()));
                     state2.push_error(mapped);
                 }

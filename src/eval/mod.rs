@@ -211,7 +211,6 @@ fn eval_dot(
             return;
         }
         ".ma" => {
-            state.push_output("間");
             if let Err(e) =
                 dispatch_meta(".ma", "connect", args, state, config, show_editor, on_eval)
             {

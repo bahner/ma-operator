@@ -191,31 +191,90 @@ impl EgoConfig {
     /// Compared against `Document.updated_at` on startup to detect IPNS staleness.
     pub const PROFILE_PUBLISHED_AT_KEY: &'static str = ".my.profile.published_at";
 
-    /// Key used to embed the username in the profile blob.
-    pub const META_USERNAME_KEY: &'static str = ".meta.username";
-
-    /// Replace the profile subtrees in this config with data from a remote profile blob.
-    /// Extracts and returns the embedded username (`.meta.username`).
-    /// All local profile keys are removed first, then the remote keys are inserted
-    /// wholesale — preventing buildup of stale data.
-    pub fn merge_profile(&mut self, cbor_bytes: &[u8]) -> Result<(usize, String), String> {
-        let map: HashMap<String, String> =
-            serde_ipld_dagcbor::from_slice(cbor_bytes).map_err(|e| e.to_string())?;
-        let username = map
-            .get(Self::META_USERNAME_KEY)
-            .cloned()
-            .unwrap_or_default();
-        self.tree.retain(|k, _| !Self::is_profile_key(k.as_str()));
-        let count = map
-            .iter()
-            .filter(|(k, _)| k.as_str() != Self::META_USERNAME_KEY)
-            .count();
-        for (k, v) in map {
-            if k != Self::META_USERNAME_KEY {
-                self.tree.insert(k, v);
+    /// Expand `.my.*` flat keys into a nested JSON map, stripping the `.my.` prefix.
+    /// `.my.config.colour.bg = "#fff"` → `{"config": {"colour": {"bg": "#fff"}}}`.
+    /// Used when building the IPFS profile blob.
+    pub fn profile_to_nested_json(&self) -> serde_json::Value {
+        let mut root = serde_json::Map::new();
+        for (key, value) in &self.tree {
+            if let Some(path) = key.strip_prefix(".my.") {
+                let parts: Vec<&str> = path.split('.').collect();
+                Self::insert_nested(&mut root, &parts, value.clone());
             }
         }
+        serde_json::Value::Object(root)
+    }
+
+    fn insert_nested(
+        obj: &mut serde_json::Map<String, serde_json::Value>,
+        parts: &[&str],
+        value: String,
+    ) {
+        if parts.is_empty() {
+            return;
+        }
+        if parts.len() == 1 {
+            obj.insert(parts[0].to_string(), serde_json::Value::String(value));
+            return;
+        }
+        let entry = obj
+            .entry(parts[0].to_string())
+            .or_insert_with(|| serde_json::Value::Object(serde_json::Map::new()));
+        if let serde_json::Value::Object(ref mut nested) = entry {
+            Self::insert_nested(nested, &parts[1..], value);
+        }
+    }
+
+    /// Replace the `.my.*` profile keys in this config from the nested `"my"` field
+    /// of a profile blob. Flattens the nested structure back to `.my.*` flat keys.
+    /// Returns `(count_of_keys_merged, username)`.
+    pub fn merge_from_nested_profile(
+        &mut self,
+        profile: &serde_json::Value,
+    ) -> Result<(usize, String), String> {
+        let username = profile
+            .get("username")
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
+        let my = profile
+            .get("my")
+            .ok_or_else(|| "profile missing 'my' field".to_string())?;
+        self.tree.retain(|k, _| !Self::is_profile_key(k.as_str()));
+        let mut flat = HashMap::new();
+        Self::flatten_nested(".my", my, &mut flat);
+        let count = flat.len();
+        self.tree.extend(flat);
         Ok((count, username))
+    }
+
+    fn flatten_nested(prefix: &str, val: &serde_json::Value, out: &mut HashMap<String, String>) {
+        match val {
+            serde_json::Value::Object(map) => {
+                for (k, v) in map {
+                    let new_prefix = format!("{}.{}", prefix, k);
+                    Self::flatten_nested(&new_prefix, v, out);
+                }
+            }
+            serde_json::Value::String(s) => {
+                out.insert(prefix.to_string(), s.clone());
+            }
+            other => {
+                out.insert(prefix.to_string(), other.to_string());
+            }
+        }
+    }
+
+    /// Return a copy of this config containing only profile keys (`.my.*`).
+    /// Used when building the IPFS profile blob.
+    pub fn for_profile(&self) -> Self {
+        let tree = self
+            .tree
+            .iter()
+            .filter(|(k, _)| Self::is_profile_key(k.as_str()))
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect();
+        Self { tree }
     }
 
     /// Return a copy of this config suitable for file export.

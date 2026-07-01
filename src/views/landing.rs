@@ -5,13 +5,13 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 
 use crate::{
+    config::EgoConfig,
     i18n::{t, tf},
     identity::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
         save_config, save_identity, storage::load_config, unlock_identity,
     },
     state::{AppState, SessionState},
-    transport::connection::LOCAL_GATEWAY_URL,
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
@@ -96,15 +96,20 @@ pub fn Landing() -> impl IntoView {
         });
     });
 
-    // ── Mode selector ─────────────────────────────────────────────────────
+    // ── Mode selector — clicking an active button toggles back to Login ───
     let set_mode = move |m: Mode| {
-        mode.set(m);
+        let next = if mode.get_untracked() == m {
+            Mode::Login
+        } else {
+            m
+        };
+        mode.set(next);
         password.set(String::new());
         confirm_password.set(String::new());
         error.set(String::new());
         status.set(String::new());
         parsed.set(None);
-        if m == Mode::New {
+        if next == Mode::New {
             did_input.set(String::new());
         }
     };
@@ -114,11 +119,9 @@ pub fn Landing() -> impl IntoView {
     fn finish_login(
         id: crate::identity::UnlockedIdentity,
         uname: String,
-        pass: String,
+        _pass: String,
         state: AppState,
     ) {
-        let profile_key = crate::profile_crypto::derive_key(&pass);
-        crate::state::SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = Some(profile_key));
         save_last_did(&id.sender_did);
         state.session.set(Some(SessionState {
             username: uname,
@@ -236,31 +239,54 @@ pub fn Landing() -> impl IntoView {
                         }
                     },
                     Ok(None) => {
-                        // Not in IndexedDB — try resolving from IPFS.
+                        // Not in IndexedDB — resolve DID document via
+                        // IpfsGatewayResolver (has built-in gateway fallbacks).
                         status.set(t("status-fetching-profile"));
-                        let ipns = uname.clone();
-                        let url = format!(
-                            "{}ipns/{}?format=dag-json",
-                            LOCAL_GATEWAY_URL.trim_end_matches('/'),
-                            ipns
-                        );
-                        match crate::http::fetch_url_text(&url).await {
-                            Ok(doc_json) => {
-                                let result = serde_json::from_str::<ma_core::Document>(&doc_json)
-                                    .ok()
-                                    .and_then(|doc| crate::parser::verbs::doc_profile_cid(&doc));
-                                match result {
+                        use ma_core::DidDocumentResolver;
+                        let resolver = ma_core::IpfsGatewayResolver::default();
+                        let full_did = format!("did:ma:{uname}");
+                        match resolver.resolve(&full_did).await {
+                            Ok(doc) => {
+                                // Apply language from DID document if present.
+                                if let Some(ma_core::Ipld::Map(ref ma)) = doc.ma {
+                                    if let Some(ma_core::Ipld::String(lang)) = ma.get("lang") {
+                                        if crate::i18n::init(lang).await {
+                                            state2.lang.set(crate::i18n::lang());
+                                        }
+                                    }
+                                }
+                                match crate::parser::verbs::doc_profile_cid(&doc) {
                                     Some(profile_cid) => {
                                         match crate::http::fetch_cid_bytes(&profile_cid).await {
                                             Ok(cbor) => {
+                                                // Decode DAG-CBOR → nested profile.
                                                 let parsed_opt = serde_ipld_dagcbor::from_slice::<
                                                     serde_json::Value,
                                                 >(
                                                     &cbor
                                                 )
                                                 .ok()
-                                                .and_then(|v| serde_json::to_string(&v).ok())
-                                                .and_then(|s| import_from_bytes(s.as_bytes()).ok());
+                                                .and_then(|profile_val| {
+                                                    let username = profile_val
+                                                        .get("username")?
+                                                        .as_str()?
+                                                        .to_string();
+                                                    let id_json = match profile_val
+                                                        .get("identity")?
+                                                    {
+                                                        serde_json::Value::String(s) => s.clone(),
+                                                        other => {
+                                                            serde_json::to_string(other).ok()?
+                                                        }
+                                                    };
+                                                    let cfg_json = {
+                                                        let mut tmp = EgoConfig::new();
+                                                        tmp.merge_from_nested_profile(&profile_val)
+                                                            .ok()?;
+                                                        tmp.to_json().ok()
+                                                    };
+                                                    Some((username, id_json, cfg_json))
+                                                });
                                                 match parsed_opt {
                                                     Some((pname, id_json, cfg_opt)) => {
                                                         match unlock_identity(&id_json, &pass) {
@@ -301,17 +327,13 @@ pub fn Landing() -> impl IntoView {
                                     }
                                     None => {
                                         status.set(String::new());
-                                        error.set(tf(
-                                            "error-identity-not-found",
-                                            &[("name", &uname)],
-                                        ));
+                                        error.set(t("profile-no-cid-in-doc"));
                                     }
                                 }
                             }
-                            Err(_) => {
-                                // IPFS not reachable — guide user to Import.
+                            Err(e) => {
                                 status.set(String::new());
-                                error.set(tf("error-identity-not-found", &[("name", &uname)]));
+                                error.set(tf("error-profile-fetch", &[("e", &e.to_string())]));
                             }
                         }
                     }

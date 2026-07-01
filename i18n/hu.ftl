@@ -258,8 +258,8 @@ profile-delete-error = a profil törlése sikertelen: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -328,7 +328,7 @@ help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a
 help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
 help-publish-steps = Lépések: futtasd '.ma [port]' a helyi ma megtalálásához, majd '.my.identity!publish @ma'.
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

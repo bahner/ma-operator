@@ -265,8 +265,8 @@ profile-delete-error = piparẹ profaili kuna: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -335,7 +335,7 @@ help-publish-intro = Títẹ jáde mú kí ìdánimọ̀ rẹ lè rí lórí n�
 help-publish-ma = Láti tẹ jáde, o nílò ma (runtime àdúgbò) tí a fi sórí. Ó so ego mọ IPFS/IPNS ní orúkọ rẹ.
 help-publish-steps = Àwọn ìgbésẹ̀: ṣe '.ma [port]' láti rí ma àdúgbò, lẹ́hìn náà '.my.identity!publish @ma'.
 help-publish-without = Láìsí títẹ jáde, àwọn mìíràn kò lè de ọ — bí wọ́n bá mọ DID rẹ pàápàá, wọn kò lè yanjú endpoint rẹ.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

@@ -265,8 +265,8 @@ profile-delete-error = پروفائل حذف کرنا ناکام ہوا: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
 profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run ':publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run ':publish' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
 profile-publish-done = profile published — DID document updated with ma.agent CID
 profile-publish-failed = profile publish failed: { $e }
@@ -335,7 +335,7 @@ help-publish-intro = اشاعت آپ کی شناخت کو نیٹ ورک پر ق�
 help-publish-ma = شائع کرنے کے لیے آپ کو ma (مقامی رن ٹائم) نصب چاہیے۔ یہ آپ کی جانب سے ego کو IPFS/IPNS سے جوڑتا ہے۔
 help-publish-steps = اقدامات: مقامی ma دریافت کرنے کے لیے '.ma [port]' چلائیں، پھر '.my.identity!publish @ma'۔
 help-publish-without = اشاعت کے بغیر دوسرے آپ تک نہیں پہنچ سکتے — چاہے وہ آپ کا DID جانتے ہوں، وہ آپ کا endpoint حل نہیں کر سکتے۔
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then ':publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

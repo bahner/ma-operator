@@ -17,6 +17,12 @@ thread_local! {
 /// Helper for registering and taking one-shot reply channels.
 pub struct AwaitingReply;
 impl AwaitingReply {
+    pub fn register(msg_id: String) -> futures::channel::oneshot::Receiver<String> {
+        let (tx, rx) = oneshot::channel();
+        AWAITING_REPLIES.with(|m| m.borrow_mut().insert(msg_id, tx));
+        rx
+    }
+
     pub fn take(msg_id: &str) -> Option<ReplySender> {
         AWAITING_REPLIES.with(|m| m.borrow_mut().remove(msg_id))
     }
@@ -610,7 +616,4 @@ thread_local! {
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_ipfs_publish` to embed `ma.agent` in the DID document.
     pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
-    /// Profile encryption key for the current session.
-    /// Derived from the passphrase at login via PBKDF2; never stored to disk.
-    pub static SESSION_PROFILE_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
 }

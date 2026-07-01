@@ -30,8 +30,8 @@ pub(crate) async fn startup_profile_exists(
         Ok(b) => b,
         Err(_) => return,
     };
-    let json_bytes = match crate::transport::decrypt_profile(&cbor_bytes) {
-        Ok(b) => b,
+    let profile_val: serde_json::Value = match serde_ipld_dagcbor::from_slice(&cbor_bytes) {
+        Ok(v) => v,
         Err(_) => return,
     };
     // Guard: only merge if the DID document is strictly newer than the last time
@@ -54,7 +54,7 @@ pub(crate) async fn startup_profile_exists(
     }
     crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
     let n = config
-        .try_update(|cfg| cfg.merge_profile(&json_bytes))
+        .try_update(|cfg| cfg.merge_from_nested_profile(&profile_val))
         .and_then(|r| r.ok())
         .map(|(count, _)| count)
         .unwrap_or(0);
