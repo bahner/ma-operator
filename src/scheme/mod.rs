@@ -20,13 +20,32 @@
 ///
 /// ## Scheme features
 ///
-/// `define`, `lambda`, `let`, `let*`, `letrec`, `if`, `cond`, `begin`,
-/// `and`, `or`, `when`, `unless`, `set!`, `quote`.
+/// Special forms: `define`, `lambda`, `let`, `let*`, `letrec`, `if`, `cond`,
+/// `begin`, `and`, `or`, `when`, `unless`, `set!`, `quote`, `guard`.
 ///
 /// Builtins: arithmetic (`+` `-` `*` `/` `mod`), comparison (`=` `<` …),
 /// list operations (`cons`, `car`, `cdr`, `map`, `filter`, `fold`, …),
 /// string operations (`string-append`, `substring`, …), predicates,
 /// `display`, `error`, `assert`.
+///
+/// ## CID callables
+///
+/// A CID literal in head position `(<bafy…>)` fetches the CID from IPFS and
+/// evaluates all top-level forms in the session environment (like `include`).
+/// If extra args are present, the last evaluated value is called with them.
+///
+/// ## Error handling
+///
+/// `(error "msg")` raises a `SchemeErr::Runtime` that halts the current
+/// script.  Use `guard` (R7RS-small §6.11) to catch it:
+///
+/// ```scheme
+/// (guard (e [#t (display e)])
+///   (<bafy…>))
+/// ```
+///
+/// The caught variable is bound to the error message string.
+/// `[#t …]` is the catch-all; unmatched errors are re-raised.
 ///
 /// ## Session environment
 ///

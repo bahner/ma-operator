@@ -347,6 +347,7 @@ enum CrudOp {
 
 fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
     let v = verb.strip_prefix(':').unwrap_or(verb);
+    let v = v.strip_prefix('.').unwrap_or(v);
     if v == "create" {
         return CrudOp::Set(".create".to_string(), body.trim().to_string());
     }

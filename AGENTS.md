@@ -161,12 +161,44 @@ Evaluation:
 ### Scheme features
 
 Special forms: `define`, `lambda`, `let`, `let*`, `letrec`, `if`, `cond`,
-`begin`, `and`, `or`, `when`, `unless`, `set!`, `quote`.
+`begin`, `and`, `or`, `when`, `unless`, `set!`, `quote`, `guard`.
 
 Builtins: arithmetic (`+` `-` `*` `/` `mod`), comparison (`=` `<` `>` …),
 list ops (`cons` `car` `cdr` `map` `filter` `fold` `append` `reverse` …),
 string ops (`string-append` `substring` `string-contains` …), predicates,
 `display` (writes to terminal), `error`, `assert`.
+
+#### `(<bafy…>)` — CID as callable
+
+A CID literal in function position fetches the CID from IPFS and evaluates
+all top-level Scheme forms in the content within the session environment
+(equivalent to `include`).  If additional arguments follow, the last
+evaluated value is called as a lambda with those arguments.
+
+```scheme
+(<bafy…>)             ; load all defines from CID
+(<bafy…> arg1 arg2)   ; load CID, then call returned value with args
+```
+
+#### `guard` — R7RS-small error handling
+
+The caught variable is bound to the error message **string**.
+
+```scheme
+(guard (e
+        [(string-contains e "not found") nil]   ; handle specific error
+        [#t (error e)])                           ; re-raise anything else
+  (<bafy…>))
+```
+
+If no clause matches the error is re-raised.  `[#t …]` is the catch-all.
+
+#### `doc !eval` — sequential execution
+
+When a document is run via `.my.doc.<name>!eval`, lines are executed **one
+at a time**.  Each Scheme expression is fully expanded (including any CID
+fetches) before the next line starts.  This guarantees that defines loaded
+via `(<bafy…>)` or `(include …)` are available to subsequent lines.
 
 ### Session environment
 

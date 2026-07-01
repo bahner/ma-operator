@@ -192,7 +192,10 @@ fn handle_input_line(
         wasm_bindgen_futures::spawn_local(async move {
             match crate::scheme::expand(&line_owned, &state2, config).await {
                 Ok(expanded) => {
-                    state2.input_queue.update(|q| q.push_back(expanded));
+                    let t = expanded.trim().to_string();
+                    if !t.is_empty() {
+                        state2.input_queue.update(|q| q.push_back(t));
+                    }
                 }
                 Err(e) => {
                     state2.push_error(format!("scheme: {e}"));

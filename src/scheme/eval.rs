@@ -196,6 +196,67 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
                             .ok_or(SchemeErr::Undefined(name))?;
                         return Ok(SchemeVal::Nil);
                     }
+                    // (guard (var (test expr…) …) body…)
+                    // R7RS-style error guard.  The body is evaluated; if it
+                    // raises an error, `var` is bound to the error message
+                    // string and each clause's test is tried in order.  The
+                    // first truthy test's expression (or the test value itself
+                    // when no expression follows) is returned.  If no clause
+                    // matches the error is re-raised.  If the body succeeds
+                    // its value is returned as-is.
+                    "guard" => {
+                        if forms.len() < 3 {
+                            return Err(SchemeErr::Runtime(
+                                "guard: expected (var clauses…) + body".to_string(),
+                            ));
+                        }
+                        let spec = match &forms[1] {
+                            SchemeExpr::List(s) => s.clone(),
+                            _ => {
+                                return Err(SchemeErr::Runtime(
+                                    "guard: first argument must be (var clause…)".to_string(),
+                                ))
+                            }
+                        };
+                        if spec.is_empty() {
+                            return Err(SchemeErr::Runtime(
+                                "guard: missing variable name".to_string(),
+                            ));
+                        }
+                        let var_name = atom_name(&spec[0], "guard")?;
+                        let clauses = spec[1..].to_vec();
+                        let body = forms[2..].to_vec();
+
+                        match eval_begin(&body, env.clone(), ctx.clone()).await {
+                            Ok(v) => return Ok(v),
+                            Err(err) => {
+                                let guard_env = Env::extend(&env);
+                                guard_env.define(var_name, SchemeVal::Str(err.to_string()));
+                                for clause in &clauses {
+                                    let parts = match clause {
+                                        SchemeExpr::List(p) if !p.is_empty() => p,
+                                        _ => {
+                                            return Err(SchemeErr::Runtime(
+                                                "guard: malformed clause".to_string(),
+                                            ))
+                                        }
+                                    };
+                                    let test_val =
+                                        eval(parts[0].clone(), guard_env.clone(), ctx.clone())
+                                            .await?;
+                                    if test_val.is_truthy() {
+                                        return if parts.len() == 1 {
+                                            Ok(test_val)
+                                        } else {
+                                            eval_begin(&parts[1..], guard_env, ctx).await
+                                        };
+                                    }
+                                }
+                                // No clause matched — re-raise.
+                                return Err(err);
+                            }
+                        }
+                    }
                     _ => {}
                 }
             }
@@ -210,6 +271,41 @@ async fn eval_inner(expr: SchemeExpr, env: Env, ctx: Ctx) -> Result<SchemeVal, S
                 .any(|f| matches!(f, SchemeExpr::Atom(s) if s == "|"))
             {
                 return eval_pipe(forms, env, ctx).await;
+            }
+
+            // ── CID in head position: (<bafy…>) ────────────────────────────
+            // Fetch the CID content and evaluate all top-level forms in the
+            // session environment, exactly like `include`.  If additional args
+            // are present the last evaluated value is called with those args.
+            if let SchemeExpr::Atom(head) = &forms[0] {
+                if head.starts_with('<') && head.ends_with('>') && head.len() > 2 {
+                    let inner = head[1..head.len() - 1].to_string();
+                    if crate::mailbox::is_link_value(&inner) {
+                        let content = crate::http::fetch_cid_text(&inner)
+                            .await
+                            .map_err(SchemeErr::MaError)?;
+                        let cid_env = crate::scheme::get_env();
+                        let tokens =
+                            tokenize(&content).map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                        let mut pos = 0;
+                        let mut last = SchemeVal::Nil;
+                        while pos < tokens.len() {
+                            let (expr, next_pos) = parse_expr(&tokens, pos)
+                                .map_err(|e| SchemeErr::ParseError(e.to_string()))?;
+                            last = eval(expr, cid_env.clone(), ctx.clone()).await?;
+                            pos = next_pos;
+                        }
+                        return if forms.len() == 1 {
+                            Ok(last)
+                        } else {
+                            let mut args = Vec::with_capacity(forms.len() - 1);
+                            for form in &forms[1..] {
+                                args.push(eval(form.clone(), env.clone(), ctx.clone()).await?);
+                            }
+                            apply(last, args, ctx).await
+                        };
+                    }
+                }
             }
 
             // ── ma dot-path in head position ────────────────────────────────

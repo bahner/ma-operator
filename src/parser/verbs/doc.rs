@@ -74,12 +74,17 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute the saved `.content` line-by-line.
+/// `:eval` — execute the saved `.content` line-by-line, sequentially.
+///
+/// Lines are processed one at a time.  Scheme expressions are fully
+/// expanded (including any CID fetches) before the next line is started.
+/// This guarantees that `(include <bafy>)` defines are available to
+/// subsequent lines in the same document.
 fn doc_eval(
     path: &str,
     state: &AppState,
     config: RwSignal<EgoConfig>,
-    on_eval: Callback<String>,
+    _on_eval: Callback<String>,
 ) -> Result<(), String> {
     let content = config
         .get_untracked()
@@ -90,7 +95,31 @@ fn doc_eval(
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
     state.push_command_done(format!("{path}!eval"));
-    on_eval.run(content);
+    let state2 = state.clone();
+    leptos::task::spawn_local(async move {
+        let lines: Vec<String> = content
+            .lines()
+            .map(|l| l.trim().to_string())
+            .filter(|l| !l.is_empty() && !l.starts_with('#'))
+            .collect();
+        for line in lines {
+            let to_dispatch = if crate::scheme::needs_expansion(&line) {
+                match crate::scheme::expand(&line, &state2, config).await {
+                    Ok(expanded) => expanded,
+                    Err(e) => {
+                        state2.push_error(format!("scheme: {e}"));
+                        break;
+                    }
+                }
+            } else {
+                line
+            };
+            let trimmed = to_dispatch.trim().to_string();
+            if !trimmed.is_empty() {
+                state2.input_queue.update(|q| q.push_back(trimmed));
+            }
+        }
+    });
     Ok(())
 }
 
