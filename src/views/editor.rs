@@ -612,7 +612,7 @@ async fn do_entity_publish(
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    let path = format!(".entities.{entity_name}");
+    let path = format!("entities.{entity_name}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
         Err(e) => {
@@ -657,7 +657,7 @@ async fn do_entity_field_publish(
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    let path = format!(".entities.{entity_name}.{field}");
+    let path = format!("entities.{entity_name}.{field}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
         Err(e) => {
@@ -704,7 +704,7 @@ async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state
                 msg_id,
                 PendingKind::IpfsCrud {
                     target_did: target.clone(),
-                    crud_path: ".acl".to_string(),
+                    crud_path: "acl".to_string(),
                     cmd_id,
                 },
                 None,
