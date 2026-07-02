@@ -15,6 +15,8 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+use ma_zscheme::DotRegistry;
+
 use crate::identity::storage::{load_config, save_config};
 
 // ── Types ──────────────────────────────────────────────────────────────────
@@ -290,7 +292,48 @@ impl EgoConfig {
     }
 }
 
-// ── Persistence ────────────────────────────────────────────────────────────
+// ── DotRegistry impl ──────────────────────────────────────────────────────
+
+/// EgoConfig stores keys with a leading `.` (e.g. `.my.aliases.foo`).
+/// DotRegistry paths may arrive without it; we normalise by adding it.
+fn ego_key(path: &str) -> String {
+    if path.starts_with('.') {
+        path.to_string()
+    } else {
+        format!(".{path}")
+    }
+}
+
+impl DotRegistry for EgoConfig {
+    fn get(&self, path: &str) -> Option<String> {
+        EgoConfig::get(self, &ego_key(path)).map(|s| s.to_string())
+    }
+
+    fn set(&mut self, path: &str, value: &str) {
+        EgoConfig::set(self, ego_key(path), value);
+    }
+
+    fn delete_subtree(&mut self, path: &str) {
+        EgoConfig::delete_subtree(self, &ego_key(path));
+    }
+
+    fn list(&self, prefix: &str) -> Vec<(String, String)> {
+        EgoConfig::list(self, &ego_key(prefix))
+            .into_iter()
+            .map(|(k, v)| (k.to_string(), v.to_string()))
+            .collect()
+    }
+
+    fn resolve_alias(&self, name: &str) -> Option<String> {
+        EgoConfig::resolve_alias(self, name.trim_start_matches('@')).map(|s| s.to_string())
+    }
+
+    fn is_read_only(&self, path: &str) -> bool {
+        EgoConfig::is_read_only(&ego_key(path))
+    }
+}
+
+// ── Persistence ────────────────────────────────────────────────────────────────
 
 pub async fn persist_config(username: &str, cfg: &EgoConfig) -> Result<(), String> {
     let json = cfg.to_json()?;
