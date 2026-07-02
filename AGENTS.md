@@ -186,12 +186,12 @@ The caught variable is bound to the error message **string**.
 
 ```scheme
 (guard (e
-        [(string-contains e "not found") nil]   ; handle specific error
-        [#t (error e)])                           ; re-raise anything else
+        ((string-contains e "not found") nil)   ; handle specific error
+        (#t (error e)))                           ; re-raise anything else
   (<bafy…>))
 ```
 
-If no clause matches the error is re-raised.  `[#t …]` is the catch-all.
+If no clause matches the error is re-raised.  `(#t …)` is the catch-all.
 
 #### `doc !eval` — sequential execution
 
