@@ -108,9 +108,9 @@ pub struct IncomingMessage {
     pub content_type: String,
     /// Raw payload bytes (multicodec-prefixed; peel varint to get codec + data).
     pub content: Vec<u8>,
-    /// Creation timestamp (seconds).
-    pub created_at: f64,
-    /// Expiry as nanosecond epoch (0 = never).
+    /// Creation timestamp (epoch seconds).
+    pub created_at: u64,
+    /// Expiry as epoch seconds (0 = never).
     pub exp: u64,
     /// Pre-formatted display text suitable for direct rendering.
     pub display: String,

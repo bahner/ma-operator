@@ -73,8 +73,7 @@ pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut EgoConfig) {
         cfg.set(format!("{base}.reply_to"), rt.as_str());
     }
     if incoming.exp != 0 {
-        let exp_secs = incoming.exp as f64 / 1_000_000_000.0;
-        cfg.set(format!("{base}.expires_at"), format!("{exp_secs:.3}"));
+        cfg.set(format!("{base}.expires_at"), format!("{}", incoming.exp));
     }
 }
 
