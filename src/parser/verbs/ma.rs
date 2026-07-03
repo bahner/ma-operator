@@ -34,7 +34,7 @@ pub(super) fn handle_ma(
         let publisher = resolve_bare_did(raw, &config.get_untracked())?;
         let state2 = state.clone();
         leptos::task::spawn_local(async move {
-            do_publish(publisher, config, &state2).await;
+            do_publish(publisher, config, &state2, None).await;
         });
         return Ok(());
     }
@@ -95,13 +95,19 @@ fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, 
             }
         };
         // Publish profile + DID. 間 arrives via inbox reply when done.
-        do_publish(did, config, &state).await;
+        do_publish(did, config, &state, None).await;
     });
 }
 
 /// Build and upload the profile blob to IPFS, then queue the DID republish.
 /// Returns `true` if the request was sent, `false` if an error was pushed.
-async fn do_publish(publisher: String, config: RwSignal<EgoConfig>, state: &AppState) -> bool {
+/// Pass `cmd_id = Some(id)` to track the operation as a terminal command.
+pub(super) async fn do_publish(
+    publisher: String,
+    config: RwSignal<EgoConfig>,
+    state: &AppState,
+    cmd_id: Option<u64>,
+) -> bool {
     let username = match state.session.get_untracked().map(|s| s.username.clone()) {
         Some(u) => u,
         None => {
@@ -166,13 +172,16 @@ async fn do_publish(publisher: String, config: RwSignal<EgoConfig>, state: &AppS
                 msg_id,
                 PendingKind::ProfilePublish {
                     publisher_did: publisher,
-                    cmd_id: None,
+                    cmd_id,
                 },
                 None,
             );
             true
         }
         Err(e) => {
+            if let Some(id) = cmd_id {
+                state.resolve_command_by_id(id, crate::core::CommandStatus::Error(e.clone()));
+            }
             state.push_error(tf("profile-publish-failed", &[("e", &e)]));
             false
         }

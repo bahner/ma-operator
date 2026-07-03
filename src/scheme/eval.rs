@@ -86,7 +86,7 @@ impl SchemeCtx for EvalCtx {
     fn register_reply_sender(
         &self,
         msg_id: String,
-        sender: oneshot::Sender<Result<String, String>>,
+        sender: oneshot::Sender<Result<SchemeVal, String>>,
     ) {
         self.state.register_scheme_sender(msg_id, sender);
     }
@@ -120,15 +120,53 @@ impl SchemeCtx for EvalCtx {
                 }
             };
             let verb_str = verb.unwrap_or_default();
-            let arg_strs: Vec<String> = body.split_whitespace().map(|s| s.to_string()).collect();
-            let arg_refs: Vec<&str> = arg_strs.iter().map(|s| s.as_str()).collect();
-            let msg_id = crate::transport::send_rpc(&target, &verb_str, &arg_refs)
+            let scheme_args: Vec<SchemeVal> = body
+                .split_whitespace()
+                .map(|s| SchemeVal::Str(s.to_string()))
+                .collect();
+            let msg_id = crate::transport::send_rpc_vals(&target, &verb_str, &scheme_args)
                 .await
                 .map_err(SchemeErr::MaError)?;
-            let (sender, receiver) = futures::channel::oneshot::channel::<Result<String, String>>();
+            let (sender, receiver) =
+                futures::channel::oneshot::channel::<Result<SchemeVal, String>>();
             self.state.register_scheme_sender(msg_id, sender);
             match receiver.await {
-                Ok(Ok(content)) => Ok(SchemeVal::Str(content)),
+                Ok(Ok(val)) => Ok(val),
+                Ok(Err(e)) => Err(SchemeErr::MaError(e)),
+                Err(_) => Err(SchemeErr::MaError(
+                    "RPC reply channel cancelled".to_string(),
+                )),
+            }
+        })
+    }
+
+    fn eval_actor_with_vals<'a>(
+        &'a self,
+        actor: &'a str,
+        args: &'a [SchemeVal],
+    ) -> LocalBoxFuture<'a, Result<SchemeVal, SchemeErr>> {
+        Box::pin(async move {
+            use crate::parser::command::{parse, Command};
+            let effective = if actor.starts_with('@') || actor.starts_with("did:") {
+                actor.to_string()
+            } else {
+                format!("@{actor}")
+            };
+            let cfg = self.config.get_untracked();
+            let parsed = parse(&effective, &cfg).map_err(SchemeErr::MaError)?;
+            let (target, verb) = match parsed {
+                Command::ActorMessage { target, verb, .. } => (target, verb),
+                _ => return Err(SchemeErr::MaError(format!("expected actor: {effective}"))),
+            };
+            let verb_str = verb.unwrap_or_default();
+            let msg_id = crate::transport::send_rpc_vals(&target, &verb_str, args)
+                .await
+                .map_err(SchemeErr::MaError)?;
+            let (sender, receiver) =
+                futures::channel::oneshot::channel::<Result<SchemeVal, String>>();
+            self.state.register_scheme_sender(msg_id, sender);
+            match receiver.await {
+                Ok(Ok(val)) => Ok(val),
                 Ok(Err(e)) => Err(SchemeErr::MaError(e)),
                 Err(_) => Err(SchemeErr::MaError(
                     "RPC reply channel cancelled".to_string(),
@@ -141,15 +179,12 @@ impl SchemeCtx for EvalCtx {
         &'a self,
         target: &'a str,
         verb: &'a str,
-        args: &'a [String],
+        args: &'a [SchemeVal],
     ) -> LocalBoxFuture<'a, Result<String, String>> {
         let target = target.to_string();
         let verb = verb.to_string();
-        let args: Vec<String> = args.to_vec();
-        Box::pin(async move {
-            let arg_refs: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
-            crate::transport::send_rpc(&target, &verb, &arg_refs).await
-        })
+        let args: Vec<SchemeVal> = args.to_vec();
+        Box::pin(async move { crate::transport::send_rpc_vals(&target, &verb, &args).await })
     }
 
     fn send_text<'a>(

@@ -1,6 +1,7 @@
 use futures::channel::oneshot;
 use leptos::prelude::*;
 use ma_core::{Inbox, IpfsGatewayResolver, Message};
+use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
@@ -29,7 +30,12 @@ impl AwaitingReply {
 }
 
 /// (sender, sent_at_ms) for Scheme RPC reply channels.
-type SchemeSender = (oneshot::Sender<Result<String, String>>, f64);
+type SchemeSender = (oneshot::Sender<Result<SchemeVal, String>>, f64);
+
+thread_local! {
+    static SCHEME_SENDERS: RefCell<HashMap<String, SchemeSender>> =
+        RefCell::new(HashMap::new());
+}
 
 use crate::config::EgoConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
@@ -235,9 +241,6 @@ pub struct AppState {
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
-    /// Oneshot senders for in-flight Scheme RPC calls, keyed by `Message.id`.
-    /// Registered by `scheme::eval_ma_actor`; resolved by `inbox_poll::dispatch_reply`.
-    pub scheme_senders: RwSignal<HashMap<String, SchemeSender>>,
 }
 
 impl AppState {
@@ -259,7 +262,6 @@ impl AppState {
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
             outbox_queue: RwSignal::new(VecDeque::new()),
-            scheme_senders: RwSignal::new(HashMap::new()),
         }
     }
 
@@ -480,21 +482,19 @@ impl AppState {
     pub fn register_scheme_sender(
         &self,
         msg_id: String,
-        sender: oneshot::Sender<Result<String, String>>,
+        sender: oneshot::Sender<Result<SchemeVal, String>>,
     ) {
         let now = js_sys::Date::now();
-        self.scheme_senders.update(|m| {
-            m.insert(msg_id, (sender, now));
-        });
+        SCHEME_SENDERS.with(|m| m.borrow_mut().insert(msg_id, (sender, now)));
     }
 
     /// Remove and return the sender for `msg_id`, if any.
     pub fn take_scheme_sender(
         &self,
         msg_id: &str,
-    ) -> Option<oneshot::Sender<Result<String, String>>> {
-        self.scheme_senders
-            .update_untracked(|m| m.remove(msg_id))
+    ) -> Option<oneshot::Sender<Result<SchemeVal, String>>> {
+        SCHEME_SENDERS
+            .with(|m| m.borrow_mut().remove(msg_id))
             .map(|(s, _)| s)
     }
 
@@ -503,15 +503,16 @@ impl AppState {
     /// which the evaluator maps to `(:timeout)`.
     pub fn expire_scheme_senders(&self, timeout_ms: f64) {
         let now = js_sys::Date::now();
-        let expired: Vec<String> = self.scheme_senders.with_untracked(|m| {
-            m.iter()
+        let expired: Vec<String> = SCHEME_SENDERS.with(|m| {
+            m.borrow()
+                .iter()
                 .filter(|(_, (_, sent_at))| now - sent_at > timeout_ms)
                 .map(|(id, _)| id.clone())
                 .collect()
         });
         for id in expired {
             // Dropping the sender unblocks the awaiting evaluator task.
-            self.scheme_senders.update_untracked(|m| m.remove(&id));
+            SCHEME_SENDERS.with(|m| m.borrow_mut().remove(&id));
         }
     }
 

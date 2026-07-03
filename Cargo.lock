@@ -2765,8 +2765,6 @@ dependencies = [
 [[package]]
 name = "ma-zscheme"
 version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bacc402197176fab56077ed1dcd2a675318bea904f68f2dc5ccc48990b88e437"
 dependencies = [
  "futures",
 ]

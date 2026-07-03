@@ -6,6 +6,7 @@ use ma_core::{
     MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE,
     MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
+use ma_zscheme::SchemeVal;
 
 use crate::i18n::tf;
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
@@ -201,6 +202,62 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
     let msg_id = msg.id.clone();
     send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
+}
+
+/// Send an RPC message with `SchemeVal` arguments, preserving list/map
+/// structure in the CBOR encoding. Returns the dispatched `Message.id`.
+pub async fn send_rpc_vals(
+    target_did: &str,
+    verb: &str,
+    args: &[SchemeVal],
+) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session_info()?;
+
+    let atom = if verb.starts_with(':') {
+        verb.to_string()
+    } else {
+        format!(":{verb}")
+    };
+
+    let cbor_val = if args.is_empty() {
+        ciborium::Value::Text(atom)
+    } else {
+        let mut items: Vec<ciborium::Value> = Vec::with_capacity(1 + args.len());
+        items.push(ciborium::Value::Text(atom));
+        for arg in args {
+            items.push(scheme_val_to_cbor(arg));
+        }
+        ciborium::Value::Array(items)
+    };
+
+    let mut body = Vec::new();
+    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
+
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_RPC,
+        CONTENT_TYPE_TERM,
+        &body,
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
+    use ciborium::Value as V;
+    match v {
+        SchemeVal::Str(s) => V::Text(s.clone()),
+        SchemeVal::Int(n) => V::Integer(ciborium::value::Integer::from(*n)),
+        SchemeVal::Float(f) => V::Float(*f),
+        SchemeVal::Bool(b) => V::Bool(*b),
+        SchemeVal::Nil => V::Null,
+        SchemeVal::List(items) => V::Array(items.iter().map(scheme_val_to_cbor).collect()),
+        other => V::Text(other.display()),
+    }
 }
 
 /// Send an RPC message whose single argument is a raw byte blob (DAG-CBOR).

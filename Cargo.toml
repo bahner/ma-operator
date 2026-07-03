@@ -79,3 +79,5 @@ pbkdf2 = "0.12"
 sha2 = "0.10"
 futures-channel = "0.3.32"
 
+[patch.crates-io]
+ma-zscheme = { path = "../rust-ma-zscheme/ma-zscheme" }

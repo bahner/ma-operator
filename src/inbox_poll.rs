@@ -12,8 +12,9 @@ use crate::{
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
-        classify_reply, handle_cid_op_reply, handle_crud_confirm, handle_edit_open_reply,
-        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply,
+        cbor_reply_to_scheme_val, classify_reply, handle_cid_op_reply, handle_crud_confirm,
+        handle_edit_open_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
+        handle_profile_publish_reply,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -79,12 +80,7 @@ fn dispatch_reply(
 ) {
     // Scheme-initiated RPC: route the reply directly to the waiting evaluator.
     if let Some(sender) = state.take_scheme_sender(msg_id) {
-        let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
-        let result = if incoming.is_error {
-            Err(text_opt.unwrap_or_else(|| display.clone()))
-        } else {
-            Ok(text_opt.unwrap_or_default())
-        };
+        let result = cbor_reply_to_scheme_val(&incoming.content, incoming.is_error, &display);
         let _ = sender.send(result);
         return;
     }

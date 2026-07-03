@@ -1,0 +1,507 @@
+//! Handlers for replies to requests *we* sent.
+//!
+//! Each `handle_*_reply` function corresponds to one `PendingKind` variant and
+//! is called from `inbox_poll::dispatch_reply` when a matching reply arrives.
+
+use leptos::prelude::*;
+use ma_zscheme::SchemeVal;
+use wasm_bindgen_futures::spawn_local;
+
+use crate::{
+    config::{persist_config, EgoConfig},
+    core::CommandStatus,
+    http::{fetch_cid_bytes, fetch_cid_text},
+    i18n::{t, tf},
+    messages::IncomingMessage,
+    state::{AppState, OutboxTask},
+    views::editor::{EditorContext, EditorMode},
+};
+
+// ── IPFS CRUD ──────────────────────────────────────────────────────────────
+
+/// IPFS-store reply → trigger a CRUD SET with the returned CID.
+pub(crate) fn handle_ipfs_crud_reply(
+    target_did: String,
+    crud_path: String,
+    cmd_id: Option<u64>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+) {
+    if incoming.is_error {
+        if let Some(cid) = cmd_id {
+            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
+        }
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    match crate::messages::extract_ok_text(&incoming.content) {
+        Ok(cid) => {
+            let bracketed = format!("<{cid}>");
+            state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::CrudSet {
+                    target_did,
+                    crud_path,
+                    value: ciborium::Value::Text(bracketed),
+                    cmd_id,
+                });
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+        }
+    }
+}
+
+/// IPFS-store reply for a kind upsert → trigger a CRUD SET on `.kinds`.
+pub(crate) fn handle_ipfs_kind_reply(
+    target_did: String,
+    protocol_id: String,
+    cmd_id: Option<u64>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+) {
+    if incoming.is_error {
+        if let Some(cid) = cmd_id {
+            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
+        }
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    match crate::messages::extract_ok_text(&incoming.content) {
+        Ok(cid) => {
+            state.outbox_queue.update(|q| {
+                q.push_back(OutboxTask::CrudSet {
+                    target_did,
+                    crud_path: ".kinds".to_string(),
+                    value: ciborium::Value::Array(vec![
+                        ciborium::Value::Text(protocol_id),
+                        ciborium::Value::Text(cid),
+                    ]),
+                    cmd_id,
+                });
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+        }
+    }
+}
+
+// ── Profile publish ────────────────────────────────────────────────────────
+
+/// Profile-publish reply: the encrypted blob CID is now stored — republish DID doc.
+pub(crate) fn handle_profile_publish_reply(
+    publisher_did: String,
+    cmd_id: Option<u64>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    if incoming.is_error {
+        if let Some(id) = cmd_id {
+            state.resolve_command_by_id(id, CommandStatus::Error(incoming.display.clone()));
+        }
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    match crate::messages::extract_ok_text(&incoming.content) {
+        Ok(cid_str) => {
+            // Store profile CID in session — embedded in the DID document on next publish.
+            crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(cid_str.clone()));
+            // Record publish timestamp so the startup guard can detect IPNS-lagged
+            // DID docs on the next login and skip the merge (preserving local state).
+            let now = js_sys::Date::new_0()
+                .to_iso_string()
+                .as_string()
+                .unwrap_or_default();
+            config.update(|c| c.set(EgoConfig::PROFILE_PUBLISHED_AT_KEY, &now));
+            let username = state
+                .session
+                .get_untracked()
+                .map(|s| s.username.clone())
+                .unwrap_or_default();
+            // Republish DID document with ma.profile = new CID embedded.
+            // For tracked commands the DID-doc reply is the visible result;
+            // for untracked commands push 間 on completion.
+            let state2 = state.clone();
+            let cfg_snap = config.get_untracked();
+            leptos::task::spawn_local(async move {
+                let _ = persist_config(&username, &cfg_snap).await;
+                match crate::transport::send_ipfs_publish(&publisher_did).await {
+                    Ok(did_msg_id) => {
+                        if let Some(id) = cmd_id {
+                            // Bind the DID-doc reply to the original terminal command.
+                            state2.bind_message_id(id, did_msg_id);
+                        } else {
+                            state2.push_output("間");
+                        }
+                    }
+                    Err(e) => {
+                        if let Some(id) = cmd_id {
+                            state2.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(e);
+                    }
+                }
+            });
+        }
+        Err(e) => {
+            if let Some(id) = cmd_id {
+                state.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+        }
+    }
+}
+
+// ── Editor open ────────────────────────────────────────────────────────────
+
+/// Edit-open reply: decode the CBOR payload and open the editor in the right mode.
+pub(crate) fn handle_edit_open_reply(
+    target: String,
+    crud_path: String,
+    editor_mode: EditorMode,
+    cmd_id: u64,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+) {
+    if incoming.is_error {
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    let content_bytes = incoming.content.clone();
+    let content_type = incoming.content_type.clone();
+    let doc_path = format!("@{}{}", target, crud_path);
+    let state2 = state.clone();
+    let editor_mode = match editor_mode {
+        EditorMode::CrudEdit {
+            target, crud_path, ..
+        } => EditorMode::CrudEdit {
+            target,
+            crud_path,
+            content_type: content_type.clone(),
+        },
+        other => other,
+    };
+
+    match content_type.as_str() {
+        "application/x-ma-term+dag-cbor" => {
+            open_editor_via_cid(
+                state2,
+                show_editor,
+                doc_path,
+                content_bytes,
+                editor_mode,
+                cmd_id,
+            );
+        }
+        "application/x-ma-term+cbor" => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+            Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
+        },
+        "application/x-ma-term+yaml" => {
+            open_editor_from_yaml_cbor(
+                state2,
+                show_editor,
+                doc_path,
+                content_bytes,
+                editor_mode,
+                cmd_id,
+            );
+        }
+        _ => {
+            // Unknown / legacy content-type — best-effort CBOR → YAML.
+            match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+                Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+                Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
+            }
+        }
+    }
+}
+
+/// Open the editor immediately with a known YAML string.
+fn open_editor(
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    yaml: String,
+    language: &str,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    show_editor.set(Some(
+        EditorContext::new(doc_path, yaml)
+            .with_language(language)
+            .with_mode(mode)
+            .with_cmd_id(cmd_id),
+    ));
+}
+
+/// Record an edit-open error on the command and push an error line.
+fn edit_error(state: &AppState, cmd_id: u64, i18n_key: &str, e: &str) {
+    state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.to_string()));
+    state.push_error(tf(i18n_key, &[("e", e)]));
+}
+
+/// For `application/x-ma-term+dag-cbor`: extract a CID from the payload,
+/// fetch it, convert to YAML, and open the editor.
+fn open_editor_via_cid(
+    state: AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    content_bytes: Vec<u8>,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+        Ok(ciborium::Value::Text(cid)) => {
+            spawn_local(async move {
+                match fetch_cid_bytes(&cid).await {
+                    Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                        Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+                        Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
+                    },
+                    Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
+                }
+            });
+        }
+        Ok(_) | Err(_) => {
+            state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("err-edit-cbor")));
+            state.push_error(t("err-edit-cbor"));
+        }
+    }
+}
+
+/// For `application/x-ma-term+yaml`: unwrap the CBOR text wrapper, or fall
+/// back to raw CBOR → YAML conversion.
+fn open_editor_from_yaml_cbor(
+    state: AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+    doc_path: String,
+    content_bytes: Vec<u8>,
+    mode: EditorMode,
+    cmd_id: u64,
+) {
+    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+        Ok(ciborium::Value::Text(yaml)) => {
+            open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id);
+        }
+        Ok(_) | Err(_) => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+            Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
+        },
+    }
+}
+
+// ── CID content-op ─────────────────────────────────────────────────────────
+
+/// CID content-op reply: fetch the CID and apply the op (cat/head/tail/wc).
+pub(crate) fn handle_cid_op_reply(
+    op: String,
+    args: Vec<String>,
+    cmd_id: u64,
+    incoming: &IncomingMessage,
+    state: &AppState,
+) {
+    if incoming.is_error {
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    let content_bytes = incoming.content.clone();
+    let fallback_display = incoming.display.clone();
+    let state2 = state.clone();
+    spawn_local(async move {
+        match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+            Ok(ciborium::Value::Text(cid))
+                if (cid.starts_with('b') || cid.starts_with('Q')) && cid.len() > 10 =>
+            {
+                match fetch_cid_text(&cid).await {
+                    Ok(text) => {
+                        let args_ref: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
+                        for line in crate::cid_ops::apply(&op, &text, &args_ref) {
+                            state2.push_output(line);
+                        }
+                        state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
+                    }
+                    Err(e) => {
+                        state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                        state2.push_error(tf("cid-op-fetch-failed", &[("e", &e)]));
+                    }
+                }
+            }
+            _ => {
+                // Not a CID — display as plain text.
+                state2.push_output(fallback_display);
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
+            }
+        }
+    });
+}
+
+// ── CRUD confirm ───────────────────────────────────────────────────────────
+
+/// CRUD SET confirmation (end of the IPFS-store → CRUD-SET publish flow).
+pub(crate) fn handle_crud_confirm(
+    cmd_id: u64,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    display: &str,
+) {
+    let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, display);
+    state.resolve_command_by_id(cmd_id, status);
+    if let Some(text) = push_opt {
+        state.push_incoming(text, Some(cmd_id), incoming.is_error);
+    }
+}
+
+// ── Reply classifier ───────────────────────────────────────────────────────
+
+/// Classify an incoming reply into a `CommandStatus` transition and optional
+/// display text to print below the command line.
+pub(crate) fn classify_reply(
+    content: &[u8],
+    is_error: bool,
+    fallback: &str,
+) -> (CommandStatus, Option<String>) {
+    use ciborium::Value as V;
+    if is_error {
+        let reason = match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
+            Ok(V::Array(items)) => items
+                .get(1)
+                .and_then(|v| {
+                    if let V::Text(s) = v {
+                        Some(s.clone())
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or_else(|| fallback.to_string()),
+            _ => fallback.to_string(),
+        };
+        return (CommandStatus::Error(String::new()), Some(reason));
+    }
+    match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
+        Ok(V::Text(s)) => {
+            if s == ":ok" {
+                (CommandStatus::Replied(String::new()), None)
+            } else {
+                (CommandStatus::Replied(String::new()), Some(s))
+            }
+        }
+        Ok(V::Array(items)) => match (items.first(), items.get(1)) {
+            (Some(V::Text(verb)), value) if verb == ":ok" => match value {
+                Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
+                Some(_) => (
+                    CommandStatus::Replied(String::new()),
+                    Some(fallback.to_string()),
+                ),
+                None => (CommandStatus::Replied(String::new()), None),
+            },
+            (Some(V::Text(verb)), value) if verb == ":error" => {
+                let reason = value
+                    .and_then(|v| {
+                        if let V::Text(s) = v {
+                            Some(s.clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .unwrap_or_else(|| fallback.to_string());
+                (CommandStatus::Error(String::new()), Some(reason))
+            }
+            _ => (
+                CommandStatus::Replied(String::new()),
+                Some(fallback.to_string()),
+            ),
+        },
+        _ => (
+            CommandStatus::Replied(String::new()),
+            Some(fallback.to_string()),
+        ),
+    }
+}
+
+// ── CBOR → SchemeVal conversion ───────────────────────────────────────
+
+fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
+    use ciborium::Value as V;
+    match v {
+        V::Text(s) => SchemeVal::Str(s.clone()),
+        V::Integer(n) => SchemeVal::Int(i128::from(*n) as i64),
+        V::Float(f) => SchemeVal::Float(*f),
+        V::Bool(b) => SchemeVal::Bool(*b),
+        V::Null => SchemeVal::Nil,
+        V::Array(items) => SchemeVal::List(items.iter().map(cbor_to_scheme_val).collect()),
+        V::Map(pairs) => SchemeVal::List(
+            pairs
+                .iter()
+                .map(|(k, v)| SchemeVal::List(vec![cbor_to_scheme_val(k), cbor_to_scheme_val(v)]))
+                .collect(),
+        ),
+        V::Tag(_, inner) => cbor_to_scheme_val(inner),
+        _ => SchemeVal::Str(format!("{v:?}")),
+    }
+}
+
+/// Decode a raw CBOR reply payload into a `SchemeVal`, unwrapping the
+/// `[:ok, payload]` envelope. Used by `inbox_poll::dispatch_reply` for
+/// Scheme-initiated RPC calls so the evaluator receives structured values.
+pub(crate) fn cbor_reply_to_scheme_val(
+    content: &[u8],
+    is_error: bool,
+    fallback: &str,
+) -> Result<SchemeVal, String> {
+    use ciborium::Value as V;
+    if is_error {
+        let reason = match ciborium::de::from_reader::<V, _>(&mut &content[..]) {
+            Ok(V::Array(items)) => items
+                .get(1)
+                .and_then(|v| {
+                    if let V::Text(s) = v {
+                        Some(s.clone())
+                    } else {
+                        None
+                    }
+                })
+                .unwrap_or_else(|| fallback.to_string()),
+            _ => fallback.to_string(),
+        };
+        return Err(reason);
+    }
+    let val: V = match ciborium::de::from_reader(&mut &content[..]) {
+        Ok(v) => v,
+        Err(_) => return Ok(SchemeVal::Str(fallback.to_string())),
+    };
+    match &val {
+        V::Text(s) if s == ":ok" => Ok(SchemeVal::Nil),
+        V::Array(items) => match (items.first(), items.get(1)) {
+            (Some(V::Text(verb)), _) if verb == ":ok" => match items.get(1) {
+                Some(v) => Ok(cbor_to_scheme_val(v)),
+                None => Ok(SchemeVal::Nil),
+            },
+            (Some(V::Text(verb)), _) if verb == ":error" => {
+                let reason = items
+                    .get(1)
+                    .and_then(|v| {
+                        if let V::Text(s) = v {
+                            Some(s.clone())
+                        } else {
+                            None
+                        }
+                    })
+                    .unwrap_or_else(|| fallback.to_string());
+                Err(reason)
+            }
+            _ => Ok(cbor_to_scheme_val(&val)),
+        },
+        _ => Ok(cbor_to_scheme_val(&val)),
+    }
+}
