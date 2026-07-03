@@ -554,7 +554,49 @@ pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, St
     Ok(msg_id)
 }
 
-async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Result<(), String> {
+/// Re-establish the iroh endpoint using the current session keys.
+/// Called automatically when a send fails due to a stale transport after long idle.
+async fn reconnect() -> Result<(), String> {
+    let iroh_key = SESSION_IROH_KEY
+        .with(|k| *k.borrow())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let ipns_key = SESSION_IPNS_KEY
+        .with(|k| *k.borrow())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let signing_key = SESSION_SIGNING_KEY
+        .with(|k| *k.borrow())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let enc_key = SESSION_ENCRYPTION_KEY
+        .with(|k| *k.borrow())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let sender_did = SESSION_SENDER_DID
+        .with(|d| d.borrow().clone())
+        .ok_or_else(|| "not logged in".to_string())?;
+    let created_at = SESSION_CREATED_AT
+        .with(|c| c.borrow().clone())
+        .ok_or_else(|| "not logged in".to_string())?;
+
+    log::warn!("[transport] stale connection — reconnecting iroh endpoint");
+    connect(
+        iroh_key,
+        ipns_key,
+        signing_key,
+        enc_key,
+        sender_did,
+        created_at,
+    )
+    .await
+}
+
+fn is_transport_error(e: &str) -> bool {
+    e.contains("connect failed")
+        || e.contains("timed out")
+        || e.contains("transport error")
+        || e.contains("open_bi failed")
+        || e.contains("ConnectionClosed")
+}
+
+async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Result<(), String> {
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
@@ -567,17 +609,31 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
         .outbox(resolver.as_ref(), target_did, protocol)
         .await
         .map_err(|e| {
-            log::warn!("send_message_on: outbox failed for {target_did}: {e}");
+            log::warn!("try_send_once: outbox failed for {target_did}: {e}");
             e.to_string()
         })?;
 
-    log::debug!("send_message_on: outbox ready, sending msg id={}", msg.id);
-    let result = outbox.send(&msg).await.map_err(|e| {
-        log::warn!("send_message_on: send failed for {target_did}: {e}");
+    log::debug!("try_send_once: outbox ready, sending msg id={}", msg.id);
+    let result = outbox.send(msg).await.map_err(|e| {
+        log::warn!("try_send_once: send failed for {target_did}: {e}");
         e.to_string()
     });
     log::debug!("[send] done ok={}", result.is_ok());
     result
+}
+
+async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Result<(), String> {
+    match try_send_once(target_did, protocol, &msg).await {
+        Ok(()) => return Ok(()),
+        Err(e) if is_transport_error(&e) => {
+            log::warn!("[transport] send failed ({e}), reconnecting and retrying");
+            reconnect()
+                .await
+                .map_err(|re| format!("reconnect failed: {re}"))?;
+        }
+        Err(e) => return Err(e),
+    }
+    try_send_once(target_did, protocol, &msg).await
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.
