@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Pa kapab jwenn CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID ki valab: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Avètisman: Kle prive IPNS ou a ap voye nan sèvis runtime sa a pou pibliye idantite ou. Sèlman itilize yon runtime ou fè konfyans nèt.

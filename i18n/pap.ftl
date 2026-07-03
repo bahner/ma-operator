@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = No por haña CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID no ta válido: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Aviso: Bo yabi privá IPNS lo wordo manda na e runtime aki pa pública identidad. Sòlamente uza un runtime ku bo konfía tur-tur.

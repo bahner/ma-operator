@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = 獲取 CID { $cid } 失敗：{ $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = 無效的 CID：{ $value }
+label-runtime = 馬
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = 警告：您的IPNS私鑰將被傳送至此執行環境以進行身份發布。請僅使用您完全信任的執行環境。

@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Imeshindwa kupata CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID si sahihi: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Onyo: Ufunguo wako wa siri wa IPNS utatumwa kwa runtime hii kwa ajili ya kuchapisha utambulisho. Tumia runtime unayoiamini kabisa tu.

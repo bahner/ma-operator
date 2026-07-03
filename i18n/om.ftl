@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } fudhatuu dadhabame: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID sirrii miti: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Gorgorsiisa: Furtuun IPNS dhuunfaa keessan runtime kanaatti ergama eenyummaa maxxansuu. Fuula runtime amannu qofa fayyadamaa.

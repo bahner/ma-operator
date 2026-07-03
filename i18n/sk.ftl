@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Načítanie CID { $cid } zlyhalo: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Neplatný CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Upozornenie: Váš súkromný kľúč IPNS bude odoslaný do tohto runtime prostredia na publikovanie identity. Používajte iba runtime prostredie, ktorému plne dôverujete.

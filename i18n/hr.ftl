@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Dohvaćanje CID-a { $cid } nije uspjelo: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Nevažeći CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Upozorenje: Vaš privatni IPNS ključ bit će poslan ovom izvršnom okruženju radi objave identiteta. Koristite samo izvršno okruženje kojemu u potpunosti vjerujete.

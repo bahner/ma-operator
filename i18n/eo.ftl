@@ -342,3 +342,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Malsukcesis preni CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Nevalida CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Averto: Via IPNS privata ŝlosilo estos sendita al ĉi tiu rultempa servilo por identeca eldonado. Uzu nur ruлtempa servilon, kiun vi plene fidas.

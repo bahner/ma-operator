@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Akukwazekanga ukufumana CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID ayilunganga: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Isilumkiso: Isitshixo sakho sanasese se-IPNS siya-thunyelwa kwi-runtime ukuze kupapashwe ubunyani. Sebenzisa kuphela i-runtime oyithembayo ngokupheleleyo.

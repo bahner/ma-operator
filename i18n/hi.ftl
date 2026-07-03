@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } लाने में विफल: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = अमान्य CID: { $value }
+label-runtime = मा
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = चेतावनी: आपकी IPNS निजी कुंजी इस रनटाइम को पहचान प्रकाशित करने के लिए भेजी जाएगी। केवल उस रनटाइम का उपयोग करें जिस पर आप पूरी तरह भरोसा करते हैं।

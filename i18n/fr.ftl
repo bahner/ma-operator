@@ -349,3 +349,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Échec de la récupération du CID { $cid } : { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID non valide : { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Avertissement : Votre clé privée IPNS sera envoyée à cet environnement d'exécution pour la publication de votre identité. N'utilisez qu'un environnement d'exécution auquel vous faites entièrement confiance.

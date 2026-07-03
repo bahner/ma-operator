@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Ошибка получения CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Неверный CID: { $value }
+label-runtime = ма
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Предупреждение: Ваш закрытый ключ IPNS будет отправлен в эту среду выполнения для публикации удостоверения личности. Используйте только среду выполнения, которой полностью доверяете.

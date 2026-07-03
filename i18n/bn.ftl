@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } আনতে ব্যর্থ: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = বৈধ CID নয়: { $value }
+label-runtime = মা
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = সতর্কতা: পরিচয় প্রকাশের জন্য আপনার IPNS ব্যক্তিগত কী এই রানটাইমে পাঠানো হবে। শুধুমাত্র এমন রানটাইম ব্যবহার করুন যার উপর আপনি সম্পূর্ণ বিশ্বাস রাখেন।

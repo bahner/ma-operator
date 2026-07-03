@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Tókst ekki að sækja CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Ógilt CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Viðvörun: Einkalykill IPNS þinn verður sendur á þennan keyrslutengil til útgáfu á auðkenningu. Notaðu eingöngu keyrslutengil sem þú treystir að fullu.

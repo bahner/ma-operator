@@ -15,6 +15,23 @@ use crate::{
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
+const LAST_RUNTIME_KEY: &str = "zion_last_runtime";
+
+/// Persist the last successfully connected runtime (DID or URL) to localStorage.
+/// Called by `src/parser/verbs/ma.rs` after a successful `.ma!connect`.
+pub(crate) fn save_last_runtime(runtime: &str) {
+    let _ = web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .map(|s| s.set_item(LAST_RUNTIME_KEY, runtime));
+}
+
+fn load_last_runtime() -> String {
+    web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .and_then(|s| s.get_item(LAST_RUNTIME_KEY).ok().flatten())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| "http://localhost:5003".to_string())
+}
 
 fn save_last_did(did: &str) {
     let _ = web_sys::window()
@@ -55,6 +72,21 @@ pub fn Landing() -> impl IntoView {
     let error = RwSignal::new(String::new());
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
+
+    // Runtime field: DID or HTTP URL to connect to after login.
+    // Seeded from `?ma=` URL param (already in state.startup_ma) or localStorage.
+    let url_ma_did: Option<String> = state
+        .startup_ma
+        .get_untracked()
+        .filter(|v| v.starts_with("did:ma:"));
+    let prev_runtime = load_last_runtime();
+    let ma_input = RwSignal::new(prev_runtime.clone());
+    // If ?ma= was an HTTP URL (not a DID), pre-fill the runtime field with it.
+    if let Some(ref url_val) = state.startup_ma.get_untracked() {
+        if url_val.starts_with("http") {
+            ma_input.set(url_val.clone());
+        }
+    }
 
     // Background music.
     Effect::new(move |_| {
@@ -139,6 +171,11 @@ pub fn Landing() -> impl IntoView {
         let state = state.clone();
         move || {
             let state = state.clone(); // fresh clone each call → Fn not FnOnce
+                                       // Capture runtime choice before any branching.
+            let ma_val = ma_input.get_untracked();
+            if !ma_val.is_empty() {
+                state.startup_ma.set(Some(ma_val));
+            }
             let current_mode = mode.get_untracked();
             let did = did_input.get_untracked().trim().to_string();
             let pass = password.get_untracked();
@@ -431,7 +468,53 @@ pub fn Landing() -> impl IntoView {
             on:keydown=on_keydown
         >
             <div class="landing-box">
-                // ── Mode selector (top) ───────────────────────────────────
+                // ── ma field + warning: above tabs, hidden in Export mode ──
+                <Show when=move || mode.get() != Mode::Export>
+                    // Privacy warning at very top when a remote DID is selected.
+                    <Show when=move || ma_input.get().starts_with("did:ma:")>
+                        <p class="landing-warning">{move || { let _ = lang.get(); t("warning-remote-runtime") }}</p>
+                    </Show>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-runtime") }}</label>
+                        {
+                            let has_url_did = url_ma_did.is_some();
+                            if has_url_did {
+                                let url_did = url_ma_did.clone().unwrap_or_default();
+                                let prev = prev_runtime.clone();
+                                view! {
+                                    <select
+                                        class="runtime-select"
+                                        on:change=move |ev| {
+                                            use wasm_bindgen::JsCast;
+                                            let sel = ev.target().unwrap()
+                                                .unchecked_into::<web_sys::HtmlSelectElement>();
+                                            ma_input.set(sel.value());
+                                        }
+                                    >
+                                        <option value={prev.clone()}>{prev.clone()}</option>
+                                        <option value={url_did.clone()}>{url_did.clone()}</option>
+                                    </select>
+                                }.into_any()
+                            } else {
+                                view! {
+                                    <input
+                                        type="text"
+                                        prop:value=move || ma_input.get()
+                                        placeholder=move || { let _ = lang.get(); t("label-runtime-placeholder") }
+                                        on:input=move |ev| {
+                                            use wasm_bindgen::JsCast;
+                                            let target = ev.target().unwrap();
+                                            let input = target.unchecked_into::<HtmlInputElement>();
+                                            ma_input.set(input.value());
+                                        }
+                                    />
+                                }.into_any()
+                            }
+                        }
+                    </div>
+                </Show>
+
+                // ── Mode selector (tabs) ──────────────────────────────────
                 <div class="landing-tabs">
                     <button
                         class=move || if mode.get() == Mode::New { "landing-tab active" } else { "landing-tab" }

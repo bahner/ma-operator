@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = No bin ebl fo get CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Dat no bin valid CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Wanin: Yu IPNS praivet ki go sen go dis runtime fo pablish yu adentiti. Yon-li yuz wan runtime we yu trit im.

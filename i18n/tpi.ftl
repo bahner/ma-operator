@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = No inap kisim CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Dispela CID i no stret: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Woning: Praivit ki bilong IPNS bilong yu bai i go long runtime ia bilong publisim aideniti. Usum tasol runtime yu trastim tru.

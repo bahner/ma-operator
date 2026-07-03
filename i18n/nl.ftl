@@ -349,3 +349,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } ophalen mislukt: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Ongeldig CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Waarschuwing: Je privé IPNS-sleutel wordt naar deze uitvoeringsomgeving gestuurd voor identiteitspublicatie. Gebruik alleen een uitvoeringsomgeving die je volledig vertrouwt.

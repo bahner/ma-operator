@@ -151,6 +151,23 @@ html, body {
     color: #333;
 }
 
+.form-row select.runtime-select {
+    background: var(--colour-bg);
+    border: 1px solid var(--colour-dimmed);
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    padding: 0.5rem 0.6rem;
+    outline: none;
+    width: 100%;
+    cursor: pointer;
+}
+
+.form-row select.runtime-select:focus {
+    border-color: var(--colour-text);
+    box-shadow: 0 0 6px var(--colour-dimmed);
+}
+
 .btn {
     background: none;
     border: 1px solid var(--colour-text);
@@ -223,6 +240,14 @@ html, body {
     color: var(--colour-error);
     font-size: 0.85rem;
     margin-top: 0.5rem;
+}
+
+.landing-warning {
+    color: #ffaa00;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+    border: 1px solid #ffaa00;
+    padding: 0.4rem 0.6rem;
 }
 
 .landing-status {

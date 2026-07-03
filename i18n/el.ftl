@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Αποτυχία ανάκτησης CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Μη έγκυρο CID: { $value }
+label-runtime = μα
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Προειδοποίηση: Το ιδιωτικό κλειδί IPNS σας θα σταλεί σε αυτό το περιβάλλον εκτέλεσης για τη δημοσίευση ταυτότητας. Χρησιμοποιείτε μόνο ένα περιβάλλον εκτέλεσης που εμπιστεύεστε πλήρως.

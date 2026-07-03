@@ -33,8 +33,11 @@ pub(super) fn handle_ma(
     if raw.starts_with('@') || raw.starts_with("did:") {
         let publisher = resolve_bare_did(raw, &config.get_untracked())?;
         let state2 = state.clone();
+        let publisher_for_storage = publisher.clone();
         leptos::task::spawn_local(async move {
-            do_publish(publisher, config, &state2, None).await;
+            if do_publish(publisher, config, &state2, None).await {
+                crate::views::landing::save_last_runtime(&publisher_for_storage);
+            }
         });
         return Ok(());
     }
@@ -75,6 +78,7 @@ fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, 
         // Discover — populate .ctx.ma.* and .my.aliases.ma.
         let did = match rediscover_ma(&ma_base, config).await {
             Ok(did) => {
+                crate::views::landing::save_last_runtime(&ma_base);
                 if let Some(sess) = state.session.get_untracked() {
                     let username = sess.username.clone();
                     let cfg = config.get_untracked();

@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Onnst ikki at fáa CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Ógilt CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Áminning: Tín privati IPNS-lykil verður sendur til hetta keyrsluumhvørvi til at birta kennsl. Nýt bert eitt keyrsluumhvørvi tú fulliga treystir.

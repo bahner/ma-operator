@@ -349,3 +349,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } konnte nicht abgerufen werden: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Kein gültiger CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Warnung: Dein privater IPNS-Schlüssel wird an diese Laufzeitumgebung zur Identitätspublizierung gesendet. Verwende nur eine Laufzeitumgebung, der du vollständig vertraust.

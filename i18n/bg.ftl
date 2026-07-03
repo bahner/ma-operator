@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Грешка при извличане на CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Невалиден CID: { $value }
+label-runtime = ма
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Предупреждение: Вашият частен IPNS ключ ще бъде изпратен към тази среда за изпълнение за публикуване на самоличност. Използвайте само среда за изпълнение, на която напълно се доверявате.

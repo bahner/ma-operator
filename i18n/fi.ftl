@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } hakeminen epäonnistui: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Virheellinen CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Varoitus: IPNS-yksityisavaimesi lähetetään tälle suorituspalvelulle henkilöllisyytesi julkaisemiseen. Käytä vain suorituspalvelua, johon luotat täysin.

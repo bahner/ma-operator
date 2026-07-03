@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Kò ṣeéṣe láti gbà CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID tó tọ kọ: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Ìkìlọ̀: Kọ́kọ́rọ́ ìkọ̀kọ̀ IPNS rẹ yóò rán sí runtime yìí fún ìtẹ̀jáde ìdánimọ̀. Lò nìkan runtime tí o ní ìgbẹ́kẹ̀lé pátápátá sí.

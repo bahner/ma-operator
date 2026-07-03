@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = No fit fetch CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Dis CID no valid: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Warning: Yur IPNS private key go send go dis runtime to publish yur identity. Only use runtime wey you trust kpata kpata.

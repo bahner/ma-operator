@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Keenista CID { $cid } ku guuldarreysatay: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID aan saxnayn: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Digniin: Furahaada sirta ah ee IPNS waxaa loo diri doonaa runtime-kan si lagu daabaco aqoonsiga. Waxaad isticmaali kartaa oo keliya runtime aad si buuxda u aaminsan tahay.

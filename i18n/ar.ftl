@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = فشل جلب CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID غير صالح: { $value }
+label-runtime = ما
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = تحذير: سيتم إرسال مفتاحك الخاص IPNS إلى بيئة التشغيل هذه لنشر هويتك. استخدم فقط بيئة تشغيل تثق بها تمامًا.

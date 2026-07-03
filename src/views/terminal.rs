@@ -59,9 +59,10 @@ pub fn Terminal() -> impl IntoView {
         spawn_local(startup_load_history(state.clone(), sess.username));
     }
 
-    // Start iroh endpoint
+    // Start iroh endpoint. Consume startup_ma here so it is passed to startup_connect.
     if let Some(sess) = state.session.get_untracked() {
-        spawn_local(startup_connect(state.clone(), config, sess));
+        let startup_ma = state.startup_ma.update_untracked(|v| v.take());
+        spawn_local(startup_connect(state.clone(), config, sess, startup_ma));
     }
 
     // Inbox polling loop

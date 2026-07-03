@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Neizdevās ielādēt CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Nederīgs CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Brīdinājums: Jūsu IPNS privātā atslēga tiks nosūtīta uz šo izpildes vidi identitātes publicēšanai. Izmantojiet tikai izpildes vidi, kurai pilnībā uzticaties.

@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } 가져오기 실패: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = 유효하지 않은 CID: { $value }
+label-runtime = 마
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = 경고: 귀하의 IPNS 개인 키가 신원 게시를 위해 이 런타임으로 전송됩니다. 완전히 신뢰하는 런타임만 사용하십시오.

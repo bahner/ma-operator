@@ -349,3 +349,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } の取得に失敗しました: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = 有効な CID ではありません: { $value }
+label-runtime = マ
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = 警告：あなたのIPNSプライベートキーはこのランタイムにアイデンティティを公開するために送信されます。完全に信頼するランタイムのみを使用してください。

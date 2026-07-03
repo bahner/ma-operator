@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Không thể lấy CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID không hợp lệ: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Cảnh báo: Khóa riêng tư IPNS của bạn sẽ được gửi đến môi trường chạy này để xuất bản danh tính. Chỉ sử dụng môi trường chạy mà bạn hoàn toàn tin tưởng.

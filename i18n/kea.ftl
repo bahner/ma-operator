@@ -343,3 +343,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Ka falla busca CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID ka ta válidu: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Avisu: Bu xave privadu IPNS di bu la ser mandadu pa kel runtime li pa pabliká identidadi. So uza un runtime ku bu kunfia di txeu.

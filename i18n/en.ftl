@@ -9,6 +9,8 @@ label-passphrase = passphrase
 label-username = username
 label-confirm-passphrase = confirm passphrase
 label-did = did
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
 label-profile-cid = profile CID
 label-or-file = or file
 btn-login = login
@@ -17,6 +19,7 @@ btn-generate = generate
 btn-new-endpoint = new endpoint
 btn-import-profile = import profile
 passphrase-warning = Lost passphrase = lost identity. There is no recovery.
+warning-remote-runtime = Warning: Your IPNS private key will be sent to this runtime for identity publishing. Only use a runtime you fully trust.
 import-profile-help = Import a .zion.json profile by CID or file. No passphrase needed for a fresh import. Passphrase only required to overwrite an existing identity.
 import-profile-detected-user = Profile belongs to: { $name }
 status-unlocking = unlocking...

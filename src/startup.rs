@@ -63,8 +63,22 @@ pub(crate) async fn startup_profile_exists(
     let _ = persist_config(&username, &cfg).await;
 }
 
-pub(crate) async fn startup_no_document(state: AppState, config: RwSignal<EgoConfig>) {
-    let ma_url = {
+pub(crate) async fn startup_no_document(
+    state: AppState,
+    config: RwSignal<EgoConfig>,
+    startup_ma: Option<String>,
+) {
+    // Skip if a remote DID was explicitly chosen — startup_connect will queue .ma!connect <did>.
+    if startup_ma
+        .as_deref()
+        .map_or(false, |v| v.starts_with("did:ma:"))
+    {
+        return;
+    }
+    // If an explicit HTTP URL was provided, use it; otherwise fall back to config / default.
+    let ma_url = if let Some(url) = startup_ma.as_deref().filter(|v| v.starts_with("http")) {
+        url.trim_end_matches('/').to_string()
+    } else {
         let cfg = config.get_untracked();
         cfg.get(".ctx.ma.url")
             .unwrap_or("http://localhost:5003")
@@ -114,6 +128,7 @@ pub(crate) async fn startup_did_sync(
     username: String,
     state: AppState,
     config: RwSignal<EgoConfig>,
+    startup_ma: Option<String>,
 ) {
     let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
     let Some(resolver) = resolver else { return };
@@ -124,7 +139,7 @@ pub(crate) async fn startup_did_sync(
             // document was never published from this device.
             let has_local_cid = crate::state::SESSION_AGENT_CID.with(|c| c.borrow().is_some());
             if !has_local_cid {
-                startup_no_document(state, config).await;
+                startup_no_document(state, config, startup_ma).await;
             }
         }
     }
@@ -218,6 +233,7 @@ pub(crate) async fn startup_connect(
     state: AppState,
     config: RwSignal<EgoConfig>,
     sess: SessionState,
+    startup_ma: Option<String>,
 ) {
     let iroh_key = sess.iroh_key;
     let ipns_secret_key = sess.ipns_secret_key;
@@ -240,7 +256,22 @@ pub(crate) async fn startup_connect(
         Ok(()) => {
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
-            startup_did_sync(sender_did, username, state.clone(), config).await;
+            startup_did_sync(
+                sender_did,
+                username,
+                state.clone(),
+                config,
+                startup_ma.clone(),
+            )
+            .await;
+            // If a remote DID was explicitly chosen on the landing page, queue auto-connect.
+            if let Some(ref ma_val) = startup_ma {
+                if ma_val.starts_with("did:ma:") {
+                    state
+                        .input_queue
+                        .update(|q| q.push_back(format!(".ma!connect {ma_val}")));
+                }
+            }
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }

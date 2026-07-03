@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Kuskure wajen ɗaukar CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Ba ingantaccen CID ba: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Gargaɗi: Makullin IPNS ɗin ku na sirri zai aika zuwa wannan runtime don wallafa shaida. Yi amfani da runtime da kuka amince da shi gaba ɗaya ne kaɗai.

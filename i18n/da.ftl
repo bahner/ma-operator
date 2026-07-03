@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Kunne ikke hente CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Ugyldigt CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Advarsel: Din private IPNS-nøgle vil blive sendt til dette køretidsmiljø til publicering af identitet. Brug kun et køretidsmiljø, du stoler fuldt ud på.

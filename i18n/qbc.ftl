@@ -359,3 +359,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Pensa CID { $cid } na kang: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Dat na proper CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Belte wok: Da IPNS priv-key du senye go na dis runtime fo pashang identity. Kowl yuse runtime du fulding trust, walowda.

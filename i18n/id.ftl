@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Gagal mengambil CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID tidak valid: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Peringatan: Kunci privat IPNS Anda akan dikirim ke runtime ini untuk penerbitan identitas. Gunakan hanya runtime yang sepenuhnya Anda percayai.

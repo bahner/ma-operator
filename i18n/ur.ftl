@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } حاصل کرنے میں ناکامی: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = غیر معتبر CID: { $value }
+label-runtime = ما
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = انتباہ: آپ کی IPNS نجی کلید شناخت کی اشاعت کے لیے اس رن ٹائم کو بھیجی جائے گی۔ صرف ایسے رن ٹائم کا استعمال کریں جس پر آپ مکمل بھروسہ کریں۔

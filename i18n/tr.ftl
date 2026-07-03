@@ -356,3 +356,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } alınamadı: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Geçersiz CID: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Uyarı: IPNS özel anahtarınız kimlik yayımlama için bu çalışma ortamına gönderilecektir. Yalnızca tamamen güvendiğiniz bir çalışma ortamı kullanın.

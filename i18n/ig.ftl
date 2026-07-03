@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Ịnweta CID { $cid } enweghị ike: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID na-adịghị mma: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Ịdọ aka ná ntị: Igodo nzuzo IPNS gị ga-aziga runtime a maka nkwupụta njirimara. Jiri naanị runtime i kwere n'ezi obi nke ọma.

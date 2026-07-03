@@ -350,3 +350,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Preluarea CID { $cid } a eșuat: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID invalid: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Avertisment: Cheia ta privată IPNS va fi trimisă la acest mediu de execuție pentru publicarea identității. Folosește doar un mediu de execuție în care ai deplină încredere.

@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = Waawaa CID { $cid } heɓude: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID ɓurɗo fewdo: { $value }
+label-runtime = ma
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = Tiitoore: Furdu maa IPNS e innde maa waɗete e ɗoo runtime ngam winndude dewgal maa. Huutoro tan runtime mo njinnaaɗaa haa timmi.

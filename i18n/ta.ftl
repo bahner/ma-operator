@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } பெற முடியவில்லை: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = செல்லுபடியாகாத CID: { $value }
+label-runtime = மா
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = எச்சரிக்கை: உங்கள் IPNS தனியார் விசை அடையாளத்தை வெளியிட இந்த இயக்க நேர சேவைக்கு அனுப்பப்படும். நீங்கள் முழுமையாக நம்பும் இயக்க நேர சேவையை மட்டுமே பயன்படுத்துங்கள்.

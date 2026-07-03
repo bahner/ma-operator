@@ -357,3 +357,6 @@ help-cmd-batch-async = help-cmd-batch-async
 scheme-cid-fetch-error = CID { $cid } తీసుకురావడం విఫలమైంది: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = చెల్లని CID: { $value }
+label-runtime = మా
+label-runtime-placeholder = did:ma:... or http://localhost:5003
+warning-remote-runtime = హెచ్చరిక: మీ IPNS ప్రైవేట్ కీ గుర్తింపు ప్రచురణ కోసం ఈ రన్‌టైమ్‌కు పంపబడుతుంది. మీరు పూర్తిగా విశ్వసించే రన్‌టైమ్‌ మాత్రమే ఉపయోగించండి.
