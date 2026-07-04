@@ -44,7 +44,7 @@ msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID స్థానిక ma ({ $url }) ద్వారా ప్రచురించబడింది
-msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '.my.identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help.publish' టైప్ చేయండి.
+msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '/my/identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help.publish' టైప్ చేయండి.
 msg-blocked = ⊗ నిరోధించబడింది [{ $cap }]: { $from }
 msg-focus-cleared = ఫోకస్ తొలగించబడింది
 msg-focusing = { $did } ని { $prompt } గా ఫోకస్ చేస్తోంది
@@ -108,7 +108,7 @@ discover-invalid-did = డిస్కవర్ విఫలమైంది: `di
 discover-no-endpoint = డిస్కవర్ హెచ్చరిక: status.json లో `endpoint_id` లేదు; DID మాత్రమే సేవ్ అయింది
 discover-success = { $url } వద్ద ma కనుగొనబడింది
 discover-did-line = DID: { $did }
-discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — మీ గుర్తింపు ప్రచురించడానికి '.my.identity!publish @ma' అమలు చేయండి.
+discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — మీ గుర్తింపు ప్రచురించడానికి '/my/identity!publish @ma' అమలు చేయండి.
 claim-success = { $did } కోసం రన్‌టైమ్ క్లెయిమ్ చేయబడింది
 claim-conflict = రన్‌టైమ్ ఇప్పటికే మరొక గుర్తింపు ద్వారా క్లెయిమ్ చేయబడింది
 claim-http-failed = క్లెయిమ్ విఫలమైంది: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = లాగిన్ కాలేదు; రన్‌టైమ�
 runtime-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 
 # ── క్రియలు — ACL ──────────────────────────────────────────────────────────
-acl-reset = .my.acl రీసెట్ చేయబడింది (పూర్తిగా తెరవబడింది)
+acl-reset = /my/acl రీసెట్ చేయబడింది (పూర్తిగా తెరవబడింది)
 acl-persist-error = సేవ్ లోపం: { $e }
-acl-no-verb = .my.acl కోసం `{ $verb }` క్రియ లేదు
+acl-no-verb = /my/acl కోసం `{ $verb }` క్రియ లేదు
 
 # ── క్రియలు — గుర్తింపు ──────────────────────────────────────────────────
-publish-usage = వాడకం: .my.identity!publish <did-లేదా-మారుపేరు>
+publish-usage = వాడకం: /my/identity!publish <did-లేదా-మారుపేరు>
 identity-exported = బండిల్ { $filename } గా డౌన్‌లోడ్ అయింది
 identity-export-failed = ఎగుమతి విఫలమైంది: { $e }
 
 # ── క్రియలు — డాక్యుమెంట్‌లు ────────────────────────────────────────────
-doc-content-empty = { $path }.content ఖాళీగా ఉంది
-doc-save-first = { $path }.content ఖాళీగా ఉంది — ముందు సేవ్ చేయండి
+doc-content-empty = { $path }/content ఖాళీగా ఉంది
+doc-save-first = { $path }/content ఖాళీగా ఉంది — ముందు సేవ్ చేయండి
 doc-missing-name = డాక్యుమెంట్ పేరు లేదు
-doc-publish-usage = వాడకం: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = వాడకం: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = వాడకం: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = వాడకం: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = ప్రచురణ { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
-doc-fetch-done = { $cid } తెచ్చబడింది → { $path }.content (అమలు చేయలేదు)
+doc-fetch-done = { $cid } తెచ్చబడింది → { $path }/content (అమలు చేయలేదు)
 doc-fetch-failed = పొందు { $cid }: { $e }
-doc-fetch-usage = వాడకం: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid సెట్ చేయలేదు
+doc-fetch-usage = వాడకం: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid సెట్ చేయలేదు
 doc-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 path-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       లీఫ్ లేదా �
 help-config-verb =   .path!verb [args]            స్థానిక క్రియ కాల్ చేయండి
 
 # ── సహాయం — సాధారణ మార్గాలు ──────────────────────────────────────────────
-help-my =   .my                          అన్ని వ్యక్తిగత కాన్ఫిగ్ చూపించు
-help-aliases =   .my.aliases                  మారుపేర్ల జాబితా
-help-aliases-set =   .my.aliases.<name>: <did>    మారుపేరు జోడించు/అప్‌డేట్ చేయి
-help-aliases-del =   .my.aliases.<name>:          మారుపేరు తొలగించు
+help-my =   /my                          అన్ని వ్యక్తిగత కాన్ఫిగ్ చూపించు
+help-aliases =   /my/aliases                  మారుపేర్ల జాబితా
+help-aliases-set =   /my/aliases/<name>: <did>    మారుపేరు జోడించు/అప్‌డేట్ చేయి
+help-aliases-del =   /my/aliases/<name>:          మారుపేరు తొలగించు
 help-runtime-discover =   .ma [port]          స్థానిక రన్‌టైమ్ కనుగొనండి మరియు @ma సృష్టించండి
 help-runtime-claim =   .ma [port]             మీ DID తో రన్‌టైమ్ క్లెయిమ్ చేయండి
-help-identity =   .my.identity                 గుర్తింపు కాన్ఫిగ్ చూపించు
-help-identity-did =   .my.identity.did             మీ DID చూపించు (చదవడానికి మాత్రమే)
-help-identity-publish =   .my.identity!publish @pub    ప్రచురణ సేవ ద్వారా DID ప్రచురించండి
-help-identity-export =   .my.identity!export          మీ గుర్తింపు బండిల్ డౌన్‌లోడ్ చేయండి
+help-identity =   /my/identity                 గుర్తింపు కాన్ఫిగ్ చూపించు
+help-identity-did =   /my/identity/did             మీ DID చూపించు (చదవడానికి మాత్రమే)
+help-identity-publish =   /my/identity!publish @pub    ప్రచురణ సేవ ద్వారా DID ప్రచురించండి
+help-identity-export =   /my/identity!export          మీ గుర్తింపు బండిల్ డౌన్‌లోడ్ చేయండి
 help-config-path =   .config                      అన్ని .config.* నమోదులు చూపించు
 
 # ── సహాయం — ఇన్‌బాక్స్ ────────────────────────────────────────────────────
-help-inbox =   .my.inbox                    ఇన్‌బాక్స్ జాబితా (సబ్‌ట్రీ వీక్షణ)
-help-inbox-n =   .my.inbox.N                  నమోదు N యొక్క ఫీల్డ్‌లు చూపించు
-help-inbox-from =   .my.inbox.N.from             నమోదు N యొక్క పంపినవారి DID
-help-inbox-reply =   .my.inbox.N!reply [body]     జవాబు పంపండి (బాడీ లేదు — ఎడిటర్ తెరుచుకుంటుంది)
-help-inbox-open =   .my.inbox.N!open             చదవడానికి మాత్రమే ఎడిటర్‌లో కంటెంట్ తెరవండి
-help-inbox-del =   .my.inbox.N:                 నమోదు N తొలగించు
-help-inbox-delall =   .my.inbox:                   అన్ని ఇన్‌బాక్స్ నమోదులు తొలగించు
-help-inbox-flush =   .my.inbox!flush              అన్ని నమోదులు టెర్మినల్‌కు ప్రింట్ చేయి
-help-inbox-filter =   .my.inbox!filter @who        @who నుండి మాత్రమే ఎంట్రీలు చూపించు
-help-inbox-traverse =   .my.inbox.N.sender.<field>   పంపినవారి DID డాక్యుమెంట్‌ను సోమరిగా అన్వేషించు
+help-inbox =   /my/inbox                    ఇన్‌బాక్స్ జాబితా (సబ్‌ట్రీ వీక్షణ)
+help-inbox-n =   /my/inbox/N                  నమోదు N యొక్క ఫీల్డ్‌లు చూపించు
+help-inbox-from =   /my/inbox/N/from             నమోదు N యొక్క పంపినవారి DID
+help-inbox-reply =   /my/inbox/N!reply [body]     జవాబు పంపండి (బాడీ లేదు — ఎడిటర్ తెరుచుకుంటుంది)
+help-inbox-open =   /my/inbox/N!open             చదవడానికి మాత్రమే ఎడిటర్‌లో కంటెంట్ తెరవండి
+help-inbox-del =   /my/inbox/N:                 నమోదు N తొలగించు
+help-inbox-delall =   /my/inbox:                   అన్ని ఇన్‌బాక్స్ నమోదులు తొలగించు
+help-inbox-flush =   /my/inbox!flush              అన్ని నమోదులు టెర్మినల్‌కు ప్రింట్ చేయి
+help-inbox-filter =   /my/inbox!filter @who        @who నుండి మాత్రమే ఎంట్రీలు చూపించు
+help-inbox-traverse =   /my/inbox/N/sender/<field>   పంపినవారి DID డాక్యుమెంట్‌ను సోమరిగా అన్వేషించు
 
 # ── సహాయం — డాక్యుమెంట్‌లు ─────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           సేవ్ చేసిన కంటెంట్‌తో ఎడిటర్ తెరవండి
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID తెచ్చి, సమీక్ష కోసం మాత్రమే తెరవండి
-help-doc-eval =   .my.doc.<name>!eval           సేవ్ చేసిన కంటెంట్‌ను లైన్-బై-లైన్ అమలు చేయండి
-help-doc-publish =   .my.doc.<name>!publish @pub   రా blob గా స్టోర్ చేయండి (ఏ రకమైనా)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ని DAG-CBOR IPLD నోడ్‌గా స్టోర్ చేయండి
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID కంటెంట్ దిగుమతి చేయండి (అమలు కాదు)
-help-doc-cid =   .my.doc.<name>!cid            స్టోర్ చేసిన CID చూపించు
-help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ తొలగించు
+help-doc-edit =   /my/doc/<name>!edit           సేవ్ చేసిన కంటెంట్‌తో ఎడిటర్ తెరవండి
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID తెచ్చి, సమీక్ష కోసం మాత్రమే తెరవండి
+help-doc-eval =   /my/doc/<name>!eval           సేవ్ చేసిన కంటెంట్‌ను లైన్-బై-లైన్ అమలు చేయండి
+help-doc-publish =   /my/doc/<name>!publish @pub   రా blob గా స్టోర్ చేయండి (ఏ రకమైనా)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML ని DAG-CBOR IPLD నోడ్‌గా స్టోర్ చేయండి
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID కంటెంట్ దిగుమతి చేయండి (అమలు కాదు)
+help-doc-cid =   /my/doc/<name>!cid            స్టోర్ చేసిన CID చూపించు
+help-doc-del =   /my/doc/<name>:              డాక్యుమెంట్ తొలగించు
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = అందుబాటులో ఉన్న భాషలు (.my.i18n: <code> తో సెట్ చేయండి):
+lang-list-header = అందుబాటులో ఉన్న భాషలు (/my/i18n: <code> తో సెట్ చేయండి):
 err-lang-not-found = భాష కనుగొనబడలేదు: { $lang }
 
 msg-send-failed = పంపడం విఫలమైంది: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = ప్రొఫైల్ { $name } తొలగించబ�
 profiles-not-found = ప్రొఫైల్ కనుగొనబడలేదు: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                నెట్‌వర్క�
 help-header-publish = ── గుర్తింపు ప్రచురణ ────────────────────────────────────────────────────────
 help-publish-intro = ప్రచురణ మీ గుర్తింపును నెట్‌వర్క్‌లో కనుగొనగలిగేలా చేస్తుంది. ఇతరులు మీ DID వెతికి మిమ్మల్ని చేరుకోవచ్చు.
 help-publish-ma = ప్రచురించడానికి ma (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.
-help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.ma [port]' అమలు చేయండి, తర్వాత '.my.identity!publish @ma'.
+help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.ma [port]' అమలు చేయండి, తర్వాత '/my/identity!publish @ma'.
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

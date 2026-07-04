@@ -44,7 +44,7 @@ msg-connecting = spajanje na iroh...
 msg-iroh-ready = iroh krajnja točka spremna
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID objavljen putem lokalnog ma ({ $url })
-msg-identity-not-published = Identitet nije pronađen online — ako imaš ma instaliran lokalno, pokreni '.ma [port]' i zatim '.my.identity!publish @ma'. Upiši '.help.publish' za pojedinosti.
+msg-identity-not-published = Identitet nije pronađen online — ako imaš ma instaliran lokalno, pokreni '.ma [port]' i zatim '/my/identity!publish @ma'. Upiši '.help.publish' za pojedinosti.
 msg-blocked = ⊗ blokirano [{ $cap }]: { $from }
 msg-focus-cleared = fokus obrisan
 msg-focusing = fokusiranje na { $did } kao { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = otkrivanje nije uspjelo: očekivano `did` koje počinje s
 discover-no-endpoint = upozorenje otkrivanja: `endpoint_id` odsutan u status.json; pohranjen samo DID
 discover-success = ma otkriveno na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma stvoren — pokreni '.my.identity!publish @ma' za objavu svog identiteta.
+discover-alias-hint =   alias @ma stvoren — pokreni '/my/identity!publish @ma' za objavu svog identiteta.
 claim-success = Izvođenje zatraženo za { $did }
 claim-conflict = Izvođenje već zatraženo od drugog identiteta
 claim-http-failed = zahtjev nije uspio: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = niste prijavljeni; prvo se prijavite za zatražiti izvođenje
 runtime-no-verb = nema glagola `{ $verb }` za { $path }
 
 # ── Glagoli — kontrola pristupa ───────────────────────────────────────────
-acl-reset = .my.acl resetiran (potpuno otvoren)
+acl-reset = /my/acl resetiran (potpuno otvoren)
 acl-persist-error = greška pri spremanju: { $e }
-acl-no-verb = nema glagola `{ $verb }` za .my.acl
+acl-no-verb = nema glagola `{ $verb }` za /my/acl
 
 # ── Glagoli — identitet ───────────────────────────────────────────────────
-publish-usage = korištenje: .my.identity!publish <did-ili-pseudonim>
+publish-usage = korištenje: /my/identity!publish <did-ili-pseudonim>
 identity-exported = Paket preuzet kao { $filename }
 identity-export-failed = Izvoz nije uspio: { $e }
 
 # ── Glagoli — dokumenti ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content je prazno
-doc-save-first = { $path }.content je prazno — prvo spremite
+doc-content-empty = { $path }/content je prazno
+doc-save-first = { $path }/content je prazno — prvo spremite
 doc-missing-name = nedostaje naziv dokumenta
-doc-publish-usage = korištenje: .my.doc.<naziv>:publish <izdavač>
-doc-publish-ipld-usage = korištenje: .my.doc.<naziv>:publish-ipld <izdavač>
+doc-publish-usage = korištenje: /my/doc/<naziv>:publish <izdavač>
+doc-publish-ipld-usage = korištenje: /my/doc/<naziv>:publish-ipld <izdavač>
 doc-publish-failed = objavljivanje { $path }: { $e }
 doc-publish-ipld-failed = objavljivanje IPLD { $path }: { $e }
 doc-store-sent = zahtjev za pohranom poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
 doc-ipld-store-sent = zahtjev za pohranom IPLD poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
-doc-fetch-done = { $cid } dohvaćeno → { $path }.content (nije pokrenuto)
+doc-fetch-done = { $cid } dohvaćeno → { $path }/content (nije pokrenuto)
 doc-fetch-failed = dohvaćanje { $cid }: { $e }
-doc-fetch-usage = korištenje: .my.doc.<naziv>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid nije postavljeno
+doc-fetch-usage = korištenje: /my/doc/<naziv>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid nije postavljeno
 doc-no-verb = nema glagola `{ $verb }` za { $path }
 path-no-verb = nema glagola `{ $verb }` za { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 postavi list
 help-config-delete =   .path:                       obriši list ili podstablo
 help-config-verb =   .path!verb [args]            pokreni lokalni glagol
 
-help-my =   .my                          prikaži cjelokupnu osobnu konfiguraciju
-help-aliases =   .my.aliases                  izlistaj pseudonime
-help-aliases-set =   .my.aliases.<name>: <did>    dodaj/ažuriraj pseudonim (čist DID, bez #fragmenta)
-help-aliases-del =   .my.aliases.<name>:          ukloni pseudonim
+help-my =   /my                          prikaži cjelokupnu osobnu konfiguraciju
+help-aliases =   /my/aliases                  izlistaj pseudonime
+help-aliases-set =   /my/aliases/<name>: <did>    dodaj/ažuriraj pseudonim (čist DID, bez #fragmenta)
+help-aliases-del =   /my/aliases/<name>:          ukloni pseudonim
 help-runtime-discover =   .ma [port]          otkrij lokalno izvođenje i stvori pseudonim @ma
 help-runtime-claim =   .ma [port]             zahtijevaj izvođenje svojim DID-om
-help-identity =   .my.identity                 prikaži konfiguraciju identiteta
-help-identity-did =   .my.identity.did             prikaži vlastiti DID (samo za čitanje)
-help-identity-publish =   .my.identity!publish @pub    objavi vlastiti DID putem usluge izdavača
-help-identity-export =   .my.identity!export          preuzmi vlastiti paket identiteta
+help-identity =   /my/identity                 prikaži konfiguraciju identiteta
+help-identity-did =   /my/identity/did             prikaži vlastiti DID (samo za čitanje)
+help-identity-publish =   /my/identity!publish @pub    objavi vlastiti DID putem usluge izdavača
+help-identity-export =   /my/identity!export          preuzmi vlastiti paket identiteta
 help-config-path =   .config                      prikaži sve unose .config.*
 
-help-inbox =   .my.inbox                    izlistaj pristiglu poštu (prikaz podstabla)
-help-inbox-n =   .my.inbox.N                  prikaži polja unosa N
-help-inbox-from =   .my.inbox.N.from             DID pošiljatelja za unos N
-help-inbox-reply =   .my.inbox.N!reply [body]     pošalji odgovor (otvori uređivač bez tijela)
-help-inbox-open =   .my.inbox.N!open             otvori sadržaj u uređivaču samo za čitanje
-help-inbox-del =   .my.inbox.N:                 obriši unos N
-help-inbox-delall =   .my.inbox:                   obriši sve unose pristigle pošte
-help-inbox-flush =   .my.inbox!flush              ispiši sve unose u terminal
-help-inbox-filter =   .my.inbox!filter @who        prikaži samo unose od @who
-help-inbox-traverse =   .my.inbox.N.sender.<polje>  lijeno prolazi DID dokumentom pošiljatelja
+help-inbox =   /my/inbox                    izlistaj pristiglu poštu (prikaz podstabla)
+help-inbox-n =   /my/inbox/N                  prikaži polja unosa N
+help-inbox-from =   /my/inbox/N/from             DID pošiljatelja za unos N
+help-inbox-reply =   /my/inbox/N!reply [body]     pošalji odgovor (otvori uređivač bez tijela)
+help-inbox-open =   /my/inbox/N!open             otvori sadržaj u uređivaču samo za čitanje
+help-inbox-del =   /my/inbox/N:                 obriši unos N
+help-inbox-delall =   /my/inbox:                   obriši sve unose pristigle pošte
+help-inbox-flush =   /my/inbox!flush              ispiši sve unose u terminal
+help-inbox-filter =   /my/inbox!filter @who        prikaži samo unose od @who
+help-inbox-traverse =   /my/inbox/N/sender/<polje>  lijeno prolazi DID dokumentom pošiljatelja
 
-help-doc-edit =   .my.doc.<naziv>:edit           otvori uređivač sa spremljenim sadržajem
-help-doc-edit-cid =   .my.doc.<naziv>:edit <cid>     dohvati CID, otvori za pregled
-help-doc-eval =   .my.doc.<naziv>:eval           pokreni spremljeni sadržaj redak po redak
-help-doc-publish =   .my.doc.<naziv>:publish @pub   spremi kao sirovi blob (svi tipovi)
-help-doc-publish-ipld =   .my.doc.<naziv>:publish-ipld @pub  spremi YAML kao strukturirani DAG-CBOR IPLD čvor
-help-doc-fetch =   .my.doc.<naziv>:fetch <cid>    uvezi sadržaj CID (bez pokretanja)
-help-doc-cid =   .my.doc.<naziv>:cid            prikaži spremljeni CID
-help-doc-del =   .my.doc.<naziv>:              obriši dokument
+help-doc-edit =   /my/doc/<naziv>:edit           otvori uređivač sa spremljenim sadržajem
+help-doc-edit-cid =   /my/doc/<naziv>:edit <cid>     dohvati CID, otvori za pregled
+help-doc-eval =   /my/doc/<naziv>:eval           pokreni spremljeni sadržaj redak po redak
+help-doc-publish =   /my/doc/<naziv>:publish @pub   spremi kao sirovi blob (svi tipovi)
+help-doc-publish-ipld =   /my/doc/<naziv>:publish-ipld @pub  spremi YAML kao strukturirani DAG-CBOR IPLD čvor
+help-doc-fetch =   /my/doc/<naziv>:fetch <cid>    uvezi sadržaj CID (bez pokretanja)
+help-doc-cid =   /my/doc/<naziv>:cid            prikaži spremljeni CID
+help-doc-del =   /my/doc/<naziv>:              obriši dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Dostupni jezici (postavi s .my.i18n: <code>):
+lang-list-header = Dostupni jezici (postavi s /my/i18n: <code>):
 err-lang-not-found = jezik nije pronađen: { $lang }
 
 msg-send-failed = slanje nije uspjelo: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = profil { $name } izbrisan
 profiles-not-found = profil nije pronađen: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                objaviti identitet u mreži
 help-header-publish = ── objava identiteta ────────────────────────────────────────────────────────
 help-publish-intro = Objavljivanje čini tvoj identitet pronađljivim u mreži. Drugi mogu potražiti tvoj DID da te kontaktiraju.
 help-publish-ma = Za objavu trebaš instaliran ma (lokalno izvršno okruženje). Ono povezuje ego s IPFS/IPNS u tvoje ime.
-help-publish-steps = Koraci: pokreni '.ma [port]' za otkrivanje lokalnog ma, zatim '.my.identity!publish @ma'.
+help-publish-steps = Koraci: pokreni '.ma [port]' za otkrivanje lokalnog ma, zatim '/my/identity!publish @ma'.
 help-publish-without = Bez objave drugi te ne mogu doseći — čak i ako znaju tvoj DID, ne mogu razriješiti tvoj endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

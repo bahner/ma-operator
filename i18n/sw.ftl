@@ -44,7 +44,7 @@ msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID imechapishwa kupitia ma ya ndani ({ $url })
-msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '.my.identity!publish @ma'. Andika '.help.publish' kwa maelezo.
+msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '/my/identity!publish @ma'. Andika '.help.publish' kwa maelezo.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
 msg-focusing = kuzingatia { $did } kama { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = ugunduzi umeshindwa: ilitarajiwa `did` kuanza na did:ma:,
 discover-no-endpoint = onyo la ugunduzi: `endpoint_id` haipo katika status.json; DID tu ilihifadhiwa
 discover-success = ma imegunduliwa katika { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   jina bandia @ma limeundwa — endesha '.my.identity!publish @ma' kutangaza utambulisho wako.
+discover-alias-hint =   jina bandia @ma limeundwa — endesha '/my/identity!publish @ma' kutangaza utambulisho wako.
 claim-success = Wakati wa utekelezaji umedaiwa kwa { $did }
 claim-conflict = Wakati wa utekelezaji tayari umedaiwa na utambulisho mwingine
 claim-http-failed = kudai kumeshindwa: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = hujaingia; ingia kwanza ili kudai wakati wa utekelezaji
 runtime-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 
 # ── Vitenzi — udhibiti wa ufikiaji ────────────────────────────────────────
-acl-reset = .my.acl imewekwa upya (wazi kabisa)
+acl-reset = /my/acl imewekwa upya (wazi kabisa)
 acl-persist-error = hitilafu ya kuhifadhi: { $e }
-acl-no-verb = hakuna kitenzi `{ $verb }` kwa .my.acl
+acl-no-verb = hakuna kitenzi `{ $verb }` kwa /my/acl
 
 # ── Vitenzi — utambulisho ─────────────────────────────────────────────────
-publish-usage = matumizi: .my.identity!publish <did-au-jina-la-kubadilisha>
+publish-usage = matumizi: /my/identity!publish <did-au-jina-la-kubadilisha>
 identity-exported = Kifurushi kilipakuliwa kama { $filename }
 identity-export-failed = Usafirishaji umeshindwa: { $e }
 
 # ── Vitenzi — nyaraka ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ipo wazi
-doc-save-first = { $path }.content ipo wazi — hifadhi kwanza
+doc-content-empty = { $path }/content ipo wazi
+doc-save-first = { $path }/content ipo wazi — hifadhi kwanza
 doc-missing-name = jina la hati linakosekana
-doc-publish-usage = matumizi: .my.doc.<jina>:publish <mchapishaji>
-doc-publish-ipld-usage = matumizi: .my.doc.<jina>:publish-ipld <mchapishaji>
+doc-publish-usage = matumizi: /my/doc/<jina>:publish <mchapishaji>
+doc-publish-ipld-usage = matumizi: /my/doc/<jina>:publish-ipld <mchapishaji>
 doc-publish-failed = kuchapisha { $path }: { $e }
 doc-publish-ipld-failed = kuchapisha IPLD { $path }: { $e }
 doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
-doc-fetch-done = { $cid } imepatikana → { $path }.content (haijatekelezwa)
+doc-fetch-done = { $cid } imepatikana → { $path }/content (haijatekelezwa)
 doc-fetch-failed = kupata { $cid }: { $e }
-doc-fetch-usage = matumizi: .my.doc.<jina>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid haijawekwa
+doc-fetch-usage = matumizi: /my/doc/<jina>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid haijawekwa
 doc-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 path-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 weka jani
 help-config-delete =   .path:                       futa jani au mti mdogo
 help-config-verb =   .path!verb [args]            tekeleza kitenzi cha ndani
 
-help-my =   .my                          onyesha usanidi wote wa kibinafsi
-help-aliases =   .my.aliases                  orodhesha majina ya kubadilisha
-help-aliases-set =   .my.aliases.<name>: <did>    ongeza/sasisha jina la kubadilisha (DID safi, bila #kipande)
-help-aliases-del =   .my.aliases.<name>:          ondoa jina la kubadilisha
+help-my =   /my                          onyesha usanidi wote wa kibinafsi
+help-aliases =   /my/aliases                  orodhesha majina ya kubadilisha
+help-aliases-set =   /my/aliases/<name>: <did>    ongeza/sasisha jina la kubadilisha (DID safi, bila #kipande)
+help-aliases-del =   /my/aliases/<name>:          ondoa jina la kubadilisha
 help-runtime-discover =   .ma [port]          gundua wakati wa utekelezaji wa ndani na unda jina la kubadilisha @ma
 help-runtime-claim =   .ma [port]             dai wakati wa utekelezaji na DID yako
-help-identity =   .my.identity                 onyesha usanidi wa utambulisho
-help-identity-did =   .my.identity.did             onyesha DID yako mwenyewe (kusoma tu)
-help-identity-publish =   .my.identity!publish @pub    chapisha DID yako kupitia huduma ya mchapishaji
-help-identity-export =   .my.identity!export          pakua kifurushi cha utambulisho wako
+help-identity =   /my/identity                 onyesha usanidi wa utambulisho
+help-identity-did =   /my/identity/did             onyesha DID yako mwenyewe (kusoma tu)
+help-identity-publish =   /my/identity!publish @pub    chapisha DID yako kupitia huduma ya mchapishaji
+help-identity-export =   /my/identity!export          pakua kifurushi cha utambulisho wako
 help-config-path =   .config                      onyesha ingizo zote za .config.*
 
-help-inbox =   .my.inbox                    orodhesha kisanduku cha barua (mtazamo wa mti mdogo)
-help-inbox-n =   .my.inbox.N                  onyesha sehemu za ingizo N
-help-inbox-from =   .my.inbox.N.from             DID ya mtumaji kwa ingizo N
-help-inbox-reply =   .my.inbox.N!reply [body]     tuma jibu (fungua mhariri bila mwili)
-help-inbox-open =   .my.inbox.N!open             fungua maudhui katika mhariri wa kusoma tu
-help-inbox-del =   .my.inbox.N:                 futa ingizo N
-help-inbox-delall =   .my.inbox:                   futa ingizo zote za kisanduku cha barua
-help-inbox-flush =   .my.inbox!flush              chapisha ingizo zote kwenye terminal
-help-inbox-filter =   .my.inbox!filter @who        onyesha maingizo kutoka @who peke yake
-help-inbox-traverse =   .my.inbox.N.sender.<uwanja>  pita hati ya DID ya mtumaji kwa uvivu
+help-inbox =   /my/inbox                    orodhesha kisanduku cha barua (mtazamo wa mti mdogo)
+help-inbox-n =   /my/inbox/N                  onyesha sehemu za ingizo N
+help-inbox-from =   /my/inbox/N/from             DID ya mtumaji kwa ingizo N
+help-inbox-reply =   /my/inbox/N!reply [body]     tuma jibu (fungua mhariri bila mwili)
+help-inbox-open =   /my/inbox/N!open             fungua maudhui katika mhariri wa kusoma tu
+help-inbox-del =   /my/inbox/N:                 futa ingizo N
+help-inbox-delall =   /my/inbox:                   futa ingizo zote za kisanduku cha barua
+help-inbox-flush =   /my/inbox!flush              chapisha ingizo zote kwenye terminal
+help-inbox-filter =   /my/inbox!filter @who        onyesha maingizo kutoka @who peke yake
+help-inbox-traverse =   /my/inbox/N/sender/<uwanja>  pita hati ya DID ya mtumaji kwa uvivu
 
-help-doc-edit =   .my.doc.<jina>:edit           fungua mhariri na maudhui yaliyohifadhiwa
-help-doc-edit-cid =   .my.doc.<jina>:edit <cid>     pata CID, fungua kwa mapitio
-help-doc-eval =   .my.doc.<jina>:eval           tekeleza maudhui yaliyohifadhiwa mstari kwa mstari
-help-doc-publish =   .my.doc.<jina>:publish @pub   hifadhi kama blob ghafi (aina zote)
-help-doc-publish-ipld =   .my.doc.<jina>:publish-ipld @pub  hifadhi YAML kama nodi ya DAG-CBOR IPLD iliyopangwa
-help-doc-fetch =   .my.doc.<jina>:fetch <cid>    ingiza maudhui ya CID (bila utekelezaji)
-help-doc-cid =   .my.doc.<jina>:cid            onyesha CID iliyohifadhiwa
-help-doc-del =   .my.doc.<jina>:              futa hati
+help-doc-edit =   /my/doc/<jina>:edit           fungua mhariri na maudhui yaliyohifadhiwa
+help-doc-edit-cid =   /my/doc/<jina>:edit <cid>     pata CID, fungua kwa mapitio
+help-doc-eval =   /my/doc/<jina>:eval           tekeleza maudhui yaliyohifadhiwa mstari kwa mstari
+help-doc-publish =   /my/doc/<jina>:publish @pub   hifadhi kama blob ghafi (aina zote)
+help-doc-publish-ipld =   /my/doc/<jina>:publish-ipld @pub  hifadhi YAML kama nodi ya DAG-CBOR IPLD iliyopangwa
+help-doc-fetch =   /my/doc/<jina>:fetch <cid>    ingiza maudhui ya CID (bila utekelezaji)
+help-doc-cid =   /my/doc/<jina>:cid            onyesha CID iliyohifadhiwa
+help-doc-del =   /my/doc/<jina>:              futa hati
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Lugha zinazopatikana (weka kwa .my.i18n: <code>):
+lang-list-header = Lugha zinazopatikana (weka kwa /my/i18n: <code>):
 err-lang-not-found = lugha haikupatikana: { $lang }
 
 msg-send-failed = kutuma kulishindwa: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = profaili { $name } imefutwa
 profiles-not-found = profaili haikupatikana: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                chapisha utambulisho wako kw
 help-header-publish = ── kuchapisha utambulisho ────────────────────────────────────────────────────
 help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtandao. Wengine wanaweza kutafuta DID yako kukufikia.
 help-publish-ma = Ili kuchapisha, unahitaji ma (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.
-help-publish-steps = Hatua: endesha '.ma [port]' kugundua ma ya ndani, kisha '.my.identity!publish @ma'.
+help-publish-steps = Hatua: endesha '.ma [port]' kugundua ma ya ndani, kisha '/my/identity!publish @ma'.
 help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

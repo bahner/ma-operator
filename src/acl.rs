@@ -9,7 +9,7 @@
 ///
 /// Replies to outgoing RPCs are **never filtered** regardless of sender.
 ///
-/// If `.my.acl` is absent or unparseable, the ACL defaults to fully open
+/// If `/my/acl` is absent or unparseable, the ACL defaults to fully open
 /// (`"*": [inbox, rpc]`).
 use ma_core::{check_cap, AclMap, CapabilityEntry};
 pub use ma_core::{CAP_INBOX, CAP_RPC};
@@ -17,9 +17,9 @@ pub use ma_core::{CAP_INBOX, CAP_RPC};
 use crate::config::EgoConfig;
 
 /// Config key where the ACL YAML blob is stored.
-pub const ACL_KEY: &str = ".my.acl";
+pub const ACL_KEY: &str = "/my/acl";
 
-/// Parse the ACL stored at `.my.acl`.  Falls back to a fully-open ACL on
+/// Parse the ACL stored at `/my/acl`.  Falls back to a fully-open ACL on
 /// parse error or when the key is absent.
 pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
     cfg.get(ACL_KEY)

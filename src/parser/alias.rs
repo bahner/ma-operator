@@ -2,7 +2,7 @@
 ///
 /// Rules:
 ///   \@name  → literal "@name"  (no lookup)
-///   @name   → looked up in .my.aliases, error if not found and not a DID
+///   @name   → looked up in /my/aliases, error if not found and not a DID
 ///   @did:ma:...  → passed through as-is (valid DID)
 use crate::config::EgoConfig;
 
@@ -85,7 +85,7 @@ mod tests {
 
     fn cfg_with_alias(name: &str, did: &str) -> EgoConfig {
         let mut cfg = EgoConfig::default();
-        cfg.set(format!(".my.aliases.{name}"), did);
+        cfg.set(format!("/my/aliases/{name}"), did);
         cfg
     }
 

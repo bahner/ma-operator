@@ -161,6 +161,16 @@ pub(crate) fn handle_profile_publish_reply(
 
 // ── Editor open ────────────────────────────────────────────────────────────
 
+/// Shared handles needed to react to a reply and (possibly) open the editor.
+/// Bundles the three values that are threaded through every reply handler in
+/// this module, keeping individual handler signatures short.
+#[derive(Clone, Copy)]
+pub(crate) struct ReplyContext<'a> {
+    pub state: &'a AppState,
+    pub config: RwSignal<EgoConfig>,
+    pub show_editor: RwSignal<Option<EditorContext>>,
+}
+
 /// Edit-open reply: decode the CBOR payload and open the editor in the right mode.
 pub(crate) fn handle_edit_open_reply(
     target: String,
@@ -168,10 +178,13 @@ pub(crate) fn handle_edit_open_reply(
     editor_mode: EditorMode,
     cmd_id: u64,
     incoming: &IncomingMessage,
-    state: &AppState,
-    show_editor: RwSignal<Option<EditorContext>>,
-    config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+    ctx: &ReplyContext,
 ) {
+    let ReplyContext {
+        state,
+        config,
+        show_editor,
+    } = *ctx;
     if incoming.is_error {
         state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
         state.push_error(incoming.display.clone());

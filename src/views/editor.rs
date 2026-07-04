@@ -75,7 +75,7 @@ pub enum EditorMode {
     /// Edit a raw config key: Save + Cancel, no eval.
     /// The editor content is written directly to `key` (not `<key>.content`).
     ConfigEdit {
-        /// The EgoConfig key to write on save, e.g. `".my.acl"`.
+        /// The EgoConfig key to write on save, e.g. `"/my/acl"`.
         key: String,
     },
     /// Edit the root transport ACL of a remote runtime: Publish + Cancel.
@@ -113,7 +113,7 @@ pub enum EditorMode {
 /// All the state needed to open an editor session for a document.
 #[derive(Clone, Debug)]
 pub struct EditorContext {
-    /// The document path being edited (e.g. `.my.doc.foo`).
+    /// The document path being edited (e.g. `/my/doc/foo`).
     pub doc_path: String,
     /// Editable "Save to" URL shown in the editor toolbar.
     /// Initialised from `doc_path` with alias resolution applied.
@@ -522,7 +522,7 @@ pub fn EditorModal(
                         <option value="plain">"plain"</option>
                         <option value="markdown">"markdown"</option>
                         <option value="yaml">"yaml"</option>
-                        <option value="scheme">"scheme"</option>
+                        <option value="zscheme">"zscheme"</option>
                     </select>
                     // Save — Standard only
                     <button

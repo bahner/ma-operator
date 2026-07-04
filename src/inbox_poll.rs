@@ -13,7 +13,7 @@ use crate::{
     messages::IncomingMessage,
     reply_handlers::{
         cbor_reply_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
-        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply,
+        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -129,16 +129,12 @@ fn dispatch_reply(
             editor_mode,
             cmd_id,
         } => {
-            handle_edit_open_reply(
-                target,
-                crud_path,
-                editor_mode,
-                cmd_id,
-                &incoming,
+            let ctx = ReplyContext {
                 state,
-                show_editor,
                 config,
-            );
+                show_editor,
+            };
+            handle_edit_open_reply(target, crud_path, editor_mode, cmd_id, &incoming, &ctx);
         }
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display);

@@ -1,6 +1,6 @@
-//! Verb dispatch for local dot-path commands.
+//! Verb dispatch for local path commands.
 //!
-//! `.path!verb` — side-effect / system operation
+//! `/path!verb` — side-effect / system operation
 
 mod acl;
 mod doc;
@@ -29,7 +29,7 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
 }
 
 /// Default base URL for the local `ma` daemon.
-/// Override with `.ctx.ma.url: http://host:port` or pass port as argument to `.ma`.
+/// Override with `/ctx/ma/url: http://host:port` or pass port as argument to `.ma`.
 pub(super) const MA_URL: &str = "http://localhost:5003";
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
@@ -49,7 +49,7 @@ fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
     Ok(resolved)
 }
 
-/// Dispatch `.path!verb` — all verb / side-effect operations.
+/// Dispatch `/path!verb` — all verb / side-effect operations.
 pub fn dispatch_meta(
     path: &str,
     verb: &str,
@@ -59,32 +59,32 @@ pub fn dispatch_meta(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    if path == ".my.scheme" || path.starts_with(".my.scheme.") {
+    if path == "/my/scheme" || path.starts_with("/my/scheme/") {
         return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.inbox" || path.starts_with(".my.inbox.") {
+    if path == "/my/inbox" || path.starts_with("/my/inbox/") {
         return inbox::handle_inbox(path, verb, args, state, config, show_editor, on_eval);
     }
     if path == ".ma" || path.starts_with(".ma.") {
         return ma::handle_ma(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.acl" || path.starts_with(".my.acl.") {
+    if path == "/my/acl" || path.starts_with("/my/acl/") {
         return acl::handle_acl(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.identity" || path.starts_with(".my.identity.") {
+    if path == "/my/identity" || path.starts_with("/my/identity/") {
         return identity::handle_identity(path, verb, args, state, config, show_editor, on_eval);
     }
-    if path == ".my.i18n" && verb == "list" {
+    if path == "/my/i18n" && verb == "list" {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
     // Content-management verbs work on any non-read-only path.
     if matches!(verb, "publish" | "publish-ipld" | "cid" | "fetch") {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
-    // Universal content-based verb routing: works on any path with .content.
+    // Universal content-based verb routing: works on any path with /content.
     let has_content = config
         .get_untracked()
-        .get(&format!("{path}.content"))
+        .get(&format!("{path}/content"))
         .is_some();
     if has_content || verb == "edit" {
         match verb {
@@ -94,11 +94,11 @@ pub fn dispatch_meta(
             _ => {}
         }
     }
-    // Scheme function call: any other verb on a path with .content.
+    // Scheme function call: any other verb on a path with /content.
     let content = if has_content {
         config
             .get_untracked()
-            .get(&format!("{path}.content"))
+            .get(&format!("{path}/content"))
             .map(|s| s.to_string())
     } else {
         None

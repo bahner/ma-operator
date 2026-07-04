@@ -44,7 +44,7 @@ msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID yerel ma ({ $url }) aracılığıyla yayımlandı
-msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '.my.identity!publish @ma' çalıştırın. Ayrıntılar için '.help.publish' yazın.
+msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '/my/identity!publish @ma' çalıştırın. Ayrıntılar için '.help.publish' yazın.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
 msg-focusing = { $did } üzerine { $prompt } olarak odaklanılıyor
@@ -108,7 +108,7 @@ discover-invalid-did = keşif başarısız: `did` did:ma: ile başlamalıydı, a
 discover-no-endpoint = keşif uyarısı: status.json'da `endpoint_id` eksik; yalnızca DID depolandı
 discover-success = ma { $url } adresinde keşfedildi
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma takma adı oluşturuldu — kimliğini yayımlamak için '.my.identity!publish @ma' çalıştır.
+discover-alias-hint =   @ma takma adı oluşturuldu — kimliğini yayımlamak için '/my/identity!publish @ma' çalıştır.
 claim-success = Çalışma zamanı { $did } için talep edildi
 claim-conflict = Çalışma zamanı başka bir kimlik tarafından zaten talep edildi
 claim-http-failed = talep başarısız: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = giriş yapılmadı; çalışma zamanını talep etmek için �
 runtime-no-verb = { $path } için `{ $verb }` fiili yok
 
 # ── Fiiller — ACL ─────────────────────────────────────────────────────────
-acl-reset = .my.acl sıfırlandı (tamamen açık)
+acl-reset = /my/acl sıfırlandı (tamamen açık)
 acl-persist-error = kaydetme hatası: { $e }
-acl-no-verb = .my.acl için `{ $verb }` fiili yok
+acl-no-verb = /my/acl için `{ $verb }` fiili yok
 
 # ── Fiiller — kimlik ──────────────────────────────────────────────────────
-publish-usage = kullanım: .my.identity!publish <did-veya-takma-ad>
+publish-usage = kullanım: /my/identity!publish <did-veya-takma-ad>
 identity-exported = Paket { $filename } olarak indirildi
 identity-export-failed = Dışa aktarma başarısız: { $e }
 
 # ── Fiiller — belgeler ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content boş
-doc-save-first = { $path }.content boş — önce kaydedin
+doc-content-empty = { $path }/content boş
+doc-save-first = { $path }/content boş — önce kaydedin
 doc-missing-name = belge adı eksik
-doc-publish-usage = kullanım: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = kullanım: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = kullanım: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = kullanım: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = yayım { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
-doc-fetch-done = { $cid } getirildi → { $path }.content (çalıştırılmadı)
+doc-fetch-done = { $cid } getirildi → { $path }/content (çalıştırılmadı)
 doc-fetch-failed = getirme { $cid }: { $e }
-doc-fetch-usage = kullanım: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid ayarlanmamış
+doc-fetch-usage = kullanım: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid ayarlanmamış
 doc-no-verb = { $path } için `{ $verb }` fiili yok
 path-no-verb = { $path } için `{ $verb }` fiili yok
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       yaprak veya alt ağacı sil
 help-config-verb =   .path!verb [args]            yerel fiil çağır
 
 # ── Yardım — yaygın yollar ────────────────────────────────────────────────
-help-my =   .my                          tüm kişisel yapılandırmayı göster
-help-aliases =   .my.aliases                  takma adları listele
-help-aliases-set =   .my.aliases.<name>: <did>    takma ad ekle/güncelle (salt DID)
-help-aliases-del =   .my.aliases.<name>:          takma adı kaldır
+help-my =   /my                          tüm kişisel yapılandırmayı göster
+help-aliases =   /my/aliases                  takma adları listele
+help-aliases-set =   /my/aliases/<name>: <did>    takma ad ekle/güncelle (salt DID)
+help-aliases-del =   /my/aliases/<name>:          takma adı kaldır
 help-runtime-discover =   .ma [port]          yerel çalışma zamanını keşfet ve @ma oluştur
 help-runtime-claim =   .ma [port]             DID'inle çalışma zamanı sahipliği talep et
-help-identity =   .my.identity                 kimlik yapılandırmasını göster
-help-identity-did =   .my.identity.did             kendi DID'ini göster (salt okunur)
-help-identity-publish =   .my.identity!publish @pub    yayım servisi aracılığıyla DID yayımla
-help-identity-export =   .my.identity!export          kendi kimlik paketini indir
+help-identity =   /my/identity                 kimlik yapılandırmasını göster
+help-identity-did =   /my/identity/did             kendi DID'ini göster (salt okunur)
+help-identity-publish =   /my/identity!publish @pub    yayım servisi aracılığıyla DID yayımla
+help-identity-export =   /my/identity!export          kendi kimlik paketini indir
 help-config-path =   .config                      tüm .config.* girdilerini göster
 
 # ── Yardım — gelen kutusu ─────────────────────────────────────────────────
-help-inbox =   .my.inbox                    gelen kutusunu listele (alt ağaç görünümü)
-help-inbox-n =   .my.inbox.N                  N girdisinin alanlarını göster
-help-inbox-from =   .my.inbox.N.from             N girdisinin gönderen DID'i
-help-inbox-reply =   .my.inbox.N!reply [body]     yanıt gönder (gövde yoksa editör açılır)
-help-inbox-open =   .my.inbox.N!open             içeriği salt okunur editörde aç
-help-inbox-del =   .my.inbox.N:                 N girdisini sil
-help-inbox-delall =   .my.inbox:                   tüm gelen kutusu girdilerini sil
-help-inbox-flush =   .my.inbox!flush              tüm girdileri terminale yazdır
-help-inbox-filter =   .my.inbox!filter @who        yalnızca @who girdilerini göster
-help-inbox-traverse =   .my.inbox.N.sender.<field>   gönderici DID belgesini tembel gez
+help-inbox =   /my/inbox                    gelen kutusunu listele (alt ağaç görünümü)
+help-inbox-n =   /my/inbox/N                  N girdisinin alanlarını göster
+help-inbox-from =   /my/inbox/N/from             N girdisinin gönderen DID'i
+help-inbox-reply =   /my/inbox/N!reply [body]     yanıt gönder (gövde yoksa editör açılır)
+help-inbox-open =   /my/inbox/N!open             içeriği salt okunur editörde aç
+help-inbox-del =   /my/inbox/N:                 N girdisini sil
+help-inbox-delall =   /my/inbox:                   tüm gelen kutusu girdilerini sil
+help-inbox-flush =   /my/inbox!flush              tüm girdileri terminale yazdır
+help-inbox-filter =   /my/inbox!filter @who        yalnızca @who girdilerini göster
+help-inbox-traverse =   /my/inbox/N/sender/<field>   gönderici DID belgesini tembel gez
 
 # ── Yardım — belgeler ─────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           kaydedilmiş içerikle editör aç
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID getir, yalnızca inceleme için aç
-help-doc-eval =   .my.doc.<name>!eval           kaydedilmiş içeriği satır satır çalıştır
-help-doc-publish =   .my.doc.<name>!publish @pub   ham veri olarak depola (herhangi tür)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML'ı DAG-CBOR IPLD düğümü olarak depola
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID içeriğini içe aktar (çalıştırma)
-help-doc-cid =   .my.doc.<name>!cid            depolanan CID'yi göster
-help-doc-del =   .my.doc.<name>:              belgeyi sil
+help-doc-edit =   /my/doc/<name>!edit           kaydedilmiş içerikle editör aç
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID getir, yalnızca inceleme için aç
+help-doc-eval =   /my/doc/<name>!eval           kaydedilmiş içeriği satır satır çalıştır
+help-doc-publish =   /my/doc/<name>!publish @pub   ham veri olarak depola (herhangi tür)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML'ı DAG-CBOR IPLD düğümü olarak depola
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID içeriğini içe aktar (çalıştırma)
+help-doc-cid =   /my/doc/<name>!cid            depolanan CID'yi göster
+help-doc-del =   /my/doc/<name>:              belgeyi sil
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Kullanılabilir diller (.my.i18n: <code> ile ayarlayın):
+lang-list-header = Kullanılabilir diller (/my/i18n: <code> ile ayarlayın):
 err-lang-not-found = dil bulunamadı: { $lang }
 
 msg-send-failed = gönderme başarısız: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = { $name } profili silindi
 profiles-not-found = profil bulunamadı: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -304,12 +304,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -332,9 +332,9 @@ help-topic-publish =   .help.publish                kimliğini ağa yayımla
 help-header-publish = ── kimlik yayımlama ─────────────────────────────────────────────────────────
 help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğerleri sana ulaşmak için DID'ini arayabilir.
 help-publish-ma = Yayımlamak için ma (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.
-help-publish-steps = Adımlar: yerel ma'yı algılamak için '.ma [port]' çalıştır, ardından '.my.identity!publish @ma'.
+help-publish-steps = Adımlar: yerel ma'yı algılamak için '.ma [port]' çalıştır, ardından '/my/identity!publish @ma'.
 help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

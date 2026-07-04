@@ -44,7 +44,7 @@ msg-connecting = iroh ला जोडले जात आहे...
 msg-iroh-ready = iroh एंडपॉइंट तयार
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID स्थानिक ma ({ $url }) द्वारे प्रकाशित झाला
-msg-identity-not-published = ओळख ऑनलाइन सापडली नाही — जर ma स्थानिकपणे स्थापित असेल, तर '.ma [port]' नंतर '.my.identity!publish @ma' चालवा। तपशीलांसाठी '.help.publish' टाइप करा।
+msg-identity-not-published = ओळख ऑनलाइन सापडली नाही — जर ma स्थानिकपणे स्थापित असेल, तर '.ma [port]' नंतर '/my/identity!publish @ma' चालवा। तपशीलांसाठी '.help.publish' टाइप करा।
 msg-blocked = ⊗ अवरोधित [{ $cap }]: { $from }
 msg-focus-cleared = फोकस साफ केले
 msg-focusing = { $did } ला { $prompt } म्हणून फोकस केले जात आहे
@@ -108,7 +108,7 @@ discover-invalid-did = शोध अयशस्वी: `did` did:ma: ने स
 discover-no-endpoint = शोध चेतावणी: status.json मध्ये `endpoint_id` नाही; फक्त DID संग्रहित
 discover-success = { $url } वर ma सापडला
 discover-did-line = DID: { $did }
-discover-alias-hint =   टोपणनाव @ma तयार केले — आपली ओळख प्रकाशित करण्यासाठी '.my.identity!publish @ma' चालवा।
+discover-alias-hint =   टोपणनाव @ma तयार केले — आपली ओळख प्रकाशित करण्यासाठी '/my/identity!publish @ma' चालवा।
 claim-success = { $did } साठी रनटाइम दाखल केला
 claim-conflict = रनटाइम आधीच दुसऱ्या ओळखीने दाखल केला आहे
 claim-http-failed = दाखल करणे अयशस्वी: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = लॉग इन नाही; रनटाइम दाख�
 runtime-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
 
 # ── क्रिया — ACL ───────────────────────────────────────────────────────────
-acl-reset = .my.acl रीसेट केला (पूर्णपणे खुला)
+acl-reset = /my/acl रीसेट केला (पूर्णपणे खुला)
 acl-persist-error = जतन त्रुटी: { $e }
-acl-no-verb = .my.acl साठी `{ $verb }` क्रिया नाही
+acl-no-verb = /my/acl साठी `{ $verb }` क्रिया नाही
 
 # ── क्रिया — ओळख ──────────────────────────────────────────────────────────
-publish-usage = वापर: .my.identity!publish <did-किंवा-टोपणनाव>
+publish-usage = वापर: /my/identity!publish <did-किंवा-टोपणनाव>
 identity-exported = { $filename } म्हणून बंडल डाउनलोड झाले
 identity-export-failed = निर्यात अयशस्वी: { $e }
 
 # ── क्रिया — दस्तऐवज ──────────────────────────────────────────────────────
-doc-content-empty = { $path }.content रिकामे आहे
-doc-save-first = { $path }.content रिकामे आहे — आधी जतन करा
+doc-content-empty = { $path }/content रिकामे आहे
+doc-save-first = { $path }/content रिकामे आहे — आधी जतन करा
 doc-missing-name = दस्तऐवजाचे नाव नाही
-doc-publish-usage = वापर: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = वापर: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = वापर: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = वापर: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = प्रकाशन { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
 doc-ipld-store-sent = IPLD संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
-doc-fetch-done = { $cid } आणले → { $path }.content (चालवले नाही)
+doc-fetch-done = { $cid } आणले → { $path }/content (चालवले नाही)
 doc-fetch-failed = आणा { $cid }: { $e }
-doc-fetch-usage = वापर: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid सेट केलेले नाही
+doc-fetch-usage = वापर: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid सेट केलेले नाही
 doc-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
 path-no-verb = { $path } साठी `{ $verb }` क्रिया नाही
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       पान किंवा �
 help-config-verb =   .path!verb [args]            स्थानिक क्रिया कॉल करा
 
 # ── मदत — सामान्य मार्ग ───────────────────────────────────────────────────
-help-my =   .my                          सर्व वैयक्तिक कॉन्फिग दाखवा
-help-aliases =   .my.aliases                  टोपणनावांची यादी
-help-aliases-set =   .my.aliases.<name>: <did>    टोपणनाव जोडा/अपडेट करा
-help-aliases-del =   .my.aliases.<name>:          टोपणनाव काढा
+help-my =   /my                          सर्व वैयक्तिक कॉन्फिग दाखवा
+help-aliases =   /my/aliases                  टोपणनावांची यादी
+help-aliases-set =   /my/aliases/<name>: <did>    टोपणनाव जोडा/अपडेट करा
+help-aliases-del =   /my/aliases/<name>:          टोपणनाव काढा
 help-runtime-discover =   .ma [port]          स्थानिक रनटाइम शोधा आणि @ma तयार करा
 help-runtime-claim =   .ma [port]             तुमच्या DID ने रनटाइम दाखल करा
-help-identity =   .my.identity                 ओळख कॉन्फिग दाखवा
-help-identity-did =   .my.identity.did             स्वतःचे DID दाखवा (फक्त वाचनीय)
-help-identity-publish =   .my.identity!publish @pub    प्रकाशन सेवेद्वारे DID प्रकाशित करा
-help-identity-export =   .my.identity!export          स्वतःचे ओळख बंडल डाउनलोड करा
+help-identity =   /my/identity                 ओळख कॉन्फिग दाखवा
+help-identity-did =   /my/identity/did             स्वतःचे DID दाखवा (फक्त वाचनीय)
+help-identity-publish =   /my/identity!publish @pub    प्रकाशन सेवेद्वारे DID प्रकाशित करा
+help-identity-export =   /my/identity!export          स्वतःचे ओळख बंडल डाउनलोड करा
 help-config-path =   .config                      सर्व .config.* नोंदी दाखवा
 
 # ── मदत — इनबॉक्स ────────────────────────────────────────────────────────
-help-inbox =   .my.inbox                    इनबॉक्स यादी (उपवृक्ष दृश्य)
-help-inbox-n =   .my.inbox.N                  नोंद N चे फील्ड दाखवा
-help-inbox-from =   .my.inbox.N.from             नोंद N चा प्रेषक DID
-help-inbox-reply =   .my.inbox.N!reply [body]     उत्तर पाठवा (मुख्य भाग नाही — संपादक उघडतो)
-help-inbox-open =   .my.inbox.N!open             फक्त वाचण्यासाठी संपादकात सामग्री उघडा
-help-inbox-del =   .my.inbox.N:                 नोंद N हटवा
-help-inbox-delall =   .my.inbox:                   सर्व इनबॉक्स नोंदी हटवा
-help-inbox-flush =   .my.inbox!flush              सर्व नोंदी टर्मिनलला प्रिंट करा
-help-inbox-filter =   .my.inbox!filter @who        फक्त @who कडून नोंदी दाखवा
-help-inbox-traverse =   .my.inbox.N.sender.<field>   प्रेषक DID दस्तऐवज आळशीपणे शोधा
+help-inbox =   /my/inbox                    इनबॉक्स यादी (उपवृक्ष दृश्य)
+help-inbox-n =   /my/inbox/N                  नोंद N चे फील्ड दाखवा
+help-inbox-from =   /my/inbox/N/from             नोंद N चा प्रेषक DID
+help-inbox-reply =   /my/inbox/N!reply [body]     उत्तर पाठवा (मुख्य भाग नाही — संपादक उघडतो)
+help-inbox-open =   /my/inbox/N!open             फक्त वाचण्यासाठी संपादकात सामग्री उघडा
+help-inbox-del =   /my/inbox/N:                 नोंद N हटवा
+help-inbox-delall =   /my/inbox:                   सर्व इनबॉक्स नोंदी हटवा
+help-inbox-flush =   /my/inbox!flush              सर्व नोंदी टर्मिनलला प्रिंट करा
+help-inbox-filter =   /my/inbox!filter @who        फक्त @who कडून नोंदी दाखवा
+help-inbox-traverse =   /my/inbox/N/sender/<field>   प्रेषक DID दस्तऐवज आळशीपणे शोधा
 
 # ── मदत — दस्तऐवज ────────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           जतन केलेल्या सामग्रीसह संपादक उघडा
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID आणा, फक्त पुनरावलोकनासाठी उघडा
-help-doc-eval =   .my.doc.<name>!eval           जतन केलेली सामग्री ओळीनुसार चालवा
-help-doc-publish =   .my.doc.<name>!publish @pub   कच्चा blob म्हणून संग्रहित करा
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ला DAG-CBOR IPLD नोड म्हणून संग्रहित करा
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID सामग्री आयात करा (चालवत नाही)
-help-doc-cid =   .my.doc.<name>!cid            संग्रहित CID दाखवा
-help-doc-del =   .my.doc.<name>:              दस्तऐवज हटवा
+help-doc-edit =   /my/doc/<name>!edit           जतन केलेल्या सामग्रीसह संपादक उघडा
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID आणा, फक्त पुनरावलोकनासाठी उघडा
+help-doc-eval =   /my/doc/<name>!eval           जतन केलेली सामग्री ओळीनुसार चालवा
+help-doc-publish =   /my/doc/<name>!publish @pub   कच्चा blob म्हणून संग्रहित करा
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML ला DAG-CBOR IPLD नोड म्हणून संग्रहित करा
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID सामग्री आयात करा (चालवत नाही)
+help-doc-cid =   /my/doc/<name>!cid            संग्रहित CID दाखवा
+help-doc-del =   /my/doc/<name>:              दस्तऐवज हटवा
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = उपलब्ध भाषा (.my.i18n: <code> ने सेट करा):
+lang-list-header = उपलब्ध भाषा (/my/i18n: <code> ने सेट करा):
 err-lang-not-found = भाषा आढळली नाही: { $lang }
 
 msg-send-failed = पाठवणे अयशस्वी: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = प्रोफाइल { $name } हटवले
 profiles-not-found = प्रोफाइल सापडले नाही: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                नेटवर्कवर 
 help-header-publish = ── ओळख प्रकाशन ──────────────────────────────────────────────────────────────
 help-publish-intro = प्रकाशन आपली ओळख नेटवर्कवर शोधण्यायोग्य बनवते। इतर आपला DID शोधून तुमच्याशी संपर्क साधू शकतात।
 help-publish-ma = प्रकाशित करण्यासाठी ma (स्थानिक रनटाइम) स्थापित करणे आवश्यक आहे. ते आपल्या वतीने ego ला IPFS/IPNS शी जोडते।
-help-publish-steps = पायऱ्या: स्थानिक ma शोधण्यासाठी '.ma [port]' चालवा, नंतर '.my.identity!publish @ma'।
+help-publish-steps = पायऱ्या: स्थानिक ma शोधण्यासाठी '.ma [port]' चालवा, नंतर '/my/identity!publish @ma'।
 help-publish-without = प्रकाशनाशिवाय इतर तुमच्यापर्यंत पोहोचू शकत नाहीत — तुमचा DID माहीत असला तरी ते तुमचा endpoint सोडवू शकत नाहीत।
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

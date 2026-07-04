@@ -44,7 +44,7 @@ msg-connecting = iroh உடன் இணைக்கப்படுகிறத
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID உள்ளூர் ma ({ $url }) வழியாக வெளியிடப்பட்டது
-msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '.my.identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help.publish' தட்டச்சு செய்யவும்.
+msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '/my/identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help.publish' தட்டச்சு செய்யவும்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
 msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது
@@ -108,7 +108,7 @@ discover-invalid-did = கண்டுபிடித்தல் தோல்�
 discover-no-endpoint = கண்டுபிடித்தல் எச்சரிக்கை: status.json இல் `endpoint_id` இல்லை; DID மட்டும் சேமிக்கப்பட்டது
 discover-success = { $url } இல் ma கண்டுபிடிக்கப்பட்டது
 discover-did-line = DID: { $did }
-discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — உங்கள் அடையாளத்தை வெளியிட '.my.identity!publish @ma' இயக்கவும்.
+discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — உங்கள் அடையாளத்தை வெளியிட '/my/identity!publish @ma' இயக்கவும்.
 claim-success = { $did } க்கு இயக்க நேரம் கோரப்பட்டது
 claim-conflict = இயக்க நேரம் ஏற்கனவே மற்றொரு அடையாளத்தால் கோரப்பட்டுள்ளது
 claim-http-failed = கோரிக்கை தோல்வியடைந்தது: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = உள்நுழையவில்லை; இயக்க �
 runtime-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
 
 # ── வினைச்சொற்கள் — ACL ──────────────────────────────────────────────────
-acl-reset = .my.acl மீட்டமைக்கப்பட்டது (முழுமையாக திறந்தது)
+acl-reset = /my/acl மீட்டமைக்கப்பட்டது (முழுமையாக திறந்தது)
 acl-persist-error = சேமிப்பு பிழை: { $e }
-acl-no-verb = .my.acl க்கு `{ $verb }` வினைச்சொல் இல்லை
+acl-no-verb = /my/acl க்கு `{ $verb }` வினைச்சொல் இல்லை
 
 # ── வினைச்சொற்கள் — அடையாளம் ──────────────────────────────────────────
-publish-usage = பயன்பாடு: .my.identity!publish <did-அல்லது-புனைப்பெயர்>
+publish-usage = பயன்பாடு: /my/identity!publish <did-அல்லது-புனைப்பெயர்>
 identity-exported = தொகுப்பு { $filename } என பதிவிறக்கப்பட்டது
 identity-export-failed = ஏற்றுமதி தோல்வி: { $e }
 
 # ── வினைச்சொற்கள் — ஆவணங்கள் ───────────────────────────────────────────
-doc-content-empty = { $path }.content காலியாக உள்ளது
-doc-save-first = { $path }.content காலியாக உள்ளது — முதலில் சேமிக்கவும்
+doc-content-empty = { $path }/content காலியாக உள்ளது
+doc-save-first = { $path }/content காலியாக உள்ளது — முதலில் சேமிக்கவும்
 doc-missing-name = ஆவணப் பெயர் இல்லை
-doc-publish-usage = பயன்பாடு: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = பயன்பாடு: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = பயன்பாடு: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = பயன்பாடு: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = வெளியீடு { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
-doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
+doc-fetch-done = { $cid } பெறப்பட்டது → { $path }/content (இயக்கப்படவில்லை)
 doc-fetch-failed = பெறு { $cid }: { $e }
-doc-fetch-usage = பயன்பாடு: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid அமைக்கப்படவில்லை
+doc-fetch-usage = பயன்பாடு: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid அமைக்கப்படவில்லை
 doc-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
 path-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       இலை அல்லது
 help-config-verb =   .path!verb [args]            உள்ளூர் வினைச்சொல் அழைக்கவும்
 
 # ── உதவி — பொதுவான பாதைகள் ──────────────────────────────────────────────
-help-my =   .my                          அனைத்து தனிப்பட்ட அமைவுகளை காட்டவும்
-help-aliases =   .my.aliases                  புனைப்பெயர்கள் பட்டியல்
-help-aliases-set =   .my.aliases.<name>: <did>    புனைப்பெயர் சேர்/புதுப்பிக்கவும்
-help-aliases-del =   .my.aliases.<name>:          புனைப்பெயர் நீக்கவும்
+help-my =   /my                          அனைத்து தனிப்பட்ட அமைவுகளை காட்டவும்
+help-aliases =   /my/aliases                  புனைப்பெயர்கள் பட்டியல்
+help-aliases-set =   /my/aliases/<name>: <did>    புனைப்பெயர் சேர்/புதுப்பிக்கவும்
+help-aliases-del =   /my/aliases/<name>:          புனைப்பெயர் நீக்கவும்
 help-runtime-discover =   .ma [port]          உள்ளூர் இயக்க நேரம் கண்டுபிடிக்கவும் மற்றும் @ma உருவாக்கவும்
 help-runtime-claim =   .ma [port]             உங்கள் DID உடன் இயக்க நேரம் கோரவும்
-help-identity =   .my.identity                 அடையாள அமைவு காட்டவும்
-help-identity-did =   .my.identity.did             உங்கள் DID காட்டவும் (படிக்க மட்டும்)
-help-identity-publish =   .my.identity!publish @pub    வெளியீட்டு சேவை மூலம் DID வெளியிடவும்
-help-identity-export =   .my.identity!export          உங்கள் அடையாள தொகுப்பை பதிவிறக்கவும்
+help-identity =   /my/identity                 அடையாள அமைவு காட்டவும்
+help-identity-did =   /my/identity/did             உங்கள் DID காட்டவும் (படிக்க மட்டும்)
+help-identity-publish =   /my/identity!publish @pub    வெளியீட்டு சேவை மூலம் DID வெளியிடவும்
+help-identity-export =   /my/identity!export          உங்கள் அடையாள தொகுப்பை பதிவிறக்கவும்
 help-config-path =   .config                      அனைத்து .config.* உள்ளீடுகளை காட்டவும்
 
 # ── உதவி — உள்வரவு ───────────────────────────────────────────────────────
-help-inbox =   .my.inbox                    உள்வரவு பட்டியல் (துணைமர காட்சி)
-help-inbox-n =   .my.inbox.N                  உள்ளீடு N இன் புலங்கள் காட்டவும்
-help-inbox-from =   .my.inbox.N.from             உள்ளீடு N இன் அனுப்புவோர் DID
-help-inbox-reply =   .my.inbox.N!reply [body]     பதில் அனுப்பவும் (உள்ளடக்கம் இல்லை — திருத்தி திறக்கும்)
-help-inbox-open =   .my.inbox.N!open             படிக்க மட்டும் திருத்தியில் உள்ளடக்கம் திறக்கவும்
-help-inbox-del =   .my.inbox.N:                 உள்ளீடு N நீக்கவும்
-help-inbox-delall =   .my.inbox:                   அனைத்து உள்வரவு உள்ளீடுகளை நீக்கவும்
-help-inbox-flush =   .my.inbox!flush              அனைத்து உள்ளீடுகளை முனையத்தில் அச்சிடவும்
-help-inbox-filter =   .my.inbox!filter @who        @who இலிருந்து மட்டும் உள்ளீடுகள் காட்டு
-help-inbox-traverse =   .my.inbox.N.sender.<field>   அனுப்புவோர் DID ஆவணத்தை சோம்பலாக ஆராயவும்
+help-inbox =   /my/inbox                    உள்வரவு பட்டியல் (துணைமர காட்சி)
+help-inbox-n =   /my/inbox/N                  உள்ளீடு N இன் புலங்கள் காட்டவும்
+help-inbox-from =   /my/inbox/N/from             உள்ளீடு N இன் அனுப்புவோர் DID
+help-inbox-reply =   /my/inbox/N!reply [body]     பதில் அனுப்பவும் (உள்ளடக்கம் இல்லை — திருத்தி திறக்கும்)
+help-inbox-open =   /my/inbox/N!open             படிக்க மட்டும் திருத்தியில் உள்ளடக்கம் திறக்கவும்
+help-inbox-del =   /my/inbox/N:                 உள்ளீடு N நீக்கவும்
+help-inbox-delall =   /my/inbox:                   அனைத்து உள்வரவு உள்ளீடுகளை நீக்கவும்
+help-inbox-flush =   /my/inbox!flush              அனைத்து உள்ளீடுகளை முனையத்தில் அச்சிடவும்
+help-inbox-filter =   /my/inbox!filter @who        @who இலிருந்து மட்டும் உள்ளீடுகள் காட்டு
+help-inbox-traverse =   /my/inbox/N/sender/<field>   அனுப்புவோர் DID ஆவணத்தை சோம்பலாக ஆராயவும்
 
 # ── உதவி — ஆவணங்கள் ─────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           சேமித்த உள்ளடக்கத்துடன் திருத்தி திறக்கவும்
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID பெற்று, மதிப்பாய்வுக்கு மட்டும் திறக்கவும்
-help-doc-eval =   .my.doc.<name>!eval           சேமித்த உள்ளடக்கத்தை வரிவரியாக இயக்கவும்
-help-doc-publish =   .my.doc.<name>!publish @pub   கச்சா blob ஆக சேமிக்கவும் (எந்த வகையும்)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ஐ DAG-CBOR IPLD முனையாக சேமிக்கவும்
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
-help-doc-cid =   .my.doc.<name>!cid            சேமித்த CID காட்டவும்
-help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவும்
+help-doc-edit =   /my/doc/<name>!edit           சேமித்த உள்ளடக்கத்துடன் திருத்தி திறக்கவும்
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID பெற்று, மதிப்பாய்வுக்கு மட்டும் திறக்கவும்
+help-doc-eval =   /my/doc/<name>!eval           சேமித்த உள்ளடக்கத்தை வரிவரியாக இயக்கவும்
+help-doc-publish =   /my/doc/<name>!publish @pub   கச்சா blob ஆக சேமிக்கவும் (எந்த வகையும்)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML ஐ DAG-CBOR IPLD முனையாக சேமிக்கவும்
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
+help-doc-cid =   /my/doc/<name>!cid            சேமித்த CID காட்டவும்
+help-doc-del =   /my/doc/<name>:              ஆவணம் நீக்கவும்
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = கிடைக்கும் மொழிகள் (.my.i18n: <code> உடன் அமைக்கவும்):
+lang-list-header = கிடைக்கும் மொழிகள் (/my/i18n: <code> உடன் அமைக்கவும்):
 err-lang-not-found = மொழி கண்டுபிடிக்கப்படவில்லை: { $lang }
 
 msg-send-failed = அனுப்புதல் தோல்வி: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = சுயவிவரம் { $name } நீக்கப்�
 profiles-not-found = சுயவிவரம் கிடைக்கவில்லை: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                நெட்வொர்க�
 help-header-publish = ── அடையாள வெளியீடு ──────────────────────────────────────────────────────────
 help-publish-intro = வெளியீடு உங்கள் அடையாளத்தை நெட்வொர்க்கில் கண்டறியக்கூடியதாக செய்கிறது. மற்றவர்கள் உங்கள் DID தேடி உங்களை அடையலாம்.
 help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
-help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.ma [port]' இயக்கவும், பின்னர் '.my.identity!publish @ma'.
+help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.ma [port]' இயக்கவும், பின்னர் '/my/identity!publish @ma'.
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

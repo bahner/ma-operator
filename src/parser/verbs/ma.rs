@@ -57,7 +57,7 @@ fn ma_base_from_port(port: Option<u16>, cfg: &EgoConfig) -> String {
     if let Some(p) = port {
         return format!("http://localhost:{p}");
     }
-    cfg.get(".ctx.ma.url")
+    cfg.get("/ctx/ma/url")
         .unwrap_or(MA_URL)
         .trim_end_matches('/')
         .to_string()
@@ -75,7 +75,7 @@ fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, 
                 return;
             }
         }
-        // Discover — populate .ctx.ma.* and .my.aliases.ma.
+        // Discover — populate /ctx/ma.* and /my/aliases/ma.
         let did = match rediscover_ma(&ma_base, config).await {
             Ok(did) => {
                 crate::views::landing::save_last_runtime(&ma_base);
@@ -251,26 +251,26 @@ pub(super) async fn rediscover_ma(
         .unwrap_or_default();
 
     config.update(|cfg| {
-        cfg.set(".ctx.ma.url", ma_base.trim_end_matches('/'));
-        cfg.set(".ctx.ma.did", &did);
+        cfg.set("/ctx/ma/url", ma_base.trim_end_matches('/'));
+        cfg.set("/ctx/ma/did", &did);
         if !endpoint_id.is_empty() {
-            cfg.set(".ctx.ma.endpoint_id", &endpoint_id);
+            cfg.set("/ctx/ma/endpoint_id", &endpoint_id);
         }
         if !ipns.is_empty() {
-            cfg.set(".ctx.ma.ipns", &ipns);
+            cfg.set("/ctx/ma/ipns", &ipns);
         }
-        cfg.set(".ctx.ma.ipfs_publisher", ipfs_publisher.to_string());
-        cfg.set(".ctx.ma.ipfs_requests", ipfs_requests.to_string());
-        cfg.set(".ctx.ma.rpc_requests", rpc_requests.to_string());
-        cfg.set(".ctx.ma.started_at", started_at.to_string());
-        cfg.set(".ctx.ma.uptime_secs", uptime_secs.to_string());
+        cfg.set("/ctx/ma/ipfs_publisher", ipfs_publisher.to_string());
+        cfg.set("/ctx/ma/ipfs_requests", ipfs_requests.to_string());
+        cfg.set("/ctx/ma/rpc_requests", rpc_requests.to_string());
+        cfg.set("/ctx/ma/started_at", started_at.to_string());
+        cfg.set("/ctx/ma/uptime_secs", uptime_secs.to_string());
         if !runtime_cid.is_empty() {
-            cfg.set(".ctx.ma.runtime", &runtime_cid);
+            cfg.set("/ctx/ma/runtime", &runtime_cid);
         }
         if !entity_names.is_empty() {
-            cfg.set(".ctx.ma.entity_names", &entity_names);
+            cfg.set("/ctx/ma/entity_names", &entity_names);
         }
-        cfg.set(".my.aliases.ma", &did);
+        cfg.set("/my/aliases/ma", &did);
     });
     Ok(did)
 }

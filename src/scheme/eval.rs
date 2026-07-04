@@ -33,7 +33,7 @@ impl SchemeCtx for EvalCtx {
         let cfg = self.config.get_untracked();
         match parse(cmd, &cfg) {
             Err(e) => Err(SchemeErr::MaError(e)),
-            Ok(Command::DotCommand { path, op, .. }) => match op {
+            Ok(Command::LocalCrud { path, op, .. }) => match op {
                 DotOp::Get => {
                     if let Some(val) = cfg.get(&path) {
                         Ok(SchemeVal::Str(val.to_string()))
@@ -70,7 +70,7 @@ impl SchemeCtx for EvalCtx {
                 }
             },
             Ok(_) => Err(SchemeErr::MaError(format!(
-                "expected a dot-path command, got: {cmd}"
+                "expected a local /my or /ctx path, got: {cmd}"
             ))),
         }
     }
@@ -93,9 +93,9 @@ impl SchemeCtx for EvalCtx {
 
     // ── Async ─────────────────────────────────────────────────────────────
 
-    fn fetch_cid<'a>(&'a self, cid: &'a str) -> LocalBoxFuture<'a, Result<String, String>> {
-        let cid = cid.to_string();
-        Box::pin(async move { crate::http::fetch_cid_text(&cid).await })
+    fn fetch_path<'a>(&'a self, path: &'a str) -> LocalBoxFuture<'a, Result<String, String>> {
+        let path = path.to_string();
+        Box::pin(async move { crate::http::fetch_path_text(&path).await })
     }
 
     fn eval_actor<'a>(

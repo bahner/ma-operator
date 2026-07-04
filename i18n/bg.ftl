@@ -44,7 +44,7 @@ msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID публикуван чрез локален ma ({ $url })
-msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.ma [port]' и след това '.my.identity!publish @ma'. Напиши '.help.publish' за подробности.
+msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.ma [port]' и след това '/my/identity!publish @ma'. Напиши '.help.publish' за подробности.
 msg-blocked = ⊗ блокирано [{ $cap }]: { $from }
 msg-focus-cleared = фокусът е изчистен
 msg-focusing = фокусиране върху { $did } като { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = откриването е неуспешно: очакв�
 discover-no-endpoint = предупреждение при откриване: `endpoint_id` липсва в status.json; запазен само DID
 discover-success = ma е открито на { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдоним @ma създаден — изпълни '.my.identity!publish @ma' за публикуване на самоличността ти.
+discover-alias-hint =   псевдоним @ma създаден — изпълни '/my/identity!publish @ma' за публикуване на самоличността ти.
 claim-success = Средата за изпълнение е заявена за { $did }
 claim-conflict = Средата за изпълнение вече е заявена от друга идентичност
 claim-http-failed = заявяването е неуспешно: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = не сте влезли; влезте първо, за да 
 runtime-no-verb = няма глагол `{ $verb }` за { $path }
 
 # ── Глаголи — контрол на достъп ──────────────────────────────────────────
-acl-reset = .my.acl е нулиран (напълно отворен)
+acl-reset = /my/acl е нулиран (напълно отворен)
 acl-persist-error = грешка при запазване: { $e }
-acl-no-verb = няма глагол `{ $verb }` за .my.acl
+acl-no-verb = няма глагол `{ $verb }` за /my/acl
 
 # ── Глаголи — идентичност ─────────────────────────────────────────────────
-publish-usage = употреба: .my.identity!publish <did-или-псевдоним>
+publish-usage = употреба: /my/identity!publish <did-или-псевдоним>
 identity-exported = Пакетът е изтеглен като { $filename }
 identity-export-failed = Грешка при експортиране: { $e }
 
 # ── Глаголи — документи ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content е празно
-doc-save-first = { $path }.content е празно — първо запазете
+doc-content-empty = { $path }/content е празно
+doc-save-first = { $path }/content е празно — първо запазете
 doc-missing-name = липсва името на документа
-doc-publish-usage = употреба: .my.doc.<име>:publish <издател>
-doc-publish-ipld-usage = употреба: .my.doc.<име>:publish-ipld <издател>
+doc-publish-usage = употреба: /my/doc/<име>:publish <издател>
+doc-publish-ipld-usage = употреба: /my/doc/<име>:publish-ipld <издател>
 doc-publish-failed = публикуване { $path }: { $e }
 doc-publish-ipld-failed = публикуване IPLD { $path }: { $e }
 doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
 doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
-doc-fetch-done = { $cid } е извлечен → { $path }.content (не е изпълнено)
+doc-fetch-done = { $cid } е извлечен → { $path }/content (не е изпълнено)
 doc-fetch-failed = извличане { $cid }: { $e }
-doc-fetch-usage = употреба: .my.doc.<име>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid не е зададен
+doc-fetch-usage = употреба: /my/doc/<име>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid не е зададен
 doc-no-verb = няма глагол `{ $verb }` за { $path }
 path-no-verb = няма глагол `{ $verb }` за { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 задава лист
 help-config-delete =   .path:                       изтрива лист или поддърво
 help-config-verb =   .path!verb [args]            изпълнява локален глагол
 
-help-my =   .my                          показва цялата лична конфигурация
-help-aliases =   .my.aliases                  изброява псевдоними
-help-aliases-set =   .my.aliases.<name>: <did>    добавя/актуализира псевдоним (чисто DID, без #фрагмент)
-help-aliases-del =   .my.aliases.<name>:          премахва псевдоним
+help-my =   /my                          показва цялата лична конфигурация
+help-aliases =   /my/aliases                  изброява псевдоними
+help-aliases-set =   /my/aliases/<name>: <did>    добавя/актуализира псевдоним (чисто DID, без #фрагмент)
+help-aliases-del =   /my/aliases/<name>:          премахва псевдоним
 help-runtime-discover =   .ma [port]          открива локална среда за изпълнение и създава псевдоним @ma
 help-runtime-claim =   .ma [port]             заявява средата за изпълнение с вашия DID
-help-identity =   .my.identity                 показва конфигурацията на идентичността
-help-identity-did =   .my.identity.did             показва собствения DID (само за четене)
-help-identity-publish =   .my.identity!publish @pub    публикува собствения DID чрез услугата на издателя
-help-identity-export =   .my.identity!export          изтегли собствения пакет с идентичност
+help-identity =   /my/identity                 показва конфигурацията на идентичността
+help-identity-did =   /my/identity/did             показва собствения DID (само за четене)
+help-identity-publish =   /my/identity!publish @pub    публикува собствения DID чрез услугата на издателя
+help-identity-export =   /my/identity!export          изтегли собствения пакет с идентичност
 help-config-path =   .config                      показва всички записи .config.*
 
-help-inbox =   .my.inbox                    изброява входящата поща (изглед на поддърво)
-help-inbox-n =   .my.inbox.N                  показва полетата на запис N
-help-inbox-from =   .my.inbox.N.from             DID на подателя за запис N
-help-inbox-reply =   .my.inbox.N!reply [body]     изпраща отговор (отваря редактор без тяло)
-help-inbox-open =   .my.inbox.N!open             отваря съдържанието в редактор само за четене
-help-inbox-del =   .my.inbox.N:                 изтрива запис N
-help-inbox-delall =   .my.inbox:                   изтрива всички записи от входящата поща
-help-inbox-flush =   .my.inbox!flush              отпечатва всички записи в терминала
-help-inbox-filter =   .my.inbox!filter @who        покажи само записи от @who
-help-inbox-traverse =   .my.inbox.N.sender.<поле>   обхожда DID документа на подателя мързеливо
+help-inbox =   /my/inbox                    изброява входящата поща (изглед на поддърво)
+help-inbox-n =   /my/inbox/N                  показва полетата на запис N
+help-inbox-from =   /my/inbox/N/from             DID на подателя за запис N
+help-inbox-reply =   /my/inbox/N!reply [body]     изпраща отговор (отваря редактор без тяло)
+help-inbox-open =   /my/inbox/N!open             отваря съдържанието в редактор само за четене
+help-inbox-del =   /my/inbox/N:                 изтрива запис N
+help-inbox-delall =   /my/inbox:                   изтрива всички записи от входящата поща
+help-inbox-flush =   /my/inbox!flush              отпечатва всички записи в терминала
+help-inbox-filter =   /my/inbox!filter @who        покажи само записи от @who
+help-inbox-traverse =   /my/inbox/N/sender/<поле>   обхожда DID документа на подателя мързеливо
 
-help-doc-edit =   .my.doc.<име>:edit           отваря редактор със запазено съдържание
-help-doc-edit-cid =   .my.doc.<ime>:edit <cid>     извлича CID, отваря за преглед
-help-doc-eval =   .my.doc.<ime>:eval           изпълнява запазеното съдържание ред по ред
-help-doc-publish =   .my.doc.<ime>:publish @pub   запазва като суров блоб (всички типове)
-help-doc-publish-ipld =   .my.doc.<ime>:publish-ipld @pub  запазва YAML като структуриран DAG-CBOR IPLD възел
-help-doc-fetch =   .my.doc.<ime>:fetch <cid>    импортира съдържание CID (без изпълнение)
-help-doc-cid =   .my.doc.<ime>:cid            показва запазения CID
-help-doc-del =   .my.doc.<ime>:              изтрива документ
+help-doc-edit =   /my/doc/<име>:edit           отваря редактор със запазено съдържание
+help-doc-edit-cid =   /my/doc/<ime>:edit <cid>     извлича CID, отваря за преглед
+help-doc-eval =   /my/doc/<ime>:eval           изпълнява запазеното съдържание ред по ред
+help-doc-publish =   /my/doc/<ime>:publish @pub   запазва като суров блоб (всички типове)
+help-doc-publish-ipld =   /my/doc/<ime>:publish-ipld @pub  запазва YAML като структуриран DAG-CBOR IPLD възел
+help-doc-fetch =   /my/doc/<ime>:fetch <cid>    импортира съдържание CID (без изпълнение)
+help-doc-cid =   /my/doc/<ime>:cid            показва запазения CID
+help-doc-del =   /my/doc/<ime>:              изтрива документ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Налични езици (задайте с .my.i18n: <code>):
+lang-list-header = Налични езици (задайте с /my/i18n: <code>):
 err-lang-not-found = езикът не е намерен: { $lang }
 
 msg-send-failed = изпращането не бе успешно: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = профил { $name } изтрит
 profiles-not-found = профилът не е намерен: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                публикуване на 
 help-header-publish = ── публикуване на самоличност ───────────────────────────────────────────────
 help-publish-intro = Публикуването прави самоличността ти намираема в мрежата. Другите могат да потърсят твоя DID, за да те достигнат.
 help-publish-ma = За публикуване е необходим инсталиран ma (локален runtime). Той свързва ego с IPFS/IPNS от твое име.
-help-publish-steps = Стъпки: изпълни '.ma [port]' за намиране на локалния ma, след което '.my.identity!publish @ma'.
+help-publish-steps = Стъпки: изпълни '.ma [port]' за намиране на локалния ma, след което '/my/identity!publish @ma'.
 help-publish-without = Без публикуване другите не могат да те достигнат — дори да знаят твоя DID, не могат да разрешат твоя endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

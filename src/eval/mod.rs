@@ -1,5 +1,5 @@
-//! Command evaluators: dot-path CRUD, actor messages, alias validation,
-//! config-to-DOM application, and lazy DID/CID link traversal.
+//! Command evaluators: local/remote path CRUD, actor messages, alias
+//! validation, config-to-DOM application, and lazy DID/CID link traversal.
 
 mod actor;
 pub(crate) mod actor_send {
@@ -13,7 +13,6 @@ use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::{persist_config, EgoConfig},
-    http::fetch_cid_text,
     i18n::{t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
@@ -23,7 +22,7 @@ use crate::{
 };
 
 fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
-    const PREFIX: &str = ".my.aliases.";
+    const PREFIX: &str = "/my/aliases/";
     if !path.starts_with(PREFIX) {
         return Ok(());
     }
@@ -63,19 +62,19 @@ pub(crate) fn apply_config_to_dom(cfg: &EgoConfig) {
 
     let style = format!(
         "--colour-text:{};--colour-dimmed:{};--colour-pending:{};--colour-replied:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};--colour-input-bg:{};--colour-border:{};--colour-cursor:{};--colour-highlight:{};--colour-editor-bg:{};",
-        cfg.get(".my.config.colour.text").unwrap_or("#00ff41"),
-        cfg.get(".my.config.colour.dimmed").unwrap_or("#008f11"),
-        cfg.get(".my.config.colour.pending").unwrap_or("#004d00"),
-        cfg.get(".my.config.colour.replied").unwrap_or("#00ff41"),
-        cfg.get(".my.config.colour.alias").unwrap_or("#ffd700"),
-        cfg.get(".my.config.colour.error").unwrap_or("#ff3333"),
-        cfg.get(".my.config.colour.system").unwrap_or("#888888"),
-        cfg.get(".my.config.colour.bg").unwrap_or("#0d0d0d"),
-        cfg.get(".my.config.colour.input_bg").unwrap_or("#0a0a0a"),
-        cfg.get(".my.config.colour.border").unwrap_or("#003300"),
-        cfg.get(".my.config.colour.cursor").unwrap_or("#00ff41"),
-        cfg.get(".my.config.colour.highlight").unwrap_or("#003300"),
-        cfg.get(".my.config.colour.editor.background").unwrap_or("#0d0d0d"),
+        cfg.get("/my/config/colour/text").unwrap_or("#00ff41"),
+        cfg.get("/my/config/colour/dimmed").unwrap_or("#008f11"),
+        cfg.get("/my/config/colour/pending").unwrap_or("#004d00"),
+        cfg.get("/my/config/colour/replied").unwrap_or("#00ff41"),
+        cfg.get("/my/config/colour/alias").unwrap_or("#ffd700"),
+        cfg.get("/my/config/colour/error").unwrap_or("#ff3333"),
+        cfg.get("/my/config/colour/system").unwrap_or("#888888"),
+        cfg.get("/my/config/colour/bg").unwrap_or("#0d0d0d"),
+        cfg.get("/my/config/colour/input_bg").unwrap_or("#0a0a0a"),
+        cfg.get("/my/config/colour/border").unwrap_or("#003300"),
+        cfg.get("/my/config/colour/cursor").unwrap_or("#00ff41"),
+        cfg.get("/my/config/colour/highlight").unwrap_or("#003300"),
+        cfg.get("/my/config/colour/editor/background").unwrap_or("#0d0d0d"),
     );
 
     let _ = root.set_attribute("style", &style);
@@ -106,8 +105,8 @@ async fn resolve_and_traverse(
                     .map_err(|e| e.to_string())
                     .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
             } else {
-                // Bare CID — fetch from local gateway.
-                match fetch_cid_text(link).await {
+                // Bare CID (IPLD link value) — fetch from local gateway.
+                match crate::http::fetch_cid_text(link).await {
                     Ok(t) => {
                         serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
                     }
@@ -131,7 +130,7 @@ async fn resolve_and_traverse(
 
     // Traverse subpath keys into the JSON document.
     let mut cur = &doc;
-    for key in subpath.split('.') {
+    for key in subpath.split('/') {
         match cur.get(key) {
             Some(v) => cur = v,
             None => {
@@ -144,7 +143,7 @@ async fn resolve_and_traverse(
         serde_json::Value::String(s) => s.clone(),
         other => other.to_string(),
     };
-    state.push_output(format!("{link}.{subpath}: {display}"));
+    state.push_output(format!("{link}/{subpath}: {display}"));
 }
 
 pub(crate) fn eval(
@@ -163,7 +162,11 @@ pub(crate) fn eval(
         }
 
         Command::DotCommand { path, op, args } => {
-            eval_dot(&path, op, &args, state, config, show_editor, on_eval);
+            eval_control(&path, op, &args, state, config, show_editor, on_eval);
+        }
+
+        Command::LocalCrud { path, op, args } => {
+            eval_local(&path, op, &args, state, config, show_editor, on_eval);
         }
 
         Command::RemoteCrud { target, path, op } => {
@@ -176,21 +179,15 @@ pub(crate) fn eval(
     }
 }
 
-fn eval_dot(
+fn eval_control(
     path: &str,
-    op: DotOp,
+    _op: DotOp,
     args: &[String],
     state: &AppState,
     config: RwSignal<EgoConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
-    let username = state
-        .session
-        .get_untracked()
-        .map(|s| s.username)
-        .unwrap_or_default();
-
     // ── .help / .help.* ───────────────────────────────────────────────────
     if path == ".help" || path.starts_with(".help.") {
         let subtopic = path.strip_prefix(".help.").unwrap_or("");
@@ -205,15 +202,12 @@ fn eval_dot(
         ".logout" => {
             transport::disconnect();
             state.session.set(None);
-            return;
         }
         ".clear" => {
             state.entries.set(vec![]);
-            return;
         }
         ".panic" => {
             state.screensaver.set(true);
-            return;
         }
         ".ma" => {
             if let Err(e) =
@@ -221,7 +215,6 @@ fn eval_dot(
             {
                 state.push_error(e);
             }
-            return;
         }
         ".history" => {
             let hist = state.history.get_untracked();
@@ -234,15 +227,13 @@ fn eval_dot(
                     last = Some(entry.as_str());
                 }
             }
-            return;
         }
         ".use" => {
             eval_use(args, state, config);
-            return;
         }
         ".edit" => {
             if let Err(e) = dispatch_meta(
-                ".my.doc.scratch",
+                "/my/doc/scratch",
                 "edit",
                 args,
                 state,
@@ -252,11 +243,10 @@ fn eval_dot(
             ) {
                 state.push_error(e);
             }
-            return;
         }
         ".batch:end" => {
             if let Err(e) = dispatch_meta(
-                ".my.doc.scratch",
+                "/my/doc/scratch",
                 "eval",
                 args,
                 state,
@@ -266,9 +256,49 @@ fn eval_dot(
             ) {
                 state.push_error(e);
             }
-            return;
         }
-        _ => {}
+        _ => {
+            state.push_error(tf("err-unknown-command", &[("path", path)]));
+        }
+    }
+}
+
+/// Roots that are read-only remote fetches rather than local config.
+fn is_remote_fetch_root(path: &str) -> bool {
+    path.starts_with("/ipfs/") || path.starts_with("/ipns/") || path.starts_with("/ipld/")
+}
+
+fn eval_local(
+    path: &str,
+    op: DotOp,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
+) {
+    let username = state
+        .session
+        .get_untracked()
+        .map(|s| s.username)
+        .unwrap_or_default();
+
+    // ── /ipfs, /ipns, /ipld — read-only remote fetch ───────────────────────
+    if is_remote_fetch_root(path) {
+        match op {
+            DotOp::Get => {
+                let path_owned = path.to_string();
+                let state2 = state.clone();
+                spawn_local(async move {
+                    match crate::http::fetch_path_text(&path_owned).await {
+                        Ok(content) => state2.push_output(format!("{path_owned}: {content}")),
+                        Err(e) => state2.push_error(e),
+                    }
+                });
+            }
+            _ => state.push_error(tf("err-read-only-path", &[("path", path)])),
+        }
+        return;
     }
 
     // ── Verb dispatch ─────────────────────────────────────────────────────
@@ -315,39 +345,36 @@ fn handle_dot_set(
         state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
         return;
     }
-    // ── <cid> explicit fetch ───────────────────────────────────────────────
-    // `.my.path: <bafy…>` — fetch the CID content and store it as the value.
-    // Plain `bafy…` (without angle brackets) is stored as a literal string.
-    if value.starts_with('<') && value.ends_with('>') && value.len() > 2 {
-        let inner = value[1..value.len() - 1].to_string();
-        if crate::mailbox::is_link_value(&inner) {
-            let path_owned = path.to_string();
-            let uname = username.to_string();
-            let state2 = state.clone();
-            spawn_local(async move {
-                match fetch_cid_text(&inner).await {
-                    Ok(content) => {
-                        config.update(|c| c.set(&path_owned, &content));
-                        let cfg = config.get_untracked();
-                        if let Err(e) = persist_config(&uname, &cfg).await {
-                            state2.push_error(e);
-                            return;
-                        }
-                        apply_config_to_dom(&cfg);
-                        state2.push_system(tf(
-                            "msg-set",
-                            &[("path", &path_owned), ("value", &content)],
-                        ));
+    // ── /ipfs, /ipns explicit fetch ─────────────────────────────────────────
+    // `/my/path: /ipfs/bafy…` — fetch the content and store it as the value.
+    // Plain text values (including bare `did:ma:…` aliases) are stored
+    // literally; only an explicit `/ipfs`, `/ipns`, `/ipld` prefix triggers
+    // a fetch.
+    if is_remote_fetch_root(&value) {
+        let path_owned = path.to_string();
+        let uname = username.to_string();
+        let state2 = state.clone();
+        spawn_local(async move {
+            match crate::http::fetch_path_text(&value).await {
+                Ok(content) => {
+                    config.update(|c| c.set(&path_owned, &content));
+                    let cfg = config.get_untracked();
+                    if let Err(e) = persist_config(&uname, &cfg).await {
+                        state2.push_error(e);
+                        return;
                     }
-                    Err(e) => state2.push_error(e),
+                    apply_config_to_dom(&cfg);
+                    state2
+                        .push_system(tf("msg-set", &[("path", &path_owned), ("value", &content)]));
                 }
-            });
-            return;
-        }
+                Err(e) => state2.push_error(e),
+            }
+        });
+        return;
     }
     config.update(|c| c.set(path, &value));
-    // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
-    if path.starts_with(".my.ctx") {
+    // Reactive: /my/ctx/use: true/false drives focus_actor immediately.
+    if path.starts_with("/my/ctx") {
         let cfg = config.get_untracked();
         apply_ctx_focus(&cfg, state);
     }
@@ -361,10 +388,10 @@ fn handle_dot_set(
             return;
         }
         apply_config_to_dom(&cfg);
-        if path_owned == ".my.config.log.level" {
+        if path_owned == "/my/config/log/level" {
             crate::apply_log_level(&value);
         }
-        if path_owned == ".my.i18n" {
+        if path_owned == "/my/i18n" {
             let first = value.split(':').next().unwrap_or(&value).to_string();
             if !crate::i18n::init(&first).await {
                 state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
@@ -432,18 +459,18 @@ fn show_children(
     cfg: &crate::config::EgoConfig,
     state: &AppState,
 ) {
-    let prefix = format!("{path}.");
+    let prefix = format!("{path}/");
     let prefix_len = prefix.len();
     let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
     for (k, _) in cfg.list(&prefix) {
         let tail = &k[prefix_len..];
-        let immediate = tail.split('.').next().unwrap_or(tail);
+        let immediate = tail.split('/').next().unwrap_or(tail);
         children.insert(immediate.to_string());
     }
     state.push_output(format!("{path}:"));
     let mut shown = 0usize;
     for child in &children {
-        let child_path = format!("{path}.{child}");
+        let child_path = format!("{path}/{child}");
         if let Some(v) = cfg.get(&child_path) {
             if let Some(q) = query {
                 if v != q.as_str() {
@@ -475,9 +502,12 @@ fn lazy_link_traverse(
 ) {
     let path_owned = path.to_string();
     let mut split_pos = path_owned.len();
-    while let Some(dot) = path_owned[..split_pos].rfind('.') {
-        split_pos = dot;
+    while let Some(slash) = path_owned[..split_pos].rfind('/') {
+        split_pos = slash;
         let ancestor = &path_owned[..split_pos];
+        if ancestor.is_empty() {
+            break;
+        }
         if let Some(link_val) = cfg.get(ancestor) {
             if crate::mailbox::is_link_value(link_val) {
                 let link = link_val.to_string();
@@ -497,24 +527,24 @@ fn lazy_link_traverse(
     state.push_error(tf("msg-key-not-found", &[("path", path)]));
 }
 
-/// Build and apply a `FocusMode` from the current `.my.ctx.*` config values.
+/// Build and apply a `FocusMode` from the current `/my/ctx.*` config values.
 ///
-/// Called after any write to `.my.ctx.*` and at login to restore focus.
-/// If `.my.ctx.use` is not `"true"` or `.my.ctx.runtime` is absent,
+/// Called after any write to `/my/ctx.*` and at login to restore focus.
+/// If `/my/ctx/use` is not `"true"` or `/my/ctx/runtime` is absent,
 /// `focus_actor` is cleared.
 pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
-    let enabled = cfg.get(".my.ctx.use").map(|s| s == "true").unwrap_or(false);
+    let enabled = cfg.get("/my/ctx/use").map(|s| s == "true").unwrap_or(false);
     if !enabled {
         state.focus_actor.set(None);
         return;
     }
-    let Some(runtime) = cfg.get(".my.ctx.runtime").map(|s| s.to_string()) else {
+    let Some(runtime) = cfg.get("/my/ctx/runtime").map(|s| s.to_string()) else {
         state.focus_actor.set(None);
         return;
     };
-    let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
-    let avatar = cfg.get(".my.ctx.alias").unwrap_or("").to_string();
-    let sticky_verb = cfg.get(".my.ctx.verb").map(|s| s.to_string());
+    let room = cfg.get("/my/ctx/room").unwrap_or("").to_string();
+    let avatar = cfg.get("/my/ctx/alias").unwrap_or("").to_string();
+    let sticky_verb = cfg.get("/my/ctx/verb").map(|s| s.to_string());
     let target = if room.is_empty() {
         runtime.clone()
     } else {
@@ -554,13 +584,13 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     // Bare `.use` → toggle
     if args.is_empty() {
         if state.focus_actor.get_untracked().is_some() {
-            // Focus is active → deactivate, keep .my.ctx.runtime/.room intact
-            config.update(|c| c.set(".my.ctx.use", "false"));
+            // Focus is active → deactivate, keep /my/ctx/runtime/.room intact
+            config.update(|c| c.set("/my/ctx/use", "false"));
             state.focus_actor.set(None);
             state.push_system(t("msg-focus-cleared"));
-        } else if cfg.get(".my.ctx.runtime").is_some() {
+        } else if cfg.get("/my/ctx/runtime").is_some() {
             // Focus is off but context is stored → re-activate
-            config.update(|c| c.set(".my.ctx.use", "true"));
+            config.update(|c| c.set("/my/ctx/use", "true"));
             let cfg2 = config.get_untracked();
             apply_ctx_focus(&cfg2, state);
             if let Some(ref focus) = state.focus_actor.get_untracked() {
@@ -616,28 +646,28 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let (did_part, frag) = resolved.split_once('#').unwrap_or((resolved.as_str(), ""));
 
     config.update(|c| {
-        c.set(".my.ctx.runtime", did_part);
-        c.set(".my.ctx.use", "true");
+        c.set("/my/ctx/runtime", did_part);
+        c.set("/my/ctx/use", "true");
         if frag.is_empty() {
-            c.delete(".my.ctx.room");
+            c.delete("/my/ctx/room");
         } else {
-            c.set(".my.ctx.room", format!("#{frag}"));
+            c.set("/my/ctx/room", format!("#{frag}"));
         }
         match sticky_verb.as_deref() {
-            Some(v) => c.set(".my.ctx.verb", v),
+            Some(v) => c.set("/my/ctx/verb", v),
             None => {
-                c.delete(".my.ctx.verb");
+                c.delete("/my/ctx/verb");
             }
         }
         match avatar.as_str() {
             "" => {
-                c.delete(".my.ctx.alias");
+                c.delete("/my/ctx/alias");
             }
-            a => c.set(".my.ctx.alias", a),
+            a => c.set("/my/ctx/alias", a),
         }
     });
 
-    // apply_ctx_focus builds the full prompt from .my.ctx.* — no duplicate logic.
+    // apply_ctx_focus builds the full prompt from /my/ctx.* — no duplicate logic.
     let cfg2 = config.get_untracked();
     apply_ctx_focus(&cfg2, state);
     if let Some(ref focus) = state.focus_actor.get_untracked() {

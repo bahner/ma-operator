@@ -44,7 +44,7 @@ msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID가 로컬 ma ({ $url })를 통해 게시되었습니다
-msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '.my.identity!publish @ma'를 실행하세요. 자세한 내용은 '.help.publish'를 입력하세요.
+msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '/my/identity!publish @ma'를 실행하세요. 자세한 내용은 '.help.publish'를 입력하세요.
 msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
 msg-focus-cleared = 포커스가 해제됨
 msg-focusing = { $did }을(를) { $prompt }(으)로 포커스 중
@@ -108,7 +108,7 @@ discover-invalid-did = 검색 실패: `did`가 did:ma:로 시작해야 했으나
 discover-no-endpoint = 검색 경고: status.json에 `endpoint_id` 없음; DID만 저장됨
 discover-success = { $url }에서 ma 발견됨
 discover-did-line = DID: { $did }
-discover-alias-hint =   별칭 @ma 생성됨 — '.my.identity!publish @ma'를 실행하여 신원을 게시하세요.
+discover-alias-hint =   별칭 @ma 생성됨 — '/my/identity!publish @ma'를 실행하여 신원을 게시하세요.
 claim-success = { $did }에 대한 런타임 청구됨
 claim-conflict = 런타임이 이미 다른 신원에 의해 청구됨
 claim-http-failed = 청구 실패: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = 로그인되지 않음; 런타임을 청구하려면 먼저 �
 runtime-no-verb = { $path }에 `{ $verb }` 동사가 없음
 
 # ── 동사 — ACL ────────────────────────────────────────────────────────────
-acl-reset = .my.acl 초기화됨 (완전히 열림)
+acl-reset = /my/acl 초기화됨 (완전히 열림)
 acl-persist-error = 저장 오류: { $e }
-acl-no-verb = .my.acl에 `{ $verb }` 동사가 없음
+acl-no-verb = /my/acl에 `{ $verb }` 동사가 없음
 
 # ── 동사 — 신원 ───────────────────────────────────────────────────────────
-publish-usage = 사용법: .my.identity!publish <did-또는-별칭>
+publish-usage = 사용법: /my/identity!publish <did-또는-별칭>
 identity-exported = 번들을 { $filename }(으)로 다운로드했습니다
 identity-export-failed = 내보내기 실패: { $e }
 
 # ── 동사 — 문서 ───────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content이(가) 비어있음
-doc-save-first = { $path }.content이(가) 비어있음 — 먼저 저장하세요
+doc-content-empty = { $path }/content이(가) 비어있음
+doc-save-first = { $path }/content이(가) 비어있음 — 먼저 저장하세요
 doc-missing-name = 문서 이름 없음
-doc-publish-usage = 사용법: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = 사용법: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = 사용법: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = 사용법: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = 게시 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
 doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
-doc-fetch-done = { $cid } 가져옴 → { $path }.content (실행되지 않음)
+doc-fetch-done = { $cid } 가져옴 → { $path }/content (실행되지 않음)
 doc-fetch-failed = 가져오기 { $cid }: { $e }
-doc-fetch-usage = 사용법: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid가 설정되지 않음
+doc-fetch-usage = 사용법: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid가 설정되지 않음
 doc-no-verb = { $path }에 `{ $verb }` 동사가 없음
 path-no-verb = { $path }에 `{ $verb }` 동사가 없음
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       리프 또는 서브트리 �
 help-config-verb =   .path!verb [args]            로컬 동사 호출
 
 # ── 도움말 — 공통 경로 ────────────────────────────────────────────────────
-help-my =   .my                          모든 개인 설정 표시
-help-aliases =   .my.aliases                  별칭 목록
-help-aliases-set =   .my.aliases.<name>: <did>    별칭 추가/업데이트
-help-aliases-del =   .my.aliases.<name>:          별칭 제거
+help-my =   /my                          모든 개인 설정 표시
+help-aliases =   /my/aliases                  별칭 목록
+help-aliases-set =   /my/aliases/<name>: <did>    별칭 추가/업데이트
+help-aliases-del =   /my/aliases/<name>:          별칭 제거
 help-runtime-discover =   .ma [port]          로컬 런타임 검색 및 @ma 생성
 help-runtime-claim =   .ma [port]             DID로 런타임 소유권 청구
-help-identity =   .my.identity                 신원 설정 표시
-help-identity-did =   .my.identity.did             자신의 DID 표시 (읽기 전용)
-help-identity-publish =   .my.identity!publish @pub    게시 서비스를 통해 DID 게시
-help-identity-export =   .my.identity!export          내 신원 번들 다운로드
+help-identity =   /my/identity                 신원 설정 표시
+help-identity-did =   /my/identity/did             자신의 DID 표시 (읽기 전용)
+help-identity-publish =   /my/identity!publish @pub    게시 서비스를 통해 DID 게시
+help-identity-export =   /my/identity!export          내 신원 번들 다운로드
 help-config-path =   .config                      모든 .config.* 항목 표시
 
 # ── 도움말 — 받은 편지함 ──────────────────────────────────────────────────
-help-inbox =   .my.inbox                    받은 편지함 목록 (서브트리 뷰)
-help-inbox-n =   .my.inbox.N                  항목 N의 필드 표시
-help-inbox-from =   .my.inbox.N.from             항목 N의 발신자 DID
-help-inbox-reply =   .my.inbox.N!reply [body]     답장 전송 (내용 없음 — 편집기 열림)
-help-inbox-open =   .my.inbox.N!open             편집기에서 읽기 전용으로 내용 열기
-help-inbox-del =   .my.inbox.N:                 항목 N 삭제
-help-inbox-delall =   .my.inbox:                   모든 받은 편지함 항목 삭제
-help-inbox-flush =   .my.inbox!flush              모든 항목을 터미널에 출력
-help-inbox-filter =   .my.inbox!filter @who        @who의 항목만 표시
-help-inbox-traverse =   .my.inbox.N.sender.<field>   발신자 DID 문서 지연 탐색
+help-inbox =   /my/inbox                    받은 편지함 목록 (서브트리 뷰)
+help-inbox-n =   /my/inbox/N                  항목 N의 필드 표시
+help-inbox-from =   /my/inbox/N/from             항목 N의 발신자 DID
+help-inbox-reply =   /my/inbox/N!reply [body]     답장 전송 (내용 없음 — 편집기 열림)
+help-inbox-open =   /my/inbox/N!open             편집기에서 읽기 전용으로 내용 열기
+help-inbox-del =   /my/inbox/N:                 항목 N 삭제
+help-inbox-delall =   /my/inbox:                   모든 받은 편지함 항목 삭제
+help-inbox-flush =   /my/inbox!flush              모든 항목을 터미널에 출력
+help-inbox-filter =   /my/inbox!filter @who        @who의 항목만 표시
+help-inbox-traverse =   /my/inbox/N/sender/<field>   발신자 DID 문서 지연 탐색
 
 # ── 도움말 — 문서 ─────────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           저장된 내용으로 편집기 열기
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID 가져오기, 검토 전용으로 열기
-help-doc-eval =   .my.doc.<name>!eval           저장된 내용을 줄 단위로 실행
-help-doc-publish =   .my.doc.<name>!publish @pub   원시 블롭으로 저장 (모든 유형)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML을 DAG-CBOR IPLD 노드로 저장
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID 내용 가져오기 (실행 없음)
-help-doc-cid =   .my.doc.<name>!cid            저장된 CID 표시
-help-doc-del =   .my.doc.<name>:              문서 삭제
+help-doc-edit =   /my/doc/<name>!edit           저장된 내용으로 편집기 열기
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID 가져오기, 검토 전용으로 열기
+help-doc-eval =   /my/doc/<name>!eval           저장된 내용을 줄 단위로 실행
+help-doc-publish =   /my/doc/<name>!publish @pub   원시 블롭으로 저장 (모든 유형)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML을 DAG-CBOR IPLD 노드로 저장
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID 내용 가져오기 (실행 없음)
+help-doc-cid =   /my/doc/<name>!cid            저장된 CID 표시
+help-doc-del =   /my/doc/<name>:              문서 삭제
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = 사용 가능한 언어 (.my.i18n: <code> 로 설정):
+lang-list-header = 사용 가능한 언어 (/my/i18n: <code> 로 설정):
 err-lang-not-found = 언어를 찾을 수 없습니다: { $lang }
 
 msg-send-failed = 전송 실패: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = 프로필 { $name } 삭제됨
 profiles-not-found = 프로필을 찾을 수 없음: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -304,12 +304,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -332,9 +332,9 @@ help-topic-publish =   .help.publish                네트워크에 신원 게�
 help-header-publish = ── 신원 게시 ─────────────────────────────────────────────────────────────────
 help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습니다. 다른 사람들이 DID를 검색하여 연락할 수 있습니다.
 help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.
-help-publish-steps = 단계: '.ma [port]'로 로컬 ma를 감지한 후 '.my.identity!publish @ma'를 실행하세요.
+help-publish-steps = 단계: '.ma [port]'로 로컬 ma를 감지한 후 '/my/identity!publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

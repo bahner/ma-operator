@@ -44,7 +44,7 @@ msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID avaldatud kohaliku ma kaudu ({ $url })
-msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.ma [port]' ja seejärel '.my.identity!publish @ma'. Kirjuta '.help.publish' üksikasjade jaoks.
+msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.ma [port]' ja seejärel '/my/identity!publish @ma'. Kirjuta '.help.publish' üksikasjade jaoks.
 msg-blocked = ⊗ blokeeritud [{ $cap }]: { $from }
 msg-focus-cleared = fookus tühjendatud
 msg-focusing = fokuseeritakse { $did } kui { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = avastamine ebaõnnestus: oodati `did` algust did:ma:-ga, 
 discover-no-endpoint = avastamise hoiatus: `endpoint_id` puudub status.json-ist; salvestati ainult DID
 discover-success = ma avastati aadressil { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma loodud — käivita '.my.identity!publish @ma' oma identiteedi avaldamiseks.
+discover-alias-hint =   alias @ma loodud — käivita '/my/identity!publish @ma' oma identiteedi avaldamiseks.
 claim-success = Käitusaeg nõutud kasutajale { $did }
 claim-conflict = Käitusaeg on juba teise identiteedi poolt nõutud
 claim-http-failed = nõudmine ebaõnnestus: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = pole sisse logitud; logi kõigepealt sisse, et käitusaeg nõ
 runtime-no-verb = { $path } jaoks pole verbi `{ $verb }`
 
 # ── Verbid — juurdepääsukontroll ──────────────────────────────────────────
-acl-reset = .my.acl lähtestatud (täielikult avatud)
+acl-reset = /my/acl lähtestatud (täielikult avatud)
 acl-persist-error = salvestusviga: { $e }
-acl-no-verb = .my.acl jaoks pole verbi `{ $verb }`
+acl-no-verb = /my/acl jaoks pole verbi `{ $verb }`
 
 # ── Verbid — identiteet ───────────────────────────────────────────────────
-publish-usage = kasutus: .my.identity!publish <did-või-alias>
+publish-usage = kasutus: /my/identity!publish <did-või-alias>
 identity-exported = Pakett alla laaditud nimega { $filename }
 identity-export-failed = Eksport ebaõnnestus: { $e }
 
 # ── Verbid — dokumendid ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content on tühi
-doc-save-first = { $path }.content on tühi — salvesta esmalt
+doc-content-empty = { $path }/content on tühi
+doc-save-first = { $path }/content on tühi — salvesta esmalt
 doc-missing-name = dokumendi nimi puudub
-doc-publish-usage = kasutus: .my.doc.<nimi>:publish <avaldaja>
-doc-publish-ipld-usage = kasutus: .my.doc.<nimi>:publish-ipld <avaldaja>
+doc-publish-usage = kasutus: /my/doc/<nimi>:publish <avaldaja>
+doc-publish-ipld-usage = kasutus: /my/doc/<nimi>:publish-ipld <avaldaja>
 doc-publish-failed = avaldamine { $path }: { $e }
 doc-publish-ipld-failed = ipld-avaldamine { $path }: { $e }
 doc-store-sent = salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
 doc-ipld-store-sent = IPLD-salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
-doc-fetch-done = toodi { $cid } → { $path }.content (pole käivitatud)
+doc-fetch-done = toodi { $cid } → { $path }/content (pole käivitatud)
 doc-fetch-failed = toomine { $cid }: { $e }
-doc-fetch-usage = kasutus: .my.doc.<nimi>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid pole seatud
+doc-fetch-usage = kasutus: /my/doc/<nimi>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid pole seatud
 doc-no-verb = { $path } jaoks pole verbi `{ $verb }`
 path-no-verb = { $path } jaoks pole verbi `{ $verb }`
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 sea leht
 help-config-delete =   .path:                       kustuta leht või alampuu
 help-config-verb =   .path!verb [args]            käivita kohalik verb
 
-help-my =   .my                          kuva kogu isiklik konfiguratsioon
-help-aliases =   .my.aliases                  loetle aliased
-help-aliases-set =   .my.aliases.<name>: <did>    lisa/uuenda alias (puhas DID, ilma #fragmendita)
-help-aliases-del =   .my.aliases.<name>:          eemalda alias
+help-my =   /my                          kuva kogu isiklik konfiguratsioon
+help-aliases =   /my/aliases                  loetle aliased
+help-aliases-set =   /my/aliases/<name>: <did>    lisa/uuenda alias (puhas DID, ilma #fragmendita)
+help-aliases-del =   /my/aliases/<name>:          eemalda alias
 help-runtime-discover =   .ma [port]          avasta kohalik käitusaeg ja loo @ma-alias
 help-runtime-claim =   .ma [port]             nõua käitusaeg oma DID-iga
-help-identity =   .my.identity                 kuva identiteedi konfiguratsioon
-help-identity-did =   .my.identity.did             kuva oma DID (kirjutuskaitstud)
-help-identity-publish =   .my.identity!publish @pub    avalda oma DID avaldajateenuse kaudu
-help-identity-export =   .my.identity!export          laadi alla oma identiteedipakett
+help-identity =   /my/identity                 kuva identiteedi konfiguratsioon
+help-identity-did =   /my/identity/did             kuva oma DID (kirjutuskaitstud)
+help-identity-publish =   /my/identity!publish @pub    avalda oma DID avaldajateenuse kaudu
+help-identity-export =   /my/identity!export          laadi alla oma identiteedipakett
 help-config-path =   .config                      kuva kõik .config.*-kirjed
 
-help-inbox =   .my.inbox                    loetle postkast (alampuuvaade)
-help-inbox-n =   .my.inbox.N                  kuva kirje N väljad
-help-inbox-from =   .my.inbox.N.from             saatja DID kirjele N
-help-inbox-reply =   .my.inbox.N!reply [body]     saada vastus (avab redaktori ilma kehata)
-help-inbox-open =   .my.inbox.N!open             ava sisu kirjutuskaitstud redaktoris
-help-inbox-del =   .my.inbox.N:                 kustuta kirje N
-help-inbox-delall =   .my.inbox:                   kustuta kõik postkasti kirjed
-help-inbox-flush =   .my.inbox!flush              prindi kõik kirjed terminali
-help-inbox-filter =   .my.inbox!filter @who        näita ainult @who kirjeid
-help-inbox-traverse =   .my.inbox.N.sender.<väli>   läbi saatja DID-dokument viivitusega
+help-inbox =   /my/inbox                    loetle postkast (alampuuvaade)
+help-inbox-n =   /my/inbox/N                  kuva kirje N väljad
+help-inbox-from =   /my/inbox/N/from             saatja DID kirjele N
+help-inbox-reply =   /my/inbox/N!reply [body]     saada vastus (avab redaktori ilma kehata)
+help-inbox-open =   /my/inbox/N!open             ava sisu kirjutuskaitstud redaktoris
+help-inbox-del =   /my/inbox/N:                 kustuta kirje N
+help-inbox-delall =   /my/inbox:                   kustuta kõik postkasti kirjed
+help-inbox-flush =   /my/inbox!flush              prindi kõik kirjed terminali
+help-inbox-filter =   /my/inbox!filter @who        näita ainult @who kirjeid
+help-inbox-traverse =   /my/inbox/N/sender/<väli>   läbi saatja DID-dokument viivitusega
 
-help-doc-edit =   .my.doc.<nimi>:edit           ava redaktor salvestatud sisuga
-help-doc-edit-cid =   .my.doc.<nimi>:edit <cid>     too CID, ava ülevaatamiseks
-help-doc-eval =   .my.doc.<nimi>:eval           käivita salvestatud sisu rida-realt
-help-doc-publish =   .my.doc.<nimi>:publish @pub   salvesta toorana blob (kõik tüübid)
-help-doc-publish-ipld =   .my.doc.<nimi>:publish-ipld @pub  salvesta YAML struktureeritud DAG-CBOR IPLD-sõlmena
-help-doc-fetch =   .my.doc.<nimi>:fetch <cid>    impordi CID-sisu (ei käivitata)
-help-doc-cid =   .my.doc.<nimi>:cid            kuva salvestatud CID
-help-doc-del =   .my.doc.<nimi>:              kustuta dokument
+help-doc-edit =   /my/doc/<nimi>:edit           ava redaktor salvestatud sisuga
+help-doc-edit-cid =   /my/doc/<nimi>:edit <cid>     too CID, ava ülevaatamiseks
+help-doc-eval =   /my/doc/<nimi>:eval           käivita salvestatud sisu rida-realt
+help-doc-publish =   /my/doc/<nimi>:publish @pub   salvesta toorana blob (kõik tüübid)
+help-doc-publish-ipld =   /my/doc/<nimi>:publish-ipld @pub  salvesta YAML struktureeritud DAG-CBOR IPLD-sõlmena
+help-doc-fetch =   /my/doc/<nimi>:fetch <cid>    impordi CID-sisu (ei käivitata)
+help-doc-cid =   /my/doc/<nimi>:cid            kuva salvestatud CID
+help-doc-del =   /my/doc/<nimi>:              kustuta dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Saadaolevad keeled (määra .my.i18n: <code>):
+lang-list-header = Saadaolevad keeled (määra /my/i18n: <code>):
 err-lang-not-found = keelt ei leitud: { $lang }
 
 msg-send-failed = saatmine ebaõnnestus: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = profiil { $name } kustutatud
 profiles-not-found = profiili ei leitud: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                identiteedi avaldamine võrg
 help-header-publish = ── identiteedi avaldamine ───────────────────────────────────────────────────
 help-publish-intro = Avaldamine muudab su identiteedi võrgus leitavaks. Teised saavad sinu DID-i otsida, et sinuga ühendust võtta.
 help-publish-ma = Avaldamiseks vajad installitud ma-d (kohalik käituskeskkond). See ühendab ego IPFS/IPNS-iga sinu nimel.
-help-publish-steps = Sammud: käivita '.ma [port]' kohaliku ma tuvastamiseks, seejärel '.my.identity!publish @ma'.
+help-publish-steps = Sammud: käivita '.ma [port]' kohaliku ma tuvastamiseks, seejärel '/my/identity!publish @ma'.
 help-publish-without = Ilma avaldamiseta teised ei saa sulle jõuda — isegi kui nad teavad sinu DID-i, ei suuda nad sinu endpointi lahendada.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

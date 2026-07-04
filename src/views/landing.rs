@@ -118,7 +118,7 @@ pub fn Landing() -> impl IntoView {
         spawn_local(async move {
             if let Ok(Some(cfg_json)) = crate::identity::storage::load_config(&uname).await {
                 if let Ok(cfg) = crate::config::EgoConfig::from_json(&cfg_json) {
-                    if let Some(lang_tag) = cfg.get(".my.i18n") {
+                    if let Some(lang_tag) = cfg.get("/my/i18n") {
                         if crate::i18n::init(lang_tag).await {
                             state2.lang.set(crate::i18n::lang());
                         }

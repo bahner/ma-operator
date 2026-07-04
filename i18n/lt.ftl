@@ -44,7 +44,7 @@ msg-connecting = jungiamasi prie iroh...
 msg-iroh-ready = iroh galinys paruoštas
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID paskelbtas per vietinį ma ({ $url })
-msg-identity-not-published = Tapatybė nerasta internete — jei ma įdiegtas vietoje, paleisk '.ma [port]' ir tada '.my.identity!publish @ma'. Parašyk '.help.publish' dėl detalių.
+msg-identity-not-published = Tapatybė nerasta internete — jei ma įdiegtas vietoje, paleisk '.ma [port]' ir tada '/my/identity!publish @ma'. Parašyk '.help.publish' dėl detalių.
 msg-blocked = ⊗ užblokuota [{ $cap }]: { $from }
 msg-focus-cleared = fokusas išvalytas
 msg-focusing = fokusuojama { $did } kaip { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = aptikimas nepavyko: tikėtasi, kad `did` prasideda did:ma
 discover-no-endpoint = aptikimo įspėjimas: `endpoint_id` trūksta status.json; išsaugota tik DID
 discover-success = ma aptikta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   slapyvardis @ma sukurtas — paleisk '.my.identity!publish @ma' savo tapatybei paskelbti.
+discover-alias-hint =   slapyvardis @ma sukurtas — paleisk '/my/identity!publish @ma' savo tapatybei paskelbti.
 claim-success = Vykdymo laikas pareikštas { $did }
 claim-conflict = Vykdymo laikas jau pareikštas kitos tapatybės
 claim-http-failed = pareikšimas nepavyko: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = neprisijungta; pirmiausia prisijunkite, kad pareikštumėte v
 runtime-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 
 # ── Veiksmažodžiai — prieigos valdymas ───────────────────────────────────
-acl-reset = .my.acl atstatytas (visiškai atviras)
+acl-reset = /my/acl atstatytas (visiškai atviras)
 acl-persist-error = išsaugojimo klaida: { $e }
-acl-no-verb = .my.acl nėra veiksmažodžio `{ $verb }`
+acl-no-verb = /my/acl nėra veiksmažodžio `{ $verb }`
 
 # ── Veiksmažodžiai — tapatybė ────────────────────────────────────────────
-publish-usage = naudojimas: .my.identity!publish <did-arba-pseudonimas>
+publish-usage = naudojimas: /my/identity!publish <did-arba-pseudonimas>
 identity-exported = Paketas atsisiųstas kaip { $filename }
 identity-export-failed = Eksportas nepavyko: { $e }
 
 # ── Veiksmažodžiai — dokumentai ───────────────────────────────────────────
-doc-content-empty = { $path }.content yra tuščias
-doc-save-first = { $path }.content yra tuščias — pirmiausia išsaugokite
+doc-content-empty = { $path }/content yra tuščias
+doc-save-first = { $path }/content yra tuščias — pirmiausia išsaugokite
 doc-missing-name = trūksta dokumento pavadinimo
-doc-publish-usage = naudojimas: .my.doc.<pavadinimas>:publish <leidėjas>
-doc-publish-ipld-usage = naudojimas: .my.doc.<pavadinimas>:publish-ipld <leidėjas>
+doc-publish-usage = naudojimas: /my/doc/<pavadinimas>:publish <leidėjas>
+doc-publish-ipld-usage = naudojimas: /my/doc/<pavadinimas>:publish-ipld <leidėjas>
 doc-publish-failed = publikavimas { $path }: { $e }
 doc-publish-ipld-failed = ipld publikavimas { $path }: { $e }
 doc-store-sent = saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-ipld-store-sent = IPLD saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
-doc-fetch-done = gauta { $cid } → { $path }.content (nevykdyta)
+doc-fetch-done = gauta { $cid } → { $path }/content (nevykdyta)
 doc-fetch-failed = gavimas { $cid }: { $e }
-doc-fetch-usage = naudojimas: .my.doc.<pavadinimas>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid nenustatytas
+doc-fetch-usage = naudojimas: /my/doc/<pavadinimas>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid nenustatytas
 doc-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 path-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 nustatyti lapą
 help-config-delete =   .path:                       ištrinti lapą arba pomedį
 help-config-verb =   .path!verb [args]            vykdyti vietinį veiksmažodį
 
-help-my =   .my                          rodyti visą asmeninę konfigūraciją
-help-aliases =   .my.aliases                  išvardyti pseudonimus
-help-aliases-set =   .my.aliases.<name>: <did>    pridėti/atnaujinti pseudonimą (grynas DID, be #fragmento)
-help-aliases-del =   .my.aliases.<name>:          pašalinti pseudonimą
+help-my =   /my                          rodyti visą asmeninę konfigūraciją
+help-aliases =   /my/aliases                  išvardyti pseudonimus
+help-aliases-set =   /my/aliases/<name>: <did>    pridėti/atnaujinti pseudonimą (grynas DID, be #fragmento)
+help-aliases-del =   /my/aliases/<name>:          pašalinti pseudonimą
 help-runtime-discover =   .ma [port]          aptikti vietinį vykdymo laiką ir sukurti @ma pseudonimą
 help-runtime-claim =   .ma [port]             pareikšti vykdymo laiką savo DID
-help-identity =   .my.identity                 rodyti tapatybės konfigūraciją
-help-identity-did =   .my.identity.did             rodyti savo DID (tik skaitomas)
-help-identity-publish =   .my.identity!publish @pub    publikuoti savo DID per leidėjo paslaugą
-help-identity-export =   .my.identity!export          atsisiųsti savą tapatybės paketą
+help-identity =   /my/identity                 rodyti tapatybės konfigūraciją
+help-identity-did =   /my/identity/did             rodyti savo DID (tik skaitomas)
+help-identity-publish =   /my/identity!publish @pub    publikuoti savo DID per leidėjo paslaugą
+help-identity-export =   /my/identity!export          atsisiųsti savą tapatybės paketą
 help-config-path =   .config                      rodyti visus .config.* įrašus
 
-help-inbox =   .my.inbox                    išvardyti pašto dėžutę (pomedinė peržiūra)
-help-inbox-n =   .my.inbox.N                  rodyti įrašo N laukus
-help-inbox-from =   .my.inbox.N.from             siuntėjo DID įrašui N
-help-inbox-reply =   .my.inbox.N!reply [body]     siųsti atsakymą (atidaro redaktorių be turinio)
-help-inbox-open =   .my.inbox.N!open             atidaryti turinį tik skaitomame redaktoriuje
-help-inbox-del =   .my.inbox.N:                 ištrinti įrašą N
-help-inbox-delall =   .my.inbox:                   ištrinti visus pašto dėžutės įrašus
-help-inbox-flush =   .my.inbox!flush              spausdinti visus įrašus terminale
-help-inbox-filter =   .my.inbox!filter @who        rodyti tik @who įrašus
-help-inbox-traverse =   .my.inbox.N.sender.<laukas>  naršyti siuntėjo DID dokumentą su vėlavimu
+help-inbox =   /my/inbox                    išvardyti pašto dėžutę (pomedinė peržiūra)
+help-inbox-n =   /my/inbox/N                  rodyti įrašo N laukus
+help-inbox-from =   /my/inbox/N/from             siuntėjo DID įrašui N
+help-inbox-reply =   /my/inbox/N!reply [body]     siųsti atsakymą (atidaro redaktorių be turinio)
+help-inbox-open =   /my/inbox/N!open             atidaryti turinį tik skaitomame redaktoriuje
+help-inbox-del =   /my/inbox/N:                 ištrinti įrašą N
+help-inbox-delall =   /my/inbox:                   ištrinti visus pašto dėžutės įrašus
+help-inbox-flush =   /my/inbox!flush              spausdinti visus įrašus terminale
+help-inbox-filter =   /my/inbox!filter @who        rodyti tik @who įrašus
+help-inbox-traverse =   /my/inbox/N/sender/<laukas>  naršyti siuntėjo DID dokumentą su vėlavimu
 
-help-doc-edit =   .my.doc.<pavadinimas>:edit           atidaryti redaktorių su išsaugotu turiniu
-help-doc-edit-cid =   .my.doc.<pavadinimas>:edit <cid>     gauti CID, atidaryti peržiūrai
-help-doc-eval =   .my.doc.<pavadinimas>:eval           vykdyti išsaugotą turinį eilutė po eilutės
-help-doc-publish =   .my.doc.<pavadinimas>:publish @pub   išsaugoti kaip neapdorotą blob (visi tipai)
-help-doc-publish-ipld =   .my.doc.<pavadinimas>:publish-ipld @pub  išsaugoti YAML kaip struktūrizuotą DAG-CBOR IPLD mazgą
-help-doc-fetch =   .my.doc.<pavadinimas>:fetch <cid>    importuoti CID turinį (be vykdymo)
-help-doc-cid =   .my.doc.<pavadinimas>:cid            rodyti išsaugotą CID
-help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
+help-doc-edit =   /my/doc/<pavadinimas>:edit           atidaryti redaktorių su išsaugotu turiniu
+help-doc-edit-cid =   /my/doc/<pavadinimas>:edit <cid>     gauti CID, atidaryti peržiūrai
+help-doc-eval =   /my/doc/<pavadinimas>:eval           vykdyti išsaugotą turinį eilutė po eilutės
+help-doc-publish =   /my/doc/<pavadinimas>:publish @pub   išsaugoti kaip neapdorotą blob (visi tipai)
+help-doc-publish-ipld =   /my/doc/<pavadinimas>:publish-ipld @pub  išsaugoti YAML kaip struktūrizuotą DAG-CBOR IPLD mazgą
+help-doc-fetch =   /my/doc/<pavadinimas>:fetch <cid>    importuoti CID turinį (be vykdymo)
+help-doc-cid =   /my/doc/<pavadinimas>:cid            rodyti išsaugotą CID
+help-doc-del =   /my/doc/<pavadinimas>:              ištrinti dokumentą
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Galimos kalbos (nustatyti su .my.i18n: <code>):
+lang-list-header = Galimos kalbos (nustatyti su /my/i18n: <code>):
 err-lang-not-found = kalba nerasta: { $lang }
 
 msg-send-failed = siuntimas nepavyko: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = profilis { $name } ištrintas
 profiles-not-found = profilis nerastas: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                tapatybės paskelbimas tinkl
 help-header-publish = ── tapatybės paskelbimas ────────────────────────────────────────────────────
 help-publish-intro = Paskelbimas padaro tavo tapatybę randamą tinkle. Kiti gali ieškoti tavo DID, kad su tavimi susisiektų.
 help-publish-ma = Paskelbimui reikia įdiegto ma (vietinė vykdymo aplinka). Ji sujungia ego su IPFS/IPNS tavo vardu.
-help-publish-steps = Žingsniai: paleisk '.ma [port]' vietiniam ma aptikti, tada '.my.identity!publish @ma'.
+help-publish-steps = Žingsniai: paleisk '.ma [port]' vietiniam ma aptikti, tada '/my/identity!publish @ma'.
 help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

@@ -44,7 +44,7 @@ msg-connecting = opretter forbindelse til iroh...
 msg-iroh-ready = iroh-slutpunkt klar
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID offentliggjort via lokal ma ({ $url })
-msg-identity-not-published = Identitet ikke fundet online — har du ma installeret lokalt, kør '.ma [port]' og derefter '.my.identity!publish @ma'. Skriv '.help.publish' for detaljer.
+msg-identity-not-published = Identitet ikke fundet online — har du ma installeret lokalt, kør '.ma [port]' og derefter '/my/identity!publish @ma'. Skriv '.help.publish' for detaljer.
 msg-blocked = ⊗ blokeret [{ $cap }]: { $from }
 msg-focus-cleared = fokus ryddet
 msg-focusing = fokuserer { $did } som { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = opdagelse mislykkedes: forventede `did` starter med did:m
 discover-no-endpoint = opdagelsesadvarsel: `endpoint_id` mangler i status.json; gemte kun DID
 discover-success = ma opdaget ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma oprettet — kør '.my.identity!publish @ma' for at udgive din identitet.
+discover-alias-hint =   alias @ma oprettet — kør '/my/identity!publish @ma' for at udgive din identitet.
 claim-success = Kørselstid gjort krav på for { $did }
 claim-conflict = Kørselstid allerede gjort krav på af en anden identitet
 claim-http-failed = krav mislykkedes: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ikke logget ind; log ind først for at gøre krav på kørsel
 runtime-no-verb = intet verb `{ $verb }` for { $path }
 
 # ── Verb — adgangskontrol ─────────────────────────────────────────────────
-acl-reset = .my.acl nulstillet (fuldt åben)
+acl-reset = /my/acl nulstillet (fuldt åben)
 acl-persist-error = gemningsfejl: { $e }
-acl-no-verb = intet verb `{ $verb }` for .my.acl
+acl-no-verb = intet verb `{ $verb }` for /my/acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
-publish-usage = brug: .my.identity!publish <did-eller-alias>
+publish-usage = brug: /my/identity!publish <did-eller-alias>
 identity-exported = Pakke hentet som { $filename }
 identity-export-failed = Eksport mislykkedes: { $e }
 
 # ── Verb — dokumenter ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content er tom
-doc-save-first = { $path }.content er tom — gem først
+doc-content-empty = { $path }/content er tom
+doc-save-first = { $path }/content er tom — gem først
 doc-missing-name = manglende dokumentnavn
-doc-publish-usage = brug: .my.doc.<navn>:publish <udgiver>
-doc-publish-ipld-usage = brug: .my.doc.<navn>:publish-ipld <udgiver>
+doc-publish-usage = brug: /my/doc/<navn>:publish <udgiver>
+doc-publish-ipld-usage = brug: /my/doc/<navn>:publish-ipld <udgiver>
 doc-publish-failed = publicering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicering { $path }: { $e }
 doc-store-sent = lagringsanmodning sendt ({ $id }) → { $publisher }; CID ankommer via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsanmodning sendt ({ $id }) → { $publisher }; CID ankommer via RPC-svar
-doc-fetch-done = hentede { $cid } → { $path }.content (ikke udført)
+doc-fetch-done = hentede { $cid } → { $path }/content (ikke udført)
 doc-fetch-failed = hentning { $cid }: { $e }
-doc-fetch-usage = brug: .my.doc.<navn>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid er ikke angivet
+doc-fetch-usage = brug: /my/doc/<navn>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid er ikke angivet
 doc-no-verb = intet verb `{ $verb }` for { $path }
 path-no-verb = intet verb `{ $verb }` for { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       slet blad eller undertræ
 help-config-verb =   .path!verb [args]            kør lokalt verb
 
 # ── Hjælpetekst — almindelige stier ──────────────────────────────────────
-help-my =   .my                          vis al personlig konfiguration
-help-aliases =   .my.aliases                  list aliaser
-help-aliases-set =   .my.aliases.<name>: <did>    tilføj/opdater alias (bart DID, intet #fragment)
-help-aliases-del =   .my.aliases.<name>:          fjern alias
+help-my =   /my                          vis al personlig konfiguration
+help-aliases =   /my/aliases                  list aliaser
+help-aliases-set =   /my/aliases/<name>: <did>    tilføj/opdater alias (bart DID, intet #fragment)
+help-aliases-del =   /my/aliases/<name>:          fjern alias
 help-runtime-discover =   .ma [port]          opdagé lokal kørselstid og opret @ma-alias
 help-runtime-claim =   .ma [port]             gør krav på kørselstid med din DID
-help-identity =   .my.identity                 vis identitetskonfiguration
-help-identity-did =   .my.identity.did             vis eget DID (skrivebeskyttet)
-help-identity-publish =   .my.identity!publish @pub    publicér eget DID via udgiver-tjeneste
-help-identity-export =   .my.identity!export          hent eget identitetspakke
+help-identity =   /my/identity                 vis identitetskonfiguration
+help-identity-did =   /my/identity/did             vis eget DID (skrivebeskyttet)
+help-identity-publish =   /my/identity!publish @pub    publicér eget DID via udgiver-tjeneste
+help-identity-export =   /my/identity!export          hent eget identitetspakke
 help-config-path =   .config                      vis alle .config.*-poster
 
 # ── Hjælpetekst — indbakke ────────────────────────────────────────────────
-help-inbox =   .my.inbox                    list indbakke (undertræsvisning)
-help-inbox-n =   .my.inbox.N                  vis post N's felter
-help-inbox-from =   .my.inbox.N.from             afsender-DID for post N
-help-inbox-reply =   .my.inbox.N!reply [body]     send svar (åbner redaktør uden body)
-help-inbox-open =   .my.inbox.N!open             åbn indhold i skrivebeskyttet redaktør
-help-inbox-del =   .my.inbox.N:                 slet post N
-help-inbox-delall =   .my.inbox:                   slet alle indbakkeposter
-help-inbox-flush =   .my.inbox!flush              udskriv alle poster til terminalen
-help-inbox-filter =   .my.inbox!filter @who        vis kun poster fra @who
-help-inbox-traverse =   .my.inbox.N.sender.<felt>   traversér afsenderens DID-dokument latenst
+help-inbox =   /my/inbox                    list indbakke (undertræsvisning)
+help-inbox-n =   /my/inbox/N                  vis post N's felter
+help-inbox-from =   /my/inbox/N/from             afsender-DID for post N
+help-inbox-reply =   /my/inbox/N!reply [body]     send svar (åbner redaktør uden body)
+help-inbox-open =   /my/inbox/N!open             åbn indhold i skrivebeskyttet redaktør
+help-inbox-del =   /my/inbox/N:                 slet post N
+help-inbox-delall =   /my/inbox:                   slet alle indbakkeposter
+help-inbox-flush =   /my/inbox!flush              udskriv alle poster til terminalen
+help-inbox-filter =   /my/inbox!filter @who        vis kun poster fra @who
+help-inbox-traverse =   /my/inbox/N/sender/<felt>   traversér afsenderens DID-dokument latenst
 
 # ── Hjælpetekst — dokumenter ──────────────────────────────────────────────
-help-doc-edit =   .my.doc.<navn>:edit           åbn redaktør med gemt indhold
-help-doc-edit-cid =   .my.doc.<navn>:edit <cid>     hent CID, åbn til gennemgang
-help-doc-eval =   .my.doc.<navn>:eval           kør gemt indhold linje for linje
-help-doc-publish =   .my.doc.<navn>:publish @pub   lagr som rå blob (alle typer)
-help-doc-publish-ipld =   .my.doc.<navn>:publish-ipld @pub  lagr YAML som struktureret DAG-CBOR IPLD-node
-help-doc-fetch =   .my.doc.<navn>:fetch <cid>    importér CID-indhold (ingen kørsel)
-help-doc-cid =   .my.doc.<navn>:cid            vis gemt CID
-help-doc-del =   .my.doc.<navn>:              slet dokument
+help-doc-edit =   /my/doc/<navn>:edit           åbn redaktør med gemt indhold
+help-doc-edit-cid =   /my/doc/<navn>:edit <cid>     hent CID, åbn til gennemgang
+help-doc-eval =   /my/doc/<navn>:eval           kør gemt indhold linje for linje
+help-doc-publish =   /my/doc/<navn>:publish @pub   lagr som rå blob (alle typer)
+help-doc-publish-ipld =   /my/doc/<navn>:publish-ipld @pub  lagr YAML som struktureret DAG-CBOR IPLD-node
+help-doc-fetch =   /my/doc/<navn>:fetch <cid>    importér CID-indhold (ingen kørsel)
+help-doc-cid =   /my/doc/<navn>:cid            vis gemt CID
+help-doc-del =   /my/doc/<navn>:              slet dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Tilgængelige sprog (indstil med .my.i18n: <code>):
+lang-list-header = Tilgængelige sprog (indstil med /my/i18n: <code>):
 err-lang-not-found = sproget ikke fundet: { $lang }
 
 msg-send-failed = afsendelse mislykkedes: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = profil { $name } slettet
 profiles-not-found = profil ikke fundet: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -304,12 +304,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -332,9 +332,9 @@ help-topic-publish =   .help.publish                udgiv din identitet til netv
 help-header-publish = ── udgiv identitet ──────────────────────────────────────────────────────────
 help-publish-intro = Udgivelse gør din identitet synlig på netværket. Andre kan slå dit DID op for at nå dig.
 help-publish-ma = For at udgive skal du have ma (lokal kørselstid) installeret. Det forbinder ego med IPFS/IPNS på dine vegne.
-help-publish-steps = Trin: kør '.ma [port]' for at opdage din lokale ma, derefter '.my.identity!publish @ma'.
+help-publish-steps = Trin: kør '.ma [port]' for at opdage din lokale ma, derefter '/my/identity!publish @ma'.
 help-publish-without = Uden udgivelse kan andre ikke nå dig — selv om de kender dit DID, kan de ikke opløse dit endepunkt.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

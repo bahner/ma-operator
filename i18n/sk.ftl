@@ -44,7 +44,7 @@ msg-connecting = pripájanie k iroh...
 msg-iroh-ready = iroh endpoint pripravený
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID zverejnené cez lokálne ma ({ $url })
-msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.ma [port]' a potom '.my.identity!publish @ma'. Napíš '.help.publish' pre podrobnosti.
+msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.ma [port]' a potom '/my/identity!publish @ma'. Napíš '.help.publish' pre podrobnosti.
 msg-blocked = ⊗ zablokované [{ $cap }]: { $from }
 msg-focus-cleared = fokus vymazaný
 msg-focusing = zameranie na { $did } ako { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = zisťovanie zlyhalo: očakávané `did` začínajúce did
 discover-no-endpoint = varovanie zisťovania: `endpoint_id` chýba v status.json; uložené len DID
 discover-success = ma zistené na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma vytvorený — spusti '.my.identity!publish @ma' na zverejnenie svojej identity.
+discover-alias-hint =   alias @ma vytvorený — spusti '/my/identity!publish @ma' na zverejnenie svojej identity.
 claim-success = Runtime prevzatý pre { $did }
 claim-conflict = Runtime už prevzatý inou identitou
 claim-http-failed = prevzatie zlyhalo: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = neprihlásený; najprv sa prihláste pre prevzatie runtime
 runtime-no-verb = žiadne sloveso `{ $verb }` pre { $path }
 
 # ── Slovesá — riadenie prístupu ───────────────────────────────────────────
-acl-reset = .my.acl obnovené (plne otvorené)
+acl-reset = /my/acl obnovené (plne otvorené)
 acl-persist-error = chyba ukladania: { $e }
-acl-no-verb = žiadne sloveso `{ $verb }` pre .my.acl
+acl-no-verb = žiadne sloveso `{ $verb }` pre /my/acl
 
 # ── Slovesá — identita ────────────────────────────────────────────────────
-publish-usage = použitie: .my.identity!publish <did-alebo-alias>
+publish-usage = použitie: /my/identity!publish <did-alebo-alias>
 identity-exported = Balík stiahnutý ako { $filename }
 identity-export-failed = Export zlyhal: { $e }
 
 # ── Slovesá — dokumenty ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content je prázdne
-doc-save-first = { $path }.content je prázdne — najprv uložte
+doc-content-empty = { $path }/content je prázdne
+doc-save-first = { $path }/content je prázdne — najprv uložte
 doc-missing-name = chýba názov dokumentu
-doc-publish-usage = použitie: .my.doc.<názov>:publish <vydavateľ>
-doc-publish-ipld-usage = použitie: .my.doc.<názov>:publish-ipld <vydavateľ>
+doc-publish-usage = použitie: /my/doc/<názov>:publish <vydavateľ>
+doc-publish-ipld-usage = použitie: /my/doc/<názov>:publish-ipld <vydavateľ>
 doc-publish-failed = publikovanie { $path }: { $e }
 doc-publish-ipld-failed = publikovanie IPLD { $path }: { $e }
 doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
 doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
-doc-fetch-done = { $cid } načítané → { $path }.content (nespustené)
+doc-fetch-done = { $cid } načítané → { $path }/content (nespustené)
 doc-fetch-failed = načítanie { $cid }: { $e }
-doc-fetch-usage = použitie: .my.doc.<názov>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid nie je nastavené
+doc-fetch-usage = použitie: /my/doc/<názov>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid nie je nastavené
 doc-no-verb = žiadne sloveso `{ $verb }` pre { $path }
 path-no-verb = žiadne sloveso `{ $verb }` pre { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 nastaviť list
 help-config-delete =   .path:                       vymazať list alebo podstrom
 help-config-verb =   .path!verb [args]            spustiť lokálne sloveso
 
-help-my =   .my                          zobraziť celú osobnú konfiguráciu
-help-aliases =   .my.aliases                  vypísať aliasy
-help-aliases-set =   .my.aliases.<name>: <did>    pridať/aktualizovať alias (čisté DID, bez #fragmentu)
-help-aliases-del =   .my.aliases.<name>:          odstrániť alias
+help-my =   /my                          zobraziť celú osobnú konfiguráciu
+help-aliases =   /my/aliases                  vypísať aliasy
+help-aliases-set =   /my/aliases/<name>: <did>    pridať/aktualizovať alias (čisté DID, bez #fragmentu)
+help-aliases-del =   /my/aliases/<name>:          odstrániť alias
 help-runtime-discover =   .ma [port]          zistiť lokálny runtime a vytvoriť alias @ma
 help-runtime-claim =   .ma [port]             prevziať runtime svojím DID
-help-identity =   .my.identity                 zobraziť konfiguráciu identity
-help-identity-did =   .my.identity.did             zobraziť vlastný DID (len na čítanie)
-help-identity-publish =   .my.identity!publish @pub    publikovať vlastný DID cez vydavateľskú službu
-help-identity-export =   .my.identity!export          stiahnuť vlastný identifikačný balík
+help-identity =   /my/identity                 zobraziť konfiguráciu identity
+help-identity-did =   /my/identity/did             zobraziť vlastný DID (len na čítanie)
+help-identity-publish =   /my/identity!publish @pub    publikovať vlastný DID cez vydavateľskú službu
+help-identity-export =   /my/identity!export          stiahnuť vlastný identifikačný balík
 help-config-path =   .config                      zobraziť všetky záznamy .config.*
 
-help-inbox =   .my.inbox                    vypísať doručenú poštu (pohľad podstromu)
-help-inbox-n =   .my.inbox.N                  zobraziť polia záznamu N
-help-inbox-from =   .my.inbox.N.from             DID odosielateľa pre záznam N
-help-inbox-reply =   .my.inbox.N!reply [body]     odoslať odpoveď (otvorí editor bez obsahu)
-help-inbox-open =   .my.inbox.N!open             otvoriť obsah v editore len na čítanie
-help-inbox-del =   .my.inbox.N:                 vymazať záznam N
-help-inbox-delall =   .my.inbox:                   vymazať všetky záznamy doručenej pošty
-help-inbox-flush =   .my.inbox!flush              vytlačiť všetky záznamy v termináli
-help-inbox-filter =   .my.inbox!filter @who        zobraziť iba záznamy od @who
-help-inbox-traverse =   .my.inbox.N.sender.<pole>   prechádzať DID dokument odosielateľa lenivo
+help-inbox =   /my/inbox                    vypísať doručenú poštu (pohľad podstromu)
+help-inbox-n =   /my/inbox/N                  zobraziť polia záznamu N
+help-inbox-from =   /my/inbox/N/from             DID odosielateľa pre záznam N
+help-inbox-reply =   /my/inbox/N!reply [body]     odoslať odpoveď (otvorí editor bez obsahu)
+help-inbox-open =   /my/inbox/N!open             otvoriť obsah v editore len na čítanie
+help-inbox-del =   /my/inbox/N:                 vymazať záznam N
+help-inbox-delall =   /my/inbox:                   vymazať všetky záznamy doručenej pošty
+help-inbox-flush =   /my/inbox!flush              vytlačiť všetky záznamy v termináli
+help-inbox-filter =   /my/inbox!filter @who        zobraziť iba záznamy od @who
+help-inbox-traverse =   /my/inbox/N/sender/<pole>   prechádzať DID dokument odosielateľa lenivo
 
-help-doc-edit =   .my.doc.<názov>:edit           otvoriť editor s uloženým obsahom
-help-doc-edit-cid =   .my.doc.<názov>:edit <cid>     načítať CID, otvoriť na kontrolu
-help-doc-eval =   .my.doc.<názov>:eval           spustiť uložený obsah riadok po riadku
-help-doc-publish =   .my.doc.<názov>:publish @pub   uložiť ako surový blob (všetky typy)
-help-doc-publish-ipld =   .my.doc.<názov>:publish-ipld @pub  uložiť YAML ako štruktúrovaný uzol DAG-CBOR IPLD
-help-doc-fetch =   .my.doc.<názov>:fetch <cid>    importovať obsah CID (bez spustenia)
-help-doc-cid =   .my.doc.<názov>:cid            zobraziť uložené CID
-help-doc-del =   .my.doc.<názov>:              vymazať dokument
+help-doc-edit =   /my/doc/<názov>:edit           otvoriť editor s uloženým obsahom
+help-doc-edit-cid =   /my/doc/<názov>:edit <cid>     načítať CID, otvoriť na kontrolu
+help-doc-eval =   /my/doc/<názov>:eval           spustiť uložený obsah riadok po riadku
+help-doc-publish =   /my/doc/<názov>:publish @pub   uložiť ako surový blob (všetky typy)
+help-doc-publish-ipld =   /my/doc/<názov>:publish-ipld @pub  uložiť YAML ako štruktúrovaný uzol DAG-CBOR IPLD
+help-doc-fetch =   /my/doc/<názov>:fetch <cid>    importovať obsah CID (bez spustenia)
+help-doc-cid =   /my/doc/<názov>:cid            zobraziť uložené CID
+help-doc-del =   /my/doc/<názov>:              vymazať dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Dostupné jazyky (nastaviť pomocou .my.i18n: <code>):
+lang-list-header = Dostupné jazyky (nastaviť pomocou /my/i18n: <code>):
 err-lang-not-found = jazyk nenájdený: { $lang }
 
 msg-send-failed = odoslanie zlyhalo: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = profil { $name } odstránený
 profiles-not-found = profil sa nenašiel: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                zverejniť svoju identitu v 
 help-header-publish = ── zverejnenie identity ─────────────────────────────────────────────────────
 help-publish-intro = Zverejnenie sprístupní tvoju identitu v sieti. Ostatní môžu vyhľadať tvoj DID a kontaktovať ťa.
 help-publish-ma = Na zverejnenie potrebuješ nainštalované ma (lokálny runtime). Prepája ego s IPFS/IPNS v tvojom mene.
-help-publish-steps = Kroky: spusti '.ma [port]' na zistenie lokálneho ma, potom '.my.identity!publish @ma'.
+help-publish-steps = Kroky: spusti '.ma [port]' na zistenie lokálneho ma, potom '/my/identity!publish @ma'.
 help-publish-without = Bez zverejnenia ťa ostatní nemôžu kontaktovať — aj keď poznajú tvoj DID, nedokážu rozlíšiť tvoj endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

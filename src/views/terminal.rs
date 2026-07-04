@@ -23,22 +23,22 @@ pub fn Terminal() -> impl IntoView {
     // Editor modal signal — Some(EditorContext) opens the overlay
     let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
 
-    // When .my.config.editor.persistent is "true", keep the editor panel open
+    // When /my/config/editor/persistent is "true", keep the editor panel open
     // at all times using a scratch document.
     {
         Effect::new(move |_| {
             let is_persistent = config
                 .get()
-                .get(".my.config.editor.persistent")
+                .get("/my/config/editor/persistent")
                 .unwrap_or("false")
                 == "true";
             if is_persistent && show_editor.get().is_none() {
                 let cfg = config.get_untracked();
                 let initial = cfg
-                    .get(".my.doc.scratch.content")
+                    .get("/my/doc/scratch/content")
                     .unwrap_or_default()
                     .to_string();
-                show_editor.set(Some(EditorContext::new(".my.doc.scratch", initial)));
+                show_editor.set(Some(EditorContext::new("/my/doc/scratch", initial)));
             }
         });
     }
@@ -104,8 +104,8 @@ pub fn Terminal() -> impl IntoView {
 
     view! {
         <div class="terminal"
-             class:placement-left=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "left"
-             class:placement-right=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "right"
+             class:placement-left=move || config.get().get("/my/config/editor/placement").unwrap_or("bottom") == "left"
+             class:placement-right=move || config.get().get("/my/config/editor/placement").unwrap_or("bottom") == "right"
         >
             <OutputPane state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>

@@ -44,7 +44,7 @@ msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID በአካባቢ ma ({ $url }) አማካኝነት ታትሟል
-msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '.my.identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help.publish' ይጻፉ።
+msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '/my/identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help.publish' ይጻፉ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
 msg-focusing = { $did } እንደ { $prompt } ላይ ትኩረት እያደረገ
@@ -108,7 +108,7 @@ discover-invalid-did = ፍለጋ አልተሰራም: `did` did:ma: ለ መጀም
 discover-no-endpoint = የፍለጋ ማስጠንቀቂያ: `endpoint_id` status.json ውስጥ ጎደለ; DID ብቻ ተቀምጧል
 discover-success = ma { $url } ላይ ተገኘ
 discover-did-line = DID: { $did }
-discover-alias-hint =   ቅጽል ስም @ma ተፈጠረ — ህሊናዎን ለማሳተም '.my.identity!publish @ma' ያሂዱ።
+discover-alias-hint =   ቅጽል ስም @ma ተፈጠረ — ህሊናዎን ለማሳተም '/my/identity!publish @ma' ያሂዱ።
 claim-success = Runtime ለ{ $did } ተጠየቀ
 claim-conflict = Runtime ቀደም ሲል በሌላ ማንነት ተጠይቋል
 claim-http-failed = ጥያቄ አልተሰራም: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = አልገቡም; runtime ለመጠየቅ መጀመሪያ ይ�
 runtime-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 
 # ── ተግባራት — ACL ──────────────────────────────────────────────────────────
-acl-reset = .my.acl ዳግም ተቀናጅቷል (ሙሉ በሙሉ ክፍት)
+acl-reset = /my/acl ዳግም ተቀናጅቷል (ሙሉ በሙሉ ክፍት)
 acl-persist-error = የማስቀመጥ ስህተት: { $e }
-acl-no-verb = ለ.my.acl `{ $verb }` ተግባር የለም
+acl-no-verb = ለ/my/acl `{ $verb }` ተግባር የለም
 
 # ── ተግባራት — ማንነት ────────────────────────────────────────────────────────
-publish-usage = አጠቃቀም: .my.identity!publish <did-ወይም-ቅፅል-ስም>
+publish-usage = አጠቃቀም: /my/identity!publish <did-ወይም-ቅፅል-ስም>
 identity-exported = ቅጅ እንደ { $filename } ወርዷል
 identity-export-failed = ወደ ውጪ ማስቀረት አልተሳካም: { $e }
 
 # ── ተግባራት — ሰነዶች ───────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ባዶ ነው
-doc-save-first = { $path }.content ባዶ ነው — መጀመሪያ ያስቀምጡ
+doc-content-empty = { $path }/content ባዶ ነው
+doc-save-first = { $path }/content ባዶ ነው — መጀመሪያ ያስቀምጡ
 doc-missing-name = የሰነድ ስም ጎደለ
-doc-publish-usage = አጠቃቀም: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = አጠቃቀም: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = አጠቃቀም: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = አጠቃቀም: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = { $path } ማተም: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
-doc-fetch-done = { $cid } ተሰብስቧል → { $path }.content (አልተሰራም)
+doc-fetch-done = { $cid } ተሰብስቧል → { $path }/content (አልተሰራም)
 doc-fetch-failed = { $cid } ማምጣት: { $e }
-doc-fetch-usage = አጠቃቀም: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid አልተዘጋጀም
+doc-fetch-usage = አጠቃቀም: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid አልተዘጋጀም
 doc-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 path-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       ቅጠሉን ወይም ን�
 help-config-verb =   .path!verb [args]            ሁናቴ ተግባር ይጥሩ
 
 # ── እርዳታ — ተሎ ጥቅም ላይ የሚዋሉ ─────────────────────────────────────────
-help-my =   .my                          ሁሉንም የግል ቅንብሮች አሳይ
-help-aliases =   .my.aliases                  ቅፅል ስሞችን ዘርዝር
-help-aliases-set =   .my.aliases.<name>: <did>    ቅፅል ስም ጨምር/አዘምን (bare DID, #fragment የለም)
-help-aliases-del =   .my.aliases.<name>:          ቅፅል ስም አስወግድ
+help-my =   /my                          ሁሉንም የግል ቅንብሮች አሳይ
+help-aliases =   /my/aliases                  ቅፅል ስሞችን ዘርዝር
+help-aliases-set =   /my/aliases/<name>: <did>    ቅፅል ስም ጨምር/አዘምን (bare DID, #fragment የለም)
+help-aliases-del =   /my/aliases/<name>:          ቅፅል ስም አስወግድ
 help-runtime-discover =   .ma [port]          ሁናቴ runtime ፈልግ እና ቅፅል ስም @ma ፍጠር
 help-runtime-claim =   .ma [port]             DIDዎ በ runtime ባለቤትነት ጠይቁ
-help-identity =   .my.identity                 የማንነት ቅንብሮችን አሳይ
-help-identity-did =   .my.identity.did             ራስዎ DID አሳይ (ለማንበብ ብቻ)
-help-identity-publish =   .my.identity!publish @pub    DID በ publishing service ያሳትሙ
-help-identity-export =   .my.identity!export          የራስ የማንነት ቅጅ አውርድ
+help-identity =   /my/identity                 የማንነት ቅንብሮችን አሳይ
+help-identity-did =   /my/identity/did             ራስዎ DID አሳይ (ለማንበብ ብቻ)
+help-identity-publish =   /my/identity!publish @pub    DID በ publishing service ያሳትሙ
+help-identity-export =   /my/identity!export          የራስ የማንነት ቅጅ አውርድ
 help-config-path =   .config                      ሁሉንም .config.* ግቤቶች አሳይ
 
 # ── እርዳታ — የገቢ ሳጥን ─────────────────────────────────────────────────────
-help-inbox =   .my.inbox                    የገቢ ሳጥን ዘርዝር (ንዑስ ዛፍ እይታ)
-help-inbox-n =   .my.inbox.N                  የ N ግቤት መስኮች አሳይ
-help-inbox-from =   .my.inbox.N.from             የ N ግቤት ላኪ DID
-help-inbox-reply =   .my.inbox.N!reply [body]     ምላሽ ይላኩ (ጽሑፍ ከሌለ አርታኢ ይከፈታል)
-help-inbox-open =   .my.inbox.N!open             ይዘቱን ለማንበብ ብቻ አርታኢ ውስጥ ይክፈቱ
-help-inbox-del =   .my.inbox.N:                 ግቤት N ሰርዝ
-help-inbox-delall =   .my.inbox:                   ሁሉንም የገቢ ሳጥን ግቤቶች ሰርዝ
-help-inbox-flush =   .my.inbox!flush              ሁሉንም ግቤቶች ወደ terminal አትም
-help-inbox-filter =   .my.inbox!filter @who        ከ @who ብቻ ያሉ ልኮዎችን አሳይ
-help-inbox-traverse =   .my.inbox.N.sender.<field>   የላኪ DID ሰነድ በዝግታ ያስሱ
+help-inbox =   /my/inbox                    የገቢ ሳጥን ዘርዝር (ንዑስ ዛፍ እይታ)
+help-inbox-n =   /my/inbox/N                  የ N ግቤት መስኮች አሳይ
+help-inbox-from =   /my/inbox/N/from             የ N ግቤት ላኪ DID
+help-inbox-reply =   /my/inbox/N!reply [body]     ምላሽ ይላኩ (ጽሑፍ ከሌለ አርታኢ ይከፈታል)
+help-inbox-open =   /my/inbox/N!open             ይዘቱን ለማንበብ ብቻ አርታኢ ውስጥ ይክፈቱ
+help-inbox-del =   /my/inbox/N:                 ግቤት N ሰርዝ
+help-inbox-delall =   /my/inbox:                   ሁሉንም የገቢ ሳጥን ግቤቶች ሰርዝ
+help-inbox-flush =   /my/inbox!flush              ሁሉንም ግቤቶች ወደ terminal አትም
+help-inbox-filter =   /my/inbox!filter @who        ከ @who ብቻ ያሉ ልኮዎችን አሳይ
+help-inbox-traverse =   /my/inbox/N/sender/<field>   የላኪ DID ሰነድ በዝግታ ያስሱ
 
 # ── እርዳታ — ሰነዶች ────────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           ከተቀመጠ ይዘት ጋር አርታኢ ይክፈቱ
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID ያምጡ, ለፍተሻ ብቻ ይክፈቱ
-help-doc-eval =   .my.doc.<name>!eval           የተቀመጠ ይዘት ሰረዝ-ሰረዝ ያሂዱ
-help-doc-publish =   .my.doc.<name>!publish @pub   እንደ ጥሬ blob ያስቀምጡ (ማናቸውም አይነት)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML እንደ IPLD DAG-CBOR ሲስተም ያስቀምጡ
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID ይዘት ያስገቡ (አልተሰራም)
-help-doc-cid =   .my.doc.<name>!cid            የተቀመጠ CID አሳይ
-help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
+help-doc-edit =   /my/doc/<name>!edit           ከተቀመጠ ይዘት ጋር አርታኢ ይክፈቱ
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID ያምጡ, ለፍተሻ ብቻ ይክፈቱ
+help-doc-eval =   /my/doc/<name>!eval           የተቀመጠ ይዘት ሰረዝ-ሰረዝ ያሂዱ
+help-doc-publish =   /my/doc/<name>!publish @pub   እንደ ጥሬ blob ያስቀምጡ (ማናቸውም አይነት)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML እንደ IPLD DAG-CBOR ሲስተም ያስቀምጡ
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID ይዘት ያስገቡ (አልተሰራም)
+help-doc-cid =   /my/doc/<name>!cid            የተቀመጠ CID አሳይ
+help-doc-del =   /my/doc/<name>:              ሰነዱን ሰርዝ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = ያሉ ቋንቋዎች (.my.i18n: <ኮድ> ለማዘጋጀት):
+lang-list-header = ያሉ ቋንቋዎች (/my/i18n: <ኮድ> ለማዘጋጀት):
 err-lang-not-found = ቋንቋ አልተገኘም: { $lang }
 
 msg-send-failed = መላኩ አልተሳካም: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = ፕሮፋይል { $name } ተሰርዟል
 profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                ህሊናዎን ወደ ኔ�
 help-header-publish = ── ህሊና ማሳተም ────────────────────────────────────────────────────────────────
 help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊፈለግ የሚችል ያደርጋል። ሌሎች DID ዎን ፈልገው ሊያገኙዎ ይችላሉ።
 help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
-help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.ma [port]' ያሂዱ፣ ከዚያም '.my.identity!publish @ma'።
+help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.ma [port]' ያሂዱ፣ ከዚያም '/my/identity!publish @ma'።
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

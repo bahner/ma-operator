@@ -13,10 +13,10 @@ pub(super) fn handle_acl(
     show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
-    // ── .my.acl ───────────────────────────────────────────────────────────
-    // .my.acl:edit  — open the ACL YAML in a config editor.
-    // .my.acl:      — (delete) reset ACL to default (fully open).
-    if path == ".my.acl" {
+    // ── /my/acl ───────────────────────────────────────────────────────────
+    // /my/acl:edit  — open the ACL YAML in a config editor.
+    // /my/acl:      — (delete) reset ACL to default (fully open).
+    if path == "/my/acl" {
         return match verb {
             "edit" => {
                 let cfg = config.get_untracked();
@@ -25,7 +25,7 @@ pub(super) fn handle_acl(
                     .unwrap_or("\"*\": [inbox, rpc]\n")
                     .to_string();
                 show_editor.set(Some(
-                    EditorContext::new(".my.acl", current)
+                    EditorContext::new("/my/acl", current)
                         .with_language("yaml")
                         .with_mode(crate::views::editor::EditorMode::ConfigEdit {
                             key: crate::acl::ACL_KEY.to_string(),

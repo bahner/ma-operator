@@ -46,7 +46,7 @@ msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID push out, local ma ({ $url })
-msg-identity-not-published = Inyalowda pashang nowit kewe na la tube — si ma besh da gut, run '.ma [port]' den '.my.identity!publish @ma'. Slip '.help.publish' fo detay.
+msg-identity-not-published = Inyalowda pashang nowit kewe na la tube — si ma besh da gut, run '.ma [port]' den '/my/identity!publish @ma'. Slip '.help.publish' fo detay.
 msg-blocked = ⊗ hamma [{ $cap }]: { $from }
 msg-focus-cleared = fokus na du
 msg-focusing = fokus { $did } as { $prompt }
@@ -110,7 +110,7 @@ discover-invalid-did = diskova hámfalla: `did` gonya showxa did:ma: diching, to
 discover-no-endpoint = diskova beleti: `endpoint_id` na finyish wit status.json; DID oyedeng hol
 discover-success = ma diskova at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma alias kowl da — run '.my.identity!publish @ma' fo pashang inyalowda setara.
+discover-alias-hint =   @ma alias kowl da — run '/my/identity!publish @ma' fo pashang inyalowda setara.
 claim-success = Runtime klaim fo { $did }
 claim-conflict = Runtime ta klaim by bifo selfmang
 claim-http-failed = kolowda hámfalla: HTTP { $status }
@@ -119,30 +119,30 @@ claim-no-session = na ingang; ingang diching fo klaim runtime
 runtime-no-verb = na du `{ $verb }` fo { $path }
 
 # ── Du — ACL ──────────────────────────────────────────────────────────────
-acl-reset = .my.acl reset finyish (udda kowl-wit)
+acl-reset = /my/acl reset finyish (udda kowl-wit)
 acl-persist-error = hámfalla hol: { $e }
-acl-no-verb = na du `{ $verb }` fo .my.acl
+acl-no-verb = na du `{ $verb }` fo /my/acl
 
 # ── Du — selfmang ─────────────────────────────────────────────────────────
-publish-usage = showxa: .my.identity!publish <did-oyedeng-alias>
+publish-usage = showxa: /my/identity!publish <did-oyedeng-alias>
 identity-exported = Bundle downye as { $filename }
 identity-export-failed = Export bombauch: { $e }
 
 # ── Du — dokuments ────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content im nating
-doc-save-first = { $path }.content im nating — hol diching
+doc-content-empty = { $path }/content im nating
+doc-save-first = { $path }/content im nating — hol diching
 doc-missing-name = dokument nim na finyish
-doc-publish-usage = showxa: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = showxa: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = showxa: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = showxa: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = sendowt { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
-doc-fetch-done = { $cid } fech finyish → { $path }.content (na du-im)
+doc-fetch-done = { $cid } fech finyish → { $path }/content (na du-im)
 doc-fetch-failed = feching { $cid }: { $e }
-doc-fetch-usage = showxa: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid na hol
+doc-fetch-usage = showxa: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid na hol
 doc-no-verb = na du `{ $verb }` fo { $path }
 path-no-verb = na du `{ $verb }` fo { $path }
 
@@ -183,42 +183,42 @@ help-config-delete =   .path:                       na-du lef oyedeng gova-kopen
 help-config-verb =   .path!verb [args]            kol lokal verb
 
 # ── Halp — kowl paj du ───────────────────────────────────────────────────
-help-my =   .my                          lit kowl selfmang konfig
-help-aliases =   .my.aliases                  lit alias kowl
-help-aliases-set =   .my.aliases.<name>: <did>    mek/update alias (bare DID, na wit #fragment)
-help-aliases-del =   .my.aliases.<name>:          na-du alias
+help-my =   /my                          lit kowl selfmang konfig
+help-aliases =   /my/aliases                  lit alias kowl
+help-aliases-set =   /my/aliases/<name>: <did>    mek/update alias (bare DID, na wit #fragment)
+help-aliases-del =   /my/aliases/<name>:          na-du alias
 help-runtime-discover =   .ma [port]          diskova lokal runtime unte mek @ma alias
 help-runtime-claim =   .ma [port]             klaim runtime wit yu DID
-help-identity =   .my.identity                 lit selfmang konfig
-help-identity-did =   .my.identity.did             lit yu DID (lit-seng oyedeng)
-help-identity-publish =   .my.identity!publish @pub    sendowt DID wit publishe
-help-identity-export =   .my.identity!export          downye yu owp identity bundle
+help-identity =   /my/identity                 lit selfmang konfig
+help-identity-did =   /my/identity/did             lit yu DID (lit-seng oyedeng)
+help-identity-publish =   /my/identity!publish @pub    sendowt DID wit publishe
+help-identity-export =   /my/identity!export          downye yu owp identity bundle
 help-config-path =   .config                      lit kowl .config.* tenye
 
 # ── Halp — inbox ─────────────────────────────────────────────────────────
-help-inbox =   .my.inbox                    lit inbox (gova-kopeng lit)
-help-inbox-n =   .my.inbox.N                  lit tenye N fild kowl
-help-inbox-from =   .my.inbox.N.from             DID showxa-mang tenye N
-help-inbox-reply =   .my.inbox.N!reply [body]     showxa bek-showxa (editow udda na wit body)
-help-inbox-open =   .my.inbox.N!open             udda mbeɗe lit-seng editow
-help-inbox-del =   .my.inbox.N:                 na-du tenye N
-help-inbox-delall =   .my.inbox:                   na-du kowl inbox tenye
-help-inbox-flush =   .my.inbox!flush              lit kowl tenye terminal
-help-inbox-filter =   .my.inbox!filter @who        lit kowl tenye fom @who
-help-inbox-traverse =   .my.inbox.N.sender.<field>   mali-du DID dok showxa-mang
+help-inbox =   /my/inbox                    lit inbox (gova-kopeng lit)
+help-inbox-n =   /my/inbox/N                  lit tenye N fild kowl
+help-inbox-from =   /my/inbox/N/from             DID showxa-mang tenye N
+help-inbox-reply =   /my/inbox/N!reply [body]     showxa bek-showxa (editow udda na wit body)
+help-inbox-open =   /my/inbox/N!open             udda mbeɗe lit-seng editow
+help-inbox-del =   /my/inbox/N:                 na-du tenye N
+help-inbox-delall =   /my/inbox:                   na-du kowl inbox tenye
+help-inbox-flush =   /my/inbox!flush              lit kowl tenye terminal
+help-inbox-filter =   /my/inbox!filter @who        lit kowl tenye fom @who
+help-inbox-traverse =   /my/inbox/N/sender/<field>   mali-du DID dok showxa-mang
 
 # ── Halp — dokuments ─────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           udda editow wit hol mbeɗe
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fech CID, udda lit-seng oyedeng
-help-doc-eval =   .my.doc.<name>!eval           du hol mbeɗe lain-wit-lain
-help-doc-publish =   .my.doc.<name>!publish @pub   hol as raw blob (kowl tip)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  hol YAML as IPLD DAG-CBOR node
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    bringin CID mbeɗe (na du-im)
-help-doc-cid =   .my.doc.<name>!cid            lit hol CID
-help-doc-del =   .my.doc.<name>:              na-du dokument
+help-doc-edit =   /my/doc/<name>!edit           udda editow wit hol mbeɗe
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     fech CID, udda lit-seng oyedeng
+help-doc-eval =   /my/doc/<name>!eval           du hol mbeɗe lain-wit-lain
+help-doc-publish =   /my/doc/<name>!publish @pub   hol as raw blob (kowl tip)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  hol YAML as IPLD DAG-CBOR node
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    bringin CID mbeɗe (na du-im)
+help-doc-cid =   /my/doc/<name>!cid            lit hol CID
+help-doc-del =   /my/doc/<name>:              na-du dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Belter languages (.my.i18n: <code> fo set):
+lang-list-header = Belter languages (/my/i18n: <code> fo set):
 err-lang-not-found = langue introuvable : { $lang }
 
 msg-send-failed = sako nah bringin: { $e }
@@ -289,11 +289,11 @@ profiles-deleted = profil { $name } dele go
 profiles-not-found = profil no found: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -305,12 +305,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -335,9 +335,9 @@ help-topic-publish =   .help.publish                pashang inyalowda setara to 
 help-header-publish = ── pashang setara ───────────────────────────────────────────────────────────
 help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID inyalowda setara fo da kontak.
 help-publish-ma = Fo pashang, ma (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
-help-publish-steps = Stap: run '.ma [port]' fo find local ma, den '.my.identity!publish @ma'.
+help-publish-steps = Stap: run '.ma [port]' fo find local ma, den '/my/identity!publish @ma'.
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

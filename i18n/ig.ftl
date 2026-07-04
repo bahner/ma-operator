@@ -44,7 +44,7 @@ msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Ebipụtara DID site na ma mpaghara ({ $url })
-msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '.my.identity!publish @ma'. Dee '.help.publish' maka nkọwa.
+msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '/my/identity!publish @ma'. Dee '.help.publish' maka nkọwa.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
 msg-focusing = na-etinye uche na { $did } dị ka { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = nchọpụta erughị: `did` ga-amalite na did:ma:, nweta
 discover-no-endpoint = ọdịmara nchọpụta: `endpoint_id` dịghị na status.json; echekwara DID naanị
 discover-success = achọpụtara ma na { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   emepụtara alias @ma — mee '.my.identity!publish @ma' iji bipute njirimara gị.
+discover-alias-hint =   emepụtara alias @ma — mee '/my/identity!publish @ma' iji bipute njirimara gị.
 claim-success = akwụtara Runtime maka { $did }
 claim-conflict = njirimara ọzọ akwụtara Runtime otu oge
 claim-http-failed = ikwu akwụ erughị: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = abanyeghị; banye ka ọ bụrụ nke mbụ iji kwu akwụ r
 runtime-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 
 # ── Ọrụ — ACL ─────────────────────────────────────────────────────────────
-acl-reset = etọghachiri .my.acl (mepee kpamkpam)
+acl-reset = etọghachiri /my/acl (mepee kpamkpam)
 acl-persist-error = njehie echekwa: { $e }
-acl-no-verb = enweghị ọrụ `{ $verb }` maka .my.acl
+acl-no-verb = enweghị ọrụ `{ $verb }` maka /my/acl
 
 # ── Ọrụ — njirimara ───────────────────────────────────────────────────────
-publish-usage = ojiji: .my.identity!publish <did-ma-ọ-bụ-nchọkwa>
+publish-usage = ojiji: /my/identity!publish <did-ma-ọ-bụ-nchọkwa>
 identity-exported = A budata bundle dị ka { $filename }
 identity-export-failed = Nbupu enweghị ike: { $e }
 
 # ── Ọrụ — akwụkwọ ────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content di efu
-doc-save-first = { $path }.content di efu — chekwaa ka ọ bụrụ nke mbụ
+doc-content-empty = { $path }/content di efu
+doc-save-first = { $path }/content di efu — chekwaa ka ọ bụrụ nke mbụ
 doc-missing-name = aha akwụkwọ hapụrụ
-doc-publish-usage = ojiji: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = ojiji: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = ojiji: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = ojiji: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = ịbipụta { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
-doc-fetch-done = enwetara { $cid } → { $path }.content (arụghị ọrụ)
+doc-fetch-done = enwetara { $cid } → { $path }/content (arụghị ọrụ)
 doc-fetch-failed = ịnweta { $cid }: { $e }
-doc-fetch-usage = ojiji: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = atọghị { $path }.cid
+doc-fetch-usage = ojiji: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = atọghị { $path }/cid
 doc-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 path-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       hichapụ ọhụrụ ma ọ
 help-config-verb =   .path!verb [args]            kpọọ ọrụ obibi
 
 # ── Enyemaka — ụzọ a na-ejikarị ──────────────────────────────────────────
-help-my =   .my                          gosi nhazi nke onwe gị niile
-help-aliases =   .my.aliases                  depụta nchọkwa
-help-aliases-set =   .my.aliases.<name>: <did>    tinye/mezigharị nchọkwa (bare DID, enweghị #fragment)
-help-aliases-del =   .my.aliases.<name>:          wepu nchọkwa
+help-my =   /my                          gosi nhazi nke onwe gị niile
+help-aliases =   /my/aliases                  depụta nchọkwa
+help-aliases-set =   /my/aliases/<name>: <did>    tinye/mezigharị nchọkwa (bare DID, enweghị #fragment)
+help-aliases-del =   /my/aliases/<name>:          wepu nchọkwa
 help-runtime-discover =   .ma [port]          chọpụta runtime obibi ma mepụtakwa nchọkwa @ma
 help-runtime-claim =   .ma [port]             kwụa akwụ runtime site na DID gị
-help-identity =   .my.identity                 gosi nhazi njirimara
-help-identity-did =   .my.identity.did             gosi DID gị (ịgụ naanị)
-help-identity-publish =   .my.identity!publish @pub    bipụta DID site na ọrụ ịbipụta
-help-identity-export =   .my.identity!export          budata bundle identity gị
+help-identity =   /my/identity                 gosi nhazi njirimara
+help-identity-did =   /my/identity/did             gosi DID gị (ịgụ naanị)
+help-identity-publish =   /my/identity!publish @pub    bipụta DID site na ọrụ ịbipụta
+help-identity-export =   /my/identity!export          budata bundle identity gị
 help-config-path =   .config                      gosi ndepụta .config.* niile
 
 # ── Enyemaka — igbe ozi ──────────────────────────────────────────────────
-help-inbox =   .my.inbox                    depụta igbe ozi (nlele alaka)
-help-inbox-n =   .my.inbox.N                  gosi ngalaba ndepụta N
-help-inbox-from =   .my.inbox.N.from             DID onye zigara ndepụta N
-help-inbox-reply =   .my.inbox.N!reply [body]     ziga ọzaghachi (meghe onye ndezi ọ bụrụ na ọ dịghị ahụ)
-help-inbox-open =   .my.inbox.N!open             mepee ọdịnaya maka ịgụ naanị n'onye ndezi
-help-inbox-del =   .my.inbox.N:                 hichapụ ndepụta N
-help-inbox-delall =   .my.inbox:                   hichapụ ndepụta igbe ozi niile
-help-inbox-flush =   .my.inbox!flush              bipụta ndepụta niile na terminal
-help-inbox-filter =   .my.inbox!filter @who        gosi naanị ndepụta site na @who
-help-inbox-traverse =   .my.inbox.N.sender.<field>   gafee akwụkwọ DID onye zigara n'ụzọ nwayọọ
+help-inbox =   /my/inbox                    depụta igbe ozi (nlele alaka)
+help-inbox-n =   /my/inbox/N                  gosi ngalaba ndepụta N
+help-inbox-from =   /my/inbox/N/from             DID onye zigara ndepụta N
+help-inbox-reply =   /my/inbox/N!reply [body]     ziga ọzaghachi (meghe onye ndezi ọ bụrụ na ọ dịghị ahụ)
+help-inbox-open =   /my/inbox/N!open             mepee ọdịnaya maka ịgụ naanị n'onye ndezi
+help-inbox-del =   /my/inbox/N:                 hichapụ ndepụta N
+help-inbox-delall =   /my/inbox:                   hichapụ ndepụta igbe ozi niile
+help-inbox-flush =   /my/inbox!flush              bipụta ndepụta niile na terminal
+help-inbox-filter =   /my/inbox!filter @who        gosi naanị ndepụta site na @who
+help-inbox-traverse =   /my/inbox/N/sender/<field>   gafee akwụkwọ DID onye zigara n'ụzọ nwayọọ
 
 # ── Enyemaka — akwụkwọ ────────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           mepee onye ndezi nwere ọdịnaya echekwara
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     nweta CID, mepee maka nlele naanị
-help-doc-eval =   .my.doc.<name>!eval           rụọ ọdịnaya echekwara akara n'akara
-help-doc-publish =   .my.doc.<name>!publish @pub   chekwaa dị ka blob ọhụrụ (ụdị ọ bụla)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  chekwaa YAML dị ka ọkpụrụkpụ IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    bawanye ọdịnaya CID (arụghị ọrụ)
-help-doc-cid =   .my.doc.<name>!cid            gosi CID echekwara
-help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
+help-doc-edit =   /my/doc/<name>!edit           mepee onye ndezi nwere ọdịnaya echekwara
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     nweta CID, mepee maka nlele naanị
+help-doc-eval =   /my/doc/<name>!eval           rụọ ọdịnaya echekwara akara n'akara
+help-doc-publish =   /my/doc/<name>!publish @pub   chekwaa dị ka blob ọhụrụ (ụdị ọ bụla)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  chekwaa YAML dị ka ọkpụrụkpụ IPLD DAG-CBOR
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    bawanye ọdịnaya CID (arụghị ọrụ)
+help-doc-cid =   /my/doc/<name>!cid            gosi CID echekwara
+help-doc-del =   /my/doc/<name>:              hichapụ akwụkwọ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Asụsụ ndị dị (.my.i18n: <code> were tọọ):
+lang-list-header = Asụsụ ndị dị (/my/i18n: <code> were tọọ):
 err-lang-not-found = asụsụ ahụ achọtaghị: { $lang }
 
 msg-send-failed = izipu dara ada: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = profaịlụ { $name } ahichapụrụ
 profiles-not-found = profaịlụ ahụghị: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                bipute njirimara gị na net
 help-header-publish = ── ibiputa njirimara ─────────────────────────────────────────────────────────
 help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. Ndị ọzọ nwere ike ịchọ DID gị iji kpọtụrụ gị.
 help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
-help-publish-steps = Usoro: bido '.ma [port]' iji chọpụta ma nke mpaghara, wee mee '.my.identity!publish @ma'.
+help-publish-steps = Usoro: bido '.ma [port]' iji chọpụta ma nke mpaghara, wee mee '/my/identity!publish @ma'.
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

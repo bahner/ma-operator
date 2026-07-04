@@ -44,7 +44,7 @@ msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID közzétéve helyi ma-n keresztül ({ $url })
-msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '.my.identity!publish @ma'. Írd '.help.publish' a részletekért.
+msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '/my/identity!publish @ma'. Írd '.help.publish' a részletekért.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
 msg-focusing = fókuszálás: { $did } mint { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = felderítés sikertelen: a `did` did:ma:-vel kell kezdőd
 discover-no-endpoint = felderítési figyelmeztetés: `endpoint_id` hiányzik a status.json-ból; csak DID mentve
 discover-success = ma felderítve a következő helyen: { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma alias létrehozva — futtasd '.my.identity!publish @ma' az identitásod közzétételéhez.
+discover-alias-hint =   @ma alias létrehozva — futtasd '/my/identity!publish @ma' az identitásod közzétételéhez.
 claim-success = Futtatókörnyezet igénybe véve: { $did }
 claim-conflict = A futtatókörnyezetet már egy másik identitás igénybe vette
 claim-http-failed = igénybevétel sikertelen: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = nincs bejelentkezés; a futtatókörnyezet igénybevételéhe
 runtime-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 
 # ── Igék — hozzáférés-vezérlés ────────────────────────────────────────────
-acl-reset = .my.acl visszaállítva (teljesen nyitott)
+acl-reset = /my/acl visszaállítva (teljesen nyitott)
 acl-persist-error = mentési hiba: { $e }
-acl-no-verb = nincs `{ $verb }` ige a .my.acl-hez
+acl-no-verb = nincs `{ $verb }` ige a /my/acl-hez
 
 # ── Igék — identitás ──────────────────────────────────────────────────────
-publish-usage = használat: .my.identity!publish <did-vagy-álnév>
+publish-usage = használat: /my/identity!publish <did-vagy-álnév>
 identity-exported = A csomag letöltve { $filename } névvel
 identity-export-failed = Az export sikertelen: { $e }
 
 # ── Igék — dokumentumok ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content üres
-doc-save-first = { $path }.content üres — először mentse el
+doc-content-empty = { $path }/content üres
+doc-save-first = { $path }/content üres — először mentse el
 doc-missing-name = hiányzó dokumentumnév
-doc-publish-usage = használat: .my.doc.<név>:publish <kiadó>
-doc-publish-ipld-usage = használat: .my.doc.<név>:publish-ipld <kiadó>
+doc-publish-usage = használat: /my/doc/<név>:publish <kiadó>
+doc-publish-ipld-usage = használat: /my/doc/<név>:publish-ipld <kiadó>
 doc-publish-failed = közzététel { $path }: { $e }
 doc-publish-ipld-failed = IPLD közzététel { $path }: { $e }
 doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
-doc-fetch-done = { $cid } letöltve → { $path }.content (nem futtatva)
+doc-fetch-done = { $cid } letöltve → { $path }/content (nem futtatva)
 doc-fetch-failed = letöltés { $cid }: { $e }
-doc-fetch-usage = használat: .my.doc.<név>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid nincs beállítva
+doc-fetch-usage = használat: /my/doc/<név>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid nincs beállítva
 doc-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 path-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 levél beállítása
 help-config-delete =   .path:                       levél vagy részfa törlése
 help-config-verb =   .path!verb [args]            helyi ige futtatása
 
-help-my =   .my                          összes személyes konfiguráció megjelenítése
-help-aliases =   .my.aliases                  álnevek listázása
-help-aliases-set =   .my.aliases.<name>: <did>    álnév hozzáadása/frissítése (tiszta DID, #töredék nélkül)
-help-aliases-del =   .my.aliases.<name>:          álnév eltávolítása
+help-my =   /my                          összes személyes konfiguráció megjelenítése
+help-aliases =   /my/aliases                  álnevek listázása
+help-aliases-set =   /my/aliases/<name>: <did>    álnév hozzáadása/frissítése (tiszta DID, #töredék nélkül)
+help-aliases-del =   /my/aliases/<name>:          álnév eltávolítása
 help-runtime-discover =   .ma [port]          helyi futtatókörnyezet felderítése és @ma álnév létrehozása
 help-runtime-claim =   .ma [port]             futtatókörnyezet igénybevétele a DID-del
-help-identity =   .my.identity                 identitáskonfiguráció megjelenítése
-help-identity-did =   .my.identity.did             saját DID megjelenítése (csak olvasható)
-help-identity-publish =   .my.identity!publish @pub    saját DID közzététele a kiadói szolgáltatáson keresztül
-help-identity-export =   .my.identity!export          saját identitáscsomag letöltése
+help-identity =   /my/identity                 identitáskonfiguráció megjelenítése
+help-identity-did =   /my/identity/did             saját DID megjelenítése (csak olvasható)
+help-identity-publish =   /my/identity!publish @pub    saját DID közzététele a kiadói szolgáltatáson keresztül
+help-identity-export =   /my/identity!export          saját identitáscsomag letöltése
 help-config-path =   .config                      összes .config.* bejegyzés megjelenítése
 
-help-inbox =   .my.inbox                    bejövő üzenetek listázása (részfa nézet)
-help-inbox-n =   .my.inbox.N                  N. bejegyzés mezőinek megjelenítése
-help-inbox-from =   .my.inbox.N.from             feladó DID az N. bejegyzéshez
-help-inbox-reply =   .my.inbox.N!reply [body]     válasz küldése (szerkesztőt nyit tartalom nélkül)
-help-inbox-open =   .my.inbox.N!open             tartalom megnyitása csak olvasható szerkesztőben
-help-inbox-del =   .my.inbox.N:                 N. bejegyzés törlése
-help-inbox-delall =   .my.inbox:                   összes bejövő bejegyzés törlése
-help-inbox-flush =   .my.inbox!flush              összes bejegyzés kiírása a terminálra
-help-inbox-filter =   .my.inbox!filter @who        csak @who bejegyzéseinek megjelenítése
-help-inbox-traverse =   .my.inbox.N.sender.<mező>   feladó DID-dokumentum lusta bejárása
+help-inbox =   /my/inbox                    bejövő üzenetek listázása (részfa nézet)
+help-inbox-n =   /my/inbox/N                  N. bejegyzés mezőinek megjelenítése
+help-inbox-from =   /my/inbox/N/from             feladó DID az N. bejegyzéshez
+help-inbox-reply =   /my/inbox/N!reply [body]     válasz küldése (szerkesztőt nyit tartalom nélkül)
+help-inbox-open =   /my/inbox/N!open             tartalom megnyitása csak olvasható szerkesztőben
+help-inbox-del =   /my/inbox/N:                 N. bejegyzés törlése
+help-inbox-delall =   /my/inbox:                   összes bejövő bejegyzés törlése
+help-inbox-flush =   /my/inbox!flush              összes bejegyzés kiírása a terminálra
+help-inbox-filter =   /my/inbox!filter @who        csak @who bejegyzéseinek megjelenítése
+help-inbox-traverse =   /my/inbox/N/sender/<mező>   feladó DID-dokumentum lusta bejárása
 
-help-doc-edit =   .my.doc.<név>:edit           szerkesztő megnyitása mentett tartalommal
-help-doc-edit-cid =   .my.doc.<név>:edit <cid>     CID letöltése, megnyitás áttekintésre
-help-doc-eval =   .my.doc.<név>:eval           mentett tartalom futtatása soronként
-help-doc-publish =   .my.doc.<név>:publish @pub   mentés nyers blobként (minden típus)
-help-doc-publish-ipld =   .my.doc.<név>:publish-ipld @pub  YAML mentése strukturált DAG-CBOR IPLD csomópontként
-help-doc-fetch =   .my.doc.<név>:fetch <cid>    CID tartalom importálása (futtatás nélkül)
-help-doc-cid =   .my.doc.<név>:cid            mentett CID megjelenítése
-help-doc-del =   .my.doc.<név>:              dokumentum törlése
+help-doc-edit =   /my/doc/<név>:edit           szerkesztő megnyitása mentett tartalommal
+help-doc-edit-cid =   /my/doc/<név>:edit <cid>     CID letöltése, megnyitás áttekintésre
+help-doc-eval =   /my/doc/<név>:eval           mentett tartalom futtatása soronként
+help-doc-publish =   /my/doc/<név>:publish @pub   mentés nyers blobként (minden típus)
+help-doc-publish-ipld =   /my/doc/<név>:publish-ipld @pub  YAML mentése strukturált DAG-CBOR IPLD csomópontként
+help-doc-fetch =   /my/doc/<név>:fetch <cid>    CID tartalom importálása (futtatás nélkül)
+help-doc-cid =   /my/doc/<név>:cid            mentett CID megjelenítése
+help-doc-del =   /my/doc/<név>:              dokumentum törlése
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Elérhető nyelvek (beállítás: .my.i18n: <code>):
+lang-list-header = Elérhető nyelvek (beállítás: /my/i18n: <code>):
 err-lang-not-found = a nyelv nem található: { $lang }
 
 msg-send-failed = küldés sikertelen: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = a(z) { $name } profil törölve
 profiles-not-found = a profil nem található: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                azonosságod közzététele 
 help-header-publish = ── azonosság közzététele ─────────────────────────────────────────────────────
 help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a hálózaton. Mások megkereshetik a DID-edet, hogy elérjenek.
 help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
-help-publish-steps = Lépések: futtasd '.ma [port]' a helyi ma megtalálásához, majd '.my.identity!publish @ma'.
+help-publish-steps = Lépések: futtasd '.ma [port]' a helyi ma megtalálásához, majd '/my/identity!publish @ma'.
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

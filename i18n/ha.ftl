@@ -44,7 +44,7 @@ msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = An buga DID ta hanyar ma na gida ({ $url })
-msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '.my.identity!publish @ma'. Rubuta '.help.publish' don cikakken bayani.
+msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '/my/identity!publish @ma'. Rubuta '.help.publish' don cikakken bayani.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
 msg-focusing = ana mai da hankali { $did } a matsayin { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = bincike ya kasa: `did` dole ne ya fara da did:ma:, an sam
 discover-no-endpoint = gargadin bincike: `endpoint_id` yana rasa a status.json; an ajiye DID kawai
 discover-success = an gano ma a { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   an ƙirƙiri laƙabi @ma — gudanar da '.my.identity!publish @ma' don wallafa ainihinku.
+discover-alias-hint =   an ƙirƙiri laƙabi @ma — gudanar da '/my/identity!publish @ma' don wallafa ainihinku.
 claim-success = an ɗauki Runtime don { $did }
 claim-conflict = wani asali ya riga ya ɗauki Runtime
 claim-http-failed = ɗaukar ya kasa: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ba a shiga ba; shiga da farko don ɗaukar runtime
 runtime-no-verb = babu aikatau `{ $verb }` don { $path }
 
 # ── Aikatau — ACL ─────────────────────────────────────────────────────────
-acl-reset = an sake saita .my.acl (buɗe gaba ɗaya)
+acl-reset = an sake saita /my/acl (buɗe gaba ɗaya)
 acl-persist-error = kuskuren ajiye: { $e }
-acl-no-verb = babu aikatau `{ $verb }` don .my.acl
+acl-no-verb = babu aikatau `{ $verb }` don /my/acl
 
 # ── Aikatau — asali ───────────────────────────────────────────────────────
-publish-usage = amfani: .my.identity!publish <did-ko-laƙabi>
+publish-usage = amfani: /my/identity!publish <did-ko-laƙabi>
 identity-exported = An sauke ƙunshin a matsayin { $filename }
 identity-export-failed = Fitarwa ta kasa: { $e }
 
 # ── Aikatau — takardu ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content fanko ne
-doc-save-first = { $path }.content fanko ne — ajiye da farko
+doc-content-empty = { $path }/content fanko ne
+doc-save-first = { $path }/content fanko ne — ajiye da farko
 doc-missing-name = suna na takarda ya ɓace
-doc-publish-usage = amfani: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = amfani: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = amfani: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = amfani: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = wallafa { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = an aika buƙatar ajiye ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-ipld-store-sent = an aika buƙatar ajiye IPLD ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
-doc-fetch-done = an ɗauko { $cid } → { $path }.content (ba a gudanar ba)
+doc-fetch-done = an ɗauko { $cid } → { $path }/content (ba a gudanar ba)
 doc-fetch-failed = ɗaukar { $cid }: { $e }
-doc-fetch-usage = amfani: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = ba a saita { $path }.cid ba
+doc-fetch-usage = amfani: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = ba a saita { $path }/cid ba
 doc-no-verb = babu aikatau `{ $verb }` don { $path }
 path-no-verb = babu aikatau `{ $verb }` don { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       goge ganye ko ƙananan reshe
 help-config-verb =   .path!verb [args]            kira aikatau gida
 
 # ── Rubutun taimako — hanyoyin gama gari ─────────────────────────────────
-help-my =   .my                          nuna duk saitunan sirri
-help-aliases =   .my.aliases                  jera laƙabai
-help-aliases-set =   .my.aliases.<name>: <did>    ƙara/sabunta laƙabi (bare DID, babu #fragment)
-help-aliases-del =   .my.aliases.<name>:          cire laƙabi
+help-my =   /my                          nuna duk saitunan sirri
+help-aliases =   /my/aliases                  jera laƙabai
+help-aliases-set =   /my/aliases/<name>: <did>    ƙara/sabunta laƙabi (bare DID, babu #fragment)
+help-aliases-del =   /my/aliases/<name>:          cire laƙabi
 help-runtime-discover =   .ma [port]          gano runtime na gida kuma samar da laƙabi @ma
 help-runtime-claim =   .ma [port]             ɗauki mallakar runtime da DID ɗinka
-help-identity =   .my.identity                 nuna saitunan asali
-help-identity-did =   .my.identity.did             nuna DID ɗinka (karatu kawai)
-help-identity-publish =   .my.identity!publish @pub    wallafa DID ta hanyar sabis na wallafa
-help-identity-export =   .my.identity!export          sauke ƙunshin shaida naka
+help-identity =   /my/identity                 nuna saitunan asali
+help-identity-did =   /my/identity/did             nuna DID ɗinka (karatu kawai)
+help-identity-publish =   /my/identity!publish @pub    wallafa DID ta hanyar sabis na wallafa
+help-identity-export =   /my/identity!export          sauke ƙunshin shaida naka
 help-config-path =   .config                      nuna duk shigarwar .config.*
 
 # ── Rubutun taimako — akwatin wasiku ─────────────────────────────────────
-help-inbox =   .my.inbox                    jera akwatin wasiku (kallon ƙananan reshe)
-help-inbox-n =   .my.inbox.N                  nuna filayen shigarwa N
-help-inbox-from =   .my.inbox.N.from             DID mai aika shigarwa N
-help-inbox-reply =   .my.inbox.N!reply [body]     aika amsa (buɗa mai gyara idan babu jikin saƙo)
-help-inbox-open =   .my.inbox.N!open             buɗa abun ciki don karatu kawai a mai gyara
-help-inbox-del =   .my.inbox.N:                 goge shigarwa N
-help-inbox-delall =   .my.inbox:                   goge duk shigarwar akwatin wasiku
-help-inbox-flush =   .my.inbox!flush              buga duk shigarwa zuwa terminal
-help-inbox-filter =   .my.inbox!filter @who        nuna shigarwa daga @who kawai
-help-inbox-traverse =   .my.inbox.N.sender.<field>   bincika takarda DID mai aika a hankali
+help-inbox =   /my/inbox                    jera akwatin wasiku (kallon ƙananan reshe)
+help-inbox-n =   /my/inbox/N                  nuna filayen shigarwa N
+help-inbox-from =   /my/inbox/N/from             DID mai aika shigarwa N
+help-inbox-reply =   /my/inbox/N!reply [body]     aika amsa (buɗa mai gyara idan babu jikin saƙo)
+help-inbox-open =   /my/inbox/N!open             buɗa abun ciki don karatu kawai a mai gyara
+help-inbox-del =   /my/inbox/N:                 goge shigarwa N
+help-inbox-delall =   /my/inbox:                   goge duk shigarwar akwatin wasiku
+help-inbox-flush =   /my/inbox!flush              buga duk shigarwa zuwa terminal
+help-inbox-filter =   /my/inbox!filter @who        nuna shigarwa daga @who kawai
+help-inbox-traverse =   /my/inbox/N/sender/<field>   bincika takarda DID mai aika a hankali
 
 # ── Rubutun taimako — takardu ─────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           buɗa mai gyara tare da abun ciki da aka ajiye
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     ɗauko CID, buɗa don duba kawai
-help-doc-eval =   .my.doc.<name>!eval           gudanar da abun ciki da aka ajiye layi-balayi
-help-doc-publish =   .my.doc.<name>!publish @pub   ajiye a matsayin blob ɗin da ba a sarrafa ba (kowane nau'i)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  ajiye YAML a matsayin kumbun IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    shigo da abun CID (babu gudanarwa)
-help-doc-cid =   .my.doc.<name>!cid            nuna CID da aka ajiye
-help-doc-del =   .my.doc.<name>:              goge takarda
+help-doc-edit =   /my/doc/<name>!edit           buɗa mai gyara tare da abun ciki da aka ajiye
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     ɗauko CID, buɗa don duba kawai
+help-doc-eval =   /my/doc/<name>!eval           gudanar da abun ciki da aka ajiye layi-balayi
+help-doc-publish =   /my/doc/<name>!publish @pub   ajiye a matsayin blob ɗin da ba a sarrafa ba (kowane nau'i)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  ajiye YAML a matsayin kumbun IPLD DAG-CBOR
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    shigo da abun CID (babu gudanarwa)
+help-doc-cid =   /my/doc/<name>!cid            nuna CID da aka ajiye
+help-doc-del =   /my/doc/<name>:              goge takarda
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Yarukan da ake da su (saita ta .my.i18n: <code>):
+lang-list-header = Yarukan da ake da su (saita ta /my/i18n: <code>):
 err-lang-not-found = harshe ba a sami ba: { $lang }
 
 msg-send-failed = aika aika: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = an goge bayanan martaba { $name }
 profiles-not-found = ba a samu bayanan martaba ba: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                wallafa ainihinku a cikin ha
 help-header-publish = ── wallafa ainihi ───────────────────────────────────────────────────────────
 help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanyar sadarwa. Wasu na iya neman DID ɗinku don tuntubarku.
 help-publish-ma = Don wallafawa, kuna buƙatar ma (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.
-help-publish-steps = Matakan: gudanar da '.ma [port]' don gano ma na cikin gida, sannan '.my.identity!publish @ma'.
+help-publish-steps = Matakan: gudanar da '.ma [port]' don gano ma na cikin gida, sannan '/my/identity!publish @ma'.
 help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

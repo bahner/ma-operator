@@ -1,11 +1,14 @@
 /// Command parser for ego terminal input.
 ///
 /// Grammar:
-///   .path                → DotOp::Get
-///   .path value          → DotOp::Get  (args carry match query)
-///   .path: value         → DotOp::Set
-///   .path:               → DotOp::Delete
-///   .path!verb [args]    → DotOp::Meta  (side-effect / system operation)
+///   .cmd                 → DotCommand      (control command: .ma, .use, .help, … — hidden, closed set)
+///   .cmd!verb [args]     → DotCommand::Meta
+///   /my/path             → LocalCrud::Get  (local config: /my, /ctx)
+///   /my/path: value      → LocalCrud::Set
+///   /my/path:            → LocalCrud::Delete
+///   /my/path!verb [args] → LocalCrud::Meta
+///   /ipfs/<cid>          → LocalCrud::Get  (remote fetch, read-only)
+///   /ipns/<key>          → LocalCrud::Get  (remote fetch, read-only)
 ///   @alias/path          → RemoteCrud::Get
 ///   @alias/path: value   → RemoteCrud::Set(value)
 ///   @alias/path:         → RemoteCrud::Delete
@@ -14,6 +17,7 @@
 ///   @did:ma:<id>[!verb]  → ActorMessage
 ///   did:ma:<id>[!verb]   → ActorMessage  (bare DID from expansion)
 ///   \@literal text       → PlainText
+///   \.literal text       → PlainText  (escape a leading control-command dot)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -44,12 +48,22 @@ pub enum RemoteCrudOp {
 #[derive(Debug, Clone, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum Command {
+    /// A closed-set hidden control command (`.ma`, `.use`, `.help`, …).
+    /// Never a data path — those live under `LocalCrud`.
     DotCommand {
         path: String,
         op: DotOp,
         args: Vec<String>,
     },
-    /// Remote CRUD on a `@alias/path` target — mirrors local `.path` grammar.
+    /// Local CRUD on a `/my`, `/ctx` config path, or a read-only remote
+    /// fetch on `/ipfs`, `/ipns`, `/ipld`. Mirrors the remote `@alias/path`
+    /// grammar.
+    LocalCrud {
+        path: String,
+        op: DotOp,
+        args: Vec<String>,
+    },
+    /// Remote CRUD on a `@alias/path` target — mirrors local `/path` grammar.
     RemoteCrud {
         target: String,
         path: String,
@@ -70,32 +84,48 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     match input {
         "" => Ok(Command::PlainText(String::new())),
         s if s.starts_with("\\@") => Ok(Command::PlainText(s[1..].to_string())),
+        s if s.starts_with("\\.") => Ok(Command::PlainText(s[1..].to_string())),
         s if s.starts_with('.') => parse_dot(s),
+        s if s.starts_with('/') => parse_local(s),
         s if s.starts_with('@') || s.starts_with("did:") => parse_actor(s, cfg),
         s => Ok(Command::PlainText(resolve_targets(s, cfg)?)),
     }
 }
 
-// ── Dot-path command ───────────────────────────────────────────────────────
+// ── Path + op parsing (shared by control-command and local-path grammars) ──
 
-fn parse_dot(input: &str) -> Result<Command, String> {
+/// Parse a `path[!verb args]` / `path[: value]` / `path:` command body into
+/// `(path, DotOp, args)`. Shared between the `.` control-command grammar and
+/// the `/` local-path grammar — the two differ only in which prefix
+/// character dispatches here and in what the resulting `path` means.
+fn parse_path_op(input: &str) -> Result<(String, DotOp, Vec<String>), String> {
     let (head, rest) = split_head_rest(input);
     // `!verb` — meta/side-effect operation; check before `:` split.
     if let Some(bang) = head.find('!') {
         let path = head[..bang].to_string();
         let meta_verb = head[bang + 1..].to_string();
-        return Ok(Command::DotCommand {
-            path,
-            op: DotOp::Meta(meta_verb),
-            args: shell_split(&rest),
-        });
+        return Ok((path, DotOp::Meta(meta_verb), shell_split(&rest)));
     }
     let (path, op) = dot_path_and_op(&head, &rest)?;
     let args = match &op {
         DotOp::Set(_) => vec![],
         _ => shell_split(&rest),
     };
+    Ok((path, op, args))
+}
+
+// ── Dot control-command ─────────────────────────────────────────────────────
+
+fn parse_dot(input: &str) -> Result<Command, String> {
+    let (path, op, args) = parse_path_op(input)?;
     Ok(Command::DotCommand { path, op, args })
+}
+
+// ── Local path CRUD (`/my`, `/ctx`, `/ipfs`, `/ipns`, `/ipld`) ──────────────
+
+fn parse_local(input: &str) -> Result<Command, String> {
+    let (path, op, args) = parse_path_op(input)?;
+    Ok(Command::LocalCrud { path, op, args })
 }
 
 fn dot_path_and_op(head: &str, rest: &str) -> Result<(String, DotOp), String> {
@@ -115,7 +145,7 @@ fn dot_path_and_op(head: &str, rest: &str) -> Result<(String, DotOp), String> {
 // ── Actor message ──────────────────────────────────────────────────────────
 
 /// Handles both `@alias[!verb] [body]` and `did:ma:…[!verb] [body]`.
-/// Also handles `@alias/path` for remote CRUD (mirrors local `.path` grammar).
+/// Also handles `@alias/path` for remote CRUD (mirrors local `/path` grammar).
 fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     let (head, body_raw) = split_head_rest(input);
     let head_stripped = head.trim_start_matches('@');
@@ -320,7 +350,7 @@ mod tests {
     fn parses_alias_target_with_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            ".my.aliases.fjodor",
+            "/my/aliases/fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -341,7 +371,7 @@ mod tests {
     fn parses_alias_target_with_fragment_and_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            ".my.aliases.fjodor",
+            "/my/aliases/fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -363,7 +393,7 @@ mod tests {
     fn parses_alias_target_with_compound_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            ".my.aliases.sky",
+            "/my/aliases/sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -384,7 +414,7 @@ mod tests {
     fn parses_alias_target_with_nested_path_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            ".my.aliases.sky",
+            "/my/aliases/sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 

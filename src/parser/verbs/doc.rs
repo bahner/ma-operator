@@ -1,6 +1,6 @@
 use super::resolve_bare_did;
 use crate::config::EgoConfig;
-use crate::http::fetch_cid_text;
+use crate::http::fetch_path_text;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::transport;
@@ -16,7 +16,7 @@ pub(super) fn handle_doc(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    if path == ".my.i18n" && verb == "list" {
+    if path == "/my/i18n" && verb == "list" {
         let mut lines = vec![t("lang-list-header")];
         for (code, name) in crate::i18n::SUPPORTED_LANGS {
             lines.push(format!("  {code:<20} {name}"));
@@ -48,12 +48,12 @@ fn doc_edit(
     let cfg = config.get_untracked();
     if args.is_empty() {
         let content = cfg
-            .get(&format!("{path}.content"))
+            .get(&format!("{path}/content"))
             .unwrap_or_default()
             .to_string();
         let lang = lang_for_path(
             path,
-            cfg.get(&format!("{path}.content_type"))
+            cfg.get(&format!("{path}/content_type"))
                 .unwrap_or("text/plain"),
         );
         show_editor.set(Some(EditorContext::new(path, content).with_language(lang)));
@@ -62,7 +62,7 @@ fn doc_edit(
         let state2 = state.clone();
         let path2 = path.to_string();
         leptos::task::spawn_local(async move {
-            match fetch_cid_text(&cid).await {
+            match fetch_path_text(&cid).await {
                 Ok(text) => {
                     state2.push_system(tf("msg-fetch-review", &[("cid", &cid)]));
                     show_editor.set(Some(EditorContext::new(path2, text).with_language("plain")));
@@ -74,11 +74,11 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute the saved `.content` line-by-line, sequentially.
+/// `:eval` — execute the saved `/content` line-by-line, sequentially.
 ///
 /// Lines are processed one at a time.  Scheme expressions are fully
 /// expanded (including any CID fetches) before the next line is started.
-/// This guarantees that `(include <bafy>)` defines are available to
+/// This guarantees that `(include #/ipfs/bafy…)` defines are available to
 /// subsequent lines in the same document.
 fn doc_eval(
     path: &str,
@@ -88,7 +88,7 @@ fn doc_eval(
 ) -> Result<(), String> {
     let content = config
         .get_untracked()
-        .get(&format!("{path}.content"))
+        .get(&format!("{path}/content"))
         .unwrap_or_default()
         .to_string();
     if content.is_empty() {
@@ -136,7 +136,7 @@ fn read_publish_args(
     }
     let publisher = resolve_bare_did(&args[0], cfg)?;
     let content = cfg
-        .get(&format!("{path}.content"))
+        .get(&format!("{path}/content"))
         .unwrap_or_default()
         .to_string();
     if content.is_empty() {
@@ -155,7 +155,7 @@ fn doc_publish(
     let cfg = config.get_untracked();
     let (publisher, content_str) = read_publish_args(path, args, "doc-publish-usage", &cfg)?;
     let content_type = cfg
-        .get(&format!("{path}.content_type"))
+        .get(&format!("{path}/content_type"))
         .unwrap_or("text/plain")
         .to_string();
     let content_bytes = content_str.into_bytes();
@@ -211,7 +211,7 @@ fn doc_publish_ipld(
 /// `:cid` — display the stored CID.
 fn doc_cid(path: &str, state: &AppState, config: RwSignal<EgoConfig>) -> Result<(), String> {
     let cfg = config.get_untracked();
-    match cfg.get(&format!("{path}.cid")) {
+    match cfg.get(&format!("{path}/cid")) {
         Some(cid) => state.push_output(tf("doc-cid-value", &[("path", path), ("cid", cid)])),
         None => state.push_output(tf("doc-cid-not-set", &[("path", path)])),
     }
@@ -232,11 +232,11 @@ fn doc_fetch(
     let state2 = state.clone();
     let path2 = path.to_string();
     leptos::task::spawn_local(async move {
-        match fetch_cid_text(&cid).await {
+        match fetch_path_text(&cid).await {
             Ok(text) => {
                 config.update(|c| {
-                    c.set(format!("{path2}.content"), &text);
-                    c.set(format!("{path2}.cid"), &cid);
+                    c.set(format!("{path2}/content"), &text);
+                    c.set(format!("{path2}/cid"), &cid);
                 });
                 state2.push_system(tf("doc-fetch-done", &[("cid", &cid), ("path", &path2)]));
             }
@@ -262,7 +262,7 @@ pub(super) fn lang_for_content_type(ct: &str) -> &'static str {
 /// `.ma`-suffixed paths are zscheme source files.
 pub(super) fn lang_for_path(path: &str, ct: &str) -> &'static str {
     if path.ends_with(".ma") {
-        "scheme"
+        "zscheme"
     } else {
         lang_for_content_type(ct)
     }

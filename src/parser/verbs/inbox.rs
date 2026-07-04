@@ -10,9 +10,9 @@ use leptos::prelude::*;
 
 /// Collect all distinct numeric inbox indices in sorted order.
 fn inbox_indices(cfg: &EgoConfig) -> std::collections::BTreeSet<usize> {
-    cfg.list(".my.inbox.")
+    cfg.list("/my/inbox/")
         .into_iter()
-        .filter_map(|(k, _)| k[".my.inbox.".len()..].split('.').next()?.parse().ok())
+        .filter_map(|(k, _)| k["/my/inbox/".len()..].split('/').next()?.parse().ok())
         .collect()
 }
 
@@ -25,23 +25,23 @@ pub(super) fn handle_inbox(
     show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
-    // ── .my.inbox ──────────────────────────────────────────────────────────
-    // Flush: .my.inbox:flush — print all entries to terminal in order.
-    if path == ".my.inbox" && verb == "flush" {
+    // ── /my/inbox ──────────────────────────────────────────────────────────
+    // Flush: /my/inbox:flush — print all entries to terminal in order.
+    if path == "/my/inbox" && verb == "flush" {
         let cfg = config.get_untracked();
         let indices = inbox_indices(&cfg);
         if indices.is_empty() {
             state.push_system(t("inbox-empty"));
         }
         for n in &indices {
-            let base = format!(".my.inbox.{n}");
-            let from = cfg.get(&format!("{base}.from")).unwrap_or("?").to_string();
+            let base = format!("/my/inbox/{n}");
+            let from = cfg.get(&format!("{base}/from")).unwrap_or("?").to_string();
             let ct = cfg
-                .get(&format!("{base}.content_type"))
+                .get(&format!("{base}/content_type"))
                 .unwrap_or("")
                 .to_string();
             let body = cfg
-                .get(&format!("{base}.content"))
+                .get(&format!("{base}/content"))
                 .unwrap_or("")
                 .to_string();
             state.push_output(format!("[{n}] from: {from}  ({ct})"));
@@ -52,26 +52,26 @@ pub(super) fn handle_inbox(
         return Ok(());
     }
 
-    // Filter: .my.inbox:filter @who — show only entries from a specific sender.
-    if path == ".my.inbox" && verb == "filter" {
+    // Filter: /my/inbox:filter @who — show only entries from a specific sender.
+    if path == "/my/inbox" && verb == "filter" {
         let raw_arg = args.first().ok_or_else(|| t("inbox-filter-no-arg"))?;
         let cfg = config.get_untracked();
         let target_did = resolve_bare_did(raw_arg, &cfg)?;
         let indices = inbox_indices(&cfg);
         let mut found = false;
         for n in &indices {
-            let base = format!(".my.inbox.{n}");
-            let from = cfg.get(&format!("{base}.from")).unwrap_or("").to_string();
+            let base = format!("/my/inbox/{n}");
+            let from = cfg.get(&format!("{base}/from")).unwrap_or("").to_string();
             if from != target_did {
                 continue;
             }
             found = true;
             let ct = cfg
-                .get(&format!("{base}.content_type"))
+                .get(&format!("{base}/content_type"))
                 .unwrap_or("")
                 .to_string();
             let body = cfg
-                .get(&format!("{base}.content"))
+                .get(&format!("{base}/content"))
                 .unwrap_or("")
                 .to_string();
             state.push_output(format!("[{n}] from: {from}  ({ct})"));
@@ -85,30 +85,30 @@ pub(super) fn handle_inbox(
         return Ok(());
     }
 
-    // Entry verbs: .my.inbox.<N>:reply | :open
+    // Entry verbs: /my/inbox/<N>!reply | !open
     if let Some(n_str) = path
-        .strip_prefix(".my.inbox.")
-        .filter(|t| !t.contains('.') && !t.is_empty())
+        .strip_prefix("/my/inbox/")
+        .filter(|t| !t.contains('/') && !t.is_empty())
     {
         let n: usize = n_str
             .parse()
             .map_err(|_| tf("inbox-invalid-index", &[("n", n_str)]))?;
-        let base = format!(".my.inbox.{n}");
+        let base = format!("/my/inbox/{n}");
 
         match verb {
             "reply" => {
                 let cfg = config.get_untracked();
                 let from = cfg
-                    .get(&format!("{base}.from"))
+                    .get(&format!("{base}/from"))
                     .ok_or_else(|| tf("inbox-entry-not-found", &[("n", &n.to_string())]))?
                     .to_string();
                 let msg_id = cfg
-                    .get(&format!("{base}.message_id"))
+                    .get(&format!("{base}/message_id"))
                     .ok_or_else(|| tf("inbox-no-message-id", &[("n", &n.to_string())]))?
                     .to_string();
                 // Use stored reply_to if present, else reply to the message id.
                 let reply_to_id = cfg
-                    .get(&format!("{base}.reply_to"))
+                    .get(&format!("{base}/reply_to"))
                     .unwrap_or(&msg_id)
                     .to_string();
 
@@ -143,11 +143,11 @@ pub(super) fn handle_inbox(
             "open" => {
                 let cfg = config.get_untracked();
                 let content = cfg
-                    .get(&format!("{base}.content"))
+                    .get(&format!("{base}/content"))
                     .unwrap_or("")
                     .to_string();
                 let ct = cfg
-                    .get(&format!("{base}.content_type"))
+                    .get(&format!("{base}/content_type"))
                     .unwrap_or("text/plain");
                 let lang = lang_for_content_type(ct);
                 show_editor.set(Some(

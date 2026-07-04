@@ -1,4 +1,4 @@
-/// Handler for `.my.scheme!verb` — session Scheme environment operations.
+/// Handler for `/my/scheme!verb` — session Scheme environment operations.
 use crate::config::{persist_config, EgoConfig};
 use crate::i18n::tf;
 use crate::state::AppState;
@@ -20,8 +20,8 @@ pub(super) fn handle_scheme(
             let source = crate::scheme::dump_env();
             let count = source.lines().filter(|l| l.starts_with("(define")).count();
             config.update(|c| {
-                c.set(format!("{path}.content"), source.clone());
-                c.set(format!("{path}.content_type"), "text/x-zscheme".to_string());
+                c.set(format!("{path}/content"), source.clone());
+                c.set(format!("{path}/content_type"), "text/x-zscheme".to_string());
             });
             let username = state
                 .session

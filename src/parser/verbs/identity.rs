@@ -17,8 +17,8 @@ pub(super) fn handle_identity(
     _show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
-    // ── .my.identity ──────────────────────────────────────────────────────
-    if path == ".my.identity" && verb == "export" {
+    // ── /my/identity ──────────────────────────────────────────────────────
+    if path == "/my/identity" && verb == "export" {
         let session = state
             .session
             .get_untracked()
@@ -47,14 +47,14 @@ pub(super) fn handle_identity(
         return Ok(());
     }
 
-    if path == ".my.identity" && verb == "publish" {
+    if path == "/my/identity" && verb == "publish" {
         if args.len() != 1 {
             return Err(t("publish-usage"));
         }
         let cfg = config.get_untracked();
         let publisher = resolve_bare_did(&args[0], &cfg)?;
         let publisher_disp = args[0].to_string();
-        let cmd_id = state.push_command(format!(".my.identity!publish {publisher_disp}"));
+        let cmd_id = state.push_command(format!("/my/identity!publish {publisher_disp}"));
         let state2 = state.clone();
         leptos::task::spawn_local(async move {
             crate::parser::verbs::ma::do_publish(publisher, config, &state2, Some(cmd_id)).await;

@@ -44,7 +44,7 @@ msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ถูกเผยแพร่ผ่าน ma ในเครื่อง ({ $url })
-msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '.my.identity!publish @ma' พิมพ์ '.help.publish' เพื่อดูรายละเอียด
+msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '/my/identity!publish @ma' พิมพ์ '.help.publish' เพื่อดูรายละเอียด
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
 msg-focusing = กำลังโฟกัส { $did } เป็น { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = การค้นหาล้มเหลว: `did` ต�
 discover-no-endpoint = คำเตือนการค้นหา: `endpoint_id` ขาดใน status.json; บันทึกเฉพาะ DID
 discover-success = พบ ma ที่ { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   สร้างชื่อแทน @ma แล้ว — รัน '.my.identity!publish @ma' เพื่อเผยแพร่ตัวตนของคุณ
+discover-alias-hint =   สร้างชื่อแทน @ma แล้ว — รัน '/my/identity!publish @ma' เพื่อเผยแพร่ตัวตนของคุณ
 claim-success = Runtime ถูกอ้างสิทธิ์สำหรับ { $did }
 claim-conflict = Runtime ถูกอ้างสิทธิ์โดยตัวตนอื่นแล้ว
 claim-http-failed = คำขอล้มเหลว: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ยังไม่ได้เข้าสู่ระบบ;
 runtime-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $path }
 
 # ── กริยา — ACL ───────────────────────────────────────────────────────────
-acl-reset = รีเซ็ต .my.acl แล้ว (เปิดทั้งหมด)
+acl-reset = รีเซ็ต /my/acl แล้ว (เปิดทั้งหมด)
 acl-persist-error = ข้อผิดพลาดการบันทึก: { $e }
-acl-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ .my.acl
+acl-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ /my/acl
 
 # ── กริยา — identity ──────────────────────────────────────────────────────
-publish-usage = การใช้งาน: .my.identity!publish <did-หรือ-นามแฝง>
+publish-usage = การใช้งาน: /my/identity!publish <did-หรือ-นามแฝง>
 identity-exported = ดาวน์โหลดบันเดิลเป็น { $filename }
 identity-export-failed = การส่งออกล้มเหลว: { $e }
 
 # ── กริยา — documents ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ว่างเปล่า
-doc-save-first = { $path }.content ว่างเปล่า — บันทึกก่อน
+doc-content-empty = { $path }/content ว่างเปล่า
+doc-save-first = { $path }/content ว่างเปล่า — บันทึกก่อน
 doc-missing-name = ขาดชื่อเอกสาร
-doc-publish-usage = การใช้งาน: .my.doc.<name>!publish <publisher>
-doc-publish-ipld-usage = การใช้งาน: .my.doc.<name>!publish-ipld <publisher>
+doc-publish-usage = การใช้งาน: /my/doc/<name>!publish <publisher>
+doc-publish-ipld-usage = การใช้งาน: /my/doc/<name>!publish-ipld <publisher>
 doc-publish-failed = เผยแพร่ { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
-doc-fetch-done = ดึง { $cid } แล้ว → { $path }.content (ยังไม่รัน)
+doc-fetch-done = ดึง { $cid } แล้ว → { $path }/content (ยังไม่รัน)
 doc-fetch-failed = ดึง { $cid }: { $e }
-doc-fetch-usage = การใช้งาน: .my.doc.<name>!fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid ยังไม่ได้ตั้งค่า
+doc-fetch-usage = การใช้งาน: /my/doc/<name>!fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid ยังไม่ได้ตั้งค่า
 doc-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $path }
 path-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       ลบ leaf หรือ sub
 help-config-verb =   .path!verb [args]            เรียกใช้กริยาท้องถิ่น
 
 # ── ช่วยเหลือ — path ที่ใช้บ่อย ─────────────────────────────────────────
-help-my =   .my                          แสดงการกำหนดค่าส่วนตัวทั้งหมด
-help-aliases =   .my.aliases                  แสดงรายการนามแฝง
-help-aliases-set =   .my.aliases.<name>: <did>    เพิ่ม/อัปเดตนามแฝง
-help-aliases-del =   .my.aliases.<name>:          ลบนามแฝง
+help-my =   /my                          แสดงการกำหนดค่าส่วนตัวทั้งหมด
+help-aliases =   /my/aliases                  แสดงรายการนามแฝง
+help-aliases-set =   /my/aliases/<name>: <did>    เพิ่ม/อัปเดตนามแฝง
+help-aliases-del =   /my/aliases/<name>:          ลบนามแฝง
 help-runtime-discover =   .ma [port]          ค้นหา runtime ท้องถิ่นและสร้าง @ma
 help-runtime-claim =   .ma [port]             อ้างสิทธิ์ runtime ด้วย DID ของคุณ
-help-identity =   .my.identity                 แสดงการกำหนดค่า identity
-help-identity-did =   .my.identity.did             แสดง DID ของคุณ (อ่านอย่างเดียว)
-help-identity-publish =   .my.identity!publish @pub    เผยแพร่ DID ผ่านบริการเผยแพร่
-help-identity-export =   .my.identity!export          ดาวน์โหลดบันเดิลตัวตนของตัวเอง
+help-identity =   /my/identity                 แสดงการกำหนดค่า identity
+help-identity-did =   /my/identity/did             แสดง DID ของคุณ (อ่านอย่างเดียว)
+help-identity-publish =   /my/identity!publish @pub    เผยแพร่ DID ผ่านบริการเผยแพร่
+help-identity-export =   /my/identity!export          ดาวน์โหลดบันเดิลตัวตนของตัวเอง
 help-config-path =   .config                      แสดงรายการ .config.* ทั้งหมด
 
 # ── ช่วยเหลือ — inbox ───────────────────────────────────────────────────
-help-inbox =   .my.inbox                    แสดงรายการ inbox (มุมมอง subtree)
-help-inbox-n =   .my.inbox.N                  แสดงฟิลด์ของรายการ N
-help-inbox-from =   .my.inbox.N.from             DID ผู้ส่งของรายการ N
-help-inbox-reply =   .my.inbox.N!reply [body]     ส่งการตอบกลับ (ไม่มีเนื้อหา — เปิดโปรแกรมแก้ไข)
-help-inbox-open =   .my.inbox.N!open             เปิดเนื้อหาอ่านอย่างเดียวในโปรแกรมแก้ไข
-help-inbox-del =   .my.inbox.N:                 ลบรายการ N
-help-inbox-delall =   .my.inbox:                   ลบรายการ inbox ทั้งหมด
-help-inbox-flush =   .my.inbox!flush              พิมพ์รายการทั้งหมดไปยัง terminal
-help-inbox-filter =   .my.inbox!filter @who        แสดงเฉพาะรายการจาก @who
-help-inbox-traverse =   .my.inbox.N.sender.<field>   ดึงเอกสาร DID ผู้ส่งแบบ lazy
+help-inbox =   /my/inbox                    แสดงรายการ inbox (มุมมอง subtree)
+help-inbox-n =   /my/inbox/N                  แสดงฟิลด์ของรายการ N
+help-inbox-from =   /my/inbox/N/from             DID ผู้ส่งของรายการ N
+help-inbox-reply =   /my/inbox/N!reply [body]     ส่งการตอบกลับ (ไม่มีเนื้อหา — เปิดโปรแกรมแก้ไข)
+help-inbox-open =   /my/inbox/N!open             เปิดเนื้อหาอ่านอย่างเดียวในโปรแกรมแก้ไข
+help-inbox-del =   /my/inbox/N:                 ลบรายการ N
+help-inbox-delall =   /my/inbox:                   ลบรายการ inbox ทั้งหมด
+help-inbox-flush =   /my/inbox!flush              พิมพ์รายการทั้งหมดไปยัง terminal
+help-inbox-filter =   /my/inbox!filter @who        แสดงเฉพาะรายการจาก @who
+help-inbox-traverse =   /my/inbox/N/sender/<field>   ดึงเอกสาร DID ผู้ส่งแบบ lazy
 
 # ── ช่วยเหลือ — เอกสาร ──────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<name>!edit           เปิดโปรแกรมแก้ไขด้วยเนื้อหาที่บันทึก
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     ดึง CID เปิดเพื่อตรวจสอบเท่านั้น
-help-doc-eval =   .my.doc.<name>!eval           รันเนื้อหาที่บันทึกทีละบรรทัด
-help-doc-publish =   .my.doc.<name>!publish @pub   บันทึกเป็น blob ดิบ (ทุกประเภท)
-help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  บันทึก YAML เป็น IPLD DAG-CBOR node
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    นำเข้าเนื้อหา CID (ไม่รัน)
-help-doc-cid =   .my.doc.<name>!cid            แสดง CID ที่บันทึก
-help-doc-del =   .my.doc.<name>:              ลบเอกสาร
+help-doc-edit =   /my/doc/<name>!edit           เปิดโปรแกรมแก้ไขด้วยเนื้อหาที่บันทึก
+help-doc-edit-cid =   /my/doc/<name>!edit <cid>     ดึง CID เปิดเพื่อตรวจสอบเท่านั้น
+help-doc-eval =   /my/doc/<name>!eval           รันเนื้อหาที่บันทึกทีละบรรทัด
+help-doc-publish =   /my/doc/<name>!publish @pub   บันทึกเป็น blob ดิบ (ทุกประเภท)
+help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  บันทึก YAML เป็น IPLD DAG-CBOR node
+help-doc-fetch =   /my/doc/<name>!fetch <cid>    นำเข้าเนื้อหา CID (ไม่รัน)
+help-doc-cid =   /my/doc/<name>!cid            แสดง CID ที่บันทึก
+help-doc-del =   /my/doc/<name>:              ลบเอกสาร
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = ภาษาที่ใช้ได้ (ตั้งค่าด้วย .my.i18n: <code>):
+lang-list-header = ภาษาที่ใช้ได้ (ตั้งค่าด้วย /my/i18n: <code>):
 err-lang-not-found = ไม่พบภาษา: { $lang }
 
 msg-send-failed = ส่งล้มเหลว: { $e }
@@ -287,11 +287,11 @@ profiles-deleted = โปรไฟล์ { $name } ถูกลบแล้ว
 profiles-not-found = ไม่พบโปรไฟล์: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -303,12 +303,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -333,9 +333,9 @@ help-topic-publish =   .help.publish                เผยแพร่ตั�
 help-header-publish = ── การเผยแพร่ตัวตน ───────────────────────────────────────────────────────────
 help-publish-intro = การเผยแพร่ทำให้ตัวตนของคุณค้นหาได้บนเครือข่าย คนอื่นสามารถค้นหา DID ของคุณเพื่อติดต่อคุณได้
 help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
-help-publish-steps = ขั้นตอน: รัน '.ma [port]' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity!publish @ma'
+help-publish-steps = ขั้นตอน: รัน '.ma [port]' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '/my/identity!publish @ma'
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

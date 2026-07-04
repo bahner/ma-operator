@@ -44,7 +44,7 @@ msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID δημοσιεύτηκε μέσω τοπικού ma ({ $url })
-msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '.my.identity!publish @ma'. Πληκτρολόγησε '.help.publish' για λεπτομέρειες.
+msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '/my/identity!publish @ma'. Πληκτρολόγησε '.help.publish' για λεπτομέρειες.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
 msg-focusing = εστίαση σε { $did } ως { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = η ανακάλυψη απέτυχε: αναμένετα�
 discover-no-endpoint = προειδοποίηση ανακάλυψης: το `endpoint_id` απουσιάζει στο status.json· αποθηκεύτηκε μόνο το DID
 discover-success = το ma ανακαλύφθηκε στο { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — εκτέλεσε '.my.identity!publish @ma' για να δημοσιεύσεις την ταυτότητά σου.
+discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — εκτέλεσε '/my/identity!publish @ma' για να δημοσιεύσεις την ταυτότητά σου.
 claim-success = Το περιβάλλον εκτέλεσης διεκδικήθηκε για { $did }
 claim-conflict = Το περιβάλλον εκτέλεσης έχει ήδη διεκδικηθεί από άλλη ταυτότητα
 claim-http-failed = η διεκδίκηση απέτυχε: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = δεν έχετε συνδεθεί· συνδεθείτε π�
 runtime-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 
 # ── Ρήματα — έλεγχος πρόσβασης ───────────────────────────────────────────
-acl-reset = .my.acl επαναφέρθηκε (πλήρως ανοικτό)
+acl-reset = /my/acl επαναφέρθηκε (πλήρως ανοικτό)
 acl-persist-error = σφάλμα αποθήκευσης: { $e }
-acl-no-verb = δεν υπάρχει ρήμα `{ $verb }` για .my.acl
+acl-no-verb = δεν υπάρχει ρήμα `{ $verb }` για /my/acl
 
 # ── Ρήματα — ταυτότητα ────────────────────────────────────────────────────
-publish-usage = χρήση: .my.identity!publish <did-ή-ψευδώνυμο>
+publish-usage = χρήση: /my/identity!publish <did-ή-ψευδώνυμο>
 identity-exported = Το πακέτο λήφθηκε ως { $filename }
 identity-export-failed = Η εξαγωγή απέτυχε: { $e }
 
 # ── Ρήματα — έγγραφα ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content είναι κενό
-doc-save-first = { $path }.content είναι κενό — αποθηκεύστε πρώτα
+doc-content-empty = { $path }/content είναι κενό
+doc-save-first = { $path }/content είναι κενό — αποθηκεύστε πρώτα
 doc-missing-name = λείπει το όνομα εγγράφου
-doc-publish-usage = χρήση: .my.doc.<όνομα>:publish <εκδότης>
-doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>:publish-ipld <εκδότης>
+doc-publish-usage = χρήση: /my/doc/<όνομα>:publish <εκδότης>
+doc-publish-ipld-usage = χρήση: /my/doc/<όνομα>:publish-ipld <εκδότης>
 doc-publish-failed = δημοσίευση { $path }: { $e }
 doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
 doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
-doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
+doc-fetch-done = { $cid } ανακτήθηκε → { $path }/content (δεν εκτελέστηκε)
 doc-fetch-failed = ανάκτηση { $cid }: { $e }
-doc-fetch-usage = χρήση: .my.doc.<όνομα>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid δεν έχει οριστεί
+doc-fetch-usage = χρήση: /my/doc/<όνομα>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid δεν έχει οριστεί
 doc-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 path-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 ρύθμιση φύλλου
 help-config-delete =   .path:                       διαγραφή φύλλου ή υποδέντρου
 help-config-verb =   .path!verb [args]            εκτέλεση τοπικού ρήματος
 
-help-my =   .my                          εμφάνιση όλης της προσωπικής διαμόρφωσης
-help-aliases =   .my.aliases                  καταγραφή ψευδωνύμων
-help-aliases-set =   .my.aliases.<name>: <did>    προσθήκη/ενημέρωση ψευδωνύμου (καθαρό DID, χωρίς #τμήμα)
-help-aliases-del =   .my.aliases.<name>:          αφαίρεση ψευδωνύμου
+help-my =   /my                          εμφάνιση όλης της προσωπικής διαμόρφωσης
+help-aliases =   /my/aliases                  καταγραφή ψευδωνύμων
+help-aliases-set =   /my/aliases/<name>: <did>    προσθήκη/ενημέρωση ψευδωνύμου (καθαρό DID, χωρίς #τμήμα)
+help-aliases-del =   /my/aliases/<name>:          αφαίρεση ψευδωνύμου
 help-runtime-discover =   .ma [port]          ανακάλυψη τοπικού περιβάλλοντος εκτέλεσης και δημιουργία ψευδωνύμου @ma
 help-runtime-claim =   .ma [port]             διεκδίκηση περιβάλλοντος εκτέλεσης με το DID σας
-help-identity =   .my.identity                 εμφάνιση διαμόρφωσης ταυτότητας
-help-identity-did =   .my.identity.did             εμφάνιση ιδίου DID (μόνο ανάγνωση)
-help-identity-publish =   .my.identity!publish @pub    δημοσίευση ιδίου DID μέσω υπηρεσίας εκδότη
-help-identity-export =   .my.identity!export          λήψη δικού σου πακέτου ταυτότητας
+help-identity =   /my/identity                 εμφάνιση διαμόρφωσης ταυτότητας
+help-identity-did =   /my/identity/did             εμφάνιση ιδίου DID (μόνο ανάγνωση)
+help-identity-publish =   /my/identity!publish @pub    δημοσίευση ιδίου DID μέσω υπηρεσίας εκδότη
+help-identity-export =   /my/identity!export          λήψη δικού σου πακέτου ταυτότητας
 help-config-path =   .config                      εμφάνιση όλων των καταχωρήσεων .config.*
 
-help-inbox =   .my.inbox                    καταγραφή εισερχομένων (προβολή υποδέντρου)
-help-inbox-n =   .my.inbox.N                  εμφάνιση πεδίων καταχώρησης N
-help-inbox-from =   .my.inbox.N.from             DID αποστολέα για καταχώρηση N
-help-inbox-reply =   .my.inbox.N!reply [body]     αποστολή απάντησης (ανοίγει επεξεργαστή χωρίς σώμα)
-help-inbox-open =   .my.inbox.N!open             άνοιγμα περιεχομένου σε επεξεργαστή μόνο ανάγνωσης
-help-inbox-del =   .my.inbox.N:                 διαγραφή καταχώρησης N
-help-inbox-delall =   .my.inbox:                   διαγραφή όλων των καταχωρήσεων εισερχομένων
-help-inbox-flush =   .my.inbox!flush              εκτύπωση όλων των καταχωρήσεων στο τερματικό
-help-inbox-filter =   .my.inbox!filter @who        εμφάνιση μόνο εγγραφών από @who
-help-inbox-traverse =   .my.inbox.N.sender.<πεδίο>  τεμπέλικη διάσχιση εγγράφου DID αποστολέα
+help-inbox =   /my/inbox                    καταγραφή εισερχομένων (προβολή υποδέντρου)
+help-inbox-n =   /my/inbox/N                  εμφάνιση πεδίων καταχώρησης N
+help-inbox-from =   /my/inbox/N/from             DID αποστολέα για καταχώρηση N
+help-inbox-reply =   /my/inbox/N!reply [body]     αποστολή απάντησης (ανοίγει επεξεργαστή χωρίς σώμα)
+help-inbox-open =   /my/inbox/N!open             άνοιγμα περιεχομένου σε επεξεργαστή μόνο ανάγνωσης
+help-inbox-del =   /my/inbox/N:                 διαγραφή καταχώρησης N
+help-inbox-delall =   /my/inbox:                   διαγραφή όλων των καταχωρήσεων εισερχομένων
+help-inbox-flush =   /my/inbox!flush              εκτύπωση όλων των καταχωρήσεων στο τερματικό
+help-inbox-filter =   /my/inbox!filter @who        εμφάνιση μόνο εγγραφών από @who
+help-inbox-traverse =   /my/inbox/N/sender/<πεδίο>  τεμπέλικη διάσχιση εγγράφου DID αποστολέα
 
-help-doc-edit =   .my.doc.<όνομα>:edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο
-help-doc-edit-cid =   .my.doc.<όνομα>:edit <cid>     ανάκτηση CID, άνοιγμα για αναθεώρηση
-help-doc-eval =   .my.doc.<όνομα>:eval           εκτέλεση αποθηκευμένου περιεχομένου γραμμή-γραμμή
-help-doc-publish =   .my.doc.<όνομα>:publish @pub   αποθήκευση ως ακατέργαστο blob (όλοι οι τύποι)
-help-doc-publish-ipld =   .my.doc.<όνομα>:publish-ipld @pub  αποθήκευση YAML ως δομημένο κόμβο DAG-CBOR IPLD
-help-doc-fetch =   .my.doc.<όνομα>:fetch <cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
-help-doc-cid =   .my.doc.<όνομα>:cid            εμφάνιση αποθηκευμένου CID
-help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγράφου
+help-doc-edit =   /my/doc/<όνομα>:edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο
+help-doc-edit-cid =   /my/doc/<όνομα>:edit <cid>     ανάκτηση CID, άνοιγμα για αναθεώρηση
+help-doc-eval =   /my/doc/<όνομα>:eval           εκτέλεση αποθηκευμένου περιεχομένου γραμμή-γραμμή
+help-doc-publish =   /my/doc/<όνομα>:publish @pub   αποθήκευση ως ακατέργαστο blob (όλοι οι τύποι)
+help-doc-publish-ipld =   /my/doc/<όνομα>:publish-ipld @pub  αποθήκευση YAML ως δομημένο κόμβο DAG-CBOR IPLD
+help-doc-fetch =   /my/doc/<όνομα>:fetch <cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
+help-doc-cid =   /my/doc/<όνομα>:cid            εμφάνιση αποθηκευμένου CID
+help-doc-del =   /my/doc/<όνομα>:              διαγραφή εγγράφου
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Διαθέσιμες γλώσσες (ορισμός με .my.i18n: <code>):
+lang-list-header = Διαθέσιμες γλώσσες (ορισμός με /my/i18n: <code>):
 err-lang-not-found = η γλώσσα δεν βρέθηκε: { $lang }
 
 msg-send-failed = αποτυχία αποστολής: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = το προφίλ { $name } διαγράφηκε
 profiles-not-found = το προφίλ δεν βρέθηκε: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -296,12 +296,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -326,9 +326,9 @@ help-topic-publish =   .help.publish                δημοσίευση ταυ�
 help-header-publish = ── δημοσίευση ταυτότητας ────────────────────────────────────────────────────
 help-publish-intro = Η δημοσίευση κάνει την ταυτότητά σου εντοπίσιμη στο δίκτυο. Άλλοι μπορούν να αναζητήσουν το DID σου για να σε βρουν.
 help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το ma (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.
-help-publish-steps = Βήματα: εκτέλεσε '.ma [port]' για ανίχνευση του τοπικού ma, μετά '.my.identity!publish @ma'.
+help-publish-steps = Βήματα: εκτέλεσε '.ma [port]' για ανίχνευση του τοπικού ma, μετά '/my/identity!publish @ma'.
 help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

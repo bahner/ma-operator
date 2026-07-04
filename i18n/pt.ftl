@@ -44,7 +44,7 @@ msg-connecting = a ligar ao iroh...
 msg-iroh-ready = ponto de extremidade iroh pronto
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicado via ma local ({ $url })
-msg-identity-not-published = Identidade não encontrada online — se tiver ma instalado localmente, execute '.ma [port]' e depois '.my.identity!publish @ma'. Digite '.help.publish' para detalhes.
+msg-identity-not-published = Identidade não encontrada online — se tiver ma instalado localmente, execute '.ma [port]' e depois '/my/identity!publish @ma'. Digite '.help.publish' para detalhes.
 msg-blocked = ⊗ bloqueado [{ $cap }]: { $from }
 msg-focus-cleared = foco limpo
 msg-focusing = a focar { $did } como { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = descoberta falhou: esperava `did` começar com did:ma:, r
 discover-no-endpoint = aviso de descoberta: `endpoint_id` ausente em status.json; apenas DID guardado
 discover-success = ma descoberto em { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma criado — execute '.my.identity!publish @ma' para publicar a sua identidade.
+discover-alias-hint =   alias @ma criado — execute '/my/identity!publish @ma' para publicar a sua identidade.
 claim-success = Tempo de execução reclamado para { $did }
 claim-conflict = Tempo de execução já reclamado por outra identidade
 claim-http-failed = reclamação falhou: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = não autenticado; inicie sessão primeiro para reclamar o tem
 runtime-no-verb = nenhum verbo `{ $verb }` para { $path }
 
 # ── Verbos — controlo de acesso ───────────────────────────────────────────
-acl-reset = .my.acl reposto (completamente aberto)
+acl-reset = /my/acl reposto (completamente aberto)
 acl-persist-error = erro ao guardar: { $e }
-acl-no-verb = nenhum verbo `{ $verb }` para .my.acl
+acl-no-verb = nenhum verbo `{ $verb }` para /my/acl
 
 # ── Verbos — identidade ───────────────────────────────────────────────────
-publish-usage = utilização: .my.identity!publish <did-ou-alias>
+publish-usage = utilização: /my/identity!publish <did-ou-alias>
 identity-exported = Pacote descarregado como { $filename }
 identity-export-failed = Exportação falhou: { $e }
 
 # ── Verbos — documentos ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content está vazio
-doc-save-first = { $path }.content está vazio — guarde primeiro
+doc-content-empty = { $path }/content está vazio
+doc-save-first = { $path }/content está vazio — guarde primeiro
 doc-missing-name = nome do documento em falta
-doc-publish-usage = utilização: .my.doc.<nome>:publish <editor>
-doc-publish-ipld-usage = utilização: .my.doc.<nome>:publish-ipld <editor>
+doc-publish-usage = utilização: /my/doc/<nome>:publish <editor>
+doc-publish-ipld-usage = utilização: /my/doc/<nome>:publish-ipld <editor>
 doc-publish-failed = publicação { $path }: { $e }
 doc-publish-ipld-failed = publicação IPLD { $path }: { $e }
 doc-store-sent = pedido de armazenamento enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
 doc-ipld-store-sent = pedido de armazenamento IPLD enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
-doc-fetch-done = { $cid } obtido → { $path }.content (não executado)
+doc-fetch-done = { $cid } obtido → { $path }/content (não executado)
 doc-fetch-failed = obtenção { $cid }: { $e }
-doc-fetch-usage = utilização: .my.doc.<nome>:fetch <cid>
-doc-cid-value = { $path }.cid = { $cid }
-doc-cid-not-set = { $path }.cid não está definido
+doc-fetch-usage = utilização: /my/doc/<nome>:fetch <cid>
+doc-cid-value = { $path }/cid = { $cid }
+doc-cid-not-set = { $path }/cid não está definido
 doc-no-verb = nenhum verbo `{ $verb }` para { $path }
 path-no-verb = nenhum verbo `{ $verb }` para { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 definir folha
 help-config-delete =   .path:                       eliminar folha ou subárvore
 help-config-verb =   .path!verb [args]            executar verbo local
 
-help-my =   .my                          mostrar toda a configuração pessoal
-help-aliases =   .my.aliases                  listar aliases
-help-aliases-set =   .my.aliases.<name>: <did>    adicionar/atualizar alias (DID puro, sem #fragmento)
-help-aliases-del =   .my.aliases.<name>:          remover alias
+help-my =   /my                          mostrar toda a configuração pessoal
+help-aliases =   /my/aliases                  listar aliases
+help-aliases-set =   /my/aliases/<name>: <did>    adicionar/atualizar alias (DID puro, sem #fragmento)
+help-aliases-del =   /my/aliases/<name>:          remover alias
 help-runtime-discover =   .ma [port]          descobrir tempo de execução local e criar alias @ma
 help-runtime-claim =   .ma [port]             reclamar tempo de execução com o seu DID
-help-identity =   .my.identity                 mostrar configuração de identidade
-help-identity-did =   .my.identity.did             mostrar DID próprio (só de leitura)
-help-identity-publish =   .my.identity!publish @pub    publicar DID próprio através do serviço editor
-help-identity-export =   .my.identity!export          descarregar o próprio pacote de identidade
+help-identity =   /my/identity                 mostrar configuração de identidade
+help-identity-did =   /my/identity/did             mostrar DID próprio (só de leitura)
+help-identity-publish =   /my/identity!publish @pub    publicar DID próprio através do serviço editor
+help-identity-export =   /my/identity!export          descarregar o próprio pacote de identidade
 help-config-path =   .config                      mostrar todas as entradas .config.*
 
-help-inbox =   .my.inbox                    listar caixa de entrada (vista de subárvore)
-help-inbox-n =   .my.inbox.N                  mostrar campos da entrada N
-help-inbox-from =   .my.inbox.N.from             DID do remetente para a entrada N
-help-inbox-reply =   .my.inbox.N!reply [body]     enviar resposta (abre editor sem corpo)
-help-inbox-open =   .my.inbox.N!open             abrir conteúdo em editor só de leitura
-help-inbox-del =   .my.inbox.N:                 eliminar entrada N
-help-inbox-delall =   .my.inbox:                   eliminar todas as entradas da caixa de entrada
-help-inbox-flush =   .my.inbox!flush              imprimir todas as entradas no terminal
-help-inbox-filter =   .my.inbox!filter @who        mostrar apenas entradas de @who
-help-inbox-traverse =   .my.inbox.N.sender.<campo>  percorrer documento DID do remetente de forma diferida
+help-inbox =   /my/inbox                    listar caixa de entrada (vista de subárvore)
+help-inbox-n =   /my/inbox/N                  mostrar campos da entrada N
+help-inbox-from =   /my/inbox/N/from             DID do remetente para a entrada N
+help-inbox-reply =   /my/inbox/N!reply [body]     enviar resposta (abre editor sem corpo)
+help-inbox-open =   /my/inbox/N!open             abrir conteúdo em editor só de leitura
+help-inbox-del =   /my/inbox/N:                 eliminar entrada N
+help-inbox-delall =   /my/inbox:                   eliminar todas as entradas da caixa de entrada
+help-inbox-flush =   /my/inbox!flush              imprimir todas as entradas no terminal
+help-inbox-filter =   /my/inbox!filter @who        mostrar apenas entradas de @who
+help-inbox-traverse =   /my/inbox/N/sender/<campo>  percorrer documento DID do remetente de forma diferida
 
-help-doc-edit =   .my.doc.<nome>:edit           abrir editor com conteúdo guardado
-help-doc-edit-cid =   .my.doc.<nome>:edit <cid>     obter CID, abrir para revisão
-help-doc-eval =   .my.doc.<nome>:eval           executar conteúdo guardado linha por linha
-help-doc-publish =   .my.doc.<nome>:publish @pub   guardar como blob bruto (todos os tipos)
-help-doc-publish-ipld =   .my.doc.<nome>:publish-ipld @pub  guardar YAML como nó IPLD DAG-CBOR estruturado
-help-doc-fetch =   .my.doc.<nome>:fetch <cid>    importar conteúdo CID (sem execução)
-help-doc-cid =   .my.doc.<nome>:cid            mostrar CID guardado
-help-doc-del =   .my.doc.<nome>:              eliminar documento
+help-doc-edit =   /my/doc/<nome>:edit           abrir editor com conteúdo guardado
+help-doc-edit-cid =   /my/doc/<nome>:edit <cid>     obter CID, abrir para revisão
+help-doc-eval =   /my/doc/<nome>:eval           executar conteúdo guardado linha por linha
+help-doc-publish =   /my/doc/<nome>:publish @pub   guardar como blob bruto (todos os tipos)
+help-doc-publish-ipld =   /my/doc/<nome>:publish-ipld @pub  guardar YAML como nó IPLD DAG-CBOR estruturado
+help-doc-fetch =   /my/doc/<nome>:fetch <cid>    importar conteúdo CID (sem execução)
+help-doc-cid =   /my/doc/<nome>:cid            mostrar CID guardado
+help-doc-del =   /my/doc/<nome>:              eliminar documento
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Idiomas disponíveis (definir com .my.i18n: <code>):
+lang-list-header = Idiomas disponíveis (definir com /my/i18n: <code>):
 err-lang-not-found = idioma não encontrado: { $lang }
 
 msg-send-failed = falha no envio: { $e }
@@ -280,11 +280,11 @@ profiles-deleted = perfil { $name } excluído
 profiles-not-found = perfil não encontrado: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help.<topic> for details
+help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help.msg                    messaging
 help-topic-focus =   .help.focus                  focus mode
 help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config
+help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help.inbox                  inbox
 help-topic-doc =   .help.doc                    documents
 help-topic-actor =   .help.actor                  remote actor
@@ -297,12 +297,12 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor body                  send text message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities.<n>          get entity
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get config value
-help-actor-config-set =   @actor.config.<key>: val     set config value
+help-actor-entities-get =   @actor.entities/<n>          get entity
+help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor.entities/<n>:         delete entity
+help-actor-config-get =   @actor.config/<key>          get config value
+help-actor-config-set =   @actor.config/<key>: val     set config value
 help-actor-acl =   @actor.acl                   get ACL
 help-actor-acl-edit =   @actor.acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
@@ -325,9 +325,9 @@ help-topic-publish =   .help.publish                publicar a sua identidade na
 help-header-publish = ── publicar identidade ──────────────────────────────────────────────────────
 help-publish-intro = Publicar torna a sua identidade encontrável na rede. Outros podem pesquisar o seu DID para o contactar.
 help-publish-ma = Para publicar, precisa de ma (runtime local) instalado. Liga ego ao IPFS/IPNS em seu nome.
-help-publish-steps = Passos: execute '.ma [port]' para detetar o seu ma local, depois '.my.identity!publish @ma'.
+help-publish-steps = Passos: execute '.ma [port]' para detetar o seu ma local, depois '/my/identity!publish @ma'.
 help-publish-without = Sem publicar, outros não conseguem contactá-lo — mesmo que conheçam o seu DID, não conseguem resolver o seu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────
