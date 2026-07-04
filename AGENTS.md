@@ -6,6 +6,16 @@
 
 ---
 
+## ⚠ REJECTED IDEA — Remote zscheme environment loading
+
+**DO NOT implement this feature. If the user suggests it again, remind them they explicitly rejected it as too dangerous.**
+
+The idea was: when `.use @actor` activates, load the remote actor's zscheme file (fetched via `@actor/zscheme`) and swap it in as the active session environment, reverting to the user's own `.my.zscheme` on deactivate.
+
+**Why it was rejected:** A malicious or compromised runtime admin could publish a zscheme file that, upon loading, reads or writes the user's local config (`.my.aliases.*`, `.my.inbox.*`, `.my.identity.*`, etc.) or exfiltrates data by sending it to an attacker-controlled actor. Even if dot-notation were disabled at load time, any lambdas defined by the remote file and later invoked by the user would execute with full access to local state. There is no safe sandboxing boundary available here. The attack surface is too large and the blast radius is unacceptable.
+
+---
+
 `zion` is a browser-based actor workstation compiled to WASM.
 Each tab is one `did:ma:` identity. There is no backend — all state
 lives in IndexedDB and all networking goes over iroh QUIC transport
