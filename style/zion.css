@@ -18,6 +18,7 @@
     --colour-border:      #003300;
     --colour-cursor:      #00ff41;
     --colour-highlight:   #003300;
+    --colour-editor-bg:   #0d0d0d;
     --font-family:        "Courier New", Courier, "Lucida Console", monospace;
     --font-size:          16px;
     --line-height:        1.5;
@@ -578,6 +579,9 @@ html, body {
 
 .editor-doc-path {
     flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
     color: var(--colour-alias);
     font-size: 0.85em;
     font-family: var(--font-family);
@@ -613,19 +617,20 @@ html, body {
 
 .editor-cm-host {
     flex: 1;
+    min-height: 0;
     overflow: auto;
     font-size: 0.9em;
-    background: var(--colour-bg);
+    background: var(--colour-editor-bg);
 }
 
 /* CodeMirror dark theme overrides */
 .editor-cm-host .cm-editor {
     height: 100%;
-    background: var(--colour-bg);
+    background: var(--colour-editor-bg);
     color: var(--colour-text);
 }
 .editor-cm-host .cm-gutters {
-    background: var(--colour-bg);
+    background: var(--colour-editor-bg);
     border-right: 1px solid var(--colour-dimmed);
     color: var(--colour-dimmed);
 }

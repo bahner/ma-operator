@@ -62,7 +62,7 @@ pub(crate) fn apply_config_to_dom(cfg: &EgoConfig) {
     };
 
     let style = format!(
-        "--colour-text:{};--colour-dimmed:{};--colour-pending:{};--colour-replied:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};--colour-input-bg:{};--colour-border:{};--colour-cursor:{};--colour-highlight:{};",
+        "--colour-text:{};--colour-dimmed:{};--colour-pending:{};--colour-replied:{};--colour-alias:{};--colour-error:{};--colour-system:{};--colour-bg:{};--colour-input-bg:{};--colour-border:{};--colour-cursor:{};--colour-highlight:{};--colour-editor-bg:{};",
         cfg.get(".my.config.colour.text").unwrap_or("#00ff41"),
         cfg.get(".my.config.colour.dimmed").unwrap_or("#008f11"),
         cfg.get(".my.config.colour.pending").unwrap_or("#004d00"),
@@ -75,6 +75,7 @@ pub(crate) fn apply_config_to_dom(cfg: &EgoConfig) {
         cfg.get(".my.config.colour.border").unwrap_or("#003300"),
         cfg.get(".my.config.colour.cursor").unwrap_or("#00ff41"),
         cfg.get(".my.config.colour.highlight").unwrap_or("#003300"),
+        cfg.get(".my.config.colour.editor.background").unwrap_or("#0d0d0d"),
     );
 
     let _ = root.set_attribute("style", &style);

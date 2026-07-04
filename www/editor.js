@@ -16,12 +16,19 @@
  * in-place once CM6 resolves.
  */
 
+// ── Pending-create queue (handles the rAF vs. dynamic-import race) ─────────
+// If create() is called before CM6 has loaded (which happens on first page load
+// because requestAnimationFrame fires in ~16ms while esm.sh imports take much
+// longer), store the args here and flush them once the real implementation is
+// ready.
+let _pendingCreate = null;
+
 // ── Synchronous stubs (safe no-ops until CM6 loads) ───────────────────────
 window.maEditor = {
-    create()      {},
+    create(elId, value, lang) { _pendingCreate = { elId, value: value ?? "", lang: lang ?? "plain" }; },
     getValue()    { return ""; },
     setLanguage() {},
-    destroy()     {},
+    destroy(elId) { _pendingCreate = null; },
 };
 
 // ── Async CM6 load ────────────────────────────────────────────────────────
@@ -104,6 +111,7 @@ window.maEditor = {
 
         /** Destroy the editor and remove it from the registry. */
         destroy(elId) {
+            _pendingCreate = null;
             const view = _editors[elId];
             if (view) {
                 view.destroy();
@@ -111,4 +119,11 @@ window.maEditor = {
             }
         },
     });
+
+    // Flush any create() call that arrived while CM6 was still loading.
+    if (_pendingCreate) {
+        const { elId, value, lang } = _pendingCreate;
+        _pendingCreate = null;
+        window.maEditor.create(elId, value, lang);
+    }
 })();

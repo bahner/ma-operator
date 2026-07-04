@@ -47,6 +47,7 @@ impl EgoConfig {
             (".my.config.colour.border", "#003300"),
             (".my.config.colour.cursor", "#00ff41"),
             (".my.config.colour.highlight", "#003300"),
+            (".my.config.colour.editor.background", "#0d0d0d"),
             (".my.config.screensaver.timeout", "300"),
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
