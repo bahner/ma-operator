@@ -6,7 +6,11 @@
 ///   .path: value         → DotOp::Set
 ///   .path:               → DotOp::Delete
 ///   .path!verb [args]    → DotOp::Meta  (side-effect / system operation)
-///   @alias[!verb] [body] → ActorMessage
+///   @alias/path          → RemoteCrud::Get
+///   @alias/path: value   → RemoteCrud::Set(value)
+///   @alias/path:         → RemoteCrud::Delete
+///   @alias/path!edit     → RemoteCrud::Edit
+///   @alias[!verb] [body] → ActorMessage  (RPC)
 ///   @did:ma:<id>[!verb]  → ActorMessage
 ///   did:ma:<id>[!verb]   → ActorMessage  (bare DID from expansion)
 ///   \@literal text       → PlainText
@@ -24,6 +28,19 @@ pub enum DotOp {
     Meta(String),
 }
 
+/// Operation for a remote CRUD command (`@alias/path`).
+#[derive(Debug, Clone, PartialEq)]
+pub enum RemoteCrudOp {
+    /// Fetch the value at path and display it.
+    Get,
+    /// Fetch the value at path and open it in the editor.
+    Edit,
+    /// Set the value at path to the given string (text or `<cid>`).
+    Set(String),
+    /// Delete the value at path.
+    Delete,
+}
+
 #[derive(Debug, Clone, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum Command {
@@ -31,6 +48,12 @@ pub enum Command {
         path: String,
         op: DotOp,
         args: Vec<String>,
+    },
+    /// Remote CRUD on a `@alias/path` target — mirrors local `.path` grammar.
+    RemoteCrud {
+        target: String,
+        path: String,
+        op: RemoteCrudOp,
     },
     ActorMessage {
         target: String,
@@ -91,14 +114,54 @@ fn dot_path_and_op(head: &str, rest: &str) -> Result<(String, DotOp), String> {
 
 // ── Actor message ──────────────────────────────────────────────────────────
 
-/// Handles both `@alias[:verb] [body]` and `did:ma:…[:verb] [body]`.
+/// Handles both `@alias[!verb] [body]` and `did:ma:…[!verb] [body]`.
+/// Also handles `@alias/path` for remote CRUD (mirrors local `.path` grammar).
 fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     let (head, body_raw) = split_head_rest(input);
-    let head = head.trim_start_matches('@');
-    let (raw_target, verb) = split_actor_head(head);
+    let head_stripped = head.trim_start_matches('@');
+
+    // Remote CRUD: `@alias/path` — `/` after the alias (not a DID).
+    // DIDs never contain `/`, so `did:ma:...` falls through to ActorMessage.
+    if !head_stripped.starts_with("did:") {
+        if let Some(slash) = head_stripped.find('/') {
+            let alias_raw = &head_stripped[..slash];
+            let path_raw = &head_stripped[slash..];
+            let target = resolve_target(alias_raw, cfg)?;
+            let (path, op) = parse_remote_crud_op(path_raw, &body_raw);
+            return Ok(Command::RemoteCrud { target, path, op });
+        }
+    }
+
+    let (raw_target, verb) = split_actor_head(head_stripped);
     let target = resolve_target(raw_target, cfg)?;
     let body = resolve_targets(&body_raw, cfg)?;
     Ok(Command::ActorMessage { target, verb, body })
+}
+
+/// Parse the path+op from the `/path` portion of a remote CRUD command.
+///
+/// | Input | path | op |
+/// |---|---|---|
+/// | `/entities/room` | `/entities/room` | `Get` |
+/// | `/entities/room!edit` | `/entities/room` | `Edit` |
+/// | `/entities/room:` (empty body) | `/entities/room` | `Delete` |
+/// | `/entities/room:` (non-empty body) | `/entities/room` | `Set(body)` |
+fn parse_remote_crud_op(path_raw: &str, body: &str) -> (String, RemoteCrudOp) {
+    // `!edit` suffix → Edit op
+    if let Some(path) = path_raw.strip_suffix("!edit") {
+        return (path.to_string(), RemoteCrudOp::Edit);
+    }
+    // trailing `:` → Delete (empty body) or Set (non-empty body)
+    if let Some(path) = path_raw.strip_suffix(':') {
+        let op = if body.trim().is_empty() {
+            RemoteCrudOp::Delete
+        } else {
+            RemoteCrudOp::Set(body.trim().to_string())
+        };
+        return (path.to_string(), op);
+    }
+    // bare path → Get
+    (path_raw.to_string(), RemoteCrudOp::Get)
 }
 
 // ── Shared helpers ─────────────────────────────────────────────────────────

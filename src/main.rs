@@ -1,6 +1,5 @@
 mod acl;
 mod app;
-mod cid_ops;
 mod config;
 mod core;
 mod dispatch;

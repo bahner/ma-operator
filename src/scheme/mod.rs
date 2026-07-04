@@ -4,7 +4,7 @@ pub mod parser;
 pub mod value;
 
 pub use eval::{Ctx, EvalCtx};
-pub use ma_zscheme::{Env, SchemeErr, SchemeVal};
+pub use ma_zscheme::{Env, SchemeVal};
 
 use crate::{config::EgoConfig, state::AppState};
 use leptos::prelude::RwSignal;
@@ -15,18 +15,10 @@ use std::rc::Rc;
 pub fn init_session_env() {
     ma_zscheme::init_session_env();
 }
-#[allow(dead_code)]
-pub fn reset_session_env() {
-    ma_zscheme::reset_session_env();
-}
 pub(crate) fn get_env() -> Env {
     ma_zscheme::get_env()
 }
 
-#[allow(dead_code)]
-pub async fn eval_source(source: &str, ctx: Ctx) -> Result<SchemeVal, SchemeErr> {
-    ma_zscheme::eval_source(source, ctx).await
-}
 
 // ── Session-env serialisation ──────────────────────────────────────────────
 

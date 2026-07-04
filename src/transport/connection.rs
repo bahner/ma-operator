@@ -260,45 +260,6 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
     }
 }
 
-/// Send an RPC message whose single argument is a raw byte blob (DAG-CBOR).
-/// The verb is sent as a CBOR text atom; the bytes are a CBOR bytes value.
-/// Returns the dispatched `Message.id` on success.
-#[allow(dead_code)]
-pub async fn send_rpc_bytes(
-    target_did: &str,
-    verb: &str,
-    payload: Vec<u8>,
-) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info()?;
-
-    let atom = if verb.starts_with(':') {
-        verb.to_string()
-    } else {
-        format!(":{verb}")
-    };
-
-    let cbor_val = ciborium::Value::Array(vec![
-        ciborium::Value::Text(atom),
-        ciborium::Value::Bytes(payload),
-    ]);
-
-    let mut body = Vec::new();
-    ciborium::ser::into_writer(&cbor_val, &mut body).map_err(|e| e.to_string())?;
-
-    let msg = Message::new(
-        &sender_did,
-        target_did,
-        MESSAGE_TYPE_RPC,
-        CONTENT_TYPE_TERM,
-        &body,
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let msg_id = msg.id.clone();
-    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
-    Ok(msg_id)
-}
-
 /// Send our own signed DID document to a publisher's `/ma/ipfs/0.0.1` endpoint.
 ///
 /// Uses `SecretBundle::generate_identity()` (via `ma_core`) to rebuild the
@@ -471,10 +432,10 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
 pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
-    let atom = if path.starts_with('.') {
+    let atom = if path.starts_with('/') {
         path.to_string()
     } else {
-        format!(".{path}")
+        format!("/{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![ciborium::Value::Text(atom)]);
     let mut body = Vec::new();
@@ -502,10 +463,10 @@ pub async fn send_crud_set(
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
-    let atom = if path.starts_with('.') {
+    let atom = if path.starts_with('/') {
         path.to_string()
     } else {
-        format!(".{path}")
+        format!("/{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![ciborium::Value::Text(atom), value]);
     let mut body = Vec::new();
@@ -529,10 +490,10 @@ pub async fn send_crud_set(
 pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
-    let atom = if path.starts_with('.') {
+    let atom = if path.starts_with('/') {
         path.to_string()
     } else {
-        format!(".{path}")
+        format!("/{path}")
     };
     let cbor_val = ciborium::Value::Array(vec![
         ciborium::Value::Text(atom),

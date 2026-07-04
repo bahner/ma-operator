@@ -240,6 +240,42 @@ do not block the batch step counter.  They re-queue the expanded line into
 
 ---
 
+## Remote CRUD grammar
+
+Remote CRUD mirrors the local dot-command grammar exactly, using `@alias/path`
+(slash separator) instead of `.path`. This cleanly separates local state (`.`)
+from remote actor state (`/`).
+
+| Syntax | Meaning |
+|--------|----------|
+| `@alias/path` | GET — fetch and display value |
+| `@alias/path: value` | SET — write text or `<bafyCID>` |
+| `@alias/path:` | DELETE — remove key/subtree |
+| `@alias/path!edit` | Edit — GET + open editor |
+
+**Examples:**
+```
+@sky/entities                      ← list all entities
+@sky/entities/room                 ← get room entity node
+@sky/entities/room: <bafy…>        ← upsert entity by CID
+@sky/entities/room:                ← delete entity
+@sky/entities/room!edit            ← open entity in editor
+@sky/kinds/ma/avatar/0.0.1         ← get kind definition
+@sky/kinds/ma/avatar/0.0.1!edit    ← edit kind definition
+@sky/config/kubo_rpc_url           ← get config value
+@sky/config/kubo_rpc_url: http://… ← set config value
+@sky/acl!edit                      ← edit root ACL
+```
+
+**Wire format:** CBOR `["/path"]` (GET) or `["/path", value]` (SET/DELETE).
+Path uses `/` as separator throughout — protocol IDs like `/ma/avatar/0.0.1`
+map naturally to `/kinds/ma/avatar/0.0.1`.
+
+**Parser:** `Command::RemoteCrud { target, path, op }` in
+`parser/command.rs`. Eval in `eval/actor.rs::eval_remote_crud`.
+
+---
+
 ## Alias rules
 
 - Stored at `.my.aliases.<name>` — bare DID only, no fragment.

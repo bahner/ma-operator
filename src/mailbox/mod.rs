@@ -5,7 +5,6 @@
 //! integer.  Indices may have gaps after deletion — always list first.
 
 use crate::config::EgoConfig;
-use crate::i18n::t;
 use crate::messages::IncomingMessage;
 use ma_core::MESSAGE_TYPE_MESSAGE;
 use std::collections::BTreeSet;
@@ -120,12 +119,6 @@ pub fn is_link_value(value: &str) -> bool {
     value.starts_with("did:ma:") || value.parse::<cid::Cid>().is_ok()
 }
 
-/// True if `token` is a valid bare CID (CIDv0 or CIDv1, any codec).
-#[allow(dead_code)]
-pub fn is_probable_cid(token: &str) -> bool {
-    token.parse::<cid::Cid>().is_ok()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -172,39 +165,6 @@ mod tests {
     #[test]
     fn is_link_value_plain_string_not_link() {
         assert!(!is_link_value("hello world"));
-    }
-
-    // ── is_probable_cid ───────────────────────────────────────────────────
-
-    #[test]
-    fn is_probable_cid_cidv1_bafy() {
-        assert!(is_probable_cid(
-            "bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi"
-        ));
-    }
-
-    #[test]
-    fn is_probable_cid_cidv1_bafkrei() {
-        assert!(is_probable_cid(
-            "bafkreiajw63hfajj5r2vonnzd46v2gyk5ppaklusvyay45x7jf25bm2igm"
-        ));
-    }
-
-    #[test]
-    fn is_probable_cid_cidv0_qm() {
-        assert!(is_probable_cid(
-            "QmYwAPJzv5CZsnA625s3Xf2nemtYgPpHdWEz79ojWnPbdG"
-        ));
-    }
-
-    #[test]
-    fn is_probable_cid_with_non_alphanumeric_not_cid() {
-        assert!(!is_probable_cid("bafy/path/component"));
-    }
-
-    #[test]
-    fn is_probable_cid_too_short_not_cid() {
-        assert!(!is_probable_cid("Qmshort"));
     }
 
     // ── next_inbox_index / inbox_count ────────────────────────────────────
@@ -266,18 +226,5 @@ mod tests {
         // No expires_at set — should never be pruned.
         let removed = prune_inbox_expired(&mut cfg, 9_999_999.0);
         assert_eq!(removed, 0);
-    }
-}
-
-#[allow(dead_code)]
-pub fn open_target(target: &str) -> Result<(), String> {
-    let window = web_sys::window().ok_or_else(|| "no browser window".to_string())?;
-    let opened = window
-        .open_with_url_and_target(target, "_blank")
-        .map_err(|e| format!("open failed: {e:?}"))?;
-    if opened.is_some() {
-        Ok(())
-    } else {
-        Err(t("err-popup-blocked"))
     }
 }

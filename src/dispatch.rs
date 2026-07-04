@@ -258,7 +258,6 @@ fn open_batch(line: &str, state: &AppState) {
         b.insert(
             batch_id,
             ActiveBatch {
-                id: batch_id,
                 mode,
                 timeout_ms,
                 on_error,

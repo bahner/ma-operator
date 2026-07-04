@@ -165,6 +165,10 @@ pub(crate) fn eval(
             eval_dot(&path, op, &args, state, config, show_editor, on_eval);
         }
 
+        Command::RemoteCrud { target, path, op } => {
+            actor::eval_remote_crud(target, path, op, raw, state, show_editor, config);
+        }
+
         Command::ActorMessage { target, verb, body } => {
             actor::eval_actor(target, verb, body, raw, state, config);
         }

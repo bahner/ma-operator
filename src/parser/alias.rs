@@ -78,33 +78,6 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
     Ok(result)
 }
 
-/// Format a DID for display: if there is an alias for it, show the alias
-/// in the configured alias colour.  Returns a plain string (CSS colouring
-/// is applied in the view layer).
-#[allow(dead_code)]
-pub fn display_did<'a>(did: &'a str, cfg: &EgoConfig) -> &'a str {
-    // Walk aliases and find a reverse match
-    for (key, val) in cfg.list(".my.aliases.") {
-        if val == did {
-            // strip the ".my.aliases." prefix from the key
-            let name = key.trim_start_matches(".my.aliases.");
-            let _ = name; // caller gets the raw did; view formats it
-        }
-    }
-    did
-}
-
-/// Reverse-lookup: DID → alias name (if one exists).
-#[allow(dead_code)]
-pub fn did_to_alias<'a>(did: &str, cfg: &'a EgoConfig) -> Option<&'a str> {
-    for (key, val) in cfg.list(".my.aliases.") {
-        if val == did {
-            return Some(key.trim_start_matches(".my.aliases."));
-        }
-    }
-    None
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -166,19 +139,5 @@ mod tests {
         let cfg = EgoConfig::default();
         let result = resolve_targets("@ alone", &cfg).unwrap();
         assert_eq!(result, "@ alone");
-    }
-
-    // ── did_to_alias ──────────────────────────────────────────────────────
-
-    #[test]
-    fn did_to_alias_found() {
-        let cfg = cfg_with_alias("alice", "did:ma:alice123");
-        assert_eq!(did_to_alias("did:ma:alice123", &cfg), Some("alice"));
-    }
-
-    #[test]
-    fn did_to_alias_not_found() {
-        let cfg = EgoConfig::default();
-        assert_eq!(did_to_alias("did:ma:nobody", &cfg), None);
     }
 }

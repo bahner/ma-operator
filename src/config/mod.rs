@@ -119,7 +119,6 @@ impl EgoConfig {
         n
     }
 
-    #[allow(dead_code)]
     pub fn delete(&mut self, key: &str) -> bool {
         self.tree.remove(key).is_some()
     }
@@ -152,19 +151,7 @@ impl EgoConfig {
             .map(|(k, _)| &k[PREFIX.len()..])
     }
 
-    // ── Colour helpers ─────────────────────────────────────────────────────
 
-    #[allow(dead_code)]
-    pub fn colour_alias(&self) -> &str {
-        self.get(".my.config.colour.alias").unwrap_or("#ffd700")
-    }
-
-    #[allow(dead_code)]
-    pub fn colour_text(&self) -> &str {
-        self.get(".my.config.colour.text").unwrap_or("#00ff41")
-    }
-
-    #[allow(dead_code)]
     pub fn screensaver_timeout_secs(&self) -> u64 {
         self.get(".my.config.screensaver.timeout")
             .and_then(|v| v.parse().ok())

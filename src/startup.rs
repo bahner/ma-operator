@@ -71,7 +71,7 @@ pub(crate) async fn startup_no_document(
     // Skip if a remote DID was explicitly chosen — startup_connect will queue .ma!connect <did>.
     if startup_ma
         .as_deref()
-        .map_or(false, |v| v.starts_with("did:ma:"))
+        .is_some_and(|v| v.starts_with("did:ma:"))
     {
         return;
     }

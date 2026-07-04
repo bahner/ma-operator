@@ -68,7 +68,6 @@ pub async fn init(lang: &str) -> bool {
 }
 
 /// Return the active language code (`"en"`, `"nb"`, …).
-#[allow(dead_code)]
 pub fn lang() -> String {
     CURRENT_LANG.with(|l| l.borrow().clone())
 }

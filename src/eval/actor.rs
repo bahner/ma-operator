@@ -1,10 +1,10 @@
-//! Actor message evaluator: routes `@target:verb` commands to transport,
-//! with interceptors for `:kinds/`, `:path:edit`, and CID content operations.
+//! Actor message and remote CRUD evaluators.
 
 use crate::{
     config::EgoConfig,
     core::CommandStatus,
     i18n::{t, tf},
+    parser::command::RemoteCrudOp,
     state::{AppState, OutboxTask, PendingKind},
     transport,
     views::editor::EditorMode,
@@ -110,205 +110,112 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
     }
 }
 
+// ── Remote CRUD ───────────────────────────────────────────────────────────
+
+/// Evaluate a `@alias/path` remote CRUD command.
+///
+/// | op | action |
+/// |---|---|
+/// | `Get` | Send CRUD GET, display reply |
+/// | `Edit` | Send CRUD GET, open editor on reply |
+/// | `Set(value)` | Send CRUD SET |
+/// | `Delete` | Send CRUD DELETE |
+pub(crate) fn eval_remote_crud(
+    target: String,
+    path: String,
+    op: RemoteCrudOp,
+    raw: &str,
+    state: &AppState,
+    _show_editor: RwSignal<Option<crate::views::editor::EditorContext>>,
+    _config: RwSignal<EgoConfig>,
+) {
+    let cmd_id = state.push_command(raw);
+    let state2 = state.clone();
+    leptos::task::spawn_local(async move {
+        match op {
+            RemoteCrudOp::Get => match transport::send_crud_get(&target, &path).await {
+                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                Err(e) => fail_cmd(e, cmd_id, &state2),
+            },
+            RemoteCrudOp::Edit => {
+                let editor_mode = editor_mode_for_path(&path, &target);
+                match transport::send_crud_get(&target, &path).await {
+                    Ok(msg_id) => state2.register_pending(
+                        msg_id,
+                        PendingKind::EditOpen {
+                            target,
+                            crud_path: path,
+                            editor_mode,
+                            cmd_id,
+                        },
+                        None,
+                    ),
+                    Err(e) => fail_cmd(e, cmd_id, &state2),
+                }
+            }
+            RemoteCrudOp::Set(value) => {
+                match transport::send_crud_set(&target, &path, ciborium::Value::Text(value)).await {
+                    Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                    Err(e) => fail_cmd(e, cmd_id, &state2),
+                }
+            }
+            RemoteCrudOp::Delete => match transport::send_crud_delete(&target, &path).await {
+                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                Err(e) => fail_cmd(e, cmd_id, &state2),
+            },
+        }
+    });
+}
+
+/// Determine which `EditorMode` to use for a given CRUD `/path`.
+fn editor_mode_for_path(path: &str, target: &str) -> EditorMode {
+    if path == "/acl" {
+        return EditorMode::RuntimeAclEdit {
+            target: target.to_string(),
+        };
+    }
+    if let Some(rest) = path.strip_prefix("/entities/") {
+        return if let Some((name, field)) = rest.split_once('/') {
+            EditorMode::EntityFieldEdit {
+                target: target.to_string(),
+                entity_name: name.to_string(),
+                field: field.to_string(),
+            }
+        } else {
+            EditorMode::EntityEdit {
+                target: target.to_string(),
+                entity_name: rest.to_string(),
+            }
+        };
+    }
+    if let Some(proto_rest) = path.strip_prefix("/kinds/") {
+        return EditorMode::KindEdit {
+            target: target.to_string(),
+            protocol_id: format!("/{proto_rest}"),
+        };
+    }
+    EditorMode::CrudEdit {
+        target: target.to_string(),
+        crud_path: path.to_string(),
+        content_type: String::new(),
+    }
+}
+
 // ── Internal dispatcher ───────────────────────────────────────────────────
 
 /// Route a verb to the right transport call.
 ///
-/// Returns `Some(result)` when the call should go through normal reply
-/// tracking, or `None` when an interceptor already handled success/failure.
+/// Only handles pure RPC (fragment-addressed targets or bare-atom verbs).
+/// Remote CRUD is handled by `eval_remote_crud` via `Command::RemoteCrud`.
 async fn dispatch_verb_to_transport(
     v: &str,
     target: &str,
     body: &str,
-    cmd_id: u64,
-    state: &AppState,
+    _cmd_id: u64,
+    _state: &AppState,
     _config: RwSignal<EgoConfig>,
 ) -> Option<Result<String, String>> {
-    // Fragment-addressed targets and bare-atom verbs always use RPC.
-    if target.contains('#') || (!v.contains('.') && !v.contains(':')) {
-        return Some(
-            transport::send_rpc(target, v, &body.split_whitespace().collect::<Vec<_>>()).await,
-        );
-    }
-    let v_inner = v.strip_prefix(':').unwrap_or(v);
-
-    if intercept_kinds(v_inner, target, body, cmd_id, state).await {
-        return None;
-    }
-    if intercept_edit(v_inner, target, cmd_id, state).await {
-        return None;
-    }
-    if intercept_cid_op(v_inner, target, body, cmd_id, state).await {
-        return None;
-    }
-
-    Some(match parse_crud_op(v, body) {
-        CrudOp::Get(path) => transport::send_crud_get(target, &path).await,
-        CrudOp::Set(path, value) => {
-            transport::send_crud_set(target, &path, ciborium::Value::Text(value)).await
-        }
-        CrudOp::Delete(path) => transport::send_crud_delete(target, &path).await,
-    })
-}
-
-// ── Interceptors ──────────────────────────────────────────────────────────
-
-/// `:kinds/<protocol>` interceptor — converts protocol-path verbs to CBOR
-/// arguments and dispatches via CRUD SET on `.kinds`.
-///
-/// Returns `true` when the request was handled (regardless of success).
-async fn intercept_kinds(
-    v_inner: &str,
-    target: &str,
-    _body: &str,
-    cmd_id: u64,
-    state: &AppState,
-) -> bool {
-    let Some(proto_path) = v_inner.strip_prefix("kinds/") else {
-        return false;
-    };
-    let (bare_proto, op) = if let Some(p) = proto_path.strip_suffix(":edit") {
-        (p, "edit")
-    } else if let Some(p) = proto_path.strip_suffix(':') {
-        (p, "delete")
-    } else {
-        (proto_path, "get")
-    };
-    let protocol_id = format!("/{bare_proto}");
-
-    match op {
-        "get" | "edit" => {
-            let result = transport::send_crud_set(
-                target,
-                ".kinds",
-                ciborium::Value::Text(protocol_id.clone()),
-            )
-            .await;
-            match result {
-                Ok(msg_id) if op == "edit" => {
-                    state.register_pending(
-                        msg_id,
-                        PendingKind::EditOpen {
-                            target: target.to_string(),
-                            crud_path: ".kinds".to_string(),
-                            editor_mode: EditorMode::KindEdit {
-                                target: target.to_string(),
-                                protocol_id: protocol_id.clone(),
-                            },
-                            cmd_id,
-                        },
-                        None,
-                    );
-                }
-                Ok(_) => {}
-                Err(e) => fail_cmd(e, cmd_id, state),
-            }
-        }
-        _ => {
-            // DELETE
-            if let Err(e) = transport::send_crud_set(
-                target,
-                ".kinds",
-                ciborium::Value::Array(vec![ciborium::Value::Text(protocol_id.clone())]),
-            )
-            .await
-            {
-                fail_cmd(e, cmd_id, state);
-            }
-        }
-    }
-    true
-}
-
-/// `:path:edit` interceptor — sends a CRUD GET so the poll loop can open the
-/// editor with the response.
-///
-/// Returns `true` when the request was handled.
-async fn intercept_edit(v_inner: &str, target: &str, cmd_id: u64, state: &AppState) -> bool {
-    let path_part = if let Some(p) = v_inner.strip_suffix(":edit") {
-        p.to_string()
-    } else if let Some(p) = v_inner.strip_suffix("!edit") {
-        // `@alias.path!edit` parses with a leading dot on the path segment
-        p.strip_prefix('.').unwrap_or(p).to_string()
-    } else {
-        return false;
-    };
-    let path_part = path_part.as_str();
-    let crud_path = format!(".{path_part}");
-    let editor_mode = match path_part {
-        "acl" => EditorMode::RuntimeAclEdit {
-            target: target.to_string(),
-        },
-        s if s.starts_with("entities.") => {
-            let rest = &s["entities.".len()..];
-            if let Some((name, field)) = rest.split_once('.') {
-                EditorMode::EntityFieldEdit {
-                    target: target.to_string(),
-                    entity_name: name.to_string(),
-                    field: field.to_string(),
-                }
-            } else {
-                EditorMode::EntityEdit {
-                    target: target.to_string(),
-                    entity_name: rest.to_string(),
-                }
-            }
-        }
-        _ => EditorMode::CrudEdit {
-            target: target.to_string(),
-            crud_path: crud_path.clone(),
-            content_type: String::new(),
-        },
-    };
-    match transport::send_crud_get(target, &crud_path).await {
-        Ok(msg_id) => {
-            state.register_pending(
-                msg_id,
-                PendingKind::EditOpen {
-                    target: target.to_string(),
-                    crud_path,
-                    editor_mode,
-                    cmd_id,
-                },
-                None,
-            );
-        }
-        Err(e) => fail_cmd(e, cmd_id, state),
-    }
-    true
-}
-
-/// CID content-operation interceptor — sends a CRUD GET so the poll loop can
-/// fetch the returned CID and apply the operation (cat / head / tail / wc).
-///
-/// Returns `true` when the request was handled.
-async fn intercept_cid_op(
-    v_inner: &str,
-    target: &str,
-    body: &str,
-    cmd_id: u64,
-    state: &AppState,
-) -> bool {
-    let Some((base_verb, op_name)) = crate::cid_ops::find_op(v_inner) else {
-        return false;
-    };
-    let crud_path = format!(".{base_verb}");
-    let args: Vec<String> = body.split_whitespace().map(String::from).collect();
-    match transport::send_crud_get(target, &crud_path).await {
-        Ok(msg_id) => {
-            state.register_pending(
-                msg_id,
-                PendingKind::CidOp {
-                    op: op_name.to_string(),
-                    args,
-                    cmd_id,
-                },
-                None,
-            );
-        }
-        Err(e) => fail_cmd(e, cmd_id, state),
-    }
-    true
+    Some(transport::send_rpc(target, v, &body.split_whitespace().collect::<Vec<_>>()).await)
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
@@ -341,29 +248,4 @@ fn fail_cmd(e: String, cmd_id: u64, state: &AppState) {
     state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
     let disp = e.replace("not logged in", &t("msg-not-logged-in"));
     state.push_error(tf("msg-send-failed", &[("e", &disp)]));
-}
-
-// ── CRUD routing ──────────────────────────────────────────────────────────
-
-enum CrudOp {
-    Get(String),
-    Set(String, String),
-    Delete(String),
-}
-
-fn parse_crud_op(verb: &str, body: &str) -> CrudOp {
-    let v = verb.strip_prefix(':').unwrap_or(verb);
-    let v = v.strip_prefix('.').unwrap_or(v);
-    if v == "create" {
-        return CrudOp::Set(".create".to_string(), body.trim().to_string());
-    }
-    if let Some(path) = v.strip_suffix(':') {
-        let atom = format!(".{path}");
-        return if body.trim().is_empty() {
-            CrudOp::Delete(atom)
-        } else {
-            CrudOp::Set(atom, body.trim().to_string())
-        };
-    }
-    CrudOp::Get(format!(".{v}"))
 }

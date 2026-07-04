@@ -82,12 +82,6 @@ pub enum PendingKind {
     },
     /// Second-leg CRUD SET confirmation (end of IPFS-store → CRUD-SET flow).
     CrudConfirm { cmd_id: u64 },
-    /// CRUD GET reply should fetch the returned CID and apply a text op.
-    CidOp {
-        op: String,
-        args: Vec<String>,
-        cmd_id: u64,
-    },
     /// CRUD GET reply should open the editor with the received content.
     EditOpen {
         target: String,
@@ -115,7 +109,6 @@ impl PendingKind {
         match self {
             PendingKind::Simple { cmd_id } => Some(*cmd_id),
             PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
-            PendingKind::CidOp { cmd_id, .. } => Some(*cmd_id),
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
             PendingKind::IpfsKindUpsert { cmd_id, .. } => *cmd_id,
@@ -134,7 +127,6 @@ pub const DEFAULT_TIMEOUT_MS: u32 = 60_000;
 pub struct TrackedRequest {
     pub kind: PendingKind,
     /// Batch this request belongs to, if any.
-    #[allow(dead_code)]
     pub batch_id: Option<u64>,
     /// `js_sys::Date::now()` when the request was registered (ms since epoch).
     pub sent_at_ms: f64,
@@ -156,8 +148,6 @@ pub enum OnError {
 
 #[derive(Clone, Debug)]
 pub struct ActiveBatch {
-    #[allow(dead_code)]
-    pub id: u64,
     pub mode: BatchMode,
     /// Timeout per step (Sync) or per command (Async), in milliseconds.
     pub timeout_ms: u32,

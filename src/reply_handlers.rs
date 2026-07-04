@@ -10,7 +10,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
-    http::{fetch_cid_bytes, fetch_cid_text},
+    http::fetch_cid_bytes,
     i18n::{t, tf},
     messages::IncomingMessage,
     state::{AppState, OutboxTask},
@@ -72,14 +72,13 @@ pub(crate) fn handle_ipfs_kind_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
+            // Path: /kinds/ma/avatar/0.0.1 (strip leading / from protocol_id)
+            let path = format!("/kinds{}", protocol_id);
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
-                    crud_path: ".kinds".to_string(),
-                    value: ciborium::Value::Array(vec![
-                        ciborium::Value::Text(protocol_id),
-                        ciborium::Value::Text(cid),
-                    ]),
+                    crud_path: path,
+                    value: ciborium::Value::Text(format!("<{cid}>")),
                     cmd_id,
                 });
             });
@@ -298,52 +297,6 @@ fn open_editor_from_yaml_cbor(
             Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
         },
     }
-}
-
-// ── CID content-op ─────────────────────────────────────────────────────────
-
-/// CID content-op reply: fetch the CID and apply the op (cat/head/tail/wc).
-pub(crate) fn handle_cid_op_reply(
-    op: String,
-    args: Vec<String>,
-    cmd_id: u64,
-    incoming: &IncomingMessage,
-    state: &AppState,
-) {
-    if incoming.is_error {
-        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
-        state.push_error(incoming.display.clone());
-        return;
-    }
-    let content_bytes = incoming.content.clone();
-    let fallback_display = incoming.display.clone();
-    let state2 = state.clone();
-    spawn_local(async move {
-        match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
-            Ok(ciborium::Value::Text(cid))
-                if (cid.starts_with('b') || cid.starts_with('Q')) && cid.len() > 10 =>
-            {
-                match fetch_cid_text(&cid).await {
-                    Ok(text) => {
-                        let args_ref: Vec<&str> = args.iter().map(|s| s.as_str()).collect();
-                        for line in crate::cid_ops::apply(&op, &text, &args_ref) {
-                            state2.push_output(line);
-                        }
-                        state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
-                    }
-                    Err(e) => {
-                        state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                        state2.push_error(tf("cid-op-fetch-failed", &[("e", &e)]));
-                    }
-                }
-            }
-            _ => {
-                // Not a CID — display as plain text.
-                state2.push_output(fallback_display);
-                state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
-            }
-        }
-    });
 }
 
 // ── CRUD confirm ───────────────────────────────────────────────────────────

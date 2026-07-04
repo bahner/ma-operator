@@ -12,7 +12,7 @@ use crate::{
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
-        cbor_reply_to_scheme_val, classify_reply, handle_cid_op_reply, handle_crud_confirm,
+        cbor_reply_to_scheme_val, classify_reply, handle_crud_confirm,
         handle_edit_open_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
         handle_profile_publish_reply,
     },
@@ -139,9 +139,6 @@ fn dispatch_reply(
                 state,
                 show_editor,
             );
-        }
-        PendingKind::CidOp { op, args, cmd_id } => {
-            handle_cid_op_reply(op, args, cmd_id, &incoming, state);
         }
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display);
