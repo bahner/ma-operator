@@ -151,7 +151,6 @@ impl EgoConfig {
             .map(|(k, _)| &k[PREFIX.len()..])
     }
 
-
     pub fn screensaver_timeout_secs(&self) -> u64 {
         self.get(".my.config.screensaver.timeout")
             .and_then(|v| v.parse().ok())

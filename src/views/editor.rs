@@ -115,6 +115,10 @@ pub enum EditorMode {
 pub struct EditorContext {
     /// The document path being edited (e.g. `.my.doc.foo`).
     pub doc_path: String,
+    /// Editable "Save to" URL shown in the editor toolbar.
+    /// Initialised from `doc_path` with alias resolution applied.
+    /// The user may change it to redirect where the content is published.
+    pub save_to: String,
     /// Initial content to load into the editor.
     pub initial: String,
     /// Language mode for CodeMirror (e.g. "markdown", "yaml").
@@ -128,13 +132,21 @@ pub struct EditorContext {
 
 impl EditorContext {
     pub fn new(doc_path: impl Into<String>, initial: impl Into<String>) -> Self {
+        let doc_path = doc_path.into();
+        let save_to = doc_path.clone();
         Self {
-            doc_path: doc_path.into(),
+            doc_path,
+            save_to,
             initial: initial.into(),
             language: "markdown".to_string(),
             mode: EditorMode::Standard,
             cmd_id: None,
         }
+    }
+
+    pub fn with_save_to(mut self, save_to: impl Into<String>) -> Self {
+        self.save_to = save_to.into();
+        self
     }
 
     pub fn with_language(mut self, language: impl Into<String>) -> Self {
@@ -172,12 +184,16 @@ pub fn EditorModal(
     // Language selector state — initialised from context when editor opens.
     let language = RwSignal::new("plain".to_string());
 
+    // Editable "Save to" URL — initialised from ctx.save_to when editor opens.
+    let save_to = RwSignal::new(String::new());
+
     // Mount / unmount the CM6 editor when `show` changes.
     Effect::new({
         move |_| {
             match show.get() {
                 Some(ref ctx) => {
                     language.set(ctx.language.clone());
+                    save_to.set(ctx.save_to.clone());
                     // We need to defer the actual CM6 mount until the DOM
                     // element is rendered.  A rAF is sufficient.
                     let initial = ctx.initial.clone();
@@ -478,13 +494,28 @@ pub fn EditorModal(
             // toolbar above the editor field, no backdrop.
             <div class="editor-panel">
                 <div class="editor-toolbar">
-                    <span class="editor-doc-path">
+                    // Editable "Save to" URL — hidden in View and Reply modes.
+                    <input
+                        type="text"
+                        class="editor-doc-path"
+                        style=move || if is_view() || is_reply() { "display:none" } else { "" }
+                        prop:value=move || save_to.get()
+                        on:input=move |ev| {
+                            let val = event_target_value(&ev);
+                            save_to.set(val);
+                        }
+                    />
+                    // Static title in View / Reply modes.
+                    <span
+                        class="editor-doc-path"
+                        style=move || if is_view() || is_reply() { "" } else { "display:none" }
+                    >
                         {move || show.get().map(|c| c.doc_path).unwrap_or_default()}
                     </span>
-                    // Language selector — hidden in View / Reply modes.
+                    // Language selector — visible in all modes except View and Reply.
                     <select
                         class="editor-lang-select"
-                        style=move || if is_standard() { "" } else { "display:none" }
+                        style=move || if is_view() || is_reply() { "display:none" } else { "" }
                         on:change=on_lang_change
                         prop:value=move || language.get()
                     >

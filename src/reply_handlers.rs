@@ -170,6 +170,7 @@ pub(crate) fn handle_edit_open_reply(
     incoming: &IncomingMessage,
     state: &AppState,
     show_editor: RwSignal<Option<EditorContext>>,
+    config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
 ) {
     if incoming.is_error {
         state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
@@ -178,7 +179,19 @@ pub(crate) fn handle_edit_open_reply(
     }
     let content_bytes = incoming.content.clone();
     let content_type = incoming.content_type.clone();
-    let doc_path = format!("@{}{}", target, crud_path);
+    // Resolve alias: show @sky/path instead of @did:ma:.../path in the editor toolbar.
+    let display_target = config.with_untracked(|c| {
+        c.reverse_alias(&target)
+            .map(|a| a.to_string())
+            .unwrap_or_else(|| target.clone())
+    });
+    let save_to = format!("@{}{}", display_target, crud_path);
+    // For KindEdit, show just the crud_path (e.g. /kinds/ma/avatar/0.0.1) as title.
+    // For everything else, include the target DID to make the path unambiguous.
+    let doc_path = match &editor_mode {
+        EditorMode::KindEdit { .. } => crud_path.clone(),
+        _ => format!("@{}{}", target, crud_path),
+    };
     let state2 = state.clone();
     let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
@@ -197,13 +210,37 @@ pub(crate) fn handle_edit_open_reply(
                 state2,
                 show_editor,
                 doc_path,
+                save_to,
                 content_bytes,
                 editor_mode,
                 cmd_id,
             );
         }
+        "text/yaml" => {
+            // Content is [":ok", yaml_string] CBOR — unwrap and open editor.
+            match crate::messages::extract_ok_yaml(&content_bytes) {
+                Ok(yaml) => open_editor(
+                    show_editor,
+                    doc_path,
+                    save_to,
+                    yaml,
+                    "yaml",
+                    editor_mode,
+                    cmd_id,
+                ),
+                Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
+            }
+        }
         "application/x-ma-term+cbor" => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+            Ok(yaml) => open_editor(
+                show_editor,
+                doc_path,
+                save_to,
+                yaml,
+                "yaml",
+                editor_mode,
+                cmd_id,
+            ),
             Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
         },
         "application/x-ma-term+yaml" => {
@@ -211,6 +248,7 @@ pub(crate) fn handle_edit_open_reply(
                 state2,
                 show_editor,
                 doc_path,
+                save_to,
                 content_bytes,
                 editor_mode,
                 cmd_id,
@@ -219,7 +257,15 @@ pub(crate) fn handle_edit_open_reply(
         _ => {
             // Unknown / legacy content-type — best-effort CBOR → YAML.
             match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-                Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", editor_mode, cmd_id),
+                Ok(yaml) => open_editor(
+                    show_editor,
+                    doc_path,
+                    save_to,
+                    yaml,
+                    "yaml",
+                    editor_mode,
+                    cmd_id,
+                ),
                 Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
             }
         }
@@ -230,6 +276,7 @@ pub(crate) fn handle_edit_open_reply(
 fn open_editor(
     show_editor: RwSignal<Option<EditorContext>>,
     doc_path: String,
+    save_to: String,
     yaml: String,
     language: &str,
     mode: EditorMode,
@@ -237,6 +284,7 @@ fn open_editor(
 ) {
     show_editor.set(Some(
         EditorContext::new(doc_path, yaml)
+            .with_save_to(save_to)
             .with_language(language)
             .with_mode(mode)
             .with_cmd_id(cmd_id),
@@ -255,6 +303,7 @@ fn open_editor_via_cid(
     state: AppState,
     show_editor: RwSignal<Option<EditorContext>>,
     doc_path: String,
+    save_to: String,
     content_bytes: Vec<u8>,
     mode: EditorMode,
     cmd_id: u64,
@@ -264,7 +313,9 @@ fn open_editor_via_cid(
             spawn_local(async move {
                 match fetch_cid_bytes(&cid).await {
                     Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
-                        Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+                        Ok(yaml) => {
+                            open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id)
+                        }
                         Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
                     },
                     Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
@@ -284,16 +335,17 @@ fn open_editor_from_yaml_cbor(
     state: AppState,
     show_editor: RwSignal<Option<EditorContext>>,
     doc_path: String,
+    save_to: String,
     content_bytes: Vec<u8>,
     mode: EditorMode,
     cmd_id: u64,
 ) {
     match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
         Ok(ciborium::Value::Text(yaml)) => {
-            open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id);
+            open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id);
         }
         Ok(_) | Err(_) => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-            Ok(yaml) => open_editor(show_editor, doc_path, yaml, "yaml", mode, cmd_id),
+            Ok(yaml) => open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id),
             Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
         },
     }

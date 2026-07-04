@@ -19,7 +19,6 @@ pub(crate) fn get_env() -> Env {
     ma_zscheme::get_env()
 }
 
-
 // ── Session-env serialisation ──────────────────────────────────────────────
 
 pub fn dump_env() -> String {
