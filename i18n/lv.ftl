@@ -44,7 +44,7 @@ msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicēts caur lokālo ma ({ $url })
-msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.ma [port]' un pēc tam '/my/identity!publish @ma'. Raksti '.help.publish' detaļām.
+msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.ma [port]' un pēc tam '/my/identity!publish @ma'. Raksti '.help/publish' detaļām.
 msg-blocked = ⊗ bloķēts [{ $cap }]: { $from }
 msg-focus-cleared = fokuss notīrīts
 msg-focusing = fokusē { $did } kā { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profils nav atrasts: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    zion atvēršana, izmantojot URL saiti
+help-topic-url =   .help/url                    zion atvēršana, izmantojot URL saiti
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
 help-url-intro =   Dalies ar saiti, kas atver zion ar iepriekš aizpildītu saņēmēju:
 help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did> (parasta ziņa)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>:emote
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospied Enter, lai nosūtītu.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                identitātes publicēšana tīklā
+help-topic-publish =   .help/publish                identitātes publicēšana tīklā
 help-header-publish = ── identitātes publicēšana ──────────────────────────────────────────────────
 help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Citi var meklēt tavu DID, lai sazinātos ar tevi.
 help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts ma (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.

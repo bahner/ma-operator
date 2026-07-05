@@ -169,6 +169,28 @@ impl EditorContext {
 
 const EDITOR_EL_ID: &str = "ma-codemirror-host";
 
+/// Re-resolve `(target_did, path)` from the "save to" toolbar field, which
+/// the user may have edited to redirect where content gets published (e.g.
+/// changing `@sky/entities/room` to `@sky/entities/restaurant`).
+///
+/// Returns `None` if the field isn't a valid `@alias/path` or `@did:ma:…/path`
+/// reference (e.g. unknown alias, or no `/path` component) — callers should
+/// fall back to the original `EditorMode` captured when the editor opened.
+fn resolve_save_to(save_to: &str, config: &EgoConfig) -> Option<(String, String)> {
+    let rest = save_to.trim().strip_prefix('@')?;
+    let slash = rest.find('/')?;
+    let (alias_or_did, path) = rest.split_at(slash);
+    if path.len() <= 1 {
+        return None;
+    }
+    let target = if alias_or_did.starts_with("did:") {
+        alias_or_did.to_string()
+    } else {
+        config.resolve_alias(alias_or_did)?.to_string()
+    };
+    Some((target, path.to_string()))
+}
+
 /// Modal editor overlay.  Mount this once inside `<Terminal>` and drive it
 /// via the `show` signal.
 #[component]
@@ -332,7 +354,15 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let _path = format!(":entities.{entity_name}");
+            // Honour an edited "save to" field — e.g. redirecting from
+            // `@sky/entities/room` to `@sky/entities/restaurant`.
+            let (target, entity_name) = config
+                .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
+                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                    EditorMode::EntityEdit { target, entity_name } => Some((target, entity_name)),
+                    _ => None,
+                })
+                .unwrap_or((target, entity_name));
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -356,7 +386,16 @@ pub fn EditorModal(
             else {
                 return;
             };
-            let _path = format!(":entities.{entity_name}.{field}");
+            // Honour an edited "save to" field.
+            let (target, entity_name, field) = config
+                .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
+                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                    EditorMode::EntityFieldEdit { target, entity_name, field } => {
+                        Some((target, entity_name, field))
+                    }
+                    _ => None,
+                })
+                .unwrap_or((target, entity_name, field));
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -382,6 +421,12 @@ pub fn EditorModal(
             let EditorMode::RuntimeAclEdit { target } = ctx.mode else {
                 return;
             };
+            // Honour an edited "save to" field (only the target may change;
+            // the ACL path itself is always fixed).
+            let target = config
+                .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
+                .map(|(t, _)| t)
+                .unwrap_or(target);
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -408,6 +453,10 @@ pub fn EditorModal(
             else {
                 return;
             };
+            // Honour an edited "save to" field.
+            let (target, crud_path) = config
+                .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
+                .unwrap_or((target, crud_path));
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -438,6 +487,14 @@ pub fn EditorModal(
             else {
                 return;
             };
+            // Honour an edited "save to" field.
+            let (target, protocol_id) = config
+                .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
+                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                    EditorMode::KindEdit { target, protocol_id } => Some((target, protocol_id)),
+                    _ => None,
+                })
+                .unwrap_or((target, protocol_id));
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -643,7 +700,7 @@ async fn do_entity_publish(
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    let path = format!("entities.{entity_name}");
+    let path = format!("/entities/{entity_name}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
         Err(e) => {
@@ -688,7 +745,7 @@ async fn do_entity_field_publish(
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    let path = format!("entities.{entity_name}.{field}");
+    let path = format!("/entities/{entity_name}/{field}");
     let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
         Ok(b) => b,
         Err(e) => {

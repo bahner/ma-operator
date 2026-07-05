@@ -259,15 +259,24 @@ from remote actor state (`/`).
 | Syntax | Meaning |
 |--------|----------|
 | `@alias/path` | GET — fetch and display value |
-| `@alias/path: value` | SET — write text or `<bafyCID>` |
+| `@alias/path: value` | SET — write text or `/ipfs/<CIDv1>` / `/ipns/<key>` |
 | `@alias/path:` | DELETE — remove key/subtree |
 | `@alias/path!edit` | Edit — GET + open editor |
+
+Structured values (entity nodes, ACL maps, kind references) MUST be set with
+an explicit `/ipfs/<CIDv1>` or `/ipns/<key>` prefix. A bare CID with no
+prefix (angle-bracketed or otherwise) is treated as plain text, never
+auto-detected as a reference, and the runtime replies `[":error",
+"cidv1-required"]` if a structured field is set without the prefix. There is
+no angle-bracket (`<bafy…>`) CID convention on the wire — that syntax is
+reserved for the local Scheme evaluator's CID-as-callable literal (see
+"Scheme evaluator" above) and must never be sent as a CRUD value.
 
 **Examples:**
 ```
 @sky/entities                      ← list all entities
 @sky/entities/room                 ← get room entity node
-@sky/entities/room: <bafy…>        ← upsert entity by CID
+@sky/entities/room: /ipfs/bafy…    ← upsert entity by CID
 @sky/entities/room:                ← delete entity
 @sky/entities/room!edit            ← open entity in editor
 @sky/kinds/ma/avatar/0.0.1         ← get kind definition

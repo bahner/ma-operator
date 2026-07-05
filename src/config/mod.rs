@@ -152,6 +152,87 @@ impl EgoConfig {
             .map(|(k, _)| &k[PREFIX.len()..])
     }
 
+    /// Split `did_url` (a bare `did:ma:<id>` or a `did:ma:<id>#fragment`
+    /// DID-URL) into `(alias, fragment)` when the base DID has a known
+    /// alias. `alias` is returned without any `@` prefix so callers can
+    /// format it as needed (plain for emote/chat text, `@alias` otherwise).
+    /// Returns `None` when the base DID has no matching alias.
+    pub fn split_alias(&self, did_url: &str) -> Option<(String, Option<String>)> {
+        let (base, frag) = did_url.split_once('#').unwrap_or((did_url, ""));
+        let alias = self.reverse_alias(base)?.to_string();
+        let frag = if frag.is_empty() {
+            None
+        } else {
+            Some(frag.to_string())
+        };
+        Some((alias, frag))
+    }
+
+    /// Scan free-form text for `@did:ma:<id>[#fragment]` occurrences — i.e.
+    /// an actor reference, not a bare DID value — and replace each with
+    /// `@<alias>` (or `@<alias>#<fragment>`) whenever a matching alias is
+    /// known (this includes the user's own DID, if they have aliased
+    /// themselves, e.g. `@me`). Only DIDs prefixed with `@` are considered;
+    /// a bare `did:ma:…` with no leading `@` is left untouched, since it is
+    /// not being used as an actor reference. DIDs with no matching alias are
+    /// also left unchanged (still prefixed with `@`).
+    ///
+    /// A backslash immediately before the `@` escapes it, mirroring the
+    /// outbound `\@name` convention in `parser/alias.rs::resolve_targets`:
+    /// `\@did:ma:…` has the backslash stripped and is never alias-substituted,
+    /// even when a matching alias exists.
+    pub fn substitute_dids(&self, text: &str) -> String {
+        const PREFIX: &str = "@did:ma:";
+        let mut out = String::with_capacity(text.len());
+        let mut rest = text;
+        loop {
+            let Some(pos) = rest.find(PREFIX) else {
+                out.push_str(rest);
+                return out;
+            };
+            let escaped = pos > 0 && rest.as_bytes()[pos - 1] == b'\\';
+            if escaped {
+                // Strip the backslash, emit the literal "@did:ma:" prefix,
+                // and never look up an alias for what follows.
+                out.push_str(&rest[..pos - 1]);
+                out.push_str(PREFIX);
+                rest = &rest[pos + PREFIX.len()..];
+                continue;
+            }
+            out.push_str(&rest[..pos]);
+            let after_prefix = &rest[pos + PREFIX.len()..];
+            let id_len = after_prefix
+                .find(|c: char| !c.is_ascii_alphanumeric())
+                .unwrap_or(after_prefix.len());
+            let (id, mut tail) = after_prefix.split_at(id_len);
+            let mut frag: Option<&str> = None;
+            if let Some(stripped) = tail.strip_prefix('#') {
+                let frag_len = stripped
+                    .find(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '-'))
+                    .unwrap_or(stripped.len());
+                if frag_len > 0 {
+                    frag = Some(&stripped[..frag_len]);
+                    tail = &stripped[frag_len..];
+                }
+            }
+            let did_url = match frag {
+                Some(f) => format!("did:ma:{id}#{f}"),
+                None => format!("did:ma:{id}"),
+            };
+            out.push('@');
+            match self.split_alias(&did_url) {
+                Some((alias, Some(f))) => {
+                    out.push_str(&alias);
+                    out.push('#');
+                    out.push_str(&f);
+                }
+                Some((alias, None)) => out.push_str(&alias),
+                None => out.push_str(&did_url),
+            }
+            rest = tail;
+        }
+    }
+
     pub fn screensaver_timeout_secs(&self) -> u64 {
         self.get("/my/config/screensaver/timeout")
             .and_then(|v| v.parse().ok())
@@ -532,6 +613,112 @@ mod tests {
     #[test]
     fn reverse_alias_missing() {
         assert!(bare().reverse_alias("did:ma:unknown").is_none());
+    }
+
+    // ── split_alias ─────────────────────────────────────────────────────────
+
+    #[test]
+    fn split_alias_found_no_fragment() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/alice", "did:ma:abc");
+        assert_eq!(
+            cfg.split_alias("did:ma:abc"),
+            Some(("alice".to_string(), None))
+        );
+    }
+
+    #[test]
+    fn split_alias_found_with_fragment() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/alice", "did:ma:abc");
+        assert_eq!(
+            cfg.split_alias("did:ma:abc#room"),
+            Some(("alice".to_string(), Some("room".to_string())))
+        );
+    }
+
+    #[test]
+    fn split_alias_missing() {
+        assert!(bare().split_alias("did:ma:unknown").is_none());
+    }
+
+    // ── substitute_dids ─────────────────────────────────────────────────────
+
+    #[test]
+    fn substitute_dids_replaces_own_aliased_did() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/me", "did:ma:k51qzabc");
+        assert_eq!(
+            cfg.substitute_dids("The owner is @did:ma:k51qzabc."),
+            "The owner is @me."
+        );
+    }
+
+    #[test]
+    fn substitute_dids_preserves_fragment() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/sky", "did:ma:k51qzabc");
+        assert_eq!(
+            cfg.substitute_dids("target is @did:ma:k51qzabc#room"),
+            "target is @sky#room"
+        );
+    }
+
+    #[test]
+    fn substitute_dids_leaves_unknown_did_unchanged() {
+        assert_eq!(
+            bare().substitute_dids("The owner is @did:ma:unknownid."),
+            "The owner is @did:ma:unknownid."
+        );
+    }
+
+    #[test]
+    fn substitute_dids_handles_multiple_occurrences() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/me", "did:ma:aaa");
+        cfg.set("/my/aliases/sky", "did:ma:bbb");
+        assert_eq!(
+            cfg.substitute_dids("from @did:ma:bbb to @did:ma:aaa"),
+            "from @sky to @me"
+        );
+    }
+
+    #[test]
+    fn substitute_dids_no_did_present() {
+        assert_eq!(bare().substitute_dids("no dids here"), "no dids here");
+    }
+
+    #[test]
+    fn substitute_dids_leaves_bare_did_without_at_prefix_unchanged() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/me", "did:ma:k51qzabc");
+        // No leading '@' — not an actor reference, must not be touched.
+        assert_eq!(
+            cfg.substitute_dids("The owner is did:ma:k51qzabc."),
+            "The owner is did:ma:k51qzabc."
+        );
+    }
+
+    #[test]
+    fn substitute_dids_escaped_backslash_not_aliased() {
+        let mut cfg = bare();
+        cfg.set("/my/aliases/me", "did:ma:k51qzabc");
+        // Backslash-escaped: stripped, but NOT alias-substituted even though
+        // a matching alias exists.
+        assert_eq!(
+            cfg.substitute_dids(r"The owner is \@did:ma:k51qzabc."),
+            "The owner is @did:ma:k51qzabc."
+        );
+    }
+
+    #[test]
+    fn substitute_dids_escaped_unknown_did_still_stripped() {
+        // Escaping still strips the backslash even when there's no alias to
+        // avoid — the escape itself is unconditional.
+        assert_eq!(
+            bare().substitute_dids(r"see \@did:ma:unknownid here"),
+            "see @did:ma:unknownid here"
+        );
     }
 
     // ── JSON round-trip ───────────────────────────────────────────────────

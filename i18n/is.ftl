@@ -44,7 +44,7 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt í gegnum staðbundið ma ({ $url })
-msg-identity-not-published = Auðkenni finnst ekki á netinu — ef ma er uppsett á þessum tölvu, keyrðu '.ma [port]' og svo '/my/identity!publish @ma'. Skrifaðu '.help.publish' fyrir frekari upplýsingar.
+msg-identity-not-published = Auðkenni finnst ekki á netinu — ef ma er uppsett á þessum tölvu, keyrðu '.ma [port]' og svo '/my/identity!publish @ma'. Skrifaðu '.help/publish' fyrir frekari upplýsingar.
 msg-blocked = ⊗ lokað á [{ $cap }]: { $from }
 msg-focus-cleared = fókus hreinsaður
 msg-focusing = beinir athygli að { $did } sem { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = notandaprófíll finnst ekki: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    opna zion í gegnum URL-tengil
+help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-header-url = ── URL-breytur ──────────────────────────────────────────────────────────────────
 help-url-intro =   Deildu tengli sem opnar zion með fyrirfram fylltan viðtakanda:
 help-url-msg =   ?msg=<did>                   fyllir fyrirfram: @<did> (venjuleg skilaboð)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 fyllir fyrirfram: @<did>:emote (
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inntakið er fyrirfram fyllt en ekki sent — ýttu á Enter til að senda.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                birta auðkenni þitt á netinu
+help-topic-publish =   .help/publish                birta auðkenni þitt á netinu
 help-header-publish = ── birting auðkennis ────────────────────────────────────────────────────────
 help-publish-intro = Birting gerir auðkenni þitt leitanlegt á netinu. Aðrir geta leitað að DID þínu til að ná í þig.
 help-publish-ma = Til að birta þarftu ma (staðbundið keyrsluumhverfi) uppsett. Það tengir ego við IPFS/IPNS fyrir þína hönd.

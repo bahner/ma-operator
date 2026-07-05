@@ -87,12 +87,13 @@ fn dispatch_reply(
     // One-shot RPC from `send_rpc_and_wait`: route reply to the oneshot channel.
     if let Some(sender) = crate::state::AwaitingReply::take(msg_id) {
         let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+        let cfg = config.get_untracked();
         let result = if incoming.is_error {
             text_opt.unwrap_or_else(|| display.clone())
         } else {
             text_opt.unwrap_or_default()
         };
-        let _ = sender.send(result);
+        let _ = sender.send(cfg.substitute_dids(&result));
         return;
     }
 
@@ -137,12 +138,13 @@ fn dispatch_reply(
             handle_edit_open_reply(target, crud_path, editor_mode, cmd_id, &incoming, &ctx);
         }
         PendingKind::CrudConfirm { cmd_id } => {
-            handle_crud_confirm(cmd_id, &incoming, state, &display);
+            handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
         PendingKind::Simple { cmd_id } => {
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             state.resolve_command_by_id(cmd_id, status);
             if let Some(text) = text_opt {
+                let text = config.get_untracked().substitute_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
             }
         }
@@ -165,15 +167,7 @@ fn acl_gate(incoming: &IncomingMessage, state: &AppState, config: RwSignal<EgoCo
     if crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
         return true;
     }
-    let (base, frag) = incoming
-        .from
-        .split_once('#')
-        .unwrap_or((&incoming.from, ""));
-    let from_disp = match cfg.reverse_alias(base) {
-        Some(a) if frag.is_empty() => format!("@{a}"),
-        Some(a) => format!("@{a}#{frag}"),
-        None => incoming.from.clone(),
-    };
+    let from_disp = alias_display(&cfg, &incoming.from);
     state.push_system(tf("msg-blocked", &[("cap", cap), ("from", &from_disp)]));
     false
 }
@@ -251,39 +245,33 @@ fn loopback_suppress(incoming: &IncomingMessage) -> bool {
 /// Build the display string for an incoming message (alias substitution).
 fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
-    let (base, frag) = incoming
-        .from
-        .split_once('#')
-        .unwrap_or((&incoming.from, ""));
-    let Some(alias) = cfg.reverse_alias(base) else {
+    let Some((alias, frag)) = cfg.split_alias(&incoming.from) else {
         return incoming.display.clone();
     };
     let bare = incoming.message_type == ma_core::MESSAGE_TYPE_EMOTE
         || incoming.message_type == ma_core::MESSAGE_TYPE_CHAT;
-    let replacement = if bare {
-        if frag.is_empty() {
-            alias.to_string()
-        } else {
-            format!("{alias}#{frag}")
-        }
-    } else if frag.is_empty() {
-        format!("@{alias}")
-    } else {
-        format!("@{alias}#{frag}")
+    let replacement = match (bare, frag) {
+        (true, Some(f)) => format!("{alias}#{f}"),
+        (true, None) => alias,
+        (false, Some(f)) => format!("@{alias}#{f}"),
+        (false, None) => format!("@{alias}"),
     };
     incoming.display.replace(&incoming.from, &replacement)
+}
+
+/// Format a `did:ma:<id>[#fragment]` DID-URL for display, substituting a
+/// known alias (`@alias` / `@alias#fragment`) when one exists, or falling
+/// back to the DID-URL unchanged. Shared by `acl_gate` and `display_sender`.
+fn alias_display(cfg: &EgoConfig, did_url: &str) -> String {
+    match cfg.split_alias(did_url) {
+        Some((alias, Some(frag))) => format!("@{alias}#{frag}"),
+        Some((alias, None)) => format!("@{alias}"),
+        None => did_url.to_string(),
+    }
 }
 
 /// Alias-resolved sender string for display in inbox notifications.
 fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
-    let (base, frag) = incoming
-        .from
-        .split_once('#')
-        .unwrap_or((&incoming.from, ""));
-    match cfg.reverse_alias(base) {
-        Some(a) if frag.is_empty() => format!("@{a}"),
-        Some(a) => format!("@{a}#{frag}"),
-        None => incoming.from.clone(),
-    }
+    alias_display(&cfg, &incoming.from)
 }

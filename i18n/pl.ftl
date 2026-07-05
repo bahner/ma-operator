@@ -44,7 +44,7 @@ msg-connecting = łączenie z iroh...
 msg-iroh-ready = punkt końcowy iroh gotowy
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID opublikowane przez lokalne ma ({ $url })
-msg-identity-not-published = Tożsamość nie znaleziona online — jeśli masz ma zainstalowane lokalnie, uruchom '.ma [port]', a potem '/my/identity!publish @ma'. Wpisz '.help.publish' po szczegóły.
+msg-identity-not-published = Tożsamość nie znaleziona online — jeśli masz ma zainstalowane lokalnie, uruchom '.ma [port]', a potem '/my/identity!publish @ma'. Wpisz '.help/publish' po szczegóły.
 msg-blocked = ⊗ zablokowano [{ $cap }]: { $from }
 msg-focus-cleared = fokus wyczyszczony
 msg-focusing = fokusowanie na { $did } jako { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profil nie znaleziony: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    otwieranie ziona przez link URL
+help-topic-url =   .help/url                    otwieranie ziona przez link URL
 help-header-url = ── parametry URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Udostępnij link, który otworzy zion z wstępnie wypełnionym odbiorcą:
 help-url-msg =   ?msg=<did>                   wstępnie wypełnia: @<did> (zwykła wiadomość)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 wstępnie wypełnia: @<did>:emot
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Pole jest wstępnie wypełnione, ale nie wysłane — naciśnij Enter, aby wysłać.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publikowanie tożsamości w sieci
+help-topic-publish =   .help/publish                publikowanie tożsamości w sieci
 help-header-publish = ── publikowanie tożsamości ──────────────────────────────────────────────────
 help-publish-intro = Publikacja sprawia, że twoja tożsamość jest widoczna w sieci. Inni mogą wyszukać twój DID, aby się z tobą skontaktować.
 help-publish-ma = Aby opublikować, potrzebujesz zainstalowanego ma (lokalny runtime). Łączy ego z IPFS/IPNS w twoim imieniu.

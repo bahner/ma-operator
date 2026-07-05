@@ -44,7 +44,7 @@ msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ถูกเผยแพร่ผ่าน ma ในเครื่อง ({ $url })
-msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '/my/identity!publish @ma' พิมพ์ '.help.publish' เพื่อดูรายละเอียด
+msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '/my/identity!publish @ma' พิมพ์ '.help/publish' เพื่อดูรายละเอียด
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
 msg-focusing = กำลังโฟกัส { $did } เป็น { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = ไม่พบโปรไฟล์: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    เปิด zion ผ่านลิงก์ URL
+help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
 help-header-url = ── พารามิเตอร์ URL ───────────────────────────────────────────────────────────────
 help-url-intro =   แบ่งปันลิงก์ที่เปิด zion พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
 help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did> (ข้อความธรรมดา)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 กรอกล่วงหน�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                เผยแพร่ตัวตนของคุณสู่เครือข่าย
+help-topic-publish =   .help/publish                เผยแพร่ตัวตนของคุณสู่เครือข่าย
 help-header-publish = ── การเผยแพร่ตัวตน ───────────────────────────────────────────────────────────
 help-publish-intro = การเผยแพร่ทำให้ตัวตนของคุณค้นหาได้บนเครือข่าย คนอื่นสามารถค้นหา DID ของคุณเพื่อติดต่อคุณได้
 help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ

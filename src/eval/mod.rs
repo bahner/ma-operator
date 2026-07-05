@@ -1,7 +1,7 @@
 //! Command evaluators: local/remote path CRUD, actor messages, alias
 //! validation, config-to-DOM application, and lazy DID/CID link traversal.
 
-mod actor;
+pub(crate) mod actor;
 pub(crate) mod actor_send {
     pub(crate) use super::actor::execute_outbox_task;
 }
@@ -189,9 +189,9 @@ fn eval_control(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
-    // ── .help / .help.* ───────────────────────────────────────────────────
-    if path == ".help" || path.starts_with(".help.") {
-        let subtopic = path.strip_prefix(".help.").unwrap_or("");
+    // ── .help / .help/* ───────────────────────────────────────────────────
+    if path == ".help" || path.starts_with(".help/") {
+        let subtopic = path.strip_prefix(".help/").unwrap_or("");
         for line in crate::help::dispatch(subtopic) {
             state.push_system(line);
         }

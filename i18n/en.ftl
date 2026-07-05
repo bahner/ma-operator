@@ -47,7 +47,7 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published via local ma ({ $url })
-msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.ma [port]' then '/my/identity!publish @ma'. Type '.help.publish' for details.
+msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.ma [port]' then '/my/identity!publish @ma'. Type '.help/publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -173,16 +173,16 @@ help-cmd-batch =   .batch                       eval scratch document (parallel,
 help-cmd-batch-sync =   .batch:begin / .batch         run commands sequentially, one per line
 
 # ── Help text — topics index ──────────────────────────────────────────────
-help-header-topics = ── topics — type .help.<topic> for details ────────────────────────────────
-help-topic-msg =   .help.msg                    messaging — @actor, send, RPC
-help-topic-focus =   .help.focus                  focus mode — .use @actor
-help-topic-path =   .help.path                   local dot-path grammar
-help-topic-my =   .help.my                     personal config — /my/*, aliases, identity
-help-topic-inbox =   .help.inbox                  inbox — /my/inbox/*
-help-topic-doc =   .help.doc                    content verbs — !edit, !eval, !publish, !fetch, !cid
-help-topic-actor =   .help.actor                  remote actor — CRUD, entities, CID ops
-help-topic-url =   .help.url                    opening zion via a URL link
-help-unknown-topic =   .help.{ $topic }: unknown topic — try .help for a list
+help-header-topics = ── topics — type .help/<topic> for details ────────────────────────────────
+help-topic-msg =   .help/msg                    messaging — @actor, send, RPC
+help-topic-focus =   .help/focus                  focus mode — .use @actor
+help-topic-path =   .help/path                   local dot-path grammar
+help-topic-my =   .help/my                     personal config — /my/*, aliases, identity
+help-topic-inbox =   .help/inbox                  inbox — /my/inbox/*
+help-topic-doc =   .help/doc                    content verbs — !edit, !eval, !publish, !fetch, !cid
+help-topic-actor =   .help/actor                  remote actor — CRUD, entities, CID ops
+help-topic-url =   .help/url                    opening zion via a URL link
+help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
 help-msg-echo =   @alias                       echo resolved DID (no message sent)
@@ -341,7 +341,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines (default 10)
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publishing your identity to the network
+help-topic-publish =   .help/publish                publishing your identity to the network
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────
 help-publish-intro = Publishing makes your identity findable on the network. Others can look up your DID to reach you.
 help-publish-ma = To publish, you need ma (local runtime) installed. It bridges ego to IPFS/IPNS on your behalf.

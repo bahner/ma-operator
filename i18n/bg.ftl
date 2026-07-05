@@ -44,7 +44,7 @@ msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID публикуван чрез локален ma ({ $url })
-msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.ma [port]' и след това '/my/identity!publish @ma'. Напиши '.help.publish' за подробности.
+msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.ma [port]' и след това '/my/identity!publish @ma'. Напиши '.help/publish' за подробности.
 msg-blocked = ⊗ блокирано [{ $cap }]: { $from }
 msg-focus-cleared = фокусът е изчистен
 msg-focusing = фокусиране върху { $did } като { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = профилът не е намерен: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    отваряне на zion чрез URL връзка
+help-topic-url =   .help/url                    отваряне на zion чрез URL връзка
 help-header-url = ── URL параметри ────────────────────────────────────────────────────────────────
 help-url-intro =   Сподели връзка, която отваря zion с предварително попълнен получател:
 help-url-msg =   ?msg=<did>                   предварително попълва: @<did> (обикновено съобщение)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 предварително по�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Полето е предварително попълнено, но не изпратено — натисни Enter за изпращане.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                публикуване на самоличността ти в мрежата
+help-topic-publish =   .help/publish                публикуване на самоличността ти в мрежата
 help-header-publish = ── публикуване на самоличност ───────────────────────────────────────────────
 help-publish-intro = Публикуването прави самоличността ти намираема в мрежата. Другите могат да потърсят твоя DID, за да те достигнат.
 help-publish-ma = За публикуване е необходим инсталиран ma (локален runtime). Той свързва ego с IPFS/IPNS от твое име.

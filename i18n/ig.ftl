@@ -44,7 +44,7 @@ msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Ebipụtara DID site na ma mpaghara ({ $url })
-msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '/my/identity!publish @ma'. Dee '.help.publish' maka nkọwa.
+msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '/my/identity!publish @ma'. Dee '.help/publish' maka nkọwa.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
 msg-focusing = na-etinye uche na { $did } dị ka { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = profaịlụ ahụghị: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    mepee zion site na njikọ URL
+help-topic-url =   .help/url                    mepee zion site na njikọ URL
 help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
 help-url-msg =   ?msg=<did>                   deeye tupu: @<did> (ozi dị mfe)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 deeye tupu: @<did>:emote (ngwa �
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                bipute njirimara gị na netwọk
+help-topic-publish =   .help/publish                bipute njirimara gị na netwọk
 help-header-publish = ── ibiputa njirimara ─────────────────────────────────────────────────────────
 help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. Ndị ọzọ nwere ike ịchọ DID gị iji kpọtụrụ gị.
 help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.

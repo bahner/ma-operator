@@ -44,7 +44,7 @@ msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID diterbitkan melalui ma lokal ({ $url })
-msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '/my/identity!publish @ma'. Ketik '.help.publish' untuk detail.
+msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '/my/identity!publish @ma'. Ketik '.help/publish' untuk detail.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
 msg-focusing = memfokuskan { $did } sebagai { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = profil tidak ditemukan: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    membuka zion melalui tautan URL
+help-topic-url =   .help/url                    membuka zion melalui tautan URL
 help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
 help-url-msg =   ?msg=<did>                   isi otomatis: @<did> (pesan biasa)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 isi otomatis: @<did>:emote (kata
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publikasikan identitas Anda ke jaringan
+help-topic-publish =   .help/publish                publikasikan identitas Anda ke jaringan
 help-header-publish = ── publikasi identitas ──────────────────────────────────────────────────────
 help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringan. Orang lain dapat mencari DID Anda untuk menghubungi Anda.
 help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.

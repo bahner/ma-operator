@@ -44,7 +44,7 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt við staðbundið ma ({ $url })
-msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.ma [port]' og síðan '/my/identity!publish @ma'. Skriva '.help.publish' fyri detaljar.
+msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.ma [port]' og síðan '/my/identity!publish @ma'. Skriva '.help/publish' fyri detaljar.
 msg-blocked = ⊗ stovnað [{ $cap }]: { $from }
 msg-focus-cleared = fókus av
 msg-focusing = fókuserar { $did } sum { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profil ikki funnin: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    opna zion í gegnum URL-tengil
+help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-header-url = ── URL-broytar ──────────────────────────────────────────────────────────────────
 help-url-intro =   Del ein tengil sum opnar zion við fyritfuldum móttakara:
 help-url-msg =   ?msg=<did>                   fyritfyllir: @<did> (vanligt boð)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>:emote (sagno
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fyri at senda.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                birta tín samleika í netinum
+help-topic-publish =   .help/publish                birta tín samleika í netinum
 help-header-publish = ── birting av samleika ──────────────────────────────────────────────────────
 help-publish-intro = Birting ger tín samleika funnarligan í netinum. Aðrir kunnu leita eftir tínum DID fyri at ná til tín.
 help-publish-ma = Fyri at birta trengt tú ma (lokalt kørsluumhvørvi) installerað. Tað tengir ego við IPFS/IPNS fyri tín hønd.

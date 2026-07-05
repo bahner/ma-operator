@@ -44,7 +44,7 @@ msg-connecting = iroh உடன் இணைக்கப்படுகிறத
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID உள்ளூர் ma ({ $url }) வழியாக வெளியிடப்பட்டது
-msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '/my/identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help.publish' தட்டச்சு செய்யவும்.
+msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '/my/identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help/publish' தட்டச்சு செய்யவும்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
 msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது
@@ -288,14 +288,14 @@ profiles-not-found = சுயவிவரம் கிடைக்கவில�
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    URL இணைப்பு வழியாக zion திறக்க
+help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
 help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
 help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
 help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did> (எளிய செய்தி)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 முன்னரே நிர�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                நெட்வொர்க்கில் உங்கள் அடையாளத்தை வெளியிடுங்கள்
+help-topic-publish =   .help/publish                நெட்வொர்க்கில் உங்கள் அடையாளத்தை வெளியிடுங்கள்
 help-header-publish = ── அடையாள வெளியீடு ──────────────────────────────────────────────────────────
 help-publish-intro = வெளியீடு உங்கள் அடையாளத்தை நெட்வொர்க்கில் கண்டறியக்கூடியதாக செய்கிறது. மற்றவர்கள் உங்கள் DID தேடி உங்களை அடையலாம்.
 help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.

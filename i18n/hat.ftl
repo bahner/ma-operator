@@ -44,7 +44,7 @@ msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pibliye via ma lokal ({ $url })
-msg-identity-not-published = Idantite pa jwenn sou entènèt — si ou gen ma ki instalé lokalman, kouri '.ma [port]' epi '/my/identity!publish @ma'. Tape '.help.publish' pou detay.
+msg-identity-not-published = Idantite pa jwenn sou entènèt — si ou gen ma ki instalé lokalman, kouri '.ma [port]' epi '/my/identity!publish @ma'. Tape '.help/publish' pou detay.
 msg-blocked = ⊗ bloke [{ $cap }]: { $from }
 msg-focus-cleared = fòkis efase
 msg-focusing = fòkis { $did } kòm { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = pwofil pa jwenn: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    ouvri zion atravè yon lyen URL
+help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
 help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
 help-url-msg =   ?msg=<did>                   ranpli davans: @<did> (mesaj senp)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 ranpli davans: @<did>:emote (vè
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                pibliye idantite ou sou rezo a
+help-topic-publish =   .help/publish                pibliye idantite ou sou rezo a
 help-header-publish = ── pibliye idantite ─────────────────────────────────────────────────────────
 help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka chèche DID ou pou kontakte ou.
 help-publish-ma = Pou pibliye, ou bezwen ma (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.

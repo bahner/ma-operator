@@ -44,7 +44,7 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publish tru local ma ({ $url })
-msg-identity-not-published = Di identity nuh foun online — if yu have ma install locally, run '.ma [port]' den '/my/identity!publish @ma'. Type '.help.publish' fi details.
+msg-identity-not-published = Di identity nuh foun online — if yu have ma install locally, run '.ma [port]' den '/my/identity!publish @ma'. Type '.help/publish' fi details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = profile nuh find: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    open zion tru URL link
+help-topic-url =   .help/url                    open zion tru URL link
 help-header-url = ── URL parameter dem ────────────────────────────────────────────────────────────
 help-url-intro =   Share a link weh open zion wid di recipient already deh deh:
 help-url-msg =   ?msg=<did>                   fill up: @<did> (plain message)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 fill up: @<did>:emote (emote ver
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input fill up but nuh send yet — press Enter fi send.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publish yu identity pan di network
+help-topic-publish =   .help/publish                publish yu identity pan di network
 help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
 help-publish-intro = Publishin mek yu identity findable pan di network. Odda people can search yu DID fi reach yu.
 help-publish-ma = Fi publish, yu need ma (local runtime) install. It connect ego to IPFS/IPNS fi yu.

@@ -44,7 +44,7 @@ msg-connecting = 正在连接到 iroh...
 msg-iroh-ready = iroh 端点就绪
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 已通过本地 ma ({ $url }) 发布
-msg-identity-not-published = 未在线找到身份 — 如果本地安装了 ma，请运行 '.ma [port]' 然后 '/my/identity!publish @ma'。输入 '.help.publish' 查看详情。
+msg-identity-not-published = 未在线找到身份 — 如果本地安装了 ma，请运行 '.ma [port]' 然后 '/my/identity!publish @ma'。输入 '.help/publish' 查看详情。
 msg-blocked = ⊗ 已拦截 [{ $cap }]: { $from }
 msg-focus-cleared = 焦点已清除
 msg-focusing = 将 { $did } 聚焦为 { $prompt }
@@ -288,15 +288,15 @@ profiles-not-found = 未找到个人资料: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    通过 URL 链接打开 zion
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    通过 URL 链接打开 zion
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 预填：@<did>:emote（emote �
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   输入框被预填但不会发送 — 按 Enter 键发送。
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                将你的身份发布到网络
+help-topic-publish =   .help/publish                将你的身份发布到网络
 help-header-publish = ── 发布身份 ──────────────────────────────────────────────────────────────────
 help-publish-intro = 发布使你的身份在网络上可被发现。其他人可以查找你的 DID 来联系你。
 help-publish-ma = 发布需要安装 ma（本地运行时）。它代表你将 ego 连接到 IPFS/IPNS。

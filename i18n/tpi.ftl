@@ -44,7 +44,7 @@ msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID i bin publishim long local ma ({ $url })
-msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.ma [port]' na '/my/identity!publish @ma'. Rait '.help.publish' bilong kisim sampela save.
+msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.ma [port]' na '/my/identity!publish @ma'. Rait '.help/publish' bilong kisim sampela save.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokus i klia pinis
 msg-focusing = fokus { $did } olsem { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = profil i no stap: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    opim zion long URL link
+help-topic-url =   .help/url                    opim zion long URL link
 help-header-url = ── URL paramita ─────────────────────────────────────────────────────────────────
 help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim olgeta i stap pinis:
 help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did> (simol meses)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>:emote (v
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                putim nem bilong yu antap long net
+help-topic-publish =   .help/publish                putim nem bilong yu antap long net
 help-header-publish = ── putim nem antap ──────────────────────────────────────────────────────────
 help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol arapela man inap painim DID bilong yu bilong toktok wantaim yu.
 help-publish-ma = Bilong putim nem antap, yu nidim ma (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.

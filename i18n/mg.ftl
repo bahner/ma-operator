@@ -44,7 +44,7 @@ msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Navoaka ny DID amin'alalan'ny ma eo an-toerana ({ $url })
-msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.ma [port]' ary '/my/identity!publish @ma'. Soraty '.help.publish' ho an'ny antsipiriany.
+msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.ma [port]' ary '/my/identity!publish @ma'. Soraty '.help/publish' ho an'ny antsipiriany.
 msg-blocked = ⊗ voasakana [{ $cap }]: { $from }
 msg-focus-cleared = voafafa ny sain-toerana
 msg-focusing = manamarika { $did } ho { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = tsy hita ny profily: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    fanokafana zion amin'ny rohy URL
+help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
 help-header-url = ── ampahany URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   Zarao rohy hanokafana zion miaraka amin'ny mpandray efa voatondro:
 help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did> (hafatra tsotra)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>:emote (m
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter handefa.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                famoahana ny mombamombao eo amin'ny tambajotra
+help-topic-publish =   .help/publish                famoahana ny mombamombao eo amin'ny tambajotra
 help-header-publish = ── famoahana mombamomba ─────────────────────────────────────────────────────
 help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'ny tambajotra. Ny hafa dia afaka mitady ny DID-nao hahafantarany anao.
 help-publish-ma = Mba hamoahana, mila ny ma (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.

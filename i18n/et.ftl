@@ -39,12 +39,12 @@ error-profile-no-identity = identiteet '{ $name }' ei leitud — importige esmal
 
 # ── Terminali süsteemiteated ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — sisse logitud kasutajana { $username }
-msg-type-help = Käskude loendi saamiseks kirjuta .help.
+msg-type-help = Käskude loendi saamiseks kirjuta .help/
 msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID avaldatud kohaliku ma kaudu ({ $url })
-msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.ma [port]' ja seejärel '/my/identity!publish @ma'. Kirjuta '.help.publish' üksikasjade jaoks.
+msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.ma [port]' ja seejärel '/my/identity!publish @ma'. Kirjuta '.help/publish' üksikasjade jaoks.
 msg-blocked = ⊗ blokeeritud [{ $cap }]: { $from }
 msg-focus-cleared = fookus tühjendatud
 msg-focusing = fokuseeritakse { $did } kui { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profiili ei leitud: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    zion'i avamine URL-lingi kaudu
+help-topic-url =   .help/url                    zion'i avamine URL-lingi kaudu
 help-header-url = ── URL-parameetrid ──────────────────────────────────────────────────────────────
 help-url-intro =   Jaga linki, mis avab zion'i eeltäidetud saajaga:
 help-url-msg =   ?msg=<did>                   eeltäidab: @<did> (lihtteade)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 eeltäidab: @<did>:emote (tegus�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Sisend on eeltäidetud, kuid saatmata — vajuta Enter saatmiseks.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                identiteedi avaldamine võrgus
+help-topic-publish =   .help/publish                identiteedi avaldamine võrgus
 help-header-publish = ── identiteedi avaldamine ───────────────────────────────────────────────────
 help-publish-intro = Avaldamine muudab su identiteedi võrgus leitavaks. Teised saavad sinu DID-i otsida, et sinuga ühendust võtta.
 help-publish-ma = Avaldamiseks vajad installitud ma-d (kohalik käituskeskkond). See ühendab ego IPFS/IPNS-iga sinu nimel.

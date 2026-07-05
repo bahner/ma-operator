@@ -44,7 +44,7 @@ msg-connecting = Verbindung zu iroh wird hergestellt...
 msg-iroh-ready = iroh-Endpunkt bereit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID über lokales ma veröffentlicht ({ $url })
-msg-identity-not-published = Identität nicht online gefunden — wenn ma lokal installiert ist, führe '.ma [port]' und dann '/my/identity!publish @ma' aus. Tippe '.help.publish' für Details.
+msg-identity-not-published = Identität nicht online gefunden — wenn ma lokal installiert ist, führe '.ma [port]' und dann '/my/identity!publish @ma' aus. Tippe '.help/publish' für Details.
 msg-blocked = ⊗ gesperrt [{ $cap }]: { $from }
 msg-focus-cleared = Fokus gelöscht
 msg-focusing = Fokussierung auf { $did } als { $prompt }
@@ -281,15 +281,15 @@ profiles-not-found = Profil nicht gefunden: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    zion über einen URL-Link öffnen
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    zion über einen URL-Link öffnen
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -321,7 +321,7 @@ help-url-emote =   ?emote=<did>                 vorausfüllen: @<did>:emote (Emo
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Das Eingabefeld wird gefüllt, aber nicht gesendet — Enter drücken zum Senden.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                Identität im Netzwerk veröffentlichen
+help-topic-publish =   .help/publish                Identität im Netzwerk veröffentlichen
 help-header-publish = ── Identität veröffentlichen ────────────────────────────────────────────────
 help-publish-intro = Durch Veröffentlichung wird deine Identität im Netzwerk auffindbar. Andere können deine DID nachschlagen, um dich zu erreichen.
 help-publish-ma = Zum Veröffentlichen benötigst du ma (lokale Laufzeit). Es verbindet ego mit IPFS/IPNS in deinem Auftrag.

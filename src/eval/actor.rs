@@ -168,7 +168,7 @@ pub(crate) fn eval_remote_crud(
 }
 
 /// Determine which `EditorMode` to use for a given CRUD `/path`.
-fn editor_mode_for_path(path: &str, target: &str) -> EditorMode {
+pub(crate) fn editor_mode_for_path(path: &str, target: &str) -> EditorMode {
     if path == "/acl" {
         return EditorMode::RuntimeAclEdit {
             target: target.to_string(),

@@ -44,7 +44,7 @@ msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID közzétéve helyi ma-n keresztül ({ $url })
-msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '/my/identity!publish @ma'. Írd '.help.publish' a részletekért.
+msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '/my/identity!publish @ma'. Írd '.help/publish' a részletekért.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
 msg-focusing = fókuszálás: { $did } mint { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = a profil nem található: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    zion megnyitása URL-linken keresztül
+help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
 help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
 help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
 help-url-msg =   ?msg=<did>                   előre kitölti: @<did> (egyszerű üzenet)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 előre kitölti: @<did>:emote (e
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                azonosságod közzététele a hálózaton
+help-topic-publish =   .help/publish                azonosságod közzététele a hálózaton
 help-header-publish = ── azonosság közzététele ─────────────────────────────────────────────────────
 help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a hálózaton. Mások megkereshetik a DID-edet, hogy elérjenek.
 help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.

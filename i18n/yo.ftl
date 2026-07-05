@@ -44,7 +44,7 @@ msg-connecting = ìsopọ̀ mọ́ iroh...
 msg-iroh-ready = ìpádédé iroh ti ṣetán
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ti jẹ atejade nipasẹ ma agbegbe ({ $url })
-msg-identity-not-published = Ìdánimọ̀ kò rí lórí ayelujara — tí o bá fi ma sórí kọ̀mpútà rẹ, ṣe '.ma [port]' lẹ́hìn náà '/my/identity!publish @ma'. Tẹ '.help.publish' fún àlàyé.
+msg-identity-not-published = Ìdánimọ̀ kò rí lórí ayelujara — tí o bá fi ma sórí kọ̀mpútà rẹ, ṣe '.ma [port]' lẹ́hìn náà '/my/identity!publish @ma'. Tẹ '.help/publish' fún àlàyé.
 msg-blocked = ⊗ a dènà [{ $cap }]: { $from }
 msg-focus-cleared = a pa ìfọkànsí rẹ
 msg-focusing = ìfọkànsí { $did } gẹ́gẹ́ bí { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = profaili { $name } ko ri: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    ṣii zion nipasẹ asopọ URL
+help-topic-url =   .help/url                    ṣii zion nipasẹ asopọ URL
 help-header-url = ── awọn paramita URL ────────────────────────────────────────────────────────────
 help-url-intro =   Pin asopọ kan ti o ṣii zion pẹlu olugba tí a ti kọ siwaju:
 help-url-msg =   ?msg=<did>                   kọ siwaju: @<did> (ifiranṣẹ rọrun)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 kọ siwaju: @<did>:emote (ọr�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Titẹ sii kọ siwaju ṣugbọn a ko firanṣẹ — tẹ Enter lati firanṣẹ.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                tẹ ìdánimọ̀ rẹ jáde sórí nẹtiwọ́kì
+help-topic-publish =   .help/publish                tẹ ìdánimọ̀ rẹ jáde sórí nẹtiwọ́kì
 help-header-publish = ── títẹ ìdánimọ̀ jáde ───────────────────────────────────────────────────────
 help-publish-intro = Títẹ jáde mú kí ìdánimọ̀ rẹ lè rí lórí nẹtiwọ́kì. Àwọn mìíràn lè wà DID rẹ láti kan sí ọ.
 help-publish-ma = Láti tẹ jáde, o nílò ma (runtime àdúgbò) tí a fi sórí. Ó so ego mọ IPFS/IPNS ní orúkọ rẹ.

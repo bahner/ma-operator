@@ -44,7 +44,7 @@ msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
-msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'/my/identity!publish @ma'を実行してください。詳細は'.help.publish'と入力してください。
+msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'/my/identity!publish @ma'を実行してください。詳細は'.help/publish'と入力してください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
 msg-focusing = { $did } を { $prompt } としてフォーカス中
@@ -281,15 +281,15 @@ profiles-not-found = プロフィールが見つかりません: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    URLリンクからzionを開く
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    URLリンクからzionを開く
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -321,7 +321,7 @@ help-url-emote =   ?emote=<did>                 事前入力: @<did>:emote（emo
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                ネットワークに身元を公開する
+help-topic-publish =   .help/publish                ネットワークに身元を公開する
 help-header-publish = ── 身元の公開 ────────────────────────────────────────────────────────────────
 help-publish-intro = 公開することでネットワーク上で身元を見つけられるようになります。他の人はDIDを検索してあなたに連絡できます。
 help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。

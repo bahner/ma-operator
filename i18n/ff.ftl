@@ -44,7 +44,7 @@ msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID hollitaama e nder ma ({ $url })
-msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '/my/identity!publish @ma'. Windu '.help.publish' ngam tabitinde.
+msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '/my/identity!publish @ma'. Windu '.help/publish' ngam tabitinde.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
 msg-focusing = nelitaade { $did } haa { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = profil {$name} walaa: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    udditde zion e nder togol URL
+help-topic-url =   .help/url                    udditde zion e nder togol URL
 help-header-url = ── kaaɗe URL ────────────────────────────────────────────────────────────────────
 help-url-intro =   Neltir togol udditde zion e jibinirde njemiraande:
 help-url-msg =   ?msg=<did>                   ara-ɓulla: @<did> (tiiɗnde yooltii)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>:emote (haala 
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter ngam neltude.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                jaatugol tigi maa to laawol
+help-topic-publish =   .help/publish                jaatugol tigi maa to laawol
 help-header-publish = ── jaatugol tigi ────────────────────────────────────────────────────────────
 help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mbaawi yiylaade DID maa ngam tawtaade.
 help-publish-ma = Ngam jaatugol, a haani ma (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.

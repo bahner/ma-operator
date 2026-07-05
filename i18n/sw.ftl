@@ -44,7 +44,7 @@ msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID imechapishwa kupitia ma ya ndani ({ $url })
-msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '/my/identity!publish @ma'. Andika '.help.publish' kwa maelezo.
+msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '/my/identity!publish @ma'. Andika '.help/publish' kwa maelezo.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
 msg-focusing = kuzingatia { $did } kama { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profaili haikupatikana: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    kufungua zion kupitia kiungo cha URL
+help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
 help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
 help-url-msg =   ?msg=<did>                   jaza mapema: @<did> (ujumbe wa kawaida)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 jaza mapema: @<did>:emote (kiten
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                chapisha utambulisho wako kwenye mtandao
+help-topic-publish =   .help/publish                chapisha utambulisho wako kwenye mtandao
 help-header-publish = ── kuchapisha utambulisho ────────────────────────────────────────────────────
 help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtandao. Wengine wanaweza kutafuta DID yako kukufikia.
 help-publish-ma = Ili kuchapisha, unahitaji ma (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.

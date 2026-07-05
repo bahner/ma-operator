@@ -44,7 +44,7 @@ msg-connecting = ixhunywa ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungile
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ishicilelwe nge-ma yendawo ({ $url })
-msg-identity-not-published = Ubunikazi abufunyanwanga ku-inthanethi — uma u-ma ufakiwe endaweni, qhuba '.ma [port]' bese '/my/identity!publish @ma'. Bhala '.help.publish' ngemininingwane.
+msg-identity-not-published = Ubunikazi abufunyanwanga ku-inthanethi — uma u-ma ufakiwe endaweni, qhuba '.ma [port]' bese '/my/identity!publish @ma'. Bhala '.help/publish' ngemininingwane.
 msg-blocked = ⊗ kuvinjwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kudulwe
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = iprofile ayitholakali: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    ukuvula zion ngesixhokelelwano se-URL
+help-topic-url =   .help/url                    ukuvula zion ngesixhokelelwano se-URL
 help-header-url = ── izinhlelo ze-URL ─────────────────────────────────────────────────────────────
 help-url-intro =   Yabelana ngesixhokelelwano esivula zion enomamukeli osegcwaliswe phambilini:
 help-url-msg =   ?msg=<did>                   gcwalisa phambilini: @<did> (umlayezo olula)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 gcwalisa phambilini: @<did>:emot
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ukufakwa kugcwaliswe phambilini kodwa akuthunyiswanga — cindezela Enter ukuthumela.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                shicilela ubunikazi bakho kwi-network
+help-topic-publish =   .help/publish                shicilela ubunikazi bakho kwi-network
 help-header-publish = ── ukushicilela ubunikazi ────────────────────────────────────────────────────
 help-publish-intro = Ukushicilela kwenza ubunikazi bakho butholakale ku-network. Abanye bangafuna i-DID yakho ukukufinyelela.
 help-publish-ma = Ukushicilela, udinga u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.

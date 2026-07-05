@@ -44,7 +44,7 @@ msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID በአካባቢ ma ({ $url }) አማካኝነት ታትሟል
-msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '/my/identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help.publish' ይጻፉ።
+msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '/my/identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help/publish' ይጻፉ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
 msg-focusing = { $did } እንደ { $prompt } ላይ ትኩረት እያደረገ
@@ -288,14 +288,14 @@ profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    zionን በURL አገናኝ ቁልፍ መክፈት
+help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
 help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
 help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
 help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did> (ቀላል መልዕክት)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>:emote (
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                ህሊናዎን ወደ ኔትወርክ ያሳትሙ
+help-topic-publish =   .help/publish                ህሊናዎን ወደ ኔትወርክ ያሳትሙ
 help-header-publish = ── ህሊና ማሳተም ────────────────────────────────────────────────────────────────
 help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊፈለግ የሚችል ያደርጋል። ሌሎች DID ዎን ፈልገው ሊያገኙዎ ይችላሉ።
 help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።

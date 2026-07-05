@@ -44,7 +44,7 @@ msg-connecting = e dey connect to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don publish through local ma ({ $url })
-msg-identity-not-published = Identity no dey online — if ma don install for your side, run '.ma [port]' den '/my/identity!publish @ma'. Type '.help.publish' for details.
+msg-identity-not-published = Identity no dey online — if ma don install for your side, run '.ma [port]' den '/my/identity!publish @ma'. Type '.help/publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = profile no dey: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    open zion through URL link
+help-topic-url =   .help/url                    open zion through URL link
 help-header-url = ── URL parameters dem ───────────────────────────────────────────────────────────
 help-url-intro =   Share link wey go open zion with di person wey don put inside:
 help-url-msg =   ?msg=<did>                   put before: @<did> (normal message)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 put before: @<did>:emote (verb e
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input don fill but dem no send am — press Enter make e send.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publish your identity for the network
+help-topic-publish =   .help/publish                publish your identity for the network
 help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
 help-publish-intro = Publishing go make your identity findable for the network. Other people fit search your DID to reach you.
 help-publish-ma = To publish, you need ma (local runtime) installed. E go connect ego to IPFS/IPNS for your side.

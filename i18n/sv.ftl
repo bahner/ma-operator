@@ -44,7 +44,7 @@ msg-connecting = ansluter till iroh...
 msg-iroh-ready = iroh-slutpunkt redo
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicerat via lokalt ma ({ $url })
-msg-identity-not-published = Identitet hittades inte online — om du har ma installerat lokalt, kör '.ma [port]' sedan '/my/identity!publish @ma'. Skriv '.help.publish' för detaljer.
+msg-identity-not-published = Identitet hittades inte online — om du har ma installerat lokalt, kör '.ma [port]' sedan '/my/identity!publish @ma'. Skriv '.help/publish' för detaljer.
 msg-blocked = ⊗ blockerad [{ $cap }]: { $from }
 msg-focus-cleared = fokus rensat
 msg-focusing = fokuserar { $did } som { $prompt }
@@ -288,15 +288,15 @@ profiles-not-found = profil hittades inte: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    öppna zion via en URL-länk
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    öppna zion via en URL-länk
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 fyller i: @<did>:emote (emote-ve
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inmatningsfältet fylls i men skickas inte — tryck Enter för att skicka.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publicera din identitet till nätverket
+help-topic-publish =   .help/publish                publicera din identitet till nätverket
 help-header-publish = ── publicera identitet ──────────────────────────────────────────────────────
 help-publish-intro = Publicering gör din identitet sökbar på nätverket. Andra kan slå upp ditt DID för att nå dig.
 help-publish-ma = För att publicera behöver du ma (lokal körtid) installerat. Det kopplar ego till IPFS/IPNS åt dig.

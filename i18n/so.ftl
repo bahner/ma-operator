@@ -44,7 +44,7 @@ msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID lagu daabacay ma maxalliga ({ $url })
-msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '/my/identity!publish @ma'. Qor '.help.publish' faahfaahin.
+msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '/my/identity!publish @ma'. Qor '.help/publish' faahfaahin.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
 msg-focusing = xushmadda { $did } ahaan { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = liiska lama helin: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    furista zion adeegsiga xiriirka URL
+help-topic-url =   .help/url                    furista zion adeegsiga xiriirka URL
 help-header-url = ── cabbirada URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   La wadaag xiriir si loo furo zion oo leh qofka la xiriira ee hore loo buuxiyey:
 help-url-msg =   ?msg=<did>                   hore u buuxi: @<did> (fariin fudud)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 hore u buuxi: @<did>:emote (fal 
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si aad u dirto.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                ku baahiso aqoonsikaaga shabakadda
+help-topic-publish =   .help/publish                ku baahiso aqoonsikaaga shabakadda
 help-header-publish = ── baahinta aqoonsiga ───────────────────────────────────────────────────────
 help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo shabakadda. Dadka kaleba waxay raadsan karaan DID-kaaga si ay kugu soo dhawaadaan.
 help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.

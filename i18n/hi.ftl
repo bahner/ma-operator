@@ -44,7 +44,7 @@ msg-connecting = iroh से कनेक्ट हो रहा है...
 msg-iroh-ready = iroh एंडपॉइंट तैयार
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID स्थानीय ma ({ $url }) के माध्यम से प्रकाशित
-msg-identity-not-published = पहचान ऑनलाइन नहीं मिली — अगर ma स्थानीय रूप से स्थापित है, तो '.ma [port]' फिर '/my/identity!publish @ma' चलाएं। विवरण के लिए '.help.publish' टाइप करें।
+msg-identity-not-published = पहचान ऑनलाइन नहीं मिली — अगर ma स्थानीय रूप से स्थापित है, तो '.ma [port]' फिर '/my/identity!publish @ma' चलाएं। विवरण के लिए '.help/publish' टाइप करें।
 msg-blocked = ⊗ अवरुद्ध [{ $cap }]: { $from }
 msg-focus-cleared = फ़ोकस साफ़ हुआ
 msg-focusing = { $did } को { $prompt } के रूप में फ़ोकस कर रहे हैं
@@ -288,14 +288,14 @@ profiles-not-found = प्रोफ़ाइल नहीं मिला: { $n
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    URL लिंक के माध्यम से zion खोलना
+help-topic-url =   .help/url                    URL लिंक के माध्यम से zion खोलना
 help-header-url = ── URL पैरामीटर ─────────────────────────────────────────────────────────────────
 help-url-intro =   एक लिंक साझा करें जो पूर्वभरित प्राप्तकर्ता के साथ zion खोले:
 help-url-msg =   ?msg=<did>                   पूर्वभरण: @<did> (सादा संदेश)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 पूर्वभरण: @<did>
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   इनपुट पूर्वभरित है लेकिन भेजा नहीं गया — भेजने के लिए Enter दबाएं।
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                अपनी पहचान नेटवर्क पर प्रकाशित करें
+help-topic-publish =   .help/publish                अपनी पहचान नेटवर्क पर प्रकाशित करें
 help-header-publish = ── पहचान प्रकाशन ────────────────────────────────────────────────────────────
 help-publish-intro = प्रकाशन आपकी पहचान को नेटवर्क पर खोजने योग्य बनाता है। अन्य लोग आप तक पहुंचने के लिए आपका DID खोज सकते हैं।
 help-publish-ma = प्रकाशित करने के लिए आपको ma (स्थानीय रनटाइम) स्थापित करना होगा। यह आपकी ओर से ego को IPFS/IPNS से जोड़ता है।

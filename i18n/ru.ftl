@@ -44,7 +44,7 @@ msg-connecting = подключение к iroh...
 msg-iroh-ready = iroh endpoint готов
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубликован через локальный ma ({ $url })
-msg-identity-not-published = Личность не найдена онлайн — если ma установлен локально, выполни '.ma [port]', а затем '/my/identity!publish @ma'. Напиши '.help.publish' для деталей.
+msg-identity-not-published = Личность не найдена онлайн — если ma установлен локально, выполни '.ma [port]', а затем '/my/identity!publish @ma'. Напиши '.help/publish' для деталей.
 msg-blocked = ⊗ заблокировано [{ $cap }]: { $from }
 msg-focus-cleared = фокус снят
 msg-focusing = фокус на { $did } как { $prompt }
@@ -288,15 +288,15 @@ profiles-not-found = профиль не найден: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    открыть zion по URL-ссылке
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    открыть zion по URL-ссылке
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 предзаполняет: @<di
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Поле заполнено, но не отправлено — нажми Enter для отправки.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                публикация личности в сети
+help-topic-publish =   .help/publish                публикация личности в сети
 help-header-publish = ── публикация личности ──────────────────────────────────────────────────────
 help-publish-intro = Публикация делает твою личность доступной для поиска в сети. Другие могут найти твой DID, чтобы связаться с тобой.
 help-publish-ma = Для публикации нужен установленный ma (локальная среда выполнения). Он соединяет ego с IPFS/IPNS от твоего имени.

@@ -44,7 +44,7 @@ msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID yerel ma ({ $url }) aracılığıyla yayımlandı
-msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '/my/identity!publish @ma' çalıştırın. Ayrıntılar için '.help.publish' yazın.
+msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '/my/identity!publish @ma' çalıştırın. Ayrıntılar için '.help/publish' yazın.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
 msg-focusing = { $did } üzerine { $prompt } olarak odaklanılıyor
@@ -288,15 +288,15 @@ profiles-not-found = profil bulunamadı: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    zion'u bir URL bağlantısıyla aç
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    zion'u bir URL bağlantısıyla aç
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>:emote 
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                kimliğini ağa yayımla
+help-topic-publish =   .help/publish                kimliğini ağa yayımla
 help-header-publish = ── kimlik yayımlama ─────────────────────────────────────────────────────────
 help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğerleri sana ulaşmak için DID'ini arayabilir.
 help-publish-ma = Yayımlamak için ma (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.

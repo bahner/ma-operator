@@ -44,7 +44,7 @@ msg-connecting = spajanje na iroh...
 msg-iroh-ready = iroh krajnja točka spremna
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID objavljen putem lokalnog ma ({ $url })
-msg-identity-not-published = Identitet nije pronađen online — ako imaš ma instaliran lokalno, pokreni '.ma [port]' i zatim '/my/identity!publish @ma'. Upiši '.help.publish' za pojedinosti.
+msg-identity-not-published = Identitet nije pronađen online — ako imaš ma instaliran lokalno, pokreni '.ma [port]' i zatim '/my/identity!publish @ma'. Upiši '.help/publish' za pojedinosti.
 msg-blocked = ⊗ blokirano [{ $cap }]: { $from }
 msg-focus-cleared = fokus obrisan
 msg-focusing = fokusiranje na { $did } kao { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profil nije pronađen: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    otvaranje ziona putem URL veze
+help-topic-url =   .help/url                    otvaranje ziona putem URL veze
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
 help-url-intro =   Podijeli vezu koja otvara zion s unaprijed ispunjenim primateljem:
 help-url-msg =   ?msg=<did>                   unaprijed ispunjava: @<did> (obična poruka)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 unaprijed ispunjava: @<did>:emot
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Unos je unaprijed ispunjen ali nije poslan — pritisni Enter za slanje.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                objaviti identitet u mreži
+help-topic-publish =   .help/publish                objaviti identitet u mreži
 help-header-publish = ── objava identiteta ────────────────────────────────────────────────────────
 help-publish-intro = Objavljivanje čini tvoj identitet pronađljivim u mreži. Drugi mogu potražiti tvoj DID da te kontaktiraju.
 help-publish-ma = Za objavu trebaš instaliran ma (lokalno izvršno okruženje). Ono povezuje ego s IPFS/IPNS u tvoje ime.

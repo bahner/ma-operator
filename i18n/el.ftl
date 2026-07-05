@@ -44,7 +44,7 @@ msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID δημοσιεύτηκε μέσω τοπικού ma ({ $url })
-msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '/my/identity!publish @ma'. Πληκτρολόγησε '.help.publish' για λεπτομέρειες.
+msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '/my/identity!publish @ma'. Πληκτρολόγησε '.help/publish' για λεπτομέρειες.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
 msg-focusing = εστίαση σε { $did } ως { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = το προφίλ δεν βρέθηκε: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    άνοιγμα του zion μέσω συνδέσμου URL
+help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
 help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
 help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
 help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did> (απλό μήνυμα)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                δημοσίευση ταυτότητας στο δίκτυο
+help-topic-publish =   .help/publish                δημοσίευση ταυτότητας στο δίκτυο
 help-header-publish = ── δημοσίευση ταυτότητας ────────────────────────────────────────────────────
 help-publish-intro = Η δημοσίευση κάνει την ταυτότητά σου εντοπίσιμη στο δίκτυο. Άλλοι μπορούν να αναζητήσουν το DID σου για να σε βρουν.
 help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το ma (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.

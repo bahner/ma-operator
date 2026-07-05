@@ -47,7 +47,7 @@ msg-connecting = підключення до iroh...
 msg-iroh-ready = iroh endpoint готовий
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубліковано через локальний ma ({ $url })
-msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '/my/identity!publish @ma'. Введіть '.help.publish' для деталей.
+msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '/my/identity!publish @ma'. Введіть '.help/publish' для деталей.
 msg-blocked = ⊗ заблоковано [{ $cap }]: { $from }
 msg-focus-cleared = фокус знято
 msg-focusing = фокус на { $did } як { $prompt }
@@ -172,15 +172,15 @@ help-cmd-batch-sync =   .batch:begin / .batch         виконати кома�
 
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
-help-topic-msg =   .help.msg                    повідомлення — @actor, надсилання, RPC
-help-topic-focus =   .help.focus                  режим фокусу — .use @actor
-help-topic-path =   .help.path                   синтаксис локального шляху
+help-topic-msg =   .help/msg                    повідомлення — @actor, надсилання, RPC
+help-topic-focus =   .help/focus                  режим фокусу — .use @actor
+help-topic-path =   .help/path                   синтаксис локального шляху
 help-topic-my =   .help/my                     особиста конфігурація
-help-topic-inbox =   .help.inbox                  вхідні — /my/inbox.*
-help-topic-doc =   .help.doc                    документи — !edit, !eval, !publish, !fetch, !cid
-help-topic-actor =   .help.actor                  віддалений актор — CRUD, об'єкти, CID
-help-topic-url =   .help.url                    відкрити zion через URL
-help-unknown-topic =   .help.{ $topic }: невідома тема — спробуйте .help для списку
+help-topic-inbox =   .help/inbox                  вхідні — /my/inbox.*
+help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
+help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
+help-topic-url =   .help/url                    відкрити zion через URL
+help-unknown-topic =   .help/{ $topic }: невідома тема — спробуйте .help для списку
 
 # ── Довідка — повідомлення ────────────────────────────────────────────────
 help-msg-echo =   @alias                       показати DID (без надсилання)
@@ -340,7 +340,7 @@ help-actor-wc =   @actor:ent:wc               кількість рядків / 
 help-actor-wc-l =   @actor:ent:wc -l            лише кількість рядків
 
 # ── Довідка — публікація ──────────────────────────────────────────────────
-help-topic-publish =   .help.publish                публікація особистості в мережі
+help-topic-publish =   .help/publish                публікація особистості в мережі
 help-header-publish = ── публікація особистості ───────────────────────────────────────────────────
 help-publish-intro = Публікація робить вашу особистість доступною для пошуку в мережі. Інші можуть знайти ваш DID, щоб зв'язатися з вами.
 help-publish-ma = Для публікації потрібен встановлений ma (локальне середовище виконання). Він з'єднує ego з IPFS/IPNS від вашого імені.

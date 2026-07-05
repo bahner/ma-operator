@@ -44,7 +44,7 @@ msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = An buga DID ta hanyar ma na gida ({ $url })
-msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '/my/identity!publish @ma'. Rubuta '.help.publish' don cikakken bayani.
+msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '/my/identity!publish @ma'. Rubuta '.help/publish' don cikakken bayani.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
 msg-focusing = ana mai da hankali { $did } a matsayin { $prompt }
@@ -288,14 +288,14 @@ profiles-not-found = ba a samu bayanan martaba ba: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    buɗe zion ta hanyar URL link
+help-topic-url =   .help/url                    buɗe zion ta hanyar URL link
 help-header-url = ── sharuɗɗan URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   Raba hanyar haɗin zion tare da mai karɓa da aka shigar da shi a gaba:
 help-url-msg =   ?msg=<did>                   cika a gaba: @<did> (saƙon rubutu)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 cika a gaba: @<did>:emote (fi'il
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don aika.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                wallafa ainihinku a cikin hanyar sadarwa
+help-topic-publish =   .help/publish                wallafa ainihinku a cikin hanyar sadarwa
 help-header-publish = ── wallafa ainihi ───────────────────────────────────────────────────────────
 help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanyar sadarwa. Wasu na iya neman DID ɗinku don tuntubarku.
 help-publish-ma = Don wallafawa, kuna buƙatar ma (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.

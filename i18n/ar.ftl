@@ -44,7 +44,7 @@ msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = تم نشر DID عبر ma المحلي ({ $url })
-msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '/my/identity!publish @ma'. اكتب '.help.publish' للتفاصيل.
+msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '/my/identity!publish @ma'. اكتب '.help/publish' للتفاصيل.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
 msg-focusing = تركيز { $did } بوصفه { $prompt }
@@ -288,15 +288,15 @@ profiles-not-found = الملف الشخصي غير موجود: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    فتح zion عبر رابط URL
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    فتح zion عبر رابط URL
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>:em
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                نشر هويتك على الشبكة
+help-topic-publish =   .help/publish                نشر هويتك على الشبكة
 help-header-publish = ── نشر الهوية ───────────────────────────────────────────────────────────────
 help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف على الشبكة. يمكن للآخرين البحث عن DID الخاص بك للتواصل معك.
 help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.

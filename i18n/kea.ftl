@@ -44,7 +44,7 @@ msg-connecting = konektandu a iroh...
 msg-iroh-ready = pontu iroh prontu
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pablikadu via ma lokal ({ $url })
-msg-identity-not-published = Idantidadi ka acha na intanet — si bu ten ma instaladu lokal, kori '.ma [port]' dipus '/my/identity!publish @ma'. Skriva '.help.publish' pa ditailyu.
+msg-identity-not-published = Idantidadi ka acha na intanet — si bu ten ma instaladu lokal, kori '.ma [port]' dipus '/my/identity!publish @ma'. Skriva '.help/publish' pa ditailyu.
 msg-blocked = ⊗ blokadu [{ $cap }]: { $from }
 msg-focus-cleared = foku limpadu
 msg-focusing = foku { $did } komo { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = profil ka atxadu: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    abri zion via un ligason URL
+help-topic-url =   .help/url                    abri zion via un ligason URL
 help-header-url = ── parametru URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Partilha un ligason ki abri zion ku un destinatáriu ia metidu:
 help-url-msg =   ?msg=<did>                   mete antis: @<did> (mensaji simples)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 mete antis: @<did>:emote (verbu 
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Entrada sta metida ma ka manda ainda — preme Enter pa manda.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publika bo idantidadi na rede
+help-topic-publish =   .help/publish                publika bo idantidadi na rede
 help-header-publish = ── publika idantidadi ───────────────────────────────────────────────────────
 help-publish-intro = Publikason fazi bo idantidadi atxável na rede. Otus podi txuba bo DID pa kontakta ku bu.
 help-publish-ma = Pa publika, bu ta prexisa ma (runtime lokal) instaladu. El liga ego ku IPFS/IPNS na bo nomi.

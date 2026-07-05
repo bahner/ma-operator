@@ -44,7 +44,7 @@ msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don pablish tru local ma ({ $url })
-msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '/my/identity!publish @ma'. Rait '.help.publish' fo mɔ infɔmeshɔn.
+msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '/my/identity!publish @ma'. Rait '.help/publish' fo mɔ infɔmeshɔn.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
 msg-focusing = fokɔs { $did } as { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = profail no dey: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    opin zion tru URL link
+help-topic-url =   .help/url                    opin zion tru URL link
 help-header-url = ── URL paramita dem ─────────────────────────────────────────────────────────────
 help-url-intro =   Shia wan link we go opin zion wit di pɔsin aredɛ put insɛd:
 help-url-msg =   ?msg=<did>                   put bifo: @<did> (simpul mɛsɛj)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 put bifo: @<did>:emote (vɛb emo
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                pɔblish yu ɔpsɛt ɔn di nɛtwɔk
+help-topic-publish =   .help/publish                pɔblish yu ɔpsɛt ɔn di nɛtwɔk
 help-header-publish = ── pɔblish ɔpsɛt ────────────────────────────────────────────────────────────
 help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda pipul kɛn luk yu DID fɔ rich yu.
 help-publish-ma = Fɔ pɔblish, yu nid ma (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.

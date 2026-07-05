@@ -44,7 +44,7 @@ msg-connecting = konektando na iroh...
 msg-iroh-ready = punto iroh ta listu
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publiká via ma lokal ({ $url })
-msg-identity-not-published = Identidad no a haña na internet — si ma ta instalá lokalmente, drenta '.ma [port]' i despues '/my/identity!publish @ma'. Tik '.help.publish' pa detaljenan.
+msg-identity-not-published = Identidad no a haña na internet — si ma ta instalá lokalmente, drenta '.ma [port]' i despues '/my/identity!publish @ma'. Tik '.help/publish' pa detaljenan.
 msg-blocked = ⊗ blokea [{ $cap }]: { $from }
 msg-focus-cleared = foko limpiá
 msg-focusing = foko { $did } komo { $prompt }
@@ -274,14 +274,14 @@ profiles-not-found = perfil no a haña: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -306,7 +306,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    habri zion via un link URL
+help-topic-url =   .help/url                    habri zion via un link URL
 help-header-url = ── parámetronan URL ─────────────────────────────────────────────────────────────
 help-url-intro =   Parti un link ku habri zion ku un destinatario ya yená:
 help-url-msg =   ?msg=<did>                   yena di antemano: @<did> (mensahe simpel)
@@ -315,7 +315,7 @@ help-url-emote =   ?emote=<did>                 yena di antemano: @<did>:emote (
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publiká bo identidad riba e red
+help-topic-publish =   .help/publish                publiká bo identidad riba e red
 help-header-publish = ── publikashon di identidad ─────────────────────────────────────────────────
 help-publish-intro = Publikashon ta hasi bo identidad enkontrable riba e red. Otronan por buská bo DID pa kontakto.
 help-publish-ma = Pa publiká, bo mester tin ma (runtime lokal) instalá. E ta konektá ego ku IPFS/IPNS na nòmber di bo.

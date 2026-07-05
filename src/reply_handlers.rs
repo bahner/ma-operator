@@ -36,12 +36,12 @@ pub(crate) fn handle_ipfs_crud_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
-            let bracketed = format!("<{cid}>");
+            let ipfs_ref = format!("/ipfs/{cid}");
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
                     crud_path,
-                    value: ciborium::Value::Text(bracketed),
+                    value: ciborium::Value::Text(ipfs_ref),
                     cmd_id,
                 });
             });
@@ -78,7 +78,7 @@ pub(crate) fn handle_ipfs_kind_reply(
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
                     crud_path: path,
-                    value: ciborium::Value::Text(format!("<{cid}>")),
+                    value: ciborium::Value::Text(format!("/ipfs/{cid}")),
                     cmd_id,
                 });
             });
@@ -185,13 +185,6 @@ pub(crate) fn handle_edit_open_reply(
         config,
         show_editor,
     } = *ctx;
-    if incoming.is_error {
-        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
-        state.push_error(incoming.display.clone());
-        return;
-    }
-    let content_bytes = incoming.content.clone();
-    let content_type = incoming.content_type.clone();
     // Resolve alias: show @sky/path instead of @did:ma:.../path in the editor toolbar.
     let display_target = config.with_untracked(|c| {
         c.reverse_alias(&target)
@@ -205,6 +198,36 @@ pub(crate) fn handle_edit_open_reply(
         EditorMode::KindEdit { .. } => crud_path.clone(),
         _ => format!("@{}{}", target, crud_path),
     };
+
+    if incoming.is_error {
+        // GET failed because the entity/kind doesn't exist yet — for modes that
+        // support creating a new one via Publish (an upsert on the runtime side),
+        // open a blank editor instead of just erroring out. Any other error
+        // (ACL denial, network, etc.) still fails normally.
+        let creatable = matches!(
+            editor_mode,
+            EditorMode::EntityEdit { .. }
+                | EditorMode::EntityFieldEdit { .. }
+                | EditorMode::KindEdit { .. }
+        );
+        let not_found = incoming.display.to_ascii_lowercase().contains("not found");
+        if creatable && not_found {
+            state.resolve_command_by_id(cmd_id, CommandStatus::Done);
+            show_editor.set(Some(
+                EditorContext::new(doc_path, String::new())
+                    .with_save_to(save_to)
+                    .with_language("yaml")
+                    .with_mode(editor_mode)
+                    .with_cmd_id(cmd_id),
+            ));
+            return;
+        }
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(incoming.display.clone()));
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    let content_bytes = incoming.content.clone();
+    let content_type = incoming.content_type.clone();
     let state2 = state.clone();
     let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
@@ -372,10 +395,12 @@ pub(crate) fn handle_crud_confirm(
     incoming: &IncomingMessage,
     state: &AppState,
     display: &str,
+    config: RwSignal<EgoConfig>,
 ) {
     let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, display);
     state.resolve_command_by_id(cmd_id, status);
     if let Some(text) = push_opt {
+        let text = config.get_untracked().substitute_dids(&text);
         state.push_incoming(text, Some(cmd_id), incoming.is_error);
     }
 }

@@ -44,7 +44,7 @@ msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publikigita per loka ma ({ $url })
-msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '/my/identity!publish @ma'. Skribu '.help.publish' por detaloj.
+msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '/my/identity!publish @ma'. Skribu '.help/publish' por detaloj.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
 msg-focusing = fokuso { $did } kiel { $prompt }
@@ -274,15 +274,15 @@ profiles-not-found = profilo ne trovita: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    malfermi zion per URL-ligilo
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    malfermi zion per URL-ligilo
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -314,7 +314,7 @@ help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>:emote (ve
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publikigi vian identecon al la reto
+help-topic-publish =   .help/publish                publikigi vian identecon al la reto
 help-header-publish = ── publikigi identecon ──────────────────────────────────────────────────────
 help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj povas serĉi vian DID por kontakti vin.
 help-publish-ma = Por publikigi, vi bezonas instalitan ma (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.

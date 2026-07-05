@@ -44,7 +44,7 @@ msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID స్థానిక ma ({ $url }) ద్వారా ప్రచురించబడింది
-msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '/my/identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help.publish' టైప్ చేయండి.
+msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '/my/identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help/publish' టైప్ చేయండి.
 msg-blocked = ⊗ నిరోధించబడింది [{ $cap }]: { $from }
 msg-focus-cleared = ఫోకస్ తొలగించబడింది
 msg-focusing = { $did } ని { $prompt } గా ఫోకస్ చేస్తోంది
@@ -288,14 +288,14 @@ profiles-not-found = ప్రొఫైల్ కనుగొనబడలేద�
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -320,7 +320,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    URL లింక్ ద్వారా zion తెరవడం
+help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
 help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
 help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
 help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did> (సాధారణ సందేశం)
@@ -329,7 +329,7 @@ help-url-emote =   ?emote=<did>                 ముందే నింపు�
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                నెట్‌వర్క్‌లో మీ గుర్తింపు ప్రచురించండి
+help-topic-publish =   .help/publish                నెట్‌వర్క్‌లో మీ గుర్తింపు ప్రచురించండి
 help-header-publish = ── గుర్తింపు ప్రచురణ ────────────────────────────────────────────────────────
 help-publish-intro = ప్రచురణ మీ గుర్తింపును నెట్‌వర్క్‌లో కనుగొనగలిగేలా చేస్తుంది. ఇతరులు మీ DID వెతికి మిమ్మల్ని చేరుకోవచ్చు.
 help-publish-ma = ప్రచురించడానికి ma (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.

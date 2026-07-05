@@ -44,7 +44,7 @@ msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID가 로컬 ma ({ $url })를 통해 게시되었습니다
-msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '/my/identity!publish @ma'를 실행하세요. 자세한 내용은 '.help.publish'를 입력하세요.
+msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '/my/identity!publish @ma'를 실행하세요. 자세한 내용은 '.help/publish'를 입력하세요.
 msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
 msg-focus-cleared = 포커스가 해제됨
 msg-focusing = { $did }을(를) { $prompt }(으)로 포커스 중
@@ -288,15 +288,15 @@ profiles-not-found = 프로필을 찾을 수 없음: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-topic-url =   .help.url                    URL 링크로 zion 열기
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-topic-url =   .help/url                    URL 링크로 zion 열기
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -328,7 +328,7 @@ help-url-emote =   ?emote=<did>                 미리 채움: @<did>:emote (emo
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                네트워크에 신원 게시하기
+help-topic-publish =   .help/publish                네트워크에 신원 게시하기
 help-header-publish = ── 신원 게시 ─────────────────────────────────────────────────────────────────
 help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습니다. 다른 사람들이 DID를 검색하여 연락할 수 있습니다.
 help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.

@@ -44,7 +44,7 @@ msg-connecting = pripájanie k iroh...
 msg-iroh-ready = iroh endpoint pripravený
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID zverejnené cez lokálne ma ({ $url })
-msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.ma [port]' a potom '/my/identity!publish @ma'. Napíš '.help.publish' pre podrobnosti.
+msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.ma [port]' a potom '/my/identity!publish @ma'. Napíš '.help/publish' pre podrobnosti.
 msg-blocked = ⊗ zablokované [{ $cap }]: { $from }
 msg-focus-cleared = fokus vymazaný
 msg-focusing = zameranie na { $did } ako { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profil sa nenašiel: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    otvorenie zion cez URL odkaz
+help-topic-url =   .help/url                    otvorenie zion cez URL odkaz
 help-header-url = ── URL parametre ────────────────────────────────────────────────────────────────
 help-url-intro =   Zdieľaj odkaz, ktorý otvorí zion s vopred vyplneným príjemcom:
 help-url-msg =   ?msg=<did>                   vopred vyplní: @<did> (jednoduchá správa)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 vopred vyplní: @<did>:emote (sl
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Pole je vopred vyplnené, ale neodoslané — stlač Enter na odoslanie.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                zverejniť svoju identitu v sieti
+help-topic-publish =   .help/publish                zverejniť svoju identitu v sieti
 help-header-publish = ── zverejnenie identity ─────────────────────────────────────────────────────
 help-publish-intro = Zverejnenie sprístupní tvoju identitu v sieti. Ostatní môžu vyhľadať tvoj DID a kontaktovať ťa.
 help-publish-ma = Na zverejnenie potrebuješ nainštalované ma (lokálny runtime). Prepája ego s IPFS/IPNS v tvojom mene.

@@ -44,7 +44,7 @@ msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicat prin ma local ({ $url })
-msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '/my/identity!publish @ma'. Tastează '.help.publish' pentru detalii.
+msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '/my/identity!publish @ma'. Tastează '.help/publish' pentru detalii.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
 msg-focusing = focalizare pe { $did } ca { $prompt }
@@ -281,14 +281,14 @@ profiles-not-found = profilul nu a fost găsit: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help.msg                    messaging
-help-topic-focus =   .help.focus                  focus mode
-help-topic-path =   .help.path                   local dot-path grammar
+help-topic-msg =   .help/msg                    messaging
+help-topic-focus =   .help/focus                  focus mode
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help.inbox                  inbox
-help-topic-doc =   .help.doc                    documents
-help-topic-actor =   .help.actor                  remote actor
-help-unknown-topic =   .help.{ $topic }: unknown topic
+help-topic-inbox =   .help/inbox                  inbox
+help-topic-doc =   .help/doc                    documents
+help-topic-actor =   .help/actor                  remote actor
+help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
 help-header-actor = -- remote actors
@@ -313,7 +313,7 @@ help-actor-tail =   @actor:ent:tail N            last N lines
 help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 
-help-topic-url =   .help.url                    deschiderea zion printr-un link URL
+help-topic-url =   .help/url                    deschiderea zion printr-un link URL
 help-header-url = ── parametri URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Distribuie un link care deschide zion cu un destinatar precompletat:
 help-url-msg =   ?msg=<did>                   precompletează: @<did> (mesaj simplu)
@@ -322,7 +322,7 @@ help-url-emote =   ?emote=<did>                 precompletează: @<did>:emote (v
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentru a trimite.
 # ── Help text — publishing ────────────────────────────────────────────────
-help-topic-publish =   .help.publish                publicarea identității în rețea
+help-topic-publish =   .help/publish                publicarea identității în rețea
 help-header-publish = ── publicarea identității ───────────────────────────────────────────────────
 help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alții pot căuta DID-ul tău pentru a te contacta.
 help-publish-ma = Pentru a publica, ai nevoie de ma (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
