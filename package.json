@@ -1,0 +1,17 @@
+{
+  "name": "zion-js-vendor",
+  "private": true,
+  "description": "Build-time only. Bundles CodeMirror 6 into www/editor.js so it ships with no CDN runtime dependency. See ../js-src/editor-entry.js and `make js-bundle`. Uses bun (not npm/node) for install + bundling.",
+  "scripts": {
+    "build:editor": "bun build js-src/editor-entry.js --outfile=www/editor.js --minify --format=esm"
+  },
+  "devDependencies": {
+    "@codemirror/commands": "^6.7.0",
+    "@codemirror/lang-markdown": "^6.3.0",
+    "@codemirror/language": "^6.10.0",
+    "@codemirror/legacy-modes": "^6.4.0",
+    "@codemirror/state": "^6.5.0",
+    "@codemirror/view": "^6.35.0",
+    "@lezer/highlight": "^1.2.0"
+  }
+}

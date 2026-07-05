@@ -9,7 +9,7 @@ SRC		= $(shell find src -name '*.rs') \
 		  $(shell find style -name '*.css' 2>/dev/null) \
 		  $(shell find www -type f 2>/dev/null)
 
-.PHONY: serve dev clean publish check dist twiggy twiggy-dom test
+.PHONY: serve dev clean publish check dist twiggy twiggy-dom test js-bundle
 
 dist:
 	trunk build $(TRUNK_OPTS)
@@ -39,6 +39,21 @@ cid:
 
 check:
 	cargo check --target wasm32-unknown-unknown
+
+# Rebuild www/editor.js from js-src/ (vendored CodeMirror bundle).
+# Requires bun (https://bun.sh) — not npm/node. Run this after editing
+# js-src/editor-entry.js or js-src/zscheme-mode.js; the output is committed.
+#
+# editor.js is served under a stable filename (unlike trunk's hashed
+# rust/wasm/css outputs), so browsers/proxies can cache it indefinitely.
+# We bust that cache by stamping a content-hash query string onto the
+# <script src="/editor.js?v=...">  reference in index.html.
+js-bundle:
+	bun install
+	bun run build:editor
+	@hash=$$(sha256sum www/editor.js | cut -c1-10); \
+	sed -i -E "s|(src=\"/editor\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$hash\"|" index.html; \
+	echo "editor.js hash: $$hash (index.html updated)"
 
 test:
 	cargo test

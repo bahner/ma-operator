@@ -2,3 +2,4 @@
 /dist/
 .cid
 .publish.sh
+node_modules/

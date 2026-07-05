@@ -13,6 +13,7 @@ use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::{persist_config, EgoConfig},
+    core::CommandStatus,
     i18n::{t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
@@ -288,11 +289,22 @@ fn eval_local(
         match op {
             DotOp::Get => {
                 let path_owned = path.to_string();
+                // Push a pending Command entry (Sent) so `dispatch_eval_line`
+                // sees a new entry and treats this as pending — this is what
+                // lets a `.batch:sync` step wait for the fetch to finish
+                // instead of advancing before it resolves.
+                let cmd_id = state.push_command(path_owned.clone());
                 let state2 = state.clone();
                 spawn_local(async move {
                     match crate::http::fetch_path_text(&path_owned).await {
-                        Ok(content) => state2.push_output(format!("{path_owned}: {content}")),
-                        Err(e) => state2.push_error(e),
+                        Ok(content) => {
+                            state2.push_output(format!("{path_owned}: {content}"));
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
+                        }
+                        Err(e) => {
+                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                            state2.push_error(e);
+                        }
                     }
                 });
             }

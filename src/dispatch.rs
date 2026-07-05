@@ -538,7 +538,11 @@ fn dispatch_eval_line(
         if line.starts_with(':') {
             // :verb body → target:verb body (overrides sticky verb)
             format!("{t}{line}")
-        } else if !line.starts_with('@') && !line.starts_with('.') && !line.starts_with('(') {
+        } else if !line.starts_with('@')
+            && !line.starts_with('.')
+            && !line.starts_with('/')
+            && !line.starts_with('(')
+        {
             // bare text → use sticky verb if set, else send as body
             match &f.default_verb {
                 Some(v) => format!("{t}:{v} {line}"),
