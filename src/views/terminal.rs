@@ -34,10 +34,7 @@ pub fn Terminal() -> impl IntoView {
                 == "true";
             if is_persistent && show_editor.get().is_none() {
                 let cfg = config.get_untracked();
-                let initial = cfg
-                    .get(".my.doc.scratch.content")
-                    .unwrap_or_default()
-                    .to_string();
+                let initial = cfg.get(".my.doc.scratch").unwrap_or_default().to_string();
                 show_editor.set(Some(EditorContext::new(".my.doc.scratch", initial)));
             }
         });

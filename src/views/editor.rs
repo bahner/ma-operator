@@ -1,11 +1,9 @@
 /// CodeMirror 6 editor modal.
 ///
 /// Driven by `RwSignal<Option<EditorContext>>`. When `Some`, renders a
-/// full-screen overlay with a CM6 editor, a language selector, and three
-/// action buttons:
+/// full-screen overlay with a CM6 editor and action buttons:
 ///
-/// - **Save** — persist `.content` and `.content_type` to `EgoConfig`,
-///   keep the editor open.
+/// - **Save** — persist the buffer to `EgoConfig`, keeping the editor open.
 /// - **Eval** — run the _current buffer_ (not necessarily saved) line-by-
 ///   line through the terminal evaluator, then close the editor.
 /// - **Cancel** — close without saving.
@@ -31,9 +29,6 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = ["window", "maEditor"], js_name = "getValue")]
     fn js_editor_get_value(el_id: &str) -> String;
-
-    #[wasm_bindgen(js_namespace = ["window", "maEditor"], js_name = "setLanguage")]
-    fn js_editor_set_language(el_id: &str, lang: &str);
 
     #[wasm_bindgen(js_namespace = ["window", "maEditor"], js_name = "destroy")]
     fn js_editor_destroy(el_id: &str);
@@ -140,7 +135,7 @@ impl EditorContext {
             doc_path,
             save_to,
             initial: initial.into(),
-            language: "markdown".to_string(),
+            language: "plain".to_string(),
             mode: EditorMode::Standard,
             cmd_id: None,
         }
@@ -205,9 +200,6 @@ pub fn EditorModal(
 ) -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
 
-    // Language selector state — initialised from context when editor opens.
-    let language = RwSignal::new("plain".to_string());
-
     // Editable "Save to" URL — initialised from ctx.save_to when editor opens.
     let save_to = RwSignal::new(String::new());
 
@@ -216,7 +208,6 @@ pub fn EditorModal(
         move |_| {
             match show.get() {
                 Some(ref ctx) => {
-                    language.set(ctx.language.clone());
                     save_to.set(ctx.save_to.clone());
                     // We need to defer the actual CM6 mount until the DOM
                     // element is rendered.  A rAF is sufficient.
@@ -238,19 +229,6 @@ pub fn EditorModal(
         }
     });
 
-    // Language selector change handler.
-    let on_lang_change = {
-        move |ev: web_sys::Event| {
-            let sel = ev
-                .target()
-                .and_then(|t| t.dyn_into::<web_sys::HtmlSelectElement>().ok())
-                .map(|s| s.value())
-                .unwrap_or_else(|| "plain".to_string());
-            js_editor_set_language(EDITOR_EL_ID, &sel);
-            language.set(sel);
-        }
-    };
-
     // Save button.
     let on_save = {
         let state = state.clone();
@@ -259,7 +237,6 @@ pub fn EditorModal(
                 return;
             };
             let text = js_editor_get_value(EDITOR_EL_ID);
-            let lang = language.get_untracked();
 
             // ConfigEdit: write directly to the config key, not <key>.content.
             if let EditorMode::ConfigEdit { key } = &ctx.mode {
@@ -282,13 +259,7 @@ pub fn EditorModal(
                 return;
             }
 
-            config.update(|c| {
-                c.set(format!("{}.content", ctx.doc_path), &text);
-                c.set(
-                    format!("{}.content_type", ctx.doc_path),
-                    content_type_for(&lang),
-                );
-            });
+            config.update(|c| c.set(&ctx.doc_path, &text));
             // Persist asynchronously.
             if let Some(sess) = use_context::<AppState>()
                 .unwrap_or_else(|| state.clone())
@@ -580,18 +551,6 @@ pub fn EditorModal(
                     >
                         {move || show.get().map(|c| c.doc_path).unwrap_or_default()}
                     </span>
-                    // Language selector — visible in all modes except View and Reply.
-                    <select
-                        class="editor-lang-select"
-                        style=move || if is_view() || is_reply() { "display:none" } else { "" }
-                        on:change=on_lang_change
-                        prop:value=move || language.get()
-                    >
-                        <option value="plain">"plain"</option>
-                        <option value="markdown">"markdown"</option>
-                        <option value="yaml">"yaml"</option>
-                        <option value="zscheme">"zscheme"</option>
-                    </select>
                     // Save — Standard only
                     <button
                         class="editor-btn btn-save"
@@ -939,15 +898,5 @@ async fn do_kind_publish(
             }
             state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
         }
-    }
-}
-
-// ── Helpers ────────────────────────────────────────────────────────────────
-
-fn content_type_for(lang: &str) -> &str {
-    match lang {
-        "markdown" => "text/markdown",
-        "yaml" => "text/yaml",
-        _ => "text/plain",
     }
 }

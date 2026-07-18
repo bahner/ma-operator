@@ -535,7 +535,37 @@ fn dispatch_eval_line(
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
         let t = &f.target;
-        if line.starts_with(':') {
+        if is_focus_world_command(line) && f.default_verb.is_none() {
+            match f.command_actor.as_deref() {
+                Some(actor) => match enqueue_focus_world_command(actor, line, state) {
+                    Ok(cmd_id) => {
+                        if let Some(bid) = batch_id {
+                            state.cmd_to_batch.update(|m| {
+                                m.insert(cmd_id, bid);
+                            });
+                        }
+                        return Some(cmd_id);
+                    }
+                    Err(e) => {
+                        state.push_error(format!("'{line}': {e}"));
+                        return None;
+                    }
+                },
+                None => {
+                    let runtime = f.runtime.clone();
+                    let line = line.to_string();
+                    let state2 = state.clone();
+                    let config2 = config;
+                    wasm_bindgen_futures::spawn_local(async move {
+                        let actor = resolve_focus_command_actor(&runtime, config2, &state2).await;
+                        if let Err(e) = enqueue_focus_world_command(&actor, &line, &state2) {
+                            state2.push_error(format!("'{line}': {e}"));
+                        }
+                    });
+                    return None;
+                }
+            }
+        } else if line.starts_with(':') {
             // :verb body → target:verb body (overrides sticky verb)
             format!("{t}{line}")
         } else if !line.starts_with('@')
@@ -583,5 +613,80 @@ fn dispatch_eval_line(
             state.push_error(format!("'{line}': {e}"));
             None
         }
+    }
+}
+
+fn is_focus_world_command(line: &str) -> bool {
+    !line.starts_with('@')
+        && !line.starts_with('.')
+        && !line.starts_with('/')
+        && !line.starts_with('(')
+        && !line.starts_with(':')
+        && !line.trim().is_empty()
+}
+
+fn enqueue_focus_world_command(actor: &str, line: &str, state: &AppState) -> Result<u64, String> {
+    let (verb, args) = parse_focus_world_command(line)?;
+    let cmd_id = state.push_command(line);
+    state.outbox_queue.update(|q| {
+        q.push_back(crate::state::OutboxTask::ActorArgs {
+            target: actor.to_string(),
+            verb,
+            args,
+            cmd_id,
+        });
+    });
+    Ok(cmd_id)
+}
+
+fn parse_focus_world_command(line: &str) -> Result<(String, Vec<String>), String> {
+    let tokens = crate::parser::command::shell_split(line)?;
+    let Some((verb, args)) = tokens.split_first() else {
+        return Err("empty command".to_string());
+    };
+    Ok((verb.to_string(), args.to_vec()))
+}
+
+async fn resolve_focus_command_actor(
+    runtime: &str,
+    config: RwSignal<EgoConfig>,
+    state: &AppState,
+) -> String {
+    match crate::transport::send_crud_get(runtime, "/config/actor").await {
+        Ok(msg_id) => {
+            let rx = crate::state::AwaitingReply::register(msg_id);
+            match rx.await {
+                Ok(actor) => match parse_config_actor(&actor) {
+                    Some(actor) => {
+                        config.update(|c| c.set(".my.ctx.actor", &actor));
+                        let cfg = config.get_untracked();
+                        crate::eval::apply_ctx_focus(&cfg, state);
+                        actor
+                    }
+                    None => focus_fallback_target(runtime, state),
+                },
+                Err(_) => focus_fallback_target(runtime, state),
+            }
+        }
+        Err(_) => focus_fallback_target(runtime, state),
+    }
+}
+
+fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
+    state
+        .focus_actor
+        .get_untracked()
+        .map(|f| f.target)
+        .unwrap_or_else(|| runtime.to_string())
+}
+
+fn parse_config_actor(raw: &str) -> Option<String> {
+    let trimmed = raw.trim();
+    let actor = serde_yaml::from_str::<String>(trimmed).unwrap_or_else(|_| trimmed.to_string());
+    let actor = actor.trim().to_string();
+    if actor.starts_with("did:ma:") && actor.contains('#') {
+        Some(actor)
+    } else {
+        None
     }
 }

@@ -59,7 +59,10 @@ pub struct SessionState {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct FocusMode {
+    pub runtime: String,
+    pub room: Option<String>,
     pub target: String,
+    pub command_actor: Option<String>,
     pub prompt: String,
     /// Optional sticky verb applied to bare-text input (e.g. "say").
     /// Set via `.use @sky#room:say` — every plain line becomes `:say line`.
@@ -184,6 +187,13 @@ pub enum OutboxTask {
         body: String,
         cmd_id: u64,
         config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+    },
+    /// A focus-mode world command already parsed into RPC method + arguments.
+    ActorArgs {
+        target: String,
+        verb: String,
+        args: Vec<String>,
+        cmd_id: u64,
     },
     /// A local zion command aimed at an actor, e.g. `@actor!say text`.
     ActorLocal {

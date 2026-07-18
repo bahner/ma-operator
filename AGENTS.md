@@ -392,22 +392,21 @@ Verbs dispatched in `parser/verbs/mod.rs`:
 
 ## Documents — `.my.doc.*`
 
-Stored in `EgoConfig`:
+Stored directly as leaf values in `EgoConfig`:
 
 ```
-.my.doc.<name>.content       text body
-.my.doc.<name>.content_type  text/plain | text/markdown | text/yaml
-.my.doc.<name>.cid           IPFS CID (set after :publish)
+.my.doc.<name>       text body
 ```
 
 Verbs:
 - `.my.doc.<name>!edit` — open editor with saved content (Standard mode)
 - `.my.doc.<name>!edit <cid>` — fetch CID, open for review (NOT auto-executed)
-- `.my.doc.<name>!eval` — execute saved `.content` line-by-line
-- `.my.doc.<name>!publish <publisher>` — send `application/vnd.ma.ipfs.request`
-- `.my.doc.<name>!cid` — print stored CID
-- `.my.doc.<name>!fetch <cid>` — import CID content (no editor, no execution)
-- `.my.doc.<name>:` — delete entire document subtree
+- `.my.doc.<name>!eval` — execute saved content line-by-line
+- `.my.doc.<name>!publish <publisher>` — send `text/plain` IPFS store request;
+  returned CID is printed as the reply, not stored locally
+- `.my.doc.<name>!cid <publisher>` — same as publish; returned CID is printed
+- `.my.doc.<name>!fetch <cid>` — import CID content directly to the path
+- `.my.doc.<name>:` — delete the document leaf
 
 ---
 
@@ -615,19 +614,18 @@ Also included in the published DID document as `ma.lang`.
 make dev          # trunk serve --port 8088 (hot reload)
 make dist         # trunk build --release → dist/
 make serve        # dist + python3 http.server on :8000
-make publish      # dist + ipfs add -r dist, writes .cid
-make cid          # print last published CID
-make check        # cargo check --target wasm32-unknown-unknown
+.my.doc.<name>       text body
 ```
 
 ---
 
 ## Key constraints
-
-- **`ma-core` must come from `crates.io`** in production.
-  `[patch.crates-io] ma-core = { path = "../rust-ma-core" }` is active
-  during development when new features are needed before a release.
-  Remove the patch before publishing.
+.my.doc.<name>!eval` — execute saved content line-by-line
+.my.doc.<name>!publish <publisher>` — send `text/plain` IPFS store request;
+  returned CID is printed as the reply, not stored locally
+.my.doc.<name>!cid <publisher>` — same as publish; returned CID is printed
+.my.doc.<name>!fetch <cid>` — import CID content directly to the path
+.my.doc.<name>:` — delete the document leaf
 - No backend. Everything is static files + IndexedDB + iroh P2P.
 - Do not duplicate logic already in `ma-core` or `ma-did`.
 - Keep modules small and single-purpose. No giant files.

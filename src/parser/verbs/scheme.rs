@@ -15,14 +15,11 @@ pub(super) fn handle_scheme(
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     match verb {
-        // !save — serialise the current session env to .content and persist.
+        // !save — serialise the current session env and persist.
         "save" => {
             let source = crate::scheme::dump_env();
             let count = source.lines().filter(|l| l.starts_with("(define")).count();
-            config.update(|c| {
-                c.set(format!("{path}.content"), source.clone());
-                c.set(format!("{path}.content_type"), "text/x-zscheme".to_string());
-            });
+            config.update(|c| c.set(path, source.clone()));
             let username = state
                 .session
                 .get_untracked()

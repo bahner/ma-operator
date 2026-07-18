@@ -94,6 +94,17 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
             }
         }
 
+        OutboxTask::ActorArgs {
+            target,
+            verb,
+            args,
+            cmd_id,
+        } => {
+            let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
+            let result = transport::send_rpc(&target, &verb, &arg_refs).await;
+            handle_send_result(result, Some(&verb), cmd_id, state);
+        }
+
         OutboxTask::ActorLocal {
             target,
             command,
@@ -253,7 +264,13 @@ async fn dispatch_verb_to_transport(
     _state: &AppState,
     _config: RwSignal<EgoConfig>,
 ) -> Option<Result<String, String>> {
-    Some(transport::send_rpc(target, v, &body.split_whitespace().collect::<Vec<_>>()).await)
+    match crate::parser::command::shell_split(body) {
+        Ok(args) => {
+            let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
+            Some(transport::send_rpc(target, v, &arg_refs).await)
+        }
+        Err(e) => Some(Err(e)),
+    }
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────

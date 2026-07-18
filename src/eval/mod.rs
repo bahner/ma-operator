@@ -592,7 +592,10 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         None => prompt_with_avatar,
     };
     state.focus_actor.set(Some(FocusMode {
+        runtime,
+        room: if room.is_empty() { None } else { Some(room) },
         target,
+        command_actor: cfg.get(".my.ctx.actor").map(|s| s.to_string()),
         prompt,
         default_verb: sticky_verb,
     }));
@@ -668,6 +671,7 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     config.update(|c| {
         c.set(".my.ctx.runtime", did_part);
         c.set(".my.ctx.use", "true");
+        c.delete(".my.ctx.actor");
         if frag.is_empty() {
             c.delete(".my.ctx.room");
         } else {

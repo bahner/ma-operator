@@ -29,7 +29,7 @@ pub(super) fn handle_doc(
         "eval" => doc_eval(path, state, config, on_eval),
         "publish" => doc_publish(path, args, state, config),
         "publish-ipld" => doc_publish_ipld(path, args, state, config),
-        "cid" => doc_cid(path, state, config),
+        "cid" => doc_cid(path, args, state, config),
         "fetch" => doc_fetch(path, args, state, config),
         other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
     }
@@ -47,15 +47,10 @@ fn doc_edit(
 ) -> Result<(), String> {
     let cfg = config.get_untracked();
     if args.is_empty() {
-        let content = cfg
-            .get(&format!("{path}.content"))
-            .unwrap_or_default()
-            .to_string();
-        let lang = lang_for_content_type(
-            cfg.get(&format!("{path}.content_type"))
-                .unwrap_or("text/plain"),
-        );
-        show_editor.set(Some(EditorContext::new(path, content).with_language(lang)));
+        let content = cfg.get(path).unwrap_or_default().to_string();
+        show_editor.set(Some(
+            EditorContext::new(path, content).with_language("plain"),
+        ));
     } else {
         let cid = args[0].clone();
         let state2 = state.clone();
@@ -73,7 +68,7 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute the saved `.content` line-by-line, sequentially.
+/// `:eval` — execute the saved content line-by-line, sequentially.
 ///
 /// Lines are processed one at a time.  Scheme expressions are fully
 /// expanded (including any CID fetches) before the next line is started.
@@ -87,7 +82,7 @@ fn doc_eval(
 ) -> Result<(), String> {
     let content = config
         .get_untracked()
-        .get(&format!("{path}.content"))
+        .get(path)
         .unwrap_or_default()
         .to_string();
     if content.is_empty() {
@@ -134,10 +129,7 @@ fn read_publish_args(
         return Err(t(usage_err_key));
     }
     let publisher = resolve_bare_did(&args[0], cfg)?;
-    let content = cfg
-        .get(&format!("{path}.content"))
-        .unwrap_or_default()
-        .to_string();
+    let content = cfg.get(path).unwrap_or_default().to_string();
     if content.is_empty() {
         return Err(tf("doc-save-first", &[("path", path)]));
     }
@@ -151,26 +143,36 @@ fn doc_publish(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> Result<(), String> {
+    doc_publish_plain(path, args, state, config, "publish")
+}
+
+fn doc_publish_plain(
+    path: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    verb: &str,
+) -> Result<(), String> {
     let cfg = config.get_untracked();
     let (publisher, content_str) = read_publish_args(path, args, "doc-publish-usage", &cfg)?;
-    let content_type = cfg
-        .get(&format!("{path}.content_type"))
-        .unwrap_or("text/plain")
-        .to_string();
     let content_bytes = content_str.into_bytes();
+    let display = format!("{path}!{verb} {}", args.join(" "));
+    let cmd_id = state.push_command(display);
     let state2 = state.clone();
     let path2 = path.to_string();
-    let publisher_disp = publisher.clone();
     leptos::task::spawn_local(async move {
-        match transport::send_ipfs_store(&publisher, content_bytes, &content_type).await {
-            Ok(msg_id) => state2.push_system(tf(
-                "doc-store-sent",
-                &[("id", &msg_id), ("pub", &publisher_disp)],
-            )),
-            Err(e) => state2.push_error(tf(
-                "doc-publish-failed",
-                &[("path", &path2), ("e", &format_publish_error(&e))],
-            )),
+        match transport::send_ipfs_store(&publisher, content_bytes, "text/plain").await {
+            Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+            Err(e) => {
+                state2.resolve_command_by_id(
+                    cmd_id,
+                    crate::core::CommandStatus::Error(format_publish_error(&e)),
+                );
+                state2.push_error(tf(
+                    "doc-publish-failed",
+                    &[("path", &path2), ("e", &format_publish_error(&e))],
+                ));
+            }
         }
     });
     Ok(())
@@ -187,34 +189,38 @@ fn doc_publish_ipld(
     let (publisher, content_str) = read_publish_args(path, args, "doc-publish-ipld-usage", &cfg)?;
     let dag_cbor = crate::messages::yaml_to_dag_cbor(&content_str)
         .map_err(|e| tf("doc-publish-ipld-error", &[("e", &e)]))?;
+    let display = format!("{path}!publish-ipld {}", args.join(" "));
+    let cmd_id = state.push_command(display);
     let state2 = state.clone();
     let path2 = path.to_string();
-    let publisher_disp = publisher.clone();
     leptos::task::spawn_local(async move {
         match transport::send_ipfs_store(&publisher, dag_cbor, "application/vnd.ipld.dag-cbor")
             .await
         {
-            Ok(msg_id) => state2.push_system(tf(
-                "doc-ipld-store-sent",
-                &[("id", &msg_id), ("pub", &publisher_disp)],
-            )),
-            Err(e) => state2.push_error(tf(
-                "doc-ipld-store-failed",
-                &[("path", &path2), ("e", &format_publish_error(&e))],
-            )),
+            Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+            Err(e) => {
+                state2.resolve_command_by_id(
+                    cmd_id,
+                    crate::core::CommandStatus::Error(format_publish_error(&e)),
+                );
+                state2.push_error(tf(
+                    "doc-ipld-store-failed",
+                    &[("path", &path2), ("e", &format_publish_error(&e))],
+                ));
+            }
         }
     });
     Ok(())
 }
 
-/// `:cid` — display the stored CID.
-fn doc_cid(path: &str, state: &AppState, config: RwSignal<EgoConfig>) -> Result<(), String> {
-    let cfg = config.get_untracked();
-    match cfg.get(&format!("{path}.cid")) {
-        Some(cid) => state.push_output(tf("doc-cid-value", &[("path", path), ("cid", cid)])),
-        None => state.push_output(tf("doc-cid-not-set", &[("path", path)])),
-    }
-    Ok(())
+/// `:cid <publisher>` — publish and print the returned CID reply.
+fn doc_cid(
+    path: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    doc_publish_plain(path, args, state, config, "cid")
 }
 
 /// `:fetch <cid>` — import content from gateway; no editor, no execution.
@@ -233,10 +239,7 @@ fn doc_fetch(
     leptos::task::spawn_local(async move {
         match fetch_path_text(&cid).await {
             Ok(text) => {
-                config.update(|c| {
-                    c.set(format!("{path2}.content"), &text);
-                    c.set(format!("{path2}.cid"), &cid);
-                });
+                config.update(|c| c.set(&path2, &text));
                 state2.push_system(tf("doc-fetch-done", &[("cid", &cid), ("path", &path2)]));
             }
             Err(e) => state2.push_error(tf("doc-fetch-failed", &[("cid", &cid), ("e", &e)])),

@@ -111,12 +111,12 @@ fn parse_path_op(input: &str) -> Result<(String, DotOp, Vec<String>), String> {
     if let Some(bang) = head.find('!') {
         let path = head[..bang].to_string();
         let meta_verb = head[bang + 1..].to_string();
-        return Ok((path, DotOp::Meta(meta_verb), shell_split(&rest)));
+        return Ok((path, DotOp::Meta(meta_verb), shell_split(&rest)?));
     }
     let (path, op) = dot_path_and_op(&head, &rest)?;
     let args = match &op {
         DotOp::Set(_) => vec![],
-        _ => shell_split(&rest),
+        _ => shell_split(&rest)?,
     };
     Ok((path, op, args))
 }
@@ -231,12 +231,51 @@ fn split_head_rest(input: &str) -> (String, String) {
     (head, rest)
 }
 
-fn shell_split(s: &str) -> Vec<String> {
-    if s.is_empty() {
-        vec![]
-    } else {
-        s.split_whitespace().map(|s| s.to_string()).collect()
+pub(crate) fn shell_split(s: &str) -> Result<Vec<String>, String> {
+    let mut words = Vec::new();
+    let mut current = String::new();
+    let mut quote: Option<char> = None;
+    let mut escaped = false;
+    for ch in s.chars() {
+        if escaped {
+            current.push(ch);
+            escaped = false;
+            continue;
+        }
+        if ch == '\\' {
+            escaped = true;
+            continue;
+        }
+        if let Some(q) = quote {
+            if ch == q {
+                quote = None;
+            } else {
+                current.push(ch);
+            }
+            continue;
+        }
+        if ch == '"' || ch == '\'' {
+            quote = Some(ch);
+            continue;
+        }
+        if ch.is_whitespace() {
+            if !current.is_empty() {
+                words.push(std::mem::take(&mut current));
+            }
+            continue;
+        }
+        current.push(ch);
     }
+    if let Some(q) = quote {
+        return Err(format!("unclosed quote {q}"));
+    }
+    if escaped {
+        current.push('\\');
+    }
+    if !current.is_empty() {
+        words.push(current);
+    }
+    Ok(words)
 }
 
 pub fn resolve_target(raw: &str, cfg: &EgoConfig) -> Result<String, String> {
@@ -341,6 +380,19 @@ mod tests {
                 args: vec![],
             }
         );
+    }
+
+    #[test]
+    fn shell_split_preserves_quoted_words() {
+        assert_eq!(
+            shell_split(r#"dig north to "the garden" 'with roses'"#).unwrap(),
+            vec!["dig", "north", "to", "the garden", "with roses"]
+        );
+    }
+
+    #[test]
+    fn shell_split_rejects_unclosed_quote() {
+        assert!(shell_split(r#"dig north "the garden"#).is_err());
     }
 
     #[test]

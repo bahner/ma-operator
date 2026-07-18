@@ -81,11 +81,8 @@ pub fn dispatch_meta(
     if matches!(verb, "publish" | "publish-ipld" | "cid" | "fetch") {
         return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);
     }
-    // Universal content-based verb routing: works on any path with .content.
-    let has_content = config
-        .get_untracked()
-        .get(&format!("{path}.content"))
-        .is_some();
+    // Universal content-based verb routing: works on any leaf path.
+    let has_content = config.get_untracked().get(path).is_some();
     if has_content || verb == "edit" {
         match verb {
             "edit" | "eval" => {
@@ -94,12 +91,9 @@ pub fn dispatch_meta(
             _ => {}
         }
     }
-    // Scheme function call: any other verb on a path with .content.
+    // Scheme function call: any other verb on a leaf path.
     let content = if has_content {
-        config
-            .get_untracked()
-            .get(&format!("{path}.content"))
-            .map(|s| s.to_string())
+        config.get_untracked().get(path).map(|s| s.to_string())
     } else {
         None
     };

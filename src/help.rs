@@ -121,7 +121,6 @@ fn doc() -> Vec<String> {
         t("help-doc-publish"),
         t("help-doc-publish-ipld"),
         t("help-doc-fetch"),
-        t("help-doc-cid"),
         t("help-doc-del"),
         t("help-footer"),
     ]
