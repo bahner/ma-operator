@@ -218,6 +218,23 @@ mod tests {
         // t() returns the key name in test context (no translations loaded).
         assert_eq!(display, "rpc-error");
     }
+
+    #[test]
+    fn formats_ok_array_payload_compactly() {
+        let mut body = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Array(vec![
+                CborValue::Text(":ok".to_string()),
+                CborValue::Array(vec![CborValue::Text("owners".to_string())]),
+            ]),
+            &mut body,
+        )
+        .expect("encode cbor");
+
+        let (display, is_error) = format_rpc_reply(&body);
+        assert!(!is_error);
+        assert_eq!(display, "owners");
+    }
 }
 
 fn format_cbor_value_short(v: &CborValue) -> String {
@@ -227,6 +244,11 @@ fn format_cbor_value_short(v: &CborValue) -> String {
         CborValue::Integer(i) => format!("{i:?}"),
         CborValue::Bytes(b) => format!("<{} bytes>", b.len()),
         CborValue::Null => "null".to_string(),
+        CborValue::Array(items) => items
+            .iter()
+            .map(format_cbor_value_short)
+            .collect::<Vec<_>>()
+            .join(" "),
         other => format!("{other:?}"),
     }
 }
