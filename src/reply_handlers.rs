@@ -3,6 +3,7 @@
 //! Each `handle_*_reply` function corresponds to one `PendingKind` variant and
 //! is called from `inbox_poll::dispatch_reply` when a matching reply arrives.
 
+use ciborium::Value as CborValue;
 use leptos::prelude::*;
 use ma_core::{CONTENT_TYPE_TERM_CBOR, CONTENT_TYPE_TERM_YAML};
 use ma_zscheme::SchemeVal;
@@ -212,7 +213,7 @@ pub(crate) fn handle_edit_open_reply(
                 | EditorMode::EntityFieldEdit { .. }
                 | EditorMode::KindEdit { .. }
         );
-        let not_found = incoming.display.to_ascii_lowercase().contains("not found");
+        let not_found = is_missing_for_creatable_edit(incoming);
         if creatable && not_found {
             state.resolve_command_by_id(cmd_id, CommandStatus::Done);
             show_editor.set(Some(
@@ -322,6 +323,23 @@ pub(crate) fn handle_edit_open_reply(
             }
         }
     }
+}
+
+fn is_missing_for_creatable_edit(incoming: &IncomingMessage) -> bool {
+    has_missing_marker(&incoming.display)
+        || match ciborium::de::from_reader::<CborValue, _>(&mut &incoming.content[..]) {
+            Ok(CborValue::Text(s)) => has_missing_marker(&s),
+            Ok(CborValue::Array(items)) => items.iter().any(|item| match item {
+                CborValue::Text(s) => has_missing_marker(s),
+                _ => false,
+            }),
+            _ => false,
+        }
+}
+
+fn has_missing_marker(text: &str) -> bool {
+    let text = text.to_ascii_lowercase();
+    text.contains("not found") || text.contains("not-found")
 }
 
 /// Open the editor immediately with a known YAML string.
@@ -552,5 +570,50 @@ pub(crate) fn cbor_reply_to_scheme_val(
             _ => Ok(cbor_to_scheme_val(&val)),
         },
         _ => Ok(cbor_to_scheme_val(&val)),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn error_reply(reason: &str, display: &str) -> IncomingMessage {
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Array(vec![
+                CborValue::Text(":error".to_string()),
+                CborValue::Text(reason.to_string()),
+            ]),
+            &mut content,
+        )
+        .expect("encode test CBOR");
+
+        IncomingMessage {
+            message_id: "reply-1".to_string(),
+            message_type: "application/vnd.ma.rpc.reply".to_string(),
+            from: "did:ma:test-runtime".to_string(),
+            to: "did:ma:test-user".to_string(),
+            reply_to: Some("request-1".to_string()),
+            content_type: CONTENT_TYPE_TERM_CBOR.to_string(),
+            content,
+            created_at: 0,
+            exp: 0,
+            display: display.to_string(),
+            is_error: true,
+        }
+    }
+
+    #[test]
+    fn creatable_edit_missing_detects_hyphenated_runtime_code() {
+        let incoming = error_reply("kind-not-found", "fot: kind-not-found");
+
+        assert!(is_missing_for_creatable_edit(&incoming));
+    }
+
+    #[test]
+    fn creatable_edit_missing_rejects_other_errors() {
+        let incoming = error_reply("acl-denied", "fot: acl-denied");
+
+        assert!(!is_missing_for_creatable_edit(&incoming));
     }
 }
