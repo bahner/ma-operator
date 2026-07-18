@@ -535,30 +535,42 @@ fn dispatch_eval_line(
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
         let t = &f.target;
-        if is_focus_world_command(line) && f.default_verb.is_none() {
-            match f.command_actor.as_deref() {
-                Some(actor) => match enqueue_focus_world_command(actor, line, state) {
-                    Ok(cmd_id) => {
-                        if let Some(bid) = batch_id {
-                            state.cmd_to_batch.update(|m| {
-                                m.insert(cmd_id, bid);
-                            });
+        if is_focus_shorthand_command(line) && f.default_verb.is_none() {
+            let parsed = match parse_focus_shorthand_command(line) {
+                Ok(parsed) => parsed,
+                Err(e) => {
+                    state.push_error(format!("'{line}': {e}"));
+                    return None;
+                }
+            };
+            let target = f.avatar_actor.as_deref().or(f.root_actor.as_deref());
+            match target {
+                Some(actor) => {
+                    match enqueue_focus_command(actor, line, parsed.verb, parsed.args, state) {
+                        Ok(cmd_id) => {
+                            if let Some(bid) = batch_id {
+                                state.cmd_to_batch.update(|m| {
+                                    m.insert(cmd_id, bid);
+                                });
+                            }
+                            return Some(cmd_id);
                         }
-                        return Some(cmd_id);
+                        Err(e) => {
+                            state.push_error(format!("'{line}': {e}"));
+                            return None;
+                        }
                     }
-                    Err(e) => {
-                        state.push_error(format!("'{line}': {e}"));
-                        return None;
-                    }
-                },
+                }
                 None => {
                     let runtime = f.runtime.clone();
                     let line = line.to_string();
                     let state2 = state.clone();
                     let config2 = config;
                     wasm_bindgen_futures::spawn_local(async move {
-                        let actor = resolve_focus_command_actor(&runtime, config2, &state2).await;
-                        if let Err(e) = enqueue_focus_world_command(&actor, &line, &state2) {
+                        let actor = resolve_focus_root_actor(&runtime, config2, &state2).await;
+                        if let Err(e) =
+                            enqueue_focus_command(&actor, &line, parsed.verb, parsed.args, &state2)
+                        {
                             state2.push_error(format!("'{line}': {e}"));
                         }
                     });
@@ -616,17 +628,21 @@ fn dispatch_eval_line(
     }
 }
 
-fn is_focus_world_command(line: &str) -> bool {
+fn is_focus_shorthand_command(line: &str) -> bool {
     !line.starts_with('@')
         && !line.starts_with('.')
         && !line.starts_with('/')
         && !line.starts_with('(')
-        && !line.starts_with(':')
         && !line.trim().is_empty()
 }
 
-fn enqueue_focus_world_command(actor: &str, line: &str, state: &AppState) -> Result<u64, String> {
-    let (verb, args) = parse_focus_world_command(line)?;
+fn enqueue_focus_command(
+    actor: &str,
+    line: &str,
+    verb: String,
+    args: Vec<String>,
+    state: &AppState,
+) -> Result<u64, String> {
     let cmd_id = state.push_command(line);
     state.outbox_queue.update(|q| {
         q.push_back(crate::state::OutboxTask::ActorArgs {
@@ -639,26 +655,38 @@ fn enqueue_focus_world_command(actor: &str, line: &str, state: &AppState) -> Res
     Ok(cmd_id)
 }
 
-fn parse_focus_world_command(line: &str) -> Result<(String, Vec<String>), String> {
+struct ParsedFocusCommand {
+    verb: String,
+    args: Vec<String>,
+}
+
+fn parse_focus_shorthand_command(line: &str) -> Result<ParsedFocusCommand, String> {
     let tokens = crate::parser::command::shell_split(line)?;
     let Some((verb, args)) = tokens.split_first() else {
         return Err("empty command".to_string());
     };
-    Ok((verb.to_string(), args.to_vec()))
+    let verb = verb.trim_start_matches(':').to_string();
+    if verb.is_empty() {
+        return Err("empty command".to_string());
+    }
+    Ok(ParsedFocusCommand {
+        verb,
+        args: args.to_vec(),
+    })
 }
 
-async fn resolve_focus_command_actor(
+async fn resolve_focus_root_actor(
     runtime: &str,
     config: RwSignal<EgoConfig>,
     state: &AppState,
 ) -> String {
-    match crate::transport::send_crud_get(runtime, "/config/actor").await {
+    match crate::transport::send_crud_get(runtime, "/config/root").await {
         Ok(msg_id) => {
             let rx = crate::state::AwaitingReply::register(msg_id);
             match rx.await {
-                Ok(actor) => match parse_config_actor(&actor) {
+                Ok(actor) => match parse_config_root(&actor) {
                     Some(actor) => {
-                        config.update(|c| c.set(".my.ctx.actor", &actor));
+                        config.update(|c| c.set(".my.ctx.root", &actor));
                         let cfg = config.get_untracked();
                         crate::eval::apply_ctx_focus(&cfg, state);
                         actor
@@ -680,7 +708,7 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
         .unwrap_or_else(|| runtime.to_string())
 }
 
-fn parse_config_actor(raw: &str) -> Option<String> {
+fn parse_config_root(raw: &str) -> Option<String> {
     let trimmed = raw.trim();
     let actor = serde_yaml::from_str::<String>(trimmed).unwrap_or_else(|_| trimmed.to_string());
     let actor = actor.trim().to_string();
@@ -688,5 +716,36 @@ fn parse_config_actor(raw: &str) -> Option<String> {
         Some(actor)
     } else {
         None
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_focus_shorthand_command;
+
+    #[test]
+    fn focus_shorthand_normalizes_bare_and_colon_methods() {
+        let say = parse_focus_shorthand_command("say hello").unwrap();
+        assert_eq!(say.verb, "say");
+        assert_eq!(say.args, vec!["hello"]);
+
+        let look = parse_focus_shorthand_command(":look").unwrap();
+        assert_eq!(look.verb, "look");
+        assert!(look.args.is_empty());
+
+        let here = parse_focus_shorthand_command("here?").unwrap();
+        assert_eq!(here.verb, "here?");
+        assert!(here.args.is_empty());
+    }
+
+    #[test]
+    fn focus_shorthand_keeps_tickets_out_of_zion() {
+        let go = parse_focus_shorthand_command("go north").unwrap();
+        assert_eq!(go.verb, "go");
+        assert_eq!(go.args, vec!["north"]);
+
+        let dig = parse_focus_shorthand_command("dig north to garden").unwrap();
+        assert_eq!(dig.verb, "dig");
+        assert_eq!(dig.args, vec!["north", "to", "garden"]);
     }
 }

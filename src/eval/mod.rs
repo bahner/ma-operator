@@ -17,7 +17,7 @@ use crate::{
     i18n::{t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
-    state::{AppState, FocusMode},
+    state::{AppState, AwaitingReply, FocusMode, OutboxTask},
     transport,
     views::editor::EditorContext,
 };
@@ -240,6 +240,9 @@ fn eval_control(
         ".use" => {
             eval_use(args, state, config);
         }
+        ".enter" => {
+            eval_enter(args, state, config);
+        }
         ".edit" => {
             if let Err(e) = dispatch_meta(
                 ".my.doc.scratch",
@@ -269,6 +272,97 @@ fn eval_control(
         _ => {
             state.push_error(tf("err-unknown-command", &[("path", path)]));
         }
+    }
+}
+
+fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    let Some(raw) = args.first() else {
+        state.push_error("usage: .enter @runtime".to_string());
+        return;
+    };
+    let cfg = config.get_untracked();
+    let actor_input = if raw.starts_with('@') || raw.starts_with("did:") {
+        raw.clone()
+    } else {
+        format!("@{raw}")
+    };
+    let resolved = match crate::parser::command::parse(&actor_input, &cfg) {
+        Ok(crate::parser::command::Command::ActorMessage { target, .. }) => target,
+        Ok(_) => {
+            state.push_error(format!("not an actor address: {raw}"));
+            return;
+        }
+        Err(e) => {
+            state.push_error(e);
+            return;
+        }
+    };
+    let runtime = resolved
+        .split_once('#')
+        .map_or(resolved.as_str(), |(did, _)| did)
+        .to_string();
+    config.update(|c| {
+        c.set(".my.ctx.runtime", &runtime);
+        c.set(".my.ctx.use", "true");
+        c.delete(".my.ctx.avatar");
+        c.delete(".my.ctx.room");
+        c.delete(".my.ctx.verb");
+    });
+
+    let state2 = state.clone();
+    let config2 = config;
+    let entered = raw.clone();
+    spawn_local(async move {
+        let root = match resolve_enter_root(&runtime).await {
+            Ok(root) => root,
+            Err(e) => {
+                state2.push_error(e);
+                return;
+            }
+        };
+        config2.update(|c| c.set(".my.ctx.root", &root));
+        let cfg = config2.get_untracked();
+        apply_ctx_focus(&cfg, &state2);
+        if let Some(sess) = state2.session.get_untracked() {
+            let uname = sess.username.clone();
+            let cfg_persist = cfg.clone();
+            spawn_local(async move {
+                if let Err(e) = persist_config(&uname, &cfg_persist).await {
+                    web_sys::console::error_1(&format!("enter persist: {e}").into());
+                }
+            });
+        }
+
+        let cmd_id = state2.push_command(format!(".enter {entered}"));
+        state2.outbox_queue.update(|q| {
+            q.push_back(OutboxTask::ActorArgs {
+                target: root,
+                verb: "enter".to_string(),
+                args: Vec::new(),
+                cmd_id,
+            });
+        });
+    });
+}
+
+async fn resolve_enter_root(runtime: &str) -> Result<String, String> {
+    let msg_id = transport::send_crud_get(runtime, "/config/root").await?;
+    let rx = AwaitingReply::register(msg_id);
+    let raw = rx
+        .await
+        .map_err(|_| "root discovery reply was cancelled".to_string())?;
+    parse_config_root(&raw)
+        .ok_or_else(|| "runtime /config/root is not a full actor DID-URL".to_string())
+}
+
+fn parse_config_root(raw: &str) -> Option<String> {
+    let trimmed = raw.trim();
+    let actor = serde_yaml::from_str::<String>(trimmed).unwrap_or_else(|_| trimmed.to_string());
+    let actor = actor.trim().to_string();
+    if actor.starts_with("did:ma:") && actor.contains('#') {
+        Some(actor)
+    } else {
+        None
     }
 }
 
@@ -595,7 +689,8 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         runtime,
         room: if room.is_empty() { None } else { Some(room) },
         target,
-        command_actor: cfg.get(".my.ctx.actor").map(|s| s.to_string()),
+        root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
+        avatar_actor: cfg.get(".my.ctx.avatar").map(|s| s.to_string()),
         prompt,
         default_verb: sticky_verb,
     }));
@@ -671,7 +766,7 @@ fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     config.update(|c| {
         c.set(".my.ctx.runtime", did_part);
         c.set(".my.ctx.use", "true");
-        c.delete(".my.ctx.actor");
+        c.delete(".my.ctx.root");
         if frag.is_empty() {
             c.delete(".my.ctx.room");
         } else {

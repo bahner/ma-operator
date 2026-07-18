@@ -55,6 +55,9 @@ fn route_incoming(
     if handle_inbox_message(&incoming, state, config) {
         return;
     }
+    if handle_client_term(&incoming, state, config) {
+        return;
+    }
     if handle_unsolicited_rpc(&incoming, state) {
         return;
     }
@@ -148,6 +151,127 @@ fn dispatch_reply(
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
             }
         }
+    }
+}
+
+/// Handle unsolicited actor-authored client terms. Returns true when handled.
+fn handle_client_term(
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> bool {
+    if incoming.reply_to.is_some()
+        || incoming.message_type != ma_core::MESSAGE_TYPE_RPC
+        || incoming.content_type != ma_core::CONTENT_TYPE_TERM
+    {
+        return false;
+    }
+    let Ok(term) = ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
+    else {
+        return false;
+    };
+    match term {
+        ciborium::Value::Array(items) => handle_client_term_array(items, incoming, state, config),
+        _ => false,
+    }
+}
+
+fn handle_client_term_array(
+    items: Vec<ciborium::Value>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> bool {
+    let Some(ciborium::Value::Text(head)) = items.first() else {
+        return false;
+    };
+    match head.as_str() {
+        ":print" => {
+            if let Some(text) = items.get(1).and_then(cbor_text) {
+                let text = config.get_untracked().substitute_dids(text);
+                state.push_incoming(text, None, false);
+            }
+            true
+        }
+        ":ctx" => {
+            handle_ctx_receipt(items.get(1), incoming, state, config);
+            true
+        }
+        _ => false,
+    }
+}
+
+fn handle_ctx_receipt(
+    payload: Option<&ciborium::Value>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    let cfg = config.get_untracked();
+    let Some(root) = cfg.get(".my.ctx.root") else {
+        return;
+    };
+    if incoming.from != root {
+        return;
+    }
+    let Some(ciborium::Value::Array(pairs)) = payload else {
+        return;
+    };
+    let root = ctx_value(pairs, ":root").map(str::to_string);
+    let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
+    let room = ctx_value(pairs, ":room").map(str::to_string);
+    let text = ctx_value(pairs, ":text").map(str::to_string);
+
+    config.update(|c| {
+        if let Some(root) = &root {
+            c.set(".my.ctx.root", root);
+        }
+        if let Some(avatar) = &avatar {
+            if avatar.is_empty() {
+                c.delete(".my.ctx.avatar");
+            } else {
+                c.set(".my.ctx.avatar", avatar);
+            }
+        }
+        if let Some(room) = &room {
+            if room.is_empty() {
+                c.delete(".my.ctx.room");
+            } else {
+                c.set(".my.ctx.room", room);
+            }
+        }
+    });
+
+    let cfg = config.get_untracked();
+    crate::eval::apply_ctx_focus(&cfg, state);
+    if let Some(sess) = state.session.get_untracked() {
+        let uname = sess.username.clone();
+        let cfg_persist = cfg.clone();
+        spawn_local(async move {
+            if let Err(e) = persist_config(&uname, &cfg_persist).await {
+                web_sys::console::error_1(&format!("ctx persist: {e}").into());
+            }
+        });
+    }
+    if let Some(text) = text {
+        state.push_incoming(cfg.substitute_dids(&text), None, false);
+    }
+}
+
+fn ctx_value<'a>(pairs: &'a [ciborium::Value], key: &str) -> Option<&'a str> {
+    pairs.iter().find_map(|pair| match pair {
+        ciborium::Value::Array(items) if items.len() == 2 => match (&items[0], &items[1]) {
+            (ciborium::Value::Text(k), ciborium::Value::Text(v)) if k == key => Some(v.as_str()),
+            _ => None,
+        },
+        _ => None,
+    })
+}
+
+fn cbor_text(value: &ciborium::Value) -> Option<&str> {
+    match value {
+        ciborium::Value::Text(text) => Some(text),
+        _ => None,
     }
 }
 

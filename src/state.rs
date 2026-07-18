@@ -62,7 +62,8 @@ pub struct FocusMode {
     pub runtime: String,
     pub room: Option<String>,
     pub target: String,
-    pub command_actor: Option<String>,
+    pub root_actor: Option<String>,
+    pub avatar_actor: Option<String>,
     pub prompt: String,
     /// Optional sticky verb applied to bare-text input (e.g. "say").
     /// Set via `.use @sky#room:say` — every plain line becomes `:say line`.
