@@ -368,7 +368,7 @@ mod tests {
     #[test]
     fn export_for_download_with_config() {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
-        let cfg_json = r#"{"tree":{"/my/i18n":"nb"}}"#;
+        let cfg_json = r#"{"tree":{".my.i18n":"nb"}}"#;
         let exported = export_for_download(&json, "alice", Some(cfg_json));
         let zion: ZionExport = serde_json::from_str(&exported).expect("must parse as ZionExport");
         assert_eq!(zion.version, 1);

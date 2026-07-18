@@ -44,7 +44,7 @@ msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = تم نشر DID عبر ma المحلي ({ $url })
-msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '/my/identity!publish @ma'. اكتب '.help/publish' للتفاصيل.
+msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '.my.identity!publish @ma'. اكتب '.help/publish' للتفاصيل.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
 msg-focusing = تركيز { $did } بوصفه { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = فشل الاكتشاف: متوقع أن يبدأ `did` �
 discover-no-endpoint = تحذير الاكتشاف: `endpoint_id` مفقود في status.json؛ تم تخزين DID فقط
 discover-success = تم اكتشاف ma في { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   تم إنشاء الاسم المستعار @ma — شغّل '/my/identity!publish @ma' لنشر هويتك.
+discover-alias-hint =   تم إنشاء الاسم المستعار @ma — شغّل '.my.identity!publish @ma' لنشر هويتك.
 claim-success = تم المطالبة بوقت التشغيل لـ { $did }
 claim-conflict = وقت التشغيل مطالب به بالفعل من قِبل هوية أخرى
 claim-http-failed = فشلت المطالبة: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = غير مسجَّل دخول؛ سجِّل دخولك أولا
 runtime-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 
 # ── الأفعال — ACL ──────────────────────────────────────────────────────────
-acl-reset = تمت إعادة تعيين /my/acl (مفتوح تماماً)
+acl-reset = تمت إعادة تعيين .my.acl (مفتوح تماماً)
 acl-persist-error = خطأ في الحفظ: { $e }
-acl-no-verb = لا يوجد فعل `{ $verb }` لـ /my/acl
+acl-no-verb = لا يوجد فعل `{ $verb }` لـ .my.acl
 
 # ── الأفعال — الهوية ──────────────────────────────────────────────────────
-publish-usage = الاستخدام: /my/identity!publish <did-أو-اسم-مستعار>
+publish-usage = الاستخدام: .my.identity!publish <did-أو-اسم-مستعار>
 identity-exported = تم تنزيل الحزمة باسم { $filename }
 identity-export-failed = فشل التصدير: { $e }
 
 # ── الأفعال — المستندات ───────────────────────────────────────────────────
-doc-content-empty = { $path }/content فارغ
-doc-save-first = { $path }/content فارغ — احفظ أولاً
+doc-content-empty = { $path }.content فارغ
+doc-save-first = { $path }.content فارغ — احفظ أولاً
 doc-missing-name = اسم المستند مفقود
-doc-publish-usage = الاستخدام: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = الاستخدام: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = الاستخدام: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = الاستخدام: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = نشر { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
-doc-fetch-done = تم جلب { $cid } → { $path }/content (لم يُنفَّذ)
+doc-fetch-done = تم جلب { $cid } → { $path }.content (لم يُنفَّذ)
 doc-fetch-failed = جلب { $cid }: { $e }
-doc-fetch-usage = الاستخدام: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid غير محدد
+doc-fetch-usage = الاستخدام: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid غير محدد
 doc-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 path-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       حذف ورقة أو شجر�
 help-config-verb =   .path!verb [args]            استدعاء فعل محلي
 
 # ── المساعدة — المسارات الشائعة ──────────────────────────────────────────
-help-my =   /my                          عرض جميع الضبط الشخصي
-help-aliases =   /my/aliases                  قائمة الأسماء المستعارة
-help-aliases-set =   /my/aliases/<name>: <did>    إضافة/تحديث اسم مستعار
-help-aliases-del =   /my/aliases/<name>:          إزالة اسم مستعار
+help-my =   .my                          عرض جميع الضبط الشخصي
+help-aliases =   .my.aliases                  قائمة الأسماء المستعارة
+help-aliases-set =   .my.aliases.<name>: <did>    إضافة/تحديث اسم مستعار
+help-aliases-del =   .my.aliases.<name>:          إزالة اسم مستعار
 help-runtime-discover =   .ma [port]          اكتشاف وقت التشغيل المحلي وإنشاء @ma
 help-runtime-claim =   .ma [port]             المطالبة بملكية وقت التشغيل
-help-identity =   /my/identity                 عرض ضبط الهوية
-help-identity-did =   /my/identity/did             عرض DID الخاص (للقراءة فقط)
-help-identity-publish =   /my/identity!publish @pub    نشر DID عبر خدمة النشر
-help-identity-export =   /my/identity!export          تنزيل حزمة هويتك
+help-identity =   .my.identity                 عرض ضبط الهوية
+help-identity-did =   .my.identity.did             عرض DID الخاص (للقراءة فقط)
+help-identity-publish =   .my.identity!publish @pub    نشر DID عبر خدمة النشر
+help-identity-export =   .my.identity!export          تنزيل حزمة هويتك
 help-config-path =   .config                      عرض جميع إدخالات .config.*
 
 # ── المساعدة — صندوق الوارد ──────────────────────────────────────────────
-help-inbox =   /my/inbox                    سرد صندوق الوارد (عرض الشجرة الفرعية)
-help-inbox-n =   /my/inbox/N                  عرض حقول الإدخال N
-help-inbox-from =   /my/inbox/N/from             DID مرسل الإدخال N
-help-inbox-reply =   /my/inbox/N!reply [body]     إرسال رد (بلا نص — يفتح المحرر)
-help-inbox-open =   /my/inbox/N!open             فتح المحتوى للقراءة فقط في المحرر
-help-inbox-del =   /my/inbox/N:                 حذف الإدخال N
-help-inbox-delall =   /my/inbox:                   حذف جميع إدخالات صندوق الوارد
-help-inbox-flush =   /my/inbox!flush              طباعة جميع الإدخالات في الطرفية
-help-inbox-filter =   /my/inbox!filter @who        عرض الإدخالات من @who فقط
-help-inbox-traverse =   /my/inbox/N/sender/<field>   استعراض مستند DID المرسل بشكل كسول
+help-inbox =   .my.inbox                    سرد صندوق الوارد (عرض الشجرة الفرعية)
+help-inbox-n =   .my.inbox.N                  عرض حقول الإدخال N
+help-inbox-from =   .my.inbox.N.from             DID مرسل الإدخال N
+help-inbox-reply =   .my.inbox.N!reply [body]     إرسال رد (بلا نص — يفتح المحرر)
+help-inbox-open =   .my.inbox.N!open             فتح المحتوى للقراءة فقط في المحرر
+help-inbox-del =   .my.inbox.N:                 حذف الإدخال N
+help-inbox-delall =   .my.inbox:                   حذف جميع إدخالات صندوق الوارد
+help-inbox-flush =   .my.inbox!flush              طباعة جميع الإدخالات في الطرفية
+help-inbox-filter =   .my.inbox!filter @who        عرض الإدخالات من @who فقط
+help-inbox-traverse =   .my.inbox.N.sender.<field>   استعراض مستند DID المرسل بشكل كسول
 
 # ── المساعدة — المستندات ─────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           فتح المحرر بالمحتوى المحفوظ
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     جلب CID وفتحه للمراجعة فقط
-help-doc-eval =   /my/doc/<name>!eval           تشغيل المحتوى المحفوظ سطراً سطراً
-help-doc-publish =   /my/doc/<name>!publish @pub   تخزين كبيانات خام (أي نوع)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  تخزين YAML كعقدة IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    استيراد محتوى CID (بلا تشغيل)
-help-doc-cid =   /my/doc/<name>!cid            عرض CID المخزَّن
-help-doc-del =   /my/doc/<name>:              حذف المستند
+help-doc-edit =   .my.doc.<name>!edit           فتح المحرر بالمحتوى المحفوظ
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     جلب CID وفتحه للمراجعة فقط
+help-doc-eval =   .my.doc.<name>!eval           تشغيل المحتوى المحفوظ سطراً سطراً
+help-doc-publish =   .my.doc.<name>!publish @pub   تخزين كبيانات خام (أي نوع)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  تخزين YAML كعقدة IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    استيراد محتوى CID (بلا تشغيل)
+help-doc-cid =   .my.doc.<name>!cid            عرض CID المخزَّن
+help-doc-del =   .my.doc.<name>:              حذف المستند
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = اللغات المتاحة (عيّن بـ /my/i18n: <code>):
+lang-list-header = اللغات المتاحة (عيّن بـ .my.i18n: <code>):
 err-lang-not-found = اللغة غير موجودة: { $lang }
 
 msg-send-failed = فشل الإرسال: { $e }
@@ -332,9 +332,9 @@ help-topic-publish =   .help/publish                نشر هويتك على ا�
 help-header-publish = ── نشر الهوية ───────────────────────────────────────────────────────────────
 help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف على الشبكة. يمكن للآخرين البحث عن DID الخاص بك للتواصل معك.
 help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
-help-publish-steps = الخطوات: شغّل '.ma [port]' للكشف عن ma المحلي، ثم '/my/identity!publish @ma'.
+help-publish-steps = الخطوات: شغّل '.ma [port]' للكشف عن ma المحلي، ثم '.my.identity!publish @ma'.
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

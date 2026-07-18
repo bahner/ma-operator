@@ -44,7 +44,7 @@ msg-connecting = 正在连接到 iroh...
 msg-iroh-ready = iroh 端点就绪
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 已通过本地 ma ({ $url }) 发布
-msg-identity-not-published = 未在线找到身份 — 如果本地安装了 ma，请运行 '.ma [port]' 然后 '/my/identity!publish @ma'。输入 '.help/publish' 查看详情。
+msg-identity-not-published = 未在线找到身份 — 如果本地安装了 ma，请运行 '.ma [port]' 然后 '.my.identity!publish @ma'。输入 '.help/publish' 查看详情。
 msg-blocked = ⊗ 已拦截 [{ $cap }]: { $from }
 msg-focus-cleared = 焦点已清除
 msg-focusing = 将 { $did } 聚焦为 { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = 发现失败：期望 `did` 以 did:ma: 开头，得到 `
 discover-no-endpoint = 发现警告：status.json 中缺少 `endpoint_id`；仅存储了 DID
 discover-success = 已在 { $url } 发现 ma
 discover-did-line = DID: { $did }
-discover-alias-hint =   已创建别名 @ma — 运行 '/my/identity!publish @ma' 以发布你的身份。
+discover-alias-hint =   已创建别名 @ma — 运行 '.my.identity!publish @ma' 以发布你的身份。
 claim-success = 运行时已为 { $did } 声明
 claim-conflict = 运行时已被另一身份声明
 claim-http-failed = 声明失败：HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = 未登录；请先登录后再声明运行时
 runtime-no-verb = { $path } 没有 `{ $verb }` 动词
 
 # ── 动词 — ACL ────────────────────────────────────────────────────────────
-acl-reset = /my/acl 已重置（完全开放）
+acl-reset = .my.acl 已重置（完全开放）
 acl-persist-error = 持久化错误: { $e }
-acl-no-verb = /my/acl 没有 `{ $verb }` 动词
+acl-no-verb = .my.acl 没有 `{ $verb }` 动词
 
 # ── 动词 — 身份 ───────────────────────────────────────────────────────────
-publish-usage = 用法: /my/identity!publish <did-或-别名>
+publish-usage = 用法: .my.identity!publish <did-或-别名>
 identity-exported = 包已下载为 { $filename }
 identity-export-failed = 导出失败：{ $e }
 
 # ── 动词 — 文档 ───────────────────────────────────────────────────────────
-doc-content-empty = { $path }/content 为空
-doc-save-first = { $path }/content 为空 — 请先保存
+doc-content-empty = { $path }.content 为空
+doc-save-first = { $path }.content 为空 — 请先保存
 doc-missing-name = 缺少文档名称
-doc-publish-usage = 用法: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = 用法: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = 用法: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = 用法: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = 发布 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = 存储请求已发送（{ $id }）→ { $publisher }；CID 将通过 RPC 回复到达
 doc-ipld-store-sent = IPLD 存储请求已发送（{ $id }）→ { $publisher }；CID 将通过 RPC 回复到达
-doc-fetch-done = 已获取 { $cid } → { $path }/content（未执行）
+doc-fetch-done = 已获取 { $cid } → { $path }.content（未执行）
 doc-fetch-failed = 获取 { $cid }: { $e }
-doc-fetch-usage = 用法: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid 未设置
+doc-fetch-usage = 用法: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid 未设置
 doc-no-verb = { $path } 没有 `{ $verb }` 动词
 path-no-verb = { $path } 没有 `{ $verb }` 动词
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       删除叶或子树
 help-config-verb =   .path!verb [args]            调用本地动词
 
 # ── 帮助文本 — 常用路径 ───────────────────────────────────────────────────
-help-my =   /my                          显示所有个人配置
-help-aliases =   /my/aliases                  列出别名
-help-aliases-set =   /my/aliases/<name>: <did>    添加/更新别名（纯 DID，无 #fragment）
-help-aliases-del =   /my/aliases/<name>:          删除别名
+help-my =   .my                          显示所有个人配置
+help-aliases =   .my.aliases                  列出别名
+help-aliases-set =   .my.aliases.<name>: <did>    添加/更新别名（纯 DID，无 #fragment）
+help-aliases-del =   .my.aliases.<name>:          删除别名
 help-runtime-discover =   .ma [port]          发现本地运行时并创建 @ma 别名
 help-runtime-claim =   .ma [port]             用您的 DID 声明运行时所有权
-help-identity =   /my/identity                 显示身份配置
-help-identity-did =   /my/identity/did             显示自己的 DID（只读）
-help-identity-publish =   /my/identity!publish @pub    通过发布服务发布自己的 DID
-help-identity-export =   /my/identity!export          下载自己的身份包
+help-identity =   .my.identity                 显示身份配置
+help-identity-did =   .my.identity.did             显示自己的 DID（只读）
+help-identity-publish =   .my.identity!publish @pub    通过发布服务发布自己的 DID
+help-identity-export =   .my.identity!export          下载自己的身份包
 help-config-path =   .config                      显示所有 .config.* 条目
 
 # ── 帮助文本 — 收件箱 ─────────────────────────────────────────────────────
-help-inbox =   /my/inbox                    列出收件箱（子树视图）
-help-inbox-n =   /my/inbox/N                  显示条目 N 的字段
-help-inbox-from =   /my/inbox/N/from             条目 N 的发送者 DID
-help-inbox-reply =   /my/inbox/N!reply [body]     发送回复（无正文则打开编辑器）
-help-inbox-open =   /my/inbox/N!open             在编辑器中只读打开条目内容
-help-inbox-del =   /my/inbox/N:                 删除条目 N
-help-inbox-delall =   /my/inbox:                   删除所有收件箱条目
-help-inbox-flush =   /my/inbox!flush              将所有条目打印到终端
-help-inbox-filter =   /my/inbox!filter @who        仅显示来自 @who 的条目
-help-inbox-traverse =   /my/inbox/N/sender/<field>   惰性遍历发送者 DID 文档
+help-inbox =   .my.inbox                    列出收件箱（子树视图）
+help-inbox-n =   .my.inbox.N                  显示条目 N 的字段
+help-inbox-from =   .my.inbox.N.from             条目 N 的发送者 DID
+help-inbox-reply =   .my.inbox.N!reply [body]     发送回复（无正文则打开编辑器）
+help-inbox-open =   .my.inbox.N!open             在编辑器中只读打开条目内容
+help-inbox-del =   .my.inbox.N:                 删除条目 N
+help-inbox-delall =   .my.inbox:                   删除所有收件箱条目
+help-inbox-flush =   .my.inbox!flush              将所有条目打印到终端
+help-inbox-filter =   .my.inbox!filter @who        仅显示来自 @who 的条目
+help-inbox-traverse =   .my.inbox.N.sender.<field>   惰性遍历发送者 DID 文档
 
 # ── 帮助文本 — 文档 ───────────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           用已保存内容打开编辑器
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     获取 CID，仅供审查打开
-help-doc-eval =   /my/doc/<name>!eval           逐行执行已保存内容
-help-doc-publish =   /my/doc/<name>!publish @pub   作为原始数据存储（任意类型）
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  将 YAML 存储为结构化 DAG-CBOR IPLD 节点
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    导入 CID 内容（不执行）
-help-doc-cid =   /my/doc/<name>!cid            显示已存储的 CID
-help-doc-del =   /my/doc/<name>:              删除文档
+help-doc-edit =   .my.doc.<name>!edit           用已保存内容打开编辑器
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     获取 CID，仅供审查打开
+help-doc-eval =   .my.doc.<name>!eval           逐行执行已保存内容
+help-doc-publish =   .my.doc.<name>!publish @pub   作为原始数据存储（任意类型）
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  将 YAML 存储为结构化 DAG-CBOR IPLD 节点
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    导入 CID 内容（不执行）
+help-doc-cid =   .my.doc.<name>!cid            显示已存储的 CID
+help-doc-del =   .my.doc.<name>:              删除文档
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = 可用语言（使用 /my/i18n: <code> 设置）：
+lang-list-header = 可用语言（使用 .my.i18n: <code> 设置）：
 err-lang-not-found = 未找到语言: { $lang }
 
 msg-send-failed = 发送失败：{ $e }
@@ -332,9 +332,9 @@ help-topic-publish =   .help/publish                将你的身份发布到网�
 help-header-publish = ── 发布身份 ──────────────────────────────────────────────────────────────────
 help-publish-intro = 发布使你的身份在网络上可被发现。其他人可以查找你的 DID 来联系你。
 help-publish-ma = 发布需要安装 ma（本地运行时）。它代表你将 ego 连接到 IPFS/IPNS。
-help-publish-steps = 步骤：运行 '.ma [port]' 检测本地 ma，然后 '/my/identity!publish @ma'。
+help-publish-steps = 步骤：运行 '.ma [port]' 检测本地 ma，然后 '.my.identity!publish @ma'。
 help-publish-without = 未发布时，其他人无法联系你 — 即使知道你的 DID，也无法解析你的 endpoint。
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

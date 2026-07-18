@@ -44,7 +44,7 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt við staðbundið ma ({ $url })
-msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.ma [port]' og síðan '/my/identity!publish @ma'. Skriva '.help/publish' fyri detaljar.
+msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.ma [port]' og síðan '.my.identity!publish @ma'. Skriva '.help/publish' fyri detaljar.
 msg-blocked = ⊗ stovnað [{ $cap }]: { $from }
 msg-focus-cleared = fókus av
 msg-focusing = fókuserar { $did } sum { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = uppgáva misluktist: ventaði `did` byrja við did:ma:, f
 discover-no-endpoint = uppgáva-ávirkan: `endpoint_id` manglar í status.json; vistað einans DID
 discover-success = ma funnist við { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma stovnað — køyr '/my/identity!publish @ma' fyri at birta tín samleika.
+discover-alias-hint =   alias @ma stovnað — køyr '.my.identity!publish @ma' fyri at birta tín samleika.
 claim-success = Keyrsluumhvørvi gjørt krav á fyri { $did }
 claim-conflict = Keyrsluumhvørvi longu gjørt krav á av annarri samleika
 claim-http-failed = krøv misluktist: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ikki ritaður inn; rita inn fyrst fyri at gera krav á keyrsl
 runtime-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 
 # ── Sagnorð — atgonguslitsing ─────────────────────────────────────────────
-acl-reset = /my/acl sett aftur (fult opinn)
+acl-reset = .my.acl sett aftur (fult opinn)
 acl-persist-error = vistu-villa: { $e }
-acl-no-verb = einki sagnorð `{ $verb }` fyri /my/acl
+acl-no-verb = einki sagnorð `{ $verb }` fyri .my.acl
 
 # ── Sagnorð — samleiki ────────────────────────────────────────────────────
-publish-usage = nýtsla: /my/identity!publish <did-ella-samnefni>
+publish-usage = nýtsla: .my.identity!publish <did-ella-samnefni>
 identity-exported = Pakkin niðurhlaðin sum { $filename }
 identity-export-failed = Útflutningur misheppnaðist: { $e }
 
 # ── Sagnorð — skjøl ──────────────────────────────────────────────────────
-doc-content-empty = { $path }/content er tómur
-doc-save-first = { $path }/content er tómur — vista fyrst
+doc-content-empty = { $path }.content er tómur
+doc-save-first = { $path }.content er tómur — vista fyrst
 doc-missing-name = skjalsnavn manglar
-doc-publish-usage = nýtsla: /my/doc/<navn>:publish <útgevari>
-doc-publish-ipld-usage = nýtsla: /my/doc/<navn>:publish-ipld <útgevari>
+doc-publish-usage = nýtsla: .my.doc.<navn>:publish <útgevari>
+doc-publish-ipld-usage = nýtsla: .my.doc.<navn>:publish-ipld <útgevari>
 doc-publish-failed = birting { $path }: { $e }
 doc-publish-ipld-failed = ipld-birting { $path }: { $e }
 doc-store-sent = vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
 doc-ipld-store-sent = IPLD-vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
-doc-fetch-done = sótti { $cid } → { $path }/content (ikki keyrt)
+doc-fetch-done = sótti { $cid } → { $path }.content (ikki keyrt)
 doc-fetch-failed = henting { $cid }: { $e }
-doc-fetch-usage = nýtsla: /my/doc/<navn>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid er ikki sett
+doc-fetch-usage = nýtsla: .my.doc.<navn>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid er ikki sett
 doc-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 path-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 set lav
 help-config-delete =   .path:                       strika lav ella undirtré
 help-config-verb =   .path!verb [args]            keyra lokal sagnorð
 
-help-my =   /my                          vís allar persónligar stillingar
-help-aliases =   /my/aliases                  lista samnefni
-help-aliases-set =   /my/aliases/<name>: <did>    legg afturat/dagfør samnefni (einans DID, einki #brot)
-help-aliases-del =   /my/aliases/<name>:          strika samnefni
+help-my =   .my                          vís allar persónligar stillingar
+help-aliases =   .my.aliases                  lista samnefni
+help-aliases-set =   .my.aliases.<name>: <did>    legg afturat/dagfør samnefni (einans DID, einki #brot)
+help-aliases-del =   .my.aliases.<name>:          strika samnefni
 help-runtime-discover =   .ma [port]          finn lokalt keyrsluumhvørvi og stovn @ma-samnefni
 help-runtime-claim =   .ma [port]             ger krav á keyrsluumhvørvið við títt DID
-help-identity =   /my/identity                 vís stillingar fyri samleika
-help-identity-did =   /my/identity/did             vís egna DID (skrivavørn)
-help-identity-publish =   /my/identity!publish @pub    birta egna DID í gongum útgevaraaðgerð
-help-identity-export =   /my/identity!export          hlaða niður egna kennslueinkapakka
+help-identity =   .my.identity                 vís stillingar fyri samleika
+help-identity-did =   .my.identity.did             vís egna DID (skrivavørn)
+help-identity-publish =   .my.identity!publish @pub    birta egna DID í gongum útgevaraaðgerð
+help-identity-export =   .my.identity!export          hlaða niður egna kennslueinkapakka
 help-config-path =   .config                      vís allar .config.*-færslur
 
-help-inbox =   /my/inbox                    lista innboks (undirtréssýni)
-help-inbox-n =   /my/inbox/N                  vís øki á færslu N
-help-inbox-from =   /my/inbox/N/from             avsendara-DID fyri færslu N
-help-inbox-reply =   /my/inbox/N!reply [body]     send svar (opnar ritforrit uttan líkami)
-help-inbox-open =   /my/inbox/N!open             opna innihald í skrivavørnum ritforrit
-help-inbox-del =   /my/inbox/N:                 strika færslu N
-help-inbox-delall =   /my/inbox:                   strika allar innboks-færslur
-help-inbox-flush =   /my/inbox!flush              prenta allar færslur á terminalen
-help-inbox-filter =   /my/inbox!filter @who        vís bert innferal frá @who
-help-inbox-traverse =   /my/inbox/N/sender/<øki>    fletta DID-skjal avsendara seinkað
+help-inbox =   .my.inbox                    lista innboks (undirtréssýni)
+help-inbox-n =   .my.inbox.N                  vís øki á færslu N
+help-inbox-from =   .my.inbox.N.from             avsendara-DID fyri færslu N
+help-inbox-reply =   .my.inbox.N!reply [body]     send svar (opnar ritforrit uttan líkami)
+help-inbox-open =   .my.inbox.N!open             opna innihald í skrivavørnum ritforrit
+help-inbox-del =   .my.inbox.N:                 strika færslu N
+help-inbox-delall =   .my.inbox:                   strika allar innboks-færslur
+help-inbox-flush =   .my.inbox!flush              prenta allar færslur á terminalen
+help-inbox-filter =   .my.inbox!filter @who        vís bert innferal frá @who
+help-inbox-traverse =   .my.inbox.N.sender.<øki>    fletta DID-skjal avsendara seinkað
 
-help-doc-edit =   /my/doc/<navn>:edit           opna ritforrit við vistað innihald
-help-doc-edit-cid =   /my/doc/<navn>:edit <cid>     sók CID, opna til yvirkun
-help-doc-eval =   /my/doc/<navn>:eval           keyra vistað innihald línu fyri línu
-help-doc-publish =   /my/doc/<navn>:publish @pub   goyma sum raw blob (allar slags)
-help-doc-publish-ipld =   /my/doc/<navn>:publish-ipld @pub  goyma YAML sum skipan DAG-CBOR IPLD-hnút
-help-doc-fetch =   /my/doc/<navn>:fetch <cid>    flyt inn CID-innihald (ongin keyring)
-help-doc-cid =   /my/doc/<navn>:cid            vís vistað CID
-help-doc-del =   /my/doc/<navn>:              strika skjal
+help-doc-edit =   .my.doc.<navn>:edit           opna ritforrit við vistað innihald
+help-doc-edit-cid =   .my.doc.<navn>:edit <cid>     sók CID, opna til yvirkun
+help-doc-eval =   .my.doc.<navn>:eval           keyra vistað innihald línu fyri línu
+help-doc-publish =   .my.doc.<navn>:publish @pub   goyma sum raw blob (allar slags)
+help-doc-publish-ipld =   .my.doc.<navn>:publish-ipld @pub  goyma YAML sum skipan DAG-CBOR IPLD-hnút
+help-doc-fetch =   .my.doc.<navn>:fetch <cid>    flyt inn CID-innihald (ongin keyring)
+help-doc-cid =   .my.doc.<navn>:cid            vís vistað CID
+help-doc-del =   .my.doc.<navn>:              strika skjal
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Tøkar mál (sett við /my/i18n: <code>):
+lang-list-header = Tøkar mál (sett við .my.i18n: <code>):
 err-lang-not-found = mál ikki funnið: { $lang }
 
 msg-send-failed = sending mishavdi: { $e }
@@ -326,9 +326,9 @@ help-topic-publish =   .help/publish                birta tín samleika í netin
 help-header-publish = ── birting av samleika ──────────────────────────────────────────────────────
 help-publish-intro = Birting ger tín samleika funnarligan í netinum. Aðrir kunnu leita eftir tínum DID fyri at ná til tín.
 help-publish-ma = Fyri at birta trengt tú ma (lokalt kørsluumhvørvi) installerað. Tað tengir ego við IPFS/IPNS fyri tín hønd.
-help-publish-steps = Steg: køyr '.ma [port]' fyri at finna lokalt ma, síðan '/my/identity!publish @ma'.
+help-publish-steps = Steg: køyr '.ma [port]' fyri at finna lokalt ma, síðan '.my.identity!publish @ma'.
 help-publish-without = Uttan birting kunnu aðrir ikki ná til tín — jafnvel um tey kennu tín DID, kunnu tey ikki greina endepunkt tín.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

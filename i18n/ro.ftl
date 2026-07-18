@@ -44,7 +44,7 @@ msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicat prin ma local ({ $url })
-msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '/my/identity!publish @ma'. Tastează '.help/publish' pentru detalii.
+msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '.my.identity!publish @ma'. Tastează '.help/publish' pentru detalii.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
 msg-focusing = focalizare pe { $did } ca { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = descoperire eșuată: așteptat `did` începând cu did:m
 discover-no-endpoint = avertisment descoperire: `endpoint_id` absent în status.json; salvat doar DID
 discover-success = ma descoperit la { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma creat — rulează '/my/identity!publish @ma' pentru a-ți publica identitatea.
+discover-alias-hint =   alias @ma creat — rulează '.my.identity!publish @ma' pentru a-ți publica identitatea.
 claim-success = Runtime revendicat pentru { $did }
 claim-conflict = Runtime deja revendicat de o altă identitate
 claim-http-failed = revendicare eșuată: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = neautentificat; autentificați-vă mai întâi pentru a reven
 runtime-no-verb = niciun verb `{ $verb }` pentru { $path }
 
 # ── Verbe — control acces ─────────────────────────────────────────────────
-acl-reset = /my/acl resetat (complet deschis)
+acl-reset = .my.acl resetat (complet deschis)
 acl-persist-error = eroare la salvare: { $e }
-acl-no-verb = niciun verb `{ $verb }` pentru /my/acl
+acl-no-verb = niciun verb `{ $verb }` pentru .my.acl
 
 # ── Verbe — identitate ────────────────────────────────────────────────────
-publish-usage = utilizare: /my/identity!publish <did-sau-alias>
+publish-usage = utilizare: .my.identity!publish <did-sau-alias>
 identity-exported = Pachetul a fost descărcat ca { $filename }
 identity-export-failed = Exportul a eșuat: { $e }
 
 # ── Verbe — documente ─────────────────────────────────────────────────────
-doc-content-empty = { $path }/content este gol
-doc-save-first = { $path }/content este gol — salvați mai întâi
+doc-content-empty = { $path }.content este gol
+doc-save-first = { $path }.content este gol — salvați mai întâi
 doc-missing-name = lipsește numele documentului
-doc-publish-usage = utilizare: /my/doc/<nume>:publish <editor>
-doc-publish-ipld-usage = utilizare: /my/doc/<nume>:publish-ipld <editor>
+doc-publish-usage = utilizare: .my.doc.<nume>:publish <editor>
+doc-publish-ipld-usage = utilizare: .my.doc.<nume>:publish-ipld <editor>
 doc-publish-failed = publicare { $path }: { $e }
 doc-publish-ipld-failed = publicare IPLD { $path }: { $e }
 doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
-doc-fetch-done = { $cid } obținut → { $path }/content (neexecutat)
+doc-fetch-done = { $cid } obținut → { $path }.content (neexecutat)
 doc-fetch-failed = obținere { $cid }: { $e }
-doc-fetch-usage = utilizare: /my/doc/<nume>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid nu este setat
+doc-fetch-usage = utilizare: .my.doc.<nume>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid nu este setat
 doc-no-verb = niciun verb `{ $verb }` pentru { $path }
 path-no-verb = niciun verb `{ $verb }` pentru { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 setează frunza
 help-config-delete =   .path:                       șterge frunza sau subarborele
 help-config-verb =   .path!verb [args]            execută verb local
 
-help-my =   /my                          afișează toată configurația personală
-help-aliases =   /my/aliases                  listează aliasuri
-help-aliases-set =   /my/aliases/<name>: <did>    adaugă/actualizează alias (DID pur, fără #fragment)
-help-aliases-del =   /my/aliases/<name>:          elimină alias
+help-my =   .my                          afișează toată configurația personală
+help-aliases =   .my.aliases                  listează aliasuri
+help-aliases-set =   .my.aliases.<name>: <did>    adaugă/actualizează alias (DID pur, fără #fragment)
+help-aliases-del =   .my.aliases.<name>:          elimină alias
 help-runtime-discover =   .ma [port]          descoperă runtime local și creează alias @ma
 help-runtime-claim =   .ma [port]             revendică runtime cu DID-ul tău
-help-identity =   /my/identity                 afișează configurația identității
-help-identity-did =   /my/identity/did             afișează DID propriu (doar citire)
-help-identity-publish =   /my/identity!publish @pub    publică DID propriu prin serviciul editor
-help-identity-export =   /my/identity!export          descarcă propriul pachet de identitate
+help-identity =   .my.identity                 afișează configurația identității
+help-identity-did =   .my.identity.did             afișează DID propriu (doar citire)
+help-identity-publish =   .my.identity!publish @pub    publică DID propriu prin serviciul editor
+help-identity-export =   .my.identity!export          descarcă propriul pachet de identitate
 help-config-path =   .config                      afișează toate intrările .config.*
 
-help-inbox =   /my/inbox                    listează căsuța poștală (vedere subarbore)
-help-inbox-n =   /my/inbox/N                  afișează câmpurile intrării N
-help-inbox-from =   /my/inbox/N/from             DID expeditor pentru intrarea N
-help-inbox-reply =   /my/inbox/N!reply [body]     trimite răspuns (deschide editor fără corp)
-help-inbox-open =   /my/inbox/N!open             deschide conținutul în editor doar citire
-help-inbox-del =   /my/inbox/N:                 șterge intrarea N
-help-inbox-delall =   /my/inbox:                   șterge toate intrările din căsuța poștală
-help-inbox-flush =   /my/inbox!flush              afișează toate intrările în terminal
-help-inbox-filter =   /my/inbox!filter @who        arată doar înregistrările de la @who
-help-inbox-traverse =   /my/inbox/N/sender/<câmp>   parcurge documentul DID al expeditorului leneș
+help-inbox =   .my.inbox                    listează căsuța poștală (vedere subarbore)
+help-inbox-n =   .my.inbox.N                  afișează câmpurile intrării N
+help-inbox-from =   .my.inbox.N.from             DID expeditor pentru intrarea N
+help-inbox-reply =   .my.inbox.N!reply [body]     trimite răspuns (deschide editor fără corp)
+help-inbox-open =   .my.inbox.N!open             deschide conținutul în editor doar citire
+help-inbox-del =   .my.inbox.N:                 șterge intrarea N
+help-inbox-delall =   .my.inbox:                   șterge toate intrările din căsuța poștală
+help-inbox-flush =   .my.inbox!flush              afișează toate intrările în terminal
+help-inbox-filter =   .my.inbox!filter @who        arată doar înregistrările de la @who
+help-inbox-traverse =   .my.inbox.N.sender.<câmp>   parcurge documentul DID al expeditorului leneș
 
-help-doc-edit =   /my/doc/<nume>:edit           deschide editor cu conținut salvat
-help-doc-edit-cid =   /my/doc/<nume>:edit <cid>     obține CID, deschide pentru revizuire
-help-doc-eval =   /my/doc/<nume>:eval           execută conținut salvat linie cu linie
-help-doc-publish =   /my/doc/<nume>:publish @pub   salvează ca blob brut (toate tipurile)
-help-doc-publish-ipld =   /my/doc/<nume>:publish-ipld @pub  salvează YAML ca nod DAG-CBOR IPLD structurat
-help-doc-fetch =   /my/doc/<nume>:fetch <cid>    importă conținut CID (fără execuție)
-help-doc-cid =   /my/doc/<nume>:cid            afișează CID salvat
-help-doc-del =   /my/doc/<nume>:              șterge document
+help-doc-edit =   .my.doc.<nume>:edit           deschide editor cu conținut salvat
+help-doc-edit-cid =   .my.doc.<nume>:edit <cid>     obține CID, deschide pentru revizuire
+help-doc-eval =   .my.doc.<nume>:eval           execută conținut salvat linie cu linie
+help-doc-publish =   .my.doc.<nume>:publish @pub   salvează ca blob brut (toate tipurile)
+help-doc-publish-ipld =   .my.doc.<nume>:publish-ipld @pub  salvează YAML ca nod DAG-CBOR IPLD structurat
+help-doc-fetch =   .my.doc.<nume>:fetch <cid>    importă conținut CID (fără execuție)
+help-doc-cid =   .my.doc.<nume>:cid            afișează CID salvat
+help-doc-del =   .my.doc.<nume>:              șterge document
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Limbi disponibile (setați cu /my/i18n: <code>):
+lang-list-header = Limbi disponibile (setați cu .my.i18n: <code>):
 err-lang-not-found = limba nu a fost găsită: { $lang }
 
 msg-send-failed = trimiterea a eşuat: { $e }
@@ -326,9 +326,9 @@ help-topic-publish =   .help/publish                publicarea identității în
 help-header-publish = ── publicarea identității ───────────────────────────────────────────────────
 help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alții pot căuta DID-ul tău pentru a te contacta.
 help-publish-ma = Pentru a publica, ai nevoie de ma (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
-help-publish-steps = Pași: rulează '.ma [port]' pentru a detecta ma-ul local, apoi '/my/identity!publish @ma'.
+help-publish-steps = Pași: rulează '.ma [port]' pentru a detecta ma-ul local, apoi '.my.identity!publish @ma'.
 help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

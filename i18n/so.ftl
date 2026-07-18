@@ -44,7 +44,7 @@ msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID lagu daabacay ma maxalliga ({ $url })
-msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '/my/identity!publish @ma'. Qor '.help/publish' faahfaahin.
+msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '.my.identity!publish @ma'. Qor '.help/publish' faahfaahin.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
 msg-focusing = xushmadda { $did } ahaan { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = ogaanshaha ku guuldareystay: `did` waa inuu ku billowdo d
 discover-no-endpoint = digniin ogaanshaha: `endpoint_id` ka maqan status.json; DID oo keliya la keydiay
 discover-success = ma laga ogaaday { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   magac-beelka @ma ayaa la abuuray — orod '/my/identity!publish @ma' si aad u baahiso aqoonsikaaga.
+discover-alias-hint =   magac-beelka @ma ayaa la abuuray — orod '.my.identity!publish @ma' si aad u baahiso aqoonsikaaga.
 claim-success = Runtime waxaa loo hantiyay { $did }
 claim-conflict = Runtime aqoonsi kale ayaa hore u hantiyay
 claim-http-failed = codsigii ku guuldareystay: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = lama gelin; gal horta si aad u hantido runtime
 runtime-no-verb = ficil `{ $verb }` { $path } ma jiro
 
 # ── Ficilada — ACL ────────────────────────────────────────────────────────
-acl-reset = /my/acl dib loo dejiyay (si buuxda u furan)
+acl-reset = .my.acl dib loo dejiyay (si buuxda u furan)
 acl-persist-error = khaladka keydinта: { $e }
-acl-no-verb = ficil `{ $verb }` /my/acl ma jiro
+acl-no-verb = ficil `{ $verb }` .my.acl ma jiro
 
 # ── Ficilada — aqoonsiga ──────────────────────────────────────────────────
-publish-usage = isticmaalka: /my/identity!publish <did-ama-magaca-kale>
+publish-usage = isticmaalka: .my.identity!publish <did-ama-magaca-kale>
 identity-exported = Bundle-ka waxaa loo dejisay { $filename }
 identity-export-failed = Dhoofinta waxay la kulmeen: { $e }
 
 # ── Ficilada — dokumantigyada ─────────────────────────────────────────────
-doc-content-empty = { $path }/content wuu maran yahay
-doc-save-first = { $path }/content wuu maran yahay — horta keydi
+doc-content-empty = { $path }.content wuu maran yahay
+doc-save-first = { $path }.content wuu maran yahay — horta keydi
 doc-missing-name = magaca dokumantigga waa la waayay
-doc-publish-usage = isticmaalka: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = isticmaalka: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = isticmaalka: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = isticmaalka: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = daabacaadda { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
 doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
-doc-fetch-done = { $cid } la soo qaatay → { $path }/content (lama socodsiin)
+doc-fetch-done = { $cid } la soo qaatay → { $path }.content (lama socodsiin)
 doc-fetch-failed = qaadashada { $cid }: { $e }
-doc-fetch-usage = isticmaalka: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid lama dejin
+doc-fetch-usage = isticmaalka: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid lama dejin
 doc-no-verb = ficil `{ $verb }` { $path } ma jiro
 path-no-verb = ficil `{ $verb }` { $path } ma jiro
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       tirtir caleenta ama geedka y
 help-config-verb =   .path!verb [args]            wac ficilka deegaanka
 
 # ── Gargaarku — wadooyinka caadiga ah ────────────────────────────────────
-help-my =   /my                          tus dhammaan dejintada shakhsiga
-help-aliases =   /my/aliases                  liisko magacyada kale
-help-aliases-set =   /my/aliases/<name>: <did>    ku dar/cusbooneysii magaca kale (bare DID, #fragment la'aan)
-help-aliases-del =   /my/aliases/<name>:          ka saar magaca kale
+help-my =   .my                          tus dhammaan dejintada shakhsiga
+help-aliases =   .my.aliases                  liisko magacyada kale
+help-aliases-set =   .my.aliases.<name>: <did>    ku dar/cusbooneysii magaca kale (bare DID, #fragment la'aan)
+help-aliases-del =   .my.aliases.<name>:          ka saar magaca kale
 help-runtime-discover =   .ma [port]          ogaw runtime deegaanka oo abuur magaca kale @ma
 help-runtime-claim =   .ma [port]             hantida runtime DID-kaagana
-help-identity =   /my/identity                 tus dejinta aqoonsiga
-help-identity-did =   /my/identity/did             tus DID-kaaga (akhrin oo keliya)
-help-identity-publish =   /my/identity!publish @pub    DID u daabac adeegga daabacaadda
-help-identity-export =   /my/identity!export          soo dajiso bundle-ka aqoonsigaaga
+help-identity =   .my.identity                 tus dejinta aqoonsiga
+help-identity-did =   .my.identity.did             tus DID-kaaga (akhrin oo keliya)
+help-identity-publish =   .my.identity!publish @pub    DID u daabac adeegga daabacaadda
+help-identity-export =   .my.identity!export          soo dajiso bundle-ka aqoonsigaaga
 help-config-path =   .config                      tus dhammaan gelitaanada .config.*
 
 # ── Gargaarku — sanduuqa gelitaanka ──────────────────────────────────────
-help-inbox =   /my/inbox                    liisko sanduuqa gelitaanka (aragtida geedka yar)
-help-inbox-n =   /my/inbox/N                  tus goobaha gelitaanka N
-help-inbox-from =   /my/inbox/N/from             DID wariyaha gelitaanka N
-help-inbox-reply =   /my/inbox/N!reply [body]     dir jawaab (fur tifatiraha haddaan jiraan jirka)
-help-inbox-open =   /my/inbox/N!open             fur waxa ku jira si loo akhriyo oo keliya tifatiraha
-help-inbox-del =   /my/inbox/N:                 tirtir gelitaanka N
-help-inbox-delall =   /my/inbox:                   tirtir dhammaan gelitaanada sanduuqa
-help-inbox-flush =   /my/inbox!flush              daabac dhammaan gelitaanada terminal
-help-inbox-filter =   /my/inbox!filter @who        muuji kaliya qeybaha ka yimid @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   orod dokumantigga DID wariyaha si tartiib ah
+help-inbox =   .my.inbox                    liisko sanduuqa gelitaanka (aragtida geedka yar)
+help-inbox-n =   .my.inbox.N                  tus goobaha gelitaanka N
+help-inbox-from =   .my.inbox.N.from             DID wariyaha gelitaanka N
+help-inbox-reply =   .my.inbox.N!reply [body]     dir jawaab (fur tifatiraha haddaan jiraan jirka)
+help-inbox-open =   .my.inbox.N!open             fur waxa ku jira si loo akhriyo oo keliya tifatiraha
+help-inbox-del =   .my.inbox.N:                 tirtir gelitaanka N
+help-inbox-delall =   .my.inbox:                   tirtir dhammaan gelitaanada sanduuqa
+help-inbox-flush =   .my.inbox!flush              daabac dhammaan gelitaanada terminal
+help-inbox-filter =   .my.inbox!filter @who        muuji kaliya qeybaha ka yimid @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   orod dokumantigga DID wariyaha si tartiib ah
 
 # ── Gargaarku — dokumantigyada ────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           fur tifatiraha leh waxa la keydiay
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     qaado CID, fur dib-u-eegista oo keliya
-help-doc-eval =   /my/doc/<name>!eval           soccodsii waxa la keydiay sadar-sadar
-help-doc-publish =   /my/doc/<name>!publish @pub   keydi ahaan blob cuur ah (nooc kasta)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  keydi YAML ahaan node IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    soo geliso waxa CID ka jira (lama socodsiin)
-help-doc-cid =   /my/doc/<name>!cid            tus CID la keydiay
-help-doc-del =   /my/doc/<name>:              tirtir dokumantigga
+help-doc-edit =   .my.doc.<name>!edit           fur tifatiraha leh waxa la keydiay
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     qaado CID, fur dib-u-eegista oo keliya
+help-doc-eval =   .my.doc.<name>!eval           soccodsii waxa la keydiay sadar-sadar
+help-doc-publish =   .my.doc.<name>!publish @pub   keydi ahaan blob cuur ah (nooc kasta)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  keydi YAML ahaan node IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    soo geliso waxa CID ka jira (lama socodsiin)
+help-doc-cid =   .my.doc.<name>!cid            tus CID la keydiay
+help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Luqadaha la heli karo (ku dejiso /my/i18n: <code>):
+lang-list-header = Luqadaha la heli karo (ku dejiso .my.i18n: <code>):
 err-lang-not-found = luqadda lama helin: { $lang }
 
 msg-send-failed = dirista way fashilaatay: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                ku baahiso aqoonsikaaga shab
 help-header-publish = ── baahinta aqoonsiga ───────────────────────────────────────────────────────
 help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo shabakadda. Dadka kaleba waxay raadsan karaan DID-kaaga si ay kugu soo dhawaadaan.
 help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
-help-publish-steps = Tallaabooyinka: orod '.ma [port]' si aad u ogaato ma gudaha ah, ka dibna '/my/identity!publish @ma'.
+help-publish-steps = Tallaabooyinka: orod '.ma [port]' si aad u ogaato ma gudaha ah, ka dibna '.my.identity!publish @ma'.
 help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

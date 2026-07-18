@@ -44,7 +44,7 @@ msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publikigita per loka ma ({ $url })
-msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '/my/identity!publish @ma'. Skribu '.help/publish' por detaloj.
+msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '.my.identity!publish @ma'. Skribu '.help/publish' por detaloj.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
 msg-focusing = fokuso { $did } kiel { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = malkovro malsukcesis: atendis `did` komenci per did:ma:, 
 discover-no-endpoint = malkovro-averto: `endpoint_id` mankas en status.json; nur DID konservita
 discover-success = ma malkovrita ĉe { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   kromnomo @ma kreita — rulu '/my/identity!publish @ma' por publikigi vian identecon.
+discover-alias-hint =   kromnomo @ma kreita — rulu '.my.identity!publish @ma' por publikigi vian identecon.
 claim-success = Rultempo reklamita por { $did }
 claim-conflict = Rultempo jam reklamita de alia identeco
 claim-http-failed = reklamo malsukcesis: HTTP { $status }
@@ -117,35 +117,35 @@ claim-no-session = ne ensalutita; ensalutu unue por reklami rultemon
 runtime-no-verb = neniu verbo `{ $verb }` por { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl reagordita (plene malfermita)
+acl-reset = .my.acl reagordita (plene malfermita)
 acl-persist-error = konservad-eraro: { $e }
-acl-no-verb = neniu verbo `{ $verb }` por /my/acl
+acl-no-verb = neniu verbo `{ $verb }` por .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
-publish-usage = uzado: /my/identity!publish <did-aŭ-kromnomo>
+publish-usage = uzado: .my.identity!publish <did-aŭ-kromnomo>
 identity-exported = Pakaĵo elŝutita kiel { $filename }
 identity-export-failed = Eksporto malsukcesis: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content estas malplena
-doc-save-first = { $path }/content estas malplena — konservu unue
+doc-content-empty = { $path }.content estas malplena
+doc-save-first = { $path }.content estas malplena — konservu unue
 doc-missing-name = mankas dokumentonomo
-doc-publish-usage = uzado: /my/doc/<nomo>:publish <eldonisto>
-doc-publish-ipld-usage = uzado: /my/doc/<nomo>:publish-ipld <eldonisto>
+doc-publish-usage = uzado: .my.doc.<nomo>:publish <eldonisto>
+doc-publish-ipld-usage = uzado: .my.doc.<nomo>:publish-ipld <eldonisto>
 doc-publish-failed = publikigi { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
-doc-fetch-done = elŝutita { $cid } → { $path }/content (ne efektivigita)
+doc-fetch-done = elŝutita { $cid } → { $path }.content (ne efektivigita)
 doc-fetch-failed = elŝuti { $cid }: { $e }
-doc-fetch-usage = uzado: /my/doc/<nomo>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid ne agordita
+doc-fetch-usage = uzado: .my.doc.<nomo>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid ne agordita
 doc-no-verb = neniu verbo `{ $verb }` por { $path }
 path-no-verb = neniu verbo `{ $verb }` por { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Disponeblaj lingvoj (agordu per /my/i18n: <code>):
+lang-list-header = Disponeblaj lingvoj (agordu per .my.i18n: <code>):
 
 err-lang-not-found = lingvo ne trovita: { $lang }
 
@@ -155,7 +155,7 @@ help-header-focus = ── fokusa reĝimo ────────────�
 help-header-config = ── loka agordo-gramatiko ──────────────────────────────────────────────────
 help-header-common = ── komunaj vojoj ──────────────────────────────────────────────────────────
 help-header-inbox = ── poŝtkesto ──────────────────────────────────────────────────────────────
-help-header-documents = ── dokumentoj (/my/doc.*) ─────────────────────────────────────────────────
+help-header-documents = ── dokumentoj (.my.doc.*) ─────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        ĉi tiu teksto
 help-cmd-clear =   .clear                       malplenigu terminalon
@@ -175,35 +175,35 @@ help-config-filter =   .path value                  serĉodemando (filtri per va
 help-config-set =   .path: value                 agordi folion
 help-config-delete =   .path:                       forigi folion aŭ subarbon
 help-config-verb =   .path!verb [args]            alvoki lokan verbon
-help-my =   /my                          montri ĉiujn personajn agordojn
-help-aliases =   /my/aliases                  listigi aliasnomojn
-help-aliases-set =   /my/aliases/<name>: <did>    aldoni/ĝisdatigi aliasnomon (nuda DID, sen #fragmento)
-help-aliases-del =   /my/aliases/<name>:          forigi aliasnomon
+help-my =   .my                          montri ĉiujn personajn agordojn
+help-aliases =   .my.aliases                  listigi aliasnomojn
+help-aliases-set =   .my.aliases.<name>: <did>    aldoni/ĝisdatigi aliasnomon (nuda DID, sen #fragmento)
+help-aliases-del =   .my.aliases.<name>:          forigi aliasnomon
 help-runtime-discover =   .ma [port]          malkovri lokan rultemon kaj krei @ma-aliasnomon
 help-runtime-claim =   .ma [port]             postuli posedadon de rultemo per via DID
-help-identity =   /my/identity                 montri identecajn agordojn
-help-identity-did =   /my/identity/did             montri propran DID (nur-legebla)
-help-identity-publish =   /my/identity!publish @pub    publikigi propran DID per eldonisto
-help-identity-export =   /my/identity!export          elŝutu propran identec-pakaĵon
+help-identity =   .my.identity                 montri identecajn agordojn
+help-identity-did =   .my.identity.did             montri propran DID (nur-legebla)
+help-identity-publish =   .my.identity!publish @pub    publikigi propran DID per eldonisto
+help-identity-export =   .my.identity!export          elŝutu propran identec-pakaĵon
 help-config-path =   .config                      montri ĉiujn .config.*-enrigetojn
-help-inbox =   /my/inbox                    listigi poŝtkeston (subarbovido)
-help-inbox-n =   /my/inbox/N                  montri kampojn de eniro N
-help-inbox-from =   /my/inbox/N/from             sendanta DID de eniro N
-help-inbox-reply =   /my/inbox/N!reply [body]     sendi respondon (malfermas redaktilon se ne estas korpo)
-help-inbox-open =   /my/inbox/N!open             malfermi enhavon nur-legenda en redaktilo
-help-inbox-del =   /my/inbox/N:                 forigi eniro N
-help-inbox-delall =   /my/inbox:                   forigi ĉiujn poŝtkestajn enrigetojn
-help-inbox-flush =   /my/inbox!flush              presi ĉiujn enrigetojn al terminalo
-help-inbox-filter =   /my/inbox!filter @who        montri nur enskribojn de @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   trairi sendantan DID-dokumenton malrapide
-help-doc-edit =   /my/doc/<name>!edit           malfermi redaktilon kun konservita enhavo
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     alŝuti CID, malfermi por recenzo nur
-help-doc-eval =   /my/doc/<name>!eval           ekzekuti konservitan enhavon linio post linio
-help-doc-publish =   /my/doc/<name>!publish @pub   konservi kiel krudan blobon (iu ajn tipo)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  konservi YAML kiel strukturan DAG-CBOR IPLD-nodon
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    importi CID-enhavon (neniu ekzekuto)
-help-doc-cid =   /my/doc/<name>!cid            montri konservitan CID
-help-doc-del =   /my/doc/<name>:              forigi dokumenton
+help-inbox =   .my.inbox                    listigi poŝtkeston (subarbovido)
+help-inbox-n =   .my.inbox.N                  montri kampojn de eniro N
+help-inbox-from =   .my.inbox.N.from             sendanta DID de eniro N
+help-inbox-reply =   .my.inbox.N!reply [body]     sendi respondon (malfermas redaktilon se ne estas korpo)
+help-inbox-open =   .my.inbox.N!open             malfermi enhavon nur-legenda en redaktilo
+help-inbox-del =   .my.inbox.N:                 forigi eniro N
+help-inbox-delall =   .my.inbox:                   forigi ĉiujn poŝtkestajn enrigetojn
+help-inbox-flush =   .my.inbox!flush              presi ĉiujn enrigetojn al terminalo
+help-inbox-filter =   .my.inbox!filter @who        montri nur enskribojn de @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   trairi sendantan DID-dokumenton malrapide
+help-doc-edit =   .my.doc.<name>!edit           malfermi redaktilon kun konservita enhavo
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     alŝuti CID, malfermi por recenzo nur
+help-doc-eval =   .my.doc.<name>!eval           ekzekuti konservitan enhavon linio post linio
+help-doc-publish =   .my.doc.<name>!publish @pub   konservi kiel krudan blobon (iu ajn tipo)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  konservi YAML kiel strukturan DAG-CBOR IPLD-nodon
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    importi CID-enhavon (neniu ekzekuto)
+help-doc-cid =   .my.doc.<name>!cid            montri konservitan CID
+help-doc-del =   .my.doc.<name>:              forigi dokumenton
 
 msg-send-failed = sendo malsukcesis: { $e }
 msg-not-logged-in = ne ensalutinta
@@ -318,9 +318,9 @@ help-topic-publish =   .help/publish                publikigi vian identecon al 
 help-header-publish = ── publikigi identecon ──────────────────────────────────────────────────────
 help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj povas serĉi vian DID por kontakti vin.
 help-publish-ma = Por publikigi, vi bezonas instalitan ma (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.
-help-publish-steps = Paŝoj: rulu '.ma [port]' por detekti lokan ma, poste '/my/identity!publish @ma'.
+help-publish-steps = Paŝoj: rulu '.ma [port]' por detekti lokan ma, poste '.my.identity!publish @ma'.
 help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

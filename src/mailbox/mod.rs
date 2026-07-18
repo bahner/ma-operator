@@ -1,7 +1,7 @@
 //! EgoConfig-backed inbox storage.
 //!
 //! Incoming `application/vnd.ma.message` messages are stored as flat leaves
-//! in EgoConfig under `/my/inbox/<N>/*`, where N is a stable non-negative
+//! in EgoConfig under `.my.inbox.<N>.*`, where N is a stable non-negative
 //! integer.  Indices may have gaps after deletion — always list first.
 
 use crate::config::EgoConfig;
@@ -9,31 +9,31 @@ use crate::messages::IncomingMessage;
 use ma_core::MESSAGE_TYPE_MESSAGE;
 use std::collections::BTreeSet;
 
-const INBOX_PREFIX: &str = "/my/inbox/";
+const INBOX_PREFIX: &str = ".my.inbox.";
 
 // ── Index helpers ─────────────────────────────────────────────────────────
 
-/// Scan existing `/my/inbox/*` keys and return the next available index.
+/// Scan existing `.my.inbox.*` keys and return the next available index.
 pub fn next_inbox_index(cfg: &EgoConfig) -> usize {
     let entries = cfg.list(INBOX_PREFIX);
     let max = entries
         .iter()
         .filter_map(|(k, _)| {
             let tail = &k[INBOX_PREFIX.len()..];
-            tail.split('/').next()?.parse::<usize>().ok()
+            tail.split('.').next()?.parse::<usize>().ok()
         })
         .max();
     max.map_or(0, |m| m + 1)
 }
 
-/// Count distinct `/my/inbox/<N>` subtrees.
+/// Count distinct `.my.inbox.<N>` subtrees.
 pub fn inbox_count(cfg: &EgoConfig) -> usize {
     let entries = cfg.list(INBOX_PREFIX);
     let indices: BTreeSet<&str> = entries
         .iter()
         .filter_map(|(k, _)| {
             let tail = &k[INBOX_PREFIX.len()..];
-            let idx_str = tail.split('/').next()?;
+            let idx_str = tail.split('.').next()?;
             idx_str.parse::<usize>().ok()?;
             Some(idx_str)
         })
@@ -52,27 +52,27 @@ pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut EgoConfig) {
     let n = next_inbox_index(cfg);
     let base = format!("{INBOX_PREFIX}{n}");
 
-    cfg.set(format!("{base}/from"), incoming.from.as_str());
-    // `/sender` is the link-leaf used for lazy DID traversal (Phase 4).
-    cfg.set(format!("{base}/sender"), incoming.from.as_str());
+    cfg.set(format!("{base}.from"), incoming.from.as_str());
+    // `.sender` is the link-leaf used for lazy DID traversal (Phase 4).
+    cfg.set(format!("{base}.sender"), incoming.from.as_str());
     cfg.set(
-        format!("{base}/content_type"),
+        format!("{base}.content_type"),
         incoming.content_type.as_str(),
     );
     cfg.set(
-        format!("{base}/content"),
+        format!("{base}.content"),
         String::from_utf8_lossy(&incoming.content).as_ref(),
     );
-    cfg.set(format!("{base}/message_id"), incoming.message_id.as_str());
+    cfg.set(format!("{base}.message_id"), incoming.message_id.as_str());
     cfg.set(
-        format!("{base}/received_at"),
+        format!("{base}.received_at"),
         format!("{:.3}", now_unix_secs()),
     );
     if let Some(ref rt) = incoming.reply_to {
-        cfg.set(format!("{base}/reply_to"), rt.as_str());
+        cfg.set(format!("{base}.reply_to"), rt.as_str());
     }
     if incoming.exp != 0 {
-        cfg.set(format!("{base}/expires_at"), format!("{}", incoming.exp));
+        cfg.set(format!("{base}.expires_at"), format!("{}", incoming.exp));
     }
 }
 
@@ -86,7 +86,7 @@ pub fn prune_inbox_expired(cfg: &mut EgoConfig, now_secs: f64) -> usize {
             .into_iter()
             .filter_map(|(k, v)| {
                 let tail = &k[INBOX_PREFIX.len()..];
-                let mut parts = tail.split('/');
+                let mut parts = tail.split('.');
                 let idx_str = parts.next()?;
                 let field = parts.next()?;
                 if field == "expires_at" {
@@ -184,16 +184,16 @@ mod tests {
     #[test]
     fn next_inbox_index_after_manual_entry() {
         let mut cfg = make_cfg();
-        cfg.set("/my/inbox/0/from", "did:ma:test");
-        cfg.set("/my/inbox/0/content", "hello");
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.content", "hello");
         assert_eq!(next_inbox_index(&cfg), 1);
     }
 
     #[test]
     fn inbox_count_after_manual_entry() {
         let mut cfg = make_cfg();
-        cfg.set("/my/inbox/0/from", "did:ma:test");
-        cfg.set("/my/inbox/2/from", "did:ma:other"); // gap
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.2.from", "did:ma:other"); // gap
         assert_eq!(inbox_count(&cfg), 2);
     }
 
@@ -202,8 +202,8 @@ mod tests {
     #[test]
     fn prune_removes_expired_entries() {
         let mut cfg = make_cfg();
-        cfg.set("/my/inbox/0/from", "did:ma:test");
-        cfg.set("/my/inbox/0/expires_at", "1000.000"); // far in the past
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.expires_at", "1000.000"); // far in the past
         let removed = prune_inbox_expired(&mut cfg, 9_999_999.0);
         assert!(removed > 0, "should have removed at least one key");
         assert_eq!(inbox_count(&cfg), 0);
@@ -212,8 +212,8 @@ mod tests {
     #[test]
     fn prune_keeps_non_expired_entries() {
         let mut cfg = make_cfg();
-        cfg.set("/my/inbox/0/from", "did:ma:test");
-        cfg.set("/my/inbox/0/expires_at", "9999999999.0"); // far in the future
+        cfg.set(".my.inbox.0.from", "did:ma:test");
+        cfg.set(".my.inbox.0.expires_at", "9999999999.0"); // far in the future
         let removed = prune_inbox_expired(&mut cfg, 1_000.0);
         assert_eq!(removed, 0);
         assert_eq!(inbox_count(&cfg), 1);
@@ -222,7 +222,7 @@ mod tests {
     #[test]
     fn prune_keeps_entries_without_expires_at() {
         let mut cfg = make_cfg();
-        cfg.set("/my/inbox/0/from", "did:ma:test");
+        cfg.set(".my.inbox.0.from", "did:ma:test");
         // No expires_at set — should never be pruned.
         let removed = prune_inbox_expired(&mut cfg, 9_999_999.0);
         assert_eq!(removed, 0);

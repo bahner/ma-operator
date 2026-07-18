@@ -3,10 +3,10 @@
 /// Grammar:
 ///   .cmd                 → DotCommand      (control command: .ma, .use, .help, … — hidden, closed set)
 ///   .cmd!verb [args]     → DotCommand::Meta
-///   /my/path             → LocalCrud::Get  (local config: /my, /ctx)
-///   /my/path: value      → LocalCrud::Set
-///   /my/path:            → LocalCrud::Delete
-///   /my/path!verb [args] → LocalCrud::Meta
+///   .my.path             → LocalCrud::Get  (local config: .my, .ctx)
+///   .my.path: value      → LocalCrud::Set
+///   .my.path:            → LocalCrud::Delete
+///   .my.path!verb [args] → LocalCrud::Meta
 ///   /ipfs/<cid>          → LocalCrud::Get  (remote fetch, read-only)
 ///   /ipns/<key>          → LocalCrud::Get  (remote fetch, read-only)
 ///   @alias/path          → RemoteCrud::Get
@@ -55,7 +55,7 @@ pub enum Command {
         op: DotOp,
         args: Vec<String>,
     },
-    /// Local CRUD on a `/my`, `/ctx` config path, or a read-only remote
+    /// Local CRUD on a `.my`, `.ctx` config path, or a read-only remote
     /// fetch on `/ipfs`, `/ipns`, `/ipld`. Mirrors the remote `@alias/path`
     /// grammar.
     LocalCrud {
@@ -85,6 +85,7 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         "" => Ok(Command::PlainText(String::new())),
         s if s.starts_with("\\@") => Ok(Command::PlainText(s[1..].to_string())),
         s if s.starts_with("\\.") => Ok(Command::PlainText(s[1..].to_string())),
+        s if is_local_dot_root(s) => parse_local(s),
         s if s.starts_with('.') => parse_dot(s),
         s if s.starts_with('/') => parse_local(s),
         s if s.starts_with('@') || s.starts_with("did:") => parse_actor(s, cfg),
@@ -121,7 +122,11 @@ fn parse_dot(input: &str) -> Result<Command, String> {
     Ok(Command::DotCommand { path, op, args })
 }
 
-// ── Local path CRUD (`/my`, `/ctx`, `/ipfs`, `/ipns`, `/ipld`) ──────────────
+// ── Local path CRUD (`.my`, `.ctx`, `/ipfs`, `/ipns`, `/ipld`) ──────────────
+
+fn is_local_dot_root(input: &str) -> bool {
+    input == ".my" || input.starts_with(".my.") || input == ".ctx" || input.starts_with(".ctx.")
+}
 
 fn parse_local(input: &str) -> Result<Command, String> {
     let (path, op, args) = parse_path_op(input)?;
@@ -286,6 +291,51 @@ mod tests {
     use super::*;
 
     #[test]
+    fn parses_dot_my_as_local_crud() {
+        let cfg = EgoConfig::new();
+        let cmd = parse(".my.aliases.fjodor", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::LocalCrud {
+                path: ".my.aliases.fjodor".to_string(),
+                op: DotOp::Get,
+                args: vec![],
+            }
+        );
+    }
+
+    #[test]
+    fn parses_dot_ctx_as_local_crud() {
+        let cfg = EgoConfig::new();
+        let cmd = parse(".ctx.ma.url: http://localhost:5003", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::LocalCrud {
+                path: ".ctx.ma.url".to_string(),
+                op: DotOp::Set("http://localhost:5003".to_string()),
+                args: vec![],
+            }
+        );
+    }
+
+    #[test]
+    fn keeps_dot_ma_as_control_command() {
+        let cfg = EgoConfig::new();
+        let cmd = parse(".ma", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::DotCommand {
+                path: ".ma".to_string(),
+                op: DotOp::Get,
+                args: vec![],
+            }
+        );
+    }
+
+    #[test]
     fn parses_did_target_without_verb() {
         let cfg = EgoConfig::new();
         let cmd = parse(
@@ -350,7 +400,7 @@ mod tests {
     fn parses_alias_target_with_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            "/my/aliases/fjodor",
+            ".my.aliases.fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -371,7 +421,7 @@ mod tests {
     fn parses_alias_target_with_fragment_and_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            "/my/aliases/fjodor",
+            ".my.aliases.fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -393,7 +443,7 @@ mod tests {
     fn parses_alias_target_with_compound_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            "/my/aliases/sky",
+            ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
@@ -414,7 +464,7 @@ mod tests {
     fn parses_alias_target_with_nested_path_verb() {
         let mut cfg = EgoConfig::new();
         cfg.set(
-            "/my/aliases/sky",
+            ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 

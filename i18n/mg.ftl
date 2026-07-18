@@ -44,7 +44,7 @@ msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Navoaka ny DID amin'alalan'ny ma eo an-toerana ({ $url })
-msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.ma [port]' ary '/my/identity!publish @ma'. Soraty '.help/publish' ho an'ny antsipiriany.
+msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.ma [port]' ary '.my.identity!publish @ma'. Soraty '.help/publish' ho an'ny antsipiriany.
 msg-blocked = ⊗ voasakana [{ $cap }]: { $from }
 msg-focus-cleared = voafafa ny sain-toerana
 msg-focusing = manamarika { $did } ho { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = tsy nahomby ny fikarohana: `did` dia tsy maintsy manombok
 discover-no-endpoint = fampitandremana fikarohana: `endpoint_id` tsy hita ao amin'ny status.json; DID ihany no voatahiry
 discover-success = ma hita tao amin'ny { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   voaforona ny alias @ma — ampiasao '/my/identity!publish @ma' hamoaka ny mombamombao.
+discover-alias-hint =   voaforona ny alias @ma — ampiasao '.my.identity!publish @ma' hamoaka ny mombamombao.
 claim-success = Runtime nalainy ho an'ny { $did }
 claim-conflict = Runtime efa nalainy mombamomba hafa
 claim-http-failed = fangatahana tsy nahomby: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = tsy niditra; miditra aloha mba halainy runtime
 runtime-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 
 # ── Fiasa — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl novàna (misokatra tanteraka)
+acl-reset = .my.acl novàna (misokatra tanteraka)
 acl-persist-error = hadisoana fitahirizana: { $e }
-acl-no-verb = tsy misy fiasa `{ $verb }` ho an'ny /my/acl
+acl-no-verb = tsy misy fiasa `{ $verb }` ho an'ny .my.acl
 
 # ── Fiasa — mombamomba ────────────────────────────────────────────────────
-publish-usage = fampiasana: /my/identity!publish <did-na-anarana-fanampiny>
+publish-usage = fampiasana: .my.identity!publish <did-na-anarana-fanampiny>
 identity-exported = Nampidina ny vondrona ho { $filename }
 identity-export-failed = Tsy nahomby ny fanondranana: { $e }
 
 # ── Fiasa — antontan-taratasy ─────────────────────────────────────────────
-doc-content-empty = { $path }/content foana
-doc-save-first = { $path }/content foana — tehirizo aloha
+doc-content-empty = { $path }.content foana
+doc-save-first = { $path }.content foana — tehirizo aloha
 doc-missing-name = anarana antontan-taratasy tsy hita
-doc-publish-usage = fampiasana: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = fampiasana: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = fampiasana: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = fampiasana: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = famoahana { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
 doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
-doc-fetch-done = voaaka { $cid } → { $path }/content (tsy naosina)
+doc-fetch-done = voaaka { $cid } → { $path }.content (tsy naosina)
 doc-fetch-failed = fetching { $cid }: { $e }
-doc-fetch-usage = fampiasana: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid tsy voapetraka
+doc-fetch-usage = fampiasana: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid tsy voapetraka
 doc-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 path-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       fafao ny ravin-kazo na hazo 
 help-config-verb =   .path!verb [args]            antsoy ny fiasa toerana
 
 # ── Fanampiana — lalan-kely mahazatra ────────────────────────────────────
-help-my =   /my                          asehoy ny fikajiana manokana rehetra
-help-aliases =   /my/aliases                  lisitra anarana fanampiny
-help-aliases-set =   /my/aliases/<name>: <did>    ampiana/havaozina anarana fanampiny (bare DID, tsy misy #fragment)
-help-aliases-del =   /my/aliases/<name>:          esorina ny anarana fanampiny
+help-my =   .my                          asehoy ny fikajiana manokana rehetra
+help-aliases =   .my.aliases                  lisitra anarana fanampiny
+help-aliases-set =   .my.aliases.<name>: <did>    ampiana/havaozina anarana fanampiny (bare DID, tsy misy #fragment)
+help-aliases-del =   .my.aliases.<name>:          esorina ny anarana fanampiny
 help-runtime-discover =   .ma [port]          ahitana runtime toerana ary mamorona anarana fanampiny @ma
 help-runtime-claim =   .ma [port]             alao runtime amin'ny DID anao
-help-identity =   /my/identity                 asehoy fikajiana mombamomba
-help-identity-did =   /my/identity/did             asehoy ny DID anao (famakiana ihany)
-help-identity-publish =   /my/identity!publish @pub    avoaka DID amin'ny serivisy famoahana
-help-identity-export =   /my/identity!export          omioty ny vondrona maha-izy ny anao
+help-identity =   .my.identity                 asehoy fikajiana mombamomba
+help-identity-did =   .my.identity.did             asehoy ny DID anao (famakiana ihany)
+help-identity-publish =   .my.identity!publish @pub    avoaka DID amin'ny serivisy famoahana
+help-identity-export =   .my.identity!export          omioty ny vondrona maha-izy ny anao
 help-config-path =   .config                      asehoy ny fidirana .config.* rehetra
 
 # ── Fanampiana — boaty fidirana ───────────────────────────────────────────
-help-inbox =   /my/inbox                    lisitra boaty fidirana (fijery hazo kely)
-help-inbox-n =   /my/inbox/N                  asehoy ny sahan'ny fidirana N
-help-inbox-from =   /my/inbox/N/from             DID mpandefitra fidirana N
-help-inbox-reply =   /my/inbox/N!reply [body]     alefa valim-pitoriana (misokatra mpandrindra raha tsy misy vatana)
-help-inbox-open =   /my/inbox/N!open             misokatra sainy famakiana ihany amin'ny mpandrindra
-help-inbox-del =   /my/inbox/N:                 fafao fidirana N
-help-inbox-delall =   /my/inbox:                   fafao ny fidirana boaty rehetra
-help-inbox-flush =   /my/inbox!flush              ataovy printy fidirana rehetra amin'ny terminal
-help-inbox-filter =   /my/inbox!filter @who        asehoy ireo sokajy avy amin'ny @who fotsiny
-help-inbox-traverse =   /my/inbox/N/sender/<field>   mandeha antontan-taratasy DID mpandefitra mora moramora
+help-inbox =   .my.inbox                    lisitra boaty fidirana (fijery hazo kely)
+help-inbox-n =   .my.inbox.N                  asehoy ny sahan'ny fidirana N
+help-inbox-from =   .my.inbox.N.from             DID mpandefitra fidirana N
+help-inbox-reply =   .my.inbox.N!reply [body]     alefa valim-pitoriana (misokatra mpandrindra raha tsy misy vatana)
+help-inbox-open =   .my.inbox.N!open             misokatra sainy famakiana ihany amin'ny mpandrindra
+help-inbox-del =   .my.inbox.N:                 fafao fidirana N
+help-inbox-delall =   .my.inbox:                   fafao ny fidirana boaty rehetra
+help-inbox-flush =   .my.inbox!flush              ataovy printy fidirana rehetra amin'ny terminal
+help-inbox-filter =   .my.inbox!filter @who        asehoy ireo sokajy avy amin'ny @who fotsiny
+help-inbox-traverse =   .my.inbox.N.sender.<field>   mandeha antontan-taratasy DID mpandefitra mora moramora
 
 # ── Fanampiana — antontan-taratasy ───────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           misokatra mpandrindra misy sainy voatahiry
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     mamoaka CID, misokatra famakiana ihany
-help-doc-eval =   /my/doc/<name>!eval           alao ny sainy voatahiry andalana-andro
-help-doc-publish =   /my/doc/<name>!publish @pub   tehirizo ho blob tsy voaohatra (karazana rehetra)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  tehirizo YAML ho node IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    ampidino sainy CID (tsy naosina)
-help-doc-cid =   /my/doc/<name>!cid            asehoy CID voatahiry
-help-doc-del =   /my/doc/<name>:              fafao antontan-taratasy
+help-doc-edit =   .my.doc.<name>!edit           misokatra mpandrindra misy sainy voatahiry
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     mamoaka CID, misokatra famakiana ihany
+help-doc-eval =   .my.doc.<name>!eval           alao ny sainy voatahiry andalana-andro
+help-doc-publish =   .my.doc.<name>!publish @pub   tehirizo ho blob tsy voaohatra (karazana rehetra)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  tehirizo YAML ho node IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    ampidino sainy CID (tsy naosina)
+help-doc-cid =   .my.doc.<name>!cid            asehoy CID voatahiry
+help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Fiteny azo ampiasaina (apetraho amin'ny /my/i18n: <code>):
+lang-list-header = Fiteny azo ampiasaina (apetraho amin'ny .my.i18n: <code>):
 err-lang-not-found = tsy hita ny teny: { $lang }
 
 msg-send-failed = tsy nahomby ny fandefasana: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                famoahana ny mombamombao eo 
 help-header-publish = ── famoahana mombamomba ─────────────────────────────────────────────────────
 help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'ny tambajotra. Ny hafa dia afaka mitady ny DID-nao hahafantarany anao.
 help-publish-ma = Mba hamoahana, mila ny ma (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.
-help-publish-steps = Dingana: ampiasao '.ma [port]' hikaroana ny ma eo an-toerana, ary '/my/identity!publish @ma'.
+help-publish-steps = Dingana: ampiasao '.ma [port]' hikaroana ny ma eo an-toerana, ary '.my.identity!publish @ma'.
 help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

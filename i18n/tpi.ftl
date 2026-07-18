@@ -44,7 +44,7 @@ msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID i bin publishim long local ma ({ $url })
-msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.ma [port]' na '/my/identity!publish @ma'. Rait '.help/publish' bilong kisim sampela save.
+msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.ma [port]' na '.my.identity!publish @ma'. Rait '.help/publish' bilong kisim sampela save.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokus i klia pinis
 msg-focusing = fokus { $did } olsem { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = discoveri i no wok: i ekspektim `did` i stat long did:ma:
 discover-no-endpoint = woning discoveri: `endpoint_id` i no stap long status.json; seivim DID tasol
 discover-success = ma discoveri long { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma i kamap pinis — ran '/my/identity!publish @ma' bilong putim nem bilong yu antap.
+discover-alias-hint =   alias @ma i kamap pinis — ran '.my.identity!publish @ma' bilong putim nem bilong yu antap.
 claim-success = Runtime klemim bilong { $did }
 claim-conflict = Runtime i klemim pinis long narapela identiti
 claim-http-failed = klem i no wok: HTTP { $status }
@@ -117,35 +117,35 @@ claim-no-session = i no lagin; lagin pastaim bilong klemim runtime
 runtime-no-verb = i no gat vèb `{ $verb }` bilong { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl i resit (opim olgeta)
+acl-reset = .my.acl i resit (opim olgeta)
 acl-persist-error = seivim erò: { $e }
-acl-no-verb = i no gat vèb `{ $verb }` bilong /my/acl
+acl-no-verb = i no gat vèb `{ $verb }` bilong .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
-publish-usage = yusim olsem: /my/identity!publish <did-o-alias>
+publish-usage = yusim olsem: .my.identity!publish <did-o-alias>
 identity-exported = Bundle i save kamdaun olsem { $filename }
 identity-export-failed = Eksport i no wok: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content i emptipela
-doc-save-first = { $path }/content i emptipela — seivim pastaim
+doc-content-empty = { $path }.content i emptipela
+doc-save-first = { $path }.content i emptipela — seivim pastaim
 doc-missing-name = nem bilong dokumen i no stap
-doc-publish-usage = yusim olsem: /my/doc/<nem>:publish <publishman>
-doc-publish-ipld-usage = yusim olsem: /my/doc/<nem>:publish-ipld <publishman>
+doc-publish-usage = yusim olsem: .my.doc.<nem>:publish <publishman>
+doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>:publish-ipld <publishman>
 doc-publish-failed = publishim { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
-doc-fetch-done = kisim { $cid } → { $path }/content (i noران)
+doc-fetch-done = kisim { $cid } → { $path }.content (i noران)
 doc-fetch-failed = kisim { $cid }: { $e }
-doc-fetch-usage = yusim olsem: /my/doc/<nem>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid i no putim
+doc-fetch-usage = yusim olsem: .my.doc.<nem>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid i no putim
 doc-no-verb = i no gat vèb `{ $verb }` bilong { $path }
 path-no-verb = i no gat vèb `{ $verb }` bilong { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Tok ples i gat (/my/i18n: <code> bilong putim):
+lang-list-header = Tok ples i gat (.my.i18n: <code> bilong putim):
 
 err-lang-not-found = tok i no painim: { $lang }
 
@@ -155,7 +155,7 @@ help-header-focus = ── fokus rot ──────────────�
 help-header-config = ── lokal seting gramar ────────────────────────────────────────────────────
 help-header-common = ── rot bilong olgeta ──────────────────────────────────────────────────────
 help-header-inbox = ── bokis bilong mesej ─────────────────────────────────────────────────────
-help-header-documents = ── pepa (/my/doc.*) ───────────────────────────────────────────────────────
+help-header-documents = ── pepa (.my.doc.*) ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dispela tok
 help-cmd-clear =   .clear                       klinim terminal
@@ -175,35 +175,35 @@ help-config-filter =   .path value                  kisim ol wantaim kweri (filt
 help-config-set =   .path: value                 setim lif
 help-config-delete =   .path:                       rausim lif o sabpatri
 help-config-verb =   .path!verb [args]            kolim lokal vob
-help-my =   /my                          soim olgeta seting bilong yu
-help-aliases =   /my/aliases                  soim olgeta alias
-help-aliases-set =   /my/aliases/<name>: <did>    putim/senisim alias (bea DID, noh #fragment)
-help-aliases-del =   /my/aliases/<name>:          rausim alias
+help-my =   .my                          soim olgeta seting bilong yu
+help-aliases =   .my.aliases                  soim olgeta alias
+help-aliases-set =   .my.aliases.<name>: <did>    putim/senisim alias (bea DID, noh #fragment)
+help-aliases-del =   .my.aliases.<name>:          rausim alias
 help-runtime-discover =   .ma [port]          painim lokal runtime na mekim alias @ma
 help-runtime-claim =   .ma [port]             klemim ownashop bilong runtime long yu DID
-help-identity =   /my/identity                 soim seting bilong identiti
-help-identity-did =   /my/identity/did             soim yu DID (ritim tasol)
-help-identity-publish =   /my/identity!publish @pub    pablisim yu DID long pablisha sovic
-help-identity-export =   /my/identity!export          kisim bundle bilong yu yet
+help-identity =   .my.identity                 soim seting bilong identiti
+help-identity-did =   .my.identity.did             soim yu DID (ritim tasol)
+help-identity-publish =   .my.identity!publish @pub    pablisim yu DID long pablisha sovic
+help-identity-export =   .my.identity!export          kisim bundle bilong yu yet
 help-config-path =   .config                      soim olgeta .config.* entri
-help-inbox =   /my/inbox                    soim bokis bilong mesej (sabpatri)
-help-inbox-n =   /my/inbox/N                  soim fild bilong entri N
-help-inbox-from =   /my/inbox/N/from             DID bilong salim entri N
-help-inbox-reply =   /my/inbox/N!reply [body]     salim beksave (openim edita sapos noh bodi)
-help-inbox-open =   /my/inbox/N!open             openim content bilong entri ritim tasol long edita
-help-inbox-del =   /my/inbox/N:                 rausim entri N
-help-inbox-delall =   /my/inbox:                   rausim olgeta entri long bokis
-help-inbox-flush =   /my/inbox!flush              soim olgeta entri long terminal
-help-inbox-filter =   /my/inbox!filter @who        soim tasol enteri bilong @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   wokabaut long senda DID dokumen isi isi
-help-doc-edit =   /my/doc/<name>!edit           openim edita wantaim content i sev pinis
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     kisim CID, openim bilong lukluk tasol
-help-doc-eval =   /my/doc/<name>!eval           renim content i sev pinis lain long lain
-help-doc-publish =   /my/doc/<name>!publish @pub   storim olsem rou blob (eni kain)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  storim YAML olsem nod DAG-CBOR IPLD
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    impotim content bilong CID (noh renim)
-help-doc-cid =   /my/doc/<name>!cid            soim CID i storim pinis
-help-doc-del =   /my/doc/<name>:              rausim pepa
+help-inbox =   .my.inbox                    soim bokis bilong mesej (sabpatri)
+help-inbox-n =   .my.inbox.N                  soim fild bilong entri N
+help-inbox-from =   .my.inbox.N.from             DID bilong salim entri N
+help-inbox-reply =   .my.inbox.N!reply [body]     salim beksave (openim edita sapos noh bodi)
+help-inbox-open =   .my.inbox.N!open             openim content bilong entri ritim tasol long edita
+help-inbox-del =   .my.inbox.N:                 rausim entri N
+help-inbox-delall =   .my.inbox:                   rausim olgeta entri long bokis
+help-inbox-flush =   .my.inbox!flush              soim olgeta entri long terminal
+help-inbox-filter =   .my.inbox!filter @who        soim tasol enteri bilong @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   wokabaut long senda DID dokumen isi isi
+help-doc-edit =   .my.doc.<name>!edit           openim edita wantaim content i sev pinis
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     kisim CID, openim bilong lukluk tasol
+help-doc-eval =   .my.doc.<name>!eval           renim content i sev pinis lain long lain
+help-doc-publish =   .my.doc.<name>!publish @pub   storim olsem rou blob (eni kain)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  storim YAML olsem nod DAG-CBOR IPLD
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    impotim content bilong CID (noh renim)
+help-doc-cid =   .my.doc.<name>!cid            soim CID i storim pinis
+help-doc-del =   .my.doc.<name>:              rausim pepa
 
 msg-send-failed = salim i no wok: { $e }
 msg-not-logged-in = yu no bin log in
@@ -319,9 +319,9 @@ help-topic-publish =   .help/publish                putim nem bilong yu antap lo
 help-header-publish = ── putim nem antap ──────────────────────────────────────────────────────────
 help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol arapela man inap painim DID bilong yu bilong toktok wantaim yu.
 help-publish-ma = Bilong putim nem antap, yu nidim ma (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.
-help-publish-steps = Ol hap: ran '.ma [port]' bilong painim local ma, na '/my/identity!publish @ma'.
+help-publish-steps = Ol hap: ran '.ma [port]' bilong painim local ma, na '.my.identity!publish @ma'.
 help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

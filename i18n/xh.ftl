@@ -44,7 +44,7 @@ msg-connecting = iyaxhuma ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungele
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ipapashiwe nge-ma yendawo ({ $url })
-msg-identity-not-published = Ubuzwe abufumanisekanga ku-intanethi — ukuba u-ma ufakiwe endaweni, qhuba '.ma [port]' wulandelise '/my/identity!publish @ma'. Bhala '.help/publish' ngenkcazelo.
+msg-identity-not-published = Ubuzwe abufumanisekanga ku-intanethi — ukuba u-ma ufakiwe endaweni, qhuba '.ma [port]' wulandelise '.my.identity!publish @ma'. Bhala '.help/publish' ngenkcazelo.
 msg-blocked = ⊗ ivalelwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kucinyiwe
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = ukubona kuhluleke: `did` kufuneka iqale nge-did:ma:, ifum
 discover-no-endpoint = isexwayiso sokubona: `endpoint_id` ayikho ku-status.json; DID kuphela igciniwe
 discover-success = ma ifunyenwe ku-{ $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   i-alias @ma yenziwe — qhuba '/my/identity!publish @ma' ukupapasha ubuzwe bakho.
+discover-alias-hint =   i-alias @ma yenziwe — qhuba '.my.identity!publish @ma' ukupapasha ubuzwe bakho.
 claim-success = Runtime ibiselwe ku-{ $did }
 claim-conflict = Runtime isebiselwe ubunjani obuphela
 claim-http-failed = isicelo sihlulekile: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = akungeniwe; ngena kuqala ukufumana i-runtime
 runtime-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 
 # ── Izenzo — ACL ──────────────────────────────────────────────────────────
-acl-reset = i-/my/acl isetwe kabusha (ivuliwe ngokupheleleyo)
+acl-reset = i-.my.acl isetwe kabusha (ivuliwe ngokupheleleyo)
 acl-persist-error = impazamo yokugcina: { $e }
-acl-no-verb = akukho senzo `{ $verb }` se-/my/acl
+acl-no-verb = akukho senzo `{ $verb }` se-.my.acl
 
 # ── Izenzo — ubunjani ─────────────────────────────────────────────────────
-publish-usage = ukusetyenziswa: /my/identity!publish <did-okanye-igama-elikhawulezayo>
+publish-usage = ukusetyenziswa: .my.identity!publish <did-okanye-igama-elikhawulezayo>
 identity-exported = Ibundle ikhutshelwe njengo { $filename }
 identity-export-failed = Ukuthumela ngaphandle kuhlulekile: { $e }
 
 # ── Izenzo — imibhalo ─────────────────────────────────────────────────────
-doc-content-empty = { $path }/content ingenaluto
-doc-save-first = { $path }/content ingenaluto — gcina kuqala
+doc-content-empty = { $path }.content ingenaluto
+doc-save-first = { $path }.content ingenaluto — gcina kuqala
 doc-missing-name = igama lemibhalo lilahlekile
-doc-publish-usage = ukusetyenziswa: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = ukusetyenziswa: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = ukusetyenziswa: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = ukusetyenziswa: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = ukushicilela { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
 doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
-doc-fetch-done = { $cid } ilandwe → { $path }/content (ayenziwanga)
+doc-fetch-done = { $cid } ilandwe → { $path }.content (ayenziwanga)
 doc-fetch-failed = ukupheka { $cid }: { $e }
-doc-fetch-usage = ukusetyenziswa: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid ayisetiwe
+doc-fetch-usage = ukusetyenziswa: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid ayisetiwe
 doc-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 path-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       cima igqabi okanye isihlahla
 help-config-verb =   .path!verb [args]            biza isenzo sendawo
 
 # ── Uncedo — iindlela ezisetshenziswa kakhulu ────────────────────────────
-help-my =   /my                          bonisa zonke izikhokelo zobunjani
-help-aliases =   /my/aliases                  bala amagama amafutshane
-help-aliases-set =   /my/aliases/<name>: <did>    yongeza/buyekeza igama elikhawulezayo (bare DID, ngaphandle kwe-#fragment)
-help-aliases-del =   /my/aliases/<name>:          susa igama elikhawulezayo
+help-my =   .my                          bonisa zonke izikhokelo zobunjani
+help-aliases =   .my.aliases                  bala amagama amafutshane
+help-aliases-set =   .my.aliases.<name>: <did>    yongeza/buyekeza igama elikhawulezayo (bare DID, ngaphandle kwe-#fragment)
+help-aliases-del =   .my.aliases.<name>:          susa igama elikhawulezayo
 help-runtime-discover =   .ma [port]          fumana i-runtime yendawo yile kwaye yila igama elikhawulezayo @ma
 help-runtime-claim =   .ma [port]             zimisele nge-runtime nge-DID yakho
-help-identity =   /my/identity                 bonisa izikhokelo zobunjani
-help-identity-did =   /my/identity/did             bonisa i-DID yakho (ukufunda kuphela)
-help-identity-publish =   /my/identity!publish @pub    shicilela i-DID ngosizo lweshishino loshicilelo
-help-identity-export =   /my/identity!export          khutshelwa ibundle yakho yesazisi
+help-identity =   .my.identity                 bonisa izikhokelo zobunjani
+help-identity-did =   .my.identity.did             bonisa i-DID yakho (ukufunda kuphela)
+help-identity-publish =   .my.identity!publish @pub    shicilela i-DID ngosizo lweshishino loshicilelo
+help-identity-export =   .my.identity!export          khutshelwa ibundle yakho yesazisi
 help-config-path =   .config                      bonisa zonke iingeniso ze-.config.*
 
 # ── Uncedo — isibhengezo sokufika ────────────────────────────────────────
-help-inbox =   /my/inbox                    bala isibhengezo sokufika (ukujonga isihlahla)
-help-inbox-n =   /my/inbox/N                  bonisa iintsimi zengeniso N
-help-inbox-from =   /my/inbox/N/from             DID yomthumeli wengeniso N
-help-inbox-reply =   /my/inbox/N!reply [body]     thumela impendulo (vula umhleli xa kungekho mzimba)
-help-inbox-open =   /my/inbox/N!open             vula okuqukethweyo ukufunda kuphela kumhleli
-help-inbox-del =   /my/inbox/N:                 cima ingeniso N
-help-inbox-delall =   /my/inbox:                   cima zonke iingeniso zesibhengezo
-help-inbox-flush =   /my/inbox!flush              printa zonke iingeniso ku-terminal
-help-inbox-filter =   /my/inbox!filter @who        bonisa amangeniso avela @who kuphela
-help-inbox-traverse =   /my/inbox/N/sender/<field>   hamba imveliso ye-DID yomthumeli ngobulumko
+help-inbox =   .my.inbox                    bala isibhengezo sokufika (ukujonga isihlahla)
+help-inbox-n =   .my.inbox.N                  bonisa iintsimi zengeniso N
+help-inbox-from =   .my.inbox.N.from             DID yomthumeli wengeniso N
+help-inbox-reply =   .my.inbox.N!reply [body]     thumela impendulo (vula umhleli xa kungekho mzimba)
+help-inbox-open =   .my.inbox.N!open             vula okuqukethweyo ukufunda kuphela kumhleli
+help-inbox-del =   .my.inbox.N:                 cima ingeniso N
+help-inbox-delall =   .my.inbox:                   cima zonke iingeniso zesibhengezo
+help-inbox-flush =   .my.inbox!flush              printa zonke iingeniso ku-terminal
+help-inbox-filter =   .my.inbox!filter @who        bonisa amangeniso avela @who kuphela
+help-inbox-traverse =   .my.inbox.N.sender.<field>   hamba imveliso ye-DID yomthumeli ngobulumko
 
 # ── Uncedo — imibhalo ────────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           vula umhleli nokuqukethweyo okugciniweyo
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     landa i-CID, vula ukujonga kuphela
-help-doc-eval =   /my/doc/<name>!eval           yenza okuqukethweyo okugciniweyo umgca ngomgca
-help-doc-publish =   /my/doc/<name>!publish @pub   gcina njenge-blob engashintshiwe (uhlobo oluluphi)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  gcina i-YAML njenge-node ye-IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    ngenisa okuqukethweyo kwe-CID (ayenziwanga)
-help-doc-cid =   /my/doc/<name>!cid            bonisa i-CID egciniweyo
-help-doc-del =   /my/doc/<name>:              cima umbhalo
+help-doc-edit =   .my.doc.<name>!edit           vula umhleli nokuqukethweyo okugciniweyo
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     landa i-CID, vula ukujonga kuphela
+help-doc-eval =   .my.doc.<name>!eval           yenza okuqukethweyo okugciniweyo umgca ngomgca
+help-doc-publish =   .my.doc.<name>!publish @pub   gcina njenge-blob engashintshiwe (uhlobo oluluphi)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  gcina i-YAML njenge-node ye-IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    ngenisa okuqukethweyo kwe-CID (ayenziwanga)
+help-doc-cid =   .my.doc.<name>!cid            bonisa i-CID egciniweyo
+help-doc-del =   .my.doc.<name>:              cima umbhalo
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Iilwimi ezikhona (seta nge /my/i18n: <code>):
+lang-list-header = Iilwimi ezikhona (seta nge .my.i18n: <code>):
 err-lang-not-found = ulwimi alufumanekanga: { $lang }
 
 msg-send-failed = ukuthumela kuhlulekile: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                papasha ubuzwe bakho kwi-net
 help-header-publish = ── ukupapasha ubuzwe ────────────────────────────────────────────────────────
 help-publish-intro = Ukupapasha kwenza ubuzwe bakho bube nokufunyanwa kwi-network. Abanye banokufuna i-DID yakho ukukufikelela.
 help-publish-ma = Ukupapasha, ufuna u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
-help-publish-steps = Amanyathelo: qhuba '.ma [port]' ukufumana u-ma wendawo, wulandelise '/my/identity!publish @ma'.
+help-publish-steps = Amanyathelo: qhuba '.ma [port]' ukufumana u-ma wendawo, wulandelise '.my.identity!publish @ma'.
 help-publish-without = Ngaphandle kokupapasha, abanye abanakufikelela kuwe — nangona bazi i-DID yakho, abanakuyisombulula i-endpoint yakho.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

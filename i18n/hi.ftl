@@ -44,7 +44,7 @@ msg-connecting = iroh से कनेक्ट हो रहा है...
 msg-iroh-ready = iroh एंडपॉइंट तैयार
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID स्थानीय ma ({ $url }) के माध्यम से प्रकाशित
-msg-identity-not-published = पहचान ऑनलाइन नहीं मिली — अगर ma स्थानीय रूप से स्थापित है, तो '.ma [port]' फिर '/my/identity!publish @ma' चलाएं। विवरण के लिए '.help/publish' टाइप करें।
+msg-identity-not-published = पहचान ऑनलाइन नहीं मिली — अगर ma स्थानीय रूप से स्थापित है, तो '.ma [port]' फिर '.my.identity!publish @ma' चलाएं। विवरण के लिए '.help/publish' टाइप करें।
 msg-blocked = ⊗ अवरुद्ध [{ $cap }]: { $from }
 msg-focus-cleared = फ़ोकस साफ़ हुआ
 msg-focusing = { $did } को { $prompt } के रूप में फ़ोकस कर रहे हैं
@@ -108,7 +108,7 @@ discover-invalid-did = खोज विफल: `did` did:ma: से शुरू
 discover-no-endpoint = खोज चेतावनी: status.json में `endpoint_id` नहीं; केवल DID संग्रहीत
 discover-success = { $url } पर ma मिला
 discover-did-line = DID: { $did }
-discover-alias-hint =   उपनाम @ma बनाया गया — अपनी पहचान प्रकाशित करने के लिए '/my/identity!publish @ma' चलाएं।
+discover-alias-hint =   उपनाम @ma बनाया गया — अपनी पहचान प्रकाशित करने के लिए '.my.identity!publish @ma' चलाएं।
 claim-success = { $did } के लिए रनटाइम का दावा किया गया
 claim-conflict = रनटाइम पहले से किसी अन्य पहचान द्वारा दावा किया गया है
 claim-http-failed = दावा विफल: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = लॉग इन नहीं; रनटाइम का द�
 runtime-no-verb = { $path } के लिए `{ $verb }` क्रिया नहीं
 
 # ── क्रिया — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl रीसेट (पूरी तरह खुला)
+acl-reset = .my.acl रीसेट (पूरी तरह खुला)
 acl-persist-error = सहेजने की त्रुटि: { $e }
-acl-no-verb = /my/acl के लिए `{ $verb }` क्रिया नहीं
+acl-no-verb = .my.acl के लिए `{ $verb }` क्रिया नहीं
 
 # ── क्रिया — पहचान ────────────────────────────────────────────────────────
-publish-usage = उपयोग: /my/identity!publish <did-या-उपनाम>
+publish-usage = उपयोग: .my.identity!publish <did-या-उपनाम>
 identity-exported = बंडल { $filename } के रूप में डाउनलोड हुआ
 identity-export-failed = निर्यात विफल: { $e }
 
 # ── क्रिया — दस्तावेज़ ─────────────────────────────────────────────────────
-doc-content-empty = { $path }/content खाली है
-doc-save-first = { $path }/content खाली है — पहले सहेजें
+doc-content-empty = { $path }.content खाली है
+doc-save-first = { $path }.content खाली है — पहले सहेजें
 doc-missing-name = दस्तावेज़ का नाम नहीं
-doc-publish-usage = उपयोग: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = उपयोग: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = उपयोग: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = उपयोग: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = प्रकाशन { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = संग्रह अनुरोध भेजा ({ $id }) → { $publisher }; CID RPC उत्तर से आएगा
 doc-ipld-store-sent = IPLD संग्रह अनुरोध भेजा ({ $id }) → { $publisher }; CID RPC उत्तर से आएगा
-doc-fetch-done = { $cid } प्राप्त → { $path }/content (चलाया नहीं गया)
+doc-fetch-done = { $cid } प्राप्त → { $path }.content (चलाया नहीं गया)
 doc-fetch-failed = फ़ेच { $cid }: { $e }
-doc-fetch-usage = उपयोग: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid सेट नहीं है
+doc-fetch-usage = उपयोग: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid सेट नहीं है
 doc-no-verb = { $path } के लिए `{ $verb }` क्रिया नहीं
 path-no-verb = { $path } के लिए `{ $verb }` क्रिया नहीं
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       लीफ़ या सब�
 help-config-verb =   .path!verb [args]            स्थानीय क्रिया बुलाएं
 
 # ── सहायता — सामान्य पथ ──────────────────────────────────────────────────
-help-my =   /my                          सभी व्यक्तिगत कॉन्फ़िग दिखाएं
-help-aliases =   /my/aliases                  उपनाम सूची
-help-aliases-set =   /my/aliases/<name>: <did>    उपनाम जोड़ें/अपडेट करें
-help-aliases-del =   /my/aliases/<name>:          उपनाम हटाएं
+help-my =   .my                          सभी व्यक्तिगत कॉन्फ़िग दिखाएं
+help-aliases =   .my.aliases                  उपनाम सूची
+help-aliases-set =   .my.aliases.<name>: <did>    उपनाम जोड़ें/अपडेट करें
+help-aliases-del =   .my.aliases.<name>:          उपनाम हटाएं
 help-runtime-discover =   .ma [port]          स्थानीय रनटाइम खोजें और @ma बनाएं
 help-runtime-claim =   .ma [port]             अपने DID से रनटाइम का दावा करें
-help-identity =   /my/identity                 पहचान कॉन्फ़िग दिखाएं
-help-identity-did =   /my/identity/did             अपना DID दिखाएं (केवल पढ़ने योग्य)
-help-identity-publish =   /my/identity!publish @pub    प्रकाशन सेवा द्वारा DID प्रकाशित करें
-help-identity-export =   /my/identity!export          अपना पहचान बंडल डाउनलोड करें
+help-identity =   .my.identity                 पहचान कॉन्फ़िग दिखाएं
+help-identity-did =   .my.identity.did             अपना DID दिखाएं (केवल पढ़ने योग्य)
+help-identity-publish =   .my.identity!publish @pub    प्रकाशन सेवा द्वारा DID प्रकाशित करें
+help-identity-export =   .my.identity!export          अपना पहचान बंडल डाउनलोड करें
 help-config-path =   .config                      सभी .config.* प्रविष्टियां दिखाएं
 
 # ── सहायता — इनबॉक्स ─────────────────────────────────────────────────────
-help-inbox =   /my/inbox                    इनबॉक्स सूची (सबट्री दृश्य)
-help-inbox-n =   /my/inbox/N                  प्रविष्टि N के फ़ील्ड दिखाएं
-help-inbox-from =   /my/inbox/N/from             प्रविष्टि N का प्रेषक DID
-help-inbox-reply =   /my/inbox/N!reply [body]     उत्तर भेजें (बिना मुख्य भाग — संपादक खुलेगा)
-help-inbox-open =   /my/inbox/N!open             सामग्री केवल पढ़ने हेतु संपादक में खोलें
-help-inbox-del =   /my/inbox/N:                 प्रविष्टि N हटाएं
-help-inbox-delall =   /my/inbox:                   सभी इनबॉक्स प्रविष्टियां हटाएं
-help-inbox-flush =   /my/inbox!flush              सभी प्रविष्टियां टर्मिनल में प्रिंट करें
-help-inbox-filter =   /my/inbox!filter @who        केवल @who से प्रविष्टियाँ दिखाएं
-help-inbox-traverse =   /my/inbox/N/sender/<field>   प्रेषक DID दस्तावेज़ का आलसी अन्वेषण
+help-inbox =   .my.inbox                    इनबॉक्स सूची (सबट्री दृश्य)
+help-inbox-n =   .my.inbox.N                  प्रविष्टि N के फ़ील्ड दिखाएं
+help-inbox-from =   .my.inbox.N.from             प्रविष्टि N का प्रेषक DID
+help-inbox-reply =   .my.inbox.N!reply [body]     उत्तर भेजें (बिना मुख्य भाग — संपादक खुलेगा)
+help-inbox-open =   .my.inbox.N!open             सामग्री केवल पढ़ने हेतु संपादक में खोलें
+help-inbox-del =   .my.inbox.N:                 प्रविष्टि N हटाएं
+help-inbox-delall =   .my.inbox:                   सभी इनबॉक्स प्रविष्टियां हटाएं
+help-inbox-flush =   .my.inbox!flush              सभी प्रविष्टियां टर्मिनल में प्रिंट करें
+help-inbox-filter =   .my.inbox!filter @who        केवल @who से प्रविष्टियाँ दिखाएं
+help-inbox-traverse =   .my.inbox.N.sender.<field>   प्रेषक DID दस्तावेज़ का आलसी अन्वेषण
 
 # ── सहायता — दस्तावेज़ ────────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           सहेजी गई सामग्री के साथ संपादक खोलें
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID लाएं, केवल समीक्षा के लिए खोलें
-help-doc-eval =   /my/doc/<name>!eval           सहेजी गई सामग्री लाइन-दर-लाइन चलाएं
-help-doc-publish =   /my/doc/<name>!publish @pub   कच्चे blob के रूप में संग्रहीत करें
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML को DAG-CBOR IPLD नोड के रूप में संग्रहीत करें
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    CID सामग्री आयात करें (निष्पादन नहीं)
-help-doc-cid =   /my/doc/<name>!cid            संग्रहीत CID दिखाएं
-help-doc-del =   /my/doc/<name>:              दस्तावेज़ हटाएं
+help-doc-edit =   .my.doc.<name>!edit           सहेजी गई सामग्री के साथ संपादक खोलें
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID लाएं, केवल समीक्षा के लिए खोलें
+help-doc-eval =   .my.doc.<name>!eval           सहेजी गई सामग्री लाइन-दर-लाइन चलाएं
+help-doc-publish =   .my.doc.<name>!publish @pub   कच्चे blob के रूप में संग्रहीत करें
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML को DAG-CBOR IPLD नोड के रूप में संग्रहीत करें
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID सामग्री आयात करें (निष्पादन नहीं)
+help-doc-cid =   .my.doc.<name>!cid            संग्रहीत CID दिखाएं
+help-doc-del =   .my.doc.<name>:              दस्तावेज़ हटाएं
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = उपलब्ध भाषाएँ (/my/i18n: <code> से सेट करें):
+lang-list-header = उपलब्ध भाषाएँ (.my.i18n: <code> से सेट करें):
 err-lang-not-found = भाषा नहीं मिली: { $lang }
 
 msg-send-failed = भेजना विफल: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                अपनी पहचान
 help-header-publish = ── पहचान प्रकाशन ────────────────────────────────────────────────────────────
 help-publish-intro = प्रकाशन आपकी पहचान को नेटवर्क पर खोजने योग्य बनाता है। अन्य लोग आप तक पहुंचने के लिए आपका DID खोज सकते हैं।
 help-publish-ma = प्रकाशित करने के लिए आपको ma (स्थानीय रनटाइम) स्थापित करना होगा। यह आपकी ओर से ego को IPFS/IPNS से जोड़ता है।
-help-publish-steps = चरण: स्थानीय ma खोजने के लिए '.ma [port]' चलाएं, फिर '/my/identity!publish @ma'।
+help-publish-steps = चरण: स्थानीय ma खोजने के लिए '.ma [port]' चलाएं, फिर '.my.identity!publish @ma'।
 help-publish-without = प्रकाशन के बिना अन्य लोग आप तक नहीं पहुंच सकते — भले ही वे आपका DID जानते हों, वे आपका endpoint नहीं सुलझा सकते।
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

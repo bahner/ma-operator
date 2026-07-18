@@ -11,13 +11,13 @@
 //! i18n::init_from_browser().await;
 //!
 //! // After config loads, re-apply if user has a preference:
-//! if let Some(lang) = cfg.get("/my/config/ui/language") {
+//! if let Some(lang) = cfg.get(".my.config.ui.language") {
 //!     i18n::init(&lang).await;
 //! }
 //!
 //! // Translate a key:
 //! let label = t("btn-save");               // → "Save" / "Lagre"
-//! let msg   = tf("msg-set", &[("path", "/my/aliases/bob"), ("value", "did:ma:...")]);
+//! let msg   = tf("msg-set", &[("path", ".my.aliases.bob"), ("value", "did:ma:...")]);
 //! ```
 //!
 //! Unknown keys fall back to the key name itself.

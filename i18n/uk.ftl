@@ -47,7 +47,7 @@ msg-connecting = підключення до iroh...
 msg-iroh-ready = iroh endpoint готовий
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубліковано через локальний ma ({ $url })
-msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '/my/identity!publish @ma'. Введіть '.help/publish' для деталей.
+msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '.my.identity!publish @ma'. Введіть '.help/publish' для деталей.
 msg-blocked = ⊗ заблоковано [{ $cap }]: { $from }
 msg-focus-cleared = фокус знято
 msg-focusing = фокус на { $did } як { $prompt }
@@ -112,7 +112,7 @@ discover-invalid-did = виявлення не вдалося: очікувал�
 discover-no-endpoint = попередження: `endpoint_id` відсутній у status.json; збережено лише DID
 discover-success = ma знайдено за { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдонім @ma створено — виконайте '/my/identity!publish @ma' для публікації особистості.
+discover-alias-hint =   псевдонім @ma створено — виконайте '.my.identity!publish @ma' для публікації особистості.
 claim-success = середовище виконання заявлено для { $did }
 claim-conflict = середовище виконання вже заявлено іншою особистістю
 claim-http-failed = заявка не вдалася: HTTP { $status }
@@ -121,33 +121,33 @@ claim-no-session = не увійшли; увійдіть для заявки с�
 runtime-no-verb = немає команди `{ $verb }` для { $path }
 
 # ── Дієслова — ACL ────────────────────────────────────────────────────────
-acl-reset = /my/acl скинуто (повністю відкрито)
+acl-reset = .my.acl скинуто (повністю відкрито)
 acl-persist-error = помилка збереження: { $e }
-acl-no-verb = немає команди `{ $verb }` для /my/acl
+acl-no-verb = немає команди `{ $verb }` для .my.acl
 
 # ── Дієслова — мова ───────────────────────────────────────────────────────
-lang-list-header = Доступні мови (задати через /my/i18n: <code>):
+lang-list-header = Доступні мови (задати через .my.i18n: <code>):
 
 # ── Дієслова — особистість ────────────────────────────────────────────────
-publish-usage = використання: /my/identity!publish <did-або-псевдонім>
+publish-usage = використання: .my.identity!publish <did-або-псевдонім>
 identity-exported = Пакет завантажено як { $filename }
 identity-export-failed = Експорт не вдався: { $e }
 
 # ── Дієслова — документи ─────────────────────────────────────────────────
-doc-content-empty = { $path }/content порожній
-doc-save-first = { $path }/content порожній — спочатку збережіть
+doc-content-empty = { $path }.content порожній
+doc-save-first = { $path }.content порожній — спочатку збережіть
 doc-missing-name = відсутня назва документу
-doc-publish-usage = використання: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = використання: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = використання: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = використання: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = публікація { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
-doc-fetch-done = завантажено { $cid } → { $path }/content (не виконано)
+doc-fetch-done = завантажено { $cid } → { $path }.content (не виконано)
 doc-fetch-failed = завантаження { $cid }: { $e }
-doc-fetch-usage = використання: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid не встановлено
+doc-fetch-usage = використання: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid не встановлено
 doc-no-verb = немає команди `{ $verb }` для { $path }
 path-no-verb = немає команди `{ $verb }` для { $path }
 
@@ -176,7 +176,7 @@ help-topic-msg =   .help/msg                    повідомлення — @ac
 help-topic-focus =   .help/focus                  режим фокусу — .use @actor
 help-topic-path =   .help/path                   синтаксис локального шляху
 help-topic-my =   .help/my                     особиста конфігурація
-help-topic-inbox =   .help/inbox                  вхідні — /my/inbox.*
+help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
 help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
 help-topic-url =   .help/url                    відкрити zion через URL
@@ -200,39 +200,39 @@ help-config-delete =   .path:                       видалити лист а
 help-config-verb =   .path!verb [args]            викликати локальне дієслово
 
 # ── Довідка — загальні шляхи ──────────────────────────────────────────────
-help-my =   /my                          показати особисту конфігурацію
-help-aliases =   /my/aliases                  список псевдонімів
-help-aliases-set =   /my/aliases/<name>: <did>    додати/оновити псевдонім (bare DID, без #fragment)
-help-aliases-del =   /my/aliases/<name>:          видалити псевдонім
-help-runtime-discover =   .ma [port]                   підключити локальне середовище → /ctx/ma.* (порт за замовчуванням 5003)
+help-my =   .my                          показати особисту конфігурацію
+help-aliases =   .my.aliases                  список псевдонімів
+help-aliases-set =   .my.aliases.<name>: <did>    додати/оновити псевдонім (bare DID, без #fragment)
+help-aliases-del =   .my.aliases.<name>:          видалити псевдонім
+help-runtime-discover =   .ma [port]                   підключити локальне середовище → .ctx.ma.* (порт за замовчуванням 5003)
 help-runtime-claim =   .ma [port]                   (те ж саме — заявка та виявлення об'єднані)
-help-identity =   /my/identity                 показати конфігурацію особистості
-help-identity-did =   /my/identity/did             показати власний DID (лише читання)
-help-identity-publish =   /my/identity!publish @pub    опублікувати DID через службу публікацій
-help-identity-export =   /my/identity!export          завантажити власний пакет особистості
-help-config-path =   /ctx                         стан контексту — інформація про ma runtime, CID профілю
+help-identity =   .my.identity                 показати конфігурацію особистості
+help-identity-did =   .my.identity.did             показати власний DID (лише читання)
+help-identity-publish =   .my.identity!publish @pub    опублікувати DID через службу публікацій
+help-identity-export =   .my.identity!export          завантажити власний пакет особистості
+help-config-path =   .ctx                         стан контексту — інформація про ma runtime, CID профілю
 
 # ── Довідка — вхідні ──────────────────────────────────────────────────────
-help-inbox =   /my/inbox                    список вхідних (перегляд піддерева)
-help-inbox-n =   /my/inbox/N                  показати поля запису N
-help-inbox-from =   /my/inbox/N/from             DID відправника запису N
-help-inbox-reply =   /my/inbox/N!reply [body]     надіслати відповідь (без тексту — редактор)
-help-inbox-open =   /my/inbox/N!open             відкрити вміст у режимі читання
-help-inbox-del =   /my/inbox/N:                 видалити запис N
-help-inbox-delall =   /my/inbox:                   видалити всі вхідні
-help-inbox-flush =   /my/inbox!flush              вивести всі записи в термінал
-help-inbox-filter =   /my/inbox!filter @who        показати лише записи від @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   обхід документу відправника
+help-inbox =   .my.inbox                    список вхідних (перегляд піддерева)
+help-inbox-n =   .my.inbox.N                  показати поля запису N
+help-inbox-from =   .my.inbox.N.from             DID відправника запису N
+help-inbox-reply =   .my.inbox.N!reply [body]     надіслати відповідь (без тексту — редактор)
+help-inbox-open =   .my.inbox.N!open             відкрити вміст у режимі читання
+help-inbox-del =   .my.inbox.N:                 видалити запис N
+help-inbox-delall =   .my.inbox:                   видалити всі вхідні
+help-inbox-flush =   .my.inbox!flush              вивести всі записи в термінал
+help-inbox-filter =   .my.inbox!filter @who        показати лише записи від @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   обхід документу відправника
 
 # ── Довідка — документи ───────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           відкрити редактор зі збереженим вмістом
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     завантажити CID для перегляду
-help-doc-eval =   /my/doc/<name>!eval           виконати вміст рядок за рядком
-help-doc-publish =   /my/doc/<name>!publish @pub   зберегти як сирі дані (будь-який тип)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  зберегти YAML як DAG-CBOR IPLD вузол
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    імпортувати вміст CID
-help-doc-cid =   /my/doc/<name>!cid            показати збережений CID
-help-doc-del =   /my/doc/<name>:              видалити документ
+help-doc-edit =   .my.doc.<name>!edit           відкрити редактор зі збереженим вмістом
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     завантажити CID для перегляду
+help-doc-eval =   .my.doc.<name>!eval           виконати вміст рядок за рядком
+help-doc-publish =   .my.doc.<name>!publish @pub   зберегти як сирі дані (будь-який тип)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  зберегти YAML як DAG-CBOR IPLD вузол
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    імпортувати вміст CID
+help-doc-cid =   .my.doc.<name>!cid            показати збережений CID
+help-doc-del =   .my.doc.<name>:              видалити документ
 
 # ── Довідка — параметри URL ───────────────────────────────────────────────
 help-header-url = ── параметри URL ─────────────────────────────────────────────────────────
@@ -303,7 +303,7 @@ profile-publish-done = профіль опубліковано — DID-доку�
 profile-publish-failed = публікація профілю не вдалася: { $e }
 profile-fetch-done = профіль отримано — завантажено ключів { $n } з IPFS
 profile-fetch-failed = отримання профілю не вдалося: { $e }
-profile-fetch-did-resolve-failed = DID ще не опубліковано — спочатку виконайте '/my/identity!publish @ma', потім '!publish' профіль
+profile-fetch-did-resolve-failed = DID ще не опубліковано — спочатку виконайте '.my.identity!publish @ma', потім '!publish' профіль
 profile-update-done = профіль оновлено — { $n } ключів об'єднано з CID
 msg-identity-exists = особистість вже опублікована — профіль актуальний
 profile-import-exists = профіль '{ $name }' вже існує — спочатку видаліть його
@@ -344,7 +344,7 @@ help-topic-publish =   .help/publish                публікація осо�
 help-header-publish = ── публікація особистості ───────────────────────────────────────────────────
 help-publish-intro = Публікація робить вашу особистість доступною для пошуку в мережі. Інші можуть знайти ваш DID, щоб зв'язатися з вами.
 help-publish-ma = Для публікації потрібен встановлений ma (локальне середовище виконання). Він з'єднує ego з IPFS/IPNS від вашого імені.
-help-publish-steps = Кроки: виконайте '.ma [port]' для виявлення локального ma, потім '/my/identity!publish @ma'.
+help-publish-steps = Кроки: виконайте '.ma [port]' для виявлення локального ma, потім '.my.identity!publish @ma'.
 help-publish-without = Без публікації інші не зможуть вас знайти — навіть знаючи ваш DID, вони не зможуть знайти ваш endpoint.
 
 # ── Пакетний режим ────────────────────────────────────────────────────────

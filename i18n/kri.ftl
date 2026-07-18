@@ -44,7 +44,7 @@ msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don pablish tru local ma ({ $url })
-msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '/my/identity!publish @ma'. Rait '.help/publish' fo mɔ infɔmeshɔn.
+msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '.my.identity!publish @ma'. Rait '.help/publish' fo mɔ infɔmeshɔn.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
 msg-focusing = fokɔs { $did } as { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = diskɔva fail: ekspekt `did` fi stat wit did:ma:, get `{ 
 discover-no-endpoint = diskɔva waning: `endpoint_id` nor dɛ status.json; sev DID only
 discover-success = ma diskɔva at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   @ma alias mek — ron '/my/identity!publish @ma' fo pɔblish yu ɔpsɛt.
+discover-alias-hint =   @ma alias mek — ron '.my.identity!publish @ma' fo pɔblish yu ɔpsɛt.
 claim-success = Runtime claim fɔ { $did }
 claim-conflict = Runtime already claim by anɔdɔ identity
 claim-http-failed = claim fail: HTTP { $status }
@@ -117,35 +117,35 @@ claim-no-session = nor login; login fɛs fi claim di runtime
 runtime-no-verb = nor get vɛb `{ $verb }` fɔ { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl reset (fully open)
+acl-reset = .my.acl reset (fully open)
 acl-persist-error = pɛsist ɛrɔ: { $e }
-acl-no-verb = nor get vɛb `{ $verb }` fɔ /my/acl
+acl-no-verb = nor get vɛb `{ $verb }` fɔ .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
-publish-usage = yusij: /my/identity!publish <did-ɔ-alias>
+publish-usage = yusij: .my.identity!publish <did-ɔ-alias>
 identity-exported = Bɔndɔl dɔnlod as { $filename }
 identity-export-failed = Ekspɔt fɛl: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content empty
-doc-save-first = { $path }/content empty — sev fɛs
+doc-content-empty = { $path }.content empty
+doc-save-first = { $path }.content empty — sev fɛs
 doc-missing-name = dokument nem nor dɛ
-doc-publish-usage = yusij: /my/doc/<nem>:publish <pɔblisha>
-doc-publish-ipld-usage = yusij: /my/doc/<nem>:publish-ipld <pɔblisha>
+doc-publish-usage = yusij: .my.doc.<nem>:publish <pɔblisha>
+doc-publish-ipld-usage = yusij: .my.doc.<nem>:publish-ipld <pɔblisha>
 doc-publish-failed = pɔblish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-ipld-store-sent = IPLD stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
-doc-fetch-done = fetch { $cid } → { $path }/content (nor execute)
+doc-fetch-done = fetch { $cid } → { $path }.content (nor execute)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = yusij: /my/doc/<nem>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid nor set
+doc-fetch-usage = yusij: .my.doc.<nem>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid nor set
 doc-no-verb = nor get vɛb `{ $verb }` fɔ { $path }
 path-no-verb = nor get vɛb `{ $verb }` fɔ { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Lenggwij dem wey dey (set wit /my/i18n: <code>):
+lang-list-header = Lenggwij dem wey dey (set wit .my.i18n: <code>):
 
 err-lang-not-found = langwej nor fine: { $lang }
 
@@ -155,7 +155,7 @@ help-header-focus = ── fokus mod ──────────────�
 help-header-config = ── lokal konfig gramma ────────────────────────────────────────────────────
 help-header-common = ── komon paf dem ──────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ──────────────────────────────────────────────────────────────────
-help-header-documents = ── dokument dem (/my/doc.*) ───────────────────────────────────────────────
+help-header-documents = ── dokument dem (.my.doc.*) ───────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
@@ -175,35 +175,35 @@ help-config-filter =   .path value                  match kweri (filta bay valu)
 help-config-set =   .path: value                 set lif
 help-config-delete =   .path:                       dilet lif or sabtri
 help-config-verb =   .path!verb [args]            invok lokal vob
-help-my =   /my                          shoh all pesonal konifig
-help-aliases =   /my/aliases                  list alias dem
-help-aliases-set =   /my/aliases/<name>: <did>    add/update alias (ber DID, noh #fragment)
-help-aliases-del =   /my/aliases/<name>:          rimov alias
+help-my =   .my                          shoh all pesonal konifig
+help-aliases =   .my.aliases                  list alias dem
+help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (ber DID, noh #fragment)
+help-aliases-del =   .my.aliases.<name>:          rimov alias
 help-runtime-discover =   .ma [port]          diskova lokal runtime en kreyet @ma alias
 help-runtime-claim =   .ma [port]             klem runtime onashep wid yu DID
-help-identity =   /my/identity                 shoh identity konifig
-help-identity-did =   /my/identity/did             shoh on DID (rid onli)
-help-identity-publish =   /my/identity!publish @pub    pablish on DID bifo pablisha sovic
-help-identity-export =   /my/identity!export          dɔnlod yu ɔn idɛntiti bɔndɔl
+help-identity =   .my.identity                 shoh identity konifig
+help-identity-did =   .my.identity.did             shoh on DID (rid onli)
+help-identity-publish =   .my.identity!publish @pub    pablish on DID bifo pablisha sovic
+help-identity-export =   .my.identity!export          dɔnlod yu ɔn idɛntiti bɔndɔl
 help-config-path =   .config                      shoh all .config.* entri dem
-help-inbox =   /my/inbox                    list inbox (sabtri vyu)
-help-inbox-n =   /my/inbox/N                  shoh entri N fild dem
-help-inbox-from =   /my/inbox/N/from             senda DID foh entri N
-help-inbox-reply =   /my/inbox/N!reply [body]     send ripla (opin edita if noh bodi)
-help-inbox-open =   /my/inbox/N!open             opin entri kontent rid-onli insay edita
-help-inbox-del =   /my/inbox/N:                 dilet entri N
-help-inbox-delall =   /my/inbox:                   dilet all inbox entri dem
-help-inbox-flush =   /my/inbox!flush              print all entri dem go terminal
-help-inbox-filter =   /my/inbox!filter @who        sho ɔnli entri fɔm @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   travos senda DID dokument layzili
-help-doc-edit =   /my/doc/<name>!edit           opin edita wid seyvd kontent
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     fech CID, opin foh rivyu onli
-help-doc-eval =   /my/doc/<name>!eval           eksekut seyvd kontent lin by lin
-help-doc-publish =   /my/doc/<name>!publish @pub   stoh as ro blob (eni tayp)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  stoh YAML as strakchad DAG-CBOR IPLD nod
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    impot CID kontent (noh eksekushon)
-help-doc-cid =   /my/doc/<name>!cid            shoh stohd CID
-help-doc-del =   /my/doc/<name>:              dilet dokument
+help-inbox =   .my.inbox                    list inbox (sabtri vyu)
+help-inbox-n =   .my.inbox.N                  shoh entri N fild dem
+help-inbox-from =   .my.inbox.N.from             senda DID foh entri N
+help-inbox-reply =   .my.inbox.N!reply [body]     send ripla (opin edita if noh bodi)
+help-inbox-open =   .my.inbox.N!open             opin entri kontent rid-onli insay edita
+help-inbox-del =   .my.inbox.N:                 dilet entri N
+help-inbox-delall =   .my.inbox:                   dilet all inbox entri dem
+help-inbox-flush =   .my.inbox!flush              print all entri dem go terminal
+help-inbox-filter =   .my.inbox!filter @who        sho ɔnli entri fɔm @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   travos senda DID dokument layzili
+help-doc-edit =   .my.doc.<name>!edit           opin edita wid seyvd kontent
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fech CID, opin foh rivyu onli
+help-doc-eval =   .my.doc.<name>!eval           eksekut seyvd kontent lin by lin
+help-doc-publish =   .my.doc.<name>!publish @pub   stoh as ro blob (eni tayp)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  stoh YAML as strakchad DAG-CBOR IPLD nod
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    impot CID kontent (noh eksekushon)
+help-doc-cid =   .my.doc.<name>!cid            shoh stohd CID
+help-doc-del =   .my.doc.<name>:              dilet dokument
 
 msg-send-failed = sen no go: { $e }
 msg-not-logged-in = yu nɔ lɔg in
@@ -319,9 +319,9 @@ help-topic-publish =   .help/publish                pɔblish yu ɔpsɛt ɔn di n
 help-header-publish = ── pɔblish ɔpsɛt ────────────────────────────────────────────────────────────
 help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda pipul kɛn luk yu DID fɔ rich yu.
 help-publish-ma = Fɔ pɔblish, yu nid ma (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.
-help-publish-steps = Stɛps: ron '.ma [port]' fɔ faind lɔkɔl ma, den '/my/identity!publish @ma'.
+help-publish-steps = Stɛps: ron '.ma [port]' fɔ faind lɔkɔl ma, den '.my.identity!publish @ma'.
 help-publish-without = Widaut pɔblishine, ɔda pipul kɛnnɔ rich yu — even if dɛn nɔ yu DID, dɛn kɛnnɔ sɔlv yu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

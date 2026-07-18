@@ -44,7 +44,7 @@ msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
-msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'/my/identity!publish @ma'を実行してください。詳細は'.help/publish'と入力してください。
+msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'.my.identity!publish @ma'を実行してください。詳細は'.help/publish'と入力してください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
 msg-focusing = { $did } を { $prompt } としてフォーカス中
@@ -108,7 +108,7 @@ discover-invalid-did = 検出に失敗しました: `did` は did:ma: で始ま�
 discover-no-endpoint = 検出の警告: status.json に `endpoint_id` がありません。DID のみ保存しました
 discover-success = { $url } で ma を検出しました
 discover-did-line = DID: { $did }
-discover-alias-hint =   エイリアス @ma が作成されました — '/my/identity!publish @ma'を実行して身元を公開してください。
+discover-alias-hint =   エイリアス @ma が作成されました — '.my.identity!publish @ma'を実行して身元を公開してください。
 claim-success = { $did } のランタイムを要求しました
 claim-conflict = ランタイムはすでに別のアイデンティティにより要求されています
 claim-http-failed = 要求に失敗しました: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ログインしていません。ランタイムを要求す�
 runtime-no-verb = { $path } に動詞 `{ $verb }` がありません
 
 # ── 動詞 — アクセス制御 ──────────────────────────────────────────────────
-acl-reset = /my/acl をリセットしました (完全に開放)
+acl-reset = .my.acl をリセットしました (完全に開放)
 acl-persist-error = 保存エラー: { $e }
-acl-no-verb = /my/acl に動詞 `{ $verb }` がありません
+acl-no-verb = .my.acl に動詞 `{ $verb }` がありません
 
 # ── 動詞 — アイデンティティ ──────────────────────────────────────────────
-publish-usage = 使用方法: /my/identity!publish <did-またはエイリアス>
+publish-usage = 使用方法: .my.identity!publish <did-またはエイリアス>
 identity-exported = バンドルを { $filename } としてダウンロードしました
 identity-export-failed = エクスポート失敗: { $e }
 
 # ── 動詞 — ドキュメント ──────────────────────────────────────────────────
-doc-content-empty = { $path }/content が空です
-doc-save-first = { $path }/content が空です — 先に保存してください
+doc-content-empty = { $path }.content が空です
+doc-save-first = { $path }.content が空です — 先に保存してください
 doc-missing-name = ドキュメント名がありません
-doc-publish-usage = 使用方法: /my/doc/<名前>:publish <発行者>
-doc-publish-ipld-usage = 使用方法: /my/doc/<名前>:publish-ipld <発行者>
+doc-publish-usage = 使用方法: .my.doc.<名前>:publish <発行者>
+doc-publish-ipld-usage = 使用方法: .my.doc.<名前>:publish-ipld <発行者>
 doc-publish-failed = { $path } の公開エラー: { $e }
 doc-publish-ipld-failed = { $path } の IPLD 公開エラー: { $e }
 doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
-doc-fetch-done = { $cid } を取得しました → { $path }/content (実行されていません)
+doc-fetch-done = { $cid } を取得しました → { $path }.content (実行されていません)
 doc-fetch-failed = { $cid } の取得エラー: { $e }
-doc-fetch-usage = 使用方法: /my/doc/<名前>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid が設定されていません
+doc-fetch-usage = 使用方法: .my.doc.<名前>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid が設定されていません
 doc-no-verb = { $path } に動詞 `{ $verb }` がありません
 path-no-verb = { $path } に動詞 `{ $verb }` がありません
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 リーフを設定
 help-config-delete =   .path:                       リーフまたはサブツリーを削除
 help-config-verb =   .path!verb [args]            ローカル動詞を実行
 
-help-my =   /my                          すべての個人設定を表示
-help-aliases =   /my/aliases                  エイリアスを一覧表示
-help-aliases-set =   /my/aliases/<name>: <did>    エイリアスを追加/更新 (純粋な DID、#フラグメントなし)
-help-aliases-del =   /my/aliases/<name>:          エイリアスを削除
+help-my =   .my                          すべての個人設定を表示
+help-aliases =   .my.aliases                  エイリアスを一覧表示
+help-aliases-set =   .my.aliases.<name>: <did>    エイリアスを追加/更新 (純粋な DID、#フラグメントなし)
+help-aliases-del =   .my.aliases.<name>:          エイリアスを削除
 help-runtime-discover =   .ma [port]          ローカルランタイムを検出し @ma エイリアスを作成
 help-runtime-claim =   .ma [port]             自分の DID でランタイムを要求
-help-identity =   /my/identity                 アイデンティティ設定を表示
-help-identity-did =   /my/identity/did             自分の DID を表示 (読み取り専用)
-help-identity-publish =   /my/identity!publish @pub    発行サービスを通じて自分の DID を公開
-help-identity-export =   /my/identity!export          自分の身元バンドルをダウンロード
+help-identity =   .my.identity                 アイデンティティ設定を表示
+help-identity-did =   .my.identity.did             自分の DID を表示 (読み取り専用)
+help-identity-publish =   .my.identity!publish @pub    発行サービスを通じて自分の DID を公開
+help-identity-export =   .my.identity!export          自分の身元バンドルをダウンロード
 help-config-path =   .config                      すべての .config.* エントリーを表示
 
-help-inbox =   /my/inbox                    受信トレイを一覧表示 (サブツリービュー)
-help-inbox-n =   /my/inbox/N                  エントリー N のフィールドを表示
-help-inbox-from =   /my/inbox/N/from             エントリー N の送信者 DID
-help-inbox-reply =   /my/inbox/N!reply [body]     返信を送信 (本文なしでエディターを開く)
-help-inbox-open =   /my/inbox/N!open             読み取り専用エディターでコンテンツを開く
-help-inbox-del =   /my/inbox/N:                 エントリー N を削除
-help-inbox-delall =   /my/inbox:                   受信トレイのすべてのエントリーを削除
-help-inbox-flush =   /my/inbox!flush              ターミナルにすべてのエントリーを出力
-help-inbox-filter =   /my/inbox!filter @who        @who からの項目のみ表示
-help-inbox-traverse =   /my/inbox/N/sender/<フィールド>  送信者の DID ドキュメントを遅延トラバース
+help-inbox =   .my.inbox                    受信トレイを一覧表示 (サブツリービュー)
+help-inbox-n =   .my.inbox.N                  エントリー N のフィールドを表示
+help-inbox-from =   .my.inbox.N.from             エントリー N の送信者 DID
+help-inbox-reply =   .my.inbox.N!reply [body]     返信を送信 (本文なしでエディターを開く)
+help-inbox-open =   .my.inbox.N!open             読み取り専用エディターでコンテンツを開く
+help-inbox-del =   .my.inbox.N:                 エントリー N を削除
+help-inbox-delall =   .my.inbox:                   受信トレイのすべてのエントリーを削除
+help-inbox-flush =   .my.inbox!flush              ターミナルにすべてのエントリーを出力
+help-inbox-filter =   .my.inbox!filter @who        @who からの項目のみ表示
+help-inbox-traverse =   .my.inbox.N.sender.<フィールド>  送信者の DID ドキュメントを遅延トラバース
 
-help-doc-edit =   /my/doc/<名前>:edit           保存されたコンテンツでエディターを開く
-help-doc-edit-cid =   /my/doc/<名前>:edit <cid>     CID を取得し、レビューのために開く
-help-doc-eval =   /my/doc/<名前>:eval           保存されたコンテンツを一行ずつ実行
-help-doc-publish =   /my/doc/<名前>:publish @pub   生のブロブとして保存 (すべてのタイプ)
-help-doc-publish-ipld =   /my/doc/<名前>:publish-ipld @pub  YAML を構造化 DAG-CBOR IPLD ノードとして保存
-help-doc-fetch =   /my/doc/<名前>:fetch <cid>    CID コンテンツをインポート (実行なし)
-help-doc-cid =   /my/doc/<名前>:cid            保存された CID を表示
-help-doc-del =   /my/doc/<名前>:              ドキュメントを削除
+help-doc-edit =   .my.doc.<名前>:edit           保存されたコンテンツでエディターを開く
+help-doc-edit-cid =   .my.doc.<名前>:edit <cid>     CID を取得し、レビューのために開く
+help-doc-eval =   .my.doc.<名前>:eval           保存されたコンテンツを一行ずつ実行
+help-doc-publish =   .my.doc.<名前>:publish @pub   生のブロブとして保存 (すべてのタイプ)
+help-doc-publish-ipld =   .my.doc.<名前>:publish-ipld @pub  YAML を構造化 DAG-CBOR IPLD ノードとして保存
+help-doc-fetch =   .my.doc.<名前>:fetch <cid>    CID コンテンツをインポート (実行なし)
+help-doc-cid =   .my.doc.<名前>:cid            保存された CID を表示
+help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = 利用可能な言語 (/my/i18n: <code> で設定):
+lang-list-header = 利用可能な言語 (.my.i18n: <code> で設定):
 err-lang-not-found = 言語が見つかりません: { $lang }
 
 msg-send-failed = 送信失敗: { $e }
@@ -325,9 +325,9 @@ help-topic-publish =   .help/publish                ネットワークに身元�
 help-header-publish = ── 身元の公開 ────────────────────────────────────────────────────────────────
 help-publish-intro = 公開することでネットワーク上で身元を見つけられるようになります。他の人はDIDを検索してあなたに連絡できます。
 help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。
-help-publish-steps = 手順：'.ma [port]'でローカルmaを検出し、'/my/identity!publish @ma'を実行してください。
+help-publish-steps = 手順：'.ma [port]'でローカルmaを検出し、'.my.identity!publish @ma'を実行してください。
 help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

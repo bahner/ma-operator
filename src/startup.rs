@@ -39,7 +39,7 @@ pub(crate) async fn startup_profile_exists(
     // freshly-published local state — after a publish the DID can still resolve
     // to the previous document for some time, causing a spurious merge that
     // restores deleted aliases.
-    // If `/my/profile/published_at` is absent (old install, first publish) we
+    // If `.my.profile.published_at` is absent (old install, first publish) we
     // fall through and merge to stay backward-compatible.
     let doc_updated_at = doc.updated_at.as_str();
     let local_published_at = config
@@ -80,7 +80,7 @@ pub(crate) async fn startup_no_document(
         url.trim_end_matches('/').to_string()
     } else {
         let cfg = config.get_untracked();
-        cfg.get("/ctx/ma/url")
+        cfg.get(".ctx.ma.url")
             .unwrap_or("http://localhost:5003")
             .trim_end_matches('/')
             .to_string()
@@ -108,11 +108,11 @@ pub(crate) async fn startup_no_document(
         .unwrap_or("")
         .to_string();
     config.update(|cfg| {
-        cfg.set("/ctx/ma/did", &ma_did);
+        cfg.set(".ctx.ma.did", &ma_did);
         if !endpoint_id.is_empty() {
-            cfg.set("/ctx/ma/endpoint_id", &endpoint_id);
+            cfg.set(".ctx.ma.endpoint_id", &endpoint_id);
         }
-        cfg.set("/my/aliases/ma", &ma_did);
+        cfg.set(".my.aliases.ma", &ma_did);
     });
     if let Some(sess) = state.session.get_untracked() {
         let cfg = config.get_untracked();
@@ -156,19 +156,19 @@ pub(crate) async fn startup_load_config(
             // Read-only session-derived field; never persisted
             // intentionally, but harmless if it leaks: it is
             // re-injected on every login.
-            cfg.set("/my/identity/did", &sender_did);
+            cfg.set(".my.identity.did", &sender_did);
             // Seed auto-publish with default "true" if not already set.
-            if cfg.get("/my/identity/auto-publish").is_none() {
-                cfg.set("/my/identity/auto-publish", "true");
+            if cfg.get(".my.identity.auto-publish").is_none() {
+                cfg.set(".my.identity.auto-publish", "true");
             }
             // Prune inbox entries that expired since last session.
             let now = js_sys::Date::now() / 1000.0;
             let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
             crate::eval::apply_config_to_dom(&cfg);
-            // Restore focus context if /my/ctx/use was true last session.
+            // Restore focus context if .my.ctx.use was true last session.
             crate::eval::apply_ctx_focus(&cfg, &state);
             // Apply log level from config if set.
-            if let Some(level) = cfg.get("/my/config/log/level") {
+            if let Some(level) = cfg.get(".my.config.log.level") {
                 crate::apply_log_level(level);
             }
             if pruned > 0 {
@@ -183,7 +183,7 @@ pub(crate) async fn startup_load_config(
     // Re-apply language preference from config if set.
     if let Some(lang) = config
         .get_untracked()
-        .get("/my/i18n")
+        .get(".my.i18n")
         .map(|s| s.to_string())
     {
         let first = lang.split(':').next().unwrap_or(&lang).to_string();
@@ -191,12 +191,12 @@ pub(crate) async fn startup_load_config(
         state.lang.set(crate::i18n::lang());
         crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(lang));
     } else {
-        // No preference stored yet — seed /my/i18n from the browser-detected language.
+        // No preference stored yet — seed .my.i18n from the browser-detected language.
         let browser_lang = crate::i18n::lang();
         state.lang.set(browser_lang.clone());
         crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(browser_lang.clone()));
         let mut cfg = config.get_untracked();
-        cfg.set("/my/i18n", &browser_lang);
+        cfg.set(".my.i18n", &browser_lang);
         if let Err(e) = persist_config(&username, &cfg).await {
             state.push_error(tf("err-lang-persist", &[("e", &e)]));
         }

@@ -44,7 +44,7 @@ msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID hollitaama e nder ma ({ $url })
-msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '/my/identity!publish @ma'. Windu '.help/publish' ngam tabitinde.
+msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '.my.identity!publish @ma'. Windu '.help/publish' ngam tabitinde.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
 msg-focusing = nelitaade { $did } haa { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = yiytaade haaɗaaka: `did` fotde fuɗɗoraade did:ma:, taw
 discover-no-endpoint = kaaɗto yiytaade: `endpoint_id` tawaaka e status.json; DID tan mooftaama
 discover-success = ma yiytaama e { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   tinndi @ma ɓe — laato '/my/identity!publish @ma' ngam jaatugol tigiraaɗe maa.
+discover-alias-hint =   tinndi @ma ɓe — laato '.my.identity!publish @ma' ngam jaatugol tigiraaɗe maa.
 claim-success = Runtime ɗaɓɓaama ko { $did }
 claim-conflict = Runtime ɗaɓɓaa ko ɗemngal goɗngal
 claim-http-failed = gollal haaɗaaka: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = naataaka wano; naatna ɓaawo ɗaɓɓude runtime
 runtime-no-verb = baɗe `{ $verb }` { $path } alaa
 
 # ── Baɗe — ACL ────────────────────────────────────────────────────────────
-acl-reset = /my/acl happaama caggal (udditaa haa timmi)
+acl-reset = .my.acl happaama caggal (udditaa haa timmi)
 acl-persist-error = juumre mooftude: { $e }
-acl-no-verb = baɗe `{ $verb }` /my/acl alaa
+acl-no-verb = baɗe `{ $verb }` .my.acl alaa
 
 # ── Baɗe — ɗemngal ───────────────────────────────────────────────────────
-publish-usage = golle: /my/identity!publish <did-walla-hesbu>
+publish-usage = golle: .my.identity!publish <did-walla-hesbu>
 identity-exported = Paake ɗownlooday haa { $filename }
 identity-export-failed = Ɗaɓɓude rewaani: { $e }
 
 # ── Baɗe — takka ─────────────────────────────────────────────────────────
-doc-content-empty = { $path }/content luuɗi
-doc-save-first = { $path }/content luuɗi — mooftu ɓaawo
+doc-content-empty = { $path }.content luuɗi
+doc-save-first = { $path }.content luuɗi — mooftu ɓaawo
 doc-missing-name = innde takka tawaaka
-doc-publish-usage = golle: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = golle: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = golle: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = golle: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = yettinde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = gollal mooftude nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-ipld-store-sent = gollal mooftude IPLD nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
-doc-fetch-done = { $cid } heɓaama → { $path }/content (hooraaka)
+doc-fetch-done = { $cid } heɓaama → { $path }.content (hooraaka)
 doc-fetch-failed = heɓtude { $cid }: { $e }
-doc-fetch-usage = golle: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid mooɓtaaka
+doc-fetch-usage = golle: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid mooɓtaaka
 doc-no-verb = baɗe `{ $verb }` { $path } alaa
 path-no-verb = baɗe `{ $verb }` { $path } alaa
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       yaltina leehol walla aawre
 help-config-verb =   .path!verb [args]            noddu baɗe tiiɗnde
 
 # ── Ballal — laabi caggal ─────────────────────────────────────────────────
-help-my =   /my                          hollu poti fikaji neɗɗaagu
-help-aliases =   /my/aliases                  listal hesbu
-help-aliases-set =   /my/aliases/<name>: <did>    tottiri/hollintu hesbu (bare DID, alaa #fragment)
-help-aliases-del =   /my/aliases/<name>:          yaltina hesbu
+help-my =   .my                          hollu poti fikaji neɗɗaagu
+help-aliases =   .my.aliases                  listal hesbu
+help-aliases-set =   .my.aliases.<name>: <did>    tottiri/hollintu hesbu (bare DID, alaa #fragment)
+help-aliases-del =   .my.aliases.<name>:          yaltina hesbu
 help-runtime-discover =   .ma [port]          yiytude runtime tiiɗnde e hobbaade hesbu @ma
 help-runtime-claim =   .ma [port]             ɗaɓɓude runtime DID maa
-help-identity =   /my/identity                 hollu fikaji neɗɗaagu
-help-identity-did =   /my/identity/did             hollu DID maa (jannde tan)
-help-identity-publish =   /my/identity!publish @pub    yettin DID e batu yettindengal
-help-identity-export =   /my/identity!export          ɗownlooda paake maa aan maa
+help-identity =   .my.identity                 hollu fikaji neɗɗaagu
+help-identity-did =   .my.identity.did             hollu DID maa (jannde tan)
+help-identity-publish =   .my.identity!publish @pub    yettin DID e batu yettindengal
+help-identity-export =   .my.identity!export          ɗownlooda paake maa aan maa
 help-config-path =   .config                      hollu jottaadi .config.* fof
 
 # ── Ballal — burro naatna ─────────────────────────────────────────────────
-help-inbox =   /my/inbox                    listal burro naatna (hollirde aawre)
-help-inbox-n =   /my/inbox/N                  hollu leehol jottaandi N
-help-inbox-from =   /my/inbox/N/from             DID nawnooɗo jottaandi N
-help-inbox-reply =   /my/inbox/N!reply [body]     nawtu jaabiri (uddita winndirde so alaa gollal)
-help-inbox-open =   /my/inbox/N!open             uddita mbeɗe jannde tan e winndirde
-help-inbox-del =   /my/inbox/N:                 yaltina jottaandi N
-help-inbox-delall =   /my/inbox:                   yaltina jottaandi burro fof
-help-inbox-flush =   /my/inbox!flush              winndita jottaandi fof e terminal
-help-inbox-filter =   /my/inbox!filter @who        yiiɗo ko @who heɓi tan
-help-inbox-traverse =   /my/inbox/N/sender/<field>   laato takka DID nawnooɗo garol garol
+help-inbox =   .my.inbox                    listal burro naatna (hollirde aawre)
+help-inbox-n =   .my.inbox.N                  hollu leehol jottaandi N
+help-inbox-from =   .my.inbox.N.from             DID nawnooɗo jottaandi N
+help-inbox-reply =   .my.inbox.N!reply [body]     nawtu jaabiri (uddita winndirde so alaa gollal)
+help-inbox-open =   .my.inbox.N!open             uddita mbeɗe jannde tan e winndirde
+help-inbox-del =   .my.inbox.N:                 yaltina jottaandi N
+help-inbox-delall =   .my.inbox:                   yaltina jottaandi burro fof
+help-inbox-flush =   .my.inbox!flush              winndita jottaandi fof e terminal
+help-inbox-filter =   .my.inbox!filter @who        yiiɗo ko @who heɓi tan
+help-inbox-traverse =   .my.inbox.N.sender.<field>   laato takka DID nawnooɗo garol garol
 
 # ── Ballal — takka ───────────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           uddita winndirde e mbeɗe mooƒtaaɗo
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     heɓta CID, uddita jannde tan
-help-doc-eval =   /my/doc/<name>!eval           hoora mbeɗe mooƒtaaɗo saɗeere e saɗeere
-help-doc-publish =   /my/doc/<name>!publish @pub   mooftu wano blob daneewal (kala sifordu)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  mooftu YAML wano node IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    keɓta mbeɗe CID (hooraaka)
-help-doc-cid =   /my/doc/<name>!cid            hollu CID mooƒtaaɗo
-help-doc-del =   /my/doc/<name>:              yaltina takka
+help-doc-edit =   .my.doc.<name>!edit           uddita winndirde e mbeɗe mooƒtaaɗo
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     heɓta CID, uddita jannde tan
+help-doc-eval =   .my.doc.<name>!eval           hoora mbeɗe mooƒtaaɗo saɗeere e saɗeere
+help-doc-publish =   .my.doc.<name>!publish @pub   mooftu wano blob daneewal (kala sifordu)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  mooftu YAML wano node IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    keɓta mbeɗe CID (hooraaka)
+help-doc-cid =   .my.doc.<name>!cid            hollu CID mooƒtaaɗo
+help-doc-del =   .my.doc.<name>:              yaltina takka
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Haɓɓe ndiyam goɗɗi (sett na /my/i18n: <code>):
+lang-list-header = Haɓɓe ndiyam goɗɗi (sett na .my.i18n: <code>):
 err-lang-not-found = hakkunde yolaani: { $lang }
 
 msg-send-failed = neldungal walaa: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                jaatugol tigi maa to laawol
 help-header-publish = ── jaatugol tigi ────────────────────────────────────────────────────────────
 help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mbaawi yiylaade DID maa ngam tawtaade.
 help-publish-ma = Ngam jaatugol, a haani ma (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.
-help-publish-steps = Laaɓol: laato '.ma [port]' ngam yiyde ma laawol, ɓe '/my/identity!publish @ma'.
+help-publish-steps = Laaɓol: laato '.ma [port]' ngam yiyde ma laawol, ɓe '.my.identity!publish @ma'.
 help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

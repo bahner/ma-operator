@@ -44,7 +44,7 @@ msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publisert via lokal ma ({ $url })
-msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.ma [port]' og deretter '/my/identity!publish @ma'. Skriv '.help/publish' for detaljar.
+msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.ma [port]' og deretter '.my.identity!publish @ma'. Skriv '.help/publish' for detaljar.
 msg-blocked = ⊗ blokkert [{ $cap }]: { $from }
 msg-focus-cleared = fokus tømt
 msg-focusing = fokuserer { $did } som { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = oppdaging mislykkast: forventa `did` byrjar med did:ma:, 
 discover-no-endpoint = oppdagingsåtvaring: `endpoint_id` manglar i status.json; lagra berre DID
 discover-success = ma oppdaga ved { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma oppretta — køyr '/my/identity!publish @ma' for å publisere identiteten din.
+discover-alias-hint =   alias @ma oppretta — køyr '.my.identity!publish @ma' for å publisere identiteten din.
 claim-success = Køyretid gjort krav på for { $did }
 claim-conflict = Køyretid allereie gjort krav på av ein annan identitet
 claim-http-failed = krav mislykkast: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ikkje logga inn; logg inn fyrst for å gjere krav på køyret
 runtime-no-verb = inkje verb `{ $verb }` for { $path }
 
 # ── Verb — tilgangskontroll ───────────────────────────────────────────────
-acl-reset = /my/acl tilbakestilt (heilt open)
+acl-reset = .my.acl tilbakestilt (heilt open)
 acl-persist-error = lagringsfeil: { $e }
-acl-no-verb = inkje verb `{ $verb }` for /my/acl
+acl-no-verb = inkje verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
-publish-usage = bruk: /my/identity!publish <did-eller-alias>
+publish-usage = bruk: .my.identity!publish <did-eller-alias>
 identity-exported = Bundle lasta ned som { $filename }
 identity-export-failed = Eksport mislukkast: { $e }
 
 # ── Verb — dokument ───────────────────────────────────────────────────────
-doc-content-empty = { $path }/content er tom
-doc-save-first = { $path }/content er tom — lagre fyrst
+doc-content-empty = { $path }.content er tom
+doc-save-first = { $path }.content er tom — lagre fyrst
 doc-missing-name = manglande dokumentnamn
-doc-publish-usage = bruk: /my/doc/<namn>:publish <utgjevar>
-doc-publish-ipld-usage = bruk: /my/doc/<namn>:publish-ipld <utgjevar>
+doc-publish-usage = bruk: .my.doc.<namn>:publish <utgjevar>
+doc-publish-ipld-usage = bruk: .my.doc.<namn>:publish-ipld <utgjevar>
 doc-publish-failed = publisering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publisering { $path }: { $e }
 doc-store-sent = lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
-doc-fetch-done = henta { $cid } → { $path }/content (ikkje køyrd)
+doc-fetch-done = henta { $cid } → { $path }.content (ikkje køyrd)
 doc-fetch-failed = henting { $cid }: { $e }
-doc-fetch-usage = bruk: /my/doc/<namn>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid er ikkje sett
+doc-fetch-usage = bruk: .my.doc.<namn>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid er ikkje sett
 doc-no-verb = inkje verb `{ $verb }` for { $path }
 path-no-verb = inkje verb `{ $verb }` for { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       slett lauv eller undertre
 help-config-verb =   .path!verb [args]            køyr lokalt verb
 
 # ── Hjelptekst — vanlege stiar ───────────────────────────────────────────
-help-my =   /my                          vis all personleg konfigurasjon
-help-aliases =   /my/aliases                  list alias
-help-aliases-set =   /my/aliases/<name>: <did>    legg til/oppdater alias (bart DID, inkje #fragment)
-help-aliases-del =   /my/aliases/<name>:          fjern alias
+help-my =   .my                          vis all personleg konfigurasjon
+help-aliases =   .my.aliases                  list alias
+help-aliases-set =   .my.aliases.<name>: <did>    legg til/oppdater alias (bart DID, inkje #fragment)
+help-aliases-del =   .my.aliases.<name>:          fjern alias
 help-runtime-discover =   .ma [port]          oppdag lokal køyretid og opprett @ma-alias
 help-runtime-claim =   .ma [port]             gjer krav på køyretid med din DID
-help-identity =   /my/identity                 vis identitetskonfigurasjon
-help-identity-did =   /my/identity/did             vis eige DID (skriveverna)
-help-identity-publish =   /my/identity!publish @pub    publiser eige DID via utgjevar-teneste
-help-identity-export =   /my/identity!export          last ned eigen identitetspakke
+help-identity =   .my.identity                 vis identitetskonfigurasjon
+help-identity-did =   .my.identity.did             vis eige DID (skriveverna)
+help-identity-publish =   .my.identity!publish @pub    publiser eige DID via utgjevar-teneste
+help-identity-export =   .my.identity!export          last ned eigen identitetspakke
 help-config-path =   .config                      vis alle .config.*-postar
 
 # ── Hjelptekst — innboks ──────────────────────────────────────────────────
-help-inbox =   /my/inbox                    list innboks (undertre-visning)
-help-inbox-n =   /my/inbox/N                  vis post N sine felt
-help-inbox-from =   /my/inbox/N/from             avsendar-DID for post N
-help-inbox-reply =   /my/inbox/N!reply [body]     send svar (opnar redigeringsprogram utan body)
-help-inbox-open =   /my/inbox/N!open             opna innhald i skriveverna redigeringsprogram
-help-inbox-del =   /my/inbox/N:                 slett post N
-help-inbox-delall =   /my/inbox:                   slett alle innbokspostar
-help-inbox-flush =   /my/inbox!flush              skriv alle postar til terminalen
-help-inbox-filter =   /my/inbox!filter @who        vis berre oppføringar frå @who
-help-inbox-traverse =   /my/inbox/N/sender/<felt>   traverser avsendar sitt DID-dokument latent
+help-inbox =   .my.inbox                    list innboks (undertre-visning)
+help-inbox-n =   .my.inbox.N                  vis post N sine felt
+help-inbox-from =   .my.inbox.N.from             avsendar-DID for post N
+help-inbox-reply =   .my.inbox.N!reply [body]     send svar (opnar redigeringsprogram utan body)
+help-inbox-open =   .my.inbox.N!open             opna innhald i skriveverna redigeringsprogram
+help-inbox-del =   .my.inbox.N:                 slett post N
+help-inbox-delall =   .my.inbox:                   slett alle innbokspostar
+help-inbox-flush =   .my.inbox!flush              skriv alle postar til terminalen
+help-inbox-filter =   .my.inbox!filter @who        vis berre oppføringar frå @who
+help-inbox-traverse =   .my.inbox.N.sender.<felt>   traverser avsendar sitt DID-dokument latent
 
 # ── Hjelptekst — dokument ─────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<namn>:edit           opna redigeringsprogram med lagra innhald
-help-doc-edit-cid =   /my/doc/<namn>:edit <cid>     hent CID, opna for gjennomgang
-help-doc-eval =   /my/doc/<namn>:eval           køyr lagra innhald linje for linje
-help-doc-publish =   /my/doc/<namn>:publish @pub   lagre som rå blob (alle typar)
-help-doc-publish-ipld =   /my/doc/<namn>:publish-ipld @pub  lagre YAML som strukturert DAG-CBOR IPLD-node
-help-doc-fetch =   /my/doc/<namn>:fetch <cid>    importer CID-innhald (ingen køyring)
-help-doc-cid =   /my/doc/<namn>:cid            vis lagra CID
-help-doc-del =   /my/doc/<namn>:              slett dokument
+help-doc-edit =   .my.doc.<namn>:edit           opna redigeringsprogram med lagra innhald
+help-doc-edit-cid =   .my.doc.<namn>:edit <cid>     hent CID, opna for gjennomgang
+help-doc-eval =   .my.doc.<namn>:eval           køyr lagra innhald linje for linje
+help-doc-publish =   .my.doc.<namn>:publish @pub   lagre som rå blob (alle typar)
+help-doc-publish-ipld =   .my.doc.<namn>:publish-ipld @pub  lagre YAML som strukturert DAG-CBOR IPLD-node
+help-doc-fetch =   .my.doc.<namn>:fetch <cid>    importer CID-innhald (ingen køyring)
+help-doc-cid =   .my.doc.<namn>:cid            vis lagra CID
+help-doc-del =   .my.doc.<namn>:              slett dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Tilgjengelege språk (set med /my/i18n: <code>):
+lang-list-header = Tilgjengelege språk (set med .my.i18n: <code>):
 err-lang-not-found = språk ikkje funne: { $lang }
 
 msg-send-failed = sending feila: { $e }
@@ -330,9 +330,9 @@ help-topic-publish =   .help/publish                publisere identiteten din ti
 help-header-publish = ── publisering av identitet ─────────────────────────────────────────────────
 help-publish-intro = Publisering gjer identiteten din synleg på nettverket. Andre kan slå opp din DID for å nå deg.
 help-publish-ma = For å publisere treng du ma (lokal køyretid) installert. Han koplar ego til IPFS/IPNS på dine vegner.
-help-publish-steps = Steg: køyr '.ma [port]' for å oppdage din lokale ma, deretter '/my/identity!publish @ma'.
+help-publish-steps = Steg: køyr '.ma [port]' for å oppdage din lokale ma, deretter '.my.identity!publish @ma'.
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
-profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '/my/identity!publish @ma' fyrst, deretter '!publish' profilen din
+profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity!publish @ma' fyrst, deretter '!publish' profilen din
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

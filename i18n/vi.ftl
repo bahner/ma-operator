@@ -44,7 +44,7 @@ msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID được xuất bản qua ma cục bộ ({ $url })
-msg-identity-not-published = Không tìm thấy danh tính trực tuyến — nếu ma được cài đặt cục bộ, hãy chạy '.ma [port]' rồi '/my/identity!publish @ma'. Gõ '.help/publish' để xem chi tiết.
+msg-identity-not-published = Không tìm thấy danh tính trực tuyến — nếu ma được cài đặt cục bộ, hãy chạy '.ma [port]' rồi '.my.identity!publish @ma'. Gõ '.help/publish' để xem chi tiết.
 msg-blocked = ⊗ bị chặn [{ $cap }]: { $from }
 msg-focus-cleared = đã xóa tiêu điểm
 msg-focusing = đang tập trung { $did } thành { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = khám phá thất bại: `did` phải bắt đầu bằng
 discover-no-endpoint = cảnh báo khám phá: `endpoint_id` thiếu trong status.json; chỉ lưu DID
 discover-success = đã khám phá ma tại { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   bí danh @ma đã được tạo — chạy '/my/identity!publish @ma' để xuất bản danh tính của bạn.
+discover-alias-hint =   bí danh @ma đã được tạo — chạy '.my.identity!publish @ma' để xuất bản danh tính của bạn.
 claim-success = Runtime đã được yêu cầu cho { $did }
 claim-conflict = Runtime đã được yêu cầu bởi danh tính khác
 claim-http-failed = yêu cầu thất bại: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = chưa đăng nhập; đăng nhập trước để yêu cầu 
 runtime-no-verb = không có động từ `{ $verb }` cho { $path }
 
 # ── Động từ — ACL ─────────────────────────────────────────────────────────
-acl-reset = /my/acl đã đặt lại (mở hoàn toàn)
+acl-reset = .my.acl đã đặt lại (mở hoàn toàn)
 acl-persist-error = lỗi lưu trữ: { $e }
-acl-no-verb = không có động từ `{ $verb }` cho /my/acl
+acl-no-verb = không có động từ `{ $verb }` cho .my.acl
 
 # ── Động từ — danh tính ───────────────────────────────────────────────────
-publish-usage = cách dùng: /my/identity!publish <did-hoặc-bí-danh>
+publish-usage = cách dùng: .my.identity!publish <did-hoặc-bí-danh>
 identity-exported = Gói đã tải xuống là { $filename }
 identity-export-failed = Xuất thất bại: { $e }
 
 # ── Động từ — tài liệu ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content trống
-doc-save-first = { $path }/content trống — lưu trước
+doc-content-empty = { $path }.content trống
+doc-save-first = { $path }.content trống — lưu trước
 doc-missing-name = thiếu tên tài liệu
-doc-publish-usage = cách dùng: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = cách dùng: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = cách dùng: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = cách dùng: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = xuất bản { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
-doc-fetch-done = đã tải { $cid } → { $path }/content (chưa chạy)
+doc-fetch-done = đã tải { $cid } → { $path }.content (chưa chạy)
 doc-fetch-failed = tải { $cid }: { $e }
-doc-fetch-usage = cách dùng: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid chưa được đặt
+doc-fetch-usage = cách dùng: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid chưa được đặt
 doc-no-verb = không có động từ `{ $verb }` cho { $path }
 path-no-verb = không có động từ `{ $verb }` cho { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       xóa lá hoặc cây con
 help-config-verb =   .path!verb [args]            gọi động từ cục bộ
 
 # ── Trợ giúp — đường dẫn thông dụng ─────────────────────────────────────
-help-my =   /my                          hiển thị tất cả cấu hình cá nhân
-help-aliases =   /my/aliases                  danh sách bí danh
-help-aliases-set =   /my/aliases/<name>: <did>    thêm/cập nhật bí danh
-help-aliases-del =   /my/aliases/<name>:          xóa bí danh
+help-my =   .my                          hiển thị tất cả cấu hình cá nhân
+help-aliases =   .my.aliases                  danh sách bí danh
+help-aliases-set =   .my.aliases.<name>: <did>    thêm/cập nhật bí danh
+help-aliases-del =   .my.aliases.<name>:          xóa bí danh
 help-runtime-discover =   .ma [port]          khám phá runtime cục bộ và tạo @ma
 help-runtime-claim =   .ma [port]             yêu cầu quyền sở hữu runtime bằng DID
-help-identity =   /my/identity                 hiển thị cấu hình danh tính
-help-identity-did =   /my/identity/did             hiển thị DID của mình (chỉ đọc)
-help-identity-publish =   /my/identity!publish @pub    xuất bản DID qua dịch vụ xuất bản
-help-identity-export =   /my/identity!export          tải xuống gói nhận dạng của bạn
+help-identity =   .my.identity                 hiển thị cấu hình danh tính
+help-identity-did =   .my.identity.did             hiển thị DID của mình (chỉ đọc)
+help-identity-publish =   .my.identity!publish @pub    xuất bản DID qua dịch vụ xuất bản
+help-identity-export =   .my.identity!export          tải xuống gói nhận dạng của bạn
 help-config-path =   .config                      hiển thị tất cả mục .config.*
 
 # ── Trợ giúp — hộp thư đến ───────────────────────────────────────────────
-help-inbox =   /my/inbox                    danh sách hộp thư đến (chế độ cây con)
-help-inbox-n =   /my/inbox/N                  hiển thị các trường của mục N
-help-inbox-from =   /my/inbox/N/from             DID người gửi của mục N
-help-inbox-reply =   /my/inbox/N!reply [body]     gửi trả lời (không có nội dung — mở soạn thảo)
-help-inbox-open =   /my/inbox/N!open             mở nội dung chỉ đọc trong soạn thảo
-help-inbox-del =   /my/inbox/N:                 xóa mục N
-help-inbox-delall =   /my/inbox:                   xóa tất cả mục hộp thư đến
-help-inbox-flush =   /my/inbox!flush              in tất cả mục ra terminal
-help-inbox-filter =   /my/inbox!filter @who        chỉ hiển thị mục từ @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   duyệt lười tài liệu DID người gửi
+help-inbox =   .my.inbox                    danh sách hộp thư đến (chế độ cây con)
+help-inbox-n =   .my.inbox.N                  hiển thị các trường của mục N
+help-inbox-from =   .my.inbox.N.from             DID người gửi của mục N
+help-inbox-reply =   .my.inbox.N!reply [body]     gửi trả lời (không có nội dung — mở soạn thảo)
+help-inbox-open =   .my.inbox.N!open             mở nội dung chỉ đọc trong soạn thảo
+help-inbox-del =   .my.inbox.N:                 xóa mục N
+help-inbox-delall =   .my.inbox:                   xóa tất cả mục hộp thư đến
+help-inbox-flush =   .my.inbox!flush              in tất cả mục ra terminal
+help-inbox-filter =   .my.inbox!filter @who        chỉ hiển thị mục từ @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   duyệt lười tài liệu DID người gửi
 
 # ── Trợ giúp — tài liệu ──────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           mở soạn thảo với nội dung đã lưu
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     tải CID, mở để xem lại
-help-doc-eval =   /my/doc/<name>!eval           chạy nội dung đã lưu từng dòng
-help-doc-publish =   /my/doc/<name>!publish @pub   lưu dưới dạng blob thô (bất kỳ loại)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  lưu YAML thành nút IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    nhập nội dung CID (không chạy)
-help-doc-cid =   /my/doc/<name>!cid            hiển thị CID đã lưu
-help-doc-del =   /my/doc/<name>:              xóa tài liệu
+help-doc-edit =   .my.doc.<name>!edit           mở soạn thảo với nội dung đã lưu
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     tải CID, mở để xem lại
+help-doc-eval =   .my.doc.<name>!eval           chạy nội dung đã lưu từng dòng
+help-doc-publish =   .my.doc.<name>!publish @pub   lưu dưới dạng blob thô (bất kỳ loại)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  lưu YAML thành nút IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    nhập nội dung CID (không chạy)
+help-doc-cid =   .my.doc.<name>!cid            hiển thị CID đã lưu
+help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Ngôn ngữ có sẵn (đặt bằng /my/i18n: <code>):
+lang-list-header = Ngôn ngữ có sẵn (đặt bằng .my.i18n: <code>):
 err-lang-not-found = không tìm thấy ngôn ngữ: { $lang }
 
 msg-send-failed = gửi thất bại: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                xuất bản danh tính củ
 help-header-publish = ── xuất bản danh tính ───────────────────────────────────────────────────────
 help-publish-intro = Xuất bản giúp danh tính của bạn được tìm thấy trên mạng. Người khác có thể tra cứu DID của bạn để liên lạc.
 help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
-help-publish-steps = Các bước: chạy '.ma [port]' để phát hiện ma cục bộ, sau đó '/my/identity!publish @ma'.
+help-publish-steps = Các bước: chạy '.ma [port]' để phát hiện ma cục bộ, sau đó '.my.identity!publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

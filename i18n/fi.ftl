@@ -44,7 +44,7 @@ msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID julkaistu paikallisen ma:n kautta ({ $url })
-msg-identity-not-published = Henkilöllisyyttä ei löydetty verkosta — jos ma on asennettu paikallisesti, aja '.ma [port]' sitten '/my/identity!publish @ma'. Kirjoita '.help/publish' yksityiskohtia varten.
+msg-identity-not-published = Henkilöllisyyttä ei löydetty verkosta — jos ma on asennettu paikallisesti, aja '.ma [port]' sitten '.my.identity!publish @ma'. Kirjoita '.help/publish' yksityiskohtia varten.
 msg-blocked = ⊗ estetty [{ $cap }]: { $from }
 msg-focus-cleared = kohdistus tyhjennetty
 msg-focusing = kohdistetaan { $did } nimellä { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = löytäminen epäonnistui: odotettiin `did`:n alkavan did
 discover-no-endpoint = löytämisvaroitus: `endpoint_id` puuttuu status.json:sta; tallennettiin vain DID
 discover-success = ma löydettiin osoitteesta { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma luotu — aja '/my/identity!publish @ma' julkaistaksesi henkilöllisyytesi.
+discover-alias-hint =   alias @ma luotu — aja '.my.identity!publish @ma' julkaistaksesi henkilöllisyytesi.
 claim-success = Ajonaikainen varattu kohteelle { $did }
 claim-conflict = Ajonaikainen on jo varattu toiselle identiteetille
 claim-http-failed = varaus epäonnistui: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = ei kirjautunut sisään; kirjaudu ensin varataksesi ajonaikai
 runtime-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 
 # ── Verbit — käyttöoikeuksien hallinta ────────────────────────────────────
-acl-reset = /my/acl palautettu (täysin avoin)
+acl-reset = .my.acl palautettu (täysin avoin)
 acl-persist-error = tallennusvirhe: { $e }
-acl-no-verb = ei verbiä `{ $verb }` kohteelle /my/acl
+acl-no-verb = ei verbiä `{ $verb }` kohteelle .my.acl
 
 # ── Verbit — identiteetti ─────────────────────────────────────────────────
-publish-usage = käyttö: /my/identity!publish <did-tai-alias>
+publish-usage = käyttö: .my.identity!publish <did-tai-alias>
 identity-exported = Paketti ladattu nimellä { $filename }
 identity-export-failed = Vienti epäonnistui: { $e }
 
 # ── Verbit — asiakirjat ───────────────────────────────────────────────────
-doc-content-empty = { $path }/content on tyhjä
-doc-save-first = { $path }/content on tyhjä — tallenna ensin
+doc-content-empty = { $path }.content on tyhjä
+doc-save-first = { $path }.content on tyhjä — tallenna ensin
 doc-missing-name = asiakirjan nimi puuttuu
-doc-publish-usage = käyttö: /my/doc/<nimi>:publish <julkaisija>
-doc-publish-ipld-usage = käyttö: /my/doc/<nimi>:publish-ipld <julkaisija>
+doc-publish-usage = käyttö: .my.doc.<nimi>:publish <julkaisija>
+doc-publish-ipld-usage = käyttö: .my.doc.<nimi>:publish-ipld <julkaisija>
 doc-publish-failed = julkaisu { $path }: { $e }
 doc-publish-ipld-failed = ipld-julkaisu { $path }: { $e }
 doc-store-sent = tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
 doc-ipld-store-sent = IPLD-tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
-doc-fetch-done = haettiin { $cid } → { $path }/content (ei suoritettu)
+doc-fetch-done = haettiin { $cid } → { $path }.content (ei suoritettu)
 doc-fetch-failed = haku { $cid }: { $e }
-doc-fetch-usage = käyttö: /my/doc/<nimi>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid ei ole asetettu
+doc-fetch-usage = käyttö: .my.doc.<nimi>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid ei ole asetettu
 doc-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 path-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 aseta lehti
 help-config-delete =   .path:                       poista lehti tai alipuu
 help-config-verb =   .path!verb [args]            suorita paikallinen verbi
 
-help-my =   /my                          näytä kaikki henkilökohtainen kokoonpano
-help-aliases =   /my/aliases                  listaa aliakset
-help-aliases-set =   /my/aliases/<name>: <did>    lisää/päivitä alias (pelkkä DID, ei #fragmenttia)
-help-aliases-del =   /my/aliases/<name>:          poista alias
+help-my =   .my                          näytä kaikki henkilökohtainen kokoonpano
+help-aliases =   .my.aliases                  listaa aliakset
+help-aliases-set =   .my.aliases.<name>: <did>    lisää/päivitä alias (pelkkä DID, ei #fragmenttia)
+help-aliases-del =   .my.aliases.<name>:          poista alias
 help-runtime-discover =   .ma [port]          löydä paikallinen ajonaikainen ja luo @ma-alias
 help-runtime-claim =   .ma [port]             varaa ajonaikainen DID:lläsi
-help-identity =   /my/identity                 näytä identiteetin kokoonpano
-help-identity-did =   /my/identity/did             näytä oma DID (kirjoitussuojattu)
-help-identity-publish =   /my/identity!publish @pub    julkaise oma DID julkaisijan kautta
-help-identity-export =   /my/identity!export          lataa oma identiteettipaketti
+help-identity =   .my.identity                 näytä identiteetin kokoonpano
+help-identity-did =   .my.identity.did             näytä oma DID (kirjoitussuojattu)
+help-identity-publish =   .my.identity!publish @pub    julkaise oma DID julkaisijan kautta
+help-identity-export =   .my.identity!export          lataa oma identiteettipaketti
 help-config-path =   .config                      näytä kaikki .config.*-merkinnät
 
-help-inbox =   /my/inbox                    listaa postilaatikko (alipuunäkymä)
-help-inbox-n =   /my/inbox/N                  näytä merkinnän N kentät
-help-inbox-from =   /my/inbox/N/from             lähettäjän DID merkinnälle N
-help-inbox-reply =   /my/inbox/N!reply [body]     lähetä vastaus (avaa editorin ilman bodya)
-help-inbox-open =   /my/inbox/N!open             avaa sisältö kirjoitussuojatussa editorissa
-help-inbox-del =   /my/inbox/N:                 poista merkintä N
-help-inbox-delall =   /my/inbox:                   poista kaikki postilaatikon merkinnät
-help-inbox-flush =   /my/inbox!flush              tulosta kaikki merkinnät terminaaliin
-help-inbox-filter =   /my/inbox!filter @who        näytä vain @who:n merkinnät
-help-inbox-traverse =   /my/inbox/N/sender/<kenttä>  traversoi lähettäjän DID-asiakirja viiveellä
+help-inbox =   .my.inbox                    listaa postilaatikko (alipuunäkymä)
+help-inbox-n =   .my.inbox.N                  näytä merkinnän N kentät
+help-inbox-from =   .my.inbox.N.from             lähettäjän DID merkinnälle N
+help-inbox-reply =   .my.inbox.N!reply [body]     lähetä vastaus (avaa editorin ilman bodya)
+help-inbox-open =   .my.inbox.N!open             avaa sisältö kirjoitussuojatussa editorissa
+help-inbox-del =   .my.inbox.N:                 poista merkintä N
+help-inbox-delall =   .my.inbox:                   poista kaikki postilaatikon merkinnät
+help-inbox-flush =   .my.inbox!flush              tulosta kaikki merkinnät terminaaliin
+help-inbox-filter =   .my.inbox!filter @who        näytä vain @who:n merkinnät
+help-inbox-traverse =   .my.inbox.N.sender.<kenttä>  traversoi lähettäjän DID-asiakirja viiveellä
 
-help-doc-edit =   /my/doc/<nimi>:edit           avaa editori tallennetulla sisällöllä
-help-doc-edit-cid =   /my/doc/<nimi>:edit <cid>     hae CID, avaa tarkasteltavaksi
-help-doc-eval =   /my/doc/<nimi>:eval           suorita tallennettu sisältö rivi riviltä
-help-doc-publish =   /my/doc/<nimi>:publish @pub   tallenna raakana blobbina (kaikki tyypit)
-help-doc-publish-ipld =   /my/doc/<nimi>:publish-ipld @pub  tallenna YAML jäsennettynä DAG-CBOR IPLD-solmuna
-help-doc-fetch =   /my/doc/<nimi>:fetch <cid>    tuo CID-sisältö (ei suoritusta)
-help-doc-cid =   /my/doc/<nimi>:cid            näytä tallennettu CID
-help-doc-del =   /my/doc/<nimi>:              poista asiakirja
+help-doc-edit =   .my.doc.<nimi>:edit           avaa editori tallennetulla sisällöllä
+help-doc-edit-cid =   .my.doc.<nimi>:edit <cid>     hae CID, avaa tarkasteltavaksi
+help-doc-eval =   .my.doc.<nimi>:eval           suorita tallennettu sisältö rivi riviltä
+help-doc-publish =   .my.doc.<nimi>:publish @pub   tallenna raakana blobbina (kaikki tyypit)
+help-doc-publish-ipld =   .my.doc.<nimi>:publish-ipld @pub  tallenna YAML jäsennettynä DAG-CBOR IPLD-solmuna
+help-doc-fetch =   .my.doc.<nimi>:fetch <cid>    tuo CID-sisältö (ei suoritusta)
+help-doc-cid =   .my.doc.<nimi>:cid            näytä tallennettu CID
+help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Käytettävissä olevat kielet (aseta /my/i18n: <code>):
+lang-list-header = Käytettävissä olevat kielet (aseta .my.i18n: <code>):
 err-lang-not-found = kieltä ei löydy: { $lang }
 
 msg-send-failed = lähetys epäonnistui: { $e }
@@ -326,9 +326,9 @@ help-topic-publish =   .help/publish                henkilöllisyyden julkaisemi
 help-header-publish = ── henkilöllisyyden julkaiseminen ───────────────────────────────────────────
 help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi verkossa. Muut voivat hakea DID:äsi tavoittaakseen sinut.
 help-publish-ma = Julkaisemiseen tarvitset ma:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
-help-publish-steps = Vaiheet: aja '.ma [port]' paikallisen ma:n havaitsemiseksi, sitten '/my/identity!publish @ma'.
+help-publish-steps = Vaiheet: aja '.ma [port]' paikallisen ma:n havaitsemiseksi, sitten '.my.identity!publish @ma'.
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

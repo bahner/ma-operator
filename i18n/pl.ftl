@@ -44,7 +44,7 @@ msg-connecting = łączenie z iroh...
 msg-iroh-ready = punkt końcowy iroh gotowy
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID opublikowane przez lokalne ma ({ $url })
-msg-identity-not-published = Tożsamość nie znaleziona online — jeśli masz ma zainstalowane lokalnie, uruchom '.ma [port]', a potem '/my/identity!publish @ma'. Wpisz '.help/publish' po szczegóły.
+msg-identity-not-published = Tożsamość nie znaleziona online — jeśli masz ma zainstalowane lokalnie, uruchom '.ma [port]', a potem '.my.identity!publish @ma'. Wpisz '.help/publish' po szczegóły.
 msg-blocked = ⊗ zablokowano [{ $cap }]: { $from }
 msg-focus-cleared = fokus wyczyszczony
 msg-focusing = fokusowanie na { $did } jako { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = wykrywanie nie powiodło się: oczekiwano `did` zaczynaj�
 discover-no-endpoint = ostrzeżenie wykrywania: `endpoint_id` nieobecny w status.json; zapisano tylko DID
 discover-success = ma wykryto pod { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma utworzony — uruchom '/my/identity!publish @ma', aby opublikować swoją tożsamość.
+discover-alias-hint =   alias @ma utworzony — uruchom '.my.identity!publish @ma', aby opublikować swoją tożsamość.
 claim-success = Środowisko uruchomieniowe przejęte dla { $did }
 claim-conflict = Środowisko uruchomieniowe już przejęte przez inną tożsamość
 claim-http-failed = przejęcie nie powiodło się: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = niezalogowano; zaloguj się najpierw, aby przejąć środowis
 runtime-no-verb = brak czasownika `{ $verb }` dla { $path }
 
 # ── Czasowniki — kontrola dostępu ────────────────────────────────────────
-acl-reset = /my/acl zresetowano (w pełni otwarte)
+acl-reset = .my.acl zresetowano (w pełni otwarte)
 acl-persist-error = błąd zapisu: { $e }
-acl-no-verb = brak czasownika `{ $verb }` dla /my/acl
+acl-no-verb = brak czasownika `{ $verb }` dla .my.acl
 
 # ── Czasowniki — tożsamość ────────────────────────────────────────────────
-publish-usage = użycie: /my/identity!publish <did-lub-alias>
+publish-usage = użycie: .my.identity!publish <did-lub-alias>
 identity-exported = Pakiet pobrany jako { $filename }
 identity-export-failed = Eksport nie powiódł się: { $e }
 
 # ── Czasowniki — dokumenty ────────────────────────────────────────────────
-doc-content-empty = { $path }/content jest puste
-doc-save-first = { $path }/content jest puste — najpierw zapisz
+doc-content-empty = { $path }.content jest puste
+doc-save-first = { $path }.content jest puste — najpierw zapisz
 doc-missing-name = brak nazwy dokumentu
-doc-publish-usage = użycie: /my/doc/<nazwa>:publish <wydawca>
-doc-publish-ipld-usage = użycie: /my/doc/<nazwa>:publish-ipld <wydawca>
+doc-publish-usage = użycie: .my.doc.<nazwa>:publish <wydawca>
+doc-publish-ipld-usage = użycie: .my.doc.<nazwa>:publish-ipld <wydawca>
 doc-publish-failed = publikowanie { $path }: { $e }
 doc-publish-ipld-failed = publikowanie IPLD { $path }: { $e }
 doc-store-sent = żądanie przechowywania wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
 doc-ipld-store-sent = żądanie przechowywania IPLD wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
-doc-fetch-done = { $cid } pobrano → { $path }/content (nie uruchomiono)
+doc-fetch-done = { $cid } pobrano → { $path }.content (nie uruchomiono)
 doc-fetch-failed = pobieranie { $cid }: { $e }
-doc-fetch-usage = użycie: /my/doc/<nazwa>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid nie jest ustawione
+doc-fetch-usage = użycie: .my.doc.<nazwa>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid nie jest ustawione
 doc-no-verb = brak czasownika `{ $verb }` dla { $path }
 path-no-verb = brak czasownika `{ $verb }` dla { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 ustaw liść
 help-config-delete =   .path:                       usuń liść lub poddrzewo
 help-config-verb =   .path!verb [args]            wykonaj lokalny czasownik
 
-help-my =   /my                          pokaż całą konfigurację osobistą
-help-aliases =   /my/aliases                  wylistuj aliasy
-help-aliases-set =   /my/aliases/<name>: <did>    dodaj/zaktualizuj alias (czysty DID, bez #fragmentu)
-help-aliases-del =   /my/aliases/<name>:          usuń alias
+help-my =   .my                          pokaż całą konfigurację osobistą
+help-aliases =   .my.aliases                  wylistuj aliasy
+help-aliases-set =   .my.aliases.<name>: <did>    dodaj/zaktualizuj alias (czysty DID, bez #fragmentu)
+help-aliases-del =   .my.aliases.<name>:          usuń alias
 help-runtime-discover =   .ma [port]          wykryj lokalne środowisko uruchomieniowe i utwórz alias @ma
 help-runtime-claim =   .ma [port]             przejmij środowisko uruchomieniowe swoim DID
-help-identity =   /my/identity                 pokaż konfigurację tożsamości
-help-identity-did =   /my/identity/did             pokaż własny DID (tylko do odczytu)
-help-identity-publish =   /my/identity!publish @pub    opublikuj własny DID przez usługę wydawcy
-help-identity-export =   /my/identity!export          pobierz własny pakiet tożsamości
+help-identity =   .my.identity                 pokaż konfigurację tożsamości
+help-identity-did =   .my.identity.did             pokaż własny DID (tylko do odczytu)
+help-identity-publish =   .my.identity!publish @pub    opublikuj własny DID przez usługę wydawcy
+help-identity-export =   .my.identity!export          pobierz własny pakiet tożsamości
 help-config-path =   .config                      pokaż wszystkie wpisy .config.*
 
-help-inbox =   /my/inbox                    wylistuj skrzynkę odbiorczą (widok poddrzewa)
-help-inbox-n =   /my/inbox/N                  pokaż pola wpisu N
-help-inbox-from =   /my/inbox/N/from             DID nadawcy dla wpisu N
-help-inbox-reply =   /my/inbox/N!reply [body]     wyślij odpowiedź (otwiera edytor bez treści)
-help-inbox-open =   /my/inbox/N!open             otwórz treść w edytorze tylko do odczytu
-help-inbox-del =   /my/inbox/N:                 usuń wpis N
-help-inbox-delall =   /my/inbox:                   usuń wszystkie wpisy skrzynki odbiorczej
-help-inbox-flush =   /my/inbox!flush              wydrukuj wszystkie wpisy w terminalu
-help-inbox-filter =   /my/inbox!filter @who        pokaż tylko wpisy od @who
-help-inbox-traverse =   /my/inbox/N/sender/<pole>   przejrzyj dokument DID nadawcy leniwie
+help-inbox =   .my.inbox                    wylistuj skrzynkę odbiorczą (widok poddrzewa)
+help-inbox-n =   .my.inbox.N                  pokaż pola wpisu N
+help-inbox-from =   .my.inbox.N.from             DID nadawcy dla wpisu N
+help-inbox-reply =   .my.inbox.N!reply [body]     wyślij odpowiedź (otwiera edytor bez treści)
+help-inbox-open =   .my.inbox.N!open             otwórz treść w edytorze tylko do odczytu
+help-inbox-del =   .my.inbox.N:                 usuń wpis N
+help-inbox-delall =   .my.inbox:                   usuń wszystkie wpisy skrzynki odbiorczej
+help-inbox-flush =   .my.inbox!flush              wydrukuj wszystkie wpisy w terminalu
+help-inbox-filter =   .my.inbox!filter @who        pokaż tylko wpisy od @who
+help-inbox-traverse =   .my.inbox.N.sender.<pole>   przejrzyj dokument DID nadawcy leniwie
 
-help-doc-edit =   /my/doc/<nazwa>:edit           otwórz edytor z zapisaną treścią
-help-doc-edit-cid =   /my/doc/<nazwa>:edit <cid>     pobierz CID, otwórz do przeglądu
-help-doc-eval =   /my/doc/<nazwa>:eval           uruchom zapisaną treść linia po linii
-help-doc-publish =   /my/doc/<nazwa>:publish @pub   zapisz jako surowy blob (wszystkie typy)
-help-doc-publish-ipld =   /my/doc/<nazwa>:publish-ipld @pub  zapisz YAML jako strukturalny węzeł DAG-CBOR IPLD
-help-doc-fetch =   /my/doc/<nazwa>:fetch <cid>    importuj treść CID (bez uruchamiania)
-help-doc-cid =   /my/doc/<nazwa>:cid            pokaż zapisany CID
-help-doc-del =   /my/doc/<nazwa>:              usuń dokument
+help-doc-edit =   .my.doc.<nazwa>:edit           otwórz edytor z zapisaną treścią
+help-doc-edit-cid =   .my.doc.<nazwa>:edit <cid>     pobierz CID, otwórz do przeglądu
+help-doc-eval =   .my.doc.<nazwa>:eval           uruchom zapisaną treść linia po linii
+help-doc-publish =   .my.doc.<nazwa>:publish @pub   zapisz jako surowy blob (wszystkie typy)
+help-doc-publish-ipld =   .my.doc.<nazwa>:publish-ipld @pub  zapisz YAML jako strukturalny węzeł DAG-CBOR IPLD
+help-doc-fetch =   .my.doc.<nazwa>:fetch <cid>    importuj treść CID (bez uruchamiania)
+help-doc-cid =   .my.doc.<nazwa>:cid            pokaż zapisany CID
+help-doc-del =   .my.doc.<nazwa>:              usuń dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Dostępne języki (ustaw przez /my/i18n: <code>):
+lang-list-header = Dostępne języki (ustaw przez .my.i18n: <code>):
 err-lang-not-found = język nie znaleziony: { $lang }
 
 msg-send-failed = wysyłanie nie powiodło się: { $e }
@@ -326,9 +326,9 @@ help-topic-publish =   .help/publish                publikowanie tożsamości w 
 help-header-publish = ── publikowanie tożsamości ──────────────────────────────────────────────────
 help-publish-intro = Publikacja sprawia, że twoja tożsamość jest widoczna w sieci. Inni mogą wyszukać twój DID, aby się z tobą skontaktować.
 help-publish-ma = Aby opublikować, potrzebujesz zainstalowanego ma (lokalny runtime). Łączy ego z IPFS/IPNS w twoim imieniu.
-help-publish-steps = Kroki: uruchom '.ma [port]', aby wykryć lokalny ma, następnie '/my/identity!publish @ma'.
+help-publish-steps = Kroki: uruchom '.ma [port]', aby wykryć lokalny ma, następnie '.my.identity!publish @ma'.
 help-publish-without = Bez publikacji inni nie mogą cię osiągnąć — nawet jeśli znają twój DID, nie są w stanie rozwiązać twojego endpointu.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

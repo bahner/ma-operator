@@ -44,7 +44,7 @@ msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID diterbitkan melalui ma lokal ({ $url })
-msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '/my/identity!publish @ma'. Ketik '.help/publish' untuk detail.
+msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '.my.identity!publish @ma'. Ketik '.help/publish' untuk detail.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
 msg-focusing = memfokuskan { $did } sebagai { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = penemuan gagal: `did` diharapkan dimulai dengan did:ma:, 
 discover-no-endpoint = peringatan penemuan: `endpoint_id` tidak ada di status.json; hanya DID tersimpan
 discover-success = ma ditemukan di { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma dibuat — jalankan '/my/identity!publish @ma' untuk mempublikasikan identitas Anda.
+discover-alias-hint =   alias @ma dibuat — jalankan '.my.identity!publish @ma' untuk mempublikasikan identitas Anda.
 claim-success = Runtime diklaim untuk { $did }
 claim-conflict = Runtime sudah diklaim oleh identitas lain
 claim-http-failed = klaim gagal: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = belum masuk; masuk dulu untuk mengklaim runtime
 runtime-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 
 # ── Kata kerja — ACL ──────────────────────────────────────────────────────
-acl-reset = /my/acl direset (sepenuhnya terbuka)
+acl-reset = .my.acl direset (sepenuhnya terbuka)
 acl-persist-error = kesalahan persistensi: { $e }
-acl-no-verb = tidak ada kata kerja `{ $verb }` untuk /my/acl
+acl-no-verb = tidak ada kata kerja `{ $verb }` untuk .my.acl
 
 # ── Kata kerja — identitas ────────────────────────────────────────────────
-publish-usage = penggunaan: /my/identity!publish <did-atau-alias>
+publish-usage = penggunaan: .my.identity!publish <did-atau-alias>
 identity-exported = Paket diunduh sebagai { $filename }
 identity-export-failed = Ekspor gagal: { $e }
 
 # ── Kata kerja — dokumen ──────────────────────────────────────────────────
-doc-content-empty = { $path }/content kosong
-doc-save-first = { $path }/content kosong — simpan dulu
+doc-content-empty = { $path }.content kosong
+doc-save-first = { $path }.content kosong — simpan dulu
 doc-missing-name = nama dokumen tidak ada
-doc-publish-usage = penggunaan: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = penggunaan: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = penggunaan: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = penggunaan: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = penerbitan { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
-doc-fetch-done = mengambil { $cid } → { $path }/content (tidak dijalankan)
+doc-fetch-done = mengambil { $cid } → { $path }.content (tidak dijalankan)
 doc-fetch-failed = pengambilan { $cid }: { $e }
-doc-fetch-usage = penggunaan: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid belum diatur
+doc-fetch-usage = penggunaan: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid belum diatur
 doc-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 path-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       hapus daun atau subpohon
 help-config-verb =   .path!verb [args]            panggil kata kerja lokal
 
 # ── Bantuan — jalur umum ──────────────────────────────────────────────────
-help-my =   /my                          tampilkan semua konfigurasi pribadi
-help-aliases =   /my/aliases                  daftar alias
-help-aliases-set =   /my/aliases/<name>: <did>    tambah/perbarui alias (DID tanpa fragment)
-help-aliases-del =   /my/aliases/<name>:          hapus alias
+help-my =   .my                          tampilkan semua konfigurasi pribadi
+help-aliases =   .my.aliases                  daftar alias
+help-aliases-set =   .my.aliases.<name>: <did>    tambah/perbarui alias (DID tanpa fragment)
+help-aliases-del =   .my.aliases.<name>:          hapus alias
 help-runtime-discover =   .ma [port]          temukan runtime lokal dan buat alias @ma
 help-runtime-claim =   .ma [port]             klaim kepemilikan runtime dengan DID Anda
-help-identity =   /my/identity                 tampilkan konfigurasi identitas
-help-identity-did =   /my/identity/did             tampilkan DID sendiri (hanya baca)
-help-identity-publish =   /my/identity!publish @pub    terbitkan DID melalui layanan penerbitan
-help-identity-export =   /my/identity!export          unduh paket identitas sendiri
+help-identity =   .my.identity                 tampilkan konfigurasi identitas
+help-identity-did =   .my.identity.did             tampilkan DID sendiri (hanya baca)
+help-identity-publish =   .my.identity!publish @pub    terbitkan DID melalui layanan penerbitan
+help-identity-export =   .my.identity!export          unduh paket identitas sendiri
 help-config-path =   .config                      tampilkan semua entri .config.*
 
 # ── Bantuan — kotak masuk ─────────────────────────────────────────────────
-help-inbox =   /my/inbox                    daftar kotak masuk (tampilan subpohon)
-help-inbox-n =   /my/inbox/N                  tampilkan bidang entri N
-help-inbox-from =   /my/inbox/N/from             DID pengirim entri N
-help-inbox-reply =   /my/inbox/N!reply [body]     kirim balasan (tanpa isi — buka editor)
-help-inbox-open =   /my/inbox/N!open             buka konten entri di editor hanya baca
-help-inbox-del =   /my/inbox/N:                 hapus entri N
-help-inbox-delall =   /my/inbox:                   hapus semua entri kotak masuk
-help-inbox-flush =   /my/inbox!flush              cetak semua entri ke terminal
-help-inbox-filter =   /my/inbox!filter @who        tampilkan hanya entri dari @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   jelajahi dokumen DID pengirim secara malas
+help-inbox =   .my.inbox                    daftar kotak masuk (tampilan subpohon)
+help-inbox-n =   .my.inbox.N                  tampilkan bidang entri N
+help-inbox-from =   .my.inbox.N.from             DID pengirim entri N
+help-inbox-reply =   .my.inbox.N!reply [body]     kirim balasan (tanpa isi — buka editor)
+help-inbox-open =   .my.inbox.N!open             buka konten entri di editor hanya baca
+help-inbox-del =   .my.inbox.N:                 hapus entri N
+help-inbox-delall =   .my.inbox:                   hapus semua entri kotak masuk
+help-inbox-flush =   .my.inbox!flush              cetak semua entri ke terminal
+help-inbox-filter =   .my.inbox!filter @who        tampilkan hanya entri dari @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   jelajahi dokumen DID pengirim secara malas
 
 # ── Bantuan — dokumen ─────────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           buka editor dengan konten tersimpan
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     ambil CID, buka untuk ditinjau saja
-help-doc-eval =   /my/doc/<name>!eval           jalankan konten tersimpan baris per baris
-help-doc-publish =   /my/doc/<name>!publish @pub   simpan sebagai blob mentah (tipe apa saja)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  simpan YAML sebagai simpul IPLD DAG-CBOR
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    impor konten CID (tidak dijalankan)
-help-doc-cid =   /my/doc/<name>!cid            tampilkan CID tersimpan
-help-doc-del =   /my/doc/<name>:              hapus dokumen
+help-doc-edit =   .my.doc.<name>!edit           buka editor dengan konten tersimpan
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     ambil CID, buka untuk ditinjau saja
+help-doc-eval =   .my.doc.<name>!eval           jalankan konten tersimpan baris per baris
+help-doc-publish =   .my.doc.<name>!publish @pub   simpan sebagai blob mentah (tipe apa saja)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  simpan YAML sebagai simpul IPLD DAG-CBOR
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    impor konten CID (tidak dijalankan)
+help-doc-cid =   .my.doc.<name>!cid            tampilkan CID tersimpan
+help-doc-del =   .my.doc.<name>:              hapus dokumen
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Bahasa yang tersedia (atur dengan /my/i18n: <code>):
+lang-list-header = Bahasa yang tersedia (atur dengan .my.i18n: <code>):
 err-lang-not-found = bahasa tidak ditemukan: { $lang }
 
 msg-send-failed = pengiriman gagal: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                publikasikan identitas Anda 
 help-header-publish = ── publikasi identitas ──────────────────────────────────────────────────────
 help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringan. Orang lain dapat mencari DID Anda untuk menghubungi Anda.
 help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
-help-publish-steps = Langkah: jalankan '.ma [port]' untuk mendeteksi ma lokal, lalu '/my/identity!publish @ma'.
+help-publish-steps = Langkah: jalankan '.ma [port]' untuk mendeteksi ma lokal, lalu '.my.identity!publish @ma'.
 help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

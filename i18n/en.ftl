@@ -47,7 +47,7 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published via local ma ({ $url })
-msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.ma [port]' then '/my/identity!publish @ma'. Type '.help/publish' for details.
+msg-identity-not-published = Identity not found online — if you have ma installed locally, run '.ma [port]' then '.my.identity!publish @ma'. Type '.help/publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -114,7 +114,7 @@ discover-invalid-did = discover failed: expected `did` to start with did:ma:, go
 discover-no-endpoint = discover warning: `endpoint_id` missing in status.json; stored DID only
 discover-success = ma discovered at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma created — run '/my/identity!publish @ma' to publish your identity.
+discover-alias-hint =   alias @ma created — run '.my.identity!publish @ma' to publish your identity.
 claim-success = Runtime claimed for { $did }
 claim-conflict = Runtime already claimed by another identity
 claim-http-failed = claim failed: HTTP { $status }
@@ -123,33 +123,33 @@ claim-no-session = not logged in; log in first to claim the runtime
 runtime-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl reset (fully open)
+acl-reset = .my.acl reset (fully open)
 acl-persist-error = persist error: { $e }
-acl-no-verb = no verb `{ $verb }` for /my/acl
+acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Available languages (set with /my/i18n: <code>):
+lang-list-header = Available languages (set with .my.i18n: <code>):
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
-publish-usage = usage: /my/identity!publish <did-or-alias>
+publish-usage = usage: .my.identity!publish <did-or-alias>
 identity-exported = Bundle downloaded as { $filename }
 identity-export-failed = export failed: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content is empty
-doc-save-first = { $path }/content is empty — save first
+doc-content-empty = { $path }.content is empty
+doc-save-first = { $path }.content is empty — save first
 doc-missing-name = missing document name
-doc-publish-usage = usage: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = usage: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = usage: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = usage: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
 doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
-doc-fetch-done = fetched { $cid } → { $path }/content (not executed)
+doc-fetch-done = fetched { $cid } → { $path }.content (not executed)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = usage: /my/doc/<name>!fetch /ipfs/<cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid is not set
+doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid is not set
 doc-no-verb = no verb `{ $verb }` for { $path }
 path-no-verb = no verb `{ $verb }` for { $path }
 
@@ -160,7 +160,7 @@ help-header-focus = ── focus mode ──────────────
 help-header-config = ── local config grammar ─────────────────────────────────────────────────
 help-header-common = ── common paths ─────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ────────────────────────────────────────────────────────────────
-help-header-documents = ── content verbs (any /path with /content) ──────────────────────────────────
+help-header-documents = ── content verbs (any .path with .content) ──────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Help text — zion commands ─────────────────────────────────────────────
@@ -177,8 +177,8 @@ help-header-topics = ── topics — type .help/<topic> for details ───�
 help-topic-msg =   .help/msg                    messaging — @actor, send, RPC
 help-topic-focus =   .help/focus                  focus mode — .use @actor
 help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config — /my/*, aliases, identity
-help-topic-inbox =   .help/inbox                  inbox — /my/inbox/*
+help-topic-my =   .help/my                     personal config — .my.*, aliases, identity
+help-topic-inbox =   .help/inbox                  inbox — .my.inbox.*
 help-topic-doc =   .help/doc                    content verbs — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  remote actor — CRUD, entities, CID ops
 help-topic-url =   .help/url                    opening zion via a URL link
@@ -202,39 +202,39 @@ help-config-delete =   .path:                       delete leaf or subtree
 help-config-verb =   .path!verb [args]            invoke local verb
 
 # ── Help text — common paths ──────────────────────────────────────────────
-help-my =   /my                          show all personal config
-help-aliases =   /my/aliases                  list aliases
-help-aliases-set =   /my/aliases/<name>: <did>    add/update alias (bare DID, no #fragment)
-help-aliases-del =   /my/aliases/<name>:          remove alias
-help-runtime-discover =   .ma [port]                   connect/claim local runtime → /ctx/ma/* (default port 5003)
+help-my =   .my                          show all personal config
+help-aliases =   .my.aliases                  list aliases
+help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)
+help-aliases-del =   .my.aliases.<name>:          remove alias
+help-runtime-discover =   .ma [port]                   connect/claim local runtime → .ctx.ma.* (default port 5003)
 help-runtime-claim =   .ma [port]                   (same as above — claim and discover are merged)
-help-identity =   /my/identity                 show identity config
-help-identity-did =   /my/identity/did             show own DID (read-only)
-help-identity-publish =   /my/identity!publish @pub    publish own DID via publisher service
-help-identity-export =   /my/identity!export          download own identity bundle
-help-config-path =   /ctx                         context state — ma runtime info, profile CIDs
+help-identity =   .my.identity                 show identity config
+help-identity-did =   .my.identity.did             show own DID (read-only)
+help-identity-publish =   .my.identity!publish @pub    publish own DID via publisher service
+help-identity-export =   .my.identity!export          download own identity bundle
+help-config-path =   .ctx                         context state — ma runtime info, profile CIDs
 
 # ── Help text — inbox ─────────────────────────────────────────────────────
-help-inbox =   /my/inbox                    list inbox (subtree view)
-help-inbox-n =   /my/inbox/N                  show entry N fields
-help-inbox-from =   /my/inbox/N/from             sender DID of entry N
-help-inbox-reply =   /my/inbox/N!reply [body]     send reply (opens editor if no body)
-help-inbox-open =   /my/inbox/N!open             open entry content read-only in editor
-help-inbox-del =   /my/inbox/N:                 delete entry N
-help-inbox-delall =   /my/inbox:                   delete all inbox entries
-help-inbox-flush =   /my/inbox!flush              print all entries to terminal
-help-inbox-filter =   /my/inbox!filter @who        show only entries from @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   traverse sender DID document lazily
+help-inbox =   .my.inbox                    list inbox (subtree view)
+help-inbox-n =   .my.inbox.N                  show entry N fields
+help-inbox-from =   .my.inbox.N.from             sender DID of entry N
+help-inbox-reply =   .my.inbox.N!reply [body]     send reply (opens editor if no body)
+help-inbox-open =   .my.inbox.N!open             open entry content read-only in editor
+help-inbox-del =   .my.inbox.N:                 delete entry N
+help-inbox-delall =   .my.inbox:                   delete all inbox entries
+help-inbox-flush =   .my.inbox!flush              print all entries to terminal
+help-inbox-filter =   .my.inbox!filter @who        show only entries from @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document lazily
 
 # ── Help text — documents ─────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           open editor with saved content
-help-doc-edit-cid =   /my/doc/<name>!edit /ipfs/<cid>  fetch CID, open for review only
-help-doc-eval =   /my/doc/<name>!eval           execute saved content line-by-line
-help-doc-publish =   /my/doc/<name>!publish @pub   store as raw blob (any type)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
-help-doc-fetch =   /my/doc/<name>!fetch /ipfs/<cid>  import CID content (no execution)
-help-doc-cid =   /my/doc/<name>!cid            show stored CID
-help-doc-del =   /my/doc/<name>:              delete document
+help-doc-edit =   .my.doc.<name>!edit           open editor with saved content
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>  fetch CID, open for review only
+help-doc-eval =   .my.doc.<name>!eval           execute saved content line-by-line
+help-doc-publish =   .my.doc.<name>!publish @pub   store as raw blob (any type)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>  import CID content (no execution)
+help-doc-cid =   .my.doc.<name>!cid            show stored CID
+help-doc-del =   .my.doc.<name>:              delete document
 
 # ── Help text — URL parameters ──────────────────────────────────────────────
 help-header-url = ── URL parameters ─────────────────────────────────────────────────────────
@@ -305,7 +305,7 @@ profile-publish-done = profile published — DID document updated with ma.agent 
 profile-publish-failed = profile publish failed: { $e }
 profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
 profile-fetch-failed = profile fetch failed: { $e }
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 msg-identity-exists = identity already published — profile up to date
 profile-import-exists = profile '{ $name }' already exists — delete it first
@@ -345,7 +345,7 @@ help-topic-publish =   .help/publish                publishing your identity to 
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────
 help-publish-intro = Publishing makes your identity findable on the network. Others can look up your DID to reach you.
 help-publish-ma = To publish, you need ma (local runtime) installed. It bridges ego to IPFS/IPNS on your behalf.
-help-publish-steps = Steps: run '.ma' (or '.ma <port>') to connect your local runtime, then '/my/identity!publish @ma'.
+help-publish-steps = Steps: run '.ma' (or '.ma <port>') to connect your local runtime, then '.my.identity!publish @ma'.
 help-publish-without = Without publishing, others cannot reach you — even if they know your DID, they cannot resolve your endpoint.
 
 # ── Batch mode ────────────────────────────────────────────────────────────

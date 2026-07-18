@@ -44,7 +44,7 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publish tru local ma ({ $url })
-msg-identity-not-published = Di identity nuh foun online — if yu have ma install locally, run '.ma [port]' den '/my/identity!publish @ma'. Type '.help/publish' fi details.
+msg-identity-not-published = Di identity nuh foun online — if yu have ma install locally, run '.ma [port]' den '.my.identity!publish @ma'. Type '.help/publish' fi details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
 msg-focusing = focusing { $did } as { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = discover failed: expected `did` fi start with did:ma:, go
 discover-no-endpoint = discover warning: `endpoint_id` missing in status.json; stored DID only
 discover-success = ma discovered at { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma mek — run '/my/identity!publish @ma' fi publish yu identity.
+discover-alias-hint =   alias @ma mek — run '.my.identity!publish @ma' fi publish yu identity.
 claim-success = Runtime claimed for { $did }
 claim-conflict = Runtime already claimed by another identity
 claim-http-failed = claim failed: HTTP { $status }
@@ -117,35 +117,35 @@ claim-no-session = nuh logged in; log in first fi claim the runtime
 runtime-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = /my/acl reset (fully open)
+acl-reset = .my.acl reset (fully open)
 acl-persist-error = persist error: { $e }
-acl-no-verb = no verb `{ $verb }` for /my/acl
+acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
-publish-usage = usage: /my/identity!publish <did-or-alias>
+publish-usage = usage: .my.identity!publish <did-or-alias>
 identity-exported = Bundle download as { $filename }
 identity-export-failed = Export fail: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }/content is empty
-doc-save-first = { $path }/content is empty — save first
+doc-content-empty = { $path }.content is empty
+doc-save-first = { $path }.content is empty — save first
 doc-missing-name = missing document name
-doc-publish-usage = usage: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = usage: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = usage: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = usage: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
 doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
-doc-fetch-done = fetched { $cid } → { $path }/content (not executed)
+doc-fetch-done = fetched { $cid } → { $path }.content (not executed)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = usage: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid is not set
+doc-fetch-usage = usage: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid is not set
 doc-no-verb = no verb `{ $verb }` for { $path }
 path-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Languages available (set with /my/i18n: <code>):
+lang-list-header = Languages available (set with .my.i18n: <code>):
 
 err-lang-not-found = language nuh find: { $lang }
 
@@ -155,7 +155,7 @@ help-header-focus = ── focus mode ──────────────
 help-header-config = ── local config ───────────────────────────────────────────────────────────
 help-header-common = ── common path dem ────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ──────────────────────────────────────────────────────────────────
-help-header-documents = ── document dem (/my/doc.*) ───────────────────────────────────────────────
+help-header-documents = ── document dem (.my.doc.*) ───────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis text ya
 help-cmd-clear =   .clear                       wipe di terminal
@@ -175,35 +175,35 @@ help-config-filter =   .path value                  match query (filter by value
 help-config-set =   .path: value                 set leaf
 help-config-delete =   .path:                       delete leaf or subtree
 help-config-verb =   .path!verb [args]            invoke local verb
-help-my =   /my                          show all personal config
-help-aliases =   /my/aliases                  list alias dem
-help-aliases-set =   /my/aliases/<name>: <did>    add/update alias (bare DID, nuh #fragment)
-help-aliases-del =   /my/aliases/<name>:          remove alias
+help-my =   .my                          show all personal config
+help-aliases =   .my.aliases                  list alias dem
+help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (bare DID, nuh #fragment)
+help-aliases-del =   .my.aliases.<name>:          remove alias
 help-runtime-discover =   .ma [port]          discover local runtime an create @ma alias
 help-runtime-claim =   .ma [port]             claim runtime ownership wid yuh DID
-help-identity =   /my/identity                 show I and I identity config
-help-identity-did =   /my/identity/did             show own DID (read-only)
-help-identity-publish =   /my/identity!publish @pub    publish I and I DID via publisher service
-help-identity-export =   /my/identity!export          download yuh own identity bundle
+help-identity =   .my.identity                 show I and I identity config
+help-identity-did =   .my.identity.did             show own DID (read-only)
+help-identity-publish =   .my.identity!publish @pub    publish I and I DID via publisher service
+help-identity-export =   .my.identity!export          download yuh own identity bundle
 help-config-path =   .config                      show all .config.* entries
-help-inbox =   /my/inbox                    list inbox (subtree view)
-help-inbox-n =   /my/inbox/N                  show entry N field dem
-help-inbox-from =   /my/inbox/N/from             sender DID of entry N
-help-inbox-reply =   /my/inbox/N!reply [body]     send reply (opens editor if nuh body)
-help-inbox-open =   /my/inbox/N!open             open entry content read-only inna editor
-help-inbox-del =   /my/inbox/N:                 delete entry N
-help-inbox-delall =   /my/inbox:                   delete all inbox entries
-help-inbox-flush =   /my/inbox!flush              print all entries to terminal
-help-inbox-filter =   /my/inbox!filter @who        sho nuo memba fram @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   traverse sender DID document lazily
-help-doc-edit =   /my/doc/<name>!edit           open editor wid saved content
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     fetch CID, open fi review only
-help-doc-eval =   /my/doc/<name>!eval           execute saved content line-by-line
-help-doc-publish =   /my/doc/<name>!publish @pub   store as raw blob (any type)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    import CID content (nuh execution)
-help-doc-cid =   /my/doc/<name>!cid            show stored CID
-help-doc-del =   /my/doc/<name>:              delete document
+help-inbox =   .my.inbox                    list inbox (subtree view)
+help-inbox-n =   .my.inbox.N                  show entry N field dem
+help-inbox-from =   .my.inbox.N.from             sender DID of entry N
+help-inbox-reply =   .my.inbox.N!reply [body]     send reply (opens editor if nuh body)
+help-inbox-open =   .my.inbox.N!open             open entry content read-only inna editor
+help-inbox-del =   .my.inbox.N:                 delete entry N
+help-inbox-delall =   .my.inbox:                   delete all inbox entries
+help-inbox-flush =   .my.inbox!flush              print all entries to terminal
+help-inbox-filter =   .my.inbox!filter @who        sho nuo memba fram @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document lazily
+help-doc-edit =   .my.doc.<name>!edit           open editor wid saved content
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fetch CID, open fi review only
+help-doc-eval =   .my.doc.<name>!eval           execute saved content line-by-line
+help-doc-publish =   .my.doc.<name>!publish @pub   store as raw blob (any type)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    import CID content (nuh execution)
+help-doc-cid =   .my.doc.<name>!cid            show stored CID
+help-doc-del =   .my.doc.<name>:              delete document
 
 msg-send-failed = send nuh work: { $e }
 msg-not-logged-in = nuh log in
@@ -319,9 +319,9 @@ help-topic-publish =   .help/publish                publish yu identity pan di n
 help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
 help-publish-intro = Publishin mek yu identity findable pan di network. Odda people can search yu DID fi reach yu.
 help-publish-ma = Fi publish, yu need ma (local runtime) install. It connect ego to IPFS/IPNS fi yu.
-help-publish-steps = Steps: run '.ma [port]' fi find di local ma, den '/my/identity!publish @ma'.
+help-publish-steps = Steps: run '.ma [port]' fi find di local ma, den '.my.identity!publish @ma'.
 help-publish-without = Widout publishin, odda people kyaan reach yu — even if dem know yu DID, dem kyaan resolve yu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

@@ -44,7 +44,7 @@ msg-connecting = iroh walitti hidhamaa...
 msg-iroh-ready = xumura iroh qophaa'eera
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ma naannoo ({ $url }) tiin maxxanfame
-msg-identity-not-published = Eenyummaan interneetii irraa hin argamne — yoo ma naannoo irratti fe'ame, '.ma [port]' itti aansuun '/my/identity!publish @ma' oofaa. Bal'ina argachuuf '.help/publish' barreessi.
+msg-identity-not-published = Eenyummaan interneetii irraa hin argamne — yoo ma naannoo irratti fe'ame, '.ma [port]' itti aansuun '.my.identity!publish @ma' oofaa. Bal'ina argachuuf '.help/publish' barreessi.
 msg-blocked = ⊗ uggurame [{ $cap }]: { $from }
 msg-focus-cleared = xiyyeeffannoon qulqullaa'e
 msg-focusing = { $did } gara { $prompt }tti xiyyeeffachaa jira
@@ -108,7 +108,7 @@ discover-invalid-did = argannoon hin milkaa'ne: `did` did:ma: irraa eegaluu qaba
 discover-no-endpoint = gorsa argannoo: `endpoint_id` status.json keessa hin jiru; DID qofa kuufame
 discover-success = ma { $url } irratti argame
 discover-did-line = DID: { $did }
-discover-alias-hint =   maqaa gorsaa @ma uumame — eenyummaa kee maxxansuuf '/my/identity!publish @ma' oofaa.
+discover-alias-hint =   maqaa gorsaa @ma uumame — eenyummaa kee maxxansuuf '.my.identity!publish @ma' oofaa.
 claim-success = Runtime { $did }f fudhatame
 claim-conflict = Runtime eenyummaa biroon duraan fudhatameera
 claim-http-failed = fudhachuu hin milkaa'ne: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = hin seenne; runtime fudhachuuf jalqaba seeni
 runtime-no-verb = gochan `{ $verb }` { $path }f hin jiru
 
 # ── Gochaalee — ACL ───────────────────────────────────────────────────────
-acl-reset = /my/acl deebi'ee qindaa'e (guutummaatti banaa)
+acl-reset = .my.acl deebi'ee qindaa'e (guutummaatti banaa)
 acl-persist-error = dogoggora kuusaa: { $e }
-acl-no-verb = gochan `{ $verb }` /my/aclf hin jiru
+acl-no-verb = gochan `{ $verb }` .my.aclf hin jiru
 
 # ── Gochaalee — eenyummaa ─────────────────────────────────────────────────
-publish-usage = fayyadamuu: /my/identity!publish <did-ykn-moggaasa>
+publish-usage = fayyadamuu: .my.identity!publish <did-ykn-moggaasa>
 identity-exported = Bundle garagalche { $filename }
 identity-export-failed = Baasuun hin dandeenye: { $e }
 
 # ── Gochaalee — galmeelee ─────────────────────────────────────────────────
-doc-content-empty = { $path }/content duwwaadha
-doc-save-first = { $path }/content duwwaadha — jalqaba olkaa'i
+doc-content-empty = { $path }.content duwwaadha
+doc-save-first = { $path }.content duwwaadha — jalqaba olkaa'i
 doc-missing-name = maqaan galmee hin jiru
-doc-publish-usage = fayyadamuu: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = fayyadamuu: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = fayyadamuu: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = fayyadamuu: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = maxxansuu { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
-doc-fetch-done = { $cid } fiddame → { $path }/content (raawwatamuu dide)
+doc-fetch-done = { $cid } fiddame → { $path }.content (raawwatamuu dide)
 doc-fetch-failed = { $cid } fiduu: { $e }
-doc-fetch-usage = fayyadamuu: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid hin qindaa'ne
+doc-fetch-usage = fayyadamuu: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid hin qindaa'ne
 doc-no-verb = gochan `{ $verb }` { $path }f hin jiru
 path-no-verb = gochan `{ $verb }` { $path }f hin jiru
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       dahoo ykn imitee haaqama
 help-config-verb =   .path!verb [args]            gochaa naannoo waami
 
 # ── Gargaarsa — karaalee waliigalaa ──────────────────────────────────────
-help-my =   /my                          qindaa'ina dhuunfaa hunda agarsiisi
-help-aliases =   /my/aliases                  moggaasalee tarreessi
-help-aliases-set =   /my/aliases/<name>: <did>    moggaasa ida'i/haaromsi (bare DID, #fragment hin qabu)
-help-aliases-del =   /my/aliases/<name>:          moggaasa haaqami
+help-my =   .my                          qindaa'ina dhuunfaa hunda agarsiisi
+help-aliases =   .my.aliases                  moggaasalee tarreessi
+help-aliases-set =   .my.aliases.<name>: <did>    moggaasa ida'i/haaromsi (bare DID, #fragment hin qabu)
+help-aliases-del =   .my.aliases.<name>:          moggaasa haaqami
 help-runtime-discover =   .ma [port]          runtime naannoo argadhu kaanis moggaasa @ma uumi
 help-runtime-claim =   .ma [port]             DID keetiin runtime fudhadhu
-help-identity =   /my/identity                 qindaa'ina eenyummaa agarsiisi
-help-identity-did =   /my/identity/did             DID kee agarsiisi (dubbisuu qofa)
-help-identity-publish =   /my/identity!publish @pub    tajaajiila maxxansaa dhaan DID maxxansi
-help-identity-export =   /my/identity!export          bundle eenyummaa kee buufadhu
+help-identity =   .my.identity                 qindaa'ina eenyummaa agarsiisi
+help-identity-did =   .my.identity.did             DID kee agarsiisi (dubbisuu qofa)
+help-identity-publish =   .my.identity!publish @pub    tajaajiila maxxansaa dhaan DID maxxansi
+help-identity-export =   .my.identity!export          bundle eenyummaa kee buufadhu
 help-config-path =   .config                      galmeewwan .config.* hunda agarsiisi
 
 # ── Gargaarsa — fuudhaa ergaa ─────────────────────────────────────────────
-help-inbox =   /my/inbox                    fuudhaa ergaa tarreessi (mul'ata imitee)
-help-inbox-n =   /my/inbox/N                  dirreelee galmee N agarsiisi
-help-inbox-from =   /my/inbox/N/from             DID ergaa galmee N
-help-inbox-reply =   /my/inbox/N!reply [body]     deebii ergi (qaamni hin jiru yoo ta'e sirreessaan banama)
-help-inbox-open =   /my/inbox/N!open             qabiyyee dubbisuu qofa sirreessaatti bani
-help-inbox-del =   /my/inbox/N:                 galmee N haaqami
-help-inbox-delall =   /my/inbox:                   galmeewwan fuudhaa ergaa hunda haaqami
-help-inbox-flush =   /my/inbox!flush              galmeewwan hunda terminalitti maxxansi
-help-inbox-filter =   /my/inbox!filter @who        galmeewwan @who irraa qofa agarsiisi
-help-inbox-traverse =   /my/inbox/N/sender/<field>   galmee DID ergaa erganii lolasaan saagi
+help-inbox =   .my.inbox                    fuudhaa ergaa tarreessi (mul'ata imitee)
+help-inbox-n =   .my.inbox.N                  dirreelee galmee N agarsiisi
+help-inbox-from =   .my.inbox.N.from             DID ergaa galmee N
+help-inbox-reply =   .my.inbox.N!reply [body]     deebii ergi (qaamni hin jiru yoo ta'e sirreessaan banama)
+help-inbox-open =   .my.inbox.N!open             qabiyyee dubbisuu qofa sirreessaatti bani
+help-inbox-del =   .my.inbox.N:                 galmee N haaqami
+help-inbox-delall =   .my.inbox:                   galmeewwan fuudhaa ergaa hunda haaqami
+help-inbox-flush =   .my.inbox!flush              galmeewwan hunda terminalitti maxxansi
+help-inbox-filter =   .my.inbox!filter @who        galmeewwan @who irraa qofa agarsiisi
+help-inbox-traverse =   .my.inbox.N.sender.<field>   galmee DID ergaa erganii lolasaan saagi
 
 # ── Gargaarsa — galmeelee ─────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           sirreessaa qabiyyee kuufameen bani
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     CID fidii, ilaluuf qofa bani
-help-doc-eval =   /my/doc/<name>!eval           qabiyyee kuufame sareen raawwadhu
-help-doc-publish =   /my/doc/<name>!publish @pub   blob hin safaramin ta'uun kuufi (gosa kamiyyuu)
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  YAML huccuu IPLD DAG-CBOR ta'uun kuufi
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    qabiyyee CID galchi (raawwachuu hin dandaa'u)
-help-doc-cid =   /my/doc/<name>!cid            CID kuufame agarsiisi
-help-doc-del =   /my/doc/<name>:              galmee haaqami
+help-doc-edit =   .my.doc.<name>!edit           sirreessaa qabiyyee kuufameen bani
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID fidii, ilaluuf qofa bani
+help-doc-eval =   .my.doc.<name>!eval           qabiyyee kuufame sareen raawwadhu
+help-doc-publish =   .my.doc.<name>!publish @pub   blob hin safaramin ta'uun kuufi (gosa kamiyyuu)
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML huccuu IPLD DAG-CBOR ta'uun kuufi
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    qabiyyee CID galchi (raawwachuu hin dandaa'u)
+help-doc-cid =   .my.doc.<name>!cid            CID kuufame agarsiisi
+help-doc-del =   .my.doc.<name>:              galmee haaqami
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Afaanota jiran (/my/i18n: <code> tiin qabi):
+lang-list-header = Afaanota jiran (.my.i18n: <code> tiin qabi):
 err-lang-not-found = afaan hin argamne: { $lang }
 
 msg-send-failed = ergaa erguun hin milkoofne: { $e }
@@ -333,9 +333,9 @@ help-topic-publish =   .help/publish                eenyummaa kee networki irrat
 help-header-publish = ── eenyummaa maxxansuu ──────────────────────────────────────────────────────
 help-publish-intro = Maxxansuun eenyummaa kee networki irratti argamuu danda'u taasisa. Namoota biroo DID kee barbaaduun si argachuu danda'u.
 help-publish-ma = Maxxansuuf, ma (runtime naannoo) fe'amuu qaba. Ego fi IPFS/IPNS si bakka buusee walitti hidha.
-help-publish-steps = Tartiiba: ma naannoo argachuuf '.ma [port]' oofaa, itti aansuun '/my/identity!publish @ma'.
+help-publish-steps = Tartiiba: ma naannoo argachuuf '.ma [port]' oofaa, itti aansuun '.my.identity!publish @ma'.
 help-publish-without = Maxxansuu malee namooni biroon si dhaqqabuu hin danda'an — DID kee beekaniiyyuu endpoint kee furuuf dandeetii hin qaban.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

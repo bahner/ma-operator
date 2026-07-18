@@ -44,7 +44,7 @@ msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicēts caur lokālo ma ({ $url })
-msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.ma [port]' un pēc tam '/my/identity!publish @ma'. Raksti '.help/publish' detaļām.
+msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.ma [port]' un pēc tam '.my.identity!publish @ma'. Raksti '.help/publish' detaļām.
 msg-blocked = ⊗ bloķēts [{ $cap }]: { $from }
 msg-focus-cleared = fokuss notīrīts
 msg-focusing = fokusē { $did } kā { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = atklāšana neizdevās: gaidīja `did` sākumu ar did:ma:
 discover-no-endpoint = atklāšanas brīdinājums: `endpoint_id` trūkst status.json; saglabāja tikai DID
 discover-success = ma atklāts { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   aizstājvārds @ma izveidots — izpildi '/my/identity!publish @ma', lai publicētu savu identitāti.
+discover-alias-hint =   aizstājvārds @ma izveidots — izpildi '.my.identity!publish @ma', lai publicētu savu identitāti.
 claim-success = Izpildlaiks pieprasīts { $did }
 claim-conflict = Izpildlaiks jau pieprasīts citas identitātes
 claim-http-failed = pieprasīšana neizdevās: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = nav pierakstījies; vispirms pierakstieties, lai pieprasītu 
 runtime-no-verb = { $path } nav darbības vārda `{ $verb }`
 
 # ── Darbības vārdi — piekļuves kontrole ──────────────────────────────────
-acl-reset = /my/acl atiestatīts (pilnīgi atvērts)
+acl-reset = .my.acl atiestatīts (pilnīgi atvērts)
 acl-persist-error = saglabāšanas kļūda: { $e }
-acl-no-verb = /my/acl nav darbības vārda `{ $verb }`
+acl-no-verb = .my.acl nav darbības vārda `{ $verb }`
 
 # ── Darbības vārdi — identitāte ──────────────────────────────────────────
-publish-usage = lietošana: /my/identity!publish <did-vai-aizstājvārds>
+publish-usage = lietošana: .my.identity!publish <did-vai-aizstājvārds>
 identity-exported = Pakotne lejupielādēta kā { $filename }
 identity-export-failed = Eksports neizdevās: { $e }
 
 # ── Darbības vārdi — dokumenti ───────────────────────────────────────────
-doc-content-empty = { $path }/content ir tukšs
-doc-save-first = { $path }/content ir tukšs — vispirms saglabājiet
+doc-content-empty = { $path }.content ir tukšs
+doc-save-first = { $path }.content ir tukšs — vispirms saglabājiet
 doc-missing-name = trūkst dokumenta nosaukuma
-doc-publish-usage = lietošana: /my/doc/<nosaukums>:publish <izdevējs>
-doc-publish-ipld-usage = lietošana: /my/doc/<nosaukums>:publish-ipld <izdevējs>
+doc-publish-usage = lietošana: .my.doc.<nosaukums>:publish <izdevējs>
+doc-publish-ipld-usage = lietošana: .my.doc.<nosaukums>:publish-ipld <izdevējs>
 doc-publish-failed = publicēšana { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicēšana { $path }: { $e }
 doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
 doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
-doc-fetch-done = ielādēja { $cid } → { $path }/content (nav izpildīts)
+doc-fetch-done = ielādēja { $cid } → { $path }.content (nav izpildīts)
 doc-fetch-failed = ielāde { $cid }: { $e }
-doc-fetch-usage = lietošana: /my/doc/<nosaukums>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid nav iestatīts
+doc-fetch-usage = lietošana: .my.doc.<nosaukums>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid nav iestatīts
 doc-no-verb = { $path } nav darbības vārda `{ $verb }`
 path-no-verb = { $path } nav darbības vārda `{ $verb }`
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 iestatīt lapu
 help-config-delete =   .path:                       dzēst lapu vai apakškoku
 help-config-verb =   .path!verb [args]            izpildīt lokālo darbības vārdu
 
-help-my =   /my                          parādīt visu personisko konfigurāciju
-help-aliases =   /my/aliases                  uzskaitīt aizstājvārdus
-help-aliases-set =   /my/aliases/<name>: <did>    pievienot/atjaunināt aizstājvārdu (tīrs DID, bez #fragmenta)
-help-aliases-del =   /my/aliases/<name>:          noņemt aizstājvārdu
+help-my =   .my                          parādīt visu personisko konfigurāciju
+help-aliases =   .my.aliases                  uzskaitīt aizstājvārdus
+help-aliases-set =   .my.aliases.<name>: <did>    pievienot/atjaunināt aizstājvārdu (tīrs DID, bez #fragmenta)
+help-aliases-del =   .my.aliases.<name>:          noņemt aizstājvārdu
 help-runtime-discover =   .ma [port]          atklāt lokālo izpildlaiku un izveidot @ma aizstājvārdu
 help-runtime-claim =   .ma [port]             pieprasīt izpildlaiku ar savu DID
-help-identity =   /my/identity                 parādīt identitātes konfigurāciju
-help-identity-did =   /my/identity/did             parādīt savu DID (tikai lasāms)
-help-identity-publish =   /my/identity!publish @pub    publicēt savu DID caur izdevēja pakalpojumu
-help-identity-export =   /my/identity!export          lejupielādēt savu identitātes pakotni
+help-identity =   .my.identity                 parādīt identitātes konfigurāciju
+help-identity-did =   .my.identity.did             parādīt savu DID (tikai lasāms)
+help-identity-publish =   .my.identity!publish @pub    publicēt savu DID caur izdevēja pakalpojumu
+help-identity-export =   .my.identity!export          lejupielādēt savu identitātes pakotni
 help-config-path =   .config                      parādīt visus .config.* ierakstus
 
-help-inbox =   /my/inbox                    uzskaitīt iesūtni (apakškoka skats)
-help-inbox-n =   /my/inbox/N                  parādīt ieraksta N laukus
-help-inbox-from =   /my/inbox/N/from             sūtītāja DID ierakstam N
-help-inbox-reply =   /my/inbox/N!reply [body]     nosūtīt atbildi (atver redaktoru bez satura)
-help-inbox-open =   /my/inbox/N!open             atvērt saturu tikai lasāmā redaktorā
-help-inbox-del =   /my/inbox/N:                 dzēst ierakstu N
-help-inbox-delall =   /my/inbox:                   dzēst visus iesūtnes ierakstus
-help-inbox-flush =   /my/inbox!flush              izdrukāt visus ierakstus terminālī
-help-inbox-filter =   /my/inbox!filter @who        rādīt tikai @who ierakstus
-help-inbox-traverse =   /my/inbox/N/sender/<lauks>  šķērsot sūtītāja DID dokumentu ar kavēšanos
+help-inbox =   .my.inbox                    uzskaitīt iesūtni (apakškoka skats)
+help-inbox-n =   .my.inbox.N                  parādīt ieraksta N laukus
+help-inbox-from =   .my.inbox.N.from             sūtītāja DID ierakstam N
+help-inbox-reply =   .my.inbox.N!reply [body]     nosūtīt atbildi (atver redaktoru bez satura)
+help-inbox-open =   .my.inbox.N!open             atvērt saturu tikai lasāmā redaktorā
+help-inbox-del =   .my.inbox.N:                 dzēst ierakstu N
+help-inbox-delall =   .my.inbox:                   dzēst visus iesūtnes ierakstus
+help-inbox-flush =   .my.inbox!flush              izdrukāt visus ierakstus terminālī
+help-inbox-filter =   .my.inbox!filter @who        rādīt tikai @who ierakstus
+help-inbox-traverse =   .my.inbox.N.sender.<lauks>  šķērsot sūtītāja DID dokumentu ar kavēšanos
 
-help-doc-edit =   /my/doc/<nosaukums>:edit           atvērt redaktoru ar saglabāto saturu
-help-doc-edit-cid =   /my/doc/<nosaukums>:edit <cid>     ielādēt CID, atvērt pārskatīšanai
-help-doc-eval =   /my/doc/<nosaukums>:eval           izpildīt saglabāto saturu rindu pa rindai
-help-doc-publish =   /my/doc/<nosaukums>:publish @pub   saglabāt kā neapstrādātu blob (visi veidi)
-help-doc-publish-ipld =   /my/doc/<nosaukums>:publish-ipld @pub  saglabāt YAML kā strukturētu DAG-CBOR IPLD mezglu
-help-doc-fetch =   /my/doc/<nosaukums>:fetch <cid>    importēt CID saturu (nav izpildes)
-help-doc-cid =   /my/doc/<nosaukums>:cid            parādīt saglabāto CID
-help-doc-del =   /my/doc/<nosaukums>:              dzēst dokumentu
+help-doc-edit =   .my.doc.<nosaukums>:edit           atvērt redaktoru ar saglabāto saturu
+help-doc-edit-cid =   .my.doc.<nosaukums>:edit <cid>     ielādēt CID, atvērt pārskatīšanai
+help-doc-eval =   .my.doc.<nosaukums>:eval           izpildīt saglabāto saturu rindu pa rindai
+help-doc-publish =   .my.doc.<nosaukums>:publish @pub   saglabāt kā neapstrādātu blob (visi veidi)
+help-doc-publish-ipld =   .my.doc.<nosaukums>:publish-ipld @pub  saglabāt YAML kā strukturētu DAG-CBOR IPLD mezglu
+help-doc-fetch =   .my.doc.<nosaukums>:fetch <cid>    importēt CID saturu (nav izpildes)
+help-doc-cid =   .my.doc.<nosaukums>:cid            parādīt saglabāto CID
+help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Pieejamās valodas (iestatīt ar /my/i18n: <code>):
+lang-list-header = Pieejamās valodas (iestatīt ar .my.i18n: <code>):
 err-lang-not-found = valoda nav atrasta: { $lang }
 
 msg-send-failed = sūtīšana neizdevās: { $e }
@@ -326,9 +326,9 @@ help-topic-publish =   .help/publish                identitātes publicēšana t
 help-header-publish = ── identitātes publicēšana ──────────────────────────────────────────────────
 help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Citi var meklēt tavu DID, lai sazinātos ar tevi.
 help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts ma (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.
-help-publish-steps = Soļi: izpildi '.ma [port]', lai noteiktu vietējo ma, pēc tam '/my/identity!publish @ma'.
+help-publish-steps = Soļi: izpildi '.ma [port]', lai noteiktu vietējo ma, pēc tam '.my.identity!publish @ma'.
 help-publish-without = Bez publicēšanas citi nevar tevi sasniegt — pat zinot tavu DID, viņi nevar atrisināt tavu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

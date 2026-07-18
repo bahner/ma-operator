@@ -44,7 +44,7 @@ msg-connecting = подключение к iroh...
 msg-iroh-ready = iroh endpoint готов
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубликован через локальный ma ({ $url })
-msg-identity-not-published = Личность не найдена онлайн — если ma установлен локально, выполни '.ma [port]', а затем '/my/identity!publish @ma'. Напиши '.help/publish' для деталей.
+msg-identity-not-published = Личность не найдена онлайн — если ma установлен локально, выполни '.ma [port]', а затем '.my.identity!publish @ma'. Напиши '.help/publish' для деталей.
 msg-blocked = ⊗ заблокировано [{ $cap }]: { $from }
 msg-focus-cleared = фокус снят
 msg-focusing = фокус на { $did } как { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = обнаружение не удалось: ожидал�
 discover-no-endpoint = предупреждение: `endpoint_id` отсутствует в status.json; сохранён только DID
 discover-success = ma обнаружен по { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   псевдоним @ma создан — выполни '/my/identity!publish @ma' для публикации своей личности.
+discover-alias-hint =   псевдоним @ma создан — выполни '.my.identity!publish @ma' для публикации своей личности.
 claim-success = среда выполнения заявлена для { $did }
 claim-conflict = среда выполнения уже заявлена другой личностью
 claim-http-failed = заявка не удалась: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = не вошли; войдите для заявки сред�
 runtime-no-verb = нет команды `{ $verb }` для { $path }
 
 # ── Глаголы — ACL ─────────────────────────────────────────────────────────
-acl-reset = /my/acl сброшен (полностью открыт)
+acl-reset = .my.acl сброшен (полностью открыт)
 acl-persist-error = ошибка сохранения: { $e }
-acl-no-verb = нет команды `{ $verb }` для /my/acl
+acl-no-verb = нет команды `{ $verb }` для .my.acl
 
 # ── Глаголы — личность ────────────────────────────────────────────────────
-publish-usage = использование: /my/identity!publish <did-или-псевдоним>
+publish-usage = использование: .my.identity!publish <did-или-псевдоним>
 identity-exported = Пакет загружен как { $filename }
 identity-export-failed = Экспорт не удался: { $e }
 
 # ── Глаголы — документы ───────────────────────────────────────────────────
-doc-content-empty = { $path }/content пуст
-doc-save-first = { $path }/content пуст — сначала сохраните
+doc-content-empty = { $path }.content пуст
+doc-save-first = { $path }.content пуст — сначала сохраните
 doc-missing-name = отсутствует имя документа
-doc-publish-usage = использование: /my/doc/<name>!publish <publisher>
-doc-publish-ipld-usage = использование: /my/doc/<name>!publish-ipld <publisher>
+doc-publish-usage = использование: .my.doc.<name>!publish <publisher>
+doc-publish-ipld-usage = использование: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = публикация { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = запрос хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
 doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
-doc-fetch-done = загружено { $cid } → { $path }/content (не выполнено)
+doc-fetch-done = загружено { $cid } → { $path }.content (не выполнено)
 doc-fetch-failed = загрузка { $cid }: { $e }
-doc-fetch-usage = использование: /my/doc/<name>!fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid не установлен
+doc-fetch-usage = использование: .my.doc.<name>!fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid не установлен
 doc-no-verb = нет команды `{ $verb }` для { $path }
 path-no-verb = нет команды `{ $verb }` для { $path }
 
@@ -181,42 +181,42 @@ help-config-delete =   .path:                       удалить лист ил
 help-config-verb =   .path!verb [args]            вызвать локальный глагол
 
 # ── Справка — общие пути ──────────────────────────────────────────────────
-help-my =   /my                          показать личную конфигурацию
-help-aliases =   /my/aliases                  список псевдонимов
-help-aliases-set =   /my/aliases/<name>: <did>    добавить/обновить псевдоним
-help-aliases-del =   /my/aliases/<name>:          удалить псевдоним
+help-my =   .my                          показать личную конфигурацию
+help-aliases =   .my.aliases                  список псевдонимов
+help-aliases-set =   .my.aliases.<name>: <did>    добавить/обновить псевдоним
+help-aliases-del =   .my.aliases.<name>:          удалить псевдоним
 help-runtime-discover =   .ma [port]          обнаружить локальную среду и создать @ma
 help-runtime-claim =   .ma [port]             заявить права на среду выполнения
-help-identity =   /my/identity                 показать конфигурацию личности
-help-identity-did =   /my/identity/did             показать собственный DID (только чтение)
-help-identity-publish =   /my/identity!publish @pub    опубликовать DID через сервис публикации
-help-identity-export =   /my/identity!export          загрузить собственный пакет идентичности
+help-identity =   .my.identity                 показать конфигурацию личности
+help-identity-did =   .my.identity.did             показать собственный DID (только чтение)
+help-identity-publish =   .my.identity!publish @pub    опубликовать DID через сервис публикации
+help-identity-export =   .my.identity!export          загрузить собственный пакет идентичности
 help-config-path =   .config                      показать все записи .config.*
 
 # ── Справка — входящие ────────────────────────────────────────────────────
-help-inbox =   /my/inbox                    список входящих (поддерево)
-help-inbox-n =   /my/inbox/N                  показать поля записи N
-help-inbox-from =   /my/inbox/N/from             DID отправителя записи N
-help-inbox-reply =   /my/inbox/N!reply [body]     отправить ответ (без текста — редактор)
-help-inbox-open =   /my/inbox/N!open             открыть содержимое в режиме чтения
-help-inbox-del =   /my/inbox/N:                 удалить запись N
-help-inbox-delall =   /my/inbox:                   удалить все входящие
-help-inbox-flush =   /my/inbox!flush              вывести все записи в терминал
-help-inbox-filter =   /my/inbox!filter @who        показать только записи от @who
-help-inbox-traverse =   /my/inbox/N/sender/<field>   обход документа отправителя
+help-inbox =   .my.inbox                    список входящих (поддерево)
+help-inbox-n =   .my.inbox.N                  показать поля записи N
+help-inbox-from =   .my.inbox.N.from             DID отправителя записи N
+help-inbox-reply =   .my.inbox.N!reply [body]     отправить ответ (без текста — редактор)
+help-inbox-open =   .my.inbox.N!open             открыть содержимое в режиме чтения
+help-inbox-del =   .my.inbox.N:                 удалить запись N
+help-inbox-delall =   .my.inbox:                   удалить все входящие
+help-inbox-flush =   .my.inbox!flush              вывести все записи в терминал
+help-inbox-filter =   .my.inbox!filter @who        показать только записи от @who
+help-inbox-traverse =   .my.inbox.N.sender.<field>   обход документа отправителя
 
 # ── Справка — документы ───────────────────────────────────────────────────
-help-doc-edit =   /my/doc/<name>!edit           открыть редактор с сохранённым содержимым
-help-doc-edit-cid =   /my/doc/<name>!edit <cid>     загрузить CID для просмотра
-help-doc-eval =   /my/doc/<name>!eval           выполнить содержимое построчно
-help-doc-publish =   /my/doc/<name>!publish @pub   сохранить как сырые данные
-help-doc-publish-ipld =   /my/doc/<name>!publish-ipld @pub  сохранить YAML как DAG-CBOR IPLD узел
-help-doc-fetch =   /my/doc/<name>!fetch <cid>    импортировать содержимое CID
-help-doc-cid =   /my/doc/<name>!cid            показать сохранённый CID
-help-doc-del =   /my/doc/<name>:              удалить документ
+help-doc-edit =   .my.doc.<name>!edit           открыть редактор с сохранённым содержимым
+help-doc-edit-cid =   .my.doc.<name>!edit <cid>     загрузить CID для просмотра
+help-doc-eval =   .my.doc.<name>!eval           выполнить содержимое построчно
+help-doc-publish =   .my.doc.<name>!publish @pub   сохранить как сырые данные
+help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  сохранить YAML как DAG-CBOR IPLD узел
+help-doc-fetch =   .my.doc.<name>!fetch <cid>    импортировать содержимое CID
+help-doc-cid =   .my.doc.<name>!cid            показать сохранённый CID
+help-doc-del =   .my.doc.<name>:              удалить документ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Доступные языки (задать через /my/i18n: <code>):
+lang-list-header = Доступные языки (задать через .my.i18n: <code>):
 err-lang-not-found = язык не найден: { $lang }
 
 msg-send-failed = ошибка отправки: { $e }
@@ -332,9 +332,9 @@ help-topic-publish =   .help/publish                публикация лич�
 help-header-publish = ── публикация личности ──────────────────────────────────────────────────────
 help-publish-intro = Публикация делает твою личность доступной для поиска в сети. Другие могут найти твой DID, чтобы связаться с тобой.
 help-publish-ma = Для публикации нужен установленный ma (локальная среда выполнения). Он соединяет ego с IPFS/IPNS от твоего имени.
-help-publish-steps = Шаги: выполни '.ma [port]' для обнаружения локального ma, затем '/my/identity!publish @ma'.
+help-publish-steps = Шаги: выполни '.ma [port]' для обнаружения локального ma, затем '.my.identity!publish @ma'.
 help-publish-without = Без публикации другие не смогут тебя найти — даже зная твой DID, они не смогут определить твой endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────

@@ -44,7 +44,7 @@ msg-connecting = verbinding maken met iroh...
 msg-iroh-ready = iroh-eindpunt gereed
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID gepubliceerd via lokale ma ({ $url })
-msg-identity-not-published = Identiteit niet online gevonden — als je ma lokaal geïnstalleerd hebt, voer '.ma [port]' uit en dan '/my/identity!publish @ma'. Typ '.help/publish' voor details.
+msg-identity-not-published = Identiteit niet online gevonden — als je ma lokaal geïnstalleerd hebt, voer '.ma [port]' uit en dan '.my.identity!publish @ma'. Typ '.help/publish' voor details.
 msg-blocked = ⊗ geblokkeerd [{ $cap }]: { $from }
 msg-focus-cleared = focus gewist
 msg-focusing = focussen op { $did } als { $prompt }
@@ -108,7 +108,7 @@ discover-invalid-did = detectie mislukt: `did` moest beginnen met did:ma:, ontva
 discover-no-endpoint = detectiewaarschuwing: `endpoint_id` ontbreekt in status.json; alleen DID opgeslagen
 discover-success = ma gedetecteerd bij { $url }
 discover-did-line = DID: { $did }
-discover-alias-hint =   alias @ma aangemaakt — voer '/my/identity!publish @ma' uit om je identiteit te publiceren.
+discover-alias-hint =   alias @ma aangemaakt — voer '.my.identity!publish @ma' uit om je identiteit te publiceren.
 claim-success = Runtime geclaimd voor { $did }
 claim-conflict = Runtime al geclaimd door een andere identiteit
 claim-http-failed = claimen mislukt: HTTP { $status }
@@ -117,30 +117,30 @@ claim-no-session = niet aangemeld; meld u eerst aan om de runtime te claimen
 runtime-no-verb = geen werkwoord `{ $verb }` voor { $path }
 
 # ── Werkwoorden — toegangsbeheer ──────────────────────────────────────────
-acl-reset = /my/acl gereset (volledig open)
+acl-reset = .my.acl gereset (volledig open)
 acl-persist-error = opslagfout: { $e }
-acl-no-verb = geen werkwoord `{ $verb }` voor /my/acl
+acl-no-verb = geen werkwoord `{ $verb }` voor .my.acl
 
 # ── Werkwoorden — identiteit ──────────────────────────────────────────────
-publish-usage = gebruik: /my/identity!publish <did-of-alias>
+publish-usage = gebruik: .my.identity!publish <did-of-alias>
 identity-exported = Bundel gedownload als { $filename }
 identity-export-failed = Export mislukt: { $e }
 
 # ── Werkwoorden — documenten ──────────────────────────────────────────────
-doc-content-empty = { $path }/content is leeg
-doc-save-first = { $path }/content is leeg — sla eerst op
+doc-content-empty = { $path }.content is leeg
+doc-save-first = { $path }.content is leeg — sla eerst op
 doc-missing-name = documentnaam ontbreekt
-doc-publish-usage = gebruik: /my/doc/<naam>:publish <uitgever>
-doc-publish-ipld-usage = gebruik: /my/doc/<naam>:publish-ipld <uitgever>
+doc-publish-usage = gebruik: .my.doc.<naam>:publish <uitgever>
+doc-publish-ipld-usage = gebruik: .my.doc.<naam>:publish-ipld <uitgever>
 doc-publish-failed = publiceren { $path }: { $e }
 doc-publish-ipld-failed = IPLD publiceren { $path }: { $e }
 doc-store-sent = opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
 doc-ipld-store-sent = IPLD-opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
-doc-fetch-done = { $cid } opgehaald → { $path }/content (niet uitgevoerd)
+doc-fetch-done = { $cid } opgehaald → { $path }.content (niet uitgevoerd)
 doc-fetch-failed = ophalen { $cid }: { $e }
-doc-fetch-usage = gebruik: /my/doc/<naam>:fetch <cid>
-doc-cid-value = { $path }/cid = { $cid }
-doc-cid-not-set = { $path }/cid is niet ingesteld
+doc-fetch-usage = gebruik: .my.doc.<naam>:fetch <cid>
+doc-cid-value = { $path }.cid = { $cid }
+doc-cid-not-set = { $path }.cid is niet ingesteld
 doc-no-verb = geen werkwoord `{ $verb }` voor { $path }
 path-no-verb = geen werkwoord `{ $verb }` voor { $path }
 
@@ -176,40 +176,40 @@ help-config-set =   .path: value                 blad instellen
 help-config-delete =   .path:                       blad of deelboom verwijderen
 help-config-verb =   .path!verb [args]            lokaal werkwoord uitvoeren
 
-help-my =   /my                          alle persoonlijke configuratie weergeven
-help-aliases =   /my/aliases                  aliassen weergeven
-help-aliases-set =   /my/aliases/<name>: <did>    alias toevoegen/bijwerken (zuivere DID, geen #fragment)
-help-aliases-del =   /my/aliases/<name>:          alias verwijderen
+help-my =   .my                          alle persoonlijke configuratie weergeven
+help-aliases =   .my.aliases                  aliassen weergeven
+help-aliases-set =   .my.aliases.<name>: <did>    alias toevoegen/bijwerken (zuivere DID, geen #fragment)
+help-aliases-del =   .my.aliases.<name>:          alias verwijderen
 help-runtime-discover =   .ma [port]          lokale runtime detecteren en @ma-alias aanmaken
 help-runtime-claim =   .ma [port]             runtime claimen met uw DID
-help-identity =   /my/identity                 identiteitsconfiguratie weergeven
-help-identity-did =   /my/identity/did             eigen DID weergeven (alleen-lezen)
-help-identity-publish =   /my/identity!publish @pub    eigen DID publiceren via uitgeversdienst
-help-identity-export =   /my/identity!export          eigen identiteitsbundel downloaden
+help-identity =   .my.identity                 identiteitsconfiguratie weergeven
+help-identity-did =   .my.identity.did             eigen DID weergeven (alleen-lezen)
+help-identity-publish =   .my.identity!publish @pub    eigen DID publiceren via uitgeversdienst
+help-identity-export =   .my.identity!export          eigen identiteitsbundel downloaden
 help-config-path =   .config                      alle .config.*-items weergeven
 
-help-inbox =   /my/inbox                    postvak in weergeven (deelboomweergave)
-help-inbox-n =   /my/inbox/N                  velden van item N weergeven
-help-inbox-from =   /my/inbox/N/from             afzender-DID voor item N
-help-inbox-reply =   /my/inbox/N!reply [body]     antwoord sturen (opent editor zonder inhoud)
-help-inbox-open =   /my/inbox/N!open             inhoud openen in alleen-lezen editor
-help-inbox-del =   /my/inbox/N:                 item N verwijderen
-help-inbox-delall =   /my/inbox:                   alle items in postvak in verwijderen
-help-inbox-flush =   /my/inbox!flush              alle items naar terminal afdrukken
-help-inbox-filter =   /my/inbox!filter @who        toon alleen vermeldingen van @who
-help-inbox-traverse =   /my/inbox/N/sender/<veld>   DID-document afzender lazy doorlopen
+help-inbox =   .my.inbox                    postvak in weergeven (deelboomweergave)
+help-inbox-n =   .my.inbox.N                  velden van item N weergeven
+help-inbox-from =   .my.inbox.N.from             afzender-DID voor item N
+help-inbox-reply =   .my.inbox.N!reply [body]     antwoord sturen (opent editor zonder inhoud)
+help-inbox-open =   .my.inbox.N!open             inhoud openen in alleen-lezen editor
+help-inbox-del =   .my.inbox.N:                 item N verwijderen
+help-inbox-delall =   .my.inbox:                   alle items in postvak in verwijderen
+help-inbox-flush =   .my.inbox!flush              alle items naar terminal afdrukken
+help-inbox-filter =   .my.inbox!filter @who        toon alleen vermeldingen van @who
+help-inbox-traverse =   .my.inbox.N.sender.<veld>   DID-document afzender lazy doorlopen
 
-help-doc-edit =   /my/doc/<naam>:edit           editor openen met opgeslagen inhoud
-help-doc-edit-cid =   /my/doc/<naam>:edit <cid>     CID ophalen, openen voor revisie
-help-doc-eval =   /my/doc/<naam>:eval           opgeslagen inhoud regel voor regel uitvoeren
-help-doc-publish =   /my/doc/<naam>:publish @pub   opslaan als ruwe blob (alle typen)
-help-doc-publish-ipld =   /my/doc/<naam>:publish-ipld @pub  YAML opslaan als gestructureerd DAG-CBOR IPLD-knooppunt
-help-doc-fetch =   /my/doc/<naam>:fetch <cid>    CID-inhoud importeren (geen uitvoering)
-help-doc-cid =   /my/doc/<naam>:cid            opgeslagen CID weergeven
-help-doc-del =   /my/doc/<naam>:              document verwijderen
+help-doc-edit =   .my.doc.<naam>:edit           editor openen met opgeslagen inhoud
+help-doc-edit-cid =   .my.doc.<naam>:edit <cid>     CID ophalen, openen voor revisie
+help-doc-eval =   .my.doc.<naam>:eval           opgeslagen inhoud regel voor regel uitvoeren
+help-doc-publish =   .my.doc.<naam>:publish @pub   opslaan als ruwe blob (alle typen)
+help-doc-publish-ipld =   .my.doc.<naam>:publish-ipld @pub  YAML opslaan als gestructureerd DAG-CBOR IPLD-knooppunt
+help-doc-fetch =   .my.doc.<naam>:fetch <cid>    CID-inhoud importeren (geen uitvoering)
+help-doc-cid =   .my.doc.<naam>:cid            opgeslagen CID weergeven
+help-doc-del =   .my.doc.<naam>:              document verwijderen
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Beschikbare talen (instellen met /my/i18n: <code>):
+lang-list-header = Beschikbare talen (instellen met .my.i18n: <code>):
 err-lang-not-found = taal niet gevonden: { $lang }
 
 msg-send-failed = verzenden mislukt: { $e }
@@ -325,9 +325,9 @@ help-topic-publish =   .help/publish                je identiteit publiceren op 
 help-header-publish = ── identiteit publiceren ────────────────────────────────────────────────────
 help-publish-intro = Publiceren maakt je identiteit vindbaar op het netwerk. Anderen kunnen je DID opzoeken om je te bereiken.
 help-publish-ma = Om te publiceren heb je ma (lokale runtime) nodig. Het koppelt ego aan IPFS/IPNS namens jou.
-help-publish-steps = Stappen: voer '.ma [port]' uit om je lokale ma te detecteren, dan '/my/identity!publish @ma'.
+help-publish-steps = Stappen: voer '.ma [port]' uit om je lokale ma te detecteren, dan '.my.identity!publish @ma'.
 help-publish-without = Zonder publiceren kunnen anderen je niet bereiken — zelfs als ze je DID kennen, kunnen ze je endpoint niet oplossen.
-profile-fetch-did-resolve-failed = DID not published yet — run '/my/identity!publish @ma' first, then '!publish' your profile
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
 profile-update-done = profile updated — { $n } keys merged from CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────
