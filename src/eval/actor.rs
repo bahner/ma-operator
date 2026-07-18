@@ -176,7 +176,7 @@ pub(crate) fn eval_remote_crud(
     raw: &str,
     state: &AppState,
     _show_editor: RwSignal<Option<crate::views::editor::EditorContext>>,
-    _config: RwSignal<EgoConfig>,
+    config: RwSignal<EgoConfig>,
 ) {
     let cmd_id = state.push_command(raw);
     let state2 = state.clone();
@@ -203,6 +203,14 @@ pub(crate) fn eval_remote_crud(
                 }
             }
             RemoteCrudOp::Set(value) => {
+                let value =
+                    match normalize_remote_crud_set_value(&path, &value, &config.get_untracked()) {
+                        Ok(value) => value,
+                        Err(e) => {
+                            fail_cmd(e, cmd_id, &state2);
+                            return;
+                        }
+                    };
                 match transport::send_crud_set(&target, &path, ciborium::Value::Text(value)).await {
                     Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
                     Err(e) => fail_cmd(e, cmd_id, &state2),
@@ -246,8 +254,13 @@ pub(crate) fn editor_mode_for_path(path: &str, target: &str) -> EditorMode {
     EditorMode::CrudEdit {
         target: target.to_string(),
         crud_path: path.to_string(),
+        creatable: is_creatable_crud_path(path),
         is_link: false,
     }
+}
+
+fn is_creatable_crud_path(path: &str) -> bool {
+    matches!(path, "/config/root")
 }
 
 // ── Internal dispatcher ───────────────────────────────────────────────────
@@ -303,4 +316,71 @@ fn fail_cmd(e: String, cmd_id: u64, state: &AppState) {
     state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
     let disp = e.replace("not logged in", &t("msg-not-logged-in"));
     state.push_error(tf("msg-send-failed", &[("e", &disp)]));
+}
+
+fn normalize_remote_crud_set_value(
+    path: &str,
+    value: &str,
+    config: &EgoConfig,
+) -> Result<String, String> {
+    if path != "/config/root" {
+        return Ok(value.to_string());
+    }
+    let value = if let Some(did) = value.strip_prefix("@did:") {
+        format!("did:{did}")
+    } else {
+        crate::parser::alias::resolve_targets(value, config)?
+    };
+    let value = value.trim().to_string();
+    if value.starts_with("did:ma:") && value.contains('#') {
+        Ok(value)
+    } else {
+        Err("/config/root must be a full actor DID-URL like @runtime#root".to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{editor_mode_for_path, normalize_remote_crud_set_value};
+    use crate::config::EgoConfig;
+    use crate::views::editor::EditorMode;
+
+    #[test]
+    fn config_root_set_expands_alias_fragment() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.sky", "did:ma:k51sky");
+        let value = normalize_remote_crud_set_value("/config/root", "@sky#root", &cfg).unwrap();
+        assert_eq!(value, "did:ma:k51sky#root");
+    }
+
+    #[test]
+    fn config_root_set_rejects_non_actor_value() {
+        let cfg = EgoConfig::default();
+        assert!(normalize_remote_crud_set_value("/config/root", "@sky", &cfg).is_err());
+        assert!(normalize_remote_crud_set_value("/config/root", "did:ma:k51sky", &cfg).is_err());
+    }
+
+    #[test]
+    fn other_remote_crud_set_values_are_not_expanded() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.sky", "did:ma:k51sky");
+        let value = normalize_remote_crud_set_value("/config/name", "@sky#root", &cfg).unwrap();
+        assert_eq!(value, "@sky#root");
+    }
+
+    #[test]
+    fn config_root_crud_edit_is_creatable() {
+        match editor_mode_for_path("/config/root", "did:ma:test-runtime") {
+            EditorMode::CrudEdit { creatable, .. } => assert!(creatable),
+            other => panic!("unexpected mode: {other:?}"),
+        }
+    }
+
+    #[test]
+    fn unrelated_crud_edit_is_not_creatable() {
+        match editor_mode_for_path("/config/name", "did:ma:test-runtime") {
+            EditorMode::CrudEdit { creatable, .. } => assert!(!creatable),
+            other => panic!("unexpected mode: {other:?}"),
+        }
+    }
 }

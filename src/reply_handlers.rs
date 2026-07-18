@@ -212,6 +212,10 @@ pub(crate) fn handle_edit_open_reply(
             EditorMode::EntityEdit { .. }
                 | EditorMode::EntityFieldEdit { .. }
                 | EditorMode::KindEdit { .. }
+                | EditorMode::CrudEdit {
+                    creatable: true,
+                    ..
+                }
         );
         let not_found = is_missing_for_creatable_edit(incoming);
         if creatable && not_found {
@@ -247,10 +251,14 @@ pub(crate) fn handle_edit_open_reply(
     };
     let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
-            target, crud_path, ..
+            target,
+            crud_path,
+            creatable,
+            ..
         } => EditorMode::CrudEdit {
             target,
             crud_path,
+            creatable,
             is_link: link_path.is_some(),
         },
         other => other,

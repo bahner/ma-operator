@@ -91,6 +91,9 @@ pub enum EditorMode {
         target: String,
         /// Full CRUD path, e.g. `".entities.alice.fil"` or `".config.owners"`.
         crud_path: String,
+        /// Whether a missing GET should open a blank editor for creating the
+        /// value instead of surfacing `*-not-found` as an error.
+        creatable: bool,
         /// Whether the GET reply that opened this session was a link
         /// reference (`/ipfs/`, `/ipns/`, `/ipld/`-prefixed value). Drives
         /// the save handler — no further conditions needed.
@@ -430,6 +433,7 @@ pub fn EditorModal(
             let EditorMode::CrudEdit {
                 target,
                 crud_path,
+                creatable: _,
                 is_link,
             } = ctx.mode
             else {
