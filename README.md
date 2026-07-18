@@ -190,33 +190,40 @@ You need two things running on your machine:
 
 Once `ma` is running, open [http://localhost:5003](http://localhost:5003) to confirm.
 
-### Auto-discovery
+### ma-space
 
-Then run one command in ego:
+Then run one command in zion:
 
 ```
-.my.間:discover
+.ma
 ```
 
 This probes `http://localhost:5003/status.json`, reads `ma`'s DID and endpoint,
-stores them under `.my.間`, and creates the alias `@間` for you automatically.
+stores them under `.ma.ctx.*`, and creates the alias `@ma` for you automatically.
 
 After that, publishing your identity is just:
 
 ```
-.my.identity:publish @間
+.my.identity!publish @ma
 ```
 
 You only need to re-run this whenever your iroh endpoint changes (e.g. after
 a new install). The DID itself is permanent.
 
-### What is `.my.間`?
+### What is ma-space?
 
-`.my.間` is your *space* on the network — the runtime that connects your
-browser identity to the wider ma world. The name is the kanji for the project
-itself (間, *ma*, meaning interval or space). Today it points to the `ma`
-daemon that handles IPFS publishing; as the platform grows it will also point
-to richer runtimes.
+ma-space is where your zion identity becomes reachable. The local `ma` daemon
+is the bridge between your browser identity and the wider ma network. The name
+is the kanji for the project itself (間, *ma*, meaning interval or space).
+
+Once your identity is published, you can enter the room through your runtime:
+
+```
+.enter @ma
+```
+
+`.leave` steps back out of that room without logging you out or changing your
+identity.
 
 ---
 
@@ -229,10 +236,10 @@ ego is early-stage but usable. These things work today:
 - Full inbox with reply, open, and delete
 - Local documents with a code editor
 - Peer-to-peer transport via [iroh QUIC](https://github.com/n0-computer/iroh)
+- Focus mode for runtime worlds via `.enter @runtime` / `.leave`
 - Everything persists across browser restarts
 
-Coming soon: a *focus mode* (`.use @actor`) for staying in context with one
-counterpart, alias colour rendering in the input field, and a publish workflow
+Coming soon: alias colour rendering in the input field and a publish workflow
 for pushing documents to IPFS.
 
 ---

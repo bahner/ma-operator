@@ -106,6 +106,10 @@ discover-json-error = detectie mislukt: ongeldige JSON van { $url }: { $e }
 discover-missing-did = detectie mislukt: status.json mist verplicht veld `did`
 discover-invalid-did = detectie mislukt: `did` moest beginnen met did:ma:, ontvangen `{ $did }`
 discover-no-endpoint = detectiewaarschuwing: `endpoint_id` ontbreekt in status.json; alleen DID opgeslagen
+discover-hint-endpoint-not-found = Hint: eindpunt niet gevonden. Controleer dat `ma` draait en /status.json op poort 5003 aanbiedt.
+discover-hint-server-error = Hint: runtime antwoordde met een serverfout. Controleer de `ma`-logs en probeer opnieuw.
+discover-hint-network = Hint: netwerk-/verbindingsprobleem. Start `ma`, controleer dat localhost:5003 bereikbaar is en sta lokale HTTP-toegang in de browser toe.
+discover-hint-generic = Hint: controleer dat `ma` en IPFS Desktop draaien en probeer `.ma` opnieuw.
 discover-success = ma gedetecteerd bij { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma aangemaakt — voer '.my.identity!publish @ma' uit om je identiteit te publiceren.
@@ -134,6 +138,16 @@ doc-publish-usage = gebruik: .my.doc.<naam>!publish <uitgever>
 doc-publish-ipld-usage = gebruik: .my.doc.<naam>!publish-ipld <uitgever>
 doc-publish-failed = publiceren { $path }: { $e }
 doc-publish-ipld-failed = IPLD publiceren { $path }: { $e }
+doc-publish-error-detail = publiceren mislukt [{ $code }]: { $err }
+doc-publish-error-hint = Hint: { $hint }
+doc-publish-hint-session = meld je opnieuw aan zodat ego toegang heeft tot je identiteitssleutels
+doc-publish-hint-target = gebruik een geldige publisher-DID of alias die naar een kale did:ma:<ipns> verwijst
+doc-publish-hint-network = controleer dat ma-runtime en IPFS bereikbaar zijn en probeer opnieuw
+doc-publish-hint-resolve = controleer dat het DID-document van de publisher gepubliceerd is en een bereikbaar eindpunt bevat
+doc-publish-hint-acl = vraag de publisher-operator om je DID in ACL toe te staan
+doc-publish-hint-runtime = runtime/plugin heeft het verzoek geweigerd; bekijk de reden en probeer opnieuw na correctie van entiteit/runtime
+doc-publish-hint-ipfs = controleer lokale Kubo/IPFS-gezondheid en status van de publisher-runtime
+doc-publish-hint-unknown = bekijk runtime-logs voor de gedetailleerde oorzaak en probeer opnieuw
 doc-store-sent = opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
 doc-ipld-store-sent = IPLD-opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
 doc-fetch-done = { $cid } opgehaald → { $path }.content (niet uitgevoerd)
@@ -147,11 +161,13 @@ path-no-verb = geen werkwoord `{ $verb }` voor { $path }
 # ── Helptekst — koppen ────────────────────────────────────────────────────
 help-header-zion = ── zion-opdrachten ────────────────────────────────────────────────────────
 help-header-messaging = ── berichten ─────────────────────────────────────────────────────────────
-help-header-focus = ── focusmodus ────────────────────────────────────────────────────────────
 help-header-config = ── lokale configuratiegrammatica ──────────────────────────────────────
 help-header-common = ── veelgebruikte paden ───────────────────────────────────────────────────
 help-header-inbox = ── postvak in ────────────────────────────────────────────────────────────
 help-header-documents = ── documenten ───────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        deze tekst
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           bericht / RPC stu
 help-msg-fragment =   @alias#fragment:verb body  sturen naar alias met expliciet DID-fragment
 help-msg-escape =   \@name                       letterlijke @name (geen aliaszoekactie)
 
-help-focus-set =   .use @alias [as @name]       focussen op actor (wijzigt prompt)
-help-focus-clear =   .use                         focus wissen
 
 help-config-get =   .path                        bladwaarde ophalen of deelboom weergeven
 help-config-filter =   .path value                  zoekfilter (filteren op waarde)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<naam>!publish-ipld @pub  YAML opslaan als ges
 help-doc-fetch =   .my.doc.<naam>!fetch /ipfs/<cid>    CID-inhoud importeren (geen uitvoering)
 help-doc-cid =   .my.doc.<naam>!cid            opgeslagen CID weergeven
 help-doc-del =   .my.doc.<naam>:              document verwijderen
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = De 間-kamer is de ruimte tussen 間-identiteiten. ma zorgt dat die identiteiten elkaar kunnen vinden en communiceren; zodra je identiteit is gepubliceerd, kun je meedoen.
+help-ma-command =   .ma [port]                   verbind met je lokale ma-runtime, lees /status.json en sla .ma.ctx.* op
+help-ma-publish =   .my.identity!publish @ma     publiceer je DID-document zodat anderen je sleutels en endpoint kunnen vinden
+help-ma-security = De duidelijkste vertrouwensgrens is je eigen ma-runtime met je eigen IPFS Desktop/Kubo. Een externe publisher kan nuttig zijn, maar dan vertrouw je op de dienst van iemand anders.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             hoe je de 間-kamer binnenkomt
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Wanneer je identiteit bekend is, laat .enter @ma je 間 binnenstappen. Zoek een wereld, ga naar binnen en doe van daaruit mee.
+help-ma-entry-steps = Start IPFS Desktop en ma, voer daarna .ma uit. Publiceer met .my.identity!publish @ma, zoek een wereld en ga naar binnen met .enter @ma.
+help-ma-entry-command =   .enter @ma                  間 binnengaan via de @ma-runtime
+help-ma-entry-leave =   .leave                       verlaat de kamer; je identiteit blijft actief en je blijft ingelogd
+help-ma-entry-url =   ?enter=<runtime>             binnengaan na login via een gedeelde URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Beschikbare talen (instellen met .my.i18n: <code>):
@@ -282,13 +316,14 @@ profiles-not-found = profiel niet gevonden: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    zion openen via een URL-link
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -297,8 +332,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -307,20 +342,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
 help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
 help-url-msg =   ?msg=<did>                   vult in: @<did>!msg (tekstbericht)
 help-url-say =   ?say=<did>                   vult in: @<did>!say (say-werkwoord)
 help-url-emote =   ?emote=<did>                 vult in: @<did>!emote (emote-werkwoord)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Het invoerveld wordt ingevuld maar niet verzonden — druk op Enter.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                je identiteit publiceren op het netwerk

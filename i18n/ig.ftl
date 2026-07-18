@@ -106,6 +106,10 @@ discover-json-error = nchọpụta erughị: JSON na-ezighị ezi si { $url }: {
 discover-missing-did = nchọpụta erughị: status.json enweghị ngalaba `did`
 discover-invalid-did = nchọpụta erughị: `did` ga-amalite na did:ma:, nwetara `{ $did }`
 discover-no-endpoint = ọdịmara nchọpụta: `endpoint_id` dịghị na status.json; echekwara DID naanị
+discover-hint-endpoint-not-found = Ndụmọdụ: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Ndụmọdụ: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Ndụmọdụ: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Ndụmọdụ: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = achọpụtara ma na { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   emepụtara alias @ma — mee '.my.identity!publish @ma' iji bipute njirimara gị.
@@ -134,6 +138,16 @@ doc-publish-usage = ojiji: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = ojiji: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = ịbipụta { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = mbipụta dara [{ $code }]: { $err }
+doc-publish-error-hint = Ndụmọdụ: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-fetch-done = enwetara { $cid } → { $path }.content (arụghị ọrụ)
@@ -147,11 +161,13 @@ path-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 # ── Enyemaka — isi ────────────────────────────────────────────────────────
 help-header-zion = ── iwu zion ──────────────────────────────────────────────────────────────
 help-header-messaging = ── ịziga ozi ─────────────────────────────────────────────────────────────
-help-header-focus = ── ọnọdụ ntụleanya ──────────────────────────────────────────────────────
 help-header-config = ── nhazi grammar ebe obibi ──────────────────────────────────────────────
 help-header-common = ── ụzọ a na-ejikarị ─────────────────────────────────────────────────────
 help-header-inbox = ── igbe ozi ─────────────────────────────────────────────────────────────
 help-header-documents = ── akwụkwọ ─────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Enyemaka — iwu zion ───────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  ziga na nchọkwa nwere fragmen
 help-msg-escape =   \@name                       @name n'okwu n'okwu (ọ chọghị nchọkwa)
 
 # ── Enyemaka — ọnọdụ ntụleanya ───────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       tụlee uche na onye na-eme ihe (gbanwee prompt)
-help-focus-clear =   .use                         hichapụ ntụleanya
 
 # ── Enyemaka — nhazi grammar ──────────────────────────────────────────────
 help-config-get =   .path                        nweta uru ọhụrụ ma ọ bụ depụta alaka
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  chekwaa YAML dị ka
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bawanye ọdịnaya CID (arụghị ọrụ)
 help-doc-cid =   .my.doc.<name>!cid            gosi CID echekwara
 help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Ụlọ 間 bụ oghere dị n’etiti njirimara 間. ma na-eme ka njirimara ndị a chọta ibe ha ma kwurịta okwu; mgbe e bipụtara njirimara gị, ị nwere ike isonye.
+help-ma-command =   .ma [port]                   jikọọ na ma runtime nke mpaghara, gụọ /status.json, ma chekwaa .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     bipụta akwụkwọ DID gị ka ndị ọzọ nwee ike ịchọta igodo gị na endpoint gị
+help-ma-security = Oke ntụkwasị obi kacha doo anya bụ ma runtime nke gị na IPFS Desktop/Kubo nke gị. Publisher dị anya nwere ike ịba uru, mana mgbe ahụ ị na-adabere na ọrụ onye ọzọ.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             otu esi abanye n’ụlọ 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Mgbe a maara njirimara gị, .enter @ma na-ahapụ gị ịbanye na 間. Chọta ụwa, banye na ya, sonye site n’ebe ahụ.
+help-ma-entry-steps = Malite IPFS Desktop na ma, mgbe ahụ gbaa .ma. Bipụta site na .my.identity!publish @ma, chọta ụwa, banye na .enter @ma.
+help-ma-entry-command =   .enter @ma                  banye na 間 site na @ma runtime
+help-ma-entry-leave =   .leave                       hapụ ụlọ ahụ; njirimara gị ka na-arụ ọrụ, ị ka nọkwa logged in
+help-ma-entry-url =   ?enter=<runtime>             banye mgbe ị banyere site na URL ekekọrịtara
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Asụsụ ndị dị (.my.i18n: <code> were tọọ):
@@ -289,7 +323,7 @@ profiles-not-found = profaịlụ ahụghị: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    mepee zion site na njikọ URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
 help-url-msg =   ?msg=<did>                   deeye tupu: @<did>!msg (ozi dị mfe)
 help-url-say =   ?say=<did>                   deeye tupu: @<did>!say (ngwa ọrụ say)
 help-url-emote =   ?emote=<did>                 deeye tupu: @<did>!emote (ngwa ọrụ emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                bipute njirimara gị na netwọk

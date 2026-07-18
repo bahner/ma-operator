@@ -106,6 +106,10 @@ discover-json-error = dekouvèt echwe: JSON invalid soti { $url }: { $e }
 discover-missing-did = dekouvèt echwe: status.json manke chan obligatwa `did`
 discover-invalid-did = dekouvèt echwe: te atann `did` kòmanse ak did:ma:, jwenn `{ $did }`
 discover-no-endpoint = avètisman dekouvèt: `endpoint_id` manke nan status.json; sèlman DID estoke
+discover-hint-endpoint-not-found = Sijesyon: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Sijesyon: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Sijesyon: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Sijesyon: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma dekouvri nan { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma te kreye — kouri '.my.identity!publish @ma' pou pibliye idantite ou.
@@ -134,6 +138,16 @@ doc-publish-usage = itilizasyon: .my.doc.<non>!publish <piblikatè>
 doc-publish-ipld-usage = itilizasyon: .my.doc.<non>!publish-ipld <piblikatè>
 doc-publish-failed = pibliye { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = piblikasyon echwe [{ $code }]: { $err }
+doc-publish-error-hint = Sijesyon: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-fetch-done = chèche { $cid } → { $path }.content (pa egzekite)
@@ -151,11 +165,13 @@ err-lang-not-found = lang pa jwenn: { $lang }
 
 help-header-zion = ── kòmand zion ────────────────────────────────────────────────────────────
 help-header-messaging = ── mesajri ────────────────────────────────────────────────────────────────
-help-header-focus = ── mòd fokis ──────────────────────────────────────────────────────────────
 help-header-config = ── gramè konfigirasyon lokal ──────────────────────────────────────────────
 help-header-common = ── chemen komen ───────────────────────────────────────────────────────────
 help-header-inbox = ── bwat resepsyon ─────────────────────────────────────────────────────────
 help-header-documents = ── dokiman (.my.doc.*) ────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        teks sa a
 help-cmd-clear =   .clear                       efase terminal
@@ -168,8 +184,6 @@ help-msg-echo =   @alias                       montre DID rezoud la (pa voye mes
 help-msg-send =   @alias!msg body / @alias:verb args           voye mesaj / RPC bay aktè
 help-msg-fragment =   @alias#fragment:verb body  voye ba alias avèk fragman DID eksplisit
 help-msg-escape =   \@name                       @name literal (pa chèche alias)
-help-focus-set =   .use @alias [as @name]       fokis sou aktè (chanje pwomp)
-help-focus-clear =   .use                         efase fokis
 help-config-get =   .path                        jwenn valè fèy oswa liste souabre
 help-config-filter =   .path value                  rekèt match (filtre pa valè)
 help-config-set =   .path: value                 mete fèy
@@ -204,6 +218,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  estoke YAML kòm nœ
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    enpòte kontni CID (pa egzekite)
 help-doc-cid =   .my.doc.<name>!cid            montre CID estoke
 help-doc-del =   .my.doc.<name>:              efase dokiman
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Chanm 間 lan se espas ki genyen ant idantite 間 yo. ma fè idantite sa yo jwenn youn lòt epi kominike; lè idantite ou pibliye, ou ka patisipe.
+help-ma-command =   .ma [port]                   konekte ak runtime ma lokal ou, li /status.json, epi sove .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     pibliye dokiman DID ou pou lòt moun ka rezoud kle ou yo ak endpoint ou
+help-ma-security = Limit konfyans ki pi klè a se pwòp runtime ma ou ak pwòp IPFS Desktop/Kubo ou. Yon publisher aleka ka itil, men lè sa a ou depann de sèvis yon lòt moun.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             kijan pou antre nan chanm 間 lan
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Lè yo konnen idantite ou, .enter @ma pèmèt ou antre nan 間. Jwenn yon mond, antre ladan l, epi patisipe depi la.
+help-ma-entry-steps = Kòmanse IPFS Desktop ak ma, apre sa kouri .ma. Pibliye ak .my.identity!publish @ma, jwenn yon mond, epi antre ak .enter @ma.
+help-ma-entry-command =   .enter @ma                  antre nan 間 atravè runtime @ma
+help-ma-entry-leave =   .leave                       kite chanm lan; idantite ou rete aktif, epi ou rete konekte
+help-ma-entry-url =   ?enter=<runtime>             antre apre login soti nan yon URL pataje
 
 msg-send-failed = echèk voye: { $e }
 msg-not-logged-in = ou pa konekte
@@ -275,7 +309,7 @@ profiles-not-found = pwofil pa jwenn: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -289,8 +323,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -299,22 +333,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
 help-url-msg =   ?msg=<did>                   ranpli davans: @<did>!msg (mesaj senp)
 help-url-say =   ?say=<did>                   ranpli davans: @<did>!say (vèb say)
 help-url-emote =   ?emote=<did>                 ranpli davans: @<did>!emote (vèb emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                pibliye idantite ou sou rezo a

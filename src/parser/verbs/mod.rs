@@ -29,7 +29,7 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
 }
 
 /// Default base URL for the local `ma` daemon.
-/// Override with `.ctx.ma.url: http://host:port` or pass port as argument to `.ma`.
+/// Override with `.ma.ctx.url: http://host:port` or pass port as argument to `.ma`.
 pub(super) const MA_URL: &str = "http://localhost:5003";
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no

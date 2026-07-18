@@ -106,6 +106,10 @@ discover-json-error = ፍለጋ አልተሰራም: ከ{ $url } ያልተሟላ 
 discover-missing-did = ፍለጋ አልተሰራም: status.json የ`did` ሜዳ ጎደለ
 discover-invalid-did = ፍለጋ አልተሰራም: `did` did:ma: ለ መጀምር ይጠበቃል, `{ $did }` ተገኘ
 discover-no-endpoint = የፍለጋ ማስጠንቀቂያ: `endpoint_id` status.json ውስጥ ጎደለ; DID ብቻ ተቀምጧል
+discover-hint-endpoint-not-found = ፍንጭ: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = ፍንጭ: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = ፍንጭ: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = ፍንጭ: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma { $url } ላይ ተገኘ
 discover-did-line = DID: { $did }
 discover-alias-hint =   ቅጽል ስም @ma ተፈጠረ — ህሊናዎን ለማሳተም '.my.identity!publish @ma' ያሂዱ።
@@ -134,6 +138,16 @@ doc-publish-usage = አጠቃቀም: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = አጠቃቀም: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = { $path } ማተም: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = ማተም አልተሳካም [{ $code }]: { $err }
+doc-publish-error-hint = ፍንጭ: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-fetch-done = { $cid } ተሰብስቧል → { $path }.content (አልተሰራም)
@@ -147,11 +161,13 @@ path-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 # ── እርዳታ — ርዕሶች ─────────────────────────────────────────────────────────
 help-header-zion = ── zion ትዕዛዞች ─────────────────────────────────────────────────────────
 help-header-messaging = ── መልዕክት ──────────────────────────────────────────────────────────────
-help-header-focus = ── የትኩረት ሁናቴ ──────────────────────────────────────────────────────────
 help-header-config = ── የአካባቢ ቅርጸት ሰዋስው ─────────────────────────────────────────────────
 help-header-common = ── ተሎ ጥቅም ላይ የሚዋሉ ዱካዎች ──────────────────────────────────────────
 help-header-inbox = ── የገቢ ሳጥን ────────────────────────────────────────────────────────────
 help-header-documents = ── ሰነዶች ─────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── እርዳታ — zion ትዕዛዞች ──────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  ግልጽ DID fragment ባለ�
 help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም ፍለጋ የለም)
 
 # ── እርዳታ — የትኩረት ሁናቴ ──────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       ተዋናይ ላይ ትኩረት (prompt ይቀያይራል)
-help-focus-clear =   .use                         ትኩረት ያጥፉ
 
 # ── እርዳታ — ቅርጸት ሰዋስው ──────────────────────────────────────────────────
 help-config-get =   .path                        የቅጠሉን ዋጋ ያግኙ ወይም ንዑስ ዛፍ ዘርዝሩ
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML እንደ IPLD 
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID ይዘት ያስገቡ (አልተሰራም)
 help-doc-cid =   .my.doc.<name>!cid            የተቀመጠ CID አሳይ
 help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = የ間 ክፍል በ間 ማንነቶች መካከል ያለው ቦታ ነው። ma እነዚህ ማንነቶች እርስ በርስ እንዲገናኙ እና እንዲነጋገሩ ያደርጋል፤ ማንነትህ ከታተመ በኋላ መሳተፍ ትችላለህ።
+help-ma-command =   .ma [port]                   ከአካባቢያዊ ma runtime ጋር ተገናኝ፣ /status.json አንብብ፣ እና .ma.ctx.* አስቀምጥ
+help-ma-publish =   .my.identity!publish @ma     DID ሰነድህን አትም፣ ሌሎች ቁልፎችህን እና endpoint እንዲያገኙ
+help-ma-security = በጣም ግልጽ የመተማመን ድንበር የራስህ ma runtime ከራስህ IPFS Desktop/Kubo ጋር ነው። የርቀት publisher ሊጠቅም ይችላል፣ ግን በዚያ ጊዜ በሌላ ሰው አገልግሎት ላይ ትመካለህ።
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             ወደ 間 ክፍል እንዴት መግባት እንደሚቻል
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = ማንነትህ ከታወቀ በኋላ፣ .enter @ma ወደ 間 እንድትገባ ያስችልሃል። ዓለም ፈልግ፣ ወደዚያ ግባ፣ እና ከዚያ ተሳተፍ።
+help-ma-entry-steps = IPFS Desktop እና ma ጀምር፣ ከዚያ .ma አስኪድ። በ .my.identity!publish @ma አትም፣ ዓለም ፈልግ፣ እና በ .enter @ma ግባ።
+help-ma-entry-command =   .enter @ma                  በ @ma runtime በኩል ወደ 間 ግባ
+help-ma-entry-leave =   .leave                       ከክፍሉ ውጣ፤ ማንነትህ ንቁ ይቆያል፣ እና ገብተህ ትቆያለህ
+help-ma-entry-url =   ?enter=<runtime>             ከተጋራ URL ከገባህ በኋላ ግባ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = ያሉ ቋንቋዎች (.my.i18n: <ኮድ> ለማዘጋጀት):
@@ -289,7 +323,7 @@ profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
 help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
 help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did>!msg (ቀላል መልዕክት)
 help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>!say (say ቃሉ)
 help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>!emote (emote ቃሉ)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                ህሊናዎን ወደ ኔትወርክ ያሳትሙ

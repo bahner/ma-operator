@@ -106,6 +106,10 @@ discover-json-error = yiytaade haaɗaaka: JSON ɓurii haa ko woɗɗi e { $url }:
 discover-missing-did = yiytaade haaɗaaka: status.json alaa `did`
 discover-invalid-did = yiytaade haaɗaaka: `did` fotde fuɗɗoraade did:ma:, tawi `{ $did }`
 discover-no-endpoint = kaaɗto yiytaade: `endpoint_id` tawaaka e status.json; DID tan mooftaama
+discover-hint-endpoint-not-found = Tinndinoore: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Tinndinoore: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Tinndinoore: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Tinndinoore: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma yiytaama e { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   tinndi @ma ɓe — laato '.my.identity!publish @ma' ngam jaatugol tigiraaɗe maa.
@@ -134,6 +138,16 @@ doc-publish-usage = golle: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = golle: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = yettinde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = bayyingol woorii [{ $code }]: { $err }
+doc-publish-error-hint = Tinndinoore: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = gollal mooftude nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-ipld-store-sent = gollal mooftude IPLD nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-fetch-done = { $cid } heɓaama → { $path }.content (hooraaka)
@@ -147,11 +161,13 @@ path-no-verb = baɗe `{ $verb }` { $path } alaa
 # ── Ballal — kanngol ──────────────────────────────────────────────────────
 help-header-zion = ── dabaaji zion ────────────────────────────────────────────────────────────
 help-header-messaging = ── winnditaade ───────────────────────────────────────────────────────────
-help-header-focus = ── nelaandu ──────────────────────────────────────────────────────────────
 help-header-config = ── naawre-daande tiiɗnde ──────────────────────────────────────────────────
 help-header-common = ── laabi caggal ──────────────────────────────────────────────────────────
 help-header-inbox = ── burro naatna ───────────────────────────────────────────────────────────
 help-header-documents = ── takka ────────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Ballal — dabaaji zion ─────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  nawtu e DID fragment baɗaaɗo
 help-msg-escape =   \@name                       @name haqiiqaajo (yiytude hesbu alaa)
 
 # ── Ballal — nelaandu ─────────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       nelita actor (prompt ɓettoto)
-help-focus-clear =   .use                         yaltina nelaandu
 
 # ── Ballal — naawre-daande ────────────────────────────────────────────────
 help-config-get =   .path                        heɓ njamu leehol walla listal aawre
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  mooftu YAML wano nod
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    keɓta mbeɗe CID (hooraaka)
 help-doc-cid =   .my.doc.<name>!cid            hollu CID mooƒtaaɗo
 help-doc-del =   .my.doc.<name>:              yaltina takka
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Suudu 間 ko woni hakkunde innde-identiteede 間. ma walla ɗee identiteede ngam yiytugol e jokkondirde; so identite maa jaɓɓinaama, a waawi seŋaade.
+help-ma-command =   .ma [port]                   seŋo e local ma runtime maa, jang /status.json, tee danndu .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     jaɓɓin DID document maa ngam woɗɓe mbaawa yiytude key maa e endpoint maa
+help-ma-security = Ɗo ɓuri laaɓde e koolnol ko ma runtime maa tigi e IPFS Desktop/Kubo maa tigi. Remote publisher ena waawi wallude, kono ɗuum noon ko huutorto-ɗaa sarwiis goɗɗo.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             hol no naatirta e suudu 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = So identite maa anndaama, .enter @ma maa yamira naatde e 間. Yiylo aduna, naatu ɗo, tee seŋo ɗoon.
+help-ma-entry-steps = Hurmin IPFS Desktop e ma, caggal mum dogin .ma. Jaɓɓin e .my.identity!publish @ma, yiylo aduna, tee naat e .enter @ma.
+help-ma-entry-command =   .enter @ma                  naat e 間 rewde @ma runtime
+help-ma-entry-leave =   .leave                       yal e suudu; identite maa heddii hurminnde, tee a heddii e login
+help-ma-entry-url =   ?enter=<runtime>             naat caggal login iwde e URL lollinaango
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Haɓɓe ndiyam goɗɗi (sett na .my.i18n: <code>):
@@ -289,7 +323,7 @@ profiles-not-found = profil {$name} walaa: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    udditde zion e nder togol URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── kaaɗe URL ────────────────────────────────────────────────────────────────────
 help-url-intro =   Neltir togol udditde zion e jibinirde njemiraande:
 help-url-msg =   ?msg=<did>                   ara-ɓulla: @<did>!msg (tiiɗnde yooltii)
 help-url-say =   ?say=<did>                   ara-ɓulla: @<did>!say (haala say)
 help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>!emote (haala emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter ngam neltude.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                jaatugol tigi maa to laawol

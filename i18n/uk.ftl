@@ -110,6 +110,10 @@ discover-json-error = виявлення не вдалося: неправиль
 discover-missing-did = виявлення не вдалося: у status.json відсутнє поле `did`
 discover-invalid-did = виявлення не вдалося: очікувалося, що `did` починається з did:ma:, отримано `{ $did }`
 discover-no-endpoint = попередження: `endpoint_id` відсутній у status.json; збережено лише DID
+discover-hint-endpoint-not-found = Підказка: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Підказка: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Підказка: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Підказка: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma знайдено за { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   псевдонім @ma створено — виконайте '.my.identity!publish @ma' для публікації особистості.
@@ -141,6 +145,16 @@ doc-publish-usage = використання: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = використання: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = публікація { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = публікація не вдалася [{ $code }]: { $err }
+doc-publish-error-hint = Підказка: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-fetch-done = завантажено { $cid } → { $path }.content (не виконано)
@@ -154,11 +168,13 @@ path-no-verb = немає команди `{ $verb }` для { $path }
 # ── Довідка — заголовки ───────────────────────────────────────────────────
 help-header-zion = ── команди zion ──────────────────────────────────────────────────────────
 help-header-messaging = ── повідомлення ──────────────────────────────────────────────────────────
-help-header-focus = ── режим фокусу ─────────────────────────────────────────────────────────
 help-header-config = ── синтаксис конфігурації ───────────────────────────────────────────────
 help-header-common = ── загальні шляхи ────────────────────────────────────────────────────────
 help-header-inbox = ── вхідні ───────────────────────────────────────────────────────────────
 help-header-documents = ── документи ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Довідка — команди zion ────────────────────────────────────────────────
@@ -173,13 +189,14 @@ help-cmd-batch-sync =   .batch:sync / .batch         виконати коман
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
 help-topic-msg =   .help/msg                    повідомлення — @actor, надсилання, RPC
-help-topic-focus =   .help/focus                  режим фокусу — .use @actor
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   синтаксис локального шляху
 help-topic-my =   .help/my                     особиста конфігурація
 help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
 help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
 help-topic-url =   .help/url                    відкрити zion через URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: невідома тема — спробуйте .help для списку
 
 # ── Довідка — повідомлення ────────────────────────────────────────────────
@@ -189,8 +206,6 @@ help-msg-fragment =   @alias#fragment:verb body  надіслати з явни�
 help-msg-escape =   \@name                       буквальний @name (без пошуку псевдоніму)
 
 # ── Довідка — режим фокусу ────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       зосередитися на акторі (змінює запрошення)
-help-focus-clear =   .use                         скинути фокус
 
 # ── Довідка — синтаксис конфігурації ─────────────────────────────────────
 help-config-get =   .path                        отримати значення або список піддерева
@@ -204,13 +219,13 @@ help-my =   .my                          показати особисту ко�
 help-aliases =   .my.aliases                  список псевдонімів
 help-aliases-set =   .my.aliases.<name>: <did>    додати/оновити псевдонім (bare DID, без #fragment)
 help-aliases-del =   .my.aliases.<name>:          видалити псевдонім
-help-runtime-discover =   .ma [port]                   підключити локальне середовище → .ctx.ma.* (порт за замовчуванням 5003)
+help-runtime-discover =   .ma [port]                   підключити локальне середовище → .ma.ctx.* (порт за замовчуванням 5003)
 help-runtime-claim =   .ma [port]                   (те ж саме — заявка та виявлення об'єднані)
 help-identity =   .my.identity                 показати конфігурацію особистості
 help-identity-did =   .my.identity.did             показати власний DID (лише читання)
 help-identity-publish =   .my.identity!publish @pub    опублікувати DID через службу публікацій
 help-identity-export =   .my.identity!export          завантажити власний пакет особистості
-help-config-path =   .ctx                         стан контексту — інформація про ma runtime, CID профілю
+help-config-path =   .ma.ctx                      локальний контекст ma runtime
 
 # ── Довідка — вхідні ──────────────────────────────────────────────────────
 help-inbox =   .my.inbox                    список вхідних (перегляд піддерева)
@@ -234,6 +249,26 @@ help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    імпортувати в
 help-doc-cid =   .my.doc.<name>!cid            показати збережений CID
 help-doc-del =   .my.doc.<name>:              видалити документ
 
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Кімната 間 — це простір між ідентичностями 間. ma допомагає цим ідентичностям знаходити одна одну й спілкуватися; коли твою ідентичність опубліковано, ти можеш брати участь.
+help-ma-command =   .ma [port]                   підключитися до локального ma runtime, прочитати /status.json і зберегти .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     опублікувати твій DID-документ, щоб інші могли знайти твої ключі й endpoint
+help-ma-security = Найчіткіша межа довіри — твій власний ma runtime із твоїм власним IPFS Desktop/Kubo. Віддалений publisher може бути корисним, але тоді ти покладаєшся на чужу службу.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             як увійти до кімнати 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Коли твою ідентичність уже знають, .enter @ma дозволяє увійти в 間. Знайди світ, увійди в нього й бери участь звідти.
+help-ma-entry-steps = Запусти IPFS Desktop і ma, потім виконай .ma. Опублікуй через .my.identity!publish @ma, знайди світ і увійди через .enter @ma.
+help-ma-entry-command =   .enter @ma                  увійти в 間 через runtime @ma
+help-ma-entry-leave =   .leave                       вийти з кімнати; твоя ідентичність лишається активною, і ти лишаєшся в системі
+help-ma-entry-url =   ?enter=<runtime>             увійти після входу зі спільного URL
+
 # ── Довідка — параметри URL ───────────────────────────────────────────────
 help-header-url = ── параметри URL ─────────────────────────────────────────────────────────
 help-url-intro =   Поділіться посиланням для відкриття zion із заздалегідь заповненим отримувачем:
@@ -241,8 +276,8 @@ help-url-msg =   ?msg=<did>                   передзаповнює: @<did>
 help-url-say =   ?say=<did>                   передзаповнює: @<did>!say (дієслово say)
 help-url-emote =   ?emote=<did>                 передзаповнює: @<did>!emote (дієслово emote)
 help-url-ma =   ?ma=<did-or-url>              передзаповнює DID runtime / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         автофокус на actor/entity після входу
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Поле заповнено, але не надіслано — натисніть Enter для надсилання.
 
 # ── Повідомлення про помилки ──────────────────────────────────────────────
@@ -324,22 +359,22 @@ help-actor-echo =   @actor                       показати DID (без н
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  перевірка доступності
 help-actor-entities =   @actor/entities              список усіх об'єктів
-help-actor-entities-get =   @actor/entities/<n>          отримати об'єкт (повертає CID)
-help-actor-entities-set =   @actor/entities/<n>: <cid>   встановити об'єкт за CID
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     редагувати об'єкт в редакторі
 help-actor-entities-del =   @actor/entities/<n>:         видалити об'єкт
 help-actor-config-get =   @actor/config/<key>          отримати значення конфігурації
 help-actor-config-set =   @actor/config/<key>: val     встановити значення конфігурації
-help-actor-acl =   @actor/acl                   отримати ACL (повертає CID)
+help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редагувати ACL в редакторі
 help-actor-fragment =   @actor#entity                надіслати до плагіну об'єкту
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC до дієслова плагіну
-help-header-cid-ops = ── операції з вмістом CID ────────────────────────────────────────────────
-help-actor-cat =   @actor:ent:cat               показати вміст файлу
-help-actor-head =   @actor:ent:head N            перші N рядків (за замовчуванням 10)
-help-actor-tail =   @actor:ent:tail N            останні N рядків (за замовчуванням 10)
-help-actor-wc =   @actor:ent:wc               кількість рядків / слів / символів
-help-actor-wc-l =   @actor:ent:wc -l            лише кількість рядків
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 # ── Довідка — публікація ──────────────────────────────────────────────────
 help-topic-publish =   .help/publish                публікація особистості в мережі

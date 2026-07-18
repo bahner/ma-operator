@@ -106,6 +106,10 @@ discover-json-error = zisťovanie zlyhalo: neplatný JSON z { $url }: { $e }
 discover-missing-did = zisťovanie zlyhalo: status.json chýba povinné pole `did`
 discover-invalid-did = zisťovanie zlyhalo: očakávané `did` začínajúce did:ma:, prijaté `{ $did }`
 discover-no-endpoint = varovanie zisťovania: `endpoint_id` chýba v status.json; uložené len DID
+discover-hint-endpoint-not-found = Tip: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Tip: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Tip: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Tip: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma zistené na { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma vytvorený — spusti '.my.identity!publish @ma' na zverejnenie svojej identity.
@@ -134,6 +138,16 @@ doc-publish-usage = použitie: .my.doc.<názov>!publish <vydavateľ>
 doc-publish-ipld-usage = použitie: .my.doc.<názov>!publish-ipld <vydavateľ>
 doc-publish-failed = publikovanie { $path }: { $e }
 doc-publish-ipld-failed = publikovanie IPLD { $path }: { $e }
+doc-publish-error-detail = publikovanie zlyhalo [{ $code }]: { $err }
+doc-publish-error-hint = Tip: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
 doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
 doc-fetch-done = { $cid } načítané → { $path }.content (nespustené)
@@ -147,11 +161,13 @@ path-no-verb = žiadne sloveso `{ $verb }` pre { $path }
 # ── Text nápovedy — záhlavie ──────────────────────────────────────────────
 help-header-zion = ── príkazy zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── zasielanie správ ───────────────────────────────────────────────────────
-help-header-focus = ── režim fokusu ──────────────────────────────────────────────────────────
 help-header-config = ── lokálna gramatika konfigurácie ─────────────────────────────────────
 help-header-common = ── bežné cesty ───────────────────────────────────────────────────────────
 help-header-inbox = ── doručená pošta ────────────────────────────────────────────────────────
 help-header-documents = ── dokumenty ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        tento text
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           odoslať správu 
 help-msg-fragment =   @alias#fragment:verb body  odoslať na alias s explicitným fragmentom DID
 help-msg-escape =   \@name                       doslovné @name (bez vyhľadávania aliasov)
 
-help-focus-set =   .use @alias [as @name]       zamerať na aktéra (zmení výzvu)
-help-focus-clear =   .use                         vymazať fokus
 
 help-config-get =   .path                        získať hodnotu listu alebo vypísať podstrom
 help-config-filter =   .path value                  vyhľadávací filter (filtrovať podľa hodnoty)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<názov>!publish-ipld @pub  uložiť YAML ako 
 help-doc-fetch =   .my.doc.<názov>!fetch /ipfs/<cid>    importovať obsah CID (bez spustenia)
 help-doc-cid =   .my.doc.<názov>!cid            zobraziť uložené CID
 help-doc-del =   .my.doc.<názov>:              vymazať dokument
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Miestnosť 間 je priestor medzi identitami 間. ma umožňuje týmto identitám nájsť sa a komunikovať; keď je tvoja identita publikovaná, môžeš sa zapojiť.
+help-ma-command =   .ma [port]                   pripoj sa k lokálnemu ma runtime, prečítaj /status.json a ulož .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publikuj svoj DID dokument, aby ostatní mohli nájsť tvoje kľúče a endpoint
+help-ma-security = Najjasnejšia hranica dôvery je vlastný ma runtime s vlastným IPFS Desktop/Kubo. Vzdialený publisher môže byť užitočný, ale potom sa spoliehaš na službu niekoho iného.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             ako vstúpiť do miestnosti 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Keď je tvoja identita známa, .enter @ma ti umožní vstúpiť do 間. Nájdi svet, vstúp doň a zapoj sa odtiaľ.
+help-ma-entry-steps = Spusti IPFS Desktop a ma, potom spusti .ma. Publikuj pomocou .my.identity!publish @ma, nájdi svet a vstúp pomocou .enter @ma.
+help-ma-entry-command =   .enter @ma                  vstúpiť do 間 cez runtime @ma
+help-ma-entry-leave =   .leave                       opusti miestnosť; tvoja identita ostáva aktívna a ostávaš prihlásený
+help-ma-entry-url =   ?enter=<runtime>             vstúpiť po prihlásení zo zdieľanej URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Dostupné jazyky (nastaviť pomocou .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profil sa nenašiel: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    otvorenie zion cez URL odkaz
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL parametre ────────────────────────────────────────────────────────────────
 help-url-intro =   Zdieľaj odkaz, ktorý otvorí zion s vopred vyplneným príjemcom:
 help-url-msg =   ?msg=<did>                   vopred vyplní: @<did>!msg (jednoduchá správa)
 help-url-say =   ?say=<did>                   vopred vyplní: @<did>!say (sloveso say)
 help-url-emote =   ?emote=<did>                 vopred vyplní: @<did>!emote (sloveso emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Pole je vopred vyplnené, ale neodoslané — stlač Enter na odoslanie.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                zverejniť svoju identitu v sieti

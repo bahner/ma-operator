@@ -106,6 +106,10 @@ discover-json-error = uppgáva misluktist: ógildigt JSON frá { $url }: { $e }
 discover-missing-did = uppgáva misluktist: status.json manglar kravda feltið `did`
 discover-invalid-did = uppgáva misluktist: ventaði `did` byrja við did:ma:, fingu `{ $did }`
 discover-no-endpoint = uppgáva-ávirkan: `endpoint_id` manglar í status.json; vistað einans DID
+discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma funnist við { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma stovnað — køyr '.my.identity!publish @ma' fyri at birta tín samleika.
@@ -134,6 +138,16 @@ doc-publish-usage = nýtsla: .my.doc.<navn>!publish <útgevari>
 doc-publish-ipld-usage = nýtsla: .my.doc.<navn>!publish-ipld <útgevari>
 doc-publish-failed = birting { $path }: { $e }
 doc-publish-ipld-failed = ipld-birting { $path }: { $e }
+doc-publish-error-detail = birting misluktist [{ $code }]: { $err }
+doc-publish-error-hint = Hint: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
 doc-ipld-store-sent = IPLD-vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
 doc-fetch-done = sótti { $cid } → { $path }.content (ikki keyrt)
@@ -147,11 +161,13 @@ path-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 # ── Hjálpitekstur — yvirskriftir ──────────────────────────────────────────
 help-header-zion = ── zion-skipanir ──────────────────────────────────────────────────────────
 help-header-messaging = ── boð ───────────────────────────────────────────────────────────────────
-help-header-focus = ── fókusstilling ─────────────────────────────────────────────────────────
 help-header-config = ── lokal stillingar-mállæra ────────────────────────────────────────────
 help-header-common = ── vanligar slóðir ───────────────────────────────────────────────────────
 help-header-inbox = ── innboks ───────────────────────────────────────────────────────────────
 help-header-documents = ── skjøl ─────────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        hesin tekstur
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           send boð / RPC t
 help-msg-fragment =   @alias#fragment:verb body  send til samnefni við greiniligum DID-broti
 help-msg-escape =   \@name                       bókstavligur @name (ongin samnefnisleit)
 
-help-focus-set =   .use @alias [as @name]       fókuser á aktør (broytir kvaðning)
-help-focus-clear =   .use                         reinsa fókus
 
 help-config-get =   .path                        sók lav-gildi ella lista undirtré
 help-config-filter =   .path value                  leitar-sía (sía eftir gildi)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<navn>!publish-ipld @pub  goyma YAML sum skipa
 help-doc-fetch =   .my.doc.<navn>!fetch /ipfs/<cid>    flyt inn CID-innihald (ongin keyring)
 help-doc-cid =   .my.doc.<navn>!cid            vís vistað CID
 help-doc-del =   .my.doc.<navn>:              strika skjal
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間-rúmið er rúmið millum 間-samleikar. ma ger, at hesir samleikar kunnu finna hvønn annan og samskifta; tá tín samleiki er almannakunngjørdur, kanst tú luttaka.
+help-ma-command =   .ma [port]                   bind til tín lokala ma-runtime, les /status.json, og goym .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     almannakunnger títt DID-skjal, so onnur kunnu finna lyklar tínar og endpoint
+help-ma-security = Greiðasta álitismarkið er tín egni ma-runtime við tínum egna IPFS Desktop/Kubo. Ein fjarskotin publisher kann vera nyttigur, men tá líta tú á tænastu hjá øðrum.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             hvussu tú fert inn í 間-rúmið
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Tá tín samleiki er kendur, letur .enter @ma teg stíga inn í 間. Finn tær ein heim, far inn í hann, og luttak haðani.
+help-ma-entry-steps = Starta IPFS Desktop og ma, koyr síðan .ma. Almannakunnger við .my.identity!publish @ma, finn ein heim, og far inn við .enter @ma.
+help-ma-entry-command =   .enter @ma                  far inn í 間 gjøgnum @ma-runtime
+help-ma-entry-leave =   .leave                       far úr rúminum; tín samleiki er framvegis virkin, og tú ert enn innritaður
+help-ma-entry-url =   ?enter=<runtime>             far inn eftir innritan frá einum deildum URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tøkar mál (sett við .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profil ikki funnin: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL-broytar ──────────────────────────────────────────────────────────────────
 help-url-intro =   Del ein tengil sum opnar zion við fyritfuldum móttakara:
 help-url-msg =   ?msg=<did>                   fyritfyllir: @<did>!msg (vanligt boð)
 help-url-say =   ?say=<did>                   fyritfyllir: @<did>!say (sagnorð say)
 help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>!emote (sagnorð emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fyri at senda.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                birta tín samleika í netinum

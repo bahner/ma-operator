@@ -106,6 +106,10 @@ discover-json-error = diskɔva fail: invalid JSON from { $url }: { $e }
 discover-missing-did = diskɔva fail: status.json nor get `did` field
 discover-invalid-did = diskɔva fail: ekspekt `did` fi stat wit did:ma:, get `{ $did }`
 discover-no-endpoint = diskɔva waning: `endpoint_id` nor dɛ status.json; sev DID only
+discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma diskɔva at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias mek — ron '.my.identity!publish @ma' fo pɔblish yu ɔpsɛt.
@@ -134,6 +138,16 @@ doc-publish-usage = yusij: .my.doc.<nem>!publish <pɔblisha>
 doc-publish-ipld-usage = yusij: .my.doc.<nem>!publish-ipld <pɔblisha>
 doc-publish-failed = pɔblish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = pɔblish fail [{ $code }]: { $err }
+doc-publish-error-hint = Hint: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-ipld-store-sent = IPLD stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-fetch-done = fetch { $cid } → { $path }.content (nor execute)
@@ -151,11 +165,13 @@ err-lang-not-found = langwej nor fine: { $lang }
 
 help-header-zion = ── zion komand dem ────────────────────────────────────────────────────────
 help-header-messaging = ── mesej dem ──────────────────────────────────────────────────────────────
-help-header-focus = ── fokus mod ──────────────────────────────────────────────────────────────
 help-header-config = ── lokal konfig gramma ────────────────────────────────────────────────────
 help-header-common = ── komon paf dem ──────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ──────────────────────────────────────────────────────────────────
 help-header-documents = ── dokument dem (.my.doc.*) ───────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
@@ -168,8 +184,6 @@ help-msg-echo =   @alias                       eko di DID wey resolve (noh mesej
 help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go to ator
 help-msg-fragment =   @alias#fragment:verb body  send go to alias wid eksplisit DID fragment
 help-msg-escape =   \@name                       literal @name (noh alias lukov)
-help-focus-set =   .use @alias [as @name]       fokus pan ator (chenja prompt)
-help-focus-clear =   .use                         klia fokus
 help-config-get =   .path                        get lif valu or list sabtri
 help-config-filter =   .path value                  match kweri (filta bay valu)
 help-config-set =   .path: value                 set lif
@@ -204,6 +218,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  stoh YAML as strakch
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impot CID kontent (noh eksekushon)
 help-doc-cid =   .my.doc.<name>!cid            shoh stohd CID
 help-doc-del =   .my.doc.<name>:              dilet dokument
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Di 間 rum na di ples bitwin 間 identity dem. ma mek dem identity fɛn wan anɔda an tɔk; afta yu identity dɔn publish, yu kin jɔin.
+help-ma-command =   .ma [port]                   kɔnɛkt to yu lokal ma runtime, rid /status.json, ɛn sev .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publish yu DID dɔkyumɛnt so ɔda pipul kin resolve yu keys ɛn endpoint
+help-ma-security = Di klia trust boundary na yu yon ma runtime wit yu yon IPFS Desktop/Kubo. Rimot publisher fit ɛp, bɔt den yu de dipɛn pan ɔda pɔsin savis.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             aw fo ɛnta di 間 rum
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Wɛn pipul sabi yu identity, .enter @ma go mek yu step insay 間. Fɛn wan wɔld, ɛnta am, ɛn jɔin frɔm de.
+help-ma-entry-steps = Stat IPFS Desktop ɛn ma, den rɔn .ma. Publish wit .my.identity!publish @ma, fɛn wan wɔld, ɛn ɛnta wit .enter @ma.
+help-ma-entry-command =   .enter @ma                  ɛnta 間 tru di @ma runtime
+help-ma-entry-leave =   .leave                       lef di rum; yu identity stil active, ɛn yu stil logged in
+help-ma-entry-url =   ?enter=<runtime>             ɛnta afta login frɔm shared URL
 
 msg-send-failed = sen no go: { $e }
 msg-not-logged-in = yu nɔ lɔg in
@@ -275,7 +309,7 @@ profiles-not-found = profail no dey: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -289,8 +323,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -299,22 +333,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opin zion tru URL link
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL paramita dem ─────────────────────────────────────────────────────────────
 help-url-intro =   Shia wan link we go opin zion wit di pɔsin aredɛ put insɛd:
 help-url-msg =   ?msg=<did>                   put bifo: @<did>!msg (simpul mɛsɛj)
 help-url-say =   ?say=<did>                   put bifo: @<did>!say (vɛb say)
 help-url-emote =   ?emote=<did>                 put bifo: @<did>!emote (vɛb emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                pɔblish yu ɔpsɛt ɔn di nɛtwɔk

@@ -106,6 +106,10 @@ discover-json-error = আবিষ্কার ব্যর্থ: { $url } থ�
 discover-missing-did = আবিষ্কার ব্যর্থ: status.json-এ `did` ফিল্ড নেই
 discover-invalid-did = আবিষ্কার ব্যর্থ: `did` did:ma: দিয়ে শুরু হওয়ার প্রত্যাশা ছিল, পাওয়া গেছে `{ $did }`
 discover-no-endpoint = আবিষ্কার সতর্কতা: status.json-এ `endpoint_id` নেই; শুধুমাত্র DID সংরক্ষিত
+discover-hint-endpoint-not-found = ইঙ্গিত: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = ইঙ্গিত: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = ইঙ্গিত: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = ইঙ্গিত: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = { $url }-এ ma আবিষ্কৃত হয়েছে
 discover-did-line = DID: { $did }
 discover-alias-hint =   ছদ্মনাম @ma তৈরি হয়েছে — আপনার পরিচয় প্রকাশ করতে '.my.identity!publish @ma' চালান।
@@ -134,6 +138,16 @@ doc-publish-usage = ব্যবহার: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = ব্যবহার: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = প্রকাশনা { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = প্রকাশ ব্যর্থ [{ $code }]: { $err }
+doc-publish-error-hint = ইঙ্গিত: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-ipld-store-sent = IPLD সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-fetch-done = { $cid } আনা হয়েছে → { $path }.content (চালানো হয়নি)
@@ -147,11 +161,13 @@ path-no-verb = { $path }-এর জন্য `{ $verb }` ক্রিয়া �
 # ── সহায়তা — শিরোনাম ─────────────────────────────────────────────────────
 help-header-zion = ── zion কমান্ড ────────────────────────────────────────────────────────────
 help-header-messaging = ── বার্তাপ্রেরণ ────────────────────────────────────────────────────────────
-help-header-focus = ── ফোকাস মোড ──────────────────────────────────────────────────────────────
 help-header-config = ── স্থানীয় কনফিগ ব্যাকরণ ──────────────────────────────────────────────
 help-header-common = ── সাধারণ পথ ─────────────────────────────────────────────────────────────
 help-header-inbox = ── ইনবক্স ────────────────────────────────────────────────────────────────
 help-header-documents = ── ডকুমেন্ট ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── সহায়তা — zion কমান্ড ─────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  স্পষ্ট DID ফ্�
 help-msg-escape =   \@name                       আক্ষরিক @name (কোনো উপনাম অনুসন্ধান নেই)
 
 # ── সহায়তা — ফোকাস মোড ───────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       অভিনেতায় ফোকাস করুন (প্রম্পট পরিবর্তন হয়)
-help-focus-clear =   .use                         ফোকাস সরান
 
 # ── সহায়তা — কনফিগ ব্যাকরণ ──────────────────────────────────────────────
 help-config-get =   .path                        লিফ মান পান বা সাবট্রি তালিকা করুন
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML-কে DAG-CBOR
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID বিষয়বস্তু আমদানি করুন (চালানো হয় না)
 help-doc-cid =   .my.doc.<name>!cid            সংরক্ষিত CID দেখান
 help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছুন
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 ঘর হলো 間 পরিচয়গুলোর মাঝের স্থান। ma এই পরিচয়গুলোকে একে অন্যকে খুঁজে পেতে ও যোগাযোগ করতে সাহায্য করে; তোমার পরিচয় প্রকাশিত হলে তুমি অংশ নিতে পারবে।
+help-ma-command =   .ma [port]                   স্থানীয় ma runtime-এ যুক্ত হও, /status.json পড়ো, এবং .ma.ctx.* সংরক্ষণ করো
+help-ma-publish =   .my.identity!publish @ma     তোমার DID নথি প্রকাশ করো, যাতে অন্যরা তোমার key ও endpoint খুঁজে পায়
+help-ma-security = সবচেয়ে পরিষ্কার trust boundary হলো নিজের ma runtime, নিজের IPFS Desktop/Kubo সহ। দূরের publisher কাজে লাগতে পারে, কিন্তু তখন তুমি অন্য কারও সেবার ওপর নির্ভর করছ।
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             কীভাবে 間 ঘরে প্রবেশ করবে
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = তোমার পরিচয় পরিচিত হলে .enter @ma তোমাকে 間-এ প্রবেশ করতে দেয়। একটি world খুঁজে নাও, তাতে ঢুকো, আর সেখান থেকে অংশ নাও।
+help-ma-entry-steps = IPFS Desktop ও ma চালু করো, তারপর .ma চালাও। .my.identity!publish @ma দিয়ে প্রকাশ করো, একটি world খুঁজে নাও, এবং .enter @ma দিয়ে প্রবেশ করো।
+help-ma-entry-command =   .enter @ma                  @ma runtime দিয়ে 間-এ প্রবেশ করো
+help-ma-entry-leave =   .leave                       ঘর ছাড়ো; তোমার পরিচয় সক্রিয় থাকে, এবং তুমি লগইন অবস্থায় থাকো
+help-ma-entry-url =   ?enter=<runtime>             শেয়ার করা URL থেকে লগইনের পর প্রবেশ করো
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = উপলব্ধ ভাষা (.my.i18n: <code> দিয়ে সেট করুন):
@@ -289,7 +323,7 @@ profiles-not-found = প্রোফাইল পাওয়া যায়ন
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL লিঙ্কের মাধ্যমে zion খোলা
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL প্যারামিটার ────────────────────────────────────────────────────────────────
 help-url-intro =   পূর্বভরণকৃত প্রাপকসহ zion খোলার লিঙ্ক শেয়ার করুন:
 help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did>!msg (সাধারণ বার্তা)
 help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>!say (say ক্রিয়া)
 help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>!emote (emote ক্রিয়া)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ইনপুট পূর্বভরণ করা হয়েছে কিন্তু পাঠানো হয়নি — পাঠাতে Enter চাপুন।
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                নেটওয়ার্কে পরিচয় প্রকাশ করুন

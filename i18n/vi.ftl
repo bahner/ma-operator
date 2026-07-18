@@ -106,6 +106,10 @@ discover-json-error = khám phá thất bại: JSON không hợp lệ từ { $ur
 discover-missing-did = khám phá thất bại: status.json thiếu trường `did`
 discover-invalid-did = khám phá thất bại: `did` phải bắt đầu bằng did:ma:, nhận được `{ $did }`
 discover-no-endpoint = cảnh báo khám phá: `endpoint_id` thiếu trong status.json; chỉ lưu DID
+discover-hint-endpoint-not-found = Gợi ý: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Gợi ý: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Gợi ý: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Gợi ý: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = đã khám phá ma tại { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   bí danh @ma đã được tạo — chạy '.my.identity!publish @ma' để xuất bản danh tính của bạn.
@@ -134,6 +138,16 @@ doc-publish-usage = cách dùng: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = cách dùng: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = xuất bản { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = xuất bản thất bại [{ $code }]: { $err }
+doc-publish-error-hint = Gợi ý: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-fetch-done = đã tải { $cid } → { $path }.content (chưa chạy)
@@ -147,11 +161,13 @@ path-no-verb = không có động từ `{ $verb }` cho { $path }
 # ── Trợ giúp — tiêu đề ───────────────────────────────────────────────────
 help-header-zion = ── lệnh zion ─────────────────────────────────────────────────────────────
 help-header-messaging = ── nhắn tin ──────────────────────────────────────────────────────────────
-help-header-focus = ── chế độ tiêu điểm ─────────────────────────────────────────────────────
 help-header-config = ── cú pháp cấu hình cục bộ ─────────────────────────────────────────────
 help-header-common = ── đường dẫn thông dụng ────────────────────────────────────────────────
 help-header-inbox = ── hộp thư đến ────────────────────────────────────────────────────────────
 help-header-documents = ── tài liệu ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Trợ giúp — lệnh zion ─────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  gửi với phân mảnh DID r�
 help-msg-escape =   \@name                       @name theo nghĩa đen (không tra bí danh)
 
 # ── Trợ giúp — chế độ tiêu điểm ─────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       tập trung vào diễn viên (thay đổi dấu nhắc)
-help-focus-clear =   .use                         xóa tiêu điểm
 
 # ── Trợ giúp — cú pháp cấu hình ─────────────────────────────────────────
 help-config-get =   .path                        lấy giá trị lá hoặc liệt kê cây con
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  lưu YAML thành nú
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    nhập nội dung CID (không chạy)
 help-doc-cid =   .my.doc.<name>!cid            hiển thị CID đã lưu
 help-doc-del =   .my.doc.<name>:              xóa tài liệu
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Phòng 間 là không gian giữa các danh tính 間. ma giúp các danh tính đó tìm thấy nhau và giao tiếp; khi danh tính của bạn đã được công bố, bạn có thể tham gia.
+help-ma-command =   .ma [port]                   kết nối với ma runtime cục bộ, đọc /status.json và lưu .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     công bố tài liệu DID của bạn để người khác phân giải khóa và endpoint của bạn
+help-ma-security = Ranh giới tin cậy rõ nhất là ma runtime của chính bạn cùng IPFS Desktop/Kubo của chính bạn. Publisher từ xa có thể hữu ích, nhưng khi đó bạn dựa vào dịch vụ của người khác.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             cách vào phòng 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Khi danh tính của bạn đã được biết đến, .enter @ma cho phép bạn bước vào 間. Hãy tìm một thế giới, vào đó và tham gia từ đó.
+help-ma-entry-steps = Khởi động IPFS Desktop và ma, rồi chạy .ma. Công bố bằng .my.identity!publish @ma, tìm một thế giới và vào bằng .enter @ma.
+help-ma-entry-command =   .enter @ma                  vào 間 qua runtime @ma
+help-ma-entry-leave =   .leave                       rời phòng; danh tính của bạn vẫn hoạt động và bạn vẫn đăng nhập
+help-ma-entry-url =   ?enter=<runtime>             vào sau khi đăng nhập từ URL được chia sẻ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Ngôn ngữ có sẵn (đặt bằng .my.i18n: <code>):
@@ -289,7 +323,7 @@ profiles-not-found = không tìm thấy hồ sơ: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    mở zion thông qua liên kết URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── tham số URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Chia sẻ một liên kết mở zion với người nhận đã được điền sẵn:
 help-url-msg =   ?msg=<did>                   điền sẵn: @<did>!msg (tin nhắn thông thường)
 help-url-say =   ?say=<did>                   điền sẵn: @<did>!say (động từ say)
 help-url-emote =   ?emote=<did>                 điền sẵn: @<did>!emote (động từ emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                xuất bản danh tính của bạn lên mạng

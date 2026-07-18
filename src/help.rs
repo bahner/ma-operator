@@ -6,7 +6,8 @@ pub fn dispatch(subtopic: &str) -> Vec<String> {
     match subtopic {
         "" => overview(),
         "msg" => messaging(),
-        "focus" => focus(),
+        "ma" => ma(),
+        "ma/entry" => ma_entry(),
         "path" => path(),
         "my" => my(),
         "inbox" => inbox(),
@@ -14,6 +15,7 @@ pub fn dispatch(subtopic: &str) -> Vec<String> {
         "actor" => actor(),
         "url" => url(),
         "publish" => publish(),
+        "i18n" => i18n(),
         other => vec![tf("help-unknown-topic", &[("topic", other)])],
     }
 }
@@ -31,7 +33,7 @@ fn overview() -> Vec<String> {
         String::new(),
         t("help-header-topics"),
         t("help-topic-msg"),
-        t("help-topic-focus"),
+        t("help-topic-ma"),
         t("help-topic-path"),
         t("help-topic-my"),
         t("help-topic-inbox"),
@@ -39,6 +41,7 @@ fn overview() -> Vec<String> {
         t("help-topic-actor"),
         t("help-topic-url"),
         t("help-topic-publish"),
+        t("help-topic-i18n"),
         t("help-footer"),
     ]
 }
@@ -54,11 +57,27 @@ fn messaging() -> Vec<String> {
     ]
 }
 
-fn focus() -> Vec<String> {
+fn ma() -> Vec<String> {
     vec![
-        t("help-header-focus"),
-        t("help-focus-set"),
-        t("help-focus-clear"),
+        t("help-header-ma"),
+        t("help-ma-intro"),
+        t("help-ma-command"),
+        t("help-ma-publish"),
+        t("help-ma-security"),
+        t("help-ma-links"),
+        t("help-ma-entry-topic"),
+        t("help-footer"),
+    ]
+}
+
+fn ma_entry() -> Vec<String> {
+    vec![
+        t("help-header-ma-entry"),
+        t("help-ma-entry-intro"),
+        t("help-ma-entry-steps"),
+        t("help-ma-entry-command"),
+        t("help-ma-entry-leave"),
+        t("help-ma-entry-url"),
         t("help-footer"),
     ]
 }
@@ -166,7 +185,7 @@ fn url() -> Vec<String> {
         t("help-url-say"),
         t("help-url-emote"),
         t("help-url-ma"),
-        t("help-url-ctx"),
+        t("help-url-enter"),
         t("help-url-example"),
         t("help-url-note"),
         t("help-footer"),
@@ -181,6 +200,16 @@ fn publish() -> Vec<String> {
         t("help-publish-ma"),
         t("help-publish-steps"),
         t("help-publish-without"),
+        t("help-footer"),
+    ]
+}
+
+fn i18n() -> Vec<String> {
+    vec![
+        t("help-header-i18n"),
+        t("help-i18n-intro"),
+        t("help-i18n-set"),
+        t("help-i18n-list"),
         t("help-footer"),
     ]
 }

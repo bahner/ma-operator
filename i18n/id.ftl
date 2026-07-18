@@ -106,6 +106,10 @@ discover-json-error = penemuan gagal: JSON tidak valid dari { $url }: { $e }
 discover-missing-did = penemuan gagal: status.json tidak memiliki bidang `did`
 discover-invalid-did = penemuan gagal: `did` diharapkan dimulai dengan did:ma:, mendapat `{ $did }`
 discover-no-endpoint = peringatan penemuan: `endpoint_id` tidak ada di status.json; hanya DID tersimpan
+discover-hint-endpoint-not-found = Petunjuk: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Petunjuk: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Petunjuk: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Petunjuk: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma ditemukan di { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma dibuat — jalankan '.my.identity!publish @ma' untuk mempublikasikan identitas Anda.
@@ -134,6 +138,16 @@ doc-publish-usage = penggunaan: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = penggunaan: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = penerbitan { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = publikasi gagal [{ $code }]: { $err }
+doc-publish-error-hint = Petunjuk: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-fetch-done = mengambil { $cid } → { $path }.content (tidak dijalankan)
@@ -147,11 +161,13 @@ path-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 # ── Bantuan — judul ───────────────────────────────────────────────────────
 help-header-zion = ── perintah zion ─────────────────────────────────────────────────────────
 help-header-messaging = ── pesan ────────────────────────────────────────────────────────────────
-help-header-focus = ── mode fokus ───────────────────────────────────────────────────────────
 help-header-config = ── sintaks konfigurasi lokal ─────────────────────────────────────────────
 help-header-common = ── jalur umum ───────────────────────────────────────────────────────────
 help-header-inbox = ── kotak masuk ──────────────────────────────────────────────────────────
 help-header-documents = ── dokumen ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Bantuan — perintah zion ───────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  kirim ke alias dengan fragmen D
 help-msg-escape =   \@name                       literal @name (tidak ada pencarian alias)
 
 # ── Bantuan — mode fokus ──────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       fokus pada aktor (mengubah prompt)
-help-focus-clear =   .use                         hapus fokus
 
 # ── Bantuan — sintaks konfigurasi ─────────────────────────────────────────
 help-config-get =   .path                        ambil nilai daun atau daftar subpohon
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  simpan YAML sebagai 
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impor konten CID (tidak dijalankan)
 help-doc-cid =   .my.doc.<name>!cid            tampilkan CID tersimpan
 help-doc-del =   .my.doc.<name>:              hapus dokumen
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Ruang 間 adalah ruang di antara identitas 間. ma membuat identitas-identitas itu dapat saling menemukan dan berkomunikasi; setelah identitasmu dipublikasikan, kamu bisa ikut serta.
+help-ma-command =   .ma [port]                   hubungkan ke ma runtime lokal, baca /status.json, dan simpan .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publikasikan dokumen DID-mu agar orang lain dapat menemukan kunci dan endpoint-mu
+help-ma-security = Batas kepercayaan paling jelas adalah ma runtime milikmu sendiri dengan IPFS Desktop/Kubo milikmu sendiri. Publisher jarak jauh bisa berguna, tetapi saat itu kamu bergantung pada layanan orang lain.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             cara masuk ke ruang 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Setelah identitasmu dikenal, .enter @ma membiarkanmu masuk ke 間. Temukan sebuah dunia, masuklah ke dalamnya, dan ikutlah dari sana.
+help-ma-entry-steps = Jalankan IPFS Desktop dan ma, lalu jalankan .ma. Publikasikan dengan .my.identity!publish @ma, temukan dunia, dan masuk dengan .enter @ma.
+help-ma-entry-command =   .enter @ma                  masuk ke 間 melalui runtime @ma
+help-ma-entry-leave =   .leave                       keluar dari ruang; identitasmu tetap aktif dan kamu tetap masuk
+help-ma-entry-url =   ?enter=<runtime>             masuk setelah login dari URL bersama
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Bahasa yang tersedia (atur dengan .my.i18n: <code>):
@@ -289,7 +323,7 @@ profiles-not-found = profil tidak ditemukan: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    membuka zion melalui tautan URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
 help-url-msg =   ?msg=<did>                   isi otomatis: @<did>!msg (pesan biasa)
 help-url-say =   ?say=<did>                   isi otomatis: @<did>!say (kata kerja say)
 help-url-emote =   ?emote=<did>                 isi otomatis: @<did>!emote (kata kerja emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publikasikan identitas Anda ke jaringan

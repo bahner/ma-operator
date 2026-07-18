@@ -106,6 +106,10 @@ discover-json-error = கண்டுபிடித்தல் தோல்வ
 discover-missing-did = கண்டுபிடித்தல் தோல்வியடைந்தது: status.json இல் `did` புலம் இல்லை
 discover-invalid-did = கண்டுபிடித்தல் தோல்வியடைந்தது: `did` did:ma: உடன் தொடங்க வேண்டும், கிடைத்தது `{ $did }`
 discover-no-endpoint = கண்டுபிடித்தல் எச்சரிக்கை: status.json இல் `endpoint_id` இல்லை; DID மட்டும் சேமிக்கப்பட்டது
+discover-hint-endpoint-not-found = குறிப்பு: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = குறிப்பு: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = குறிப்பு: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = குறிப்பு: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = { $url } இல் ma கண்டுபிடிக்கப்பட்டது
 discover-did-line = DID: { $did }
 discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — உங்கள் அடையாளத்தை வெளியிட '.my.identity!publish @ma' இயக்கவும்.
@@ -134,6 +138,16 @@ doc-publish-usage = பயன்பாடு: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = பயன்பாடு: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = வெளியீடு { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = வெளியிடல் தோல்வியடைந்தது [{ $code }]: { $err }
+doc-publish-error-hint = குறிப்பு: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
@@ -147,11 +161,13 @@ path-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல்
 # ── உதவி — தலைப்புகள் ─────────────────────────────────────────────────────
 help-header-zion = ── zion கட்டளைகள் ───────────────────────────────────────────────────────
 help-header-messaging = ── செய்தியிடல் ──────────────────────────────────────────────────────────
-help-header-focus = ── கவன முறை ─────────────────────────────────────────────────────────────
 help-header-config = ── உள்ளூர் அமைவு இலக்கணம் ────────────────────────────────────────────────
 help-header-common = ── பொதுவான பாதைகள் ──────────────────────────────────────────────────────
 help-header-inbox = ── உள்வரவு ──────────────────────────────────────────────────────────────
 help-header-documents = ── ஆவணங்கள் ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── உதவி — zion கட்டளைகள் ────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  வெளிப்படைய�
 help-msg-escape =   \@name                       நேரடி @name (புனைப்பெயர் தேடல் இல்லை)
 
 # ── உதவி — கவன முறை ──────────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       நடிகரில் கவனம் செலுத்தவும் (வரியுரை மாறும்)
-help-focus-clear =   .use                         கவனம் அழிக்கவும்
 
 # ── உதவி — அமைவு இலக்கணம் ────────────────────────────────────────────────
 help-config-get =   .path                        இலை மதிப்பு பெறவும் அல்லது துணைமரம் பட்டியலிடவும்
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ஐ DAG-CBOR IP
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
 help-doc-cid =   .my.doc.<name>!cid            சேமித்த CID காட்டவும்
 help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவும்
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 அறை என்பது 間 அடையாளங்களுக்கிடையிலான இடம். ma அவை ஒன்றையொன்று கண்டுபிடித்து தொடர்பு கொள்ள உதவுகிறது; உங்கள் அடையாளம் வெளியிடப்பட்டதும் நீங்கள் பங்கேற்கலாம்.
+help-ma-command =   .ma [port]                   உள்ளூர் ma runtime-இற்கு இணை, /status.json படி, .ma.ctx.* சேமி
+help-ma-publish =   .my.identity!publish @ma     மற்றவர்கள் உங்கள் keys மற்றும் endpoint-ஐ கண்டறிய உங்கள் DID ஆவணத்தை வெளியிடு
+help-ma-security = மிகத் தெளிவான நம்பிக்கை எல்லை, உங்கள் சொந்த IPFS Desktop/Kubo உடன் உங்கள் சொந்த ma runtime ஆகும். தொலை publisher உதவலாம், ஆனால் அப்போது நீங்கள் வேறு ஒருவரின் சேவையை நம்புகிறீர்கள்.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             間 அறைக்குள் எப்படி நுழைவது
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = உங்கள் அடையாளம் அறியப்பட்டதும், .enter @ma உங்களை 間-க்குள் செல்ல விடும். ஒரு world-ஐ கண்டுபிடித்து அதில் நுழைந்து, அங்கிருந்து பங்கேற்குங்கள்.
+help-ma-entry-steps = IPFS Desktop மற்றும் ma தொடங்கு, பின்னர் .ma இயக்கு. .my.identity!publish @ma மூலம் வெளியிடு, ஒரு world-ஐ கண்டுபிடி, .enter @ma மூலம் நுழை.
+help-ma-entry-command =   .enter @ma                  @ma runtime வழியாக 間-க்குள் நுழை
+help-ma-entry-leave =   .leave                       அறையை விட்டு வெளியேறு; உங்கள் அடையாளம் செயலில் இருக்கும், நீங்கள் logged in ஆக இருப்பீர்கள்
+help-ma-entry-url =   ?enter=<runtime>             பகிரப்பட்ட URL-இல் login ஆன பின் நுழை
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = கிடைக்கும் மொழிகள் (.my.i18n: <code> உடன் அமைக்கவும்):
@@ -289,7 +323,7 @@ profiles-not-found = சுயவிவரம் கிடைக்கவில�
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
 help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
 help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did>!msg (எளிய செய்தி)
 help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>!say (say வினை)
 help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>!emote (emote வினை)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                நெட்வொர்க்கில் உங்கள் அடையாளத்தை வெளியிடுங்கள்

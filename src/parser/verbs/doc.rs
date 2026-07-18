@@ -261,47 +261,72 @@ pub(super) fn lang_for_content_type(ct: &str) -> &'static str {
 }
 
 pub(super) fn format_publish_error(err: &str) -> String {
-    let (code, hint) = classify_publish_error(err);
-    format!("publish failed [{code}]: {err}\nHint: {hint}")
+    let (code, hint_key) = classify_publish_error(err);
+    let hint = t(hint_key);
+    let detail = tf(
+        "doc-publish-error-detail",
+        &[("code", code), ("err", err)],
+    );
+    let hint_line = tf("doc-publish-error-hint", &[("hint", &hint)]);
+    format!("{detail}\n{hint_line}")
 }
 
 pub(super) fn classify_publish_error(err: &str) -> (&'static str, &'static str) {
     let lower = err.to_ascii_lowercase();
 
     if lower.contains("not logged in") {
-        (
-            "session",
-            "log in again so ego can access your identity keys",
-        )
+        ("session", "doc-publish-hint-session")
     } else if lower.contains("unknown alias") || lower.contains("expected bare did") {
-        (
-            "target",
-            "use a valid publisher DID or alias that resolves to bare did:ma:<ipns>",
-        )
+        ("target", "doc-publish-hint-target")
     } else if lower.contains("http") || lower.contains("fetch") || lower.contains("connect") {
-        (
-            "network",
-            "verify ma runtime and IPFS are reachable, then retry",
-        )
+        ("network", "doc-publish-hint-network")
     } else if lower.contains("outbox") || lower.contains("resolve") || lower.contains("did") {
-        (
-            "resolve",
-            "verify the publisher DID document is published and contains a reachable endpoint",
-        )
+        ("resolve", "doc-publish-hint-resolve")
     } else if lower.contains("acl") || lower.contains("denied") || lower.contains("forbidden") {
-        ("acl", "ask the publisher operator to allow your DID in ACL")
+        ("acl", "doc-publish-hint-acl")
     } else if lower.contains("plugin") || lower.contains("handle_cast") || lower.contains(":error")
     {
-        ("runtime", "runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime")
+        ("runtime", "doc-publish-hint-runtime")
     } else if lower.contains("ipfs") || lower.contains("kubo") || lower.contains("cid") {
-        (
-            "ipfs",
-            "check local Kubo/IPFS health and publisher runtime status",
-        )
+        ("ipfs", "doc-publish-hint-ipfs")
     } else {
-        (
-            "unknown",
-            "inspect runtime logs for detailed cause and retry",
-        )
+        ("unknown", "doc-publish-hint-unknown")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn classify_publish_error_identifies_session_errors() {
+        assert_eq!(
+            classify_publish_error("not logged in"),
+            ("session", "doc-publish-hint-session")
+        );
+    }
+
+    #[test]
+    fn classify_publish_error_identifies_target_errors() {
+        assert_eq!(
+            classify_publish_error("unknown alias @runtime"),
+            ("target", "doc-publish-hint-target")
+        );
+    }
+
+    #[test]
+    fn classify_publish_error_identifies_network_errors() {
+        assert_eq!(
+            classify_publish_error("failed to fetch"),
+            ("network", "doc-publish-hint-network")
+        );
+    }
+
+    #[test]
+    fn classify_publish_error_identifies_fallback() {
+        assert_eq!(
+            classify_publish_error("boom"),
+            ("unknown", "doc-publish-hint-unknown")
+        );
     }
 }

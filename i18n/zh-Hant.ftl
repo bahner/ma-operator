@@ -106,6 +106,10 @@ discover-json-error = 探索失敗：來自 { $url } 的無效 JSON: { $e }
 discover-missing-did = 探索失敗：status.json 缺少必填欄位 `did`
 discover-invalid-did = 探索失敗：期望 `did` 以 did:ma: 開頭，得到 `{ $did }`
 discover-no-endpoint = 探索警告：status.json 中缺少 `endpoint_id`；僅儲存了 DID
+discover-hint-endpoint-not-found = 提示：找不到端點。請確認 `ma` 正在執行，並在 5003 連接埠公開 /status.json。
+discover-hint-server-error = 提示：執行階段回傳伺服器錯誤。請檢查 `ma` 記錄並重試。
+discover-hint-network = 提示：網路/連線問題。啟動 `ma`，確認 localhost:5003 可連線，並在瀏覽器中允許本機 HTTP 存取。
+discover-hint-generic = 提示：確認 `ma` 和 IPFS Desktop 正在執行，然後重試 `.ma`。
 discover-success = 已在 { $url } 探索到 ma
 discover-did-line = DID: { $did }
 discover-alias-hint =   已建立別名 @ma — 執行 '.my.identity!publish @ma' 以發布你的身份。
@@ -134,6 +138,16 @@ doc-publish-usage = 用法: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = 用法: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = 發佈 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = 發布失敗 [{ $code }]：{ $err }
+doc-publish-error-hint = 提示：{ $hint }
+doc-publish-hint-session = 請重新登入，讓 ego 可以存取你的身分金鑰
+doc-publish-hint-target = 使用有效的發布者 DID，或可解析為裸 did:ma:<ipns> 的別名
+doc-publish-hint-network = 確認 ma 執行階段和 IPFS 可連線，然後重試
+doc-publish-hint-resolve = 確認發布者 DID 文件已發布，且包含可連線的端點
+doc-publish-hint-acl = 請發布者操作員在 ACL 中允許你的 DID
+doc-publish-hint-runtime = 執行階段/外掛拒絕了請求；檢查原因並修正實體/執行階段後重試
+doc-publish-hint-ipfs = 檢查本機 Kubo/IPFS 健康狀態和發布者執行階段狀態
+doc-publish-hint-unknown = 查看執行階段記錄以取得詳細原因，然後重試
 doc-store-sent = 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
 doc-ipld-store-sent = IPLD 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
 doc-fetch-done = 已擷取 { $cid } → { $path }.content（未執行）
@@ -147,11 +161,13 @@ path-no-verb = { $path } 沒有 `{ $verb }` 動詞
 # ── 說明文字 — 標題 ───────────────────────────────────────────────────────
 help-header-zion = ── zion 指令 ─────────────────────────────────────────────────────────────
 help-header-messaging = ── 訊息傳遞 ──────────────────────────────────────────────────────────
-help-header-focus = ── 焦點模式 ──────────────────────────────────────────────────────────────
 help-header-config = ── 本地設定語法 ──────────────────────────────────────────────────────────
 help-header-common = ── 常用路徑 ──────────────────────────────────────────────────────────────
 help-header-inbox = ── 收件匣 ────────────────────────────────────────────────────────────────
 help-header-documents = ── 文件 ──────────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── 說明文字 — zion 指令 ──────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  傳送到帶顯式 DID 片段�
 help-msg-escape =   \@name                       字面 @name（不查找別名）
 
 # ── 說明文字 — 焦點模式 ───────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       聚焦角色（更改提示符）
-help-focus-clear =   .use                         清除焦點
 
 # ── 說明文字 — 設定語法 ───────────────────────────────────────────────────
 help-config-get =   .path                        取得葉值或列出子樹
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  將 YAML 儲存為�
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    匯入 CID 內容（不執行）
 help-doc-cid =   .my.doc.<name>!cid            顯示已儲存的 CID
 help-doc-del =   .my.doc.<name>:              刪除文件
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 房間是 間 身分之間的空間。ma 讓這些身分能夠找到彼此並通訊；當你的身分發布後，你就可以參與其中。
+help-ma-command =   .ma [port]                   連接本機 ma runtime，讀取 /status.json，並儲存 .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     發布你的 DID 文件，讓其他人能解析你的金鑰和 endpoint
+help-ma-security = 最清楚的信任邊界，是你自己的 ma runtime 加上你自己的 IPFS Desktop/Kubo。遠端 publisher 可能有用，但那表示你依賴別人的服務。
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             如何進入 間 房間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = 當你的身分已被知曉時，.enter @ma 會讓你進入 間。找一個 world，進入其中，並從那裡參與。
+help-ma-entry-steps = 啟動 IPFS Desktop 和 ma，然後執行 .ma。用 .my.identity!publish @ma 發布，找一個 world，再用 .enter @ma 進入。
+help-ma-entry-command =   .enter @ma                  透過 @ma runtime 進入 間
+help-ma-entry-leave =   .leave                       離開房間；你的身分保持啟用，並且仍保持登入
+help-ma-entry-url =   ?enter=<runtime>             從共享 URL 登入後進入
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 可用語言（使用 .my.i18n: <code> 設定）：
@@ -289,13 +323,14 @@ profiles-not-found = 找不到個人資料: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    透過 URL 連結開啟 zion
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -304,8 +339,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -314,20 +349,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
 help-url-msg =   ?msg=<did>                   預填：@<did>!msg（文字訊息）
 help-url-say =   ?say=<did>                   預填：@<did>!say（say 動詞）
 help-url-emote =   ?emote=<did>                 預填：@<did>!emote（emote 動詞）
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                將你的身份發布到網路

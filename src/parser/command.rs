@@ -1,9 +1,10 @@
 /// Command parser for ego terminal input.
 ///
 /// Grammar:
-///   .cmd                 → DotCommand      (control command: .ma, .use, .help, … — hidden, closed set)
+///   .cmd                 → DotCommand      (control command: .ma, .enter, .leave, .help, …)
 ///   .cmd!verb [args]     → DotCommand::Meta
-///   .my.path             → LocalCrud::Get  (local config: .my, .ctx)
+///   .my.path             → LocalCrud::Get  (local profile config)
+///   .ma.ctx.path         → LocalCrud::Get  (local ma runtime context)
 ///   .my.path: value      → LocalCrud::Set
 ///   .my.path:            → LocalCrud::Delete
 ///   .my.path!verb [args] → LocalCrud::Meta
@@ -49,14 +50,14 @@ pub enum RemoteCrudOp {
 #[derive(Debug, Clone, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum Command {
-    /// A closed-set hidden control command (`.ma`, `.use`, `.help`, …).
+    /// A closed-set hidden control command (`.ma`, `.enter`, `.leave`, `.help`, …).
     /// Never a data path — those live under `LocalCrud`.
     DotCommand {
         path: String,
         op: DotOp,
         args: Vec<String>,
     },
-    /// Local CRUD on a `.my`, `.ctx` config path, or a read-only remote
+    /// Local CRUD on a `.my`, `.ma.ctx` config path, or a read-only remote
     /// fetch on `/ipfs`, `/ipns`, `/ipld`. Mirrors the remote `@alias/path`
     /// grammar.
     LocalCrud {
@@ -128,10 +129,10 @@ fn parse_dot(input: &str) -> Result<Command, String> {
     Ok(Command::DotCommand { path, op, args })
 }
 
-// ── Local path CRUD (`.my`, `.ctx`, `/ipfs`, `/ipns`, `/ipld`) ──────────────
+// ── Local path CRUD (`.my`, `.ma.ctx`, `/ipfs`, `/ipns`, `/ipld`) ────────────
 
 fn is_local_dot_root(input: &str) -> bool {
-    input == ".my" || input.starts_with(".my.") || input == ".ctx" || input.starts_with(".ctx.")
+    input == ".my" || input.starts_with(".my.") || input == ".ma.ctx" || input.starts_with(".ma.ctx.")
 }
 
 fn parse_local(input: &str) -> Result<Command, String> {
@@ -368,18 +369,26 @@ mod tests {
     }
 
     #[test]
-    fn parses_dot_ctx_as_local_crud() {
+    fn parses_dot_ma_ctx_as_local_crud() {
         let cfg = EgoConfig::new();
-        let cmd = parse(".ctx.ma.url: http://localhost:5003", &cfg).expect("command should parse");
+        let cmd = parse(".ma.ctx.url: http://localhost:5003", &cfg).expect("command should parse");
 
         assert_eq!(
             cmd,
             Command::LocalCrud {
-                path: ".ctx.ma.url".to_string(),
+                path: ".ma.ctx.url".to_string(),
                 op: DotOp::Set("http://localhost:5003".to_string()),
                 args: vec![],
             }
         );
+    }
+
+    #[test]
+    fn dot_ctx_is_not_local_crud_root() {
+        let cfg = EgoConfig::new();
+        let cmd = parse(".ctx.ma.url: http://localhost:5003", &cfg).expect("command should parse");
+
+        assert!(matches!(cmd, Command::DotCommand { .. }));
     }
 
     #[test]

@@ -106,6 +106,10 @@ discover-json-error = discoveri i no wok: JSON i no stret long { $url }: { $e }
 discover-missing-did = discoveri i no wok: status.json i no gat `did` fil
 discover-invalid-did = discoveri i no wok: i ekspektim `did` i stat long did:ma:, painim `{ $did }`
 discover-no-endpoint = woning discoveri: `endpoint_id` i no stap long status.json; seivim DID tasol
+discover-hint-endpoint-not-found = Toksave: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Toksave: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Toksave: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Toksave: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma discoveri long { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma i kamap pinis — ran '.my.identity!publish @ma' bilong putim nem bilong yu antap.
@@ -134,6 +138,16 @@ doc-publish-usage = yusim olsem: .my.doc.<nem>!publish <publishman>
 doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>!publish-ipld <publishman>
 doc-publish-failed = publishim { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = publish i no wok [{ $code }]: { $err }
+doc-publish-error-hint = Toksave: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-fetch-done = kisim { $cid } → { $path }.content (i noران)
@@ -151,11 +165,13 @@ err-lang-not-found = tok i no painim: { $lang }
 
 help-header-zion = ── tok bilong zion ────────────────────────────────────────────────────────
 help-header-messaging = ── toktok ─────────────────────────────────────────────────────────────────
-help-header-focus = ── fokus rot ──────────────────────────────────────────────────────────────
 help-header-config = ── lokal seting gramar ────────────────────────────────────────────────────
 help-header-common = ── rot bilong olgeta ──────────────────────────────────────────────────────
 help-header-inbox = ── bokis bilong mesej ─────────────────────────────────────────────────────
 help-header-documents = ── pepa (.my.doc.*) ───────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dispela tok
 help-cmd-clear =   .clear                       klinim terminal
@@ -168,8 +184,6 @@ help-msg-echo =   @alias                       soim DID (noh mesej salim)
 help-msg-send =   @alias!msg body / @alias:verb args           salim mesej / RPC i go long aktor
 help-msg-fragment =   @alias#fragment:verb body  salim i go long alias wantaim DID fragment
 help-msg-escape =   \@name                       stret @name (noh lukim alias)
-help-focus-set =   .use @alias [as @name]       fokusim aktor (senisim prompt)
-help-focus-clear =   .use                         rausim fokus
 help-config-get =   .path                        kisim lif valu o soim sabpatri
 help-config-filter =   .path value                  kisim ol wantaim kweri (filta long valu)
 help-config-set =   .path: value                 setim lif
@@ -204,6 +218,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  storim YAML olsem no
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impotim content bilong CID (noh renim)
 help-doc-cid =   .my.doc.<name>!cid            soim CID i storim pinis
 help-doc-del =   .my.doc.<name>:              rausim pepa
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Di 間 rum em spes namel long ol 間 identity. ma i mekim ol dispela identity i painim narapela na toktok; taim identity bilong yu i publish pinis, yu inap join.
+help-ma-command =   .ma [port]                   connect long local ma runtime bilong yu, ritim /status.json, na save .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publish DID document bilong yu bai ol narapela inap resolve keys na endpoint bilong yu
+help-ma-security = Klir trust boundary em own ma runtime bilong yu wantaim own IPFS Desktop/Kubo bilong yu. Remote publisher inap help, tasol bihain yu depend long service bilong narapela.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             olsem wanem long go insait long 間 rum
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Taim identity bilong yu i known, .enter @ma i larim yu step insait long 間. Painim wanpela world, go insait, na join long hap.
+help-ma-entry-steps = Startim IPFS Desktop na ma, bihain runim .ma. Publish long .my.identity!publish @ma, painim world, na enter long .enter @ma.
+help-ma-entry-command =   .enter @ma                  enter 間 long @ma runtime
+help-ma-entry-leave =   .leave                       lusim rum; identity bilong yu i stap active, na yu stap logged in
+help-ma-entry-url =   ?enter=<runtime>             enter bihain login long shared URL
 
 msg-send-failed = salim i no wok: { $e }
 msg-not-logged-in = yu no bin log in
@@ -275,7 +309,7 @@ profiles-not-found = profil i no stap: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -289,8 +323,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -299,22 +333,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opim zion long URL link
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL paramita ─────────────────────────────────────────────────────────────────
 help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim olgeta i stap pinis:
 help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did>!msg (simol meses)
 help-url-say =   ?say=<did>                   pulapim pastaim: @<did>!say (vep say)
 help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>!emote (vep emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                putim nem bilong yu antap long net

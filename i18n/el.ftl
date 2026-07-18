@@ -106,6 +106,10 @@ discover-json-error = η ανακάλυψη απέτυχε: μη έγκυρο JS
 discover-missing-did = η ανακάλυψη απέτυχε: το status.json δεν έχει το υποχρεωτικό πεδίο `did`
 discover-invalid-did = η ανακάλυψη απέτυχε: αναμένεται `did` που αρχίζει με did:ma:, ελήφθη `{ $did }`
 discover-no-endpoint = προειδοποίηση ανακάλυψης: το `endpoint_id` απουσιάζει στο status.json· αποθηκεύτηκε μόνο το DID
+discover-hint-endpoint-not-found = Υπόδειξη: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Υπόδειξη: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Υπόδειξη: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Υπόδειξη: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = το ma ανακαλύφθηκε στο { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — εκτέλεσε '.my.identity!publish @ma' για να δημοσιεύσεις την ταυτότητά σου.
@@ -134,6 +138,16 @@ doc-publish-usage = χρήση: .my.doc.<όνομα>!publish <εκδότης>
 doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>!publish-ipld <εκδότης>
 doc-publish-failed = δημοσίευση { $path }: { $e }
 doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
+doc-publish-error-detail = η δημοσίευση απέτυχε [{ $code }]: { $err }
+doc-publish-error-hint = Υπόδειξη: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
@@ -147,11 +161,13 @@ path-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 # ── Κείμενο βοήθειας — κεφαλίδες ─────────────────────────────────────────
 help-header-zion = ── εντολές zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── ανταλλαγή μηνυμάτων ───────────────────────────────────────────────────
-help-header-focus = ── λειτουργία εστίασης ───────────────────────────────────────────────────
 help-header-config = ── τοπική γραμματική διαμόρφωσης ────────────────────────────────────
 help-header-common = ── συνήθεις διαδρομές ────────────────────────────────────────────────────
 help-header-inbox = ── εισερχόμενα ───────────────────────────────────────────────────────────
 help-header-documents = ── έγγραφα ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        αυτό το κείμενο
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           αποστολή 
 help-msg-fragment =   @alias#fragment:verb body  αποστολή σε ψευδώνυμο με ρητό τμήμα DID
 help-msg-escape =   \@name                       κυριολεκτικό @name (χωρίς αναζήτηση ψευδωνύμου)
 
-help-focus-set =   .use @alias [as @name]       εστίαση σε ηθοποιό (αλλάζει την προτροπή)
-help-focus-clear =   .use                         εκκαθάριση εστίασης
 
 help-config-get =   .path                        λήψη τιμής φύλλου ή καταγραφή υποδέντρου
 help-config-filter =   .path value                  φίλτρο αναζήτησης (φιλτράρισμα κατά τιμή)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<όνομα>!publish-ipld @pub  αποθήκε
 help-doc-fetch =   .my.doc.<όνομα>!fetch /ipfs/<cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
 help-doc-cid =   .my.doc.<όνομα>!cid            εμφάνιση αποθηκευμένου CID
 help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγράφου
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Το δωμάτιο 間 είναι ο χώρος ανάμεσα στις ταυτότητες 間. Το ma επιτρέπει σε αυτές τις ταυτότητες να βρίσκουν η μία την άλλη και να επικοινωνούν· μόλις δημοσιευτεί η ταυτότητά σου, μπορείς να συμμετέχεις.
+help-ma-command =   .ma [port]                   συνδέσου στο τοπικό ma runtime, διάβασε /status.json και αποθήκευσε .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     δημοσίευσε το DID έγγραφό σου ώστε άλλοι να βρίσκουν τα κλειδιά και το endpoint σου
+help-ma-security = Το καθαρότερο όριο εμπιστοσύνης είναι το δικό σου ma runtime με το δικό σου IPFS Desktop/Kubo. Ένας απομακρυσμένος publisher μπορεί να είναι χρήσιμος, αλλά τότε βασίζεσαι στην υπηρεσία κάποιου άλλου.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             πώς να μπεις στο δωμάτιο 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Όταν η ταυτότητά σου είναι γνωστή, το .enter @ma σε αφήνει να μπεις στο 間. Βρες έναν κόσμο, μπες σε αυτόν και συμμετείχε από εκεί.
+help-ma-entry-steps = Ξεκίνα το IPFS Desktop και το ma, έπειτα τρέξε .ma. Δημοσίευσε με .my.identity!publish @ma, βρες έναν κόσμο και μπες με .enter @ma.
+help-ma-entry-command =   .enter @ma                  μπες στο 間 μέσω του @ma runtime
+help-ma-entry-leave =   .leave                       φύγε από το δωμάτιο· η ταυτότητά σου μένει ενεργή και παραμένεις συνδεδεμένος
+help-ma-entry-url =   ?enter=<runtime>             μπες μετά τη σύνδεση από κοινόχρηστο URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Διαθέσιμες γλώσσες (ορισμός με .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = το προφίλ δεν βρέθηκε: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
 help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
 help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did>!msg (απλό μήνυμα)
 help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>!say (ρήμα say)
 help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>!emote (ρήμα emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                δημοσίευση ταυτότητας στο δίκτυο

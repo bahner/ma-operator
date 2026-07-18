@@ -106,6 +106,10 @@ discover-json-error = aptikimas nepavyko: neteisingas JSON iš { $url }: { $e }
 discover-missing-did = aptikimas nepavyko: status.json trūksta privalomo lauko `did`
 discover-invalid-did = aptikimas nepavyko: tikėtasi, kad `did` prasideda did:ma:, gauta `{ $did }`
 discover-no-endpoint = aptikimo įspėjimas: `endpoint_id` trūksta status.json; išsaugota tik DID
+discover-hint-endpoint-not-found = Užuomina: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Užuomina: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Užuomina: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Užuomina: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma aptikta { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   slapyvardis @ma sukurtas — paleisk '.my.identity!publish @ma' savo tapatybei paskelbti.
@@ -134,6 +138,16 @@ doc-publish-usage = naudojimas: .my.doc.<pavadinimas>!publish <leidėjas>
 doc-publish-ipld-usage = naudojimas: .my.doc.<pavadinimas>!publish-ipld <leidėjas>
 doc-publish-failed = publikavimas { $path }: { $e }
 doc-publish-ipld-failed = ipld publikavimas { $path }: { $e }
+doc-publish-error-detail = publikavimas nepavyko [{ $code }]: { $err }
+doc-publish-error-hint = Užuomina: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-ipld-store-sent = IPLD saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-fetch-done = gauta { $cid } → { $path }.content (nevykdyta)
@@ -147,11 +161,13 @@ path-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 # ── Pagalbos tekstas — antraštės ──────────────────────────────────────────
 help-header-zion = ── zion komandos ──────────────────────────────────────────────────────────
 help-header-messaging = ── pranešimai ────────────────────────────────────────────────────────────
-help-header-focus = ── fokuso režimas ────────────────────────────────────────────────────────
 help-header-config = ── vietinė konfigūracijos gramatika ──────────────────────────────────────
 help-header-common = ── dažni keliai ──────────────────────────────────────────────────────────
 help-header-inbox = ── pašto dėžutė ──────────────────────────────────────────────────────────
 help-header-documents = ── dokumentai ───────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        šis tekstas
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           siųsti pranešim
 help-msg-fragment =   @alias#fragment:verb body  siųsti pseudonimui su aiškiu DID fragmentu
 help-msg-escape =   \@name                       pažodinis @name (be pseudonimo paieškos)
 
-help-focus-set =   .use @alias [as @name]       fokusuotis į dalyvį (keičia raginimą)
-help-focus-clear =   .use                         išvalyti fokusą
 
 help-config-get =   .path                        gauti lapo reikšmę arba išvardyti pomedį
 help-config-filter =   .path value                  paieškos filtras (filtruoti pagal reikšmę)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<pavadinimas>!publish-ipld @pub  išsaugoti YA
 help-doc-fetch =   .my.doc.<pavadinimas>!fetch /ipfs/<cid>    importuoti CID turinį (be vykdymo)
 help-doc-cid =   .my.doc.<pavadinimas>!cid            rodyti išsaugotą CID
 help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 kambarys yra erdvė tarp 間 tapatybių. ma leidžia šioms tapatybėms rasti viena kitą ir bendrauti; kai tavo tapatybė paskelbta, gali dalyvauti.
+help-ma-command =   .ma [port]                   prisijunk prie vietinio ma runtime, perskaityk /status.json ir išsaugok .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     paskelbk savo DID dokumentą, kad kiti galėtų rasti tavo raktus ir endpoint
+help-ma-security = Aiškiausia pasitikėjimo riba yra tavo paties ma runtime su tavo paties IPFS Desktop/Kubo. Nuotolinis publisher gali būti naudingas, bet tada remiesi kito žmogaus paslauga.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             kaip įeiti į 間 kambarį
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Kai tavo tapatybė žinoma, .enter @ma leidžia įžengti į 間. Susirask pasaulį, įeik į jį ir dalyvauk iš ten.
+help-ma-entry-steps = Paleisk IPFS Desktop ir ma, tada vykdyk .ma. Paskelbk su .my.identity!publish @ma, susirask pasaulį ir įeik su .enter @ma.
+help-ma-entry-command =   .enter @ma                  įeiti į 間 per @ma runtime
+help-ma-entry-leave =   .leave                       palikti kambarį; tavo tapatybė lieka aktyvi, o tu lieki prisijungęs
+help-ma-entry-url =   ?enter=<runtime>             įeiti po prisijungimo iš bendrinamo URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Galimos kalbos (nustatyti su .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profilis nerastas: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion atidarymas per URL nuorodą
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL parametrai ───────────────────────────────────────────────────────────────
 help-url-intro =   Pasidalinkite nuoroda, kuri atidaro zion su iš anksto užpildytu gavėju:
 help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did>!msg (paprastas pranešimas)
 help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>!say (veiksmažodis say)
 help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>!emote (veiksmažodis emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Enter siųsti.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                tapatybės paskelbimas tinkle

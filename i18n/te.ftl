@@ -106,6 +106,10 @@ discover-json-error = డిస్కవర్ విఫలమైంది: { $u
 discover-missing-did = డిస్కవర్ విఫలమైంది: status.json లో `did` ఫీల్డ్ లేదు
 discover-invalid-did = డిస్కవర్ విఫలమైంది: `did` did:ma: తో మొదలవ్వాలని ఆశించారు, పొందింది `{ $did }`
 discover-no-endpoint = డిస్కవర్ హెచ్చరిక: status.json లో `endpoint_id` లేదు; DID మాత్రమే సేవ్ అయింది
+discover-hint-endpoint-not-found = సూచన: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = సూచన: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = సూచన: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = సూచన: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = { $url } వద్ద ma కనుగొనబడింది
 discover-did-line = DID: { $did }
 discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — మీ గుర్తింపు ప్రచురించడానికి '.my.identity!publish @ma' అమలు చేయండి.
@@ -134,6 +138,16 @@ doc-publish-usage = వాడకం: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = వాడకం: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = ప్రచురణ { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = ప్రచురణ విఫలమైంది [{ $code }]: { $err }
+doc-publish-error-hint = సూచన: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-fetch-done = { $cid } తెచ్చబడింది → { $path }.content (అమలు చేయలేదు)
@@ -147,11 +161,13 @@ path-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 # ── సహాయం — శీర్షికలు ─────────────────────────────────────────────────────
 help-header-zion = ── zion ఆదేశాలు ─────────────────────────────────────────────────────────
 help-header-messaging = ── సందేశం ─────────────────────────────────────────────────────────────────
-help-header-focus = ── ఫోకస్ మోడ్ ─────────────────────────────────────────────────────────────
 help-header-config = ── స్థానిక కాన్ఫిగ్ వ్యాకరణం ──────────────────────────────────────────────
 help-header-common = ── సాధారణ మార్గాలు ──────────────────────────────────────────────────────────
 help-header-inbox = ── ఇన్‌బాక్స్ ────────────────────────────────────────────────────────────────
 help-header-documents = ── డాక్యుమెంట్‌లు ──────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── సహాయం — zion ఆదేశాలు ────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  స్పష్టమైన DID
 help-msg-escape =   \@name                       అక్షరార్థ @name (మారుపేరు శోధన లేదు)
 
 # ── సహాయం — ఫోకస్ మోడ్ ───────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       నటుడిపై ఫోకస్ చేయండి (ప్రాంప్ట్ మారుతుంది)
-help-focus-clear =   .use                         ఫోకస్ తొలగించండి
 
 # ── సహాయం — కాన్ఫిగ్ వ్యాకరణం ────────────────────────────────────────────
 help-config-get =   .path                        లీఫ్ విలువ పొందండి లేదా సబ్‌ట్రీ జాబితా చేయండి
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ని DAG-CBOR
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID కంటెంట్ దిగుమతి చేయండి (అమలు కాదు)
 help-doc-cid =   .my.doc.<name>!cid            స్టోర్ చేసిన CID చూపించు
 help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ తొలగించు
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 గది అనేది 間 గుర్తింపుల మధ్య ఉన్న స్థలం. ma ఆ గుర్తింపులు ఒకదానిని ఒకటి కనుగొని మాట్లాడుకునేలా చేస్తుంది; నీ గుర్తింపు ప్రచురించబడిన తర్వాత నీవు పాల్గొనవచ్చు.
+help-ma-command =   .ma [port]                   స్థానిక ma runtime కు కలుపుకో, /status.json చదువు, .ma.ctx.* భద్రపరచు
+help-ma-publish =   .my.identity!publish @ma     ఇతరులు నీ keys మరియు endpoint కనుగొనడానికి నీ DID పత్రాన్ని ప్రచురించు
+help-ma-security = స్పష్టమైన trust boundary అంటే నీ స్వంత IPFS Desktop/Kubo తో నీ స్వంత ma runtime. దూర publisher ఉపయోగపడవచ్చు, కానీ అప్పుడు నీవు వేరెవరి సేవపై ఆధారపడుతున్నావు.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             間 గదిలోకి ఎలా ప్రవేశించాలి
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = నీ గుర్తింపు తెలిసిన తర్వాత, .enter @ma నిన్ను 間 లోకి అడుగుపెట్టనిస్తుంది. ఒక world కనుగొని దానిలోకి ప్రవేశించి, అక్కడి నుంచి పాల్గొను.
+help-ma-entry-steps = IPFS Desktop మరియు ma ప్రారంభించు, ఆపై .ma నడుపు. .my.identity!publish @ma తో ప్రచురించు, ఒక world కనుగొను, .enter @ma తో ప్రవేశించు.
+help-ma-entry-command =   .enter @ma                  @ma runtime ద్వారా 間 లోకి ప్రవేశించు
+help-ma-entry-leave =   .leave                       గది నుండి బయటకు వెళ్ళు; నీ గుర్తింపు సక్రియంగానే ఉంటుంది, నీవు logged in గా ఉంటావు
+help-ma-entry-url =   ?enter=<runtime>             పంచుకున్న URL నుండి login తరువాత ప్రవేశించు
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = అందుబాటులో ఉన్న భాషలు (.my.i18n: <code> తో సెట్ చేయండి):
@@ -289,7 +323,7 @@ profiles-not-found = ప్రొఫైల్ కనుగొనబడలేద�
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
 help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
 help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did>!msg (సాధారణ సందేశం)
 help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>!say (say క్రియ)
 help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>!emote (emote క్రియ)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                నెట్‌వర్క్‌లో మీ గుర్తింపు ప్రచురించండి

@@ -348,12 +348,12 @@ impl EgoConfig {
     }
 
     /// Return a copy of this config suitable for file export.
-    /// Excludes `.ctx.ma.*` (device-specific runtime state).
+    /// Excludes `.ma.ctx.*` (device-specific runtime state).
     pub fn for_export(&self) -> Self {
         let tree = self
             .tree
             .iter()
-            .filter(|(k, _)| !k.starts_with(".ctx.ma."))
+            .filter(|(k, _)| k.as_str() != ".ma.ctx" && !k.starts_with(".ma.ctx."))
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
         Self { tree }
@@ -369,6 +369,18 @@ impl EgoConfig {
                 self.tree.entry(migrated).or_insert_with(|| value.clone());
             }
         }
+        let moved: Vec<(String, String, String)> = self
+            .tree
+            .iter()
+            .filter_map(|(key, value)| {
+                Self::migrate_ma_ctx_key(key)
+                    .map(|migrated| (key.clone(), migrated, value.clone()))
+            })
+            .collect();
+        for (old_key, migrated, value) in moved {
+            self.tree.entry(migrated).or_insert(value);
+            self.tree.remove(&old_key);
+        }
     }
 
     fn legacy_key(key: &str) -> bool {
@@ -378,15 +390,20 @@ impl EgoConfig {
     fn migrate_key(key: &str) -> Option<String> {
         match key {
             "/my" => Some(".my".to_string()),
-            "/ctx" => Some(".ctx".to_string()),
+            "/ctx" => None,
             _ => key
                 .strip_prefix("/my/")
                 .map(|path| format!(".my.{}", path.replace('/', ".")))
                 .or_else(|| {
-                    key.strip_prefix("/ctx/")
-                        .map(|path| format!(".ctx.{}", path.replace('/', ".")))
+                    key.strip_prefix("/ctx/ma")
+                        .map(|path| format!(".ma.ctx{}", path.replace('/', ".")))
                 }),
         }
+    }
+
+    fn migrate_ma_ctx_key(key: &str) -> Option<String> {
+        key.strip_prefix(".ctx.ma")
+            .map(|path| format!(".ma.ctx{path}"))
     }
 }
 
@@ -444,7 +461,7 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
             let mut cfg = EgoConfig::from_json(&json)?;
             cfg.migrate_slash_keys();
             cfg.tree
-                .retain(|k, _| k.starts_with(".my.") || k.starts_with(".ctx."));
+                .retain(|k, _| k.starts_with(".my.") || k == ".ma.ctx" || k.starts_with(".ma.ctx."));
             cfg.set_defaults();
             Ok(cfg)
         }
@@ -774,9 +791,21 @@ mod tests {
         cfg.migrate_slash_keys();
 
         assert_eq!(cfg.get(".my.aliases.alice"), Some("did:ma:abc"));
-        assert_eq!(cfg.get(".ctx.ma.url"), Some("http://localhost:5003"));
+        assert_eq!(cfg.get(".ma.ctx.url"), Some("http://localhost:5003"));
         assert!(cfg.get("/my/aliases/alice").is_none());
         assert!(cfg.get("/ctx/ma/url").is_none());
+        assert!(cfg.get(".ctx.ma.url").is_none());
+    }
+
+    #[test]
+    fn migrate_slash_keys_rewrites_old_dot_ma_context() {
+        let mut cfg = bare();
+        cfg.set(".ctx.ma.did", "did:ma:abc");
+
+        cfg.migrate_slash_keys();
+
+        assert_eq!(cfg.get(".ma.ctx.did"), Some("did:ma:abc"));
+        assert!(cfg.get(".ctx.ma.did").is_none());
     }
 
     #[test]

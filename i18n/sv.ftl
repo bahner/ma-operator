@@ -106,6 +106,10 @@ discover-json-error = identifiering misslyckades: ogiltigt JSON från { $url }: 
 discover-missing-did = identifiering misslyckades: status.json saknar obligatoriskt fält `did`
 discover-invalid-did = identifiering misslyckades: förväntade `did` börja med did:ma:, fick `{ $did }`
 discover-no-endpoint = identifieringsvarning: `endpoint_id` saknas i status.json; lagrade enbart DID
+discover-hint-endpoint-not-found = Tips: slutpunkten hittades inte. Kontrollera att `ma` kör och exponerar /status.json på port 5003.
+discover-hint-server-error = Tips: körmiljön svarade med serverfel. Kontrollera `ma`-loggarna och försök igen.
+discover-hint-network = Tips: nätverks-/anslutningsproblem. Starta `ma`, kontrollera att localhost:5003 kan nås och tillåt lokal HTTP-åtkomst i webbläsaren.
+discover-hint-generic = Tips: kontrollera att `ma` och IPFS Desktop kör och försök `.ma` igen.
 discover-success = ma identifierat vid { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma skapat — kör '.my.identity!publish @ma' för att publicera din identitet.
@@ -134,6 +138,16 @@ doc-publish-usage = användning: .my.doc.<namn>!publish <utgivare>
 doc-publish-ipld-usage = användning: .my.doc.<namn>!publish-ipld <utgivare>
 doc-publish-failed = publicering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicering { $path }: { $e }
+doc-publish-error-detail = publicering misslyckades [{ $code }]: { $err }
+doc-publish-error-hint = Tips: { $hint }
+doc-publish-hint-session = logga in igen så att ego kan komma åt dina identitetsnycklar
+doc-publish-hint-target = använd en giltig utgivar-DID eller ett alias som löses till en ren did:ma:<ipns>
+doc-publish-hint-network = kontrollera att ma-körmiljön och IPFS kan nås och försök igen
+doc-publish-hint-resolve = kontrollera att utgivarens DID-dokument är publicerat och innehåller en nåbar slutpunkt
+doc-publish-hint-acl = be utgivaroperatören tillåta din DID i ACL
+doc-publish-hint-runtime = körmiljön/pluginen avvisade begäran; läs orsaken och försök igen efter att entitet/körmiljö har rättats
+doc-publish-hint-ipfs = kontrollera lokal Kubo/IPFS-hälsa och status för utgivarens körmiljö
+doc-publish-hint-unknown = granska körmiljöloggarna för detaljerad orsak och försök igen
 doc-store-sent = lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
 doc-fetch-done = hämtade { $cid } → { $path }.content (ej utförd)
@@ -147,11 +161,13 @@ path-no-verb = inget verb `{ $verb }` för { $path }
 # ── Hjälptext — rubriker ──────────────────────────────────────────────────
 help-header-zion = ── zion-kommandon ─────────────────────────────────────────────────────────
 help-header-messaging = ── meddelanden ──────────────────────────────────────────────────────────
-help-header-focus = ── fokusläge ────────────────────────────────────────────────────────────
 help-header-config = ── lokal konfigurationsgrammatik ─────────────────────────────────────────
 help-header-common = ── vanliga sökvägar ──────────────────────────────────────────────────────
 help-header-inbox = ── inkorg ───────────────────────────────────────────────────────────────
 help-header-documents = ── dokument ─────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Hjälptext — zion-kommandon ────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  skicka till alias med explicit 
 help-msg-escape =   \@name                       bokstavlig @name (ingen alias-sökning)
 
 # ── Hjälptext — fokusläge ─────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       fokusera på aktör (ändrar prompt)
-help-focus-clear =   .use                         rensa fokus
 
 # ── Hjälptext — konfigurationsgrammatik ──────────────────────────────────
 help-config-get =   .path                        hämta löv-värde eller lista underträd
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<namn>!publish-ipld @pub  lagra YAML som struk
 help-doc-fetch =   .my.doc.<namn>!fetch /ipfs/<cid>    importera CID-innehåll (ingen körning)
 help-doc-cid =   .my.doc.<namn>!cid            visa lagrat CID
 help-doc-del =   .my.doc.<namn>:              radera dokument
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間-rummet är rummet mellan 間-identiteter. ma ser till att identiteterna kan hitta varandra och kommunicera; när din identitet är publicerad kan du delta.
+help-ma-command =   .ma [port]                   anslut till din lokala ma-runtime, läs /status.json och spara .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publicera ditt DID-dokument så att andra kan hitta dina nycklar och din endpoint
+help-ma-security = Den tydligaste tillitsgränsen är din egen ma-runtime med din egen IPFS Desktop/Kubo. En fjärrpublisher kan vara användbar, men då förlitar du dig på någon annans tjänst.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             hur du går in i 間-rummet
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = När din identitet är känd låter .enter @ma dig stiga in i 間. Hitta en värld, gå in i den och delta därifrån.
+help-ma-entry-steps = Starta IPFS Desktop och ma, kör sedan .ma. Publicera med .my.identity!publish @ma, hitta en värld och gå in med .enter @ma.
+help-ma-entry-command =   .enter @ma                  gå in i 間 genom @ma-runtime
+help-ma-entry-leave =   .leave                       gå ut ur rummet; din identitet förblir aktiv och du är fortfarande inloggad
+help-ma-entry-url =   ?enter=<runtime>             gå in efter inloggning från en delad URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Tillgängliga språk (ange med .my.i18n: <code>):
@@ -289,13 +323,14 @@ profiles-not-found = profil hittades inte: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    öppna zion via en URL-länk
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -304,8 +339,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -314,20 +349,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
 help-url-msg =   ?msg=<did>                   fyller i: @<did>!msg (textmeddelande)
 help-url-say =   ?say=<did>                   fyller i: @<did>!say (say-verb)
 help-url-emote =   ?emote=<did>                 fyller i: @<did>!emote (emote-verb)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Inmatningsfältet fylls i men skickas inte — tryck Enter för att skicka.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publicera din identitet till nätverket

@@ -106,6 +106,10 @@ discover-json-error = descoperire eșuată: JSON invalid de la { $url }: { $e }
 discover-missing-did = descoperire eșuată: status.json lipsește câmpul obligatoriu `did`
 discover-invalid-did = descoperire eșuată: așteptat `did` începând cu did:ma:, primit `{ $did }`
 discover-no-endpoint = avertisment descoperire: `endpoint_id` absent în status.json; salvat doar DID
+discover-hint-endpoint-not-found = Indiciu: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Indiciu: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Indiciu: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Indiciu: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma descoperit la { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma creat — rulează '.my.identity!publish @ma' pentru a-ți publica identitatea.
@@ -134,6 +138,16 @@ doc-publish-usage = utilizare: .my.doc.<nume>!publish <editor>
 doc-publish-ipld-usage = utilizare: .my.doc.<nume>!publish-ipld <editor>
 doc-publish-failed = publicare { $path }: { $e }
 doc-publish-ipld-failed = publicare IPLD { $path }: { $e }
+doc-publish-error-detail = publicare eșuată [{ $code }]: { $err }
+doc-publish-error-hint = Indiciu: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-fetch-done = { $cid } obținut → { $path }.content (neexecutat)
@@ -147,11 +161,13 @@ path-no-verb = niciun verb `{ $verb }` pentru { $path }
 # ── Text ajutor — anteturi ────────────────────────────────────────────────
 help-header-zion = ── comenzi zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── mesagerie ─────────────────────────────────────────────────────────────
-help-header-focus = ── modul focus ───────────────────────────────────────────────────────────
 help-header-config = ── gramatică de configurare locală ────────────────────────────────────
 help-header-common = ── căi comune ────────────────────────────────────────────────────────────
 help-header-inbox = ── căsuță poștală ────────────────────────────────────────────────────────
 help-header-documents = ── documente ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        acest text
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           trimite mesaj / R
 help-msg-fragment =   @alias#fragment:verb body  trimite la alias cu fragment DID explicit
 help-msg-escape =   \@name                       @name literal (fără căutare alias)
 
-help-focus-set =   .use @alias [as @name]       focalizare pe actor (modifică promptul)
-help-focus-clear =   .use                         șterge focus
 
 help-config-get =   .path                        obține valoarea frunzei sau listează subarborele
 help-config-filter =   .path value                  filtru de căutare (filtrare după valoare)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<nume>!publish-ipld @pub  salvează YAML ca no
 help-doc-fetch =   .my.doc.<nume>!fetch /ipfs/<cid>    importă conținut CID (fără execuție)
 help-doc-cid =   .my.doc.<nume>!cid            afișează CID salvat
 help-doc-del =   .my.doc.<nume>:              șterge document
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Camera 間 este spațiul dintre identitățile 間. ma le permite acestor identități să se găsească și să comunice; după ce identitatea ta este publicată, poți participa.
+help-ma-command =   .ma [port]                   conectează-te la runtime-ul ma local, citește /status.json și salvează .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publică documentul tău DID pentru ca alții să poată rezolva cheile și endpoint-ul tău
+help-ma-security = Cea mai clară limită de încredere este propriul tău runtime ma cu propriul IPFS Desktop/Kubo. Un publisher la distanță poate fi util, dar atunci te bazezi pe serviciul altcuiva.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             cum intri în camera 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Când identitatea ta este cunoscută, .enter @ma te lasă să intri în 間. Găsește o lume, intră în ea și participă de acolo.
+help-ma-entry-steps = Pornește IPFS Desktop și ma, apoi rulează .ma. Publică cu .my.identity!publish @ma, găsește o lume și intră cu .enter @ma.
+help-ma-entry-command =   .enter @ma                  intră în 間 prin runtime-ul @ma
+help-ma-entry-leave =   .leave                       părăsește camera; identitatea ta rămâne activă și rămâi autentificat
+help-ma-entry-url =   ?enter=<runtime>             intră după autentificare dintr-un URL partajat
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Limbi disponibile (setați cu .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profilul nu a fost găsit: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    deschiderea zion printr-un link URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── parametri URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Distribuie un link care deschide zion cu un destinatar precompletat:
 help-url-msg =   ?msg=<did>                   precompletează: @<did>!msg (mesaj simplu)
 help-url-say =   ?say=<did>                   precompletează: @<did>!say (verb say)
 help-url-emote =   ?emote=<did>                 precompletează: @<did>!emote (verb emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentru a trimite.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publicarea identității în rețea

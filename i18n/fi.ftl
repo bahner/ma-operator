@@ -106,6 +106,10 @@ discover-json-error = löytäminen epäonnistui: virheellinen JSON osoitteesta {
 discover-missing-did = löytäminen epäonnistui: status.json puuttuu pakollinen kenttä `did`
 discover-invalid-did = löytäminen epäonnistui: odotettiin `did`:n alkavan did:ma::lla, saatiin `{ $did }`
 discover-no-endpoint = löytämisvaroitus: `endpoint_id` puuttuu status.json:sta; tallennettiin vain DID
+discover-hint-endpoint-not-found = Vihje: päätepistettä ei löytynyt. Tarkista, että `ma` on käynnissä ja tarjoaa /status.json portissa 5003.
+discover-hint-server-error = Vihje: ajonaika vastasi palvelinvirheellä. Tarkista `ma`-lokit ja yritä uudelleen.
+discover-hint-network = Vihje: verkko-/yhteysongelma. Käynnistä `ma`, tarkista että localhost:5003 on saavutettavissa ja salli paikallinen HTTP-yhteys selaimessa.
+discover-hint-generic = Vihje: tarkista että `ma` ja IPFS Desktop ovat käynnissä, ja yritä `.ma` uudelleen.
 discover-success = ma löydettiin osoitteesta { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma luotu — aja '.my.identity!publish @ma' julkaistaksesi henkilöllisyytesi.
@@ -134,6 +138,16 @@ doc-publish-usage = käyttö: .my.doc.<nimi>!publish <julkaisija>
 doc-publish-ipld-usage = käyttö: .my.doc.<nimi>!publish-ipld <julkaisija>
 doc-publish-failed = julkaisu { $path }: { $e }
 doc-publish-ipld-failed = ipld-julkaisu { $path }: { $e }
+doc-publish-error-detail = julkaisu epäonnistui [{ $code }]: { $err }
+doc-publish-error-hint = Vihje: { $hint }
+doc-publish-hint-session = kirjaudu uudelleen, jotta ego voi käyttää identiteettiavaimiasi
+doc-publish-hint-target = käytä kelvollista julkaisijan DID:tä tai aliasta, joka ratkeaa paljaaksi did:ma:<ipns>
+doc-publish-hint-network = tarkista että ma-ajonaika ja IPFS ovat saavutettavissa ja yritä uudelleen
+doc-publish-hint-resolve = tarkista että julkaisijan DID-dokumentti on julkaistu ja sisältää saavutettavan päätepisteen
+doc-publish-hint-acl = pyydä julkaisijan operaattoria sallimaan DID:si ACL:ssä
+doc-publish-hint-runtime = ajonaika/plugin hylkäsi pyynnön; tarkista syy ja yritä uudelleen entiteetin/ajonajan korjauksen jälkeen
+doc-publish-hint-ipfs = tarkista paikallisen Kubo/IPFS:n tila ja julkaisijan ajonajan tila
+doc-publish-hint-unknown = tarkista ajonaikalokit tarkempaa syytä varten ja yritä uudelleen
 doc-store-sent = tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
 doc-ipld-store-sent = IPLD-tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
 doc-fetch-done = haettiin { $cid } → { $path }.content (ei suoritettu)
@@ -147,11 +161,13 @@ path-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 # ── Ohjeteksti — otsikot ─────────────────────────────────────────────────
 help-header-zion = ── zion-komennot ──────────────────────────────────────────────────────────
 help-header-messaging = ── viestit ───────────────────────────────────────────────────────────────
-help-header-focus = ── kohdistustila ─────────────────────────────────────────────────────────
 help-header-config = ── paikallinen kokoonpanokielioppi ───────────────────────────────────────
 help-header-common = ── yleiset polut ─────────────────────────────────────────────────────────
 help-header-inbox = ── postilaatikko ─────────────────────────────────────────────────────────
 help-header-documents = ── asiakirjat ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        tämä teksti
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           lähetä viesti /
 help-msg-fragment =   @alias#fragment:verb body  lähetä aliakselle eksplisiittisellä DID-fragmentilla
 help-msg-escape =   \@name                       kirjaimellinen @name (ei aliashakua)
 
-help-focus-set =   .use @alias [as @name]       kohdista toimijaan (muuttaa kehotetta)
-help-focus-clear =   .use                         tyhjennä kohdistus
 
 help-config-get =   .path                        hae lehden arvo tai listaa alipuu
 help-config-filter =   .path value                  hakusuodatin (suodata arvon mukaan)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<nimi>!publish-ipld @pub  tallenna YAML jäsen
 help-doc-fetch =   .my.doc.<nimi>!fetch /ipfs/<cid>    tuo CID-sisältö (ei suoritusta)
 help-doc-cid =   .my.doc.<nimi>!cid            näytä tallennettu CID
 help-doc-del =   .my.doc.<nimi>:              poista asiakirja
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間-huone on tila 間-identiteettien välissä. ma auttaa näitä identiteettejä löytämään toisensa ja kommunikoimaan; kun identiteettisi on julkaistu, voit osallistua.
+help-ma-command =   .ma [port]                   yhdistä paikalliseen ma-runtimeen, lue /status.json ja tallenna .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     julkaise DID-dokumenttisi, jotta muut voivat selvittää avaimesi ja endpointisi
+help-ma-security = Selkein luottamusraja on oma ma-runtime yhdessä oman IPFS Desktop/Kubon kanssa. Etä-publisher voi olla hyödyllinen, mutta silloin luotat jonkun toisen palveluun.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             miten 間-huoneeseen mennään
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Kun identiteettisi tunnetaan, .enter @ma päästää sinut astumaan 間-tilaan. Etsi maailma, mene siihen ja osallistu sieltä.
+help-ma-entry-steps = Käynnistä IPFS Desktop ja ma, aja sitten .ma. Julkaise komennolla .my.identity!publish @ma, etsi maailma ja mene sisään komennolla .enter @ma.
+help-ma-entry-command =   .enter @ma                  astu 間-tilaan @ma-runtimen kautta
+help-ma-entry-leave =   .leave                       poistu huoneesta; identiteettisi pysyy aktiivisena ja pysyt kirjautuneena
+help-ma-entry-url =   ?enter=<runtime>             mene sisään kirjautumisen jälkeen jaetusta URL:sta
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Käytettävissä olevat kielet (aseta .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profiilia ei löydy: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL-parametrit ───────────────────────────────────────────────────────────────
 help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla:
 help-url-msg =   ?msg=<did>                   esitäyttää: @<did>!msg (tekstiviesti)
 help-url-say =   ?say=<did>                   esitäyttää: @<did>!say (verbi say)
 help-url-emote =   ?emote=<did>                 esitäyttää: @<did>!emote (verbi emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                henkilöllisyyden julkaiseminen verkossa

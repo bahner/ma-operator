@@ -106,6 +106,10 @@ discover-json-error = malkovro malsukcesis: nevalida JSON de { $url }: { $e }
 discover-missing-did = malkovro malsukcesis: status.json mankas bezonata kampo `did`
 discover-invalid-did = malkovro malsukcesis: atendis `did` komenci per did:ma:, ricevis `{ $did }`
 discover-no-endpoint = malkovro-averto: `endpoint_id` mankas en status.json; nur DID konservita
+discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma malkovrita ĉe { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   kromnomo @ma kreita — rulu '.my.identity!publish @ma' por publikigi vian identecon.
@@ -134,6 +138,16 @@ doc-publish-usage = uzado: .my.doc.<nomo>!publish <eldonisto>
 doc-publish-ipld-usage = uzado: .my.doc.<nomo>!publish-ipld <eldonisto>
 doc-publish-failed = publikigi { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = publish failed [{ $code }]: { $err }
+doc-publish-error-hint = Hint: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-fetch-done = elŝutita { $cid } → { $path }.content (ne efektivigita)
@@ -151,11 +165,13 @@ err-lang-not-found = lingvo ne trovita: { $lang }
 
 help-header-zion = ── zion-komandoj ──────────────────────────────────────────────────────────
 help-header-messaging = ── mesaĝado ───────────────────────────────────────────────────────────────
-help-header-focus = ── fokusa reĝimo ──────────────────────────────────────────────────────────
 help-header-config = ── loka agordo-gramatiko ──────────────────────────────────────────────────
 help-header-common = ── komunaj vojoj ──────────────────────────────────────────────────────────
 help-header-inbox = ── poŝtkesto ──────────────────────────────────────────────────────────────
 help-header-documents = ── dokumentoj (.my.doc.*) ─────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        ĉi tiu teksto
 help-cmd-clear =   .clear                       malplenigu terminalon
@@ -168,8 +184,6 @@ help-msg-echo =   @alias                       eĥigi solvitan DID (neniu mesaĝ
 help-msg-send =   @alias!msg body / @alias:verb args           sendi mesaĝon / RPC al aktoro
 help-msg-fragment =   @alias#fragment:verb body  sendi al alias kun eksplicita DID-fragmento
 help-msg-escape =   \@name                       laŭvorta @name (neniu alias-serĉo)
-help-focus-set =   .use @alias [as @name]       fokusi sur aktoro (ŝanĝas promptan)
-help-focus-clear =   .use                         viŝi fokuson
 help-config-get =   .path                        akiri folian valoron aŭ listi subarbon
 help-config-filter =   .path value                  serĉodemando (filtri per valoro)
 help-config-set =   .path: value                 agordi folion
@@ -204,6 +218,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  konservi YAML kiel s
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    importi CID-enhavon (neniu ekzekuto)
 help-doc-cid =   .my.doc.<name>!cid            montri konservitan CID
 help-doc-del =   .my.doc.<name>:              forigi dokumenton
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = La 間-ĉambro estas la spaco inter 間-identecoj. ma helpas tiujn identecojn trovi unu la alian kaj komuniki; kiam via identeco estas publikigita, vi povas partopreni.
+help-ma-command =   .ma [port]                   konekti al via loka ma-runtime, legi /status.json, kaj konservi .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publikigi vian DID-dokumenton por ke aliaj trovu viajn ŝlosilojn kaj endpoint-on
+help-ma-security = La plej klara fidlimo estas via propra ma-runtime kun via propra IPFS Desktop/Kubo. Fora publisher povas utili, sed tiam vi fidas je servo de iu alia.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             kiel eniri la 間-ĉambron
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Kiam via identeco estas konata, .enter @ma lasas vin enpaŝi en 間. Trovu mondon, eniru ĝin, kaj partoprenu de tie.
+help-ma-entry-steps = Startigu IPFS Desktop kaj ma, poste rulu .ma. Publikigu per .my.identity!publish @ma, trovu mondon, kaj eniru per .enter @ma.
+help-ma-entry-command =   .enter @ma                  eniri 間 tra la @ma-runtime
+help-ma-entry-leave =   .leave                       forlasi la ĉambron; via identeco restas aktiva kaj vi restas ensalutinta
+help-ma-entry-url =   ?enter=<runtime>             eniri post ensaluto el kundividita URL
 
 msg-send-failed = sendo malsukcesis: { $e }
 msg-not-logged-in = ne ensalutinta
@@ -275,13 +309,14 @@ profiles-not-found = profilo ne trovita: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    malfermi zion per URL-ligilo
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -290,8 +325,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -300,20 +335,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
 help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
 help-url-msg =   ?msg=<did>                   antaŭplenigas: @<did>!msg (teksta mesaĝo)
 help-url-say =   ?say=<did>                   antaŭplenigas: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>!emote (verbo emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publikigi vian identecon al la reto

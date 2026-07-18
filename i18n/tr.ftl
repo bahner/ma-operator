@@ -106,6 +106,10 @@ discover-json-error = keşif başarısız: { $url } adresinden geçersiz JSON: {
 discover-missing-did = keşif başarısız: status.json'da gerekli `did` alanı eksik
 discover-invalid-did = keşif başarısız: `did` did:ma: ile başlamalıydı, alındı `{ $did }`
 discover-no-endpoint = keşif uyarısı: status.json'da `endpoint_id` eksik; yalnızca DID depolandı
+discover-hint-endpoint-not-found = İpucu: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = İpucu: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = İpucu: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = İpucu: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma { $url } adresinde keşfedildi
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma takma adı oluşturuldu — kimliğini yayımlamak için '.my.identity!publish @ma' çalıştır.
@@ -134,6 +138,16 @@ doc-publish-usage = kullanım: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = kullanım: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = yayım { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = yayınlama başarısız [{ $code }]: { $err }
+doc-publish-error-hint = İpucu: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-fetch-done = { $cid } getirildi → { $path }.content (çalıştırılmadı)
@@ -147,11 +161,13 @@ path-no-verb = { $path } için `{ $verb }` fiili yok
 # ── Yardım — başlıklar ────────────────────────────────────────────────────
 help-header-zion = ── zion komutları ────────────────────────────────────────────────────────
 help-header-messaging = ── mesajlaşma ───────────────────────────────────────────────────────────
-help-header-focus = ── odak modu ────────────────────────────────────────────────────────────
 help-header-config = ── yerel yapılandırma sözdizimi ───────────────────────────────────────────
 help-header-common = ── yaygın yollar ─────────────────────────────────────────────────────────
 help-header-inbox = ── gelen kutusu ──────────────────────────────────────────────────────────
 help-header-documents = ── belgeler ─────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Yardım — zion komutları ───────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  açık DID parçasıyla gönder
 help-msg-escape =   \@name                       değişmez @name (takma ad araması yok)
 
 # ── Yardım — odak modu ────────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       aktöre odaklan (istemi değiştirir)
-help-focus-clear =   .use                         odağı temizle
 
 # ── Yardım — yapılandırma sözdizimi ──────────────────────────────────────
 help-config-get =   .path                        yaprak değer al veya alt ağacı listele
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML'ı DAG-CBOR IPL
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID içeriğini içe aktar (çalıştırma)
 help-doc-cid =   .my.doc.<name>!cid            depolanan CID'yi göster
 help-doc-del =   .my.doc.<name>:              belgeyi sil
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 odası, 間 kimlikleri arasındaki alandır. ma bu kimliklerin birbirini bulmasını ve iletişim kurmasını sağlar; kimliğin yayımlandığında katılabilirsin.
+help-ma-command =   .ma [port]                   yerel ma runtime’a bağlan, /status.json oku ve .ma.ctx.* kaydet
+help-ma-publish =   .my.identity!publish @ma     başkaları anahtarlarını ve endpoint’ini çözebilsin diye DID belgeni yayımla
+help-ma-security = En açık güven sınırı, kendi IPFS Desktop/Kubo’nla birlikte kendi ma runtime’ındır. Uzak bir publisher yararlı olabilir, ama o zaman başkasının hizmetine güvenirsin.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             間 odasına nasıl girilir
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Kimliğin bilindiğinde .enter @ma seni 間 içine sokar. Bir dünya bul, içine gir ve oradan katıl.
+help-ma-entry-steps = IPFS Desktop ve ma’yı başlat, sonra .ma çalıştır. .my.identity!publish @ma ile yayımla, bir dünya bul ve .enter @ma ile gir.
+help-ma-entry-command =   .enter @ma                  @ma runtime üzerinden 間 içine gir
+help-ma-entry-leave =   .leave                       odadan çık; kimliğin aktif kalır ve oturumun açık kalır
+help-ma-entry-url =   ?enter=<runtime>             paylaşılan URL’den giriş yaptıktan sonra gir
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Kullanılabilir diller (.my.i18n: <code> ile ayarlayın):
@@ -289,13 +323,14 @@ profiles-not-found = profil bulunamadı: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    zion'u bir URL bağlantısıyla aç
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -304,8 +339,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -314,20 +349,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
 help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)
 help-url-say =   ?say=<did>                   önceden doldurur: @<did>!say (say fiili)
 help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>!emote (emote fiili)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                kimliğini ağa yayımla

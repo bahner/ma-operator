@@ -106,6 +106,10 @@ discover-json-error = 検出に失敗しました: { $url } からの無効な J
 discover-missing-did = 検出に失敗しました: status.json に必須フィールド `did` がありません
 discover-invalid-did = 検出に失敗しました: `did` は did:ma: で始まる必要がありますが、`{ $did }` を受け取りました
 discover-no-endpoint = 検出の警告: status.json に `endpoint_id` がありません。DID のみ保存しました
+discover-hint-endpoint-not-found = ヒント: エンドポイントが見つかりません。`ma` が実行中で、ポート 5003 で /status.json を公開していることを確認してください。
+discover-hint-server-error = ヒント: ランタイムがサーバーエラーを返しました。`ma` のログを確認して再試行してください。
+discover-hint-network = ヒント: ネットワーク/接続の問題です。`ma` を起動し、localhost:5003 に到達できることと、ブラウザでローカル HTTP アクセスが許可されていることを確認してください。
+discover-hint-generic = ヒント: `ma` と IPFS Desktop が実行中であることを確認してから `.ma` を再試行してください。
 discover-success = { $url } で ma を検出しました
 discover-did-line = DID: { $did }
 discover-alias-hint =   エイリアス @ma が作成されました — '.my.identity!publish @ma'を実行して身元を公開してください。
@@ -134,6 +138,16 @@ doc-publish-usage = 使用方法: .my.doc.<名前>!publish <発行者>
 doc-publish-ipld-usage = 使用方法: .my.doc.<名前>!publish-ipld <発行者>
 doc-publish-failed = { $path } の公開エラー: { $e }
 doc-publish-ipld-failed = { $path } の IPLD 公開エラー: { $e }
+doc-publish-error-detail = 公開に失敗しました [{ $code }]: { $err }
+doc-publish-error-hint = ヒント: { $hint }
+doc-publish-hint-session = ego が識別キーにアクセスできるように再ログインしてください
+doc-publish-hint-target = 有効な発行者 DID、または裸の did:ma:<ipns> に解決されるエイリアスを使用してください
+doc-publish-hint-network = ma ランタイムと IPFS に到達できることを確認して再試行してください
+doc-publish-hint-resolve = 発行者の DID ドキュメントが公開され、到達可能なエンドポイントを含むことを確認してください
+doc-publish-hint-acl = 発行者の運用者に ACL であなたの DID を許可してもらってください
+doc-publish-hint-runtime = ランタイム/プラグインが要求を拒否しました。理由を確認し、エンティティ/ランタイム修正後に再試行してください
+doc-publish-hint-ipfs = ローカル Kubo/IPFS の状態と発行者ランタイムの状態を確認してください
+doc-publish-hint-unknown = 詳細な原因をランタイムログで確認して再試行してください
 doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-fetch-done = { $cid } を取得しました → { $path }.content (実行されていません)
@@ -147,11 +161,13 @@ path-no-verb = { $path } に動詞 `{ $verb }` がありません
 # ── ヘルプテキスト — ヘッダー ─────────────────────────────────────────────
 help-header-zion = ── zion コマンド ──────────────────────────────────────────────────────────
 help-header-messaging = ── メッセージ送受信 ────────────────────────────────────────────────────────
-help-header-focus = ── フォーカスモード ─────────────────────────────────────────────────────────
 help-header-config = ── ローカル設定文法 ─────────────────────────────────────────────────────────
 help-header-common = ── よく使うパス ─────────────────────────────────────────────────────────────
 help-header-inbox = ── 受信トレイ ──────────────────────────────────────────────────────────────
 help-header-documents = ── ドキュメント ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        このテキスト
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           アクターに�
 help-msg-fragment =   @alias#fragment:verb body  明示的な DID フラグメント付きエイリアスに送信
 help-msg-escape =   \@name                       リテラル @name (エイリアス検索なし)
 
-help-focus-set =   .use @alias [as @name]       アクターにフォーカス (プロンプトを変更)
-help-focus-clear =   .use                         フォーカスをクリア
 
 help-config-get =   .path                        リーフの値を取得またはサブツリーを一覧表示
 help-config-filter =   .path value                  検索フィルター (値でフィルタリング)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<名前>!publish-ipld @pub  YAML を構造化 
 help-doc-fetch =   .my.doc.<名前>!fetch /ipfs/<cid>    CID コンテンツをインポート (実行なし)
 help-doc-cid =   .my.doc.<名前>!cid            保存された CID を表示
 help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間の部屋は、間のアイデンティティ同士のあいだにある場所です。ma はそれらのアイデンティティが互いを見つけ、通信できるようにします。あなたのアイデンティティが公開されると、参加できるようになります。
+help-ma-command =   .ma [port]                   ローカルの ma runtime に接続し、/status.json を読み、.ma.ctx.* を保存する
+help-ma-publish =   .my.identity!publish @ma     DID ドキュメントを公開し、他の人が鍵と endpoint を解決できるようにする
+help-ma-security = もっとも明確な信頼境界は、自分の ma runtime と自分の IPFS Desktop/Kubo です。リモート publisher は便利な場合もありますが、その場合は他人のサービスに依存します。
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             間の部屋への入り方
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = あなたのアイデンティティが知られると、.enter @ma で 間 に入れます。world を見つけてそこに入り、そこから参加します。
+help-ma-entry-steps = IPFS Desktop と ma を起動し、.ma を実行します。.my.identity!publish @ma で公開し、world を見つけ、.enter @ma で入ります。
+help-ma-entry-command =   .enter @ma                  @ma runtime 経由で 間 に入る
+help-ma-entry-leave =   .leave                       部屋を離れる。アイデンティティは有効なままで、ログイン状態も続きます
+help-ma-entry-url =   ?enter=<runtime>             共有 URL からログインしたあとに入る
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 利用可能な言語 (.my.i18n: <code> で設定):
@@ -282,13 +316,14 @@ profiles-not-found = プロフィールが見つかりません: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    URLリンクからzionを開く
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -297,8 +332,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -307,20 +342,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
 help-url-say =   ?say=<did>                   事前入力: @<did>!say（say動詞）
 help-url-emote =   ?emote=<did>                 事前入力: @<did>!emote（emote動詞）
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                ネットワークに身元を公開する

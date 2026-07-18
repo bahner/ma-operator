@@ -106,6 +106,10 @@ discover-json-error = felderítés sikertelen: érvénytelen JSON a következőb
 discover-missing-did = felderítés sikertelen: a status.json hiányzó kötelező `did` mezőt tartalmaz
 discover-invalid-did = felderítés sikertelen: a `did` did:ma:-vel kell kezdődjön, kapott: `{ $did }`
 discover-no-endpoint = felderítési figyelmeztetés: `endpoint_id` hiányzik a status.json-ból; csak DID mentve
+discover-hint-endpoint-not-found = Tipp: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Tipp: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Tipp: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Tipp: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma felderítve a következő helyen: { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias létrehozva — futtasd '.my.identity!publish @ma' az identitásod közzétételéhez.
@@ -134,6 +138,16 @@ doc-publish-usage = használat: .my.doc.<név>!publish <kiadó>
 doc-publish-ipld-usage = használat: .my.doc.<név>!publish-ipld <kiadó>
 doc-publish-failed = közzététel { $path }: { $e }
 doc-publish-ipld-failed = IPLD közzététel { $path }: { $e }
+doc-publish-error-detail = közzététel sikertelen [{ $code }]: { $err }
+doc-publish-error-hint = Tipp: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-fetch-done = { $cid } letöltve → { $path }.content (nem futtatva)
@@ -147,11 +161,13 @@ path-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 # ── Súgószöveg — fejlécek ─────────────────────────────────────────────────
 help-header-zion = ── zion parancsok ─────────────────────────────────────────────────────────
 help-header-messaging = ── üzenetküldés ──────────────────────────────────────────────────────────
-help-header-focus = ── fókusz mód ────────────────────────────────────────────────────────────
 help-header-config = ── helyi konfigurációs szintaxis ──────────────────────────────────────
 help-header-common = ── általános útvonalak ───────────────────────────────────────────────────
 help-header-inbox = ── bejövő üzenetek ──────────────────────────────────────────────────────
 help-header-documents = ── dokumentumok ─────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        ez a szöveg
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           üzenet / RPC kü
 help-msg-fragment =   @alias#fragment:verb body  küldés álnévnek explicit DID-töredékkel
 help-msg-escape =   \@name                       szó szerinti @name (alias keresés nélkül)
 
-help-focus-set =   .use @alias [as @name]       fókuszálás szereplőre (módosítja a promptot)
-help-focus-clear =   .use                         fókusz törlése
 
 help-config-get =   .path                        levél értékének lekérése vagy részfa listázása
 help-config-filter =   .path value                  keresési szűrő (szűrés érték szerint)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<név>!publish-ipld @pub  YAML mentése strukt
 help-doc-fetch =   .my.doc.<név>!fetch /ipfs/<cid>    CID tartalom importálása (futtatás nélkül)
 help-doc-cid =   .my.doc.<név>!cid            mentett CID megjelenítése
 help-doc-del =   .my.doc.<név>:              dokumentum törlése
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = A 間 szoba a 間 identitások közötti tér. A ma segít ezeknek az identitásoknak megtalálni egymást és kommunikálni; amint az identitásod publikálva van, részt vehetsz.
+help-ma-command =   .ma [port]                   kapcsolódj a helyi ma runtime-hoz, olvasd be a /status.json-t, és mentsd a .ma.ctx.* értékeket
+help-ma-publish =   .my.identity!publish @ma     publikáld a DID dokumentumodat, hogy mások feloldhassák a kulcsaidat és endpointodat
+help-ma-security = A legtisztább bizalmi határ a saját ma runtime-od a saját IPFS Desktop/Kubo példányoddal. Egy távoli publisher hasznos lehet, de akkor valaki más szolgáltatására támaszkodsz.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             hogyan lépj be a 間 szobába
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Ha az identitásod ismert, a .enter @ma beenged a 間 térbe. Keress egy világot, lépj be, és onnan vegyél részt.
+help-ma-entry-steps = Indítsd el az IPFS Desktopot és a ma-t, majd futtasd a .ma parancsot. Publikálj a .my.identity!publish @ma paranccsal, keress egy világot, és lépj be a .enter @ma paranccsal.
+help-ma-entry-command =   .enter @ma                  belépés a 間 térbe az @ma runtime-on keresztül
+help-ma-entry-leave =   .leave                       kilépés a szobából; az identitásod aktív marad, és bejelentkezve maradsz
+help-ma-entry-url =   ?enter=<runtime>             belépés megosztott URL-ből való bejelentkezés után
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Elérhető nyelvek (beállítás: .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = a profil nem található: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
 help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
 help-url-msg =   ?msg=<did>                   előre kitölti: @<did>!msg (egyszerű üzenet)
 help-url-say =   ?say=<did>                   előre kitölti: @<did>!say (say ige)
 help-url-emote =   ?emote=<did>                 előre kitölti: @<did>!emote (emote ige)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                azonosságod közzététele a hálózaton

@@ -106,6 +106,10 @@ discover-json-error = ugunduzi umeshindwa: JSON batili kutoka { $url }: { $e }
 discover-missing-did = ugunduzi umeshindwa: status.json inakosea uwanja unaohitajika `did`
 discover-invalid-did = ugunduzi umeshindwa: ilitarajiwa `did` kuanza na did:ma:, ilipokea `{ $did }`
 discover-no-endpoint = onyo la ugunduzi: `endpoint_id` haipo katika status.json; DID tu ilihifadhiwa
+discover-hint-endpoint-not-found = Kidokezo: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Kidokezo: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Kidokezo: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Kidokezo: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma imegunduliwa katika { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   jina bandia @ma limeundwa — endesha '.my.identity!publish @ma' kutangaza utambulisho wako.
@@ -134,6 +138,16 @@ doc-publish-usage = matumizi: .my.doc.<jina>!publish <mchapishaji>
 doc-publish-ipld-usage = matumizi: .my.doc.<jina>!publish-ipld <mchapishaji>
 doc-publish-failed = kuchapisha { $path }: { $e }
 doc-publish-ipld-failed = kuchapisha IPLD { $path }: { $e }
+doc-publish-error-detail = uchapishaji umeshindwa [{ $code }]: { $err }
+doc-publish-error-hint = Kidokezo: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-fetch-done = { $cid } imepatikana → { $path }.content (haijatekelezwa)
@@ -147,11 +161,13 @@ path-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 # ── Maandishi ya msaada — vichwa ──────────────────────────────────────────
 help-header-zion = ── amri za zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── ujumbe ────────────────────────────────────────────────────────────────
-help-header-focus = ── hali ya umakini ───────────────────────────────────────────────────────
 help-header-config = ── sarufi ya usanidi wa ndani ─────────────────────────────────────────
 help-header-common = ── njia za kawaida ───────────────────────────────────────────────────────
 help-header-inbox = ── kisanduku cha barua ───────────────────────────────────────────────────
 help-header-documents = ── nyaraka ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        maandishi haya
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           tuma ujumbe / RPC
 help-msg-fragment =   @alias#fragment:verb body  tuma kwa jina la kubadilisha lenye kipande cha DID wazi
 help-msg-escape =   \@name                       @name halisi (bila utafutaji wa jina la kubadilisha)
 
-help-focus-set =   .use @alias [as @name]       zingatia muigizaji (hubadilisha kidokezo)
-help-focus-clear =   .use                         futa umakini
 
 help-config-get =   .path                        pata thamani ya jani au orodhesha mti mdogo
 help-config-filter =   .path value                  kichujio cha utafutaji (chuja kwa thamani)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<jina>!publish-ipld @pub  hifadhi YAML kama no
 help-doc-fetch =   .my.doc.<jina>!fetch /ipfs/<cid>    ingiza maudhui ya CID (bila utekelezaji)
 help-doc-cid =   .my.doc.<jina>!cid            onyesha CID iliyohifadhiwa
 help-doc-del =   .my.doc.<jina>:              futa hati
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Chumba cha 間 ni nafasi kati ya vitambulisho vya 間. ma huviwezesha vitambulisho hivyo kupatana na kuwasiliana; utambulisho wako ukishachapishwa, unaweza kushiriki.
+help-ma-command =   .ma [port]                   unganisha kwenye ma runtime yako ya karibu, soma /status.json, na uhifadhi .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     chapisha hati yako ya DID ili wengine wapate funguo zako na endpoint yako
+help-ma-security = Mpaka wa uaminifu ulio wazi zaidi ni ma runtime yako mwenyewe pamoja na IPFS Desktop/Kubo yako mwenyewe. Publisher wa mbali anaweza kusaidia, lakini hapo unategemea huduma ya mtu mwingine.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             jinsi ya kuingia chumba cha 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Utambulisho wako ukijulikana, .enter @ma hukuruhusu kuingia 間. Tafuta ulimwengu, ingia ndani yake, na shiriki ukiwa hapo.
+help-ma-entry-steps = Anzisha IPFS Desktop na ma, kisha endesha .ma. Chapisha kwa .my.identity!publish @ma, tafuta ulimwengu, na ingia kwa .enter @ma.
+help-ma-entry-command =   .enter @ma                  ingia 間 kupitia @ma runtime
+help-ma-entry-leave =   .leave                       ondoka kwenye chumba; utambulisho wako unabaki hai na unabaki umeingia
+help-ma-entry-url =   ?enter=<runtime>             ingia baada ya login kutoka URL iliyoshirikiwa
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Lugha zinazopatikana (weka kwa .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = profaili haikupatikana: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
 help-url-msg =   ?msg=<did>                   jaza mapema: @<did>!msg (ujumbe wa kawaida)
 help-url-say =   ?say=<did>                   jaza mapema: @<did>!say (kitenzi say)
 help-url-emote =   ?emote=<did>                 jaza mapema: @<did>!emote (kitenzi emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                chapisha utambulisho wako kwenye mtandao

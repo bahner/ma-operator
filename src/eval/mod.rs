@@ -237,11 +237,11 @@ fn eval_control(
                 }
             }
         }
-        ".use" => {
-            eval_use(args, state, config);
-        }
         ".enter" => {
             eval_enter(args, state, config);
+        }
+        ".leave" => {
+            eval_leave(args, state, config);
         }
         ".edit" => {
             if let Err(e) = dispatch_meta(
@@ -343,6 +343,20 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             });
         });
     });
+}
+
+fn eval_leave(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    if !args.is_empty() {
+        state.push_error("usage: .leave".to_string());
+        return;
+    }
+    clear_focus(state, config);
+}
+
+fn clear_focus(state: &AppState, config: RwSignal<EgoConfig>) {
+    config.update(|c| c.set(".my.ctx.use", "false"));
+    state.focus_actor.set(None);
+    state.push_system(t("msg-focus-cleared"));
 }
 
 async fn resolve_enter_root(runtime: &str) -> Result<String, String> {
@@ -694,105 +708,4 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         prompt,
         default_verb: sticky_verb,
     }));
-}
-
-fn eval_use(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
-    let cfg = config.get_untracked();
-
-    // Bare `.use` → toggle
-    if args.is_empty() {
-        if state.focus_actor.get_untracked().is_some() {
-            // Focus is active → deactivate, keep .my.ctx.runtime..room intact
-            config.update(|c| c.set(".my.ctx.use", "false"));
-            state.focus_actor.set(None);
-            state.push_system(t("msg-focus-cleared"));
-        } else if cfg.get(".my.ctx.runtime").is_some() {
-            // Focus is off but context is stored → re-activate
-            config.update(|c| c.set(".my.ctx.use", "true"));
-            let cfg2 = config.get_untracked();
-            apply_ctx_focus(&cfg2, state);
-            if let Some(ref focus) = state.focus_actor.get_untracked() {
-                state.push_system(tf(
-                    "msg-focusing",
-                    &[("did", &focus.target), ("prompt", &focus.prompt)],
-                ));
-            }
-        } else {
-            state.push_system(t("msg-focus-cleared"));
-        }
-        return;
-    }
-
-    // `.use <target> [as @alias]`
-    // Accepts: "alice@sky#room:say", "@sky#room:say", "@sky#room", "did:ma:…#room"
-    let raw = args[0].as_str();
-
-    // Strip optional avatar prefix: "alice@sky#room" → avatar="alice", rest="@sky#room"
-    let (avatar, actor_str) = {
-        let at = raw.find('@').unwrap_or(raw.len());
-        let pre = &raw[..at];
-        if !pre.is_empty()
-            && pre
-                .chars()
-                .all(|c| c.is_alphanumeric() || c == '-' || c == '_')
-        {
-            (pre.to_string(), raw[at..].to_string())
-        } else {
-            (String::new(), raw.to_string())
-        }
-    };
-
-    // Prefix @  if needed, then let parse() do all alias resolution and verb extraction.
-    let actor_input = if actor_str.starts_with('@') || actor_str.starts_with("did:") {
-        actor_str.clone()
-    } else {
-        format!("@{actor_str}")
-    };
-
-    let (resolved, sticky_verb) = match crate::parser::command::parse(&actor_input, &cfg) {
-        Ok(crate::parser::command::Command::ActorMessage { target, verb, .. }) => (target, verb),
-        Ok(_) => {
-            state.push_error(format!("not an actor address: {actor_str}"));
-            return;
-        }
-        Err(e) => {
-            state.push_error(e);
-            return;
-        }
-    };
-
-    let (did_part, frag) = resolved.split_once('#').unwrap_or((resolved.as_str(), ""));
-
-    config.update(|c| {
-        c.set(".my.ctx.runtime", did_part);
-        c.set(".my.ctx.use", "true");
-        c.delete(".my.ctx.root");
-        if frag.is_empty() {
-            c.delete(".my.ctx.room");
-        } else {
-            c.set(".my.ctx.room", format!("#{frag}"));
-        }
-        match sticky_verb.as_deref() {
-            Some(v) => c.set(".my.ctx.verb", v),
-            None => {
-                c.delete(".my.ctx.verb");
-            }
-        }
-        match avatar.as_str() {
-            "" => {
-                c.delete(".my.ctx.alias");
-            }
-            a => c.set(".my.ctx.alias", a),
-        }
-    });
-
-    // apply_ctx_focus builds the full prompt from .my.ctx.* — no duplicate logic.
-    let cfg2 = config.get_untracked();
-    apply_ctx_focus(&cfg2, state);
-    if let Some(ref focus) = state.focus_actor.get_untracked() {
-        state.push_system(tf(
-            "msg-focusing",
-            &[("did", &resolved), ("prompt", &focus.prompt)],
-        ));
-    }
 }

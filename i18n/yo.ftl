@@ -106,6 +106,10 @@ discover-json-error = ìwárí kùnà: JSON tí kò tọ́ láti { $url }: { $e 
 discover-missing-did = ìwárí kùnà: status.json àánù `did`
 discover-invalid-did = ìwárí kùnà: `did` gbọdọ̀ bẹ̀rẹ̀ pẹ̀lú did:ma:, a rí `{ $did }`
 discover-no-endpoint = ìkìlọ̀ ìwárí: `endpoint_id` àánù nínú status.json; a tọ́jú DID nìkan
+discover-hint-endpoint-not-found = Àbá: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Àbá: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Àbá: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Àbá: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = a rí ma ní { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   à tún ṣẹ̀dá alias @ma — ṣe '.my.identity!publish @ma' láti tẹ ìdánimọ̀ rẹ jáde.
@@ -134,6 +138,16 @@ doc-publish-usage = lílo: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = lílo: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = ìtẹ jáde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = ìtẹ̀jáde kùnà [{ $code }]: { $err }
+doc-publish-error-hint = Àbá: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
 doc-ipld-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú IPLD ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
 doc-fetch-done = a gba { $cid } → { $path }.content (a kò ṣe)
@@ -147,11 +161,13 @@ path-no-verb = kò sí ìgbésẹ̀ `{ $verb }` fún { $path }
 # ── Ìrànlọ́wọ́ — àwọn àkọlé ──────────────────────────────────────────────
 help-header-zion = ── àwọn àṣẹ zion ────────────────────────────────────────────────────────
 help-header-messaging = ── fíránṣẹ́ ─────────────────────────────────────────────────────────────
-help-header-focus = ── ìpele ìfọkànsí ───────────────────────────────────────────────────────
 help-header-config = ── gírámà ìtúpalẹ̀ ẹbí ────────────────────────────────────────────────
 help-header-common = ── àwọn ọ̀nà ti ó wọ́pọ̀ ─────────────────────────────────────────────
 help-header-inbox = ── apótí ìnrọ̀lé ──────────────────────────────────────────────────────
 help-header-documents = ── àwọn ìwé ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Ìrànlọ́wọ́ — àwọn àṣẹ zion ────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  ránsẹ́ sí àpèlé pẹ̀l
 help-msg-escape =   \@name                       @name gangan (kò sí ìwádìí àpèlé)
 
 # ── Ìrànlọ́wọ́ — ìpele ìfọkànsí ────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       fọkàn sí onísẹ̀ (yípadà prompt)
-help-focus-clear =   .use                         pa ìfọkànsí rẹ
 
 # ── Ìrànlọ́wọ́ — gírámà ìtúpalẹ̀ ─────────────────────────────────────────
 help-config-get =   .path                        gba iye ewé tàbí ṣàkójọ igi-abẹ
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  tọ́jú YAML gẹ�
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    gbàwọlé àkóónú CID (kò sí ìmúṣẹ)
 help-doc-cid =   .my.doc.<name>!cid            ṣàfihàn CID tí a pamọ́
 help-doc-del =   .my.doc.<name>:              pa ìwé rẹ̀
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Yàrá 間 ni ààyè tó wà láàrin àwọn ìdánimọ̀ 間. ma ń jẹ́ kí àwọn ìdánimọ̀ wọ̀nyí rí ara wọn kí wọ́n sì bá ara wọn sọ̀rọ̀; tí a bá ti tẹ ìdánimọ̀ rẹ jáde, o lè kópa.
+help-ma-command =   .ma [port]                   so mọ́ ma runtime agbègbè rẹ, ka /status.json, kí o sì fi .ma.ctx.* pamọ́
+help-ma-publish =   .my.identity!publish @ma     tẹ iwe DID rẹ jáde kí àwọn míì lè rí keys rẹ àti endpoint rẹ
+help-ma-security = Ààlà ìgbẹ́kẹ̀lé tó ṣe kedere jù ni ma runtime tirẹ pẹ̀lú IPFS Desktop/Kubo tirẹ. Publisher tó jìn lè wúlò, ṣùgbọ́n nígbà yẹn o ń gbẹ́kẹ̀lé iṣẹ́ ẹlòmíì.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             bí a ṣe ń wọ yàrá 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Nígbà tí ìdánimọ̀ rẹ bá ti mọ̀, .enter @ma yóò jẹ́ kí o wọ 間. Wa ayé kan, wọ inú rẹ, kí o sì kópa láti ibẹ̀.
+help-ma-entry-steps = Bẹrẹ IPFS Desktop àti ma, lẹ́yìn náà ṣiṣẹ́ .ma. Tẹ jáde pẹ̀lú .my.identity!publish @ma, wa ayé kan, kí o wọ pẹ̀lú .enter @ma.
+help-ma-entry-command =   .enter @ma                  wọ 間 nípasẹ̀ @ma runtime
+help-ma-entry-leave =   .leave                       jáde kúrò nínú yàrá; ìdánimọ̀ rẹ ń ṣiṣẹ́ síbẹ̀, o sì ṣì wà logged in
+help-ma-entry-url =   ?enter=<runtime>             wọlé lẹ́yìn login láti URL tí a pín
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Àwọn èdè tó wà (.my.i18n: <code> láti ṣètò):
@@ -289,7 +323,7 @@ profiles-not-found = profaili { $name } ko ri: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    ṣii zion nipasẹ asopọ URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── awọn paramita URL ────────────────────────────────────────────────────────────
 help-url-intro =   Pin asopọ kan ti o ṣii zion pẹlu olugba tí a ti kọ siwaju:
 help-url-msg =   ?msg=<did>                   kọ siwaju: @<did>!msg (ifiranṣẹ rọrun)
 help-url-say =   ?say=<did>                   kọ siwaju: @<did>!say (ọrọ-iṣe say)
 help-url-emote =   ?emote=<did>                 kọ siwaju: @<did>!emote (ọrọ-iṣe emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Titẹ sii kọ siwaju ṣugbọn a ko firanṣẹ — tẹ Enter lati firanṣẹ.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                tẹ ìdánimọ̀ rẹ jáde sórí nẹtiwọ́kì

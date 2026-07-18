@@ -80,7 +80,7 @@ pub(crate) async fn startup_no_document(
         url.trim_end_matches('/').to_string()
     } else {
         let cfg = config.get_untracked();
-        cfg.get(".ctx.ma.url")
+        cfg.get(".ma.ctx.url")
             .unwrap_or("http://localhost:5003")
             .trim_end_matches('/')
             .to_string()
@@ -108,9 +108,9 @@ pub(crate) async fn startup_no_document(
         .unwrap_or("")
         .to_string();
     config.update(|cfg| {
-        cfg.set(".ctx.ma.did", &ma_did);
+        cfg.set(".ma.ctx.did", &ma_did);
         if !endpoint_id.is_empty() {
-            cfg.set(".ctx.ma.endpoint_id", &endpoint_id);
+            cfg.set(".ma.ctx.endpoint_id", &endpoint_id);
         }
         cfg.set(".my.aliases.ma", &ma_did);
     });
@@ -210,11 +210,11 @@ pub(crate) async fn startup_load_config(
         ],
     ));
     state.push_system(t("msg-type-help"));
-    // Apply ?ctx= URL param: auto-focus the specified target.
-    if let Some(ctx_target) = state.startup_ctx.update_untracked(|v| v.take()) {
+    // Apply ?enter= URL param: enter the specified runtime world.
+    if let Some(runtime) = state.startup_enter.update_untracked(|v| v.take()) {
         state
             .input_queue
-            .update(|q| q.push_back(format!(".use {ctx_target}")));
+            .update(|q| q.push_back(format!(".enter {runtime}")));
     }
 }
 

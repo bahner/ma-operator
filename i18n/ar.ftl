@@ -106,6 +106,10 @@ discover-json-error = فشل الاكتشاف: JSON غير صالح من { $url 
 discover-missing-did = فشل الاكتشاف: الحقل `did` مفقود في status.json
 discover-invalid-did = فشل الاكتشاف: متوقع أن يبدأ `did` بـ did:ma:، تم استلام `{ $did }`
 discover-no-endpoint = تحذير الاكتشاف: `endpoint_id` مفقود في status.json؛ تم تخزين DID فقط
+discover-hint-endpoint-not-found = تلميح: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = تلميح: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = تلميح: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = تلميح: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = تم اكتشاف ma في { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   تم إنشاء الاسم المستعار @ma — شغّل '.my.identity!publish @ma' لنشر هويتك.
@@ -134,6 +138,16 @@ doc-publish-usage = الاستخدام: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = الاستخدام: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = نشر { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = فشل النشر [{ $code }]: { $err }
+doc-publish-error-hint = تلميح: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-fetch-done = تم جلب { $cid } → { $path }.content (لم يُنفَّذ)
@@ -147,11 +161,13 @@ path-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 # ── المساعدة — العناوين ───────────────────────────────────────────────────
 help-header-zion = ── أوامر zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── المراسلة ──────────────────────────────────────────────────────────────
-help-header-focus = ── وضع التركيز ───────────────────────────────────────────────────────────
 help-header-config = ── قواعد الضبط المحلي ───────────────────────────────────────────────────
 help-header-common = ── المسارات الشائعة ──────────────────────────────────────────────────────
 help-header-inbox = ── صندوق الوارد ──────────────────────────────────────────────────────────
 help-header-documents = ── المستندات ─────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── المساعدة — أوامر zion ──────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  إرسال مع مقطع DID ص
 help-msg-escape =   \@name                       @name حرفياً (بلا بحث عن اسم مستعار)
 
 # ── المساعدة — وضع التركيز ────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       التركيز على ممثل (يغير المحث)
-help-focus-clear =   .use                         مسح التركيز
 
 # ── المساعدة — قواعد الضبط ────────────────────────────────────────────────
 help-config-get =   .path                        الحصول على قيمة ورقة أو سرد الشجرة الفرعية
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  تخزين YAML كع
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    استيراد محتوى CID (بلا تشغيل)
 help-doc-cid =   .my.doc.<name>!cid            عرض CID المخزَّن
 help-doc-del =   .my.doc.<name>:              حذف المستند
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = غرفة 間 هي المساحة بين هويات 間. يتيح ma لهذه الهويات أن تعثر على بعضها وتتواصل؛ وبعد نشر هويتك يمكنك المشاركة.
+help-ma-command =   .ma [port]                   اتصل بوقت تشغيل ma المحلي، واقرأ /status.json، واحفظ .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     انشر مستند DID الخاص بك كي يتمكن الآخرون من حل مفاتيحك ونقطة النهاية
+help-ma-security = أوضح حد للثقة هو وقت تشغيل ma الخاص بك مع IPFS Desktop/Kubo الخاص بك. قد يكون ناشر بعيد مفيدًا، لكنك عندها تعتمد على خدمة شخص آخر.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             كيفية الدخول إلى غرفة 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = بعد أن تصبح هويتك معروفة، يتيح لك .enter @ma أن تدخل إلى 間. ابحث عن عالم، وادخل إليه، وشارك من هناك.
+help-ma-entry-steps = شغّل IPFS Desktop و ma، ثم نفّذ .ma. انشر باستخدام .my.identity!publish @ma، وابحث عن عالم، وادخل باستخدام .enter @ma.
+help-ma-entry-command =   .enter @ma                  ادخل إلى 間 عبر وقت تشغيل @ma
+help-ma-entry-leave =   .leave                       غادر الغرفة؛ تبقى هويتك نشطة وتبقى مسجّل الدخول
+help-ma-entry-url =   ?enter=<runtime>             ادخل بعد تسجيل الدخول من URL مشترك
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = اللغات المتاحة (عيّن بـ .my.i18n: <code>):
@@ -289,13 +323,14 @@ profiles-not-found = الملف الشخصي غير موجود: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    فتح zion عبر رابط URL
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -304,8 +339,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -314,20 +349,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
 help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
 help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did>!msg (رسالة نصية)
 help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>!say (فعل say)
 help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>!emote (فعل emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                نشر هويتك على الشبكة

@@ -51,30 +51,16 @@ fn url_prefill() -> Option<String> {
     None
 }
 
-/// Read `?ctx=` from the URL — a DID-URL to auto-focus after login.
-/// Accepts `@alias#fragment`, `@alias`, `did:ma:…#fragment` forms.
-///
-/// The `#fragment` part of a ctx value is a URL fragment and is
-/// stripped by the browser from `location.search`.  We recover it
-/// from `location.hash` and re-attach it when the ctx value does not
-/// already contain a `#`.  This means both
-///   `?ctx=@sky%23room`   (percent-encoded, explicit)
-///   `?ctx=@sky#room`     (natural, fragment split by browser)
-/// produce the same result: `"@sky#room"`.
-fn url_ctx() -> Option<String> {
+/// Read `?enter=` from the URL — a runtime DID or alias to enter after login.
+fn url_enter() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;
-    let hash = window.location().hash().ok().unwrap_or_default();
     let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
-    let target = params.get("ctx")?.trim().to_string();
-    if target.is_empty() {
-        return None;
-    }
-    // If ctx has no '#' but the URL hash has one, the browser split it.
-    if !target.contains('#') && hash.starts_with('#') {
-        Some(format!("{target}{hash}"))
+    let val = params.get("enter")?.trim().to_string();
+    if val.is_empty() {
+        None
     } else {
-        Some(target)
+        Some(val)
     }
 }
 
@@ -89,9 +75,9 @@ pub fn App() -> impl IntoView {
     if let Some(prefill) = url_prefill() {
         state.prefill_input.set(Some(prefill));
     }
-    // ?ctx=<target> — auto-apply .use <target> after login.
-    if let Some(ctx) = url_ctx() {
-        state.startup_ctx.set(Some(ctx));
+    // ?enter=<runtime> — auto-enter the runtime world after login.
+    if let Some(runtime) = url_enter() {
+        state.startup_enter.set(Some(runtime));
     }
     // ?ma=<runtime> — runtime DID or URL, pre-fills the runtime field on the landing page.
     if let Some(ma) = url_ma() {

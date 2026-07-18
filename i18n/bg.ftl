@@ -106,6 +106,10 @@ discover-json-error = откриването е неуспешно: невали
 discover-missing-did = откриването е неуспешно: status.json липсва задължителното поле `did`
 discover-invalid-did = откриването е неуспешно: очаква се `did` да започва с did:ma:, получено `{ $did }`
 discover-no-endpoint = предупреждение при откриване: `endpoint_id` липсва в status.json; запазен само DID
+discover-hint-endpoint-not-found = Подсказка: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Подсказка: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Подсказка: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Подсказка: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma е открито на { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   псевдоним @ma създаден — изпълни '.my.identity!publish @ma' за публикуване на самоличността ти.
@@ -134,6 +138,16 @@ doc-publish-usage = употреба: .my.doc.<име>!publish <издател>
 doc-publish-ipld-usage = употреба: .my.doc.<име>!publish-ipld <издател>
 doc-publish-failed = публикуване { $path }: { $e }
 doc-publish-ipld-failed = публикуване IPLD { $path }: { $e }
+doc-publish-error-detail = публикуването е неуспешно [{ $code }]: { $err }
+doc-publish-error-hint = Подсказка: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
 doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
 doc-fetch-done = { $cid } е извлечен → { $path }.content (не е изпълнено)
@@ -147,11 +161,13 @@ path-no-verb = няма глагол `{ $verb }` за { $path }
 # ── Текст за помощ — заглавия ─────────────────────────────────────────────
 help-header-zion = ── команди на zion ────────────────────────────────────────────────────────
 help-header-messaging = ── съобщения ─────────────────────────────────────────────────────────────
-help-header-focus = ── режим на фокус ────────────────────────────────────────────────────────
 help-header-config = ── локален синтаксис за конфигурация ──────────────────────────────────
 help-header-common = ── чести пътища ──────────────────────────────────────────────────────────
 help-header-inbox = ── входяща поща ──────────────────────────────────────────────────────────
 help-header-documents = ── документи ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        този текст
@@ -167,8 +183,6 @@ help-msg-send =   @alias!msg body / @alias:verb args           изпраща с
 help-msg-fragment =   @alias#fragment:verb body  изпраща до псевдоним с явен DID фрагмент
 help-msg-escape =   \@name                       буквален @name (без търсене на псевдоним)
 
-help-focus-set =   .use @alias [as @name]       фокусира върху актьор (променя подсказката)
-help-focus-clear =   .use                         изчиства фокуса
 
 help-config-get =   .path                        получава стойността на лист или изброява поддърво
 help-config-filter =   .path value                  филтър за търсене (филтриране по стойност)
@@ -207,6 +221,26 @@ help-doc-publish-ipld =   .my.doc.<ime>!publish-ipld @pub  запазва YAML �
 help-doc-fetch =   .my.doc.<ime>!fetch /ipfs/<cid>    импортира съдържание CID (без изпълнение)
 help-doc-cid =   .my.doc.<ime>!cid            показва запазения CID
 help-doc-del =   .my.doc.<ime>:              изтрива документ
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Стаята 間 е пространството между 間 идентичности. ma помага на тези идентичности да се намират и да общуват; щом идентичността ти е публикувана, можеш да участваш.
+help-ma-command =   .ma [port]                   свържи се с локалния ma runtime, прочети /status.json и запази .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     публикувай своя DID документ, за да могат другите да открият ключовете и endpoint-а ти
+help-ma-security = Най-ясната граница на доверие е твоят собствен ma runtime със собствен IPFS Desktop/Kubo. Отдалечен publisher може да е полезен, но тогава разчиташ на чужда услуга.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             как да влезеш в стаята 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Когато идентичността ти е позната, .enter @ma ти позволява да влезеш в 間. Намери свят, влез в него и участвай оттам.
+help-ma-entry-steps = Стартирай IPFS Desktop и ma, после изпълни .ma. Публикувай с .my.identity!publish @ma, намери свят и влез с .enter @ma.
+help-ma-entry-command =   .enter @ma                  влез в 間 през runtime-а @ma
+help-ma-entry-leave =   .leave                       излез от стаята; идентичността ти остава активна и оставаш вписан
+help-ma-entry-url =   ?enter=<runtime>             влез след вход от споделен URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Налични езици (задайте с .my.i18n: <code>):
@@ -282,7 +316,7 @@ profiles-not-found = профилът не е намерен: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -296,8 +330,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -306,22 +340,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    отваряне на zion чрез URL връзка
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL параметри ────────────────────────────────────────────────────────────────
 help-url-intro =   Сподели връзка, която отваря zion с предварително попълнен получател:
 help-url-msg =   ?msg=<did>                   предварително попълва: @<did>!msg (обикновено съобщение)
 help-url-say =   ?say=<did>                   предварително попълва: @<did>!say (глагол say)
 help-url-emote =   ?emote=<did>                 предварително попълва: @<did>!emote (глагол emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Полето е предварително попълнено, но не изпратено — натисни Enter за изпращане.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                публикуване на самоличността ти в мрежата

@@ -66,7 +66,7 @@ pub struct FocusMode {
     pub avatar_actor: Option<String>,
     pub prompt: String,
     /// Optional sticky verb applied to bare-text input (e.g. "say").
-    /// Set via `.use @sky#room:say` — every plain line becomes `:say line`.
+    /// Set via `.my.ctx.verb` — every plain line becomes `:say line`.
     pub default_verb: Option<String>,
 }
 
@@ -236,9 +236,9 @@ pub struct AppState {
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
     /// Set at app startup, consumed once by InputBar after login.
     pub prefill_input: RwSignal<Option<String>>,
-    /// Context target from `?ctx=` URL param — e.g. `did:ma:xyz#room`.
-    /// Consumed once by `startup_load_config` to call `.use` after login.
-    pub startup_ctx: RwSignal<Option<String>>,
+    /// Runtime target from `?enter=` URL param — e.g. `did:ma:xyz`.
+    /// Consumed once by `startup_load_config` to call `.enter` after login.
+    pub startup_enter: RwSignal<Option<String>>,
     /// Runtime DID or HTTP URL from the landing page runtime field (`?ma=` or user entry).
     /// Consumed once by `startup_connect` to auto-connect after login.
     pub startup_ma: RwSignal<Option<String>>,
@@ -267,7 +267,7 @@ impl AppState {
             entry_counter: RwSignal::new(0),
             lang: RwSignal::new("en".to_string()),
             prefill_input: RwSignal::new(None),
-            startup_ctx: RwSignal::new(None),
+            startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
             input_queue: RwSignal::new(VecDeque::new()),
             batches: RwSignal::new(HashMap::new()),

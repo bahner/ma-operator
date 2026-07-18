@@ -106,6 +106,10 @@ discover-json-error = 검색 실패: { $url }에서 잘못된 JSON: { $e }
 discover-missing-did = 검색 실패: status.json에 `did` 필드 없음
 discover-invalid-did = 검색 실패: `did`가 did:ma:로 시작해야 했으나 `{ $did }` 받음
 discover-no-endpoint = 검색 경고: status.json에 `endpoint_id` 없음; DID만 저장됨
+discover-hint-endpoint-not-found = 힌트: 엔드포인트를 찾을 수 없습니다. `ma`가 실행 중이고 5003 포트에서 /status.json을 제공하는지 확인하세요.
+discover-hint-server-error = 힌트: 런타임이 서버 오류로 응답했습니다. `ma` 로그를 확인하고 다시 시도하세요.
+discover-hint-network = 힌트: 네트워크/연결 문제입니다. `ma`를 시작하고 localhost:5003에 접근 가능한지 확인한 뒤 브라우저에서 로컬 HTTP 접근을 허용하세요.
+discover-hint-generic = 힌트: `ma`와 IPFS Desktop이 실행 중인지 확인한 뒤 `.ma`를 다시 시도하세요.
 discover-success = { $url }에서 ma 발견됨
 discover-did-line = DID: { $did }
 discover-alias-hint =   별칭 @ma 생성됨 — '.my.identity!publish @ma'를 실행하여 신원을 게시하세요.
@@ -134,6 +138,16 @@ doc-publish-usage = 사용법: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = 사용법: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = 게시 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = 게시 실패 [{ $code }]: { $err }
+doc-publish-error-hint = 힌트: { $hint }
+doc-publish-hint-session = ego가 신원 키에 접근할 수 있도록 다시 로그인하세요
+doc-publish-hint-target = 유효한 게시자 DID 또는 bare did:ma:<ipns>로 해석되는 별칭을 사용하세요
+doc-publish-hint-network = ma 런타임과 IPFS에 접근 가능한지 확인하고 다시 시도하세요
+doc-publish-hint-resolve = 게시자의 DID 문서가 게시되어 있고 접근 가능한 엔드포인트를 포함하는지 확인하세요
+doc-publish-hint-acl = 게시자 운영자에게 ACL에서 당신의 DID를 허용해 달라고 요청하세요
+doc-publish-hint-runtime = 런타임/플러그인이 요청을 거부했습니다. 이유를 확인하고 엔티티/런타임을 수정한 뒤 다시 시도하세요
+doc-publish-hint-ipfs = 로컬 Kubo/IPFS 상태와 게시자 런타임 상태를 확인하세요
+doc-publish-hint-unknown = 자세한 원인을 런타임 로그에서 확인하고 다시 시도하세요
 doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
 doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
 doc-fetch-done = { $cid } 가져옴 → { $path }.content (실행되지 않음)
@@ -147,11 +161,13 @@ path-no-verb = { $path }에 `{ $verb }` 동사가 없음
 # ── 도움말 — 헤더 ─────────────────────────────────────────────────────────
 help-header-zion = ── zion 명령어 ───────────────────────────────────────────────────────────
 help-header-messaging = ── 메시징 ────────────────────────────────────────────────────────────────
-help-header-focus = ── 포커스 모드 ──────────────────────────────────────────────────────────
 help-header-config = ── 로컬 설정 문법 ─────────────────────────────────────────────────────
 help-header-common = ── 공통 경로 ─────────────────────────────────────────────────────────────
 help-header-inbox = ── 받은 편지함 ────────────────────────────────────────────────────────────
 help-header-documents = ── 문서 ──────────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── 도움말 — zion 명령어 ──────────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  명시적 DID 프래그먼트�
 help-msg-escape =   \@name                       리터럴 @name (별칭 조회 없음)
 
 # ── 도움말 — 포커스 모드 ──────────────────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       액터에 포커스 (프롬프트 변경)
-help-focus-clear =   .use                         포커스 해제
 
 # ── 도움말 — 설정 문법 ────────────────────────────────────────────────────
 help-config-get =   .path                        리프 값 가져오기 또는 서브트리 나열
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML을 DAG-CBOR IPL
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID 내용 가져오기 (실행 없음)
 help-doc-cid =   .my.doc.<name>!cid            저장된 CID 표시
 help-doc-del =   .my.doc.<name>:              문서 삭제
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = 間 방은 間 정체성들 사이의 공간입니다. ma는 그 정체성들이 서로를 찾고 통신할 수 있게 합니다. 당신의 정체성이 게시되면 참여할 수 있습니다.
+help-ma-command =   .ma [port]                   로컬 ma runtime에 연결하고 /status.json을 읽은 뒤 .ma.ctx.* 저장
+help-ma-publish =   .my.identity!publish @ma     다른 이들이 키와 endpoint를 확인할 수 있도록 DID 문서를 게시
+help-ma-security = 가장 분명한 신뢰 경계는 자신의 IPFS Desktop/Kubo와 함께 쓰는 자신의 ma runtime입니다. 원격 publisher가 유용할 수 있지만, 그때는 다른 사람의 서비스에 의존하게 됩니다.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             間 방에 들어가는 방법
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = 당신의 정체성이 알려지면 .enter @ma로 間에 들어갈 수 있습니다. world를 찾고 들어간 뒤, 그곳에서 참여하세요.
+help-ma-entry-steps = IPFS Desktop과 ma를 시작한 뒤 .ma를 실행하세요. .my.identity!publish @ma로 게시하고, world를 찾은 다음 .enter @ma로 들어갑니다.
+help-ma-entry-command =   .enter @ma                  @ma runtime을 통해 間에 들어가기
+help-ma-entry-leave =   .leave                       방을 떠납니다. 정체성은 계속 활성 상태이고 로그인도 유지됩니다
+help-ma-entry-url =   ?enter=<runtime>             공유 URL에서 로그인한 뒤 들어가기
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = 사용 가능한 언어 (.my.i18n: <code> 로 설정):
@@ -289,13 +323,14 @@ profiles-not-found = 프로필을 찾을 수 없음: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
 help-topic-doc =   .help/doc                    documents
 help-topic-actor =   .help/actor                  remote actor
 help-topic-url =   .help/url                    URL 링크로 zion 열기
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic
 
 # -- Help actor section
@@ -304,8 +339,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -314,20 +349,20 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)
 help-url-say =   ?say=<did>                   미리 채움: @<did>!say (say 동사)
 help-url-emote =   ?emote=<did>                 미리 채움: @<did>!emote (emote 동사)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                네트워크에 신원 게시하기

@@ -106,6 +106,10 @@ discover-json-error = bincike ya kasa: JSON mara inganci daga { $url }: { $e }
 discover-missing-did = bincike ya kasa: status.json yana rasa filin `did`
 discover-invalid-did = bincike ya kasa: `did` dole ne ya fara da did:ma:, an samu `{ $did }`
 discover-no-endpoint = gargadin bincike: `endpoint_id` yana rasa a status.json; an ajiye DID kawai
+discover-hint-endpoint-not-found = Alama: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Alama: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Alama: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Alama: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = an gano ma a { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   an ƙirƙiri laƙabi @ma — gudanar da '.my.identity!publish @ma' don wallafa ainihinku.
@@ -134,6 +138,16 @@ doc-publish-usage = amfani: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = amfani: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = wallafa { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = wallafawa ta kasa [{ $code }]: { $err }
+doc-publish-error-hint = Alama: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = an aika buƙatar ajiye ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-ipld-store-sent = an aika buƙatar ajiye IPLD ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-fetch-done = an ɗauko { $cid } → { $path }.content (ba a gudanar ba)
@@ -147,11 +161,13 @@ path-no-verb = babu aikatau `{ $verb }` don { $path }
 # ── Rubutun taimako — taken ───────────────────────────────────────────────
 help-header-zion = ── umarnan zion ───────────────────────────────────────────────────────────
 help-header-messaging = ── aikawasiku ───────────────────────────────────────────────────────────
-help-header-focus = ── yanayin mai da hankali ────────────────────────────────────────────────
 help-header-config = ── nahawun saitunan gida ─────────────────────────────────────────────────
 help-header-common = ── hanyoyin gama gari ────────────────────────────────────────────────────
 help-header-inbox = ── akwatin wasiku ────────────────────────────────────────────────────────
 help-header-documents = ── takardu ──────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Rubutun taimako — umarnan zion ────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  aika da fragment DID bayyananne
 help-msg-escape =   \@name                       @name na zahiri (babu binciken laƙabi)
 
 # ── Rubutun taimako — yanayin mai da hankali ─────────────────────────────
-help-focus-set =   .use @alias [as @name]       mai da hankali a kan ɗan wasa (canza buɗe)
-help-focus-clear =   .use                         share mai da hankali
 
 # ── Rubutun taimako — nahawun saitunan ───────────────────────────────────
 help-config-get =   .path                        sami ƙimar ganye ko jera ƙananan reshe
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  ajiye YAML a matsayi
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    shigo da abun CID (babu gudanarwa)
 help-doc-cid =   .my.doc.<name>!cid            nuna CID da aka ajiye
 help-doc-del =   .my.doc.<name>:              goge takarda
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Dakin 間 shi ne fili tsakanin shaidun 間. ma yana sa waɗannan shaidu su samu juna su kuma yi sadarwa; idan an wallafa shaidarka, za ka iya shiga.
+help-ma-command =   .ma [port]                   haɗa da ma runtime na gida, karanta /status.json, kuma ajiye .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     wallafa takardar DID ɗinka domin wasu su gano maɓallanka da endpoint ɗinka
+help-ma-security = Iyakar amincewa mafi bayyana ita ce ma runtime naka tare da IPFS Desktop/Kubo naka. Publisher na nesa na iya amfani, amma a lokacin kana dogaro da sabis na wani.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             yadda ake shiga ɗakin 間
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Idan an san shaidarka, .enter @ma zai baka damar shiga 間. Nemo duniya, shiga cikinta, ka kuma shiga daga can.
+help-ma-entry-steps = Fara IPFS Desktop da ma, sannan ka gudanar da .ma. Wallafa da .my.identity!publish @ma, nemo duniya, ka shiga da .enter @ma.
+help-ma-entry-command =   .enter @ma                  shiga 間 ta @ma runtime
+help-ma-entry-leave =   .leave                       fita daga ɗakin; shaidarka tana nan a kunne, kuma kana nan a shiga
+help-ma-entry-url =   ?enter=<runtime>             shiga bayan login daga URL da aka raba
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Yarukan da ake da su (saita ta .my.i18n: <code>):
@@ -289,7 +323,7 @@ profiles-not-found = ba a samu bayanan martaba ba: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    buɗe zion ta hanyar URL link
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── sharuɗɗan URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   Raba hanyar haɗin zion tare da mai karɓa da aka shigar da shi a gaba:
 help-url-msg =   ?msg=<did>                   cika a gaba: @<did>!msg (saƙon rubutu)
 help-url-say =   ?say=<did>                   cika a gaba: @<did>!say (fi'ili say)
 help-url-emote =   ?emote=<did>                 cika a gaba: @<did>!emote (fi'ili emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don aika.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                wallafa ainihinku a cikin hanyar sadarwa

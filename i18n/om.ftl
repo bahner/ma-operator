@@ -106,6 +106,10 @@ discover-json-error = argannoon hin milkaa'ne: JSON dogongoraa { $url }: { $e } 
 discover-missing-did = argannoon hin milkaa'ne: status.json dirree `did` hin qabu
 discover-invalid-did = argannoon hin milkaa'ne: `did` did:ma: irraa eegaluu qaba, `{ $did }` argame
 discover-no-endpoint = gorsa argannoo: `endpoint_id` status.json keessa hin jiru; DID qofa kuufame
+discover-hint-endpoint-not-found = Yaadachiisa: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Yaadachiisa: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Yaadachiisa: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Yaadachiisa: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma { $url } irratti argame
 discover-did-line = DID: { $did }
 discover-alias-hint =   maqaa gorsaa @ma uumame — eenyummaa kee maxxansuuf '.my.identity!publish @ma' oofaa.
@@ -134,6 +138,16 @@ doc-publish-usage = fayyadamuu: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = fayyadamuu: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = maxxansuu { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
+doc-publish-error-detail = maxxansiisu hin milkoofne [{ $code }]: { $err }
+doc-publish-error-hint = Yaadachiisa: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-fetch-done = { $cid } fiddame → { $path }.content (raawwatamuu dide)
@@ -147,11 +161,13 @@ path-no-verb = gochan `{ $verb }` { $path }f hin jiru
 # ── Gargaarsa — mataa dureelee ────────────────────────────────────────────
 help-header-zion = ── ajajoota zion ──────────────────────────────────────────────────────────
 help-header-messaging = ── ergaa erguuf ──────────────────────────────────────────────────────────
-help-header-focus = ── moodii xiyyeeffannoo ─────────────────────────────────────────────────
 help-header-config = ── giiraama qindaa'ina naannoo ──────────────────────────────────────────
 help-header-common = ── karaalee waliigalaa ────────────────────────────────────────────────────
 help-header-inbox = ── fuudhaa ergaa ───────────────────────────────────────────────────────────
 help-header-documents = ── galmeelee ────────────────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Gargaarsa — ajajoota zion ─────────────────────────────────────────────
@@ -170,8 +186,6 @@ help-msg-fragment =   @alias#fragment:verb body  fragment DID ifaa wajjin ergi
 help-msg-escape =   \@name                       @name dhugaa (moggaasni hin barbaadamu)
 
 # ── Gargaarsa — moodii xiyyeeffannoo ─────────────────────────────────────
-help-focus-set =   .use @alias [as @name]       taphataan xiyyeeffadhu (prompt jijjiira)
-help-focus-clear =   .use                         xiyyeeffannoo qulqulleessi
 
 # ── Gargaarsa — giiraama qindaa'inaa ─────────────────────────────────────
 help-config-get =   .path                        gatii dahoo argadhu ykn imitee tarreessi
@@ -214,6 +228,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML huccuu IPLD DAG
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    qabiyyee CID galchi (raawwachuu hin dandaa'u)
 help-doc-cid =   .my.doc.<name>!cid            CID kuufame agarsiisi
 help-doc-del =   .my.doc.<name>:              galmee haaqami
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Kutaan 間 iddoo eenyummaa 間 gidduu jiru dha. ma eenyummaa kana akka wal arganii fi waliif qunnamaniif gargaara; eenyummaan kee erga maxxanfamee booda hirmaachuu dandeessa.
+help-ma-command =   .ma [port]                   ma runtime naannoo kee waliin wal qunnami, /status.json dubbisi, .ma.ctx.* immoo kuusi
+help-ma-publish =   .my.identity!publish @ma     galmee DID kee maxxansi, namoonni biroon furtuu fi endpoint kee akka argatan
+help-ma-security = Daangaan amantaa ifa ta’e ma runtime kee mataa keetii fi IPFS Desktop/Kubo kee mataa keetii dha. Publisher fagoo ni fayyada ta’a, garuu yeroo sana tajaajila nama biraa irratti hirkata.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             akkamitti kutaa 間 seenuu akka danda’amu
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = Eenyummaan kee yoo beekame, .enter @ma gara 間 akka seentu si taasisa. Addunyaa barbaadi, itti seeni, achirraa hirmaadhu.
+help-ma-entry-steps = IPFS Desktop fi ma jalqabi, achiin .ma hojjedhu. .my.identity!publish @ma tiin maxxansi, addunyaa barbaadi, .enter @ma tiin seeni.
+help-ma-entry-command =   .enter @ma                  @ma runtime keessa gara 間 seeni
+help-ma-entry-leave =   .leave                       kutaa keessaa ba’i; eenyummaan kee hojiirra jiraata, ati immoo logged in taatee turta
+help-ma-entry-url =   ?enter=<runtime>             URL qoodame irraa login booda seeni
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Afaanota jiran (.my.i18n: <code> tiin qabi):
@@ -289,7 +323,7 @@ profiles-not-found = profaayilii hin argamne: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -303,8 +337,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -313,22 +347,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion URL link tiin banuu
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── ulaagalee URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Fuullee itti sirraa'e wajjin zion banu link qoodi:
 help-url-msg =   ?msg=<did>                   dursee guuti: @<did>!msg (ergaa salphaa)
 help-url-say =   ?say=<did>                   dursee guuti: @<did>!say (jechi say)
 help-url-emote =   ?emote=<did>                 dursee guuti: @<did>!emote (jechi emote)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Galchi guutameera garuu hin ergamne — erguu Enter tuqi.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                eenyummaa kee networki irratti maxxansi

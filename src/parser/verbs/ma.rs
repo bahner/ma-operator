@@ -57,7 +57,7 @@ fn ma_base_from_port(port: Option<u16>, cfg: &EgoConfig) -> String {
     if let Some(p) = port {
         return format!("http://localhost:{p}");
     }
-    cfg.get(".ctx.ma.url")
+    cfg.get(".ma.ctx.url")
         .unwrap_or(MA_URL)
         .trim_end_matches('/')
         .to_string()
@@ -75,7 +75,7 @@ fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, 
                 return;
             }
         }
-        // Discover — populate .ctx.ma.* and .my.aliases.ma.
+        // Discover — populate .ma.ctx.* and .my.aliases.ma.
         let did = match rediscover_ma(&ma_base, config).await {
             Ok(did) => {
                 crate::views::landing::save_last_runtime(&ma_base);
@@ -251,39 +251,43 @@ pub(super) async fn rediscover_ma(
         .unwrap_or_default();
 
     config.update(|cfg| {
-        cfg.set(".ctx.ma.url", ma_base.trim_end_matches('/'));
-        cfg.set(".ctx.ma.did", &did);
+        cfg.set(".ma.ctx.url", ma_base.trim_end_matches('/'));
+        cfg.set(".ma.ctx.did", &did);
         if !endpoint_id.is_empty() {
-            cfg.set(".ctx.ma.endpoint_id", &endpoint_id);
+            cfg.set(".ma.ctx.endpoint_id", &endpoint_id);
         }
         if !ipns.is_empty() {
-            cfg.set(".ctx.ma.ipns", &ipns);
+            cfg.set(".ma.ctx.ipns", &ipns);
         }
-        cfg.set(".ctx.ma.ipfs_publisher", ipfs_publisher.to_string());
-        cfg.set(".ctx.ma.ipfs_requests", ipfs_requests.to_string());
-        cfg.set(".ctx.ma.rpc_requests", rpc_requests.to_string());
-        cfg.set(".ctx.ma.started_at", started_at.to_string());
-        cfg.set(".ctx.ma.uptime_secs", uptime_secs.to_string());
+        cfg.set(".ma.ctx.ipfs_publisher", ipfs_publisher.to_string());
+        cfg.set(".ma.ctx.ipfs_requests", ipfs_requests.to_string());
+        cfg.set(".ma.ctx.rpc_requests", rpc_requests.to_string());
+        cfg.set(".ma.ctx.started_at", started_at.to_string());
+        cfg.set(".ma.ctx.uptime_secs", uptime_secs.to_string());
         if !runtime_cid.is_empty() {
-            cfg.set(".ctx.ma.runtime", &runtime_cid);
+            cfg.set(".ma.ctx.runtime", &runtime_cid);
         }
         if !entity_names.is_empty() {
-            cfg.set(".ctx.ma.entity_names", &entity_names);
+            cfg.set(".ma.ctx.entity_names", &entity_names);
         }
         cfg.set(".my.aliases.ma", &did);
     });
     Ok(did)
 }
 
-pub(super) fn discover_fetch_hint(err: &str) -> &'static str {
+pub(super) fn discover_fetch_hint(err: &str) -> String {
+    t(discover_fetch_hint_key(err))
+}
+
+fn discover_fetch_hint_key(err: &str) -> &'static str {
     if err.contains("HTTP 404") {
-        "Hint: endpoint not found. Check that `ma` is running and exposes /status.json on port 5003."
+        "discover-hint-endpoint-not-found"
     } else if err.contains("HTTP 5") {
-        "Hint: runtime answered with server error. Check `ma` logs and retry."
+        "discover-hint-server-error"
     } else if err.contains("TypeError") || err.contains("Failed to fetch") {
-        "Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser."
+        "discover-hint-network"
     } else {
-        "Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`."
+        "discover-hint-generic"
     }
 }
 
@@ -308,4 +312,35 @@ async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {
         .map_err(|e| format!("{e:?}"))?;
     let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
     Ok(resp.status())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn discover_fetch_hint_key_classifies_http_404() {
+        assert_eq!(
+            discover_fetch_hint_key("HTTP 404"),
+            "discover-hint-endpoint-not-found"
+        );
+    }
+
+    #[test]
+    fn discover_fetch_hint_key_classifies_server_error() {
+        assert_eq!(discover_fetch_hint_key("HTTP 503"), "discover-hint-server-error");
+    }
+
+    #[test]
+    fn discover_fetch_hint_key_classifies_browser_fetch_error() {
+        assert_eq!(
+            discover_fetch_hint_key("TypeError: Failed to fetch"),
+            "discover-hint-network"
+        );
+    }
+
+    #[test]
+    fn discover_fetch_hint_key_classifies_fallback() {
+        assert_eq!(discover_fetch_hint_key("boom"), "discover-hint-generic");
+    }
 }

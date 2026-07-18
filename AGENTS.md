@@ -117,7 +117,7 @@ Makefile
 - [x] Send reply (`.my.inbox.N!reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
-- [x] `.ma!discover` — probes localhost:5003, creates `@ma` alias, persists config
+- [x] `.ma` — probes localhost:5003, creates `@ma` alias, persists config
 - [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.i18n`
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
@@ -125,7 +125,7 @@ Makefile
 
 ## Pending / not yet implemented
 
-- [ ] `.use @actor [as @alias]` focus mode — pre-fills prompt
+- [ ] `.enter @runtime` ma-space entry polish — room-aware prompt and entry affordances
 - [ ] Alias colour rendering in input field
 - [ ] `.my.doc.<name>!publish` — `application/vnd.ma.ipfs.request` protocol
 - [ ] `.my.home` — default actor context
@@ -323,26 +323,26 @@ it is needed to decrypt incoming messages.
 
 ---
 
-## `.my.ma` — local ma runtime
+## `.ma.ctx` — local ma runtime context
 
-`.my.ma` is the config subtree for the user's local `ma` daemon.
-It is set once via `:discover` and then used as the publish target.
+`.ma.ctx` is the config subtree for the user's local `ma` daemon.
+It is set by `.ma` and then used as the publish target.
 
-Leaves written by `:discover`:
+Leaves written by `.ma`:
 ```
-.ma.did          DID of the local ma runtime
-.ma.endpoint_id  iroh endpoint ID (from status.json)
+.ma.ctx.did          DID of the local ma runtime
+.ma.ctx.endpoint_id  iroh endpoint ID (from status.json)
 ```
-The alias `.my.aliases.ma` is also created, pointing to `.ma.did`.
+The alias `.my.aliases.ma` is also created, pointing to `.ma.ctx.did`.
 
 Configurable leaf:
 ```
-.ma.url          base URL of the ma daemon (default: http://localhost:5003)
+.ma.ctx.url          base URL of the ma daemon (default: http://localhost:5003)
 ```
-Set this if `ma` runs on a non-default port: `.ma.url: http://localhost:1234`
+Set this if `ma` runs on a non-default port: `.ma.ctx.url: http://localhost:1234`
 
-Verb:
-- `.ma!discover` — fetches `<.ma.url>/status.json`, reads `did`
+Command:
+- `.ma [port]` — fetches `<.ma.ctx.url>/status.json` or the given port, reads `did`
   and `endpoint_id`, writes the above leaves, creates alias `@ma`, persists config.
   Reports an actionable error if `ma` is not running.
 

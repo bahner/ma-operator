@@ -1,7 +1,7 @@
-# art-x-lyaric — Dread Talk / Iyaric (Rasta)
-# Rastafarian Iyaric dialect, also known as Dread Talk or Lyaric.
+# art-x-lyaric — Dread Talk / Lyaric (Rasta)
+# Rastafarian Lyaric dialect, also known as Dread Talk or Lyaric.
 # BCP-47 private-use tag: art-x-lyaric
-lang-name = Iyaric
+lang-name = Lyaric
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = enter Zion
@@ -108,6 +108,10 @@ discover-json-error = seeking fall: no irie JSON from { $url }: { $e }
 discover-missing-did = seeking fall: status.json missing required field `did`
 discover-invalid-did = seeking fall: expected `did` fi start with did:ma:, got `{ $did }`
 discover-no-endpoint = seeking notice: `endpoint_id` missing in status.json; kept DID only
+discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
+discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma found at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma create — run '.my.identity!publish @ma' fi publish di ites.
@@ -136,6 +140,16 @@ doc-publish-usage = livity: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = livity: .my.doc.<name>!publish-ipld <publisher>
 doc-publish-failed = manifest { $path }: { $e }
 doc-publish-ipld-failed = manifest-ipld { $path }: { $e }
+doc-publish-error-detail = publish fall [{ $code }]: { $err }
+doc-publish-error-hint = Hint: { $hint }
+doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
 doc-ipld-store-sent = IPLD store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
 doc-fetch-done = brought { $cid } → { $path }.content (not livity)
@@ -153,11 +167,13 @@ err-lang-not-found = I-language nuh find: { $lang }
 
 help-header-zion = ── zion commands — Irie ───────────────────────────────────────────────────
 help-header-messaging = ── I-messages ─────────────────────────────────────────────────────────────
-help-header-focus = ── focus inna I-sight ─────────────────────────────────────────────────────
 help-header-config = ── I-config grammar ───────────────────────────────────────────────────────
 help-header-common = ── I-paths ────────────────────────────────────────────────────────────────
 help-header-inbox = ── I-box ──────────────────────────────────────────────────────────────────
 help-header-documents = ── I-writings (.my.doc.*) ─────────────────────────────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis I-text
 help-cmd-clear =   .clear                       clear di terminal
@@ -170,8 +186,6 @@ help-msg-echo =   @alias                       echo di I-dentity DID (no message
 help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to I-dren
 help-msg-fragment =   @alias#fragment:verb body  send to I-name wid explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no I-name search)
-help-focus-set =   .use @alias [as @name]       focus pon I-dren (changes I-prompt)
-help-focus-clear =   .use                         clear I-focus
 help-config-get =   .path                        sight leaf value or list subtree
 help-config-filter =   .path value                  match query (filter by value)
 help-config-set =   .path: value                 set leaf
@@ -206,6 +220,26 @@ help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  store YAML as struct
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bring in CID content (no execution)
 help-doc-cid =   .my.doc.<name>!cid            sight stored CID
 help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
+
+# ── Help text — language ──────────────────────────────────────────────────
+help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
+help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — ma-space ──────────────────────────────────────────────────
+help-ma-intro = Di 間 room a di space between 間 identity dem. ma mek dem identity deh find one anedda an reason; when yuh identity publish, yuh can tek part.
+help-ma-command =   .ma [port]                   link to yuh local ma runtime, read /status.json, an save .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publish yuh DID document so odda can resolve yuh key dem an endpoint
+help-ma-security = Di clearest trust boundary a yuh own ma runtime wid yuh own IPFS Desktop/Kubo. A remote publisher can help, but den yuh lean pon somebody else service.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-entry-topic =   .help/ma/entry             how fi enter di 間 room
+
+# ── Help text — ma-space entry ────────────────────────────────────────────
+help-ma-entry-intro = When yuh identity known, .enter @ma mek yuh step into 間. Find a world, enter it, an tek part from deh.
+help-ma-entry-steps = Start IPFS Desktop an ma, den run .ma. Publish wid .my.identity!publish @ma, find a world, an enter wid .enter @ma.
+help-ma-entry-command =   .enter @ma                  enter 間 through di @ma runtime
+help-ma-entry-leave =   .leave                       leave di room; yuh identity stay active, an yuh remain logged in
+help-ma-entry-url =   ?enter=<runtime>             enter after login from a shared URL
 
 msg-send-failed = send nuh forward: { $e }
 msg-not-logged-in = I an I nuh log in, seen
@@ -277,7 +311,7 @@ profiles-not-found = profile nuh deh: { $name }
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
 help-topic-msg =   .help/msg                    messaging
-help-topic-focus =   .help/focus                  focus mode
+help-topic-ma =   .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config
 help-topic-inbox =   .help/inbox                  inbox
@@ -291,8 +325,8 @@ help-actor-echo =   @actor                       echo resolved DID
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity
-help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          get config value
@@ -301,22 +335,23 @@ help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = -- CID content ops
-help-actor-cat =   @actor:ent:cat               show file content inline
-help-actor-head =   @actor:ent:head N            first N lines
-help-actor-tail =   @actor:ent:tail N            last N lines
-help-actor-wc =   @actor:ent:wc               line / word / char count
-help-actor-wc-l =   @actor:ent:wc -l            line count only
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    open Zion tru a URL link
+help-topic-i18n =   .help/i18n                   language preference for your identity
 help-header-url = ── URL I-parameters ─────────────────────────────────────────────────────────────
 help-url-intro =   Share a link fi open Zion wid a I-recipient ready fill:
 help-url-msg =   ?msg=<did>                   fill up: @<did>!msg (I-message)
 help-url-say =   ?say=<did>                   fill up: @<did>!say (say verb)
 help-url-emote =   ?emote=<did>                 fill up: @<did>!emote (emote verb)
 help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
-help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di I-input fill up but not send — press Enter fi send.
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publish di ites pon di network
