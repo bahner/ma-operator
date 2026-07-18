@@ -17,7 +17,7 @@ use crate::{
     i18n::{t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
-    state::{AppState, AwaitingReply, FocusMode, OutboxTask},
+    state::{AppState, AwaitingReply, FocusMode},
     transport,
     views::editor::EditorContext,
 };
@@ -277,14 +277,16 @@ fn eval_control(
 
 fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let Some(raw) = args.first() else {
-        state.push_error("usage: .enter @runtime".to_string());
+        state.push_error("usage: .enter [nick]@runtime[#room]".to_string());
         return;
     };
     let cfg = config.get_untracked();
-    let actor_input = if raw.starts_with('@') || raw.starts_with("did:") {
-        raw.clone()
-    } else {
-        format!("@{raw}")
+    let (requested_nick, actor_input) = match parse_enter_target(raw) {
+        Ok(parsed) => parsed,
+        Err(e) => {
+            state.push_error(e);
+            return;
+        }
     };
     let resolved = match crate::parser::command::parse(&actor_input, &cfg) {
         Ok(crate::parser::command::Command::ActorMessage { target, .. }) => target,
@@ -297,52 +299,120 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             return;
         }
     };
-    let runtime = resolved
-        .split_once('#')
-        .map_or(resolved.as_str(), |(did, _)| did)
-        .to_string();
-    config.update(|c| {
-        c.set(".my.ctx.runtime", &runtime);
-        c.set(".my.ctx.use", "true");
-        c.delete(".my.ctx.avatar");
-        c.delete(".my.ctx.room");
-        c.delete(".my.ctx.verb");
-    });
+    if resolved.ends_with('#') {
+        state.push_error("usage: .enter [nick]@runtime[#room]".to_string());
+        return;
+    }
+    let target_actor = resolved.clone();
 
     let state2 = state.clone();
-    let config2 = config;
     let entered = raw.clone();
     spawn_local(async move {
-        let root = match resolve_enter_root(&runtime).await {
-            Ok(root) => root,
+        let cmd_id = state2.push_command(format!(".enter {entered}"));
+        let (entry_runtime, room_actor) = target_actor
+            .split_once('#')
+            .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
+            .unwrap_or_else(|| (target_actor.clone(), None));
+        let entry_runtime = entry_runtime.to_string();
+        let root = resolve_enter_root(&entry_runtime)
+            .await
+            .unwrap_or_else(|_| format!("{entry_runtime}#root"));
+        let enter_args = match (room_actor.as_deref(), requested_nick.as_deref()) {
+            (Some(room), Some(nick)) => vec![room, nick],
+            (Some(room), None) => vec![room],
+            (None, Some(nick)) => vec!["", nick],
+            (None, None) => Vec::new(),
+        };
+        match transport::send_rpc(&root, "enter", &enter_args).await {
+            Ok(_) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
             Err(e) => {
-                state2.push_error(e);
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                state2.push_error(tf("msg-send-failed", &[("e", &e)]));
                 return;
             }
-        };
-        config2.update(|c| c.set(".my.ctx.root", &root));
-        let cfg = config2.get_untracked();
-        apply_ctx_focus(&cfg, &state2);
-        if let Some(sess) = state2.session.get_untracked() {
-            let uname = sess.username.clone();
-            let cfg_persist = cfg.clone();
-            spawn_local(async move {
-                if let Err(e) = persist_config(&uname, &cfg_persist).await {
-                    web_sys::console::error_1(&format!("enter persist: {e}").into());
-                }
-            });
         }
-
-        let cmd_id = state2.push_command(format!(".enter {entered}"));
-        state2.outbox_queue.update(|q| {
-            q.push_back(OutboxTask::ActorArgs {
-                target: root,
-                verb: "enter".to_string(),
-                args: Vec::new(),
-                cmd_id,
-            });
-        });
     });
+}
+
+fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
+    if raw.starts_with('@') {
+        if raw.len() == 1 {
+            return Err("usage: .enter [nick]@runtime[#room]".to_string());
+        }
+        if raw[1..].contains('@') {
+            return Err("usage: .enter [nick]@runtime[#room]".to_string());
+        }
+        return Ok((None, raw.to_string()));
+    }
+    let Some((nick, runtime)) = raw.split_once('@') else {
+        return Err("usage: .enter [nick]@runtime[#room]".to_string());
+    };
+    let nick = nick.trim();
+    let runtime = runtime.trim();
+    if nick.is_empty() || runtime.is_empty() {
+        return Err("usage: .enter [nick]@runtime[#room]".to_string());
+    }
+    let actor_input = format!("@{runtime}");
+    if nick.is_empty() {
+        Ok((None, actor_input))
+    } else {
+        Ok((Some(nick.to_string()), actor_input))
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::parse_enter_target;
+
+    #[test]
+    fn parse_enter_target_accepts_nick_at_alias() {
+        assert_eq!(
+            parse_enter_target("Armageddon@sky"),
+            Ok((Some("Armageddon".to_string()), "@sky".to_string()))
+        );
+    }
+
+    #[test]
+    fn parse_enter_target_accepts_explicit_at_alias_and_did_forms() {
+        assert_eq!(parse_enter_target("@sky"), Ok((None, "@sky".to_string())));
+        assert_eq!(
+            parse_enter_target("@sky#room"),
+            Ok((None, "@sky#room".to_string()))
+        );
+        assert_eq!(
+            parse_enter_target("@did:ma:k51example"),
+            Ok((None, "@did:ma:k51example".to_string()))
+        );
+    }
+
+    #[test]
+    fn parse_enter_target_rejects_unprefixed_runtime_forms() {
+        assert!(parse_enter_target("sky").is_err());
+        assert!(parse_enter_target("did:ma:k51example").is_err());
+    }
+
+    #[test]
+    fn parse_enter_target_rejects_at_prefixed_nick_form() {
+        assert!(parse_enter_target("@Armageddon@sky").is_err());
+    }
+
+    #[test]
+    fn parse_enter_target_accepts_nick_at_did() {
+        assert_eq!(
+            parse_enter_target("Armageddon@did:ma:k51example"),
+            Ok((
+                Some("Armageddon".to_string()),
+                "@did:ma:k51example".to_string()
+            ))
+        );
+        assert_eq!(
+            parse_enter_target("Armageddon@did:ma:k51example#room"),
+            Ok((
+                Some("Armageddon".to_string()),
+                "@did:ma:k51example#room".to_string()
+            ))
+        );
+    }
 }
 
 fn eval_leave(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
@@ -671,33 +741,25 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         return;
     };
     let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
-    let avatar = cfg.get(".my.ctx.alias").unwrap_or("").to_string();
-    let sticky_verb = cfg.get(".my.ctx.verb").map(|s| s.to_string());
+    let avatar = cfg
+        .get(".my.ctx.nick")
+        .or_else(|| cfg.get(".my.ctx.alias"))
+        .unwrap_or("")
+        .to_string();
     let target = if room.is_empty() {
         runtime.clone()
     } else {
         format!("{runtime}{room}") // room already carries '#' prefix
     };
     let base_prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
-        if room.is_empty() {
-            format!("@{alias}")
-        } else {
-            format!("@{alias}{room}")
-        }
-    } else if let Some(alias) = cfg.reverse_alias(&target) {
         format!("@{alias}")
     } else {
-        target.clone()
+        runtime.clone()
     };
-    // Prepend avatar and append sticky verb to prompt
-    let prompt_with_avatar = if avatar.is_empty() {
+    let prompt = if avatar.is_empty() {
         base_prompt
     } else {
         format!("{avatar}{base_prompt}")
-    };
-    let prompt = match &sticky_verb {
-        Some(v) => format!("{prompt_with_avatar}:{v}"),
-        None => prompt_with_avatar,
     };
     state.focus_actor.set(Some(FocusMode {
         runtime,
@@ -706,6 +768,5 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
         avatar_actor: cfg.get(".my.ctx.avatar").map(|s| s.to_string()),
         prompt,
-        default_verb: sticky_verb,
     }));
 }

@@ -263,10 +263,7 @@ pub(super) fn lang_for_content_type(ct: &str) -> &'static str {
 pub(super) fn format_publish_error(err: &str) -> String {
     let (code, hint_key) = classify_publish_error(err);
     let hint = t(hint_key);
-    let detail = tf(
-        "doc-publish-error-detail",
-        &[("code", code), ("err", err)],
-    );
+    let detail = tf("doc-publish-error-detail", &[("code", code), ("err", err)]);
     let hint_line = tf("doc-publish-error-hint", &[("hint", &hint)]);
     format!("{detail}\n{hint_line}")
 }

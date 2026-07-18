@@ -65,9 +65,6 @@ pub struct FocusMode {
     pub root_actor: Option<String>,
     pub avatar_actor: Option<String>,
     pub prompt: String,
-    /// Optional sticky verb applied to bare-text input (e.g. "say").
-    /// Set via `.my.ctx.verb` — every plain line becomes `:say line`.
-    pub default_verb: Option<String>,
 }
 
 // ── Pending request kinds ─────────────────────────────────────────────────

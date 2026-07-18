@@ -219,6 +219,7 @@ fn handle_ctx_receipt(
     };
     let root = ctx_value(pairs, ":root").map(str::to_string);
     let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
+    let nick = ctx_value(pairs, ":nick").map(str::to_string);
     let room = ctx_value(pairs, ":room").map(str::to_string);
     let text = ctx_value(pairs, ":text").map(str::to_string);
 
@@ -231,6 +232,15 @@ fn handle_ctx_receipt(
                 c.delete(".my.ctx.avatar");
             } else {
                 c.set(".my.ctx.avatar", avatar);
+            }
+        }
+        if let Some(nick) = &nick {
+            if nick.is_empty() {
+                c.delete(".my.ctx.nick");
+                c.delete(".my.ctx.alias");
+            } else {
+                c.set(".my.ctx.nick", nick);
+                c.delete(".my.ctx.alias");
             }
         }
         if let Some(room) = &room {

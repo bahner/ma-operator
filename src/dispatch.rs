@@ -534,8 +534,7 @@ fn dispatch_eval_line(
 
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
-        let t = &f.target;
-        if is_focus_shorthand_command(line) && f.default_verb.is_none() {
+        if is_focus_shorthand_command(line) {
             let parsed = match parse_focus_shorthand_command(line) {
                 Ok(parsed) => parsed,
                 Err(e) => {
@@ -543,10 +542,9 @@ fn dispatch_eval_line(
                     return None;
                 }
             };
-            let target = f.avatar_actor.as_deref().or(f.root_actor.as_deref());
-            match target {
-                Some(actor) => {
-                    match enqueue_focus_command(actor, line, parsed.verb, parsed.args, state) {
+            let target = f.avatar_actor.as_deref().unwrap_or(&f.target);
+            if target.contains('#') {
+                match enqueue_focus_command(target, line, parsed.verb, parsed.args, state) {
                         Ok(cmd_id) => {
                             if let Some(bid) = batch_id {
                                 state.cmd_to_batch.update(|m| {
@@ -560,8 +558,7 @@ fn dispatch_eval_line(
                             return None;
                         }
                     }
-                }
-                None => {
+            } else {
                     let runtime = f.runtime.clone();
                     let line = line.to_string();
                     let state2 = state.clone();
@@ -575,20 +572,6 @@ fn dispatch_eval_line(
                         }
                     });
                     return None;
-                }
-            }
-        } else if line.starts_with(':') {
-            // :verb body → target:verb body (overrides sticky verb)
-            format!("{t}{line}")
-        } else if !line.starts_with('@')
-            && !line.starts_with('.')
-            && !line.starts_with('/')
-            && !line.starts_with('(')
-        {
-            // bare text → use sticky verb if set, else send as body
-            match &f.default_verb {
-                Some(v) => format!("{t}:{v} {line}"),
-                None => format!("{t} {line}"),
             }
         } else {
             line.to_string()

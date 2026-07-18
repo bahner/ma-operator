@@ -328,7 +328,10 @@ mod tests {
 
     #[test]
     fn discover_fetch_hint_key_classifies_server_error() {
-        assert_eq!(discover_fetch_hint_key("HTTP 503"), "discover-hint-server-error");
+        assert_eq!(
+            discover_fetch_hint_key("HTTP 503"),
+            "discover-hint-server-error"
+        );
     }
 
     #[test]

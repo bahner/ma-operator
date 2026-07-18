@@ -132,7 +132,10 @@ fn parse_dot(input: &str) -> Result<Command, String> {
 // ── Local path CRUD (`.my`, `.ma.ctx`, `/ipfs`, `/ipns`, `/ipld`) ────────────
 
 fn is_local_dot_root(input: &str) -> bool {
-    input == ".my" || input.starts_with(".my.") || input == ".ma.ctx" || input.starts_with(".ma.ctx.")
+    input == ".my"
+        || input.starts_with(".my.")
+        || input == ".ma.ctx"
+        || input.starts_with(".ma.ctx.")
 }
 
 fn parse_local(input: &str) -> Result<Command, String> {

@@ -373,8 +373,7 @@ impl EgoConfig {
             .tree
             .iter()
             .filter_map(|(key, value)| {
-                Self::migrate_ma_ctx_key(key)
-                    .map(|migrated| (key.clone(), migrated, value.clone()))
+                Self::migrate_ma_ctx_key(key).map(|migrated| (key.clone(), migrated, value.clone()))
             })
             .collect();
         for (old_key, migrated, value) in moved {
@@ -460,8 +459,9 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
             cfg.migrate_slash_keys();
-            cfg.tree
-                .retain(|k, _| k.starts_with(".my.") || k == ".ma.ctx" || k.starts_with(".ma.ctx."));
+            cfg.tree.retain(|k, _| {
+                k.starts_with(".my.") || k == ".ma.ctx" || k.starts_with(".ma.ctx.")
+            });
             cfg.set_defaults();
             Ok(cfg)
         }
