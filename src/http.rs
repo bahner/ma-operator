@@ -59,7 +59,6 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 /// (user-facing path syntax). `/ipld/` is currently routed identically to
 /// `/ipfs/` (aliased, no separate DAG-CBOR handling yet). The gateway
 /// resolves `/ipns/` transparently — no client-side resolution needed.
-#[allow(dead_code)]
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
     fetch_url_bytes(&format!("{LOCAL_GATEWAY_URL}{arg}")).await

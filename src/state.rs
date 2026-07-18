@@ -559,7 +559,7 @@ impl AppState {
     /// Ingest a message into the EgoConfig inbox tree and return the new
     /// entry count.  The caller is responsible for persisting `config`.
     ///
-    /// Only `application/x-ma-message` messages are stored; others are ignored.
+    /// Only `application/vnd.ma.message` messages are stored; others are ignored.
     pub fn ingest_mailbox_message(
         &self,
         incoming: &crate::messages::IncomingMessage,
@@ -609,6 +609,6 @@ thread_local! {
     pub static SESSION_RESOLVER: RefCell<Option<Rc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
     /// CID of the most recently stored encrypted profile blob.
     /// Set when an ipfs-store reply arrives for a profile-publish request.
-    /// Read by `send_ipfs_publish` to embed `ma.agent` in the DID document.
+    /// Read by `send_identity_publish` to embed `ma.agent` in the DID document.
     pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
 }

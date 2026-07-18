@@ -1,6 +1,6 @@
 //! EgoConfig-backed inbox storage.
 //!
-//! Incoming `application/x-ma-message` messages are stored as flat leaves
+//! Incoming `application/vnd.ma.message` messages are stored as flat leaves
 //! in EgoConfig under `/my/inbox/<N>/*`, where N is a stable non-negative
 //! integer.  Indices may have gaps after deletion — always list first.
 

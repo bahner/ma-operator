@@ -25,6 +25,18 @@ pub fn yaml_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
         .map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
 }
 
+/// Convert any valid YAML document into DAG-CBOR bytes.
+///
+/// Use this for generic CRUD values whose schema is owned by the remote
+/// runtime path (for example `/grp/<name>` lists), not for entity/kind
+/// definitions that must remain mappings.
+pub fn yaml_any_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
+    let val: serde_json::Value =
+        serde_yaml::from_str(yaml).map_err(|e| tf("yaml-parse-error", &[("e", &e.to_string())]))?;
+    serde_ipld_dagcbor::to_vec(&val)
+        .map_err(|e| tf("dagcbor-encode-error", &[("e", &e.to_string())]))
+}
+
 /// Convert a YAML string into a `ciborium::Value`.
 ///
 /// Flow: YAML → `serde_json::Value` (via serde_yaml) → `ciborium::Value`.
@@ -64,7 +76,7 @@ pub fn extract_ok_text(bytes: &[u8]) -> Result<String, String> {
 
 /// Extract the YAML string payload from a `[":ok", yaml_text]` CBOR reply.
 ///
-/// All CRUD edit replies arrive as `application/x-ma-term` with a
+/// All CRUD edit replies arrive as `application/vnd.ma.term` with a
 /// `[":ok", yaml_string]` CBOR array body. The YAML is already a plain
 /// string — no further conversion is needed.
 pub fn extract_ok_yaml(bytes: &[u8]) -> Result<String, String> {

@@ -197,7 +197,7 @@ pub(crate) fn editor_mode_for_path(path: &str, target: &str) -> EditorMode {
     EditorMode::CrudEdit {
         target: target.to_string(),
         crud_path: path.to_string(),
-        content_type: String::new(),
+        is_link: false,
     }
 }
 

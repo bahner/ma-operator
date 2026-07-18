@@ -212,7 +212,7 @@ fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool
         return false;
     }
     // Room events are broadcast unsolicited RPC — let them through to display.
-    if incoming.content_type == "application/x-ma-room-event" {
+    if incoming.content_type == "application/vnd.ma.room.event" {
         return false;
     }
     if let Ok(ciborium::Value::Text(atom)) =

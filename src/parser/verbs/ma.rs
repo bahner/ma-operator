@@ -123,7 +123,7 @@ pub(super) async fn do_publish(
     // current iroh endpoint.  Register a reply channel and wait for the ack
     // before sending the store — this guarantees the runtime has our endpoint
     // in doc_cache when the store reply needs to be delivered.
-    let did_pub_rx = match crate::transport::send_ipfs_publish(&publisher).await {
+    let did_pub_rx = match crate::transport::send_identity_publish(&publisher).await {
         Ok(msg_id) => Some(crate::state::AwaitingReply::register(msg_id)),
         Err(_) => None,
     };

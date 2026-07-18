@@ -127,7 +127,7 @@ Makefile
 
 - [ ] `.use @actor [as @alias]` focus mode — pre-fills prompt
 - [ ] Alias colour rendering in input field
-- [ ] `.my.doc.<name>!publish` — `application/x-ma-ipfs-store` protocol
+- [ ] `.my.doc.<name>!publish` — `application/vnd.ma.ipfs.request` protocol
 - [ ] `.my.home` — default actor context
 - [ ] Scheme expressions inside sync batches (currently fire-and-forget)
 
@@ -404,7 +404,7 @@ Verbs:
 - `.my.doc.<name>!edit` — open editor with saved content (Standard mode)
 - `.my.doc.<name>!edit <cid>` — fetch CID, open for review (NOT auto-executed)
 - `.my.doc.<name>!eval` — execute saved `.content` line-by-line
-- `.my.doc.<name>!publish <publisher>` — send `application/x-ma-ipfs-store`
+- `.my.doc.<name>!publish <publisher>` — send `application/vnd.ma.ipfs.request`
 - `.my.doc.<name>!cid` — print stored CID
 - `.my.doc.<name>!fetch <cid>` — import CID content (no editor, no execution)
 - `.my.doc.<name>:` — delete entire document subtree
@@ -446,8 +446,9 @@ on nested reactive closures).
 - `send_rpc(target_did, verb, args)` — sends on `RPC_PROTOCOL_ID`.
 - `send_text_reply(target_did, body, reply_to_id)` — sends text reply with
   `reply_to` field set.
-- `send_ipfs_publish(publisher_did)` — builds and signs the DID document via
-  `bundle.build_document(ma_ext)`, then sends it to the publisher.
+- `send_identity_publish(publisher_did)` — builds and signs the DID document via
+  `bundle.build_document(ma_ext)`, then sends it to the publisher as an
+  `application/vnd.ma.identity.publish.request` message.
   The `ma:` extension always includes:
   - `ma.type = "agent"` (via `MaExtension::kind("agent")`)
   - `ma.lang = <lang>` — from `SESSION_LANG`, only if set

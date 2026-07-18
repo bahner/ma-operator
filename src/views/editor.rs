@@ -85,19 +85,21 @@ pub enum EditorMode {
         target: String,
     },
     /// Edit an arbitrary CRUD path on a remote runtime: Publish + Cancel.
-    /// Save behaviour is determined by `content_type`:
-    /// - `application/x-ma-term+dag-cbor` → serialise to DAG-CBOR, upload to
-    ///   IPFS, register CID via CRUD set at `crud_path`.
-    /// - anything else (`+cbor`, `+yaml`) → parse editor YAML, send inline
-    ///   via CRUD set at `crud_path`.
+    /// Save behaviour is determined by `is_link`:
+    /// - `true` (the GET reply value was an `/ipfs/`- or `/ipns/`-prefixed
+    ///   link) → serialise to DAG-CBOR, upload to IPFS, register the CID
+    ///   (as an `/ipfs/<cid>` reference) via CRUD set at `crud_path`.
+    /// - `false` → parse editor YAML, send inline via CRUD set at
+    ///   `crud_path`.
     CrudEdit {
         /// DID of the runtime.
         target: String,
         /// Full CRUD path, e.g. `".entities.alice.fil"` or `".config.owners"`.
         crud_path: String,
-        /// Content-type from the GET reply that opened this editor session.
-        /// Drives the save handler — no further conditions needed.
-        content_type: String,
+        /// Whether the GET reply that opened this session was a link
+        /// reference (`/ipfs/`, `/ipns/`, `/ipld/`-prefixed value). Drives
+        /// the save handler — no further conditions needed.
+        is_link: bool,
     },
     /// Edit a kind definition: Publish + Cancel.
     /// Content serialised to DAG-CBOR, uploaded to IPFS; CID registered via
@@ -358,10 +360,15 @@ pub fn EditorModal(
             // `@sky/entities/room` to `@sky/entities/restaurant`.
             let (target, entity_name) = config
                 .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
-                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
-                    EditorMode::EntityEdit { target, entity_name } => Some((target, entity_name)),
-                    _ => None,
-                })
+                .and_then(
+                    |(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                        EditorMode::EntityEdit {
+                            target,
+                            entity_name,
+                        } => Some((target, entity_name)),
+                        _ => None,
+                    },
+                )
                 .unwrap_or((target, entity_name));
             let cmd_id = ctx.cmd_id;
             show.set(None);
@@ -389,12 +396,16 @@ pub fn EditorModal(
             // Honour an edited "save to" field.
             let (target, entity_name, field) = config
                 .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
-                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
-                    EditorMode::EntityFieldEdit { target, entity_name, field } => {
-                        Some((target, entity_name, field))
-                    }
-                    _ => None,
-                })
+                .and_then(
+                    |(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                        EditorMode::EntityFieldEdit {
+                            target,
+                            entity_name,
+                            field,
+                        } => Some((target, entity_name, field)),
+                        _ => None,
+                    },
+                )
                 .unwrap_or((target, entity_name, field));
             let cmd_id = ctx.cmd_id;
             show.set(None);
@@ -434,10 +445,10 @@ pub fn EditorModal(
         }
     };
 
-    // CrudEdit — save handler; behaviour is driven entirely by `content_type`
+    // CrudEdit — save handler; behaviour is driven entirely by `is_link`
     // from the GET reply that opened this session:
-    //   application/x-ma-term+dag-cbor → IPFS publish flow
-    //   anything else (+cbor, +yaml)   → parse YAML → CBOR → inline CRUD set
+    //   is_link == true  → IPFS publish flow
+    //   is_link == false → parse YAML → CBOR → inline CRUD set
     let on_crud_save = {
         let state = state.clone();
         move |_| {
@@ -448,7 +459,7 @@ pub fn EditorModal(
             let EditorMode::CrudEdit {
                 target,
                 crud_path,
-                content_type,
+                is_link,
             } = ctx.mode
             else {
                 return;
@@ -461,12 +472,7 @@ pub fn EditorModal(
             show.set(None);
             let state2 = state.clone();
             leptos::task::spawn_local(do_crud_save(
-                text,
-                target,
-                crud_path,
-                content_type,
-                cmd_id,
-                state2,
+                text, target, crud_path, is_link, cmd_id, state2,
             ));
         }
     };
@@ -490,10 +496,15 @@ pub fn EditorModal(
             // Honour an edited "save to" field.
             let (target, protocol_id) = config
                 .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
-                .and_then(|(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
-                    EditorMode::KindEdit { target, protocol_id } => Some((target, protocol_id)),
-                    _ => None,
-                })
+                .and_then(
+                    |(t, p)| match crate::eval::actor::editor_mode_for_path(&p, &t) {
+                        EditorMode::KindEdit {
+                            target,
+                            protocol_id,
+                        } => Some((target, protocol_id)),
+                        _ => None,
+                    },
+                )
                 .unwrap_or((target, protocol_id));
             let cmd_id = ctx.cmd_id;
             show.set(None);
@@ -811,81 +822,78 @@ async fn do_crud_save(
     text: String,
     target: String,
     crud_path: String,
-    content_type: String,
+    is_link: bool,
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    match content_type.as_str() {
-        "application/x-ma-term+dag-cbor" => {
-            let cbor_bytes = match crate::messages::yaml_to_dag_cbor(&text) {
-                Ok(b) => b,
-                Err(e) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                    }
-                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                    return;
+    if is_link {
+        let cbor_bytes = match crate::messages::yaml_any_to_dag_cbor(&text) {
+            Ok(b) => b,
+            Err(e) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                 }
-            };
-            match crate::transport::send_ipfs_store(
-                &target,
-                cbor_bytes,
-                "application/vnd.ipld.dag-cbor",
-            )
-            .await
-            {
-                Ok(msg_id) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(cid, CommandStatus::Publishing);
-                    }
+                state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                return;
+            }
+        };
+        match crate::transport::send_ipfs_store(
+            &target,
+            cbor_bytes,
+            "application/vnd.ipld.dag-cbor",
+        )
+        .await
+        {
+            Ok(msg_id) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, CommandStatus::Publishing);
+                }
+                state.register_pending(
+                    msg_id,
+                    PendingKind::IpfsCrud {
+                        target_did: target.clone(),
+                        crud_path: crud_path.clone(),
+                        cmd_id,
+                    },
+                    None,
+                );
+            }
+            Err(e) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                }
+                state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+            }
+        }
+    } else {
+        // Inline data — parse YAML and send inline.
+        let cbor_val = match crate::messages::yaml_to_cbor_value(&text) {
+            Ok(v) => v,
+            Err(e) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+                }
+                state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
+                return;
+            }
+        };
+        match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
+            Ok(set_msg_id) => {
+                if let Some(original_cmd_id) = cmd_id {
                     state.register_pending(
-                        msg_id,
-                        PendingKind::IpfsCrud {
-                            target_did: target.clone(),
-                            crud_path: crud_path.clone(),
-                            cmd_id,
+                        set_msg_id,
+                        PendingKind::CrudConfirm {
+                            cmd_id: original_cmd_id,
                         },
                         None,
                     );
                 }
-                Err(e) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                    }
-                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                }
             }
-        }
-        _ => {
-            // +cbor, +yaml, or unknown — parse YAML and send inline.
-            let cbor_val = match crate::messages::yaml_to_cbor_value(&text) {
-                Ok(v) => v,
-                Err(e) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                    }
-                    state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
-                    return;
+            Err(e) => {
+                if let Some(cid) = cmd_id {
+                    state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
                 }
-            };
-            match crate::transport::send_crud_set(&target, &crud_path, cbor_val).await {
-                Ok(set_msg_id) => {
-                    if let Some(original_cmd_id) = cmd_id {
-                        state.register_pending(
-                            set_msg_id,
-                            PendingKind::CrudConfirm {
-                                cmd_id: original_cmd_id,
-                            },
-                            None,
-                        );
-                    }
-                }
-                Err(e) => {
-                    if let Some(cid) = cmd_id {
-                        state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-                    }
-                    state.push_error(e);
-                }
+                state.push_error(e);
             }
         }
     }

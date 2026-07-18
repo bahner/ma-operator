@@ -1,10 +1,10 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
-    generate_ipfs_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
+    generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
     IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
     CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT,
-    MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IPFS_REQUEST, MESSAGE_TYPE_MESSAGE,
-    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST,
+    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
 
@@ -130,7 +130,7 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
     Ok(msg_id)
 }
 
-/// Send an ephemeral chat message (`application/x-ma-chat`).
+/// Send an ephemeral chat message (`application/vnd.ma.chat`).
 /// Returns the dispatched `Message.id` on success.
 pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
@@ -148,7 +148,7 @@ pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
     Ok(msg_id)
 }
 
-/// Send an emote (`application/x-ma-emote`).
+/// Send an emote (`application/vnd.ma.emote`).
 /// Returns the dispatched `Message.id` on success.
 pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
@@ -264,9 +264,10 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
 ///
 /// Uses `SecretBundle::generate_identity()` (via `ma_core`) to rebuild the
 /// deterministic signed `Document` from the session keys, then packages it
-/// with `generate_ipfs_publish_request()` into an `application/x-ma-ipfs-request`
-/// CBOR envelope addressed to `publisher_did`.
-pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
+/// with `generate_identity_publish_request()` into an
+/// `application/vnd.ma.identity.publish.request` CBOR envelope addressed to
+/// `publisher_did`.
+pub async fn send_identity_publish(publisher_did: &str) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
 
     let ipns_key = SESSION_IPNS_KEY
@@ -320,13 +321,13 @@ pub async fn send_ipfs_publish(publisher_did: &str) -> Result<String, String> {
         .build_document(ma_ext)
         .map_err(|e| format!("build document failed: {e}"))?;
 
-    let payload = generate_ipfs_publish_request(&document, &ipns_key)
+    let payload = generate_identity_publish_request(&document, &ipns_key)
         .map_err(|e| format!("build ipfs request: {e}"))?;
 
     let msg = Message::new(
         &sender_did,
         publisher_did,
-        MESSAGE_TYPE_IPFS_REQUEST,
+        MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST,
         "application/cbor",
         &payload,
         &signing_key,
@@ -608,7 +609,7 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
     })
 }
 
-/// Decode an `application/x-ma-room-event` CBOR payload into a display string.
+/// Decode an `application/vnd.ma.room.event` CBOR payload into a display string.
 /// Format: [:verb, avatar_id, name_or_null, ...args]
 fn decode_room_event(payload: Vec<u8>) -> String {
     let val = match ciborium::de::from_reader::<ciborium::Value, _>(payload.as_slice()) {
@@ -656,7 +657,7 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (display, is_error) = match msg.message_type.as_str() {
         MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY
-            if msg.content_type == "application/x-ma-room-event" =>
+            if msg.content_type == "application/vnd.ma.room.event" =>
         {
             (decode_room_event(msg.payload()), false)
         }

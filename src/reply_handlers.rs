@@ -4,14 +4,16 @@
 //! is called from `inbox_poll::dispatch_reply` when a matching reply arrives.
 
 use leptos::prelude::*;
+use ma_core::{CONTENT_TYPE_TERM_CBOR, CONTENT_TYPE_TERM_YAML};
 use ma_zscheme::SchemeVal;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
-    http::fetch_cid_bytes,
-    i18n::{t, tf},
+    eval::is_remote_fetch_root,
+    http::fetch_path_bytes,
+    i18n::tf,
     messages::IncomingMessage,
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
@@ -132,7 +134,7 @@ pub(crate) fn handle_profile_publish_reply(
             let cfg_snap = config.get_untracked();
             leptos::task::spawn_local(async move {
                 let _ = persist_config(&username, &cfg_snap).await;
-                match crate::transport::send_ipfs_publish(&publisher_did).await {
+                match crate::transport::send_identity_publish(&publisher_did).await {
                     Ok(did_msg_id) => {
                         if let Some(id) = cmd_id {
                             // Bind the DID-doc reply to the original terminal command.
@@ -229,29 +231,31 @@ pub(crate) fn handle_edit_open_reply(
     let content_bytes = incoming.content.clone();
     let content_type = incoming.content_type.clone();
     let state2 = state.clone();
+
+    // Decode the value once so we can tell whether this GET reply is a link
+    // reference (`/ipfs/`, `/ipns/`, `/ipld/`-prefixed) that needs to be
+    // fetched and resolved, or inline data to be displayed as-is. This
+    // mirrors the SET-side convention (ma-crud-service-v1.md §3.3/§4) and
+    // replaces the old dedicated `+dag-cbor` content-type.
+    let link_path: Option<String> = match content_type.as_str() {
+        t if t == "text/yaml" || t == CONTENT_TYPE_TERM_CBOR || t == CONTENT_TYPE_TERM_YAML => None,
+        _ => match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
+            Ok(ciborium::Value::Text(s)) if is_remote_fetch_root(&s) => Some(s),
+            _ => None,
+        },
+    };
     let editor_mode = match editor_mode {
         EditorMode::CrudEdit {
             target, crud_path, ..
         } => EditorMode::CrudEdit {
             target,
             crud_path,
-            content_type: content_type.clone(),
+            is_link: link_path.is_some(),
         },
         other => other,
     };
 
     match content_type.as_str() {
-        "application/x-ma-term+dag-cbor" => {
-            open_editor_via_cid(
-                state2,
-                show_editor,
-                doc_path,
-                save_to,
-                content_bytes,
-                editor_mode,
-                cmd_id,
-            );
-        }
         "text/yaml" => {
             // Content is [":ok", yaml_string] CBOR — unwrap and open editor.
             match crate::messages::extract_ok_yaml(&content_bytes) {
@@ -267,7 +271,7 @@ pub(crate) fn handle_edit_open_reply(
                 Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
             }
         }
-        "application/x-ma-term+cbor" => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+        CONTENT_TYPE_TERM_CBOR => match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
             Ok(yaml) => open_editor(
                 show_editor,
                 doc_path,
@@ -279,7 +283,7 @@ pub(crate) fn handle_edit_open_reply(
             ),
             Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
         },
-        "application/x-ma-term+yaml" => {
+        CONTENT_TYPE_TERM_YAML => {
             open_editor_from_yaml_cbor(
                 state2,
                 show_editor,
@@ -291,18 +295,30 @@ pub(crate) fn handle_edit_open_reply(
             );
         }
         _ => {
-            // Unknown / legacy content-type — best-effort CBOR → YAML.
-            match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
-                Ok(yaml) => open_editor(
+            if let Some(path) = link_path {
+                open_editor_via_path(
+                    state2,
                     show_editor,
                     doc_path,
                     save_to,
-                    yaml,
-                    "yaml",
+                    path,
                     editor_mode,
                     cmd_id,
-                ),
-                Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
+                );
+            } else {
+                // Inline data — best-effort CBOR → YAML.
+                match crate::messages::cbor_bytes_to_yaml(&content_bytes) {
+                    Ok(yaml) => open_editor(
+                        show_editor,
+                        doc_path,
+                        save_to,
+                        yaml,
+                        "yaml",
+                        editor_mode,
+                        cmd_id,
+                    ),
+                    Err(e) => edit_error(&state2, cmd_id, "err-edit-decode-failed", &e),
+                }
             }
         }
     }
@@ -333,39 +349,29 @@ fn edit_error(state: &AppState, cmd_id: u64, i18n_key: &str, e: &str) {
     state.push_error(tf(i18n_key, &[("e", e)]));
 }
 
-/// For `application/x-ma-term+dag-cbor`: extract a CID from the payload,
-/// fetch it, convert to YAML, and open the editor.
-fn open_editor_via_cid(
+/// For a `/ipfs/`, `/ipns/`, or `/ipld/`-prefixed link value: fetch the
+/// referenced content, convert to YAML, and open the editor.
+fn open_editor_via_path(
     state: AppState,
     show_editor: RwSignal<Option<EditorContext>>,
     doc_path: String,
     save_to: String,
-    content_bytes: Vec<u8>,
+    path: String,
     mode: EditorMode,
     cmd_id: u64,
 ) {
-    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
-        Ok(ciborium::Value::Text(cid)) => {
-            spawn_local(async move {
-                match fetch_cid_bytes(&cid).await {
-                    Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
-                        Ok(yaml) => {
-                            open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id)
-                        }
-                        Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
-                    },
-                    Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
-                }
-            });
+    spawn_local(async move {
+        match fetch_path_bytes(&path).await {
+            Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
+                Ok(yaml) => open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id),
+                Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
+            },
+            Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
         }
-        Ok(_) | Err(_) => {
-            state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("err-edit-cbor")));
-            state.push_error(t("err-edit-cbor"));
-        }
-    }
+    });
 }
 
-/// For `application/x-ma-term+yaml`: unwrap the CBOR text wrapper, or fall
+/// For `application/vnd.ma.term+yaml`: unwrap the CBOR text wrapper, or fall
 /// back to raw CBOR → YAML conversion.
 fn open_editor_from_yaml_cbor(
     state: AppState,

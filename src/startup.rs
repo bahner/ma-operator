@@ -118,7 +118,7 @@ pub(crate) async fn startup_no_document(
         let cfg = config.get_untracked();
         let _ = persist_config(&sess.username, &cfg).await;
     }
-    if transport::send_ipfs_publish(&ma_did).await.is_ok() {
+    if transport::send_identity_publish(&ma_did).await.is_ok() {
         state.push_system(tf("msg-auto-published", &[("url", &ma_url)]));
     }
 }

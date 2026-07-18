@@ -265,7 +265,7 @@ fn eval_control(
 }
 
 /// Roots that are read-only remote fetches rather than local config.
-fn is_remote_fetch_root(path: &str) -> bool {
+pub(crate) fn is_remote_fetch_root(path: &str) -> bool {
     path.starts_with("/ipfs/") || path.starts_with("/ipns/") || path.starts_with("/ipld/")
 }
 
