@@ -138,7 +138,7 @@ doc-store-sent = 存储请求已发送（{ $id }）→ { $publisher }；CID 将�
 doc-ipld-store-sent = IPLD 存储请求已发送（{ $id }）→ { $publisher }；CID 将通过 RPC 回复到达
 doc-fetch-done = 已获取 { $cid } → { $path }.content（未执行）
 doc-fetch-failed = 获取 { $cid }: { $e }
-doc-fetch-usage = 用法: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = 用法: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid 未设置
 doc-no-verb = { $path } 没有 `{ $verb }` 动词
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       最后手段 — 遇到问题时
 help-cmd-history =   .history                     命令历史（连续重复项已合并）
 help-cmd-logout =   .logout                      退出登录
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── 帮助文本 — 消息传递 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       回显已解析的 DID（不发送消息）
-help-msg-send =   @alias[:verb] body           发送消息 / RPC 给角色
-help-msg-fragment =   @alias#fragment[:verb] body  发送到带显式 DID 片段的别名
+help-msg-send =   @alias!msg body / @alias:verb args           发送消息 / RPC 给角色
+help-msg-fragment =   @alias#fragment:verb body  发送到带显式 DID 片段的别名
 help-msg-escape =   \@name                       字面 @name（不查找别名）
 
 # ── 帮助文本 — 焦点模式 ───────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   惰性遍历发送者 DID �
 
 # ── 帮助文本 — 文档 ───────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           用已保存内容打开编辑器
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     获取 CID，仅供审查打开
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     获取 CID，仅供审查打开
 help-doc-eval =   .my.doc.<name>!eval           逐行执行已保存内容
 help-doc-publish =   .my.doc.<name>!publish @pub   作为原始数据存储（任意类型）
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  将 YAML 存储为结构化 DAG-CBOR IPLD 节点
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    导入 CID 内容（不执行）
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    导入 CID 内容（不执行）
 help-doc-cid =   .my.doc.<name>!cid            显示已存储的 CID
 help-doc-del =   .my.doc.<name>:              删除文档
 
@@ -301,17 +301,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -322,9 +322,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL 参数 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一个链接，打开 zion 时自动填入收件人：
-help-url-msg =   ?msg=<did>                   预填：@<did>（文本消息）
-help-url-say =   ?say=<did>                   预填：@<did>:say（say 动词）
-help-url-emote =   ?emote=<did>                 预填：@<did>:emote（emote 动词）
+help-url-msg =   ?msg=<did>                   预填：@<did>!msg（文本消息）
+help-url-say =   ?say=<did>                   预填：@<did>!say（say 动词）
+help-url-emote =   ?emote=<did>                 预填：@<did>!emote（emote 动词）
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   输入框被预填但不会发送 — 按 Enter 键发送。
 # ── Help text — publishing ────────────────────────────────────────────────

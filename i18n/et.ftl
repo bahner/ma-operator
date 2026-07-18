@@ -130,15 +130,15 @@ identity-export-failed = Eksport ebaõnnestus: { $e }
 doc-content-empty = { $path }.content on tühi
 doc-save-first = { $path }.content on tühi — salvesta esmalt
 doc-missing-name = dokumendi nimi puudub
-doc-publish-usage = kasutus: .my.doc.<nimi>:publish <avaldaja>
-doc-publish-ipld-usage = kasutus: .my.doc.<nimi>:publish-ipld <avaldaja>
+doc-publish-usage = kasutus: .my.doc.<nimi>!publish <avaldaja>
+doc-publish-ipld-usage = kasutus: .my.doc.<nimi>!publish-ipld <avaldaja>
 doc-publish-failed = avaldamine { $path }: { $e }
 doc-publish-ipld-failed = ipld-avaldamine { $path }: { $e }
 doc-store-sent = salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
 doc-ipld-store-sent = IPLD-salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
 doc-fetch-done = toodi { $cid } → { $path }.content (pole käivitatud)
 doc-fetch-failed = toomine { $cid }: { $e }
-doc-fetch-usage = kasutus: .my.doc.<nimi>:fetch <cid>
+doc-fetch-usage = kasutus: .my.doc.<nimi>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid pole seatud
 doc-no-verb = { $path } jaoks pole verbi `{ $verb }`
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       viimane abinõu — kasuta, kui 
 help-cmd-history =   .history                     käsuajalugu (järjestikused kordused ühendatud)
 help-cmd-logout =   .logout                      logi välja
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       kuva lahendatud DID (ühtegi sõnumit pole saadetud)
-help-msg-send =   @alias[:verb] body           saada sõnum / RPC osalejale
-help-msg-fragment =   @alias#fragment[:verb] body  saada aliasele selge DID-fragmendiga
+help-msg-send =   @alias!msg body / @alias:verb args           saada sõnum / RPC osalejale
+help-msg-fragment =   @alias#fragment:verb body  saada aliasele selge DID-fragmendiga
 help-msg-escape =   \@name                       sõnasõnaline @name (aliast ei otsita)
 
 help-focus-set =   .use @alias [as @name]       fokusseeri osalejale (muudab viipa)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              prindi kõik kirjed terminali
 help-inbox-filter =   .my.inbox!filter @who        näita ainult @who kirjeid
 help-inbox-traverse =   .my.inbox.N.sender.<väli>   läbi saatja DID-dokument viivitusega
 
-help-doc-edit =   .my.doc.<nimi>:edit           ava redaktor salvestatud sisuga
-help-doc-edit-cid =   .my.doc.<nimi>:edit <cid>     too CID, ava ülevaatamiseks
-help-doc-eval =   .my.doc.<nimi>:eval           käivita salvestatud sisu rida-realt
-help-doc-publish =   .my.doc.<nimi>:publish @pub   salvesta toorana blob (kõik tüübid)
-help-doc-publish-ipld =   .my.doc.<nimi>:publish-ipld @pub  salvesta YAML struktureeritud DAG-CBOR IPLD-sõlmena
-help-doc-fetch =   .my.doc.<nimi>:fetch <cid>    impordi CID-sisu (ei käivitata)
-help-doc-cid =   .my.doc.<nimi>:cid            kuva salvestatud CID
+help-doc-edit =   .my.doc.<nimi>!edit           ava redaktor salvestatud sisuga
+help-doc-edit-cid =   .my.doc.<nimi>!edit /ipfs/<cid>     too CID, ava ülevaatamiseks
+help-doc-eval =   .my.doc.<nimi>!eval           käivita salvestatud sisu rida-realt
+help-doc-publish =   .my.doc.<nimi>!publish @pub   salvesta toorana blob (kõik tüübid)
+help-doc-publish-ipld =   .my.doc.<nimi>!publish-ipld @pub  salvesta YAML struktureeritud DAG-CBOR IPLD-sõlmena
+help-doc-fetch =   .my.doc.<nimi>!fetch /ipfs/<cid>    impordi CID-sisu (ei käivitata)
+help-doc-cid =   .my.doc.<nimi>!cid            kuva salvestatud CID
 help-doc-del =   .my.doc.<nimi>:              kustuta dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zion'i avamine URL-lingi kaudu
 help-header-url = ── URL-parameetrid ──────────────────────────────────────────────────────────────
 help-url-intro =   Jaga linki, mis avab zion'i eeltäidetud saajaga:
-help-url-msg =   ?msg=<did>                   eeltäidab: @<did> (lihtteade)
-help-url-say =   ?say=<did>                   eeltäidab: @<did>:say (tegusõna say)
-help-url-emote =   ?emote=<did>                 eeltäidab: @<did>:emote (tegusõna emote)
+help-url-msg =   ?msg=<did>                   eeltäidab: @<did>!msg (lihtteade)
+help-url-say =   ?say=<did>                   eeltäidab: @<did>!say (tegusõna say)
+help-url-emote =   ?emote=<did>                 eeltäidab: @<did>!emote (tegusõna emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Sisend on eeltäidetud, kuid saatmata — vajuta Enter saatmiseks.
 # ── Help text — publishing ────────────────────────────────────────────────

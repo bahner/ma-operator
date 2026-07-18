@@ -138,7 +138,7 @@ doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publ
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-fetch-done = { $cid } ተሰብስቧል → { $path }.content (አልተሰራም)
 doc-fetch-failed = { $cid } ማምጣት: { $e }
-doc-fetch-usage = አጠቃቀም: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = አጠቃቀም: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid አልተዘጋጀም
 doc-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — �
 help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
 help-cmd-logout =   .logout                      ይውጡ
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       የተፈታ DID አሳይ (ምንም መልዕክት አልተላከም)
-help-msg-send =   @alias[:verb] body           ወደ ተዋናይ መልዕክት / RPC ይላኩ
-help-msg-fragment =   @alias#fragment[:verb] body  ግልጽ DID fragment ባለው ቅፅል ስም ይላኩ
+help-msg-send =   @alias!msg body / @alias:verb args           ወደ ተዋናይ መልዕክት / RPC ይላኩ
+help-msg-fragment =   @alias#fragment:verb body  ግልጽ DID fragment ባለው ቅፅል ስም ይላኩ
 help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም ፍለጋ የለም)
 
 # ── እርዳታ — የትኩረት ሁናቴ ──────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   የላኪ DID ሰነድ በ
 
 # ── እርዳታ — ሰነዶች ────────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           ከተቀመጠ ይዘት ጋር አርታኢ ይክፈቱ
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID ያምጡ, ለፍተሻ ብቻ ይክፈቱ
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID ያምጡ, ለፍተሻ ብቻ ይክፈቱ
 help-doc-eval =   .my.doc.<name>!eval           የተቀመጠ ይዘት ሰረዝ-ሰረዝ ያሂዱ
 help-doc-publish =   .my.doc.<name>!publish @pub   እንደ ጥሬ blob ያስቀምጡ (ማናቸውም አይነት)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML እንደ IPLD DAG-CBOR ሲስተም ያስቀምጡ
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID ይዘት ያስገቡ (አልተሰራም)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID ይዘት ያስገቡ (አልተሰራም)
 help-doc-cid =   .my.doc.<name>!cid            የተቀመጠ CID አሳይ
 help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
 help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
 help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
-help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did> (ቀላል መልዕክት)
-help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>:say (say ቃሉ)
-help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>:emote (emote ቃሉ)
+help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did>!msg (ቀላል መልዕክት)
+help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>!say (say ቃሉ)
+help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>!emote (emote ቃሉ)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
 # ── Help text — publishing ────────────────────────────────────────────────

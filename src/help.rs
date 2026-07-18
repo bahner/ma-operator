@@ -166,6 +166,8 @@ fn url() -> Vec<String> {
         t("help-url-msg"),
         t("help-url-say"),
         t("help-url-emote"),
+        t("help-url-ma"),
+        t("help-url-ctx"),
         t("help-url-example"),
         t("help-url-note"),
         t("help-footer"),

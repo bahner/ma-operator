@@ -170,7 +170,7 @@ help-cmd-history =   .history                     command history (consecutive d
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
 help-cmd-batch =   .batch                       eval scratch document (parallel, fire-and-forget)
-help-cmd-batch-sync =   .batch:begin / .batch         run commands sequentially, one per line
+help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
 
 # ── Help text — topics index ──────────────────────────────────────────────
 help-header-topics = ── topics — type .help/<topic> for details ────────────────────────────────
@@ -186,8 +186,8 @@ help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
 help-msg-echo =   @alias                       echo resolved DID (no message sent)
-help-msg-send =   @alias[:verb] body           send message / RPC to actor
-help-msg-fragment =   @alias#fragment[:verb] body  send to alias with explicit DID fragment
+help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to actor
+help-msg-fragment =   @alias#fragment:verb body  send to alias with explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no alias lookup)
 
 # ── Help text — focus mode ────────────────────────────────────────────────
@@ -239,9 +239,11 @@ help-doc-del =   .my.doc.<name>:              delete document
 # ── Help text — URL parameters ──────────────────────────────────────────────
 help-header-url = ── URL parameters ─────────────────────────────────────────────────────────
 help-url-intro =   Share a link to open zion with a pre-filled recipient:
-help-url-msg =   ?msg=<did>                   pre-fill: @<did> (plain message)
-help-url-say =   ?say=<did>                   pre-fill: @<did>:say (say verb)
-help-url-emote =   ?emote=<did>                 pre-fill: @<did>:emote (emote verb)
+help-url-msg =   ?msg=<did>                   pre-fill: @<did>!msg (plain message)
+help-url-say =   ?say=<did>                   pre-fill: @<did>!say (say verb)
+help-url-emote =   ?emote=<did>                 pre-fill: @<did>!emote (emote verb)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   The input is pre-filled but not sent — press Enter to send.
 
@@ -321,17 +323,17 @@ cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 # ── Help text — actor / remote CRUD ──────────────────────────────────────
 help-header-actor = ── remote actors ─────────────────────────────────────────────────────────
 help-actor-echo =   @actor                       echo resolved DID (no message sent)
-help-actor-text =   @actor body                  send plain text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list all entities
-help-actor-entities-get =   @actor.entities.<n>          get entity (returns CID)
-help-actor-entities-set =   @actor.entities.<n>: <cid>   set entity by CID
-help-actor-entities-edit =   @actor.entities.<n>!edit     edit entity in editor
-help-actor-entities-del =   @actor.entities.<n>:         delete entity
-help-actor-config-get =   @actor.config.<key>          get runtime config value
-help-actor-config-set =   @actor.config.<key>: val     set runtime config value
-help-actor-acl =   @actor.acl                   get ACL (returns CID)
-help-actor-acl-edit =   @actor.acl!edit              edit ACL in editor
+help-actor-entities =   @actor/entities              list all entities
+help-actor-entities-get =   @actor/entities/<n>          get entity (returns CID)
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity by CID
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity in editor
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get runtime config value
+help-actor-config-set =   @actor/config/<key>: val     set runtime config value
+help-actor-acl =   @actor/acl                   get ACL (returns CID)
+help-actor-acl-edit =   @actor/acl!edit              edit ACL in editor
 help-actor-fragment =   @actor#entity                send to entity plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to entity plugin verb
 help-header-cid-ops = ── CID content ops ───────────────────────────────────────────────────────
@@ -357,7 +359,6 @@ batch-step-timeout = batch step timed out
 batch-done = Batch done in { $secs }s — { $steps } steps
 batch-done-error = Batch finished with errors in { $secs }s — { $steps } steps
 msg-timeout = Message timed out (no reply in 60s)
-help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
 help-cmd-batch-async =   .batch:async / .batch        run commands in parallel
 
 

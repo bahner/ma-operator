@@ -138,7 +138,7 @@ doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID 
 doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-fetch-done = { $cid } getirildi → { $path }.content (çalıştırılmadı)
 doc-fetch-failed = getirme { $cid }: { $e }
-doc-fetch-usage = kullanım: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = kullanım: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid ayarlanmamış
 doc-no-verb = { $path } için `{ $verb }` fiili yok
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       son çare — sorun çıkarsa ku
 help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID'yi göster (mesaj gönderilmez)
-help-msg-send =   @alias[:verb] body           aktöre mesaj / RPC gönder
-help-msg-fragment =   @alias#fragment[:verb] body  açık DID parçasıyla gönder
+help-msg-send =   @alias!msg body / @alias:verb args           aktöre mesaj / RPC gönder
+help-msg-fragment =   @alias#fragment:verb body  açık DID parçasıyla gönder
 help-msg-escape =   \@name                       değişmez @name (takma ad araması yok)
 
 # ── Yardım — odak modu ────────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   gönderici DID belgesini te
 
 # ── Yardım — belgeler ─────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           kaydedilmiş içerikle editör aç
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID getir, yalnızca inceleme için aç
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID getir, yalnızca inceleme için aç
 help-doc-eval =   .my.doc.<name>!eval           kaydedilmiş içeriği satır satır çalıştır
 help-doc-publish =   .my.doc.<name>!publish @pub   ham veri olarak depola (herhangi tür)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML'ı DAG-CBOR IPLD düğümü olarak depola
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID içeriğini içe aktar (çalıştırma)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID içeriğini içe aktar (çalıştırma)
 help-doc-cid =   .my.doc.<name>!cid            depolanan CID'yi göster
 help-doc-del =   .my.doc.<name>:              belgeyi sil
 
@@ -301,17 +301,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -322,9 +322,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
-help-url-msg =   ?msg=<did>                   önceden doldurur: @<did> (metin mesajı)
-help-url-say =   ?say=<did>                   önceden doldurur: @<did>:say (say fiili)
-help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>:emote (emote fiili)
+help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)
+help-url-say =   ?say=<did>                   önceden doldurur: @<did>!say (say fiili)
+help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>!emote (emote fiili)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.
 # ── Help text — publishing ────────────────────────────────────────────────

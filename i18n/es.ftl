@@ -130,15 +130,15 @@ identity-export-failed = Exportación fallida: { $e }
 doc-content-empty = { $path }.content está vacío
 doc-save-first = { $path }.content está vacío — guarda primero
 doc-missing-name = falta el nombre del documento
-doc-publish-usage = uso: .my.doc.<nombre>:publish <editor>
-doc-publish-ipld-usage = uso: .my.doc.<nombre>:publish-ipld <editor>
+doc-publish-usage = uso: .my.doc.<nombre>!publish <editor>
+doc-publish-ipld-usage = uso: .my.doc.<nombre>!publish-ipld <editor>
 doc-publish-failed = publicación { $path }: { $e }
 doc-publish-ipld-failed = publicación IPLD { $path }: { $e }
 doc-store-sent = solicitud de almacenamiento enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
 doc-ipld-store-sent = solicitud de almacenamiento IPLD enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
 doc-fetch-done = { $cid } obtenido → { $path }.content (no ejecutado)
 doc-fetch-failed = obtención { $cid }: { $e }
-doc-fetch-usage = uso: .my.doc.<nombre>:fetch <cid>
+doc-fetch-usage = uso: .my.doc.<nombre>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid no está establecido
 doc-no-verb = no hay verbo `{ $verb }` para { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       último recurso — úsalo si es
 help-cmd-history =   .history                     historial de comandos (duplicados consecutivos combinados)
 help-cmd-logout =   .logout                      cerrar sesión
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       mostrar DID resuelto (no se envió ningún mensaje)
-help-msg-send =   @alias[:verb] body           enviar mensaje / RPC a actor
-help-msg-fragment =   @alias#fragment[:verb] body  enviar al alias con fragmento DID explícito
+help-msg-send =   @alias!msg body / @alias:verb args           enviar mensaje / RPC a actor
+help-msg-fragment =   @alias#fragment:verb body  enviar al alias con fragmento DID explícito
 help-msg-escape =   \@name                       @name literal (sin búsqueda de alias)
 
 help-focus-set =   .use @alias [as @name]       enfocar en actor (cambia el indicador)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              imprimir todas las entradas en
 help-inbox-filter =   .my.inbox!filter @who        mostrar solo entradas de @who
 help-inbox-traverse =   .my.inbox.N.sender.<campo>  recorrer el documento DID del remitente de forma diferida
 
-help-doc-edit =   .my.doc.<nombre>:edit           abrir editor con contenido guardado
-help-doc-edit-cid =   .my.doc.<nombre>:edit <cid>     obtener CID, abrir para revisión
-help-doc-eval =   .my.doc.<nombre>:eval           ejecutar contenido guardado línea por línea
-help-doc-publish =   .my.doc.<nombre>:publish @pub   guardar como blob sin procesar (todos los tipos)
-help-doc-publish-ipld =   .my.doc.<nombre>:publish-ipld @pub  guardar YAML como nodo IPLD DAG-CBOR estructurado
-help-doc-fetch =   .my.doc.<nombre>:fetch <cid>    importar contenido CID (sin ejecución)
-help-doc-cid =   .my.doc.<nombre>:cid            mostrar CID guardado
+help-doc-edit =   .my.doc.<nombre>!edit           abrir editor con contenido guardado
+help-doc-edit-cid =   .my.doc.<nombre>!edit /ipfs/<cid>     obtener CID, abrir para revisión
+help-doc-eval =   .my.doc.<nombre>!eval           ejecutar contenido guardado línea por línea
+help-doc-publish =   .my.doc.<nombre>!publish @pub   guardar como blob sin procesar (todos los tipos)
+help-doc-publish-ipld =   .my.doc.<nombre>!publish-ipld @pub  guardar YAML como nodo IPLD DAG-CBOR estructurado
+help-doc-fetch =   .my.doc.<nombre>!fetch /ipfs/<cid>    importar contenido CID (sin ejecución)
+help-doc-cid =   .my.doc.<nombre>!cid            mostrar CID guardado
 help-doc-del =   .my.doc.<nombre>:              eliminar documento
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -294,17 +294,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -315,9 +315,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── parámetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Comparte un enlace que abre zion con un destinatario ya rellenado:
-help-url-msg =   ?msg=<did>                   rellena: @<did> (mensaje de texto)
-help-url-say =   ?say=<did>                   rellena: @<did>:say (verbo say)
-help-url-emote =   ?emote=<did>                 rellena: @<did>:emote (verbo emote)
+help-url-msg =   ?msg=<did>                   rellena: @<did>!msg (mensaje de texto)
+help-url-say =   ?say=<did>                   rellena: @<did>!say (verbo say)
+help-url-emote =   ?emote=<did>                 rellena: @<did>!emote (verbo emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   El campo se rellena pero no se envía — pulsa Intro para enviar.
 # ── Help text — publishing ────────────────────────────────────────────────

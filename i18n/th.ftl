@@ -138,7 +138,7 @@ doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว
 doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-fetch-done = ดึง { $cid } แล้ว → { $path }.content (ยังไม่รัน)
 doc-fetch-failed = ดึง { $cid }: { $e }
-doc-fetch-usage = การใช้งาน: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = การใช้งาน: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid ยังไม่ได้ตั้งค่า
 doc-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       ทางเลือกสุ�
 help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID ที่แก้ไขแล้ว (ไม่ส่งข้อความ)
-help-msg-send =   @alias[:verb] body           ส่งข้อความ / RPC ไปยัง actor
-help-msg-fragment =   @alias#fragment[:verb] body  ส่งพร้อม DID fragment ที่ระบุ
+help-msg-send =   @alias!msg body / @alias:verb args           ส่งข้อความ / RPC ไปยัง actor
+help-msg-fragment =   @alias#fragment:verb body  ส่งพร้อม DID fragment ที่ระบุ
 help-msg-escape =   \@name                       @name ตามตัวอักษร (ไม่ค้นหานามแฝง)
 
 # ── ช่วยเหลือ — โหมดโฟกัส ───────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   ดึงเอกสาร
 
 # ── ช่วยเหลือ — เอกสาร ──────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           เปิดโปรแกรมแก้ไขด้วยเนื้อหาที่บันทึก
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     ดึง CID เปิดเพื่อตรวจสอบเท่านั้น
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     ดึง CID เปิดเพื่อตรวจสอบเท่านั้น
 help-doc-eval =   .my.doc.<name>!eval           รันเนื้อหาที่บันทึกทีละบรรทัด
 help-doc-publish =   .my.doc.<name>!publish @pub   บันทึกเป็น blob ดิบ (ทุกประเภท)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  บันทึก YAML เป็น IPLD DAG-CBOR node
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    นำเข้าเนื้อหา CID (ไม่รัน)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    นำเข้าเนื้อหา CID (ไม่รัน)
 help-doc-cid =   .my.doc.<name>!cid            แสดง CID ที่บันทึก
 help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
 help-header-url = ── พารามิเตอร์ URL ───────────────────────────────────────────────────────────────
 help-url-intro =   แบ่งปันลิงก์ที่เปิด zion พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
-help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did> (ข้อความธรรมดา)
-help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>:say (กริยา say)
-help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>:emote (กริยา emote)
+help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did>!msg (ข้อความธรรมดา)
+help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>!say (กริยา say)
+help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>!emote (กริยา emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง
 # ── Help text — publishing ────────────────────────────────────────────────

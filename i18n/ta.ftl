@@ -138,7 +138,7 @@ doc-store-sent = சேமிப்பு கோரிக்கை அனுப�
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
 doc-fetch-failed = பெறு { $cid }: { $e }
-doc-fetch-usage = பயன்பாடு: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = பயன்பாடு: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid அமைக்கப்படவில்லை
 doc-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       கடைசி வழி — �
 help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
 help-cmd-logout =   .logout                      வெளியேறவும்
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID காட்டு (செய்தி இல்லை)
-help-msg-send =   @alias[:verb] body           நடிகருக்கு செய்தி / RPC அனுப்பவும்
-help-msg-fragment =   @alias#fragment[:verb] body  வெளிப்படையான DID துண்டுடன் அனுப்பவும்
+help-msg-send =   @alias!msg body / @alias:verb args           நடிகருக்கு செய்தி / RPC அனுப்பவும்
+help-msg-fragment =   @alias#fragment:verb body  வெளிப்படையான DID துண்டுடன் அனுப்பவும்
 help-msg-escape =   \@name                       நேரடி @name (புனைப்பெயர் தேடல் இல்லை)
 
 # ── உதவி — கவன முறை ──────────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   அனுப்புவோ
 
 # ── உதவி — ஆவணங்கள் ─────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           சேமித்த உள்ளடக்கத்துடன் திருத்தி திறக்கவும்
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID பெற்று, மதிப்பாய்வுக்கு மட்டும் திறக்கவும்
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID பெற்று, மதிப்பாய்வுக்கு மட்டும் திறக்கவும்
 help-doc-eval =   .my.doc.<name>!eval           சேமித்த உள்ளடக்கத்தை வரிவரியாக இயக்கவும்
 help-doc-publish =   .my.doc.<name>!publish @pub   கச்சா blob ஆக சேமிக்கவும் (எந்த வகையும்)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ஐ DAG-CBOR IPLD முனையாக சேமிக்கவும்
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID உள்ளடக்கம் இறக்குமதி செய்யவும் (இயக்கம் இல்லை)
 help-doc-cid =   .my.doc.<name>!cid            சேமித்த CID காட்டவும்
 help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவும்
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
 help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
 help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
-help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did> (எளிய செய்தி)
-help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>:say (say வினை)
-help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>:emote (emote வினை)
+help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did>!msg (எளிய செய்தி)
+help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>!say (say வினை)
+help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>!emote (emote வினை)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
 # ── Help text — publishing ────────────────────────────────────────────────

@@ -138,7 +138,7 @@ doc-store-sent = সংরক্ষণ অনুরোধ পাঠানো হ
 doc-ipld-store-sent = IPLD সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-fetch-done = { $cid } আনা হয়েছে → { $path }.content (চালানো হয়নি)
 doc-fetch-failed = ফেচ { $cid }: { $e }
-doc-fetch-usage = ব্যবহার: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = ব্যবহার: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid সেট করা নেই
 doc-no-verb = { $path }-এর জন্য `{ $verb }` ক্রিয়া নেই
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       শেষ অবলম্বন 
 help-cmd-history =   .history                     কমান্ড ইতিহাস (ক্রমাগত পুনরাবৃত্তি একত্রিত)
 help-cmd-logout =   .logout                      লগ আউট
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── সহায়তা — বার্তাপ্রেরণ ────────────────────────────────────────────────
 help-msg-echo =   @alias                       সমাধান করা DID দেখান (কোনো বার্তা পাঠানো হয় না)
-help-msg-send =   @alias[:verb] body           অভিনেতাকে বার্তা / RPC পাঠান
-help-msg-fragment =   @alias#fragment[:verb] body  স্পষ্ট DID ফ্র্যাগমেন্ট সহ পাঠান
+help-msg-send =   @alias!msg body / @alias:verb args           অভিনেতাকে বার্তা / RPC পাঠান
+help-msg-fragment =   @alias#fragment:verb body  স্পষ্ট DID ফ্র্যাগমেন্ট সহ পাঠান
 help-msg-escape =   \@name                       আক্ষরিক @name (কোনো উপনাম অনুসন্ধান নেই)
 
 # ── সহায়তা — ফোকাস মোড ───────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   প্রেরক DID ড�
 
 # ── সহায়তা — ডকুমেন্ট ───────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           সংরক্ষিত বিষয়বস্তু দিয়ে সম্পাদক খুলুন
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID আনুন, শুধুমাত্র পর্যালোচনার জন্য খুলুন
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID আনুন, শুধুমাত্র পর্যালোচনার জন্য খুলুন
 help-doc-eval =   .my.doc.<name>!eval           সংরক্ষিত বিষয়বস্তু লাইন-বাই-লাইন চালান
 help-doc-publish =   .my.doc.<name>!publish @pub   কাঁচা blob হিসেবে সংরক্ষণ করুন
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML-কে DAG-CBOR IPLD নোড হিসেবে সংরক্ষণ করুন
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID বিষয়বস্তু আমদানি করুন (চালানো হয় না)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID বিষয়বস্তু আমদানি করুন (চালানো হয় না)
 help-doc-cid =   .my.doc.<name>!cid            সংরক্ষিত CID দেখান
 help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছুন
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    URL লিঙ্কের মাধ্যমে zion খোলা
 help-header-url = ── URL প্যারামিটার ────────────────────────────────────────────────────────────────
 help-url-intro =   পূর্বভরণকৃত প্রাপকসহ zion খোলার লিঙ্ক শেয়ার করুন:
-help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did> (সাধারণ বার্তা)
-help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>:say (say ক্রিয়া)
-help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>:emote (emote ক্রিয়া)
+help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did>!msg (সাধারণ বার্তা)
+help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>!say (say ক্রিয়া)
+help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>!emote (emote ক্রিয়া)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ইনপুট পূর্বভরণ করা হয়েছে কিন্তু পাঠানো হয়নি — পাঠাতে Enter চাপুন।
 # ── Help text — publishing ────────────────────────────────────────────────

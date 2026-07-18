@@ -130,15 +130,15 @@ identity-export-failed = Export misslyckades: { $e }
 doc-content-empty = { $path }.content är tom
 doc-save-first = { $path }.content är tom — spara först
 doc-missing-name = dokumentnamn saknas
-doc-publish-usage = användning: .my.doc.<namn>:publish <utgivare>
-doc-publish-ipld-usage = användning: .my.doc.<namn>:publish-ipld <utgivare>
+doc-publish-usage = användning: .my.doc.<namn>!publish <utgivare>
+doc-publish-ipld-usage = användning: .my.doc.<namn>!publish-ipld <utgivare>
 doc-publish-failed = publicering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicering { $path }: { $e }
 doc-store-sent = lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
 doc-fetch-done = hämtade { $cid } → { $path }.content (ej utförd)
 doc-fetch-failed = hämtning { $cid }: { $e }
-doc-fetch-usage = användning: .my.doc.<namn>:fetch <cid>
+doc-fetch-usage = användning: .my.doc.<namn>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid är inte angiven
 doc-no-verb = inget verb `{ $verb }` för { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       sista utvägen — använd om du
 help-cmd-history =   .history                     kommandohistorik (på varandra följande dubletter slås samman)
 help-cmd-logout =   .logout                      logga ut
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────
 help-msg-echo =   @alias                       visa löst DID (inget meddelande skickat)
-help-msg-send =   @alias[:verb] body           skicka meddelande / RPC till aktör
-help-msg-fragment =   @alias#fragment[:verb] body  skicka till alias med explicit DID-fragment
+help-msg-send =   @alias!msg body / @alias:verb args           skicka meddelande / RPC till aktör
+help-msg-fragment =   @alias#fragment:verb body  skicka till alias med explicit DID-fragment
 help-msg-escape =   \@name                       bokstavlig @name (ingen alias-sökning)
 
 # ── Hjälptext — fokusläge ─────────────────────────────────────────────────
@@ -206,13 +206,13 @@ help-inbox-filter =   .my.inbox!filter @who        visa bara poster från @who
 help-inbox-traverse =   .my.inbox.N.sender.<fält>   traversera avsändarens DID-dokument latent
 
 # ── Hjälptext — dokument ──────────────────────────────────────────────────
-help-doc-edit =   .my.doc.<namn>:edit           öppna redigerare med sparat innehåll
-help-doc-edit-cid =   .my.doc.<namn>:edit <cid>     hämta CID, öppna för granskning
-help-doc-eval =   .my.doc.<namn>:eval           kör sparat innehåll rad för rad
-help-doc-publish =   .my.doc.<namn>:publish @pub   lagra som rå blob (alla typer)
-help-doc-publish-ipld =   .my.doc.<namn>:publish-ipld @pub  lagra YAML som strukturerad DAG-CBOR IPLD-nod
-help-doc-fetch =   .my.doc.<namn>:fetch <cid>    importera CID-innehåll (ingen körning)
-help-doc-cid =   .my.doc.<namn>:cid            visa lagrat CID
+help-doc-edit =   .my.doc.<namn>!edit           öppna redigerare med sparat innehåll
+help-doc-edit-cid =   .my.doc.<namn>!edit /ipfs/<cid>     hämta CID, öppna för granskning
+help-doc-eval =   .my.doc.<namn>!eval           kör sparat innehåll rad för rad
+help-doc-publish =   .my.doc.<namn>!publish @pub   lagra som rå blob (alla typer)
+help-doc-publish-ipld =   .my.doc.<namn>!publish-ipld @pub  lagra YAML som strukturerad DAG-CBOR IPLD-nod
+help-doc-fetch =   .my.doc.<namn>!fetch /ipfs/<cid>    importera CID-innehåll (ingen körning)
+help-doc-cid =   .my.doc.<namn>!cid            visa lagrat CID
 help-doc-del =   .my.doc.<namn>:              radera dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -301,17 +301,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -322,9 +322,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
-help-url-msg =   ?msg=<did>                   fyller i: @<did> (textmeddelande)
-help-url-say =   ?say=<did>                   fyller i: @<did>:say (say-verb)
-help-url-emote =   ?emote=<did>                 fyller i: @<did>:emote (emote-verb)
+help-url-msg =   ?msg=<did>                   fyller i: @<did>!msg (textmeddelande)
+help-url-say =   ?say=<did>                   fyller i: @<did>!say (say-verb)
+help-url-emote =   ?emote=<did>                 fyller i: @<did>!emote (emote-verb)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Inmatningsfältet fylls i men skickas inte — tryck Enter för att skicka.
 # ── Help text — publishing ────────────────────────────────────────────────

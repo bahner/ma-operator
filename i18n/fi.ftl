@@ -130,15 +130,15 @@ identity-export-failed = Vienti epäonnistui: { $e }
 doc-content-empty = { $path }.content on tyhjä
 doc-save-first = { $path }.content on tyhjä — tallenna ensin
 doc-missing-name = asiakirjan nimi puuttuu
-doc-publish-usage = käyttö: .my.doc.<nimi>:publish <julkaisija>
-doc-publish-ipld-usage = käyttö: .my.doc.<nimi>:publish-ipld <julkaisija>
+doc-publish-usage = käyttö: .my.doc.<nimi>!publish <julkaisija>
+doc-publish-ipld-usage = käyttö: .my.doc.<nimi>!publish-ipld <julkaisija>
 doc-publish-failed = julkaisu { $path }: { $e }
 doc-publish-ipld-failed = ipld-julkaisu { $path }: { $e }
 doc-store-sent = tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
 doc-ipld-store-sent = IPLD-tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
 doc-fetch-done = haettiin { $cid } → { $path }.content (ei suoritettu)
 doc-fetch-failed = haku { $cid }: { $e }
-doc-fetch-usage = käyttö: .my.doc.<nimi>:fetch <cid>
+doc-fetch-usage = käyttö: .my.doc.<nimi>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid ei ole asetettu
 doc-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       viimeinen keino — käytä jos 
 help-cmd-history =   .history                     komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty)
 help-cmd-logout =   .logout                      kirjaudu ulos
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       näytä ratkaistu DID (ei viestiä lähetetty)
-help-msg-send =   @alias[:verb] body           lähetä viesti / RPC toimijalle
-help-msg-fragment =   @alias#fragment[:verb] body  lähetä aliakselle eksplisiittisellä DID-fragmentilla
+help-msg-send =   @alias!msg body / @alias:verb args           lähetä viesti / RPC toimijalle
+help-msg-fragment =   @alias#fragment:verb body  lähetä aliakselle eksplisiittisellä DID-fragmentilla
 help-msg-escape =   \@name                       kirjaimellinen @name (ei aliashakua)
 
 help-focus-set =   .use @alias [as @name]       kohdista toimijaan (muuttaa kehotetta)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              tulosta kaikki merkinnät term
 help-inbox-filter =   .my.inbox!filter @who        näytä vain @who:n merkinnät
 help-inbox-traverse =   .my.inbox.N.sender.<kenttä>  traversoi lähettäjän DID-asiakirja viiveellä
 
-help-doc-edit =   .my.doc.<nimi>:edit           avaa editori tallennetulla sisällöllä
-help-doc-edit-cid =   .my.doc.<nimi>:edit <cid>     hae CID, avaa tarkasteltavaksi
-help-doc-eval =   .my.doc.<nimi>:eval           suorita tallennettu sisältö rivi riviltä
-help-doc-publish =   .my.doc.<nimi>:publish @pub   tallenna raakana blobbina (kaikki tyypit)
-help-doc-publish-ipld =   .my.doc.<nimi>:publish-ipld @pub  tallenna YAML jäsennettynä DAG-CBOR IPLD-solmuna
-help-doc-fetch =   .my.doc.<nimi>:fetch <cid>    tuo CID-sisältö (ei suoritusta)
-help-doc-cid =   .my.doc.<nimi>:cid            näytä tallennettu CID
+help-doc-edit =   .my.doc.<nimi>!edit           avaa editori tallennetulla sisällöllä
+help-doc-edit-cid =   .my.doc.<nimi>!edit /ipfs/<cid>     hae CID, avaa tarkasteltavaksi
+help-doc-eval =   .my.doc.<nimi>!eval           suorita tallennettu sisältö rivi riviltä
+help-doc-publish =   .my.doc.<nimi>!publish @pub   tallenna raakana blobbina (kaikki tyypit)
+help-doc-publish-ipld =   .my.doc.<nimi>!publish-ipld @pub  tallenna YAML jäsennettynä DAG-CBOR IPLD-solmuna
+help-doc-fetch =   .my.doc.<nimi>!fetch /ipfs/<cid>    tuo CID-sisältö (ei suoritusta)
+help-doc-cid =   .my.doc.<nimi>!cid            näytä tallennettu CID
 help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
 help-header-url = ── URL-parametrit ───────────────────────────────────────────────────────────────
 help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla:
-help-url-msg =   ?msg=<did>                   esitäyttää: @<did> (tekstiviesti)
-help-url-say =   ?say=<did>                   esitäyttää: @<did>:say (verbi say)
-help-url-emote =   ?emote=<did>                 esitäyttää: @<did>:emote (verbi emote)
+help-url-msg =   ?msg=<did>                   esitäyttää: @<did>!msg (tekstiviesti)
+help-url-say =   ?say=<did>                   esitäyttää: @<did>!say (verbi say)
+help-url-emote =   ?emote=<did>                 esitäyttää: @<did>!emote (verbi emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.
 # ── Help text — publishing ────────────────────────────────────────────────

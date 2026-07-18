@@ -145,7 +145,7 @@ doc-store-sent = запит збереження надіслано ({ $id }) �
 doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-fetch-done = завантажено { $cid } → { $path }.content (не виконано)
 doc-fetch-failed = завантаження { $cid }: { $e }
-doc-fetch-usage = використання: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = використання: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid не встановлено
 doc-no-verb = немає команди `{ $verb }` для { $path }
@@ -168,7 +168,7 @@ help-cmd-history =   .history                     історія команд (�
 help-cmd-panic =   .panic                       останній засіб — використовувати при проблемах
 help-cmd-logout =   .logout                      вийти
 help-cmd-batch =   .batch                       виконати чернетку (паралельно)
-help-cmd-batch-sync =   .batch:begin / .batch         виконати команди послідовно, по одній
+help-cmd-batch-sync =   .batch:sync / .batch         виконати команди послідовно, по одній
 
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
@@ -184,8 +184,8 @@ help-unknown-topic =   .help/{ $topic }: невідома тема — спро�
 
 # ── Довідка — повідомлення ────────────────────────────────────────────────
 help-msg-echo =   @alias                       показати DID (без надсилання)
-help-msg-send =   @alias[:verb] body           надіслати повідомлення / RPC актору
-help-msg-fragment =   @alias#fragment[:verb] body  надіслати з явним фрагментом DID
+help-msg-send =   @alias!msg body / @alias:verb args           надіслати повідомлення / RPC актору
+help-msg-fragment =   @alias#fragment:verb body  надіслати з явним фрагментом DID
 help-msg-escape =   \@name                       буквальний @name (без пошуку псевдоніму)
 
 # ── Довідка — режим фокусу ────────────────────────────────────────────────
@@ -226,20 +226,22 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   обхід документ
 
 # ── Довідка — документи ───────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           відкрити редактор зі збереженим вмістом
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     завантажити CID для перегляду
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     завантажити CID для перегляду
 help-doc-eval =   .my.doc.<name>!eval           виконати вміст рядок за рядком
 help-doc-publish =   .my.doc.<name>!publish @pub   зберегти як сирі дані (будь-який тип)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  зберегти YAML як DAG-CBOR IPLD вузол
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    імпортувати вміст CID
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    імпортувати вміст CID
 help-doc-cid =   .my.doc.<name>!cid            показати збережений CID
 help-doc-del =   .my.doc.<name>:              видалити документ
 
 # ── Довідка — параметри URL ───────────────────────────────────────────────
 help-header-url = ── параметри URL ─────────────────────────────────────────────────────────
 help-url-intro =   Поділіться посиланням для відкриття zion із заздалегідь заповненим отримувачем:
-help-url-msg =   ?msg=<did>                   передзаповнює: @<did> (текстове повідомлення)
-help-url-say =   ?say=<did>                   передзаповнює: @<did>:say (дієслово say)
-help-url-emote =   ?emote=<did>                 передзаповнює: @<did>:emote (дієслово emote)
+help-url-msg =   ?msg=<did>                   передзаповнює: @<did>!msg (текстове повідомлення)
+help-url-say =   ?say=<did>                   передзаповнює: @<did>!say (дієслово say)
+help-url-emote =   ?emote=<did>                 передзаповнює: @<did>!emote (дієслово emote)
+help-url-ma =   ?ma=<did-or-url>              передзаповнює DID runtime / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         автофокус на actor/entity після входу
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Поле заповнено, але не надіслано — натисніть Enter для надсилання.
 
@@ -288,7 +290,7 @@ status-publishing = публікується
 
 # ── Керування профілями ───────────────────────────────────────────────────
 profile-delete-no-session = немає активної сесії — профіль не може бути видалений
-profile-delete-needs-name = вкажіть назву профілю: .profiles/<name>:
+profile-delete-needs-name = вкажіть назву профілю: .profiles.<name>:
 profile-delete-error = видалення профілю не вдалося: { $e }
 profiles-empty = (нема)
 profiles-deleted = профіль { $name } видалено
@@ -319,17 +321,17 @@ cid-op-wc = { $lines } рядків  { $words } слів  { $chars } симво�
 # ── Довідка — актор / віддалений CRUD ────────────────────────────────────
 help-header-actor = ── віддалені актори ──────────────────────────────────────────────────────
 help-actor-echo =   @actor                       показати DID (без надсилання)
-help-actor-text =   @actor body                  надіслати текстове повідомлення
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  перевірка доступності
-help-actor-entities =   @actor.entities              список усіх об'єктів
-help-actor-entities-get =   @actor.entities/<n>          отримати об'єкт (повертає CID)
-help-actor-entities-set =   @actor.entities/<n>: <cid>   встановити об'єкт за CID
-help-actor-entities-edit =   @actor.entities/<n>!edit     редагувати об'єкт в редакторі
-help-actor-entities-del =   @actor.entities/<n>:         видалити об'єкт
-help-actor-config-get =   @actor.config/<key>          отримати значення конфігурації
-help-actor-config-set =   @actor.config/<key>: val     встановити значення конфігурації
-help-actor-acl =   @actor.acl                   отримати ACL (повертає CID)
-help-actor-acl-edit =   @actor.acl!edit              редагувати ACL в редакторі
+help-actor-entities =   @actor/entities              список усіх об'єктів
+help-actor-entities-get =   @actor/entities/<n>          отримати об'єкт (повертає CID)
+help-actor-entities-set =   @actor/entities/<n>: <cid>   встановити об'єкт за CID
+help-actor-entities-edit =   @actor/entities/<n>!edit     редагувати об'єкт в редакторі
+help-actor-entities-del =   @actor/entities/<n>:         видалити об'єкт
+help-actor-config-get =   @actor/config/<key>          отримати значення конфігурації
+help-actor-config-set =   @actor/config/<key>: val     встановити значення конфігурації
+help-actor-acl =   @actor/acl                   отримати ACL (повертає CID)
+help-actor-acl-edit =   @actor/acl!edit              редагувати ACL в редакторі
 help-actor-fragment =   @actor#entity                надіслати до плагіну об'єкту
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC до дієслова плагіну
 help-header-cid-ops = ── операції з вмістом CID ────────────────────────────────────────────────
@@ -356,7 +358,6 @@ batch-step-timeout = час очікування кроку пакету вич�
 batch-done = Пакет виконано за { $secs }с — { $steps } кроків
 batch-done-error = Пакет завершено з помилками за { $secs }с — { $steps } кроків
 msg-timeout = Час очікування повідомлення вичерпано (немає відповіді протягом 60 с)
-help-cmd-batch-sync =   .batch:sync / .batch         виконати команди послідовно, по одній
 help-cmd-batch-async =   .batch:async / .batch        виконати команди паралельно
 
 # ── Схема ─────────────────────────────────────────────────────────────────

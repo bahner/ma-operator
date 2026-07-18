@@ -138,7 +138,7 @@ doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RP
 doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
 doc-fetch-done = { $cid } 가져옴 → { $path }.content (실행되지 않음)
 doc-fetch-failed = 가져오기 { $cid }: { $e }
-doc-fetch-usage = 사용법: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = 사용법: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid가 설정되지 않음
 doc-no-verb = { $path }에 `{ $verb }` 동사가 없음
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       최후 수단 — 문제 발생 
 help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
 help-cmd-logout =   .logout                      로그아웃
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       해석된 DID 표시 (메시지 전송 없음)
-help-msg-send =   @alias[:verb] body           액터에게 메시지 / RPC 전송
-help-msg-fragment =   @alias#fragment[:verb] body  명시적 DID 프래그먼트로 전송
+help-msg-send =   @alias!msg body / @alias:verb args           액터에게 메시지 / RPC 전송
+help-msg-fragment =   @alias#fragment:verb body  명시적 DID 프래그먼트로 전송
 help-msg-escape =   \@name                       리터럴 @name (별칭 조회 없음)
 
 # ── 도움말 — 포커스 모드 ──────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   발신자 DID 문서 지연
 
 # ── 도움말 — 문서 ─────────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           저장된 내용으로 편집기 열기
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID 가져오기, 검토 전용으로 열기
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID 가져오기, 검토 전용으로 열기
 help-doc-eval =   .my.doc.<name>!eval           저장된 내용을 줄 단위로 실행
 help-doc-publish =   .my.doc.<name>!publish @pub   원시 블롭으로 저장 (모든 유형)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML을 DAG-CBOR IPLD 노드로 저장
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID 내용 가져오기 (실행 없음)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID 내용 가져오기 (실행 없음)
 help-doc-cid =   .my.doc.<name>!cid            저장된 CID 표시
 help-doc-del =   .my.doc.<name>:              문서 삭제
 
@@ -301,17 +301,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -322,9 +322,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
-help-url-msg =   ?msg=<did>                   미리 채움: @<did> (텍스트 메시지)
-help-url-say =   ?say=<did>                   미리 채움: @<did>:say (say 동사)
-help-url-emote =   ?emote=<did>                 미리 채움: @<did>:emote (emote 동사)
+help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)
+help-url-say =   ?say=<did>                   미리 채움: @<did>!say (say 동사)
+help-url-emote =   ?emote=<did>                 미리 채움: @<did>!emote (emote 동사)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.
 # ── Help text — publishing ────────────────────────────────────────────────

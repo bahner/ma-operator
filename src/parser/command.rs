@@ -13,9 +13,10 @@
 ///   @alias/path: value   → RemoteCrud::Set(value)
 ///   @alias/path:         → RemoteCrud::Delete
 ///   @alias/path!edit     → RemoteCrud::Edit
-///   @alias[!verb] [body] → ActorMessage  (RPC)
-///   @did:ma:<id>[!verb]  → ActorMessage
-///   did:ma:<id>[!verb]   → ActorMessage  (bare DID from expansion)
+///   @alias!cmd [body]    → ActorLocalCommand (local zion command: msg/say/emote)
+///   @alias[:verb] [body] → ActorMessage  (remote method / RPC)
+///   @did:ma:<id>[:verb]  → ActorMessage
+///   did:ma:<id>[:verb]   → ActorMessage  (bare DID from expansion)
 ///   \@literal text       → PlainText
 ///   \.literal text       → PlainText  (escape a leading control-command dot)
 use super::alias::resolve_targets;
@@ -72,6 +73,11 @@ pub enum Command {
     ActorMessage {
         target: String,
         verb: Option<String>,
+        body: String,
+    },
+    ActorLocalCommand {
+        target: String,
+        command: String,
         body: String,
     },
     PlainText(String),
@@ -165,6 +171,23 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
             let (path, op) = parse_remote_crud_op(path_raw, &body_raw);
             return Ok(Command::RemoteCrud { target, path, op });
         }
+    }
+
+    // Local actor command: `@actor!say text` chooses a zion-side workflow or
+    // message type. It is not a remote method call; `:` remains remote RPC.
+    if let Some(bang) = head_stripped.find('!') {
+        let raw_target = &head_stripped[..bang];
+        let command = &head_stripped[bang + 1..];
+        if raw_target.is_empty() || command.is_empty() {
+            return Err(format!("invalid actor command: @{head_stripped}"));
+        }
+        let target = resolve_target(raw_target, cfg)?;
+        let body = resolve_targets(&body_raw, cfg)?;
+        return Ok(Command::ActorLocalCommand {
+            target,
+            command: command.to_string(),
+            body,
+        });
     }
 
     let (raw_target, verb) = split_actor_head(head_stripped);
@@ -477,6 +500,71 @@ mod tests {
                     .to_string(),
                 verb: Some("entities.rms:edit".to_string()),
                 body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_alias_target_with_local_actor_command() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky!say hello there", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorLocalCommand {
+                target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
+                    .to_string(),
+                command: "say".to_string(),
+                body: "hello there".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_fragment_target_with_local_actor_command() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky#room!emote danser", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorLocalCommand {
+                target:
+                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
+                        .to_string(),
+                command: "emote".to_string(),
+                body: "danser".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn keeps_colon_as_remote_actor_method() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky#room:emote danser", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target:
+                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
+                        .to_string(),
+                verb: Some("emote".to_string()),
+                body: "danser".to_string(),
             }
         );
     }

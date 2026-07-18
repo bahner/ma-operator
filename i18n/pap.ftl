@@ -130,15 +130,15 @@ identity-export-failed = Eksportashon a faya: { $e }
 doc-content-empty = { $path }.content ta bashi
 doc-save-first = { $path }.content ta bashi — wardá promé
 doc-missing-name = nòmber di dokumentu falta
-doc-publish-usage = uso: .my.doc.<nòmber>:publish <publikadó>
-doc-publish-ipld-usage = uso: .my.doc.<nòmber>:publish-ipld <publikadó>
+doc-publish-usage = uso: .my.doc.<nòmber>!publish <publikadó>
+doc-publish-ipld-usage = uso: .my.doc.<nòmber>!publish-ipld <publikadó>
 doc-publish-failed = publiká { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = petishon di almacenamentu mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
 doc-ipld-store-sent = petishon di almacenamentu IPLD mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
 doc-fetch-done = bishitá { $cid } → { $path }.content (no ehekulá)
 doc-fetch-failed = bishitá { $cid }: { $e }
-doc-fetch-usage = uso: .my.doc.<nòmber>:fetch <cid>
+doc-fetch-usage = uso: .my.doc.<nòmber>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid no ta shetá
 doc-no-verb = no tin verb `{ $verb }` pa { $path }
@@ -163,10 +163,10 @@ help-cmd-panic =   .panic                       último rekurso — usá si bo h
 help-cmd-history =   .history                     historial di komando (duplikado konsekutivo kombiná)
 help-cmd-logout =   .logout                      sali
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       ekuá DID resueltá (ningun mensahe enviá)
-help-msg-send =   @alias[:verb] body           mandá mensahe / RPC na aktor
-help-msg-fragment =   @alias#fragment[:verb] body  mandá na alias ku fragmento DID eksplísito
+help-msg-send =   @alias!msg body / @alias:verb args           mandá mensahe / RPC na aktor
+help-msg-fragment =   @alias#fragment:verb body  mandá na alias ku fragmento DID eksplísito
 help-msg-escape =   \@name                       @name literal (ningun búskeda di alias)
 help-focus-set =   .use @alias [as @name]       fokusá riba aktor (kambiá prompt)
 help-focus-clear =   .use                         kitsá fókus
@@ -197,11 +197,11 @@ help-inbox-flush =   .my.inbox!flush              imprimí tur entrada na termin
 help-inbox-filter =   .my.inbox!filter @who        mustra sòlo entradanan di @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   atravesá dokumento DID di remitente parsiosamente
 help-doc-edit =   .my.doc.<name>!edit           habri editor ku kontenidonan salvá
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     buská CID, habri pa revisión solamente
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     buská CID, habri pa revisión solamente
 help-doc-eval =   .my.doc.<name>!eval           ehekutá kontenidonan salvá liña pa liña
 help-doc-publish =   .my.doc.<name>!publish @pub   almacená komo blob bruto (kualke tipo)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  almacená YAML komo nodo DAG-CBOR IPLD estruturá
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    importá kontenidonan CID (ningun ehekushon)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    importá kontenidonan CID (ningun ehekushon)
 help-doc-cid =   .my.doc.<name>!cid            mustrá CID almacená
 help-doc-del =   .my.doc.<name>:              bòrá dokumento
 
@@ -286,17 +286,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -309,9 +309,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    habri zion via un link URL
 help-header-url = ── parámetronan URL ─────────────────────────────────────────────────────────────
 help-url-intro =   Parti un link ku habri zion ku un destinatario ya yená:
-help-url-msg =   ?msg=<did>                   yena di antemano: @<did> (mensahe simpel)
-help-url-say =   ?say=<did>                   yena di antemano: @<did>:say (verbu say)
-help-url-emote =   ?emote=<did>                 yena di antemano: @<did>:emote (verbu emote)
+help-url-msg =   ?msg=<did>                   yena di antemano: @<did>!msg (mensahe simpel)
+help-url-say =   ?say=<did>                   yena di antemano: @<did>!say (verbu say)
+help-url-emote =   ?emote=<did>                 yena di antemano: @<did>!emote (verbu emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.
 # ── Help text — publishing ────────────────────────────────────────────────

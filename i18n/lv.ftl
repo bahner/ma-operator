@@ -130,15 +130,15 @@ identity-export-failed = Eksports neizdevās: { $e }
 doc-content-empty = { $path }.content ir tukšs
 doc-save-first = { $path }.content ir tukšs — vispirms saglabājiet
 doc-missing-name = trūkst dokumenta nosaukuma
-doc-publish-usage = lietošana: .my.doc.<nosaukums>:publish <izdevējs>
-doc-publish-ipld-usage = lietošana: .my.doc.<nosaukums>:publish-ipld <izdevējs>
+doc-publish-usage = lietošana: .my.doc.<nosaukums>!publish <izdevējs>
+doc-publish-ipld-usage = lietošana: .my.doc.<nosaukums>!publish-ipld <izdevējs>
 doc-publish-failed = publicēšana { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicēšana { $path }: { $e }
 doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
 doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
 doc-fetch-done = ielādēja { $cid } → { $path }.content (nav izpildīts)
 doc-fetch-failed = ielāde { $cid }: { $e }
-doc-fetch-usage = lietošana: .my.doc.<nosaukums>:fetch <cid>
+doc-fetch-usage = lietošana: .my.doc.<nosaukums>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nav iestatīts
 doc-no-verb = { $path } nav darbības vārda `{ $verb }`
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       pēdējais līdzeklis — izmant
 help-cmd-history =   .history                     komandu vēsture (secīgie dublikāti apvienoti)
 help-cmd-logout =   .logout                      atteikties
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       parādīt atrisināto DID (ziņojums nav nosūtīts)
-help-msg-send =   @alias[:verb] body           nosūtīt ziņojumu / RPC dalībniekam
-help-msg-fragment =   @alias#fragment[:verb] body  nosūtīt aizstājvārdam ar skaidru DID fragmentu
+help-msg-send =   @alias!msg body / @alias:verb args           nosūtīt ziņojumu / RPC dalībniekam
+help-msg-fragment =   @alias#fragment:verb body  nosūtīt aizstājvārdam ar skaidru DID fragmentu
 help-msg-escape =   \@name                       burtiski @name (nav aizstājvārda meklēšanas)
 
 help-focus-set =   .use @alias [as @name]       fokusēties uz dalībnieku (maina uzvedni)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              izdrukāt visus ierakstus term
 help-inbox-filter =   .my.inbox!filter @who        rādīt tikai @who ierakstus
 help-inbox-traverse =   .my.inbox.N.sender.<lauks>  šķērsot sūtītāja DID dokumentu ar kavēšanos
 
-help-doc-edit =   .my.doc.<nosaukums>:edit           atvērt redaktoru ar saglabāto saturu
-help-doc-edit-cid =   .my.doc.<nosaukums>:edit <cid>     ielādēt CID, atvērt pārskatīšanai
-help-doc-eval =   .my.doc.<nosaukums>:eval           izpildīt saglabāto saturu rindu pa rindai
-help-doc-publish =   .my.doc.<nosaukums>:publish @pub   saglabāt kā neapstrādātu blob (visi veidi)
-help-doc-publish-ipld =   .my.doc.<nosaukums>:publish-ipld @pub  saglabāt YAML kā strukturētu DAG-CBOR IPLD mezglu
-help-doc-fetch =   .my.doc.<nosaukums>:fetch <cid>    importēt CID saturu (nav izpildes)
-help-doc-cid =   .my.doc.<nosaukums>:cid            parādīt saglabāto CID
+help-doc-edit =   .my.doc.<nosaukums>!edit           atvērt redaktoru ar saglabāto saturu
+help-doc-edit-cid =   .my.doc.<nosaukums>!edit /ipfs/<cid>     ielādēt CID, atvērt pārskatīšanai
+help-doc-eval =   .my.doc.<nosaukums>!eval           izpildīt saglabāto saturu rindu pa rindai
+help-doc-publish =   .my.doc.<nosaukums>!publish @pub   saglabāt kā neapstrādātu blob (visi veidi)
+help-doc-publish-ipld =   .my.doc.<nosaukums>!publish-ipld @pub  saglabāt YAML kā strukturētu DAG-CBOR IPLD mezglu
+help-doc-fetch =   .my.doc.<nosaukums>!fetch /ipfs/<cid>    importēt CID saturu (nav izpildes)
+help-doc-cid =   .my.doc.<nosaukums>!cid            parādīt saglabāto CID
 help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zion atvēršana, izmantojot URL saiti
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
 help-url-intro =   Dalies ar saiti, kas atver zion ar iepriekš aizpildītu saņēmēju:
-help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did> (parasta ziņa)
-help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>:say (darbības vārds say)
-help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>:emote (darbības vārds emote)
+help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did>!msg (parasta ziņa)
+help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>!say (darbības vārds say)
+help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>!emote (darbības vārds emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospied Enter, lai nosūtītu.
 # ── Help text — publishing ────────────────────────────────────────────────

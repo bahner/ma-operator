@@ -130,15 +130,15 @@ identity-export-failed = Izvoz nije uspio: { $e }
 doc-content-empty = { $path }.content je prazno
 doc-save-first = { $path }.content je prazno — prvo spremite
 doc-missing-name = nedostaje naziv dokumenta
-doc-publish-usage = korištenje: .my.doc.<naziv>:publish <izdavač>
-doc-publish-ipld-usage = korištenje: .my.doc.<naziv>:publish-ipld <izdavač>
+doc-publish-usage = korištenje: .my.doc.<naziv>!publish <izdavač>
+doc-publish-ipld-usage = korištenje: .my.doc.<naziv>!publish-ipld <izdavač>
 doc-publish-failed = objavljivanje { $path }: { $e }
 doc-publish-ipld-failed = objavljivanje IPLD { $path }: { $e }
 doc-store-sent = zahtjev za pohranom poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
 doc-ipld-store-sent = zahtjev za pohranom IPLD poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
 doc-fetch-done = { $cid } dohvaćeno → { $path }.content (nije pokrenuto)
 doc-fetch-failed = dohvaćanje { $cid }: { $e }
-doc-fetch-usage = korištenje: .my.doc.<naziv>:fetch <cid>
+doc-fetch-usage = korištenje: .my.doc.<naziv>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nije postavljeno
 doc-no-verb = nema glagola `{ $verb }` za { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       zadnja mogućnost — koristite 
 help-cmd-history =   .history                     povijest naredbi (uzastopni duplikati spojeni)
 help-cmd-logout =   .logout                      odjava
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       prikaži razriješeni DID (nije poslana poruka)
-help-msg-send =   @alias[:verb] body           pošalji poruku / RPC akteru
-help-msg-fragment =   @alias#fragment[:verb] body  pošalji na pseudonim s eksplicitnim DID fragmentom
+help-msg-send =   @alias!msg body / @alias:verb args           pošalji poruku / RPC akteru
+help-msg-fragment =   @alias#fragment:verb body  pošalji na pseudonim s eksplicitnim DID fragmentom
 help-msg-escape =   \@name                       doslovni @name (bez pretraživanja pseudonima)
 
 help-focus-set =   .use @alias [as @name]       fokusiranje na aktera (mijenja prompt)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              ispiši sve unose u terminal
 help-inbox-filter =   .my.inbox!filter @who        prikaži samo unose od @who
 help-inbox-traverse =   .my.inbox.N.sender.<polje>  lijeno prolazi DID dokumentom pošiljatelja
 
-help-doc-edit =   .my.doc.<naziv>:edit           otvori uređivač sa spremljenim sadržajem
-help-doc-edit-cid =   .my.doc.<naziv>:edit <cid>     dohvati CID, otvori za pregled
-help-doc-eval =   .my.doc.<naziv>:eval           pokreni spremljeni sadržaj redak po redak
-help-doc-publish =   .my.doc.<naziv>:publish @pub   spremi kao sirovi blob (svi tipovi)
-help-doc-publish-ipld =   .my.doc.<naziv>:publish-ipld @pub  spremi YAML kao strukturirani DAG-CBOR IPLD čvor
-help-doc-fetch =   .my.doc.<naziv>:fetch <cid>    uvezi sadržaj CID (bez pokretanja)
-help-doc-cid =   .my.doc.<naziv>:cid            prikaži spremljeni CID
+help-doc-edit =   .my.doc.<naziv>!edit           otvori uređivač sa spremljenim sadržajem
+help-doc-edit-cid =   .my.doc.<naziv>!edit /ipfs/<cid>     dohvati CID, otvori za pregled
+help-doc-eval =   .my.doc.<naziv>!eval           pokreni spremljeni sadržaj redak po redak
+help-doc-publish =   .my.doc.<naziv>!publish @pub   spremi kao sirovi blob (svi tipovi)
+help-doc-publish-ipld =   .my.doc.<naziv>!publish-ipld @pub  spremi YAML kao strukturirani DAG-CBOR IPLD čvor
+help-doc-fetch =   .my.doc.<naziv>!fetch /ipfs/<cid>    uvezi sadržaj CID (bez pokretanja)
+help-doc-cid =   .my.doc.<naziv>!cid            prikaži spremljeni CID
 help-doc-del =   .my.doc.<naziv>:              obriši dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    otvaranje ziona putem URL veze
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
 help-url-intro =   Podijeli vezu koja otvara zion s unaprijed ispunjenim primateljem:
-help-url-msg =   ?msg=<did>                   unaprijed ispunjava: @<did> (obična poruka)
-help-url-say =   ?say=<did>                   unaprijed ispunjava: @<did>:say (glagol say)
-help-url-emote =   ?emote=<did>                 unaprijed ispunjava: @<did>:emote (glagol emote)
+help-url-msg =   ?msg=<did>                   unaprijed ispunjava: @<did>!msg (obična poruka)
+help-url-say =   ?say=<did>                   unaprijed ispunjava: @<did>!say (glagol say)
+help-url-emote =   ?emote=<did>                 unaprijed ispunjava: @<did>!emote (glagol emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Unos je unaprijed ispunjen ali nije poslan — pritisni Enter za slanje.
 # ── Help text — publishing ────────────────────────────────────────────────

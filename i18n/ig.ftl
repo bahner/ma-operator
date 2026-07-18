@@ -138,7 +138,7 @@ doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID 
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-fetch-done = enwetara { $cid } → { $path }.content (arụghị ọrụ)
 doc-fetch-failed = ịnweta { $cid }: { $e }
-doc-fetch-usage = ojiji: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = ojiji: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = atọghị { $path }.cid
 doc-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mg
 help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID ezatara (ezitaraghị ozi)
-help-msg-send =   @alias[:verb] body           ziga ozi / RPC na onye na-eme ihe
-help-msg-fragment =   @alias#fragment[:verb] body  ziga na nchọkwa nwere fragment DID ọkụkọ
+help-msg-send =   @alias!msg body / @alias:verb args           ziga ozi / RPC na onye na-eme ihe
+help-msg-fragment =   @alias#fragment:verb body  ziga na nchọkwa nwere fragment DID ọkụkọ
 help-msg-escape =   \@name                       @name n'okwu n'okwu (ọ chọghị nchọkwa)
 
 # ── Enyemaka — ọnọdụ ntụleanya ───────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   gafee akwụkwọ DID onye 
 
 # ── Enyemaka — akwụkwọ ────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           mepee onye ndezi nwere ọdịnaya echekwara
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     nweta CID, mepee maka nlele naanị
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     nweta CID, mepee maka nlele naanị
 help-doc-eval =   .my.doc.<name>!eval           rụọ ọdịnaya echekwara akara n'akara
 help-doc-publish =   .my.doc.<name>!publish @pub   chekwaa dị ka blob ọhụrụ (ụdị ọ bụla)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  chekwaa YAML dị ka ọkpụrụkpụ IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    bawanye ọdịnaya CID (arụghị ọrụ)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bawanye ọdịnaya CID (arụghị ọrụ)
 help-doc-cid =   .my.doc.<name>!cid            gosi CID echekwara
 help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    mepee zion site na njikọ URL
 help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
-help-url-msg =   ?msg=<did>                   deeye tupu: @<did> (ozi dị mfe)
-help-url-say =   ?say=<did>                   deeye tupu: @<did>:say (ngwa ọrụ say)
-help-url-emote =   ?emote=<did>                 deeye tupu: @<did>:emote (ngwa ọrụ emote)
+help-url-msg =   ?msg=<did>                   deeye tupu: @<did>!msg (ozi dị mfe)
+help-url-say =   ?say=<did>                   deeye tupu: @<did>!say (ngwa ọrụ say)
+help-url-emote =   ?emote=<did>                 deeye tupu: @<did>!emote (ngwa ọrụ emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
 # ── Help text — publishing ────────────────────────────────────────────────

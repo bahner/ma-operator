@@ -140,7 +140,7 @@ doc-store-sent = store request forward ({ $id }) → { $publisher }; CID will ar
 doc-ipld-store-sent = IPLD store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
 doc-fetch-done = brought { $cid } → { $path }.content (not livity)
 doc-fetch-failed = bringing { $cid }: { $e }
-doc-fetch-usage = livity: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = livity: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid not set
 doc-no-verb = no verb `{ $verb }` for { $path }
@@ -165,10 +165,10 @@ help-cmd-panic =   .panic                       last resort — use if I-self fi
 help-cmd-history =   .history                     I-command history (consecutive repeats mash inna one)
 help-cmd-logout =   .logout                      depart from Zion
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       echo di I-dentity DID (no message sent)
-help-msg-send =   @alias[:verb] body           send message / RPC to I-dren
-help-msg-fragment =   @alias#fragment[:verb] body  send to I-name wid explicit DID fragment
+help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to I-dren
+help-msg-fragment =   @alias#fragment:verb body  send to I-name wid explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no I-name search)
 help-focus-set =   .use @alias [as @name]       focus pon I-dren (changes I-prompt)
 help-focus-clear =   .use                         clear I-focus
@@ -199,11 +199,11 @@ help-inbox-flush =   .my.inbox!flush              manifest all entries to termin
 help-inbox-filter =   .my.inbox!filter @who        sight only I-box from @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse sender DID document in I-time
 help-doc-edit =   .my.doc.<name>!edit           open editor with saved I-writing
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fetch CID, open for I-sight only
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     fetch CID, open for I-sight only
 help-doc-eval =   .my.doc.<name>!eval           execute saved I-writing line by line
 help-doc-publish =   .my.doc.<name>!publish @pub   store as raw blob (any type)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    bring in CID content (no execution)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bring in CID content (no execution)
 help-doc-cid =   .my.doc.<name>!cid            sight stored CID
 help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
 
@@ -288,17 +288,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -311,9 +311,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    open Zion tru a URL link
 help-header-url = ── URL I-parameters ─────────────────────────────────────────────────────────────
 help-url-intro =   Share a link fi open Zion wid a I-recipient ready fill:
-help-url-msg =   ?msg=<did>                   fill up: @<did> (I-message)
-help-url-say =   ?say=<did>                   fill up: @<did>:say (say verb)
-help-url-emote =   ?emote=<did>                 fill up: @<did>:emote (emote verb)
+help-url-msg =   ?msg=<did>                   fill up: @<did>!msg (I-message)
+help-url-say =   ?say=<did>                   fill up: @<did>!say (say verb)
+help-url-emote =   ?emote=<did>                 fill up: @<did>!emote (emote verb)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di I-input fill up but not send — press Enter fi send.
 # ── Help text — publishing ────────────────────────────────────────────────

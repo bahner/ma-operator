@@ -177,6 +177,14 @@ pub(crate) fn eval(
         Command::ActorMessage { target, verb, body } => {
             actor::eval_actor(target, verb, body, raw, state, config);
         }
+
+        Command::ActorLocalCommand {
+            target,
+            command,
+            body,
+        } => {
+            actor::eval_actor_local(target, command, body, raw, state);
+        }
     }
 }
 

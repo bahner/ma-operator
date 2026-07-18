@@ -130,15 +130,15 @@ identity-export-failed = Ekspɔt fɛl: { $e }
 doc-content-empty = { $path }.content empty
 doc-save-first = { $path }.content empty — sev fɛs
 doc-missing-name = dokument nem nor dɛ
-doc-publish-usage = yusij: .my.doc.<nem>:publish <pɔblisha>
-doc-publish-ipld-usage = yusij: .my.doc.<nem>:publish-ipld <pɔblisha>
+doc-publish-usage = yusij: .my.doc.<nem>!publish <pɔblisha>
+doc-publish-ipld-usage = yusij: .my.doc.<nem>!publish-ipld <pɔblisha>
 doc-publish-failed = pɔblish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-ipld-store-sent = IPLD stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-fetch-done = fetch { $cid } → { $path }.content (nor execute)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = yusij: .my.doc.<nem>:fetch <cid>
+doc-fetch-usage = yusij: .my.doc.<nem>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nor set
 doc-no-verb = nor get vɛb `{ $verb }` fɔ { $path }
@@ -163,10 +163,10 @@ help-cmd-panic =   .panic                       las opshen — yus if yu los yos
 help-cmd-history =   .history                     komand istri (kopi dem wey dɔn folo sɛf bia wanwan)
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       eko di DID wey resolve (noh mesej sent)
-help-msg-send =   @alias[:verb] body           send mesej / RPC go to ator
-help-msg-fragment =   @alias#fragment[:verb] body  send go to alias wid eksplisit DID fragment
+help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go to ator
+help-msg-fragment =   @alias#fragment:verb body  send go to alias wid eksplisit DID fragment
 help-msg-escape =   \@name                       literal @name (noh alias lukov)
 help-focus-set =   .use @alias [as @name]       fokus pan ator (chenja prompt)
 help-focus-clear =   .use                         klia fokus
@@ -197,11 +197,11 @@ help-inbox-flush =   .my.inbox!flush              print all entri dem go termina
 help-inbox-filter =   .my.inbox!filter @who        sho ɔnli entri fɔm @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   travos senda DID dokument layzili
 help-doc-edit =   .my.doc.<name>!edit           opin edita wid seyvd kontent
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fech CID, opin foh rivyu onli
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     fech CID, opin foh rivyu onli
 help-doc-eval =   .my.doc.<name>!eval           eksekut seyvd kontent lin by lin
 help-doc-publish =   .my.doc.<name>!publish @pub   stoh as ro blob (eni tayp)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  stoh YAML as strakchad DAG-CBOR IPLD nod
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    impot CID kontent (noh eksekushon)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impot CID kontent (noh eksekushon)
 help-doc-cid =   .my.doc.<name>!cid            shoh stohd CID
 help-doc-del =   .my.doc.<name>:              dilet dokument
 
@@ -286,17 +286,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -309,9 +309,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    opin zion tru URL link
 help-header-url = ── URL paramita dem ─────────────────────────────────────────────────────────────
 help-url-intro =   Shia wan link we go opin zion wit di pɔsin aredɛ put insɛd:
-help-url-msg =   ?msg=<did>                   put bifo: @<did> (simpul mɛsɛj)
-help-url-say =   ?say=<did>                   put bifo: @<did>:say (vɛb say)
-help-url-emote =   ?emote=<did>                 put bifo: @<did>:emote (vɛb emote)
+help-url-msg =   ?msg=<did>                   put bifo: @<did>!msg (simpul mɛsɛj)
+help-url-say =   ?say=<did>                   put bifo: @<did>!say (vɛb say)
+help-url-emote =   ?emote=<did>                 put bifo: @<did>!emote (vɛb emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
 # ── Help text — publishing ────────────────────────────────────────────────

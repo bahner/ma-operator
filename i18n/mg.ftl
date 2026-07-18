@@ -138,7 +138,7 @@ doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; C
 doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
 doc-fetch-done = voaaka { $cid } → { $path }.content (tsy naosina)
 doc-fetch-failed = fetching { $cid }: { $e }
-doc-fetch-usage = fampiasana: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = fampiasana: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid tsy voapetraka
 doc-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       fanalana farany — ampiasao rah
 help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
 help-cmd-logout =   .logout                      mivoaka
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       asehoy DID nonadihina (tsy nalefa hafatra)
-help-msg-send =   @alias[:verb] body           alefa hafatra / RPC any amin'ny mpilalao
-help-msg-fragment =   @alias#fragment[:verb] body  alefa misy DID fragment mazava
+help-msg-send =   @alias!msg body / @alias:verb args           alefa hafatra / RPC any amin'ny mpilalao
+help-msg-fragment =   @alias#fragment:verb body  alefa misy DID fragment mazava
 help-msg-escape =   \@name                       @name ara-bakiteny (tsy mikaroka anarana fanampiny)
 
 # ── Fanampiana — fomba sain-toerana ──────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   mandeha antontan-taratasy D
 
 # ── Fanampiana — antontan-taratasy ───────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           misokatra mpandrindra misy sainy voatahiry
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     mamoaka CID, misokatra famakiana ihany
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     mamoaka CID, misokatra famakiana ihany
 help-doc-eval =   .my.doc.<name>!eval           alao ny sainy voatahiry andalana-andro
 help-doc-publish =   .my.doc.<name>!publish @pub   tehirizo ho blob tsy voaohatra (karazana rehetra)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  tehirizo YAML ho node IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    ampidino sainy CID (tsy naosina)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    ampidino sainy CID (tsy naosina)
 help-doc-cid =   .my.doc.<name>!cid            asehoy CID voatahiry
 help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
 help-header-url = ── ampahany URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   Zarao rohy hanokafana zion miaraka amin'ny mpandray efa voatondro:
-help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did> (hafatra tsotra)
-help-url-say =   ?say=<did>                   fenoina mialoha: @<did>:say (matoanteny say)
-help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>:emote (matoanteny emote)
+help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did>!msg (hafatra tsotra)
+help-url-say =   ?say=<did>                   fenoina mialoha: @<did>!say (matoanteny say)
+help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>!emote (matoanteny emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter handefa.
 # ── Help text — publishing ────────────────────────────────────────────────

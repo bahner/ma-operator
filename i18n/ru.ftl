@@ -138,7 +138,7 @@ doc-store-sent = запрос хранения отправлен ({ $id }) → 
 doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
 doc-fetch-done = загружено { $cid } → { $path }.content (не выполнено)
 doc-fetch-failed = загрузка { $cid }: { $e }
-doc-fetch-usage = использование: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = использование: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid не установлен
 doc-no-verb = нет команды `{ $verb }` для { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       последний resort — и
 help-cmd-history =   .history                     история команд (последовательные дубликаты объединены)
 help-cmd-logout =   .logout                      выйти
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Справка — сообщения ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       вывести DID (без отправки)
-help-msg-send =   @alias[:verb] body           отправить сообщение / RPC актору
-help-msg-fragment =   @alias#fragment[:verb] body  отправить с явным фрагментом DID
+help-msg-send =   @alias!msg body / @alias:verb args           отправить сообщение / RPC актору
+help-msg-fragment =   @alias#fragment:verb body  отправить с явным фрагментом DID
 help-msg-escape =   \@name                       буквальный @name (без поиска псевдонима)
 
 # ── Справка — режим фокуса ────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   обход документ
 
 # ── Справка — документы ───────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           открыть редактор с сохранённым содержимым
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     загрузить CID для просмотра
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     загрузить CID для просмотра
 help-doc-eval =   .my.doc.<name>!eval           выполнить содержимое построчно
 help-doc-publish =   .my.doc.<name>!publish @pub   сохранить как сырые данные
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  сохранить YAML как DAG-CBOR IPLD узел
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    импортировать содержимое CID
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    импортировать содержимое CID
 help-doc-cid =   .my.doc.<name>!cid            показать сохранённый CID
 help-doc-del =   .my.doc.<name>:              удалить документ
 
@@ -301,17 +301,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -322,9 +322,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── параметры URL ───────────────────────────────────────────────────────────
 help-url-intro =   Поделись ссылкой, открывающей zion с заранее заполненным получателем:
-help-url-msg =   ?msg=<did>                   предзаполняет: @<did> (текстовое сообщение)
-help-url-say =   ?say=<did>                   предзаполняет: @<did>:say (глагол say)
-help-url-emote =   ?emote=<did>                 предзаполняет: @<did>:emote (глагол emote)
+help-url-msg =   ?msg=<did>                   предзаполняет: @<did>!msg (текстовое сообщение)
+help-url-say =   ?say=<did>                   предзаполняет: @<did>!say (глагол say)
+help-url-emote =   ?emote=<did>                 предзаполняет: @<did>!emote (глагол emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Поле заполнено, но не отправлено — нажми Enter для отправки.
 # ── Help text — publishing ────────────────────────────────────────────────

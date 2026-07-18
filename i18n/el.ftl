@@ -130,15 +130,15 @@ identity-export-failed = Η εξαγωγή απέτυχε: { $e }
 doc-content-empty = { $path }.content είναι κενό
 doc-save-first = { $path }.content είναι κενό — αποθηκεύστε πρώτα
 doc-missing-name = λείπει το όνομα εγγράφου
-doc-publish-usage = χρήση: .my.doc.<όνομα>:publish <εκδότης>
-doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>:publish-ipld <εκδότης>
+doc-publish-usage = χρήση: .my.doc.<όνομα>!publish <εκδότης>
+doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>!publish-ipld <εκδότης>
 doc-publish-failed = δημοσίευση { $path }: { $e }
 doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
 doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
 doc-fetch-failed = ανάκτηση { $cid }: { $e }
-doc-fetch-usage = χρήση: .my.doc.<όνομα>:fetch <cid>
+doc-fetch-usage = χρήση: .my.doc.<όνομα>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid δεν έχει οριστεί
 doc-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       τελευταία λύση — 
 help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
 help-cmd-logout =   .logout                      αποσύνδεση
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID (δεν αποστέλλεται μήνυμα)
-help-msg-send =   @alias[:verb] body           αποστολή μηνύματος / RPC σε ηθοποιό
-help-msg-fragment =   @alias#fragment[:verb] body  αποστολή σε ψευδώνυμο με ρητό τμήμα DID
+help-msg-send =   @alias!msg body / @alias:verb args           αποστολή μηνύματος / RPC σε ηθοποιό
+help-msg-fragment =   @alias#fragment:verb body  αποστολή σε ψευδώνυμο με ρητό τμήμα DID
 help-msg-escape =   \@name                       κυριολεκτικό @name (χωρίς αναζήτηση ψευδωνύμου)
 
 help-focus-set =   .use @alias [as @name]       εστίαση σε ηθοποιό (αλλάζει την προτροπή)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              εκτύπωση όλων τω
 help-inbox-filter =   .my.inbox!filter @who        εμφάνιση μόνο εγγραφών από @who
 help-inbox-traverse =   .my.inbox.N.sender.<πεδίο>  τεμπέλικη διάσχιση εγγράφου DID αποστολέα
 
-help-doc-edit =   .my.doc.<όνομα>:edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο
-help-doc-edit-cid =   .my.doc.<όνομα>:edit <cid>     ανάκτηση CID, άνοιγμα για αναθεώρηση
-help-doc-eval =   .my.doc.<όνομα>:eval           εκτέλεση αποθηκευμένου περιεχομένου γραμμή-γραμμή
-help-doc-publish =   .my.doc.<όνομα>:publish @pub   αποθήκευση ως ακατέργαστο blob (όλοι οι τύποι)
-help-doc-publish-ipld =   .my.doc.<όνομα>:publish-ipld @pub  αποθήκευση YAML ως δομημένο κόμβο DAG-CBOR IPLD
-help-doc-fetch =   .my.doc.<όνομα>:fetch <cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
-help-doc-cid =   .my.doc.<όνομα>:cid            εμφάνιση αποθηκευμένου CID
+help-doc-edit =   .my.doc.<όνομα>!edit           άνοιγμα επεξεργαστή με αποθηκευμένο περιεχόμενο
+help-doc-edit-cid =   .my.doc.<όνομα>!edit /ipfs/<cid>     ανάκτηση CID, άνοιγμα για αναθεώρηση
+help-doc-eval =   .my.doc.<όνομα>!eval           εκτέλεση αποθηκευμένου περιεχομένου γραμμή-γραμμή
+help-doc-publish =   .my.doc.<όνομα>!publish @pub   αποθήκευση ως ακατέργαστο blob (όλοι οι τύποι)
+help-doc-publish-ipld =   .my.doc.<όνομα>!publish-ipld @pub  αποθήκευση YAML ως δομημένο κόμβο DAG-CBOR IPLD
+help-doc-fetch =   .my.doc.<όνομα>!fetch /ipfs/<cid>    εισαγωγή περιεχομένου CID (χωρίς εκτέλεση)
+help-doc-cid =   .my.doc.<όνομα>!cid            εμφάνιση αποθηκευμένου CID
 help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγράφου
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
 help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
 help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
-help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did> (απλό μήνυμα)
-help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>:say (ρήμα say)
-help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>:emote (ρήμα emote)
+help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did>!msg (απλό μήνυμα)
+help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>!say (ρήμα say)
+help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>!emote (ρήμα emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.
 # ── Help text — publishing ────────────────────────────────────────────────

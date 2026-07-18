@@ -138,7 +138,7 @@ doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; C
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-fetch-done = mengambil { $cid } → { $path }.content (tidak dijalankan)
 doc-fetch-failed = pengambilan { $cid }: { $e }
-doc-fetch-usage = penggunaan: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = penggunaan: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid belum diatur
 doc-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       pilihan terakhir — gunakan saa
 help-cmd-history =   .history                     riwayat perintah (duplikat berurutan digabung)
 help-cmd-logout =   .logout                      keluar
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       tampilkan DID yang diselesaikan (tidak kirim pesan)
-help-msg-send =   @alias[:verb] body           kirim pesan / RPC ke aktor
-help-msg-fragment =   @alias#fragment[:verb] body  kirim ke alias dengan fragmen DID eksplisit
+help-msg-send =   @alias!msg body / @alias:verb args           kirim pesan / RPC ke aktor
+help-msg-fragment =   @alias#fragment:verb body  kirim ke alias dengan fragmen DID eksplisit
 help-msg-escape =   \@name                       literal @name (tidak ada pencarian alias)
 
 # ── Bantuan — mode fokus ──────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   jelajahi dokumen DID pengir
 
 # ── Bantuan — dokumen ─────────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           buka editor dengan konten tersimpan
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     ambil CID, buka untuk ditinjau saja
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     ambil CID, buka untuk ditinjau saja
 help-doc-eval =   .my.doc.<name>!eval           jalankan konten tersimpan baris per baris
 help-doc-publish =   .my.doc.<name>!publish @pub   simpan sebagai blob mentah (tipe apa saja)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  simpan YAML sebagai simpul IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    impor konten CID (tidak dijalankan)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impor konten CID (tidak dijalankan)
 help-doc-cid =   .my.doc.<name>!cid            tampilkan CID tersimpan
 help-doc-del =   .my.doc.<name>:              hapus dokumen
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    membuka zion melalui tautan URL
 help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
-help-url-msg =   ?msg=<did>                   isi otomatis: @<did> (pesan biasa)
-help-url-say =   ?say=<did>                   isi otomatis: @<did>:say (kata kerja say)
-help-url-emote =   ?emote=<did>                 isi otomatis: @<did>:emote (kata kerja emote)
+help-url-msg =   ?msg=<did>                   isi otomatis: @<did>!msg (pesan biasa)
+help-url-say =   ?say=<did>                   isi otomatis: @<did>!say (kata kerja say)
+help-url-emote =   ?emote=<did>                 isi otomatis: @<did>!emote (kata kerja emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
 # ── Help text — publishing ────────────────────────────────────────────────

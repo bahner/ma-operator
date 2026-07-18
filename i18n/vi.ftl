@@ -138,7 +138,7 @@ doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; 
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-fetch-done = đã tải { $cid } → { $path }.content (chưa chạy)
 doc-fetch-failed = tải { $cid }: { $e }
-doc-fetch-usage = cách dùng: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = cách dùng: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid chưa được đặt
 doc-no-verb = không có động từ `{ $verb }` cho { $path }
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       phương án cuối cùng — d�
 help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
 help-cmd-logout =   .logout                      đăng xuất
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hiển thị DID đã phân giải (không gửi tin)
-help-msg-send =   @alias[:verb] body           gửi tin nhắn / RPC tới diễn viên
-help-msg-fragment =   @alias#fragment[:verb] body  gửi với phân mảnh DID rõ ràng
+help-msg-send =   @alias!msg body / @alias:verb args           gửi tin nhắn / RPC tới diễn viên
+help-msg-fragment =   @alias#fragment:verb body  gửi với phân mảnh DID rõ ràng
 help-msg-escape =   \@name                       @name theo nghĩa đen (không tra bí danh)
 
 # ── Trợ giúp — chế độ tiêu điểm ─────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   duyệt lười tài liệu
 
 # ── Trợ giúp — tài liệu ──────────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           mở soạn thảo với nội dung đã lưu
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     tải CID, mở để xem lại
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     tải CID, mở để xem lại
 help-doc-eval =   .my.doc.<name>!eval           chạy nội dung đã lưu từng dòng
 help-doc-publish =   .my.doc.<name>!publish @pub   lưu dưới dạng blob thô (bất kỳ loại)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  lưu YAML thành nút IPLD DAG-CBOR
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    nhập nội dung CID (không chạy)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    nhập nội dung CID (không chạy)
 help-doc-cid =   .my.doc.<name>!cid            hiển thị CID đã lưu
 help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    mở zion thông qua liên kết URL
 help-header-url = ── tham số URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Chia sẻ một liên kết mở zion với người nhận đã được điền sẵn:
-help-url-msg =   ?msg=<did>                   điền sẵn: @<did> (tin nhắn thông thường)
-help-url-say =   ?say=<did>                   điền sẵn: @<did>:say (động từ say)
-help-url-emote =   ?emote=<did>                 điền sẵn: @<did>:emote (động từ emote)
+help-url-msg =   ?msg=<did>                   điền sẵn: @<did>!msg (tin nhắn thông thường)
+help-url-say =   ?say=<did>                   điền sẵn: @<did>!say (động từ say)
+help-url-emote =   ?emote=<did>                 điền sẵn: @<did>!emote (động từ emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.
 # ── Help text — publishing ────────────────────────────────────────────────

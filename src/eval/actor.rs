@@ -33,6 +33,24 @@ pub(crate) fn eval_actor(
     });
 }
 
+pub(crate) fn eval_actor_local(
+    target: String,
+    command: String,
+    body: String,
+    raw: &str,
+    state: &AppState,
+) {
+    let cmd_id = state.push_command(raw);
+    state.outbox_queue.update(|q| {
+        q.push_back(OutboxTask::ActorLocal {
+            target,
+            command,
+            body,
+            cmd_id,
+        })
+    });
+}
+
 /// Execute one queued outbox task. Called serially from the dispatch loop.
 pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
     match task {
@@ -73,6 +91,26 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                     verb.as_deref()
                 };
                 handle_send_result(r, effective_verb, cmd_id, state);
+            }
+        }
+
+        OutboxTask::ActorLocal {
+            target,
+            command,
+            body,
+            cmd_id,
+        } => {
+            let result = match command.as_str() {
+                "msg" | "message" | "text" => Some(transport::send_text(&target, &body).await),
+                "say" | "chat" => Some(transport::send_chat(&target, &body).await),
+                "emote" => Some(transport::send_emote(&target, &body).await),
+                other => {
+                    fail_cmd(format!("unknown actor command: !{other}"), cmd_id, state);
+                    None
+                }
+            };
+            if let Some(r) = result {
+                handle_send_result(r, None, cmd_id, state);
             }
         }
 

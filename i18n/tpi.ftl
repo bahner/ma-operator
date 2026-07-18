@@ -130,15 +130,15 @@ identity-export-failed = Eksport i no wok: { $e }
 doc-content-empty = { $path }.content i emptipela
 doc-save-first = { $path }.content i emptipela — seivim pastaim
 doc-missing-name = nem bilong dokumen i no stap
-doc-publish-usage = yusim olsem: .my.doc.<nem>:publish <publishman>
-doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>:publish-ipld <publishman>
+doc-publish-usage = yusim olsem: .my.doc.<nem>!publish <publishman>
+doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>!publish-ipld <publishman>
 doc-publish-failed = publishim { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-fetch-done = kisim { $cid } → { $path }.content (i noران)
 doc-fetch-failed = kisim { $cid }: { $e }
-doc-fetch-usage = yusim olsem: .my.doc.<nem>:fetch <cid>
+doc-fetch-usage = yusim olsem: .my.doc.<nem>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid i no putim
 doc-no-verb = i no gat vèb `{ $verb }` bilong { $path }
@@ -163,10 +163,10 @@ help-cmd-panic =   .panic                       las rot — yusim sapos yu bagar
 help-cmd-history =   .history                     histri bilong komand (ol sem koman i stap wantaim)
 help-cmd-logout =   .logout                      autim
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       soim DID (noh mesej salim)
-help-msg-send =   @alias[:verb] body           salim mesej / RPC i go long aktor
-help-msg-fragment =   @alias#fragment[:verb] body  salim i go long alias wantaim DID fragment
+help-msg-send =   @alias!msg body / @alias:verb args           salim mesej / RPC i go long aktor
+help-msg-fragment =   @alias#fragment:verb body  salim i go long alias wantaim DID fragment
 help-msg-escape =   \@name                       stret @name (noh lukim alias)
 help-focus-set =   .use @alias [as @name]       fokusim aktor (senisim prompt)
 help-focus-clear =   .use                         rausim fokus
@@ -197,11 +197,11 @@ help-inbox-flush =   .my.inbox!flush              soim olgeta entri long termina
 help-inbox-filter =   .my.inbox!filter @who        soim tasol enteri bilong @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   wokabaut long senda DID dokumen isi isi
 help-doc-edit =   .my.doc.<name>!edit           openim edita wantaim content i sev pinis
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     kisim CID, openim bilong lukluk tasol
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     kisim CID, openim bilong lukluk tasol
 help-doc-eval =   .my.doc.<name>!eval           renim content i sev pinis lain long lain
 help-doc-publish =   .my.doc.<name>!publish @pub   storim olsem rou blob (eni kain)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  storim YAML olsem nod DAG-CBOR IPLD
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    impotim content bilong CID (noh renim)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    impotim content bilong CID (noh renim)
 help-doc-cid =   .my.doc.<name>!cid            soim CID i storim pinis
 help-doc-del =   .my.doc.<name>:              rausim pepa
 
@@ -286,17 +286,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -309,9 +309,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    opim zion long URL link
 help-header-url = ── URL paramita ─────────────────────────────────────────────────────────────────
 help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim olgeta i stap pinis:
-help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did> (simol meses)
-help-url-say =   ?say=<did>                   pulapim pastaim: @<did>:say (vep say)
-help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>:emote (vep emote)
+help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did>!msg (simol meses)
+help-url-say =   ?say=<did>                   pulapim pastaim: @<did>!say (vep say)
+help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>!emote (vep emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.
 # ── Help text — publishing ────────────────────────────────────────────────

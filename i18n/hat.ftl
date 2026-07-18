@@ -130,15 +130,15 @@ identity-export-failed = Ekspòtasyon echwe: { $e }
 doc-content-empty = { $path }.content vid
 doc-save-first = { $path }.content vid — sove dabò
 doc-missing-name = non dokiman manke
-doc-publish-usage = itilizasyon: .my.doc.<non>:publish <piblikatè>
-doc-publish-ipld-usage = itilizasyon: .my.doc.<non>:publish-ipld <piblikatè>
+doc-publish-usage = itilizasyon: .my.doc.<non>!publish <piblikatè>
+doc-publish-ipld-usage = itilizasyon: .my.doc.<non>!publish-ipld <piblikatè>
 doc-publish-failed = pibliye { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-fetch-done = chèche { $cid } → { $path }.content (pa egzekite)
 doc-fetch-failed = chèche { $cid }: { $e }
-doc-fetch-usage = itilizasyon: .my.doc.<non>:fetch <cid>
+doc-fetch-usage = itilizasyon: .my.doc.<non>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid pa defini
 doc-no-verb = pa gen vèb `{ $verb }` pou { $path }
@@ -163,10 +163,10 @@ help-cmd-panic =   .panic                       dènye rekous — itilize si ou 
 help-cmd-history =   .history                     istwa kòmand (repetisyon konsekitif konbine)
 help-cmd-logout =   .logout                      dekonekte
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       montre DID rezoud la (pa voye mesaj)
-help-msg-send =   @alias[:verb] body           voye mesaj / RPC bay aktè
-help-msg-fragment =   @alias#fragment[:verb] body  voye ba alias avèk fragman DID eksplisit
+help-msg-send =   @alias!msg body / @alias:verb args           voye mesaj / RPC bay aktè
+help-msg-fragment =   @alias#fragment:verb body  voye ba alias avèk fragman DID eksplisit
 help-msg-escape =   \@name                       @name literal (pa chèche alias)
 help-focus-set =   .use @alias [as @name]       fokis sou aktè (chanje pwomp)
 help-focus-clear =   .use                         efase fokis
@@ -197,11 +197,11 @@ help-inbox-flush =   .my.inbox!flush              enprime tout antri nan termina
 help-inbox-filter =   .my.inbox!filter @who        montre sèlman antre ki soti nan @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   travèse dokiman DID expèditè alèz
 help-doc-edit =   .my.doc.<name>!edit           ouvri editè avèk kontni sovgade
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     rekipere CID, ouvri pou revizyon sèlman
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     rekipere CID, ouvri pou revizyon sèlman
 help-doc-eval =   .my.doc.<name>!eval           egzekite kontni sovgade liy pa liy
 help-doc-publish =   .my.doc.<name>!publish @pub   estoke kòm blob brital (nenpòt tip)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  estoke YAML kòm nœd DAG-CBOR IPLD strukturè
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    enpòte kontni CID (pa egzekite)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    enpòte kontni CID (pa egzekite)
 help-doc-cid =   .my.doc.<name>!cid            montre CID estoke
 help-doc-del =   .my.doc.<name>:              efase dokiman
 
@@ -286,17 +286,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -309,9 +309,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
 help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
-help-url-msg =   ?msg=<did>                   ranpli davans: @<did> (mesaj senp)
-help-url-say =   ?say=<did>                   ranpli davans: @<did>:say (vèb say)
-help-url-emote =   ?emote=<did>                 ranpli davans: @<did>:emote (vèb emote)
+help-url-msg =   ?msg=<did>                   ranpli davans: @<did>!msg (mesaj senp)
+help-url-say =   ?say=<did>                   ranpli davans: @<did>!say (vèb say)
+help-url-emote =   ?emote=<did>                 ranpli davans: @<did>!emote (vèb emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
 # ── Help text — publishing ────────────────────────────────────────────────

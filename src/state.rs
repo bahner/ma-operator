@@ -185,6 +185,13 @@ pub enum OutboxTask {
         cmd_id: u64,
         config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
     },
+    /// A local zion command aimed at an actor, e.g. `@actor!say text`.
+    ActorLocal {
+        target: String,
+        command: String,
+        body: String,
+        cmd_id: u64,
+    },
     /// CRUD SET triggered by an incoming IPFS-store reply.
     CrudSet {
         target_did: String,

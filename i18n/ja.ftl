@@ -130,15 +130,15 @@ identity-export-failed = エクスポート失敗: { $e }
 doc-content-empty = { $path }.content が空です
 doc-save-first = { $path }.content が空です — 先に保存してください
 doc-missing-name = ドキュメント名がありません
-doc-publish-usage = 使用方法: .my.doc.<名前>:publish <発行者>
-doc-publish-ipld-usage = 使用方法: .my.doc.<名前>:publish-ipld <発行者>
+doc-publish-usage = 使用方法: .my.doc.<名前>!publish <発行者>
+doc-publish-ipld-usage = 使用方法: .my.doc.<名前>!publish-ipld <発行者>
 doc-publish-failed = { $path } の公開エラー: { $e }
 doc-publish-ipld-failed = { $path } の IPLD 公開エラー: { $e }
 doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-fetch-done = { $cid } を取得しました → { $path }.content (実行されていません)
 doc-fetch-failed = { $cid } の取得エラー: { $e }
-doc-fetch-usage = 使用方法: .my.doc.<名前>:fetch <cid>
+doc-fetch-usage = 使用方法: .my.doc.<名前>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid が設定されていません
 doc-no-verb = { $path } に動詞 `{ $verb }` がありません
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       最後の手段 — 困ったと
 help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       解決済み DID を表示 (メッセージは送信されない)
-help-msg-send =   @alias[:verb] body           アクターにメッセージ / RPC を送信
-help-msg-fragment =   @alias#fragment[:verb] body  明示的な DID フラグメント付きエイリアスに送信
+help-msg-send =   @alias!msg body / @alias:verb args           アクターにメッセージ / RPC を送信
+help-msg-fragment =   @alias#fragment:verb body  明示的な DID フラグメント付きエイリアスに送信
 help-msg-escape =   \@name                       リテラル @name (エイリアス検索なし)
 
 help-focus-set =   .use @alias [as @name]       アクターにフォーカス (プロンプトを変更)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              ターミナルにすべての
 help-inbox-filter =   .my.inbox!filter @who        @who からの項目のみ表示
 help-inbox-traverse =   .my.inbox.N.sender.<フィールド>  送信者の DID ドキュメントを遅延トラバース
 
-help-doc-edit =   .my.doc.<名前>:edit           保存されたコンテンツでエディターを開く
-help-doc-edit-cid =   .my.doc.<名前>:edit <cid>     CID を取得し、レビューのために開く
-help-doc-eval =   .my.doc.<名前>:eval           保存されたコンテンツを一行ずつ実行
-help-doc-publish =   .my.doc.<名前>:publish @pub   生のブロブとして保存 (すべてのタイプ)
-help-doc-publish-ipld =   .my.doc.<名前>:publish-ipld @pub  YAML を構造化 DAG-CBOR IPLD ノードとして保存
-help-doc-fetch =   .my.doc.<名前>:fetch <cid>    CID コンテンツをインポート (実行なし)
-help-doc-cid =   .my.doc.<名前>:cid            保存された CID を表示
+help-doc-edit =   .my.doc.<名前>!edit           保存されたコンテンツでエディターを開く
+help-doc-edit-cid =   .my.doc.<名前>!edit /ipfs/<cid>     CID を取得し、レビューのために開く
+help-doc-eval =   .my.doc.<名前>!eval           保存されたコンテンツを一行ずつ実行
+help-doc-publish =   .my.doc.<名前>!publish @pub   生のブロブとして保存 (すべてのタイプ)
+help-doc-publish-ipld =   .my.doc.<名前>!publish-ipld @pub  YAML を構造化 DAG-CBOR IPLD ノードとして保存
+help-doc-fetch =   .my.doc.<名前>!fetch /ipfs/<cid>    CID コンテンツをインポート (実行なし)
+help-doc-cid =   .my.doc.<名前>!cid            保存された CID を表示
 help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -294,17 +294,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -315,9 +315,11 @@ help-actor-wc =   @actor:ent:wc               line / word / char count
 help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
-help-url-msg =   ?msg=<did>                   事前入力: @<did>（テキストメッセージ）
-help-url-say =   ?say=<did>                   事前入力: @<did>:say（say動詞）
-help-url-emote =   ?emote=<did>                 事前入力: @<did>:emote（emote動詞）
+help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
+help-url-say =   ?say=<did>                   事前入力: @<did>!say（say動詞）
+help-url-emote =   ?emote=<did>                 事前入力: @<did>!emote（emote動詞）
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
 # ── Help text — publishing ────────────────────────────────────────────────

@@ -130,15 +130,15 @@ identity-export-failed = Eksportas nepavyko: { $e }
 doc-content-empty = { $path }.content yra tuščias
 doc-save-first = { $path }.content yra tuščias — pirmiausia išsaugokite
 doc-missing-name = trūksta dokumento pavadinimo
-doc-publish-usage = naudojimas: .my.doc.<pavadinimas>:publish <leidėjas>
-doc-publish-ipld-usage = naudojimas: .my.doc.<pavadinimas>:publish-ipld <leidėjas>
+doc-publish-usage = naudojimas: .my.doc.<pavadinimas>!publish <leidėjas>
+doc-publish-ipld-usage = naudojimas: .my.doc.<pavadinimas>!publish-ipld <leidėjas>
 doc-publish-failed = publikavimas { $path }: { $e }
 doc-publish-ipld-failed = ipld publikavimas { $path }: { $e }
 doc-store-sent = saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-ipld-store-sent = IPLD saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-fetch-done = gauta { $cid } → { $path }.content (nevykdyta)
 doc-fetch-failed = gavimas { $cid }: { $e }
-doc-fetch-usage = naudojimas: .my.doc.<pavadinimas>:fetch <cid>
+doc-fetch-usage = naudojimas: .my.doc.<pavadinimas>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nenustatytas
 doc-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       paskutinė priemonė — naudoki
 help-cmd-history =   .history                     komandų istorija (nuoseklūs dublikatai sujungti)
 help-cmd-logout =   .logout                      atsijungti
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       rodyti išspręstą DID (joks pranešimas neišsiųstas)
-help-msg-send =   @alias[:verb] body           siųsti pranešimą / RPC dalyviui
-help-msg-fragment =   @alias#fragment[:verb] body  siųsti pseudonimui su aiškiu DID fragmentu
+help-msg-send =   @alias!msg body / @alias:verb args           siųsti pranešimą / RPC dalyviui
+help-msg-fragment =   @alias#fragment:verb body  siųsti pseudonimui su aiškiu DID fragmentu
 help-msg-escape =   \@name                       pažodinis @name (be pseudonimo paieškos)
 
 help-focus-set =   .use @alias [as @name]       fokusuotis į dalyvį (keičia raginimą)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              spausdinti visus įrašus term
 help-inbox-filter =   .my.inbox!filter @who        rodyti tik @who įrašus
 help-inbox-traverse =   .my.inbox.N.sender.<laukas>  naršyti siuntėjo DID dokumentą su vėlavimu
 
-help-doc-edit =   .my.doc.<pavadinimas>:edit           atidaryti redaktorių su išsaugotu turiniu
-help-doc-edit-cid =   .my.doc.<pavadinimas>:edit <cid>     gauti CID, atidaryti peržiūrai
-help-doc-eval =   .my.doc.<pavadinimas>:eval           vykdyti išsaugotą turinį eilutė po eilutės
-help-doc-publish =   .my.doc.<pavadinimas>:publish @pub   išsaugoti kaip neapdorotą blob (visi tipai)
-help-doc-publish-ipld =   .my.doc.<pavadinimas>:publish-ipld @pub  išsaugoti YAML kaip struktūrizuotą DAG-CBOR IPLD mazgą
-help-doc-fetch =   .my.doc.<pavadinimas>:fetch <cid>    importuoti CID turinį (be vykdymo)
-help-doc-cid =   .my.doc.<pavadinimas>:cid            rodyti išsaugotą CID
+help-doc-edit =   .my.doc.<pavadinimas>!edit           atidaryti redaktorių su išsaugotu turiniu
+help-doc-edit-cid =   .my.doc.<pavadinimas>!edit /ipfs/<cid>     gauti CID, atidaryti peržiūrai
+help-doc-eval =   .my.doc.<pavadinimas>!eval           vykdyti išsaugotą turinį eilutė po eilutės
+help-doc-publish =   .my.doc.<pavadinimas>!publish @pub   išsaugoti kaip neapdorotą blob (visi tipai)
+help-doc-publish-ipld =   .my.doc.<pavadinimas>!publish-ipld @pub  išsaugoti YAML kaip struktūrizuotą DAG-CBOR IPLD mazgą
+help-doc-fetch =   .my.doc.<pavadinimas>!fetch /ipfs/<cid>    importuoti CID turinį (be vykdymo)
+help-doc-cid =   .my.doc.<pavadinimas>!cid            rodyti išsaugotą CID
 help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zion atidarymas per URL nuorodą
 help-header-url = ── URL parametrai ───────────────────────────────────────────────────────────────
 help-url-intro =   Pasidalinkite nuoroda, kuri atidaro zion su iš anksto užpildytu gavėju:
-help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did> (paprastas pranešimas)
-help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>:say (veiksmažodis say)
-help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>:emote (veiksmažodis emote)
+help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did>!msg (paprastas pranešimas)
+help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>!say (veiksmažodis say)
+help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>!emote (veiksmažodis emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Enter siųsti.
 # ── Help text — publishing ────────────────────────────────────────────────

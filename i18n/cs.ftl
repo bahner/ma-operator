@@ -130,15 +130,15 @@ identity-export-failed = Export se nezdařil: { $e }
 doc-content-empty = { $path }.content je prázdné
 doc-save-first = { $path }.content je prázdné — nejprve uložte
 doc-missing-name = chybí název dokumentu
-doc-publish-usage = použití: .my.doc.<název>:publish <vydavatel>
-doc-publish-ipld-usage = použití: .my.doc.<název>:publish-ipld <vydavatel>
+doc-publish-usage = použití: .my.doc.<název>!publish <vydavatel>
+doc-publish-ipld-usage = použití: .my.doc.<název>!publish-ipld <vydavatel>
 doc-publish-failed = publikování { $path }: { $e }
 doc-publish-ipld-failed = publikování IPLD { $path }: { $e }
 doc-store-sent = žádost o uložení odeslána ({ $id }) → { $publisher }; CID přijde v odpovědi RPC
 doc-ipld-store-sent = žádost o uložení IPLD odeslána ({ $id }) → { $publisher }; CID přijde v odpovědi RPC
 doc-fetch-done = { $cid } načteno → { $path }.content (nespuštěno)
 doc-fetch-failed = načítání { $cid }: { $e }
-doc-fetch-usage = použití: .my.doc.<název>:fetch <cid>
+doc-fetch-usage = použití: .my.doc.<název>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid není nastaveno
 doc-no-verb = žádné sloveso `{ $verb }` pro { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       poslední záchrana — použijt
 help-cmd-history =   .history                     historie příkazů (po sobě jdoucí duplikáty sloučeny)
 help-cmd-logout =   .logout                      odhlásit
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       zobrazit přeložený DID (žádná zpráva není odeslána)
-help-msg-send =   @alias[:verb] body           odeslat zprávu / RPC aktérovi
-help-msg-fragment =   @alias#fragment[:verb] body  odeslat na alias s explicitním fragmentem DID
+help-msg-send =   @alias!msg body / @alias:verb args           odeslat zprávu / RPC aktérovi
+help-msg-fragment =   @alias#fragment:verb body  odeslat na alias s explicitním fragmentem DID
 help-msg-escape =   \@name                       doslovné @name (bez vyhledávání aliasů)
 
 help-focus-set =   .use @alias [as @name]       zaměřit na aktéra (změní výzvu)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              vytisknout všechny záznamy v
 help-inbox-filter =   .my.inbox!filter @who        zobrazit pouze záznamy od @who
 help-inbox-traverse =   .my.inbox.N.sender.<pole>   procházet DID dokument odesílatele líně
 
-help-doc-edit =   .my.doc.<název>:edit           otevřít editor s uloženým obsahem
-help-doc-edit-cid =   .my.doc.<název>:edit <cid>     načíst CID, otevřít pro kontrolu
-help-doc-eval =   .my.doc.<název>:eval           spustit uložený obsah řádek po řádku
-help-doc-publish =   .my.doc.<název>:publish @pub   uložit jako surový blob (všechny typy)
-help-doc-publish-ipld =   .my.doc.<název>:publish-ipld @pub  uložit YAML jako strukturovaný uzel DAG-CBOR IPLD
-help-doc-fetch =   .my.doc.<název>:fetch <cid>    importovat obsah CID (bez spuštění)
-help-doc-cid =   .my.doc.<název>:cid            zobrazit uložené CID
+help-doc-edit =   .my.doc.<název>!edit           otevřít editor s uloženým obsahem
+help-doc-edit-cid =   .my.doc.<název>!edit /ipfs/<cid>     načíst CID, otevřít pro kontrolu
+help-doc-eval =   .my.doc.<název>!eval           spustit uložený obsah řádek po řádku
+help-doc-publish =   .my.doc.<název>!publish @pub   uložit jako surový blob (všechny typy)
+help-doc-publish-ipld =   .my.doc.<název>!publish-ipld @pub  uložit YAML jako strukturovaný uzel DAG-CBOR IPLD
+help-doc-fetch =   .my.doc.<název>!fetch /ipfs/<cid>    importovat obsah CID (bez spuštění)
+help-doc-cid =   .my.doc.<název>!cid            zobrazit uložené CID
 help-doc-del =   .my.doc.<název>:              smazat dokument
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    otevření zion přes URL odkaz
 help-header-url = ── URL parametry ────────────────────────────────────────────────────────────────
 help-url-intro =   Sdílej odkaz, který otevře zion s předvyplněným příjemcem:
-help-url-msg =   ?msg=<did>                   předvyplní: @<did> (prostá zpráva)
-help-url-say =   ?say=<did>                   předvyplní: @<did>:say (sloveso say)
-help-url-emote =   ?emote=<did>                 předvyplní: @<did>:emote (sloveso emote)
+help-url-msg =   ?msg=<did>                   předvyplní: @<did>!msg (prostá zpráva)
+help-url-say =   ?say=<did>                   předvyplní: @<did>!say (sloveso say)
+help-url-emote =   ?emote=<did>                 předvyplní: @<did>!emote (sloveso emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Vstup je předvyplněn, ale neodeslaný — stiskni Enter pro odeslání.
 # ── Help text — publishing ────────────────────────────────────────────────

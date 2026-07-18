@@ -130,15 +130,15 @@ identity-export-failed = Útflutningur misheppnaðist: { $e }
 doc-content-empty = { $path }.content er tómur
 doc-save-first = { $path }.content er tómur — vista fyrst
 doc-missing-name = skjalsnavn manglar
-doc-publish-usage = nýtsla: .my.doc.<navn>:publish <útgevari>
-doc-publish-ipld-usage = nýtsla: .my.doc.<navn>:publish-ipld <útgevari>
+doc-publish-usage = nýtsla: .my.doc.<navn>!publish <útgevari>
+doc-publish-ipld-usage = nýtsla: .my.doc.<navn>!publish-ipld <útgevari>
 doc-publish-failed = birting { $path }: { $e }
 doc-publish-ipld-failed = ipld-birting { $path }: { $e }
 doc-store-sent = vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
 doc-ipld-store-sent = IPLD-vistunargrein send ({ $id }) → { $publisher }; CID kemur við RPC-svari
 doc-fetch-done = sótti { $cid } → { $path }.content (ikki keyrt)
 doc-fetch-failed = henting { $cid }: { $e }
-doc-fetch-usage = nýtsla: .my.doc.<navn>:fetch <cid>
+doc-fetch-usage = nýtsla: .my.doc.<navn>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid er ikki sett
 doc-no-verb = einki sagnorð `{ $verb }` fyri { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       seinasti ráður — nýt um tú
 help-cmd-history =   .history                     skipanaferill (eftirfylgjandi endurtøkur samlagar)
 help-cmd-logout =   .logout                      rita út
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       vís leyst DID (einki boð sent)
-help-msg-send =   @alias[:verb] body           send boð / RPC til aktør
-help-msg-fragment =   @alias#fragment[:verb] body  send til samnefni við greiniligum DID-broti
+help-msg-send =   @alias!msg body / @alias:verb args           send boð / RPC til aktør
+help-msg-fragment =   @alias#fragment:verb body  send til samnefni við greiniligum DID-broti
 help-msg-escape =   \@name                       bókstavligur @name (ongin samnefnisleit)
 
 help-focus-set =   .use @alias [as @name]       fókuser á aktør (broytir kvaðning)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              prenta allar færslur á termi
 help-inbox-filter =   .my.inbox!filter @who        vís bert innferal frá @who
 help-inbox-traverse =   .my.inbox.N.sender.<øki>    fletta DID-skjal avsendara seinkað
 
-help-doc-edit =   .my.doc.<navn>:edit           opna ritforrit við vistað innihald
-help-doc-edit-cid =   .my.doc.<navn>:edit <cid>     sók CID, opna til yvirkun
-help-doc-eval =   .my.doc.<navn>:eval           keyra vistað innihald línu fyri línu
-help-doc-publish =   .my.doc.<navn>:publish @pub   goyma sum raw blob (allar slags)
-help-doc-publish-ipld =   .my.doc.<navn>:publish-ipld @pub  goyma YAML sum skipan DAG-CBOR IPLD-hnút
-help-doc-fetch =   .my.doc.<navn>:fetch <cid>    flyt inn CID-innihald (ongin keyring)
-help-doc-cid =   .my.doc.<navn>:cid            vís vistað CID
+help-doc-edit =   .my.doc.<navn>!edit           opna ritforrit við vistað innihald
+help-doc-edit-cid =   .my.doc.<navn>!edit /ipfs/<cid>     sók CID, opna til yvirkun
+help-doc-eval =   .my.doc.<navn>!eval           keyra vistað innihald línu fyri línu
+help-doc-publish =   .my.doc.<navn>!publish @pub   goyma sum raw blob (allar slags)
+help-doc-publish-ipld =   .my.doc.<navn>!publish-ipld @pub  goyma YAML sum skipan DAG-CBOR IPLD-hnút
+help-doc-fetch =   .my.doc.<navn>!fetch /ipfs/<cid>    flyt inn CID-innihald (ongin keyring)
+help-doc-cid =   .my.doc.<navn>!cid            vís vistað CID
 help-doc-del =   .my.doc.<navn>:              strika skjal
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-header-url = ── URL-broytar ──────────────────────────────────────────────────────────────────
 help-url-intro =   Del ein tengil sum opnar zion við fyritfuldum móttakara:
-help-url-msg =   ?msg=<did>                   fyritfyllir: @<did> (vanligt boð)
-help-url-say =   ?say=<did>                   fyritfyllir: @<did>:say (sagnorð say)
-help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>:emote (sagnorð emote)
+help-url-msg =   ?msg=<did>                   fyritfyllir: @<did>!msg (vanligt boð)
+help-url-say =   ?say=<did>                   fyritfyllir: @<did>!say (sagnorð say)
+help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>!emote (sagnorð emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fyri at senda.
 # ── Help text — publishing ────────────────────────────────────────────────

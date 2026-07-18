@@ -138,7 +138,7 @@ doc-store-sent = స్టోర్ అభ్యర్థన పంపబడి�
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-fetch-done = { $cid } తెచ్చబడింది → { $path }.content (అమలు చేయలేదు)
 doc-fetch-failed = పొందు { $cid }: { $e }
-doc-fetch-usage = వాడకం: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = వాడకం: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid సెట్ చేయలేదు
 doc-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
@@ -161,12 +161,12 @@ help-cmd-panic =   .panic                       చివరి మార్గ�
 help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
 help-cmd-logout =   .logout                      లాగ్ అవుట్
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID చూపించు (సందేశం పంపలేదు)
-help-msg-send =   @alias[:verb] body           నటుడికి సందేశం / RPC పంపండి
-help-msg-fragment =   @alias#fragment[:verb] body  స్పష్టమైన DID ఫ్రాగ్మెంట్‌తో పంపండి
+help-msg-send =   @alias!msg body / @alias:verb args           నటుడికి సందేశం / RPC పంపండి
+help-msg-fragment =   @alias#fragment:verb body  స్పష్టమైన DID ఫ్రాగ్మెంట్‌తో పంపండి
 help-msg-escape =   \@name                       అక్షరార్థ @name (మారుపేరు శోధన లేదు)
 
 # ── సహాయం — ఫోకస్ మోడ్ ───────────────────────────────────────────────────
@@ -207,11 +207,11 @@ help-inbox-traverse =   .my.inbox.N.sender.<field>   పంపినవారి
 
 # ── సహాయం — డాక్యుమెంట్‌లు ─────────────────────────────────────────────
 help-doc-edit =   .my.doc.<name>!edit           సేవ్ చేసిన కంటెంట్‌తో ఎడిటర్ తెరవండి
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     CID తెచ్చి, సమీక్ష కోసం మాత్రమే తెరవండి
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     CID తెచ్చి, సమీక్ష కోసం మాత్రమే తెరవండి
 help-doc-eval =   .my.doc.<name>!eval           సేవ్ చేసిన కంటెంట్‌ను లైన్-బై-లైన్ అమలు చేయండి
 help-doc-publish =   .my.doc.<name>!publish @pub   రా blob గా స్టోర్ చేయండి (ఏ రకమైనా)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  YAML ని DAG-CBOR IPLD నోడ్‌గా స్టోర్ చేయండి
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    CID కంటెంట్ దిగుమతి చేయండి (అమలు కాదు)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    CID కంటెంట్ దిగుమతి చేయండి (అమలు కాదు)
 help-doc-cid =   .my.doc.<name>!cid            స్టోర్ చేసిన CID చూపించు
 help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ తొలగించు
 
@@ -300,17 +300,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -323,9 +323,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
 help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
 help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
-help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did> (సాధారణ సందేశం)
-help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>:say (say క్రియ)
-help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>:emote (emote క్రియ)
+help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did>!msg (సాధారణ సందేశం)
+help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>!say (say క్రియ)
+help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>!emote (emote క్రియ)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
 # ── Help text — publishing ────────────────────────────────────────────────

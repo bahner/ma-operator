@@ -130,15 +130,15 @@ identity-export-failed = Usafirishaji umeshindwa: { $e }
 doc-content-empty = { $path }.content ipo wazi
 doc-save-first = { $path }.content ipo wazi — hifadhi kwanza
 doc-missing-name = jina la hati linakosekana
-doc-publish-usage = matumizi: .my.doc.<jina>:publish <mchapishaji>
-doc-publish-ipld-usage = matumizi: .my.doc.<jina>:publish-ipld <mchapishaji>
+doc-publish-usage = matumizi: .my.doc.<jina>!publish <mchapishaji>
+doc-publish-ipld-usage = matumizi: .my.doc.<jina>!publish-ipld <mchapishaji>
 doc-publish-failed = kuchapisha { $path }: { $e }
 doc-publish-ipld-failed = kuchapisha IPLD { $path }: { $e }
 doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-fetch-done = { $cid } imepatikana → { $path }.content (haijatekelezwa)
 doc-fetch-failed = kupata { $cid }: { $e }
-doc-fetch-usage = matumizi: .my.doc.<jina>:fetch <cid>
+doc-fetch-usage = matumizi: .my.doc.<jina>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid haijawekwa
 doc-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa k
 help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
 help-cmd-logout =   .logout                      toka
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       onyesha DID iliyotatuliwa (hakuna ujumbe unaotumwa)
-help-msg-send =   @alias[:verb] body           tuma ujumbe / RPC kwa muigizaji
-help-msg-fragment =   @alias#fragment[:verb] body  tuma kwa jina la kubadilisha lenye kipande cha DID wazi
+help-msg-send =   @alias!msg body / @alias:verb args           tuma ujumbe / RPC kwa muigizaji
+help-msg-fragment =   @alias#fragment:verb body  tuma kwa jina la kubadilisha lenye kipande cha DID wazi
 help-msg-escape =   \@name                       @name halisi (bila utafutaji wa jina la kubadilisha)
 
 help-focus-set =   .use @alias [as @name]       zingatia muigizaji (hubadilisha kidokezo)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              chapisha ingizo zote kwenye te
 help-inbox-filter =   .my.inbox!filter @who        onyesha maingizo kutoka @who peke yake
 help-inbox-traverse =   .my.inbox.N.sender.<uwanja>  pita hati ya DID ya mtumaji kwa uvivu
 
-help-doc-edit =   .my.doc.<jina>:edit           fungua mhariri na maudhui yaliyohifadhiwa
-help-doc-edit-cid =   .my.doc.<jina>:edit <cid>     pata CID, fungua kwa mapitio
-help-doc-eval =   .my.doc.<jina>:eval           tekeleza maudhui yaliyohifadhiwa mstari kwa mstari
-help-doc-publish =   .my.doc.<jina>:publish @pub   hifadhi kama blob ghafi (aina zote)
-help-doc-publish-ipld =   .my.doc.<jina>:publish-ipld @pub  hifadhi YAML kama nodi ya DAG-CBOR IPLD iliyopangwa
-help-doc-fetch =   .my.doc.<jina>:fetch <cid>    ingiza maudhui ya CID (bila utekelezaji)
-help-doc-cid =   .my.doc.<jina>:cid            onyesha CID iliyohifadhiwa
+help-doc-edit =   .my.doc.<jina>!edit           fungua mhariri na maudhui yaliyohifadhiwa
+help-doc-edit-cid =   .my.doc.<jina>!edit /ipfs/<cid>     pata CID, fungua kwa mapitio
+help-doc-eval =   .my.doc.<jina>!eval           tekeleza maudhui yaliyohifadhiwa mstari kwa mstari
+help-doc-publish =   .my.doc.<jina>!publish @pub   hifadhi kama blob ghafi (aina zote)
+help-doc-publish-ipld =   .my.doc.<jina>!publish-ipld @pub  hifadhi YAML kama nodi ya DAG-CBOR IPLD iliyopangwa
+help-doc-fetch =   .my.doc.<jina>!fetch /ipfs/<cid>    ingiza maudhui ya CID (bila utekelezaji)
+help-doc-cid =   .my.doc.<jina>!cid            onyesha CID iliyohifadhiwa
 help-doc-del =   .my.doc.<jina>:              futa hati
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
 help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
-help-url-msg =   ?msg=<did>                   jaza mapema: @<did> (ujumbe wa kawaida)
-help-url-say =   ?say=<did>                   jaza mapema: @<did>:say (kitenzi say)
-help-url-emote =   ?emote=<did>                 jaza mapema: @<did>:emote (kitenzi emote)
+help-url-msg =   ?msg=<did>                   jaza mapema: @<did>!msg (ujumbe wa kawaida)
+help-url-say =   ?say=<did>                   jaza mapema: @<did>!say (kitenzi say)
+help-url-emote =   ?emote=<did>                 jaza mapema: @<did>!emote (kitenzi emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.
 # ── Help text — publishing ────────────────────────────────────────────────

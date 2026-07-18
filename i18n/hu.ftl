@@ -130,15 +130,15 @@ identity-export-failed = Az export sikertelen: { $e }
 doc-content-empty = { $path }.content üres
 doc-save-first = { $path }.content üres — először mentse el
 doc-missing-name = hiányzó dokumentumnév
-doc-publish-usage = használat: .my.doc.<név>:publish <kiadó>
-doc-publish-ipld-usage = használat: .my.doc.<név>:publish-ipld <kiadó>
+doc-publish-usage = használat: .my.doc.<név>!publish <kiadó>
+doc-publish-ipld-usage = használat: .my.doc.<név>!publish-ipld <kiadó>
 doc-publish-failed = közzététel { $path }: { $e }
 doc-publish-ipld-failed = IPLD közzététel { $path }: { $e }
 doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-fetch-done = { $cid } letöltve → { $path }.content (nem futtatva)
 doc-fetch-failed = letöltés { $cid }: { $e }
-doc-fetch-usage = használat: .my.doc.<név>:fetch <cid>
+doc-fetch-usage = használat: .my.doc.<név>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nincs beállítva
 doc-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
@@ -160,11 +160,11 @@ help-cmd-panic =   .panic                       végső megoldás — ha bajban 
 help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
 help-cmd-logout =   .logout                      kijelentkezés
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 help-msg-echo =   @alias                       feloldott DID megjelenítése (nem küld üzenetet)
-help-msg-send =   @alias[:verb] body           üzenet / RPC küldése szereplőnek
-help-msg-fragment =   @alias#fragment[:verb] body  küldés álnévnek explicit DID-töredékkel
+help-msg-send =   @alias!msg body / @alias:verb args           üzenet / RPC küldése szereplőnek
+help-msg-fragment =   @alias#fragment:verb body  küldés álnévnek explicit DID-töredékkel
 help-msg-escape =   \@name                       szó szerinti @name (alias keresés nélkül)
 
 help-focus-set =   .use @alias [as @name]       fókuszálás szereplőre (módosítja a promptot)
@@ -199,13 +199,13 @@ help-inbox-flush =   .my.inbox!flush              összes bejegyzés kiírása a
 help-inbox-filter =   .my.inbox!filter @who        csak @who bejegyzéseinek megjelenítése
 help-inbox-traverse =   .my.inbox.N.sender.<mező>   feladó DID-dokumentum lusta bejárása
 
-help-doc-edit =   .my.doc.<név>:edit           szerkesztő megnyitása mentett tartalommal
-help-doc-edit-cid =   .my.doc.<név>:edit <cid>     CID letöltése, megnyitás áttekintésre
-help-doc-eval =   .my.doc.<név>:eval           mentett tartalom futtatása soronként
-help-doc-publish =   .my.doc.<név>:publish @pub   mentés nyers blobként (minden típus)
-help-doc-publish-ipld =   .my.doc.<név>:publish-ipld @pub  YAML mentése strukturált DAG-CBOR IPLD csomópontként
-help-doc-fetch =   .my.doc.<név>:fetch <cid>    CID tartalom importálása (futtatás nélkül)
-help-doc-cid =   .my.doc.<név>:cid            mentett CID megjelenítése
+help-doc-edit =   .my.doc.<név>!edit           szerkesztő megnyitása mentett tartalommal
+help-doc-edit-cid =   .my.doc.<név>!edit /ipfs/<cid>     CID letöltése, megnyitás áttekintésre
+help-doc-eval =   .my.doc.<név>!eval           mentett tartalom futtatása soronként
+help-doc-publish =   .my.doc.<név>!publish @pub   mentés nyers blobként (minden típus)
+help-doc-publish-ipld =   .my.doc.<név>!publish-ipld @pub  YAML mentése strukturált DAG-CBOR IPLD csomópontként
+help-doc-fetch =   .my.doc.<név>!fetch /ipfs/<cid>    CID tartalom importálása (futtatás nélkül)
+help-doc-cid =   .my.doc.<név>!cid            mentett CID megjelenítése
 help-doc-del =   .my.doc.<név>:              dokumentum törlése
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -293,17 +293,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -316,9 +316,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
 help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
 help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
-help-url-msg =   ?msg=<did>                   előre kitölti: @<did> (egyszerű üzenet)
-help-url-say =   ?say=<did>                   előre kitölti: @<did>:say (say ige)
-help-url-emote =   ?emote=<did>                 előre kitölti: @<did>:emote (emote ige)
+help-url-msg =   ?msg=<did>                   előre kitölti: @<did>!msg (egyszerű üzenet)
+help-url-say =   ?say=<did>                   előre kitölti: @<did>!say (say ige)
+help-url-emote =   ?emote=<did>                 előre kitölti: @<did>!emote (emote ige)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.
 # ── Help text — publishing ────────────────────────────────────────────────

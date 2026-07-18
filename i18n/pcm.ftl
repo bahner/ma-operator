@@ -138,7 +138,7 @@ doc-store-sent = store request send ({ $id }) → { $publisher }; CID go arrive 
 doc-ipld-store-sent = IPLD store request send ({ $id }) → { $publisher }; CID go arrive via RPC reply
 doc-fetch-done = fetched { $cid } → { $path }.content (no execute)
 doc-fetch-failed = fetch { $cid }: { $e }
-doc-fetch-usage = usage: .my.doc.<name>!fetch <cid>
+doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nor set
 doc-no-verb = no verb `{ $verb }` for { $path }
@@ -163,10 +163,10 @@ help-cmd-panic =   .panic                       las resort — yus am if yu waka
 help-cmd-history =   .history                     history of command (repeat wey follow each oda don join)
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:begin                  eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       eko di DID wey dem resolve (noh mesej send)
-help-msg-send =   @alias[:verb] body           send mesej / RPC go aktor
-help-msg-fragment =   @alias#fragment[:verb] body  send go alias wey get eksplisit DID fragment
+help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go aktor
+help-msg-fragment =   @alias#fragment:verb body  send go alias wey get eksplisit DID fragment
 help-msg-escape =   \@name                       literal @name (noh alias lookup)
 help-focus-set =   .use @alias [as @name]       fokus on aktor (e go chanje prompt)
 help-focus-clear =   .use                         klia fokus
@@ -197,11 +197,11 @@ help-inbox-flush =   .my.inbox!flush              print all entri dem go termina
 help-inbox-filter =   .my.inbox!filter @who        show only entri from @who
 help-inbox-traverse =   .my.inbox.N.sender.<field>   traverse senda DID dokument layzily
 help-doc-edit =   .my.doc.<name>!edit           open edita wit saved content
-help-doc-edit-cid =   .my.doc.<name>!edit <cid>     fetsh CID, open for review only
+help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     fetsh CID, open for review only
 help-doc-eval =   .my.doc.<name>!eval           execute saved content line-by-line
 help-doc-publish =   .my.doc.<name>!publish @pub   store as raw blob (any type)
 help-doc-publish-ipld =   .my.doc.<name>!publish-ipld @pub  store YAML as struktured DAG-CBOR IPLD node
-help-doc-fetch =   .my.doc.<name>!fetch <cid>    import CID content (noh execution)
+help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    import CID content (noh execution)
 help-doc-cid =   .my.doc.<name>!cid            shoh stored CID
 help-doc-del =   .my.doc.<name>:              dilit dokument
 
@@ -286,17 +286,17 @@ help-unknown-topic =   .help/{ $topic }: unknown topic
 # -- Help actor section
 help-header-actor = -- remote actors
 help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor body                  send text message
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor.entities              list entities
-help-actor-entities-get =   @actor.entities/<n>          get entity
-help-actor-entities-set =   @actor.entities/<n>: <cid>   set entity
-help-actor-entities-edit =   @actor.entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor.entities/<n>:         delete entity
-help-actor-config-get =   @actor.config/<key>          get config value
-help-actor-config-set =   @actor.config/<key>: val     set config value
-help-actor-acl =   @actor.acl                   get ACL
-help-actor-acl-edit =   @actor.acl!edit              edit ACL
+help-actor-entities =   @actor/entities              list entities
+help-actor-entities-get =   @actor/entities/<n>          get entity
+help-actor-entities-set =   @actor/entities/<n>: <cid>   set entity
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
+help-actor-config-get =   @actor/config/<key>          get config value
+help-actor-config-set =   @actor/config/<key>: val     set config value
+help-actor-acl =   @actor/acl                   get ACL
+help-actor-acl-edit =   @actor/acl!edit              edit ACL
 help-actor-fragment =   @actor#entity                send to plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
 help-header-cid-ops = -- CID content ops
@@ -309,9 +309,11 @@ help-actor-wc-l =   @actor:ent:wc -l            line count only
 help-topic-url =   .help/url                    open zion through URL link
 help-header-url = ── URL parameters dem ───────────────────────────────────────────────────────────
 help-url-intro =   Share link wey go open zion with di person wey don put inside:
-help-url-msg =   ?msg=<did>                   put before: @<did> (normal message)
-help-url-say =   ?say=<did>                   put before: @<did>:say (verb say)
-help-url-emote =   ?emote=<did>                 put before: @<did>:emote (verb emote)
+help-url-msg =   ?msg=<did>                   put before: @<did>!msg (normal message)
+help-url-say =   ?say=<did>                   put before: @<did>!say (verb say)
+help-url-emote =   ?emote=<did>                 put before: @<did>!emote (verb emote)
+help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ctx =   ?ctx=<actor[#entity]>         auto-focus actor/entity after login
 help-url-example =   https://ma.bahner.com/?msg=did:ma:k51…
 help-url-note =   Di input don fill but dem no send am — press Enter make e send.
 # ── Help text — publishing ────────────────────────────────────────────────
