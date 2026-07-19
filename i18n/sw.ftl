@@ -44,10 +44,10 @@ msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID imechapishwa kupitia ma ya ndani ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = tunajaribu kukuunganisha na 間trix
+msg-local-ma-claimed = 間 ya ndani imedaiwa
+msg-local-ma-already-claimed = 間 ya ndani tayari imedaiwa
+msg-local-ma-claim-failed = imeshindikana kudai 間 ya ndani
 msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '.my.identity!publish @ma'. Andika '.help/publish' kwa maelezo.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   jina bandia @ma limeundwa — endesha '.my.identity!publish @ma' kutangaza utambulisho wako.
 claim-success = Wakati wa utekelezaji umedaiwa kwa { $did }
 claim-conflict = Wakati wa utekelezaji tayari umedaiwa na utambulisho mwingine
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime tayari imedaiwa na utambulisho huu
 claim-http-failed = kudai kumeshindwa: HTTP { $status }
 claim-error = kudai kumeshindwa: { $e }
 claim-no-session = hujaingia; ingia kwanza ili kudai wakati wa utekelezaji
@@ -145,14 +145,14 @@ doc-publish-failed = kuchapisha { $path }: { $e }
 doc-publish-ipld-failed = kuchapisha IPLD { $path }: { $e }
 doc-publish-error-detail = uchapishaji umeshindwa [{ $code }]: { $err }
 doc-publish-error-hint = Kidokezo: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = ingia tena ili ego iweze kufikia funguo zako za utambulisho
+doc-publish-hint-target = tumia mchapishaji halali wa DID au lakabu ambayo inaamua kuweka wazi 57
+doc-publish-hint-network = thibitisha wakati wa kukimbia wa 7 na 22 zinaweza kufikiwa, kisha ujaribu tena
+doc-publish-hint-resolve = thibitisha kuwa hati ya DID ya mchapishaji imechapishwa na ina sehemu ya mwisho inayoweza kufikiwa
+doc-publish-hint-acl = omba opereta wa mchapishaji akuruhusu DID yako katika 48
+doc-publish-hint-runtime = wakati wa kukimbia/programu-jalizi imekataa ombi; kagua sababu na ujaribu tena baada ya kurekebisha huluki/muda wa utekelezaji
+doc-publish-hint-ipfs = angalia hali ya afya ya 12/17 ya ndani na hali ya wakati wa utekelezaji wa mchapishaji
+doc-publish-hint-unknown = kagua kumbukumbu za wakati wa utekelezaji kwa sababu za kina na ujaribu tena
 doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-fetch-done = { $cid } imepatikana → { $path }.content (haijatekelezwa)
@@ -170,9 +170,9 @@ help-header-config = ── sarufi ya usanidi wa ndani ────────�
 help-header-common = ── njia za kawaida ───────────────────────────────────────────────────────
 help-header-inbox = ── kisanduku cha barua ───────────────────────────────────────────────────
 help-header-documents = ── nyaraka ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── lugha ───────────────────────────── ──────────────────────────────
+help-header-ma = ── 3-nafasi ────────────────────────────── ──────────────────────────────
+help-header-ma-entry = ── kuingia 間-nafasi ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        maandishi haya
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       futa terminal
 help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa katika shida
 help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
 help-cmd-logout =   .logout                      toka
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
+help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
 
 help-msg-echo =   @alias                       onyesha DID/DID-URL iliyotatuliwa (hakuna ujumbe unaotumwa)
 help-msg-send =   @alias!msg body / @alias:verb args           tuma ujumbe / RPC kwa muigizaji
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<jina>!cid            onyesha CID iliyohifadhiwa
 help-doc-del =   .my.doc.<jina>:              futa hati
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n huhifadhi mapendeleo ya lugha yanayohusiana na utambulisho wako.
+help-i18n-set = .my.i18n: <code>             chagua lugha ambayo 20 hutumia kwa utambulisho huu
+help-i18n-list = .my.i18n!list               orodhesha misimbo ya lugha inayopatikana
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Chumba cha 間 ni nafasi kati ya vitambulisho vya 間. ma huviwezesha vitambulisho hivyo kupatana na kuwasiliana; utambulisho wako ukishachapishwa, unaweza kushiriki.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = kuhariri: hitilafu ya kupata: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = hakuna kipindi cha kazi — profaili haiwezi kufutwa
 profile-delete-error = kufuta profaili kumeshindwa: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = haiwezi kuweka 11 kwa wasifu mwingine — wako tu
+profile-wrong-user-name = haiwezi kuweka 11 kwa 19 — wasifu wako mwenyewe pekee
+profile-no-ma = hakuna muda wa utekelezaji wa 3 uliosanidiwa - endesha 31 kwanza
+profile-no-cid = hakuna 3 iliyohifadhiwa kwa wasifu huu - endesha 37 kwanza
+profile-no-cid-in-doc = hakuna wasifu 11 uliopatikana katika hati ya DID — endesha 43 kwanza
+profile-publish-sent = wasifu umesimbwa na kutumwa kwa IPFS; hati ya DID itasasishwa CID itakapofika
+profile-publish-done = wasifu umechapishwa — hati ya DID imesasishwa kwa ma.agent CID
+profile-publish-failed = uchapishaji wa wasifu haukufaulu: 24
+profile-fetch-done = wasifu umechukuliwa - funguo za 18 zimepakiwa kutoka 43
+profile-fetch-failed = Imeshindwa kuleta wasifu: 22
+msg-identity-exists = utambulisho tayari umechapishwa - wasifu umesasishwa
+profile-import-exists = wasifu 8 tayari upo — uifute kwanza
+profile-import-wrong-user = faili ina wasifu 22, inayotarajiwa 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = maudhui ya jozi (hayajaonyeshwa)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = imeshindwa kuleta maudhui: 25
+cid-op-unknown = Operesheni isiyojulikana ya yaliyomo: 27
+cid-op-wc = { $lines } mistari 18 maneno 36 chara
 profiles-empty = (hakuna)
 profiles-deleted = profaili { $name } imefutwa
 profiles-not-found = profaili haikupatikana: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- topik -- ketik .help/<topic> untuk detail
+help-topic-msg =   .help/msg                    pesan
+help-topic-ma = .help/ma                     ma-nafasi, uchapishaji, na kuingia
+help-topic-path = .help/path                   sarufi ya njia ya nukta
+help-topic-my =   .help/my                     config pribadi
+help-topic-inbox =   .help/inbox                  kotak masuk
+help-topic-doc =   .help/doc                    dokumen
+help-topic-actor =   .help/actor                  actor jarak jauh
+help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- aktor jarak jauh
+help-actor-echo =   @actor                       tampilkan DID yang diselesaikan
+help-actor-text = @actor[#entity]!msg|!say|!emote body         tuma ujumbe wa moja kwa moja / gumzo / hisia
+help-actor-ping = @actor:ping                  uhai wa ping
+help-actor-entities =   @actor/entities              daftar entitas
+help-actor-entities-get = @actor/entities/<n>          pata nodi ya chombo
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   weka huluki kwa marejeleo ya 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entitas
+help-actor-entities-del = @actor/entities/<n>:         futa huluki
+help-actor-config-get =   @actor/config/<key>          ambil nilai config
+help-actor-config-set =   @actor/config/<key>: val     atur nilai config
+help-actor-acl = @actor/acl                   pata 4
+help-actor-acl-edit =   @actor/acl!edit              hariri ACL
+help-actor-fragment =   @actor#entity                kirim ke plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-header-cid-ops = ── simu za mwigizaji wa 3 ─────────────────────── ─────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  pigia huluki 15 kutoka 24 na usubiri jibu lake
+help-actor-head = (@actor/path)                pata maudhui ya mbali ya CRUD kutoka 31
+help-actor-tail = (<bafy...>)                  jumuisha na tathmini 21 kutoka kwa 36 41
+help-actor-wc = (define x (@actor:verb arg))  weka majibu ya 5 katika mazingira ya kikao
+help-actor-wc-l = .my.scheme.ma!edit           hariri visaidizi vya 11 vilivyohifadhiwa kwa utambulisho huu
 
 help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   upendeleo wa lugha kwa utambulisho wako
 help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
 help-url-msg =   ?msg=<did>                   jaza mapema: @<did>!msg (ujumbe wa kawaida)
 help-url-say =   ?say=<did>                   jaza mapema: @<did>!say (kitenzi say)
 help-url-emote =   ?emote=<did>                 jaza mapema: @<did>!emote (kitenzi emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              jaza mapema wakati wa kukimbia DID / 23 URL
+help-url-enter = ?enter=<runtime>             ingiza ulimwengu wa wakati wa kukimbia baada ya kuingia
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter kutuma.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtanda
 help-publish-ma = Ili kuchapisha, unahitaji ma (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.
 help-publish-steps = Hatua: endesha '.ma [port]' kugundua ma ya ndani, kisha '.my.identity!publish @ma'.
 help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID bado haijachapishwa - endesha 28 kwanza, kisha 67 wasifu wako
+profile-update-done = wasifu umesasishwa - funguo za 18 zimeunganishwa kutoka 43
+profile-delete-needs-name = taja jina la wasifu: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Kukusanya kundi — andika amri, malizia kwa .batch
+batch-already-collecting = Tayari inakusanya kundi - malizia kwa .batch kwanza
+batch-empty = Kundi lilikuwa tupu - hakuna cha kukimbia
+batch-running = Menjalankan batch…
+batch-step-timeout = hatua ya kundi imeisha muda
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
+batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
+msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+err-unknown-command = amri isiyojulikana: { $path }
+err-read-only-path = { $path } ni ya kusoma tu
+help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

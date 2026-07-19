@@ -44,10 +44,10 @@ msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pibliye via ma lokal ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = ap eseye konekte ou ak 間trix la
+msg-local-ma-claimed = 間 lokal reklame
+msg-local-ma-already-claimed = 間 lokal deja reklame
+msg-local-ma-claim-failed = pa t kapab reklame 間 lokal
 msg-identity-not-published = Idantite pa jwenn sou entènèt — si ou gen ma ki instalé lokalman, kouri '.ma [port]' epi '.my.identity!publish @ma'. Tape '.help/publish' pou detay.
 msg-blocked = ⊗ bloke [{ $cap }]: { $from }
 msg-focus-cleared = fòkis efase
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma te kreye — kouri '.my.identity!publish @ma' pou pibliye idantite ou.
 claim-success = Runtime reklame pou { $did }
 claim-conflict = Runtime deja reklame pa yon lòt idantite
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime deja reklame pa idantite sa a
 claim-http-failed = reklamasyon echwe: HTTP { $status }
 claim-error = reklamasyon echwe: { $e }
 claim-no-session = pa konekte; konekte dabò pou reklame runtime
@@ -145,14 +145,14 @@ doc-publish-failed = pibliye { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = piblikasyon echwe [{ $code }]: { $err }
 doc-publish-error-hint = Sijesyon: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle idantite w yo
+doc-publish-hint-target = sèvi ak yon piblikatè valab DID oswa alyas ki rezoud nan bare 57
+doc-publish-hint-network = verifye 7 ègzekutabl ak 22 yo ka jwenn, Lè sa a, reesye
+doc-publish-hint-resolve = verifye dokiman DID piblikatè a pibliye epi li gen yon pwen final ki ka jwenn
+doc-publish-hint-acl = mande operatè piblikatè a pou pèmèt DID ou nan 48
+doc-publish-hint-runtime = runtime/plugin te rejte demann lan; enspekte rezon an epi eseye refè apre ranje antite / ègzekutabl
+doc-publish-hint-ipfs = tcheke sante lokal 12/17 ak estati egzekite Piblikatè
+doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
 doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-fetch-done = chèche { $cid } → { $path }.content (pa egzekite)
@@ -174,9 +174,9 @@ help-header-config = ── gramè konfigirasyon lokal ────────�
 help-header-common = ── chemen komen ───────────────────────────────────────────────────────────
 help-header-inbox = ── bwat resepsyon ─────────────────────────────────────────────────────────
 help-header-documents = ── dokiman (.my.doc.*) ────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── lang ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-espas ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── k ap antre nan 間-espas ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        teks sa a
 help-cmd-clear =   .clear                       efase terminal
@@ -225,9 +225,9 @@ help-doc-cid =   .my.doc.<name>!cid            montre CID estoke
 help-doc-del =   .my.doc.<name>:              efase dokiman
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak idantite w.
+help-i18n-set = .my.i18n: <code>             chwazi lang 20 itilize pou idantite sa a
+help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Chanm 間 lan se espas ki genyen ant idantite 間 yo. ma fè idantite sa yo jwenn youn lòt epi kominike; lè idantite ou pibliye, ou ka patisipe.
@@ -287,73 +287,73 @@ err-edit-fetch-failed = edisyon: echèk chajman: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = pa gen sesyon aktif — pa kapab efase pwofil la
 profile-delete-error = efaseman pwofil echwe: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = pa ka mete 11 pou yon lòt pwofil - sèlman pwòp ou a
+profile-wrong-user-name = pa ka mete 11 pou 19 — sèlman pwòp pwofil ou
+profile-no-ma = pa gen 3 ègzekutabl konfigirasyon - kouri 31 an premye
+profile-no-cid = pa gen 3 ki estoke pou pwofil sa a — kouri 37 an premye
+profile-no-cid-in-doc = pa gen okenn pwofil 11 yo jwenn nan dokiman DID — kouri 43 an premye
+profile-publish-sent = pwofil la ankode epi voye sou IPFS; dokiman DID la ap mete ajou lè CID la rive
+profile-publish-done = pwofil la pibliye — dokiman DID la mete ajou ak CID ma.agent
+profile-publish-failed = pwofil pibliye echwe: 24
+profile-fetch-done = pwofil chache — kle 18 chaje soti nan 43
+profile-fetch-failed = chache pwofil echwe: 22
+msg-identity-exists = idantite deja pibliye - pwofil jiska dat
+profile-import-exists = pwofil 8 deja egziste — efase li an premye
+profile-import-wrong-user = dosye gen pwofil 22, espere 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = kontni binè (pa parèt)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = echwe pou jwenn kontni: 25
+cid-op-unknown = operasyon kontni enkoni: 27
+cid-op-wc = { $lines } liy 18 mo 36 karaktè
 profiles-empty = (okenn)
 profiles-deleted = pwofil { $name } efase
 profiles-not-found = pwofil pa jwenn: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-msg =   .help/msg                    mesaj
+help-topic-ma = .help/ma                     ma-espas, pibliye, ak antre
+help-topic-path = .help/path                   gramè lokal dot-chemen
+help-topic-my =   .help/my                     konfig pèsonèl
+help-topic-inbox =   .help/inbox                  bwat resepsyon
+help-topic-doc =   .help/doc                    dokiman
+help-topic-actor =   .help/actor                  aktè adistans
+help-unknown-topic =   .help/{ $topic }: sijè enkoni
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- aktè adistans
+help-actor-echo =   @actor                       montre DID ki rezoud la
+help-actor-text = @actor[#entity]!msg|!say|!emote body         voye mesaj dirèk/chat/emote
+help-actor-ping = @actor:ping                  lavi ping
+help-actor-entities =   @actor/entities              lis antite yo
+help-actor-entities-get = @actor/entities/<n>          jwenn node antite
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   mete antite pa referans 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     modifye antite
+help-actor-entities-del = @actor/entities/<n>:         efase antite
+help-actor-config-get =   @actor/config/<key>          pran valè config
+help-actor-config-set =   @actor/config/<key>: val     mete valè config
+help-actor-acl = @actor/acl                   jwenn 4
+help-actor-acl-edit =   @actor/acl!edit              modifye ACL
+help-actor-fragment =   @actor#entity                voye bay plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC bay plugin
+help-header-cid-ops = ── 3 aktè rele ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  rele yon antite 15 soti nan 24 epi tann repons li
+help-actor-head = (@actor/path)                chache kontni CRUD aleka nan 31
+help-actor-tail = (<bafy...>)                  enkli ak evalye 21 soti nan yon 36 41
+help-actor-wc = (define x (@actor:verb arg))  kenbe repons 5 nan anviwònman sesyon an
+help-actor-wc-l = .my.scheme.ma!edit           edite ki te sove 11 asistan yo pou idantite sa a
 
 help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   preferans lang pou idantite w
 help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
 help-url-msg =   ?msg=<did>                   ranpli davans: @<did>!msg (mesaj senp)
 help-url-say =   ?say=<did>                   ranpli davans: @<did>!say (vèb say)
 help-url-emote =   ?emote=<did>                 ranpli davans: @<did>!emote (vèb emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pre-ranpli ègzekutabl DID / 23 URL
+help-url-enter = ?enter=<runtime>             antre nan mond lan apre konekte
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -363,20 +363,23 @@ help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka 
 help-publish-ma = Pou pibliye, ou bezwen ma (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.
 help-publish-steps = Etap: kouri '.ma [port]' pou detekte ma lokal, epi '.my.identity!publish @ma'.
 help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID pa pibliye ankò — kouri 28 an premye, apre sa 67 pwofil ou a
+profile-update-done = pwofil mete ajou - kle 18 fizyone soti nan 43
+profile-delete-needs-name = presize non pwofil la: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Kolekte pakèt - tape kòmandman, fini ak .batch
+batch-already-collecting = Deja kolekte yon pakèt - fini ak .batch an premye
+batch-empty = Pakèt te vid - pa gen anyen yo kouri
+batch-running = Batch ap kouri…
+batch-step-timeout = etap pakèt kwonometre soti
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch fini an { $secs }s — { $steps } etap
+batch-done-error = Batch fini ak erè an { $secs }s — { $steps } etap
+msg-timeout = Mesaj la ekspire (pa gen repons nan 60s)
+err-unknown-command = kòmand enkoni: { $path }
+err-read-only-path = { $path } se lekti sèlman
+help-cmd-batch-async =   .batch:async / .batch        evalye dokiman bouyon an paralèl
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -44,10 +44,10 @@ msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID yerel ma ({ $url }) aracılığıyla yayımlandı
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = seni 間trix'e bağlamaya çalışıyor
+msg-local-ma-claimed = yerel 間 talep edildi
+msg-local-ma-already-claimed = yerel 間 zaten talep edilmiş
+msg-local-ma-claim-failed = yerel 間 talep edilemedi
 msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '.my.identity!publish @ma' çalıştırın. Ayrıntılar için '.help/publish' yazın.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   @ma takma adı oluşturuldu — kimliğini yayımlamak için '.my.identity!publish @ma' çalıştır.
 claim-success = Çalışma zamanı { $did } için talep edildi
 claim-conflict = Çalışma zamanı başka bir kimlik tarafından zaten talep edildi
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime zaten bu kimlik tarafından talep edilmiş
 claim-http-failed = talep başarısız: HTTP { $status }
 claim-error = talep başarısız: { $e }
 claim-no-session = giriş yapılmadı; çalışma zamanını talep etmek için önce giriş yapın
@@ -145,14 +145,14 @@ doc-publish-failed = yayım { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = yayınlama başarısız [{ $code }]: { $err }
 doc-publish-error-hint = İpucu: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = Ego'nun kimlik anahtarlarınıza erişebilmesi için tekrar giriş yapın
+doc-publish-hint-target = geçerli bir yayıncı DID'si veya çıplak 57 olarak çözümlenen takma ad kullanın
+doc-publish-hint-network = 7 çalışma zamanının ve 22'in erişilebilir olduğunu doğrulayın ve ardından yeniden deneyin
+doc-publish-hint-resolve = yayıncı DID belgesinin yayınlandığını ve ulaşılabilir bir uç nokta içerdiğini doğrulayın
+doc-publish-hint-acl = yayıncı operatöründen 48'te DID'nize izin vermesini isteyin
+doc-publish-hint-runtime = çalışma zamanı/eklenti isteği reddetti; nedenini inceleyin ve varlığı/çalışma zamanını düzelttikten sonra yeniden deneyin
+doc-publish-hint-ipfs = yerel 12/17 sağlığını ve yayıncı çalışma zamanı durumunu kontrol edin
+doc-publish-hint-unknown = ayrıntılı neden için çalışma zamanı günlüklerini inceleyin ve yeniden deneyin
 doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-fetch-done = { $cid } getirildi → { $path }.content (çalıştırılmadı)
@@ -170,9 +170,9 @@ help-header-config = ── yerel yapılandırma sözdizimi ──────�
 help-header-common = ── yaygın yollar ─────────────────────────────────────────────────────────
 help-header-inbox = ── gelen kutusu ──────────────────────────────────────────────────────────
 help-header-documents = ── belgeler ─────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── dil ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-boşluk ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── 間-boşluğa girme ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Yardım — zion komutları ───────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       terminali temizle
 help-cmd-panic =   .panic                       son çare — sorun çıkarsa kullan
 help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       taslak belgeyi paralel değerlendir
+help-cmd-batch-sync =   .batch:sync / .batch         taslak belgeyi satır satır değerlendir
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID/DID-URL göster (mesaj gönderilmez)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            depolanan CID'yi göster
 help-doc-del =   .my.doc.<name>:              belgeyi sil
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n, kimliğinize bağlı dil tercihini saklar.
+help-i18n-set = .my.i18n: <code>             20'in bu kimlik için kullandığı dili seçin
+help-i18n-list = .my.i18n!list               mevcut dil kodlarını listele
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 odası, 間 kimlikleri arasındaki alandır. ma bu kimliklerin birbirini bulmasını ve iletişim kurmasını sağlar; kimliğin yayımlandığında katılabilirsin.
@@ -301,72 +301,72 @@ err-edit-fetch-failed = düzenleme: getirme hatası: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = etkin oturum yok — profil silinemiyor
 profile-delete-error = profil silme başarısız: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 11'i başka bir profil için ayarlayamazsınız - yalnızca kendi profiliniz
+profile-wrong-user-name = 19 için 11 ayarlanamaz — yalnızca kendi profiliniz
+profile-no-ma = yapılandırılmış 3 çalışma zamanı yok — önce 31'i çalıştırın
+profile-no-cid = bu profil için saklanan 3 yok — önce 37'i çalıştırın
+profile-no-cid-in-doc = DID belgesinde 11 profili bulunamadı — önce 43'i çalıştırın
+profile-publish-sent = profil şifrelendi ve IPFS'ye gönderildi; CID geldiğinde DID belgesi güncellenecek
+profile-publish-done = profil yayımlandı — DID belgesi ma.agent CID ile güncellendi
+profile-publish-failed = profil yayınlanamadı: 24
+profile-fetch-done = profil getirildi — 43'ten 18 anahtarları yüklendi
+profile-fetch-failed = profil getirme işlemi başarısız oldu: 22
+msg-identity-exists = kimlik zaten yayınlandı — profil güncel
+profile-import-exists = 8 profili zaten mevcut — önce onu silin
+profile-import-wrong-user = dosya 22 profilini içeriyor, beklenen 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = ikili içerik (görüntülenmiyor)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = içerik getirilemedi: 25
+cid-op-unknown = bilinmeyen içerik işlemi: 27
+cid-op-wc = { $lines } satırlar 18 kelimeler 36 karakterler
 profiles-empty = (yok)
 profiles-deleted = { $name } profili silindi
 profiles-not-found = profil bulunamadı: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- konular -- ayrıntılar için .help/<topic> yazın
+help-topic-msg =   .help/msg                    mesajlaşma
+help-topic-ma = .help/ma                     ma-boşluk, yayınlama ve giriş
+help-topic-path = .help/path                   yerel nokta yolu dilbilgisi
+help-topic-my =   .help/my                     kişisel config
+help-topic-inbox =   .help/inbox                  gelen kutusu
+help-topic-doc =   .help/doc                    belgeler
+help-topic-actor =   .help/actor                  uzak actor
 help-topic-url =   .help/url                    zion'u bir URL bağlantısıyla aç
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   kimliğiniz için dil tercihi
+help-unknown-topic =   .help/{ $topic }: bilinmeyen konu
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- uzak aktörler
+help-actor-echo =   @actor                       çözümlenen DID göster
+help-actor-text = @actor[#entity]!msg|!say|!emote body         doğrudan/sohbet/ifade mesajı gönder
+help-actor-ping = @actor:ping                  canlılık pingi
+help-actor-entities =   @actor/entities              entity listesini göster
+help-actor-entities-get = @actor/entities/<n>          varlık düğümünü al
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   varlığı 14 referansına göre ayarla
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity düzenle
+help-actor-entities-del = @actor/entities/<n>:         varlığı sil
+help-actor-config-get =   @actor/config/<key>          config değerini al
+help-actor-config-set =   @actor/config/<key>: val     config değerini ayarla
+help-actor-acl = @actor/acl                   4'i edinin
+help-actor-acl-edit =   @actor/acl!edit              ACL düzenle
+help-actor-fragment =   @actor#entity                plugine gönder
+help-actor-fragment-verb =   @actor#entity:verb [args]    plugine RPC
+help-header-cid-ops = ── 3 aktör çağrıları ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  24'ten bir 15 varlığını arayın ve yanıtını bekleyin
+help-actor-head = (@actor/path)                31'ten uzak CRUD içeriğini getir
+help-actor-tail = (<bafy...>)                  36 41'ten 21'i dahil edin ve değerlendirin
+help-actor-wc = (define x (@actor:verb arg))  5 yanıtlarını oturum ortamında tut
+help-actor-wc-l = .my.scheme.ma!edit           bu kimlik için kayıtlı 11 yardımcılarını düzenleyin
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
 help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)
 help-url-say =   ?say=<did>                   önceden doldurur: @<did>!say (say fiili)
 help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>!emote (emote fiili)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              çalışma zamanı ön doldurma DID / 23 URL'si
+help-url-enter = ?enter=<runtime>             Giriş yaptıktan sonra çalışma zamanı dünyasına girin
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a bas.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -376,20 +376,23 @@ help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğ
 help-publish-ma = Yayımlamak için ma (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.
 help-publish-steps = Adımlar: yerel ma'yı algılamak için '.ma [port]' çalıştır, ardından '.my.identity!publish @ma'.
 help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID henüz yayınlanmadı — önce 28'i, ardından profilinizi 67 çalıştırın
+profile-update-done = profil güncellendi — 18 anahtarları 43'ten birleştirildi
+profile-delete-needs-name = bir profil adı belirtin: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Toplu toplama — komutları yazın, .batch ile bitirin
+batch-already-collecting = Zaten bir parti topluyorsunuz — önce .batch ile bitirin
+batch-empty = Toplu iş boştu; çalıştırılacak bir şey yok
+batch-running = Batch çalışıyor…
+batch-step-timeout = toplu adım zaman aşımına uğradı
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch { $secs }s içinde bitti — { $steps } adım
+batch-done-error = Batch hatalarla { $secs }s içinde bitti — { $steps } adım
+msg-timeout = Mesaj zaman aşımına uğradı (60s içinde yanıt yok)
+err-unknown-command = bilinmeyen komut: { $path }
+err-read-only-path = { $path } salt okunur
+help-cmd-batch-async =   .batch:async / .batch        taslak belgeyi paralel değerlendir
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -44,10 +44,10 @@ msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = An buga DID ta hanyar ma na gida ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = ana ƙoƙarin haɗa ka da 間trix
+msg-local-ma-claimed = an ɗauki 間 na gida
+msg-local-ma-already-claimed = an riga an ɗauki 間 na gida
+msg-local-ma-claim-failed = an kasa ɗaukar 間 na gida
 msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '.my.identity!publish @ma'. Rubuta '.help/publish' don cikakken bayani.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   an ƙirƙiri laƙabi @ma — gudanar da '.my.identity!publish @ma' don wallafa ainihinku.
 claim-success = an ɗauki Runtime don { $did }
 claim-conflict = wani asali ya riga ya ɗauki Runtime
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = wannan asali ya riga ya ɗauki Runtime
 claim-http-failed = ɗaukar ya kasa: HTTP { $status }
 claim-error = ɗaukar ya kasa: { $e }
 claim-no-session = ba a shiga ba; shiga da farko don ɗaukar runtime
@@ -145,14 +145,14 @@ doc-publish-failed = wallafa { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = wallafawa ta kasa [{ $code }]: { $err }
 doc-publish-error-hint = Alama: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = sake shiga don samun damar samun damar maɓallan shaidar ku
+doc-publish-hint-target = yi amfani da ingantaccen mawallafin DID ko wanda aka laƙafta wanda ya yanke shawarar ba da 57
+doc-publish-hint-network = tabbatar da lokacin aiki na 7 kuma 22 ana iya kaiwa, sannan sake gwadawa
+doc-publish-hint-resolve = tabbatar da cewa an buga daftarin aiki na DID kuma ya ƙunshi wurin da za a iya kaiwa ga ƙarshe
+doc-publish-hint-acl = tambayi afaretan mawallafin don ƙyale DIID ɗin ku a cikin 48
+doc-publish-hint-runtime = Runtime/plugin sun ƙi buƙatar; duba dalilin kuma sake gwadawa bayan gyara mahalli/lokacin aiki
+doc-publish-hint-ipfs = duba lafiyar 12/17 na gida da matsayin lokacin gudu na mai wallafa
+doc-publish-hint-unknown = duba rajistan ayyukan lokaci don cikakken dalili kuma sake gwadawa
 doc-store-sent = an aika buƙatar ajiye ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-ipld-store-sent = an aika buƙatar ajiye IPLD ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-fetch-done = an ɗauko { $cid } → { $path }.content (ba a gudanar ba)
@@ -170,9 +170,9 @@ help-header-config = ── nahawun saitunan gida ──────────
 help-header-common = ── hanyoyin gama gari ────────────────────────────────────────────────────
 help-header-inbox = ── akwatin wasiku ────────────────────────────────────────────────────────
 help-header-documents = ── takardu ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── harshe ────────────────── ─────────────────
+help-header-ma = ── 3-sarari ───────────────── ─────────────────
+help-header-ma-entry = ── shiga 間-sarari ───────────────── ──────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Rubutun taimako — umarnan zion ────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       share terminal
 help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani idan akwai matsala
 help-cmd-history =   .history                     tarihin umarni (maimaita masu jere sun haɗu)
 help-cmd-logout =   .logout                      fita
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── Rubutun taimako — aikawasiku ──────────────────────────────────────────
 help-msg-echo =   @alias                       nuna DID/DID-URL da aka warware (ba a aika saƙo ba)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            nuna CID da aka ajiye
 help-doc-del =   .my.doc.<name>:              goge takarda
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n yana adana zaɓin harshen da ke da alaƙa da ainihin ku.
+help-i18n-set = .my.i18n: <code>             zaɓi yaren da 20 ke amfani da shi don wannan ainihi
+help-i18n-list = .my.i18n!list               jera lambobin yare masu samuwa
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Dakin 間 shi ne fili tsakanin shaidun 間. ma yana sa waɗannan shaidu su samu juna su kuma yi sadarwa; idan an wallafa shaidarka, za ka iya shiga.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = gyara: kuskuren nemo: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = babu takardar izni mai aiki — ba za a iya goge bayanan martaba ba
 profile-delete-error = gogewa bayanan martaba ta ci tura: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = ba zai iya saita 11 don wani bayanin martaba ba - naku kawai
+profile-wrong-user-name = ba zai iya saita 11 don 19 ba - bayanin martaba naka kawai
+profile-no-ma = babu 3 da aka saita lokacin gudu - fara 31
+profile-no-cid = babu 3 da aka adana don wannan bayanin martaba - fara 37
+profile-no-cid-in-doc = babu bayanin martaba 11 da aka samu a cikin DID daftarin aiki - fara 43
+profile-publish-sent = an rufaffen bayanin martaba an aika shi zuwa IPFS; za a sabunta takardar DID idan CID ya zo
+profile-publish-done = an wallafa bayanin martaba — an sabunta takardar DID da ma.agent CID
+profile-publish-failed = Buga bayanan martaba ya kasa: 24
+profile-fetch-done = bayanan martaba - maɓallan 18 da aka ɗora daga 43
+profile-fetch-failed = An kasa samun nasarar fitar da bayanan martaba: 22
+msg-identity-exists = ainihi da aka riga aka buga - bayanin martaba har zuwa yau
+profile-import-exists = bayanin martaba 8 ya riga ya wanzu - share shi tukuna
+profile-import-wrong-user = fayil ɗin ya ƙunshi bayanin martaba 22, 42 da ake tsammani
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = abun ciki na binary (ba a nuna ba)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = ya kasa debo abun ciki: 25
+cid-op-unknown = Ba a san aikin abun ciki ba: 27
+cid-op-wc = Layin { $lines } 18 kalmomi 36 caja
 profiles-empty = (babu)
 profiles-deleted = an goge bayanan martaba { $name }
 profiles-not-found = ba a samu bayanan martaba ba: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
+help-topic-msg =   .help/msg                    መልዕክት
+help-topic-ma = .help/ma                     ma-sarari, bugu, da shigarwa
+help-topic-path = .help/path                   nahawu mai digon gida
+help-topic-my =   .help/my                     የግል config
+help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
+help-topic-doc =   .help/doc                    ሰነዶች
+help-topic-actor =   .help/actor                  ርቀት actor
+help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- ርቀት ተዋናዮች
+help-actor-echo =   @actor                       DID ፍቺን አሳይ
+help-actor-text = @actor[#entity]!msg|!say|!emote body         aika saƙon kai tsaye/taɗi/emote
+help-actor-ping = @actor:ping                  rayuwa ping
+help-actor-entities =   @actor/entities              entitiy ዘርዝር
+help-actor-entities-get = @actor/entities/<n>          samun kumburin mahalli
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   saita mahallin ta hanyar tunani 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity አርትዕ
+help-actor-entities-del = @actor/entities/<n>:         share mahaluži
+help-actor-config-get =   @actor/config/<key>          config እሴት አግኝ
+help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘጋጅ
+help-actor-acl = @actor/acl                   sami 4
+help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
+help-actor-fragment =   @actor#entity                ወደ plugin ላክ
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-header-cid-ops = ─ ─ 3 ya yi kira ───────────────── ─────────────────
+help-actor-cat = (@actor#entity:verb arg...)  kira wani mahaluži 15 daga 24 kuma jira amsarta
+help-actor-head = (@actor/path)                debo abun ciki na CRUD mai nisa daga 31
+help-actor-tail = (<bafy...>)                  hada da kimanta 21 daga 36 41
+help-actor-wc = (define x (@actor:verb arg))  kiyaye martanin 5 a cikin yanayin zama
+help-actor-wc-l = .my.scheme.ma!edit           gyara mataimakan 11 da aka ajiye don wannan ainihi
 
 help-topic-url =   .help/url                    buɗe zion ta hanyar URL link
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   zaɓin harshe don ainihin ku
 help-header-url = ── sharuɗɗan URL ─────────────────────────────────────────────────────────────────
 help-url-intro =   Raba hanyar haɗin zion tare da mai karɓa da aka shigar da shi a gaba:
 help-url-msg =   ?msg=<did>                   cika a gaba: @<did>!msg (saƙon rubutu)
 help-url-say =   ?say=<did>                   cika a gaba: @<did>!say (fi'ili say)
 help-url-emote =   ?emote=<did>                 cika a gaba: @<did>!emote (fi'ili emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pre-cika lokacin aiki DID / 23 URL
+help-url-enter = ?enter=<runtime>             shigar da runtime duniya bayan login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don aika.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanya
 help-publish-ma = Don wallafawa, kuna buƙatar ma (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.
 help-publish-steps = Matakan: gudanar da '.ma [port]' don gano ma na cikin gida, sannan '.my.identity!publish @ma'.
 help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = BA a buga ba tukuna - fara 28, sannan 67 bayanin martabarku
+profile-update-done = sabunta bayanan martaba - Maɓallan 18 sun haɗe daga 43
+profile-delete-needs-name = saka sunan bayanin martaba: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Tattara tsari - nau'in umarni, ƙare tare da .batch
+batch-already-collecting = Tuni ana tattara tsari - ƙare da .batch farko
+batch-empty = Batch ya kasance fanko - babu abin da zai gudana
+batch-running = batch በሂደት ላይ…
+batch-step-timeout = mataki mataki ya ƙare
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
+batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
+msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+err-unknown-command = umarni da ba a sani ba: { $path }
+err-read-only-path = { $path } na karantawa kawai ne
+help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -44,10 +44,10 @@ msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = 間trix へ接続しようとしています
+msg-local-ma-claimed = ローカル 間 を要求しました
+msg-local-ma-already-claimed = ローカル 間 はすでに要求済みです
+msg-local-ma-claim-failed = ローカル 間 の要求に失敗しました
 msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'.my.identity!publish @ma'を実行してください。詳細は'.help/publish'と入力してください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   エイリアス @ma が作成されました — '.my.identity!publish @ma'を実行して身元を公開してください。
 claim-success = { $did } のランタイムを要求しました
 claim-conflict = ランタイムはすでに別のアイデンティティにより要求されています
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime はすでにこのアイデンティティにより要求されています
 claim-http-failed = 要求に失敗しました: HTTP { $status }
 claim-error = 要求に失敗しました: { $e }
 claim-no-session = ログインしていません。ランタイムを要求するには先にログインしてください
@@ -170,9 +170,9 @@ help-header-config = ── ローカル設定文法 ─────────
 help-header-common = ── よく使うパス ─────────────────────────────────────────────────────────────
 help-header-inbox = ── 受信トレイ ──────────────────────────────────────────────────────────────
 help-header-documents = ── ドキュメント ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── 言語 ───────────────────
+help-header-ma = ── 3-space ─────────────────
+help-header-ma-entry = ── 間に入ります ─────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        このテキスト
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       ターミナルをクリア
 help-cmd-panic =   .panic                       最後の手段 — 困ったときに使用
 help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       スクラッチ文書を並列評価
+help-cmd-batch-sync =   .batch:sync / .batch         スクラッチ文書を行ごとに評価
 
 help-msg-echo =   @alias                       解決済み DID/DID-URL を表示 (メッセージは送信されません)
 help-msg-send =   @alias!msg body / @alias:verb args           アクターにメッセージ / RPC を送信
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<名前>!cid            保存された CID を表示
 help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n には、ユーザーの ID に関連付けられた言語設定が保存されます。
+help-i18n-set = .my.i18n: <code>             20 がこの ID に使用する言語を選択します
+help-i18n-list = .my.i18n!list               利用可能な言語コードをリストする
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間の部屋は、間のアイデンティティ同士のあいだにある場所です。ma はそれらのアイデンティティが互いを見つけ、通信できるようにします。あなたのアイデンティティが公開されると、参加できるようになります。
@@ -294,72 +294,72 @@ err-edit-fetch-failed = 編集: 取得失敗: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = アクティブなセッションがありません — プロフィールを削除できません
 profile-delete-error = プロフィールの削除に失敗しました: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 別のプロファイルに 11 を設定することはできません。自分のプロファイルにのみ設定できます
+profile-wrong-user-name = 19 に 11 を設定することはできません - 自分のプロファイルのみを設定します
+profile-no-ma = 3 ランタイムが構成されていません - 最初に 31 を実行します
+profile-no-cid = このプロファイルには 3 が保存されていません - 最初に 37 を実行してください
+profile-no-cid-in-doc = DID ドキュメントにプロファイル 11 が見つかりません - 最初に 43 を実行してください
+profile-publish-sent = プロファイルは暗号化されて IPFS に送信されました。CID が届くと DID ドキュメントが更新されます
+profile-publish-done = プロファイルを公開しました — DID ドキュメントを ma.agent CID で更新しました
+profile-publish-failed = プロファイルの公開に失敗しました: 24
+profile-fetch-done = プロファイルが取得されました — 43 からロードされた 18 キー
+profile-fetch-failed = プロファイルの取得に失敗しました: 22
+msg-identity-exists = 身元はすでに公開されています - プロフィールは最新です
+profile-import-exists = プロファイル 8 はすでに存在します - 最初に削除してください
+profile-import-wrong-user = ファイルにはプロファイル 22 が含まれていますが、予期される 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = バイナリコンテンツ (表示されません)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = コンテンツの取得に失敗しました: 25
+cid-op-unknown = 不明なコンテンツ操作: 27
+cid-op-wc = { $lines } 行 18 ワード 36 文字
 profiles-empty = (なし)
 profiles-deleted = プロフィール { $name } を削除しました
 profiles-not-found = プロフィールが見つかりません: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- トピック -- 詳細は .help/<topic> と入力
+help-topic-msg =   .help/msg                    メッセージ
+help-topic-ma = .help/ma                     ma-スペース、公開、およびエントリ
+help-topic-path = .help/path                   ローカルドットパス文法
+help-topic-my =   .help/my                     個人 config
+help-topic-inbox =   .help/inbox                  受信箱
+help-topic-doc =   .help/doc                    文書
+help-topic-actor =   .help/actor                  リモート actor
 help-topic-url =   .help/url                    URLリンクからzionを開く
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   自分のアイデンティティに合わせた言語設定
+help-unknown-topic =   .help/{ $topic }: 不明なトピック
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- リモート actor
+help-actor-echo =   @actor                       解決済み DID を表示
+help-actor-text = @actor[#entity]!msg|!say|!emote body         ダイレクト/チャット/エモートメッセージを送信する
+help-actor-ping = @actor:ping                  活性ピング
+help-actor-entities =   @actor/entities              entity を一覧表示
+help-actor-entities-get = @actor/entities/<n>          エンティティノードを取得する
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 参照によるエンティティの設定
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity を編集
+help-actor-entities-del = @actor/entities/<n>:         エンティティの削除
+help-actor-config-get =   @actor/config/<key>          config 値を取得
+help-actor-config-set =   @actor/config/<key>: val     config 値を設定
+help-actor-acl = @actor/acl                   4を取得
+help-actor-acl-edit =   @actor/acl!edit              ACL を編集
+help-actor-fragment =   @actor#entity                plugin に送信
+help-actor-fragment-verb =   @actor#entity:verb [args]    plugin への RPC
+help-header-cid-ops = ── 3 アクターコール ───────────────
+help-actor-cat = (@actor#entity:verb arg...)  24 からエンティティ 15 を呼び出し、その応答を待ちます
+help-actor-head = (@actor/path)                31 からリモート CRUD コンテンツを取得します
+help-actor-tail = (<bafy...>)                  36 41 から 21 を含めて評価します
+help-actor-wc = (define x (@actor:verb arg))  5 応答をセッション環境に保持する
+help-actor-wc-l = .my.scheme.ma!edit           この ID の保存された 11 ヘルパーを編集します
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
 help-url-say =   ?say=<did>                   事前入力: @<did>!say（say動詞）
 help-url-emote =   ?emote=<did>                 事前入力: @<did>!emote（emote動詞）
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              事前入力ランタイム DID / 23 URL
+help-url-enter = ?enter=<runtime>             ログイン後にランタイムワールドに入る
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -369,20 +369,23 @@ help-publish-intro = 公開することでネットワーク上で身元を見�
 help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。
 help-publish-steps = 手順：'.ma [port]'でローカルmaを検出し、'.my.identity!publish @ma'を実行してください。
 help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID はまだ公開されていません — 最初に 28 を実行し、次に 67 プロファイルを実行します
+profile-update-done = プロファイルが更新されました — 43 から 18 キーがマージされました
+profile-delete-needs-name = プロファイル名を指定してください: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = バッチを収集しています — コマンドを入力し、.batch で終わります
+batch-already-collecting = すでにバッチを収集しています - 最初に .batch で終了します
+batch-empty = バッチは空でした - 実行するものがありません
+batch-running = batch を実行中…
+batch-step-timeout = バッチステップがタイムアウトしました
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch 完了: { $secs }s — { $steps } ステップ
+batch-done-error = batch はエラー付きで完了: { $secs }s — { $steps } ステップ
+msg-timeout = メッセージがタイムアウトしました (60s 応答なし)
+err-unknown-command = 不明なコマンド: { $path }
+err-read-only-path = { $path } は読み取り専用です
+help-cmd-batch-async =   .batch:async / .batch        スクラッチ文書を並列評価
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

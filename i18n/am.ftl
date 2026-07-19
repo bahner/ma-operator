@@ -44,10 +44,10 @@ msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID በአካባቢ ma ({ $url }) አማካኝነት ታትሟል
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = ወደ 間trix ልናገናኝዎ እየሞከርን ነው
+msg-local-ma-claimed = አካባቢያዊ 間 ተጠይቋል
+msg-local-ma-already-claimed = አካባቢያዊ 間 አስቀድሞ ተጠይቋል
+msg-local-ma-claim-failed = አካባቢያዊ 間 መጠየቅ አልተሳካም
 msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '.my.identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help/publish' ይጻፉ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   ቅጽል ስም @ma ተፈጠረ — ህሊናዎን ለማሳተም '.my.identity!publish @ma' ያሂዱ።
 claim-success = Runtime ለ{ $did } ተጠየቀ
 claim-conflict = Runtime ቀደም ሲል በሌላ ማንነት ተጠይቋል
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime በዚህ ማንነት አስቀድሞ ተጠይቋል
 claim-http-failed = ጥያቄ አልተሰራም: HTTP { $status }
 claim-error = ጥያቄ አልተሰራም: { $e }
 claim-no-session = አልገቡም; runtime ለመጠየቅ መጀመሪያ ይግቡ
@@ -145,14 +145,14 @@ doc-publish-failed = { $path } ማተም: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ማተም አልተሳካም [{ $code }]: { $err }
 doc-publish-error-hint = ፍንጭ: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = ኢጎ የማንነት ቁልፎችዎን መድረስ እንዲችል እንደገና ይግቡ
+doc-publish-hint-target = 57 ለመራቆት የሚፈታ ትክክለኛ አታሚ DID ወይም ቅጽል ይጠቀሙ
+doc-publish-hint-network = 7 የሩጫ ጊዜ እና 22 ሊደረስባቸው የሚችሉ መሆናቸውን ያረጋግጡ እና እንደገና ይሞክሩ
+doc-publish-hint-resolve = የአሳታሚው ዲአይዲ ሰነድ መታተሙን እና ሊደረስበት የሚችል የመጨረሻ ነጥብ እንዳለው ያረጋግጡ
+doc-publish-hint-acl = በ48 ውስጥ የእርስዎን DID እንዲፈቅድ የአታሚውን ኦፕሬተር ይጠይቁ
+doc-publish-hint-runtime = Runtime/plugin ጥያቄውን ውድቅ አደረገው; ምክንያቱን ይመርምሩ እና ህጋዊውን / የአሂድ ጊዜን ካስተካከሉ በኋላ እንደገና ይሞክሩ
+doc-publish-hint-ipfs = የአካባቢያዊ 12/17 ጤና እና የአሳታሚ የአሂድ ጊዜ ሁኔታን ያረጋግጡ
+doc-publish-hint-unknown = ለዝርዝር ምክንያት የሩጫ ጊዜ መዝገቦችን ይፈትሹ እና እንደገና ይሞክሩ
 doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-fetch-done = { $cid } ተሰብስቧል → { $path }.content (አልተሰራም)
@@ -170,9 +170,9 @@ help-header-config = ── የአካባቢ ቅርጸት ሰዋስው ───�
 help-header-common = ── ተሎ ጥቅም ላይ የሚዋሉ ዱካዎች ──────────────────────────────────────────
 help-header-inbox = ── የገቢ ሳጥን ────────────────────────────────────────────────────────────
 help-header-documents = ── ሰነዶች ─────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ቋንቋ ───────────── ─────────────
+help-header-ma = ── 3-ቦታ ───────────── ─────────────
+help-header-ma-entry = 間-ቦታ በመግባት ላይ ──────────── ─────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── እርዳታ — zion ትዕዛዞች ──────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       terminal ያጽዱ
 help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — ችግር ሲያጋጥምዎ ይጠቀሙ
 help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
 help-cmd-logout =   .logout                      ይውጡ
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       የተፈታ DID/DID-URL አሳይ (መልዕክት አይላክም)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            የተቀመጠ CID አሳይ
 help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n ከማንነትዎ ጋር የተያያዘውን የቋንቋ ምርጫ ያከማቻል።
+help-i18n-set = .my.i18n: <code>             ለዚህ ማንነት 20 የሚጠቀመውን ቋንቋ ይምረጡ
+help-i18n-list = .my.i18n!list               የሚገኙ የቋንቋ ኮዶችን ይዘርዝሩ
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = የ間 ክፍል በ間 ማንነቶች መካከል ያለው ቦታ ነው። ma እነዚህ ማንነቶች እርስ በርስ እንዲገናኙ እና እንዲነጋገሩ ያደርጋል፤ ማንነትህ ከታተመ በኋላ መሳተፍ ትችላለህ።
@@ -301,73 +301,73 @@ err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ንቁ ክፍለ ጊዜ የለም — ፕሮፋይልን መሰረዝ አይቻልም
 profile-delete-error = ፕሮፋይልን መሰረዝ አልተሳካም: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 11 ለሌላ መገለጫ ማዋቀር አይቻልም - የእራስዎ ብቻ
+profile-wrong-user-name = 11 ለ19 ማዋቀር አይቻልም - የራስዎን መገለጫ ብቻ
+profile-no-ma = ምንም የ3 አሂድ ጊዜ አልተዋቀረም - መጀመሪያ 31 አሂድ
+profile-no-cid = ለዚህ መገለጫ ምንም 3 አልተቀመጠም - መጀመሪያ 37 ን ያሂዱ
+profile-no-cid-in-doc = በዲአይዲ ሰነድ ውስጥ 11 ምንም መገለጫ አልተገኘም - መጀመሪያ 43 ን ያሂዱ
+profile-publish-sent = መገለጫው ተመስጥሮ ወደ IPFS ተልኳል፤ CID ሲመጣ DID ሰነዱ ይዘምናል
+profile-publish-done = መገለጫው ታትሟል — DID ሰነዱ በ ma.agent CID ተዘምኗል
+profile-publish-failed = የመገለጫ ህትመት አልተሳካም፡ 24
+profile-fetch-done = ፕሮፋይል ተገኘ - ከ43 የተጫኑ የ18 ቁልፎች
+profile-fetch-failed = ፕሮፋይል ማምጣት አልተሳካም፡ 22
+msg-identity-exists = ማንነት አስቀድሞ ታትሟል - የዘመነ መገለጫ
+profile-import-exists = መገለጫ 8 አስቀድሞ አለ - መጀመሪያ ይሰርዙት።
+profile-import-wrong-user = ፋይሉ 22 ፕሮፋይል ይዟል፣ የሚጠበቀው 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = ሁለትዮሽ ይዘት (አይታይም)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = ይዘት ማምጣት አልተሳካም: 25
+cid-op-unknown = ያልታወቀ የይዘት አሠራር፡ 27
+cid-op-wc = { $lines } መስመሮች 18 ቃላት 36 ቻርሶች
 profiles-empty = (ምንም)
 profiles-deleted = ፕሮፋይል { $name } ተሰርዟል
 profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
+help-topic-msg =   .help/msg                    መልዕክት
+help-topic-ma = .help/ma                     ma-ቦታ፣ ማተም እና መግባት
+help-topic-path = .help/path                   የአካባቢ ነጥብ-መንገድ ሰዋሰው
+help-topic-my =   .help/my                     የግል config
+help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
+help-topic-doc =   .help/doc                    ሰነዶች
+help-topic-actor =   .help/actor                  ርቀት actor
+help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- ርቀት ተዋናዮች
+help-actor-echo =   @actor                       DID ፍቺን አሳይ
+help-actor-text = @actor[#entity]!msg|!say|!emote body         ቀጥተኛ/ቻት/የማሳየት መልእክት ላክ
+help-actor-ping = @actor:ping                  ሕያውነት ፒንግ
+help-actor-entities =   @actor/entities              entitiy ዘርዝር
+help-actor-entities-get = @actor/entities/<n>          አካል መስቀለኛ መንገድ ያግኙ
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   አካል በ 14 ማጣቀሻ
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity አርትዕ
+help-actor-entities-del = @actor/entities/<n>:         አካል ሰርዝ
+help-actor-config-get =   @actor/config/<key>          config እሴት አግኝ
+help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘጋጅ
+help-actor-acl = @actor/acl                   4 ያግኙ
+help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
+help-actor-fragment =   @actor#entity                ወደ plugin ላክ
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-header-cid-ops = ── 3 የተዋናይ ጥሪ ──────────── ────────────
+help-actor-cat = (@actor#entity:verb arg...)  ከ24 ለሆነ አካል 15 ይደውሉ እና መልሱን ይጠብቁ
+help-actor-head = (@actor/path)                የርቀት CRUD ይዘትን ከ31 ያግኙ
+help-actor-tail = (<bafy...>)                  21ን ከ36 41 ያካትቱ እና ይገምግሙ
+help-actor-wc = (define x (@actor:verb arg))  የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
+help-actor-wc-l = .my.scheme.ma!edit           ለዚህ ማንነት የተቀመጡ 11 ረዳቶችን አርትዕ ያድርጉ
 
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   ለማንነትዎ የቋንቋ ምርጫ
 help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
 help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
 help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did>!msg (ቀላል መልዕክት)
 help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>!say (say ቃሉ)
 help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>!emote (emote ቃሉ)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              ቅድመ-ሙላ አሂድ ጊዜ DID / 23 URL
+help-url-enter = ?enter=<runtime>             ከገቡ በኋላ ወደ ሩጫው ዓለም ይግቡ
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊ�
 help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
 help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.ma [port]' ያሂዱ፣ ከዚያም '.my.identity!publish @ma'።
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = ገና አልታተመም - በመጀመሪያ 28 ን ከዚያ መገለጫዎን 67 ያሂዱ
+profile-update-done = መገለጫ ተዘምኗል - የ18 ቁልፎች ከ43 ተዋህደዋል
+profile-delete-needs-name = የመገለጫ ስም ይግለጹ፦ .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = ባች መሰብሰብ — ትዕዛዞችን ይተይቡ፣ በ.batch ያበቃል
+batch-already-collecting = አንድን ስብስብ እየሰበሰብኩ ነው - መጀመሪያ በ.batch ጨርስ
+batch-empty = ባች ባዶ ነበር - ምንም የሚሮጥ የለም።
+batch-running = batch በሂደት ላይ…
+batch-step-timeout = የምድብ እርምጃ ጊዜው አልፎበታል።
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
+batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
+msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+err-unknown-command = ያልታወቀ ትእዛዝ፦ { $path }
+err-read-only-path = { $path } ለንባብ ብቻ ነው
+help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

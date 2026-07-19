@@ -2,8 +2,9 @@
 lang-name = Krio
 
 # ── Landing page ──────────────────────────────────────────────────────────
-tab-login = login
-tab-new-identity = new identity
+tab-login = login fɔ login
+tab-new-identity = we gɛt di taytul
+nyu aydentiti
 tab-import-profile = bring profayl kɔmɔt
 label-passphrase = passfraze
 label-username = yuza nem
@@ -11,7 +12,7 @@ label-confirm-passphrase = konfam passfraze
 label-did = DID
 label-profile-cid = profayl CID
 label-or-file = ɔ fayl
-btn-login = login
+btn-login = login fɔ login
 btn-export = eksport
 btn-generate = jenaret
 btn-new-endpoint = nyu endpoint
@@ -44,10 +45,10 @@ msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don pablish tru local ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = de tray fo konekt yu go di 間trix
+msg-local-ma-claimed = local 間 dɔn claim
+msg-local-ma-already-claimed = local 間 dɔn claim bifo
+msg-local-ma-claim-failed = nɔ bin able claim local 間
 msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '.my.identity!publish @ma'. Rait '.help/publish' fo mɔ infɔmeshɔn.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
@@ -75,7 +76,8 @@ err-bare-did = ekspekt bɛ did:ma:<ipns> (nor get fragment ɔ path), get { $did 
 
 # ── Editor ────────────────────────────────────────────────────────────────
 btn-save = Sev
-btn-eval = Eval
+btn-eval = we gɛt di taytul
+Eval
 btn-cancel = Kansel
 btn-close = Kloz
 btn-reply = Rɛpli
@@ -94,7 +96,8 @@ msg-acl-publish-failed = runtime ACL pɔblish fail: { $e }
 msg-yaml-error = YAML ɛrɔ: { $e }
 msg-editor-saved = { $path }:sev
 msg-fetch-review = fetch { $cid } — riview bifo eval
-msg-fetch-failed = fetch { $cid }: { $e }
+msg-fetch-failed = we gɛt di taytul
+fetch 6: 16 we yu go yuz
 
 # ── Verbs — inbox ─────────────────────────────────────────────────────────
 inbox-empty = inbox empty
@@ -110,23 +113,26 @@ discover-json-error = diskɔva fail: invalid JSON from { $url }: { $e }
 discover-missing-did = diskɔva fail: status.json nor get `did` field
 discover-invalid-did = diskɔva fail: ekspekt `did` fi stat wit did:ma:, get `{ $did }`
 discover-no-endpoint = diskɔva waning: `endpoint_id` nor dɛ status.json; sev DID only
-discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
-discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
-discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
-discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
+discover-hint-endpoint-not-found = Hint: endpoint no de. Check say `ma` dey show /status.json pan port 5003.
+discover-hint-server-error = Hint: runtime gi server error. Check `ma` log dem en try bak.
+discover-hint-network = we gɛt di taytul
+Hint: nɛtwɔk/kɔnektiviti prɔblɛm. Start 40, verify localhost:5003 na richable, ɛn alaw lokal 101 akses na di brawza.
+discover-hint-generic = we gɛt di taytul
+Hint: verify 13 ɛn 25 Dɛsktɔp de rɔn, dɔn tray bak 59.
 discover-success = ma diskɔva at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias mek — ron '.my.identity!publish @ma' fo pɔblish yu ɔpsɛt.
 claim-success = Runtime claim fɔ { $did }
 claim-conflict = Runtime already claim by anɔdɔ identity
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime dɔn claim by dis identity
 claim-http-failed = claim fail: HTTP { $status }
 claim-error = claim fail: { $e }
 claim-no-session = nor login; login fɛs fi claim di runtime
 runtime-no-verb = nor get vɛb `{ $verb }` fɔ { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
-acl-reset = .my.acl reset (fully open)
+acl-reset = we gɛt di taytul
+.my.acl riset (ful opin) .
 acl-persist-error = pɛsist ɛrɔ: { $e }
 acl-no-verb = nor get vɛb `{ $verb }` fɔ .my.acl
 
@@ -145,18 +151,27 @@ doc-publish-failed = pɔblish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = pɔblish fail [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = we gɛt di taytul
+log in bak so ego kin akses yu aydentiti ki
+doc-publish-hint-target = we gɛt di taytul
+yuz wan valid pɔblisha DID ɔ alias we de rizɔlt to bare 57
+doc-publish-hint-network = we gɛt di taytul
+verify 7 runtime ɛn 22 na richable, dɔn tray bak
+doc-publish-hint-resolve = we gɛt di taytul
+verify se di pɔblisha DID dɔkyumɛnt dɔn pablish ɛn i gɛt ɛndpɔynt we pɔsin kin rich
+doc-publish-hint-acl = we gɛt di taytul
+aks di pɔblisha ɔpreshɔn fɔ alaw yu DID insay 48
+doc-publish-hint-runtime = we gɛt di taytul
+runtime/plugin nɔ gri fɔ tek di rikwest; inspek di rizin ɛn tray bak afta yu dɔn fiks ɛntiti/rɔntaym
+doc-publish-hint-ipfs = we gɛt di taytul
+chɛk lokal 12/17 wɛlbɔdi ɛn pɔblisha rɔntaym stetɔs
+doc-publish-hint-unknown = we gɛt di taytul
+inspek runtime logs fɔ ditayl kɔz ɛn tray bak
 doc-store-sent = stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-ipld-store-sent = IPLD stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-fetch-done = fetch { $cid } → { $path }.content (nor execute)
-doc-fetch-failed = fetch { $cid }: { $e }
+doc-fetch-failed = we gɛt di taytul
+fetch 6: 16 we yu go yuz
 doc-fetch-usage = yusij: .my.doc.<nem>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid nor set
@@ -174,17 +189,20 @@ help-header-config = ── lokal konfig gramma ──────────�
 help-header-common = ── komon paf dem ──────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ──────────────────────────────────────────────────────────────────
 help-header-documents = ── dokument dem (.my.doc.*) ───────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = we gɛt di taytul
+── langwej ────────────────────────────── ───────────────────────────────
+help-header-ma = we gɛt di taytul
+── 3-spɛs ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = we gɛt di taytul
+── we de go insay 間-spɛs ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
 help-cmd-panic =   .panic                       las opshen — yus if yu los yoself
 help-cmd-history =   .history                     komand istri (kopi dem wey dɔn folo sɛf bia wanwan)
 help-cmd-logout =   .logout                      log owt
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       run scratch document parallel
+help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
 help-msg-echo =   @alias                       sho resolved DID/DID-URL (noh send message)
 help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go to ator
 help-msg-fragment =   @alias#fragment:verb body  send go to alias wid eksplisit DID fragment
@@ -225,9 +243,12 @@ help-doc-cid =   .my.doc.<name>!cid            shoh stohd CID
 help-doc-del =   .my.doc.<name>:              dilet dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = we gɛt di taytul
+.my.i18n de kip di langwej prɛfɛshɔn we tay to yu aydentiti.
+help-i18n-set = .my.i18n: <code>             we gɛt di taytul
+pik di langwej we 20 de yuz fɔ dis aydentiti
+help-i18n-list = .my.i18n!list               we gɛt di taytul
+list di langwej kɔd dɛn we de
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Di 間 rum na di ples bitwin 間 identity dem. ma mek dem identity fɛn wan anɔda an tɔk; afta yu identity dɔn publish, yu kin jɔin.
@@ -287,73 +308,103 @@ err-edit-fetch-failed = edit: fɛtʃ fɛl: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no aktiv sesin — no fit delet profail
 profile-delete-error = profail delet no wok: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = we gɛt di taytul
+nɔ kin sɛt 11 fɔ ɔda prɔfayl — na yu yon nɔmɔ
+profile-wrong-user-name = we gɛt di taytul
+nɔ kin sɛt 11 fɔ 19 — na yu yon prɔfayl nɔmɔ
+profile-no-ma = we gɛt di taytul
+no 3 rɔntaym kɔnfigyut — rɔn 31 fɔs
+profile-no-cid = no 3 we dɛn dɔn kip fɔ dis profayl — rɔn 37 fɔs
+profile-no-cid-in-doc = we gɛt di taytul
+no profayl 11 we dɛn fɛn na DID dɔkyumɛnt — rɔn 43 fɔs
+profile-publish-sent = dem lok profayl en send am to IPFS; DID dokyument go update wen CID kam
+profile-publish-done = profayl publish — DID dokyument update wit ma.agent CID
+profile-publish-failed = we gɛt di taytul
+profayl pablish nɔ wok: 24
+profile-fetch-done = we gɛt di taytul
+profayl fetched — 18 ki dɛn we dɛn lod frɔm 43
+profile-fetch-failed = we gɛt di taytul
+profayl fetch nɔ wok: 22
+msg-identity-exists = we gɛt di taytul
+aydentiti we dɛn dɔn ɔlrɛdi pablish — prɔfayl we de ɔp to det
+profile-import-exists = we gɛt di taytul
+profayl 8 dɔn ɔlrɛdi de — dilit am fɔs
+profile-import-wrong-user = we gɛt di taytul
+fayl gɛt profayl 22, we dɛn de ɛkspɛkt 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = we gɛt di taytul
+baynary kɔntinyu (nɔ de sho) .
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = we gɛt di taytul
+fail fɔ fetch kɔntinyu: 25
+cid-op-unknown = we gɛt di taytul
+di kɔntinyu ɔpreshɔn we dɛn nɔ no: 27
+cid-op-wc = we gɛt di taytul
+{ $lines } layn dɛn 18 wɔd dɛn 36 chars
 profiles-empty = (noting)
 profiles-deleted = profail { $name } delet
 profiles-not-found = profail no dey: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- topics -- type .help/<topic> for detail
+help-topic-msg =   .help/msg                    mesaj dem
+help-topic-ma = .help/ma                     we gɛt di taytul
+ma-spɛs, pɔblishing, ɛn ɛntrɛ
+help-topic-path = .help/path                   we gɛt di taytul
+lokal dot-pat grama
+help-topic-my =   .help/my                     persnal config
+help-topic-inbox =   .help/inbox                  inbox box
+help-topic-doc =   .help/doc                    dokyument dem
+help-topic-actor =   .help/actor                  far actor
+help-unknown-topic =   .help/{ $topic }: topic no sabi
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- remote actor dem
+help-actor-echo =   @actor                       show DID wey resolve
+help-actor-text = @actor[#entity]!msg|!say|!emote body         we gɛt di taytul
+sɛn dairekt/chat/imot mɛsej
+help-actor-ping = @actor:ping                  we gɛt di taytul
+layf we pɔsin kin gɛt ping
+help-actor-entities =   @actor/entities              sho entity dem
+help-actor-entities-get = @actor/entities/<n>          we gɛt di taytul
+get entiti node
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   we gɛt di taytul
+set entiti bay 14 rɛfrɛns
+help-actor-entities-edit =   @actor/entities/<n>!edit     chenj entity
+help-actor-entities-del = @actor/entities/<n>:         we gɛt di taytul
+dilit ɛntiti
+help-actor-config-get =   @actor/config/<key>          tek config valyu
+help-actor-config-set =   @actor/config/<key>: val     put config valyu
+help-actor-acl = @actor/acl                   we gɛt di taytul
+gɛt 4
+help-actor-acl-edit =   @actor/acl!edit              chenj ACL
+help-actor-fragment =   @actor#entity                send go plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
+help-header-cid-ops = we gɛt di taytul
+── 3 aktɔ kɔl ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  we gɛt di taytul
+kɔl wan ɛntiti 15 frɔm 24 ɛn wet fɔ in ansa
+help-actor-head = (@actor/path)                we gɛt di taytul
+fetch rimot CRUD kɔntinyu frɔm 31
+help-actor-tail = (<bafy...>)                  we gɛt di taytul
+inklud ɛn evalyu 21 frɔm wan 36 41
+help-actor-wc = (define x (@actor:verb arg))  kip 5 riply dɛn na di sɛshɔn ɛnvayrɔmɛnt
+help-actor-wc-l = .my.scheme.ma!edit           we gɛt di taytul
+edit sev 11 ɛlda fɔ dis aydentiti
 
 help-topic-url =   .help/url                    opin zion tru URL link
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   we gɛt di taytul
+langwej we yu lɛk fɔ yu aydentiti
 help-header-url = ── URL paramita dem ─────────────────────────────────────────────────────────────
 help-url-intro =   Shia wan link we go opin zion wit di pɔsin aredɛ put insɛd:
 help-url-msg =   ?msg=<did>                   put bifo: @<did>!msg (simpul mɛsɛj)
 help-url-say =   ?say=<did>                   put bifo: @<did>!say (vɛb say)
 help-url-emote =   ?emote=<did>                 put bifo: @<did>!emote (vɛb emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              we gɛt di taytul
+prɛ-fil rɔntaym DID / 23 URL
+help-url-enter = ?enter=<runtime>             we gɛt di taytul
+enta runtime wold afta yu don login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -363,20 +414,29 @@ help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda p
 help-publish-ma = Fɔ pɔblish, yu nid ma (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.
 help-publish-steps = Stɛps: ron '.ma [port]' fɔ faind lɔkɔl ma, den '.my.identity!publish @ma'.
 help-publish-without = Widaut pɔblishine, ɔda pipul kɛnnɔ rich yu — even if dɛn nɔ yu DID, dɛn kɛnnɔ sɔlv yu endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = we gɛt di taytul
+DID nɔ pablish yet — rɔn 28 fɔs, dɔn 67 yu prɔfayl
+profile-update-done = we gɛt di taytul
+profayl ɔpdet — 18 ki dɛn we dɛn jɔyn frɔm 43
+profile-delete-needs-name = put profayl nem: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = we gɛt di taytul
+Kɔlɛkshɔn batch — tayp kɔmand dɛn, dɔn wit .batch
+batch-already-collecting = we gɛt di taytul
+Ɔlrɛdi de gɛda wan batch — dɔn wit .batch fɔs
+batch-empty = we gɛt di taytul
+Batch bin ɛmti — natin fɔ rɔn
+batch-running = Batch dey run…
+batch-step-timeout = we gɛt di taytul
+batch step we dɔn taym aut
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch don finish for { $secs }s — { $steps } steps
+batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
+msg-timeout = Message time don pass (no reply for 60s)
+err-unknown-command = no sabi koman: { $path }
+err-read-only-path = { $path } na for rid nomo
+help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

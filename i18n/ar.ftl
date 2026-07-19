@@ -44,10 +44,10 @@ msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = تم نشر DID عبر ma المحلي ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = نحاول توصيلك إلى 間trix
+msg-local-ma-claimed = تمت المطالبة بـ 間 المحلي
+msg-local-ma-already-claimed = تمت المطالبة بـ 間 المحلي بالفعل
+msg-local-ma-claim-failed = فشلت المطالبة بـ 間 المحلي
 msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '.my.identity!publish @ma'. اكتب '.help/publish' للتفاصيل.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   تم إنشاء الاسم المستعار @ma — شغّل '.my.identity!publish @ma' لنشر هويتك.
 claim-success = تم المطالبة بوقت التشغيل لـ { $did }
 claim-conflict = وقت التشغيل مطالب به بالفعل من قِبل هوية أخرى
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = وقت التشغيل مطالب به بالفعل من قِبل هذه الهوية
 claim-http-failed = فشلت المطالبة: HTTP { $status }
 claim-error = فشلت المطالبة: { $e }
 claim-no-session = غير مسجَّل دخول؛ سجِّل دخولك أولاً للمطالبة بوقت التشغيل
@@ -146,12 +146,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = فشل النشر [{ $code }]: { $err }
 doc-publish-error-hint = تلميح: { $hint }
 doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare 57
+doc-publish-hint-network = verify 7 runtime and 22 are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-acl = ask the publisher operator to allow your DID in 48
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-ipfs = check local 12/17 health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
@@ -171,7 +171,7 @@ help-header-common = ── المسارات الشائعة ──────�
 help-header-inbox = ── صندوق الوارد ──────────────────────────────────────────────────────────
 help-header-documents = ── المستندات ─────────────────────────────────────────────────────────────
 help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma = ── 3-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       مسح الطرفية
 help-cmd-panic =   .panic                       الملاذ الأخير — استخدم عند المشاكل
 help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
 help-cmd-logout =   .logout                      تسجيل الخروج
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       قيّم مستند المسودة (بالتوازي)
+help-cmd-batch-sync =   .batch:sync / .batch         قيّم مستند المسودة سطراً بسطر
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       اعرض DID/DID-URL المحلول (لا تُرسل رسالة)
@@ -236,7 +236,7 @@ help-doc-del =   .my.doc.<name>:              حذف المستند
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language 20 uses for this identity
 help-i18n-list =   .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -301,71 +301,71 @@ err-edit-fetch-failed = فشل جلب التحرير: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = لا توجد جلسة نشطة — لا يمكن حذف الملف الشخصي
 profile-delete-error = فشل حذف الملف الشخصي: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
+profile-wrong-user = cannot set 11 for another profile — only your own
+profile-wrong-user-name = cannot set 11 for 19 — only your own profile
+profile-no-ma = no 3 runtime configured — run 31 first
+profile-no-cid = no 3 stored for this profile — run 37 first
+profile-no-cid-in-doc = no profile 11 found in DID document — run 43 first
+profile-publish-sent = تم تشفير الملف الشخصي وإرساله إلى IPFS؛ سيُحدَّث مستند DID عند وصول CID
+profile-publish-done = نُشر الملف الشخصي — حُدِّث مستند DID بمعرّف ma.agent CID
+profile-publish-failed = profile publish failed: 24
+profile-fetch-done = profile fetched — 18 keys loaded from 43
+profile-fetch-failed = profile fetch failed: 22
 msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-import-exists = profile 8 already exists — delete it first
+profile-import-wrong-user = file contains profile 22, expected 42
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = failed to fetch content: 25
+cid-op-unknown = unknown content operation: 27
+cid-op-wc = { $lines } lines  18 words  36 chars
 profiles-empty = (لا شيء)
 profiles-deleted = تم حذف الملف الشخصي { $name }
 profiles-not-found = الملف الشخصي غير موجود: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
+help-header-topics = -- المواضيع -- اكتب .help/<topic> للتفاصيل
+help-topic-msg =   .help/msg                    المراسلة
+help-topic-ma = .help/ma                     ma-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-topic-my =   .help/my                     الإعداد الشخصي
+help-topic-inbox =   .help/inbox                  الوارد
+help-topic-doc =   .help/doc                    المستندات
+help-topic-actor =   .help/actor                  ممثل بعيد
 help-topic-url =   .help/url                    فتح zion عبر رابط URL
 help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-unknown-topic =   .help/{ $topic }: موضوع غير معروف
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
+help-header-actor = -- ممثلون بعيدون
+help-actor-echo =   @actor                       اعرض DID المحلول
 help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
 help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
+help-actor-entities =   @actor/entities              اسرد الكيانات
 help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by 14 reference
+help-actor-entities-edit =   @actor/entities/<n>!edit     حرّر الكيان
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-config-get =   @actor/config/<key>          احصل على قيمة الإعداد
+help-actor-config-set =   @actor/config/<key>: val     عيّن قيمة الإعداد
+help-actor-acl = @actor/acl                   get 4
+help-actor-acl-edit =   @actor/acl!edit              حرّر ACL
+help-actor-fragment =   @actor#entity                أرسل إلى الإضافة
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC إلى الإضافة
+help-header-cid-ops = ── 3 actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity 15 from 24 and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from 31
+help-actor-tail = (<bafy...>)                  include and evaluate 21 from an 36 41
+help-actor-wc = (define x (@actor:verb arg))  keep 5 replies in the session environment
+help-actor-wc-l = .my.scheme.ma!edit           edit saved 11 helpers for this identity
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
 help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
 help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did>!msg (رسالة نصية)
 help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>!say (فعل say)
 help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>!emote (فعل emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
 help-url-enter =   ?enter=<runtime>             enter runtime world after login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.
@@ -376,20 +376,23 @@ help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف 
 help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
 help-publish-steps = الخطوات: شغّل '.ma [port]' للكشف عن ma المحلي، ثم '.my.identity!publish @ma'.
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID not published yet — run 28 first, then 67 your profile
+profile-update-done = profile updated — 18 keys merged from 43
+profile-delete-needs-name = حدّد اسم ملف شخصي: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
 batch-collecting-started = Collecting batch — type commands, end with .batch
 batch-already-collecting = Already collecting a batch — end with .batch first
 batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
+batch-running = تشغيل الدفعة…
 batch-step-timeout = batch step timed out
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = اكتملت الدفعة في { $secs }ث — { $steps } خطوات
+batch-done-error = اكتملت الدفعة مع أخطاء في { $secs }ث — { $steps } خطوات
+msg-timeout = انتهت مهلة الرسالة (لا رد خلال 60ث)
+err-unknown-command = أمر غير معروف: { $path }
+err-read-only-path = { $path } للقراءة فقط
+help-cmd-batch-async =   .batch:async / .batch        قيّم مستند المسودة (بالتوازي)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

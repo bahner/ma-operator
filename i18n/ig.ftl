@@ -44,10 +44,10 @@ msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Ebipụtara DID site na ma mpaghara ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = na-agbalị ijikọ gị na 間trix
+msg-local-ma-claimed = akwụtara 間 mpaghara
+msg-local-ma-already-claimed = akwụtalarị 間 mpaghara
+msg-local-ma-claim-failed = akwụtaghị 間 mpaghara
 msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '.my.identity!publish @ma'. Dee '.help/publish' maka nkọwa.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   emepụtara alias @ma — mee '.my.identity!publish @ma' iji bipute njirimara gị.
 claim-success = akwụtara Runtime maka { $did }
 claim-conflict = njirimara ọzọ akwụtara Runtime otu oge
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = njirimara a akwụtalarị Runtime
 claim-http-failed = ikwu akwụ erughị: HTTP { $status }
 claim-error = ikwu akwụ erughị: { $e }
 claim-no-session = abanyeghị; banye ka ọ bụrụ nke mbụ iji kwu akwụ runtime
@@ -145,14 +145,14 @@ doc-publish-failed = ịbipụta { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = mbipụta dara [{ $code }]: { $err }
 doc-publish-error-hint = Ndụmọdụ: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = banye ọzọ ka ego wee nweta igodo njirimara gị
+doc-publish-hint-target = jiri ezigbo onye nkwusa DID ma ọ bụ utu aha kpebiri ịgbara 57
+doc-publish-hint-network = nyochaa oge ọsọ 7 na 22 nwere ike iru, wee nwaa ọzọ
+doc-publish-hint-resolve = gosi na ebipụtara akwụkwọ DID onye mbipụta ma nwee ebe njedebe enwere ike iru
+doc-publish-hint-acl = Rịọ onye ọrụ mbipụta ka o kwe ka emee gị na 48
+doc-publish-hint-runtime = Oge ojiri gaa/ngwa mgbakwunye jụrụ arịrịọ ahụ; nyochaa ihe kpatara ya wee nwaa mgbe edozichara ihe / oge ojiri gaa
+doc-publish-hint-ipfs = lelee ahụike 12/17 mpaghara yana ọkwa oge ojiri gaa
+doc-publish-hint-unknown = lelee ndekọ oge ojiri gaa maka ihe kpatara ya wee nwaa ọzọ
 doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-fetch-done = enwetara { $cid } → { $path }.content (arụghị ọrụ)
@@ -170,9 +170,9 @@ help-header-config = ── nhazi grammar ebe obibi ─────────�
 help-header-common = ── ụzọ a na-ejikarị ─────────────────────────────────────────────────────
 help-header-inbox = ── igbe ozi ─────────────────────────────────────────────────────────────
 help-header-documents = ── akwụkwọ ─────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── asụsụ ──────────────── ───────────────
+help-header-ma = ── 3-oghere ─────────────── ───────────────
+help-header-ma-entry = ── na-abanye 間-ohere ─────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Enyemaka — iwu zion ───────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       kpochaa terminal
 help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mgbe ị nọ n'nsogbu
 help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
+help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID/DID-URL e dozierela (ezigaghị ozi)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            gosi CID echekwara
 help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n na-echekwa mmasị asụsụ jikọtara na njirimara gị.
+help-i18n-set = .my.i18n: <code>             họrọ asụsụ 20 na-eji maka njirimara a
+help-i18n-list = .my.i18n!list               depụta koodu asụsụ dị
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Ụlọ 間 bụ oghere dị n’etiti njirimara 間. ma na-eme ka njirimara ndị a chọta ibe ha ma kwurịta okwu; mgbe e bipụtara njirimara gị, ị nwere ike isonye.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = dezie: ọdịda nweta: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = enweghị nnọọ nọọọ — enweghị ike ihichapụ profaịlụ
 profile-delete-error = ihichapụ profaịlụ dara ada: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = enweghị ike ịtọ 11 maka profaịlụ ọzọ - naanị nke gị
+profile-wrong-user-name = enweghị ike ịtọ 11 maka 19 - naanị profaịlụ nke gị
+profile-no-ma = Ọ dịghị 3 oge ojiri gaa ahazi-gbaa 31 mbụ
+profile-no-cid = ọ dịghị 3 echekwara maka profaịlụ a — gba ọsọ 37 mbụ
+profile-no-cid-in-doc = enweghị profaịlụ 11 achọtara na akwụkwọ DID - gbaa 43 mbụ
+profile-publish-sent = e zoro profaịlụ ma zigara ya IPFS; a ga-emelite akwụkwọ DID mgbe CID bịara
+profile-publish-done = ebipụtala profaịlụ — emelitela akwụkwọ DID na ma.agent CID
+profile-publish-failed = mbipụta profaịlụ dara: 24
+profile-fetch-done = profaịlụ ewepụtara - igodo 18 ebugoro na 43
+profile-fetch-failed = Nweta profaịlụ dara ada: 22
+msg-identity-exists = njirimara ebipụtalarị - profaịlụ ruo ugbu a
+profile-import-exists = profaịlụ 8 adịlarị - buru ụzọ hichapụ ya
+profile-import-wrong-user = faịlụ nwere profaịlụ 22, 42 tụrụ anya
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = ọnụọgụ abụọ (anaghị egosipụta)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = enwetaghị ọdịnaya: 25
+cid-op-unknown = arụmọrụ ọdịnaya amaghi ama: 27
+cid-op-wc = Ahịrị { $lines } 18 okwu 36 chars
 profiles-empty = (ọ dịghị)
 profiles-deleted = profaịlụ { $name } ahichapụrụ
 profiles-not-found = profaịlụ ahụghị: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- topik -- ketik .help/<topic> untuk detail
+help-topic-msg =   .help/msg                    pesan
+help-topic-ma = .help/ma                     ma-oghere, mbipụta na ntinye
+help-topic-path = .help/path                   Ụtọasụsụ ntụpọ-ụzọ mpaghara
+help-topic-my =   .help/my                     config pribadi
+help-topic-inbox =   .help/inbox                  kotak masuk
+help-topic-doc =   .help/doc                    dokumen
+help-topic-actor =   .help/actor                  actor jarak jauh
+help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- aktor jarak jauh
+help-actor-echo =   @actor                       tampilkan DID yang diselesaikan
+help-actor-text = @actor[#entity]!msg|!say|!emote body         zipu ozi ozugbo/ kparịta ụka/emomote
+help-actor-ping = @actor:ping                  ping dị ndụ
+help-actor-entities =   @actor/entities              daftar entitas
+help-actor-entities-get = @actor/entities/<n>          nweta ọnụ ụlọ
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ntọala site na ntụnye aka 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entitas
+help-actor-entities-del = @actor/entities/<n>:         ihichapụ ihe
+help-actor-config-get =   @actor/config/<key>          ambil nilai config
+help-actor-config-set =   @actor/config/<key>: val     atur nilai config
+help-actor-acl = @actor/acl                   nweta 4
+help-actor-acl-edit =   @actor/acl!edit              dezie ACL
+help-actor-fragment =   @actor#entity                kirim ke plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-header-cid-ops = ── 3 oku omee ────────────── ───────────────
+help-actor-cat = (@actor#entity:verb arg...)  kpọọ otu ụlọ ọrụ 15 site na 24 wee chere azịza ya
+help-actor-head = (@actor/path)                weta ọdịnaya CRUD dịpụrụ adịpụ site na 31
+help-actor-tail = (<bafy...>)                  gụnyere ma nyochaa 21 site na 36 41
+help-actor-wc = (define x (@actor:verb arg))  debe nzaghachi 5 na gburugburu nnọkọ
+help-actor-wc-l = .my.scheme.ma!edit           dezie ndị enyemaka 11 echekwara maka njirimara a
 
 help-topic-url =   .help/url                    mepee zion site na njikọ URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   mmasị asụsụ maka njirimara gị
 help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
 help-url-msg =   ?msg=<did>                   deeye tupu: @<did>!msg (ozi dị mfe)
 help-url-say =   ?say=<did>                   deeye tupu: @<did>!say (ngwa ọrụ say)
 help-url-emote =   ?emote=<did>                 deeye tupu: @<did>!emote (ngwa ọrụ emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pre-mejuputa oge ojiri gaa DID / 23 URL
+help-url-enter = ?enter=<runtime>             banye runtime ụwa mgbe nbanye
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. 
 help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
 help-publish-steps = Usoro: bido '.ma [port]' iji chọpụta ma nke mpaghara, wee mee '.my.identity!publish @ma'.
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = Ebipụtabeghị - gbaa 28 mbụ, wee 67 profaịlụ gị
+profile-update-done = profaịlụ emelitere - igodo 18 jikọtara na 43
+profile-delete-needs-name = kọwaa aha profaịlụ: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Ịnakọta ogbe - ụdị iwu, mechie na .batch
+batch-already-collecting = Ugbua na-anakọta ogbe - jiri .batch mechie mbụ
+batch-empty = Batch tọgbọ chakoo - ọ nweghị ihe ọ ga-agba
+batch-running = Menjalankan batch…
+batch-step-timeout = Oge nkwụsị nke ogbe agwụla
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
+batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
+msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+err-unknown-command = iwu a na-amaghị: { $path }
+err-read-only-path = { $path } bụ naanị ọgụgụ
+help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

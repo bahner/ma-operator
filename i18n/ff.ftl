@@ -44,10 +44,10 @@ msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID hollitaama e nder ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = amin etagol maa e 間trix
+msg-local-ma-claimed = 間 nokku ɗaɓɓaama
+msg-local-ma-already-claimed = 間 nokku ɗaɓɓaama kisa
+msg-local-ma-claim-failed = ɗaɓɓude 間 nokku woorii
 msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '.my.identity!publish @ma'. Windu '.help/publish' ngam tabitinde.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   tinndi @ma ɓe — laato '.my.identity!publish @ma' ngam jaatugol tigiraaɗe maa.
 claim-success = Runtime ɗaɓɓaama ko { $did }
 claim-conflict = Runtime ɗaɓɓaa ko ɗemngal goɗngal
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime ɗaɓɓaama kisa e oo innde
 claim-http-failed = gollal haaɗaaka: HTTP { $status }
 claim-error = gollal haaɗaaka: { $e }
 claim-no-session = naataaka wano; naatna ɓaawo ɗaɓɓude runtime
@@ -145,14 +145,14 @@ doc-publish-failed = yettinde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = bayyingol woorii [{ $code }]: { $err }
 doc-publish-error-hint = Tinndinoore: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = log in kadi ngam ego waawa heɓde coktirgal maa
+doc-publish-hint-target = huutoro DID bayyinoowo moƴƴo walla innde woɗnde peewnitnde ngam bare 57
+doc-publish-hint-network = hoolkiso 7 waktu doggol e 22 ina mbaawi yettaade, caggal ɗuum ƴeewto
+doc-publish-hint-resolve = hoolkiso winndannde DID bayyinoowo ndee yaltinaama kadi ina waɗi toɓɓere joofnirde yettotoonde
+doc-publish-hint-acl = naamndo golloowo bayyinoowo oo yo accu DID maa e nder 48
+doc-publish-hint-runtime = runtime/plugin jaɓaani ɗaɓɓaande ndee; ƴeewto sabaabu oo e ƴeewtaade caggal nde feewnitaa entitee/runtime
+doc-publish-hint-ipfs = ƴeewto cellal 12/17 nokkuure ndee e ngonka doggol bayyinoowo
+doc-publish-hint-unknown = ƴeewto binndanɗe runtime ngam humpitaade sabaabu laaɓtuɗo e ƴeewtaade
 doc-store-sent = gollal mooftude nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-ipld-store-sent = gollal mooftude IPLD nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-fetch-done = { $cid } heɓaama → { $path }.content (hooraaka)
@@ -170,9 +170,9 @@ help-header-config = ── naawre-daande tiiɗnde ─────────�
 help-header-common = ── laabi caggal ──────────────────────────────────────────────────────────
 help-header-inbox = ── burro naatna ───────────────────────────────────────────────────────────
 help-header-documents = ── takka ────────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ɗemngal ─────────────────────────── ─────────────────────────────
+help-header-ma = ── 3- nokku ───────────────────────────── ─────────────────────────────
+help-header-ma-entry = ── naatde e 間- nokku ──────────────────────── ─────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Ballal — dabaaji zion ─────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       yaltina terminal
 help-cmd-panic =   .panic                       laawol ɓurno — faala e nder nafoore
 help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
 help-cmd-logout =   .logout                      yalta
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
+help-cmd-batch-sync =   .batch:sync / .batch         évaluer le document brouillon ligne par ligne
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hollu DID/DID-URL ɗaaɓtunde (ɓatakuru neldaaka)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            hollu CID mooƒtaaɗo
 help-doc-del =   .my.doc.<name>:              yaltina takka
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n ina moofta ɓural ɗemngal jokkondirngal e mbaydi maa.
+help-i18n-set = .my.i18n: <code>             suɓo ɗemngal ngal 20 huutortoo ngam ndeeɗoo anndinde
+help-i18n-list = .my.i18n!list               limtu kode ɗemɗe keɓaaɗe
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Suudu 間 ko woni hakkunde innde-identiteede 間. ma walla ɗee identiteede ngam yiytugol e jokkondirde; so identite maa jaɓɓinaama, a waawi seŋaade.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = taƴre: juumre heɓde: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = alaa setoore jeyaare — profil waawataa jooɓaade
 profile-delete-error = feccere profil walaa: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = waawaa waɗde 11 ngam porofayla goɗɗo — ko maa tan
+profile-wrong-user-name = waawaa waɗde 11 ngam 19 — ko lowre maa tan
+profile-no-ma = alaa 3 dogdu — dogdu 31 ko adii
+profile-no-cid = alaa 3 mooftaa ngam ndeeɗoo nate — dognu 37 ko adii
+profile-no-cid-in-doc = alaa nate 11 tawaaɗe e winndannde DID — dognu 43 ko adii
+profile-publish-sent = heftinirde nde suuɗinaama tee neldaama to IPFS; winndere DID maa hesɗitine nde CID arii
+profile-publish-done = heftinirde nde bayyinaama — winndere DID hesɗitinaama e ma.agent CID
+profile-publish-failed = bayyinde porofaayiil oo ŋakki: 24
+profile-fetch-done = porofaayiil ƴettaa — 18 kuutorɗe ƴettaaɗe e 43
+profile-fetch-failed = ƴettugol nate ngol ŋakki: 22
+msg-identity-exists = identité yaltinaama tawo — nate haa jooni
+profile-import-exists = profile 8 ina woodi tawo — momtu ɗum ko adii
+profile-import-wrong-user = fiilde ina waɗi nate 22, 42 ina ɗaminaa
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = loowdi binndol (hollittaaka)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = waawaa heɓde loowdi: 25
+cid-op-unknown = gollal loowdi ndi anndaaka: 27
+cid-op-wc = { $lines } diidi 18 konnguɗi 36 alkule
 profiles-empty = (hay)
 profiles-deleted = profil { $name } jooɓaama
 profiles-not-found = profil {$name} walaa: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- sujets -- tapez .help/<topic> pour les détails
+help-topic-msg =   .help/msg                    messagerie
+help-topic-ma = .help/ma                     ma-nokku, baylugol, e naatgol
+help-topic-path = .help/path                   grammar laawol toɓɓere nokkuure
+help-topic-my =   .help/my                     config personnelle
+help-topic-inbox =   .help/inbox                  boîte de réception
+help-topic-doc =   .help/doc                    binndanɗe
+help-topic-actor =   .help/actor                  acteur distant
+help-unknown-topic =   .help/{ $topic }: sujet inconnu
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- acteurs distants
+help-actor-echo =   @actor                       afficher le DID résolu
+help-actor-text = @actor[#entity]!msg|!say|!emote body         neldu mesaas toowɗo/yeewtere/emote
+help-actor-ping = @actor:ping                  nguurndam ping
+help-actor-entities =   @actor/entities              lister les entités
+help-actor-entities-get = @actor/entities/<n>          heɓde noddaango entitee
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entitee e tuugnorgal 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     modifier l’entité
+help-actor-entities-del = @actor/entities/<n>:         momtude huunde
+help-actor-config-get =   @actor/config/<key>          obtenir la valeur de config
+help-actor-config-set =   @actor/config/<key>: val     définir la valeur de config
+help-actor-acl = @actor/acl                   heɓde 4
+help-actor-acl-edit =   @actor/acl!edit              modifier ACL
+help-actor-fragment =   @actor#entity                envoyer au plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC vers le plugin
+help-header-cid-ops = ── 3 fijoowo ina nodda ─────────────────────── ────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  noddu entitee 15 ummoraade e 24 e faddaade jaabawol mum
+help-actor-head = (@actor/path)                ƴettude loowdi CRUD to woɗɗi ummoraade e 31
+help-actor-tail = (<bafy...>)                  hawrude e ƴeewtaade 21 ummoraade e 36 41
+help-actor-wc = (define x (@actor:verb arg))  jogaade jaabawuuli 5 e nder nokku jonnde
+help-actor-wc-l = .my.scheme.ma!edit           waylu wallidiiɓe 11 hisnaaɓe ngam ndeeɗoo anndinde
 
 help-topic-url =   .help/url                    udditde zion e nder togol URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   ɗemngal ɓurngal welde ngam anndinde ma
 help-header-url = ── kaaɗe URL ────────────────────────────────────────────────────────────────────
 help-url-intro =   Neltir togol udditde zion e jibinirde njemiraande:
 help-url-msg =   ?msg=<did>                   ara-ɓulla: @<did>!msg (tiiɗnde yooltii)
 help-url-say =   ?say=<did>                   ara-ɓulla: @<did>!say (haala say)
 help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>!emote (haala emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              ko adii hebbinde waktu dogdu DID / 23 URL
+help-url-enter = ?enter=<runtime>             naatde e aduna runtime caggal nde naati
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter ngam neltude.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mb
 help-publish-ma = Ngam jaatugol, a haani ma (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.
 help-publish-steps = Laaɓol: laato '.ma [port]' ngam yiyde ma laawol, ɓe '.my.identity!publish @ma'.
 help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID yaltinaaka tawo — dognu 28 ko adii, caggal ɗuum 67 nate maa
+profile-update-done = porofayla kesɗitinaa — 18 kuutorɗe kawraaɗe e 43
+profile-delete-needs-name = joɓɓin innde heftinirde: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Moftude batte — winndu yamiroore, joofna e .batch
+batch-already-collecting = Ko adii fof ko mooftude battane — joofna e .batch ko adii
+batch-empty = Batch wonnoo ko meere — alaa ko dogata
+batch-running = Exécution du batch…
+batch-step-timeout = batch step timmi
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch terminé en { $secs }s — { $steps } étapes
+batch-done-error = Batch terminé avec erreurs en { $secs }s — { $steps } étapes
+msg-timeout = Message expiré (aucune réponse en 60s)
+err-unknown-command = yamiroore anndaaka: { $path }
+err-read-only-path = { $path } ko janngorde tan
+help-cmd-batch-async =   .batch:async / .batch        évaluer le document brouillon en parallèle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

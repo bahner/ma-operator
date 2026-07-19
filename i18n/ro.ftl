@@ -44,10 +44,10 @@ msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicat prin ma local ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = încercăm să te conectăm la 間trix
+msg-local-ma-claimed = 間 local revendicat
+msg-local-ma-already-claimed = 間 local deja revendicat
+msg-local-ma-claim-failed = nu s-a putut revendica 間 local
 msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '.my.identity!publish @ma'. Tastează '.help/publish' pentru detalii.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma creat — rulează '.my.identity!publish @ma' pentru a-ți publica identitatea.
 claim-success = Runtime revendicat pentru { $did }
 claim-conflict = Runtime deja revendicat de o altă identitate
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime deja revendicat de această identitate
 claim-http-failed = revendicare eșuată: HTTP { $status }
 claim-error = revendicare eșuată: { $e }
 claim-no-session = neautentificat; autentificați-vă mai întâi pentru a revendica runtime
@@ -145,14 +145,14 @@ doc-publish-failed = publicare { $path }: { $e }
 doc-publish-ipld-failed = publicare IPLD { $path }: { $e }
 doc-publish-error-detail = publicare eșuată [{ $code }]: { $err }
 doc-publish-error-hint = Indiciu: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = autentificați-vă din nou pentru ca ego să vă poată accesa cheile de identitate
+doc-publish-hint-target = utilizați un DID sau un alias de editor valid care se rezolvă în 57
+doc-publish-hint-network = verificați 7 runtime și 22 sunt accesibile, apoi reîncercați
+doc-publish-hint-resolve = verificați că documentul DID al editorului este publicat și conține un punct final accesibil
+doc-publish-hint-acl = cereți operatorului editorului să vă permită DID-ul în 48
+doc-publish-hint-runtime = runtime/plugin-ul a respins cererea; inspectați motivul și reîncercați după repararea entității/execuției
+doc-publish-hint-ipfs = verificați starea locală a 12/17 și starea de rulare a editorului
+doc-publish-hint-unknown = inspectați jurnalele de rulare pentru cauze detaliate și reîncercați
 doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-fetch-done = { $cid } obținut → { $path }.content (neexecutat)
@@ -170,9 +170,9 @@ help-header-config = ── gramatică de configurare locală ──────
 help-header-common = ── căi comune ────────────────────────────────────────────────────────────
 help-header-inbox = ── căsuță poștală ────────────────────────────────────────────────────────
 help-header-documents = ── documente ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── limbaj ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-spațiu ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── intrând în 間-spațiu ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        acest text
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       șterge terminalul
 help-cmd-panic =   .panic                       ultima soluție — folosiți dacă aveți probleme
 help-cmd-history =   .history                     istoricul comenzilor (duplicate consecutive îmbinate)
 help-cmd-logout =   .logout                      deconectare
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluează documentul temporar în paralel
+help-cmd-batch-sync =   .batch:sync / .batch         evaluează documentul temporar linie cu linie
 
 help-msg-echo =   @alias                       afișează DID/DID-URL rezolvat (nu se trimite mesaj)
 help-msg-send =   @alias!msg body / @alias:verb args           trimite mesaj / RPC actorului
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<nume>!cid            afișează CID salvat
 help-doc-del =   .my.doc.<nume>:              șterge document
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n stochează preferința de limbă legată de identitatea dvs.
+help-i18n-set = .my.i18n: <code>             alege limba pe care 20 o folosește pentru această identitate
+help-i18n-list = .my.i18n!list               enumerați codurile de limbă disponibile
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Camera 間 este spațiul dintre identitățile 間. ma le permite acestor identități să se găsească și să comunice; după ce identitatea ta este publicată, poți participa.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = editare: eroare la încărcare: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nicio sesiune activă — profilul nu poate fi șters
 profile-delete-error = ștergerea profilului a eșuat: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = nu se poate seta 11 pentru alt profil — doar al tău
+profile-wrong-user-name = nu se poate seta 11 pentru 19 — doar propriul profil
+profile-no-ma = nu a fost configurat un timp de rulare 3 — rulați mai întâi 31
+profile-no-cid = nu este 3 stocat pentru acest profil — rulați mai întâi 37
+profile-no-cid-in-doc = nu s-a găsit niciun profil 11 în documentul DID — rulați mai întâi 43
+profile-publish-sent = profil criptat și trimis la IPFS; documentul DID va fi actualizat când sosește CID
+profile-publish-done = profil publicat — document DID actualizat cu CID ma.agent
+profile-publish-failed = Publicarea profilului a eșuat: 24
+profile-fetch-done = profil preluat — cheile 18 încărcate de la 43
+profile-fetch-failed = Preluarea profilului a eșuat: 22
+msg-identity-exists = identitate deja publicată — profil actualizat
+profile-import-exists = profilul 8 există deja — ștergeți-l mai întâi
+profile-import-wrong-user = fișierul conține profilul 22, așteptat 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = conținut binar (nu este afișat)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = Nu s-a putut prelua conținutul: 25
+cid-op-unknown = operație de conținut necunoscut: 27
+cid-op-wc = { $lines } linii 18 cuvinte 36 caractere
 profiles-empty = (niciunul)
 profiles-deleted = profilul { $name } a fost șters
 profiles-not-found = profilul nu a fost găsit: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- subiecte -- tastați .help/<topic> pentru detalii
+help-topic-msg =   .help/msg                    mesaje
+help-topic-ma = .help/ma                     ma-spațiu, publicare și intrare
+help-topic-path = .help/path                   gramatica locală a căii punctelor
+help-topic-my =   .help/my                     config personal
+help-topic-inbox =   .help/inbox                  mesaje primite
+help-topic-doc =   .help/doc                    documente
+help-topic-actor =   .help/actor                  actor la distanță
+help-unknown-topic =   .help/{ $topic }: subiect necunoscut
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- actori la distanță
+help-actor-echo =   @actor                       afișează DID rezolvat
+help-actor-text = @actor[#entity]!msg|!say|!emote body         trimite mesaj direct/chat/emote
+help-actor-ping = @actor:ping                  ping de viață
+help-actor-entities =   @actor/entities              listează entitățile
+help-actor-entities-get = @actor/entities/<n>          obține nodul de entitate
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   setați entitate prin referință 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     editează entitatea
+help-actor-entities-del = @actor/entities/<n>:         șterge entitatea
+help-actor-config-get =   @actor/config/<key>          obține valoarea config
+help-actor-config-set =   @actor/config/<key>: val     setează valoarea config
+help-actor-acl = @actor/acl                   obține 4
+help-actor-acl-edit =   @actor/acl!edit              editează ACL
+help-actor-fragment =   @actor#entity                trimite la plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC la plugin
+help-header-cid-ops = ── 3 sună actorul ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  apelați o entitate 15 de la 24 și așteptați răspunsul acesteia
+help-actor-head = (@actor/path)                preluați conținut CRUD la distanță de la 31
+help-actor-tail = (<bafy...>)                  includeți și evaluați 21 dintr-un 36 41
+help-actor-wc = (define x (@actor:verb arg))  păstrați răspunsurile 5 în mediul de sesiune
+help-actor-wc-l = .my.scheme.ma!edit           editați asistenții 11 salvati pentru această identitate
 
 help-topic-url =   .help/url                    deschiderea zion printr-un link URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   preferința de limbă pentru identitatea dvs
 help-header-url = ── parametri URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Distribuie un link care deschide zion cu un destinatar precompletat:
 help-url-msg =   ?msg=<did>                   precompletează: @<did>!msg (mesaj simplu)
 help-url-say =   ?say=<did>                   precompletează: @<did>!say (verb say)
 help-url-emote =   ?emote=<did>                 precompletează: @<did>!emote (verb emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pre-completare runtime DID / URL 23
+help-url-enter = ?enter=<runtime>             intrați în lumea de rulare după conectare
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentru a trimite.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alți
 help-publish-ma = Pentru a publica, ai nevoie de ma (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
 help-publish-steps = Pași: rulează '.ma [port]' pentru a detecta ma-ul local, apoi '.my.identity!publish @ma'.
 help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = Nu a fost publicat încă — rulați mai întâi 28, apoi 67 profilul dvs
+profile-update-done = profil actualizat — cheile 18 fuzionate din 43
+profile-delete-needs-name = specificați un nume de profil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Colectarea lotului — tastați comenzi, se încheie cu .batch
+batch-already-collecting = Se colectează deja un lot - terminați cu .batch mai întâi
+batch-empty = Lotul era gol - nimic de rulat
+batch-running = Rulez batch…
+batch-step-timeout = pasul lotului a expirat
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch terminat în { $secs }s — { $steps } pași
+batch-done-error = Batch terminat cu erori în { $secs }s — { $steps } pași
+msg-timeout = Mesaj expirat (niciun răspuns în 60s)
+err-unknown-command = comandă necunoscută: { $path }
+err-read-only-path = { $path } este doar pentru citire
+help-cmd-batch-async =   .batch:async / .batch        evaluează documentul temporar în paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

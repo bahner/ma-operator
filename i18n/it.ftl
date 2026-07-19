@@ -44,10 +44,10 @@ msg-connecting = connessione a iroh in corso...
 msg-iroh-ready = endpoint iroh pronto
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pubblicato tramite ma locale ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = provo a connetterti alla 間trix
+msg-local-ma-claimed = 間 locale reclamato
+msg-local-ma-already-claimed = 間 locale già reclamato
+msg-local-ma-claim-failed = impossibile reclamare il 間 locale
 msg-identity-not-published = Identità non trovata online — se hai ma installato localmente, esegui '.ma [port]' poi '.my.identity!publish @ma'. Digita '.help/publish' per i dettagli.
 msg-blocked = ⊗ bloccato [{ $cap }]: { $from }
 msg-focus-cleared = focus cancellato
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma creato — esegui '.my.identity!publish @ma' per pubblicare la tua identità.
 claim-success = Runtime reclamato per { $did }
 claim-conflict = Runtime già reclamato da un'altra identità
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime già reclamato da questa identità
 claim-http-failed = reclamo fallito: HTTP { $status }
 claim-error = reclamo fallito: { $e }
 claim-no-session = non connesso; accedi prima per reclamare il runtime
@@ -170,9 +170,9 @@ help-header-config = ── grammatica di configurazione locale ─────�
 help-header-common = ── percorsi comuni ───────────────────────────────────────────────────────
 help-header-inbox = ── casella di posta ─────────────────────────────────────────────────────
 help-header-documents = ── documenti ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── lingua ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-spazio ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── entrando nello 間-spazio ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        questo testo
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       pulisci terminale
 help-cmd-panic =   .panic                       ultima risorsa — usa se sei nei guai
 help-cmd-history =   .history                     cronologia comandi (duplicati consecutivi uniti)
 help-cmd-logout =   .logout                      disconnetti
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       valuta documento temporaneo in parallelo
+help-cmd-batch-sync =   .batch:sync / .batch         valuta documento temporaneo riga per riga
 
 help-msg-echo =   @alias                       mostra DID/DID-URL risolto (nessun messaggio inviato)
 help-msg-send =   @alias!msg body / @alias:verb args           invia messaggio / RPC ad attore
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<nome>!cid            mostra CID salvato
 help-doc-del =   .my.doc.<nome>:              elimina documento
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n memorizza la preferenza della lingua legata alla tua identità.
+help-i18n-set = .my.i18n: <code>             scegli la lingua che 20 utilizza per questa identità
+help-i18n-list = .my.i18n!list               elencare i codici delle lingue disponibili
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = La stanza 間 è lo spazio tra identità 間. ma permette a queste identità di trovarsi e comunicare; una volta pubblicata la tua identità, puoi partecipare.
@@ -294,72 +294,72 @@ err-edit-fetch-failed = modifica: recupero fallito: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nessuna sessione attiva — impossibile eliminare il profilo
 profile-delete-error = eliminazione del profilo fallita: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = non è possibile impostare 11 per un altro profilo, solo per il proprio
+profile-wrong-user-name = non è possibile impostare 11 per 19: solo il proprio profilo
+profile-no-ma = nessun runtime 3 configurato: esegui prima 31
+profile-no-cid = nessun 3 memorizzato per questo profilo: esegui prima 37
+profile-no-cid-in-doc = nessun profilo 11 trovato nel documento DID: esegui prima 43
+profile-publish-sent = profilo cifrato e inviato a IPFS; il documento DID sarà aggiornato quando arriva il CID
+profile-publish-done = profilo pubblicato — documento DID aggiornato con CID ma.agent
+profile-publish-failed = pubblicazione del profilo non riuscita: 24
+profile-fetch-done = profilo recuperato: chiavi 18 caricate da 43
+profile-fetch-failed = recupero del profilo non riuscito: 22
+msg-identity-exists = identità già pubblicata — profilo aggiornato
+profile-import-exists = il profilo 8 esiste già: eliminalo prima
+profile-import-wrong-user = il file contiene il profilo 22, previsto 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = contenuto binario (non visualizzato)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = impossibile recuperare il contenuto: 25
+cid-op-unknown = operazione contenuto sconosciuto: 27
+cid-op-wc = { $lines } righe 18 parole 36 caratteri
 profiles-empty = (nessuno)
 profiles-deleted = profilo { $name } eliminato
 profiles-not-found = profilo non trovato: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- argomenti -- digita .help/<topic> per i dettagli
+help-topic-msg =   .help/msg                    messaggi
+help-topic-ma = .help/ma                     ma-spazio, pubblicazione e ingresso
+help-topic-path = .help/path                   grammatica locale del percorso dei punti
+help-topic-my =   .help/my                     config personale
+help-topic-inbox =   .help/inbox                  posta in arrivo
+help-topic-doc =   .help/doc                    documenti
+help-topic-actor =   .help/actor                  actor remoto
 help-topic-url =   .help/url                    aprire zion tramite un link URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   preferenza linguistica per la tua identità
+help-unknown-topic =   .help/{ $topic }: argomento sconosciuto
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- attori remoti
+help-actor-echo =   @actor                       mostra DID risolto
+help-actor-text = @actor[#entity]!msg|!say|!emote body         inviare un messaggio diretto/chat/emotivo
+help-actor-ping = @actor:ping                  ping di vitalità
+help-actor-entities =   @actor/entities              elenca entità
+help-actor-entities-get = @actor/entities/<n>          ottieni il nodo dell'entità
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   imposta l'entità tramite il riferimento 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     modifica entità
+help-actor-entities-del = @actor/entities/<n>:         eliminare l'entità
+help-actor-config-get =   @actor/config/<key>          leggi valore config
+help-actor-config-set =   @actor/config/<key>: val     imposta valore config
+help-actor-acl = @actor/acl                   ottieni 4
+help-actor-acl-edit =   @actor/acl!edit              modifica ACL
+help-actor-fragment =   @actor#entity                invia al plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC al plugin
+help-header-cid-ops = ── Chiama l'attore 3 ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  chiamare un'entità 15 da 24 e attendere la sua risposta
+help-actor-head = (@actor/path)                recuperare il contenuto CRUD remoto da 31
+help-actor-tail = (<bafy...>)                  includere e valutare 21 da un 36 41
+help-actor-wc = (define x (@actor:verb arg))  mantenere le risposte 5 nell'ambiente della sessione
+help-actor-wc-l = .my.scheme.ma!edit           modifica gli helper 11 salvati per questa identità
 help-header-url = ── parametri URL ───────────────────────────────────────────────────────────
 help-url-intro =   Condividi un link che apre zion con il destinatario già compilato:
 help-url-msg =   ?msg=<did>                   precompila: @<did>!msg (messaggio testo)
 help-url-say =   ?say=<did>                   precompila: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 precompila: @<did>!emote (verbo emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              URL DID/23 di runtime di precompilazione
+help-url-enter = ?enter=<runtime>             accedere al mondo runtime dopo il login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Il campo viene precompilato ma non inviato — premi Invio per inviare.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -369,20 +369,23 @@ help-publish-intro = La pubblicazione rende la tua identità trovabile sulla ret
 help-publish-ma = Per pubblicare hai bisogno di ma (runtime locale) installato. Collega ego a IPFS/IPNS per conto tuo.
 help-publish-steps = Passi: esegui '.ma [port]' per rilevare il tuo ma locale, poi '.my.identity!publish @ma'.
 help-publish-without = Senza pubblicazione, altri non possono raggiungerti — anche se conoscono il tuo DID, non riescono a risolvere il tuo endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID non ancora pubblicato: esegui prima 28, quindi 67 il tuo profilo
+profile-update-done = profilo aggiornato: chiavi 18 unite da 43
+profile-delete-needs-name = specifica un nome profilo: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Raccolta batch: digita i comandi e termina con .batch
+batch-already-collecting = Sto già raccogliendo un lotto: termina prima con .batch
+batch-empty = Il batch era vuoto: niente da eseguire
+batch-running = Esecuzione batch…
+batch-step-timeout = il passaggio batch è scaduto
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch completato in { $secs }s — { $steps } passi
+batch-done-error = Batch completato con errori in { $secs }s — { $steps } passi
+msg-timeout = Messaggio scaduto (nessuna risposta in 60s)
+err-unknown-command = comando sconosciuto: { $path }
+err-read-only-path = { $path } è di sola lettura
+help-cmd-batch-async =   .batch:async / .batch        valuta documento temporaneo in parallelo
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

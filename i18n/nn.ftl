@@ -44,10 +44,10 @@ msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publisert via lokal ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = prøver å kopla deg til 間trix
+msg-local-ma-claimed = lokal 間 gjort krav på
+msg-local-ma-already-claimed = lokal 間 er allereie gjort krav på
+msg-local-ma-claim-failed = klarte ikkje å gjera krav på lokal 間
 msg-identity-not-published = Identitet ikkje funne online — om du har ma installert lokalt, køyr '.ma [port]' og deretter '.my.identity!publish @ma'. Skriv '.help/publish' for detaljar.
 msg-blocked = ⊗ blokkert [{ $cap }]: { $from }
 msg-focus-cleared = fokus tømt
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma oppretta — køyr '.my.identity!publish @ma' for å publisere identiteten din.
 claim-success = Køyretid gjort krav på for { $did }
 claim-conflict = Køyretid allereie gjort krav på av ein annan identitet
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime er allereie gjort krav på av denne identiteten
 claim-http-failed = krav mislykkast: HTTP { $status }
 claim-error = krav mislykkast: { $e }
 claim-no-session = ikkje logga inn; logg inn fyrst for å gjere krav på køyretida
@@ -144,7 +144,7 @@ doc-publish-ipld-usage = bruk: .my.doc.<namn>!publish-ipld <utgjevar>
 doc-publish-failed = publisering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publisering { $path }: { $e }
 doc-publish-error-detail = publisering feila [{ $code }]: { $err }
-doc-publish-error-hint = Hint: { $hint }
+doc-publish-error-hint = Tips: { $hint }
 doc-publish-hint-session = logg inn på nytt så ego får tilgang til identitetsnøklane dine
 doc-publish-hint-target = bruk ein gyldig utgjevar-DID eller eit alias som peikar til ein rein did:ma:<ipns>
 doc-publish-hint-network = sjekk at ma-køyretida og IPFS kan nåast, og prøv igjen
@@ -170,9 +170,9 @@ help-header-config = ── lokal konfigurasjonsgrammatikk ───────
 help-header-common = ── vanlege stiar ─────────────────────────────────────────────────────────
 help-header-inbox = ── innboks ───────────────────────────────────────────────────────────────
 help-header-documents = ── dokument ─────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── språk ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-rom ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── inn i 間-rommet ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Hjelptekst — zion-kommandoar ──────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       tøm terminalen
 help-cmd-panic =   .panic                       siste utveg — bruk om du er i trøbbel
 help-cmd-history =   .history                     kommandohistorikk (etterfylgjande duplikatar vert samanslåtte)
 help-cmd-logout =   .logout                      logg ut
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
+help-cmd-batch-sync =   .batch:sync / .batch         evaluer kladdedokument line for line
 
 # ── Hjelptekst — meldingar ────────────────────────────────────────────────
 help-msg-echo =   @alias                       vis løyst DID/DID-URL (inkje melding sendt)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<namn>!cid            vis lagra CID
 help-doc-del =   .my.doc.<namn>:              slett dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro =   .my.i18n lagrar språkvalet knytt til identiteten din.
+help-i18n-set =   .my.i18n: <code>             vel språket zion brukar for denne identiteten
+help-i18n-list =   .my.i18n!list               vis tilgjengelege språkkodar
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間-rommet er rommet mellom 間-identitetar. ma sørgjer for at identitetane kan finne kvarandre og kommunisere; når identiteten din er publisert, kan du delta.
@@ -310,61 +310,61 @@ profile-publish-failed = profilpublisering mislukkast: { $e }
 profile-fetch-done = profil henta — { $n } nøklar henta frå IPFS
 profile-fetch-failed = profil-henting mislukkast: { $e }
 msg-identity-exists = identitet alt publisert — profil-CID lasta frå lokal lagring
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-import-exists = profilen '{ $name }' finst allereie — slett han først
+profile-import-wrong-user = fila inneheld profilen '{ $found }', venta '{ $expected }'
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = binært innhald (blir ikkje vist)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = klarte ikkje å hente innhald: { $e }
+cid-op-unknown = ukjend innhaldsoperasjon: { $op }
+cid-op-wc = { $lines } linjer  { $words } ord  { $chars } teikn
 profiles-empty = (ingen)
 profiles-deleted = profil { $name } sletta
 profiles-not-found = fann ikkje profil: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- emne -- skriv .help/<topic> for detaljar
+help-topic-msg =   .help/msg                    meldingar
+help-topic-ma =   .help/ma                     ma-rom, publisering og inngang
+help-topic-path =   .help/path                   lokal dot-path-grammatikk
+help-topic-my =   .help/my                     personleg config
+help-topic-inbox =   .help/inbox                  innboks
+help-topic-doc =   .help/doc                    dokument
+help-topic-actor =   .help/actor                  ekstern actor
 help-topic-url =   .help/url                    opne zion via ei URL-lenkje
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n =   .help/i18n                   språkval for identiteten din
+help-unknown-topic =   .help/{ $topic }: ukjent emne
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- eksterne aktørar
+help-actor-echo =   @actor                       vis oppslått DID
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direkte/chat/emote-melding
+help-actor-ping =   @actor:ping                  tilgjengelegheitsping
+help-actor-entities =   @actor/entities              list entitetar
+help-actor-entities-get =   @actor/entities/<n>          hent entitetsnode
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entitet via IPFS-referanse
+help-actor-entities-edit =   @actor/entities/<n>!edit     rediger entitet
+help-actor-entities-del =   @actor/entities/<n>:         slett entitet
+help-actor-config-get =   @actor/config/<key>          hent config-verdi
+help-actor-config-set =   @actor/config/<key>: val     set config-verdi
+help-actor-acl =   @actor/acl                   hent ACL
+help-actor-acl-edit =   @actor/acl!edit              rediger ACL
+help-actor-fragment =   @actor#entity                send til plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC til plugin
+help-header-cid-ops = ── Scheme-aktørkall ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  kall entitets-RPC frå Scheme og vent på svar
+help-actor-head =   (@actor/path)                hent eksternt CRUD-innhald frå Scheme
+help-actor-tail =   (<bafy...>)                  inkluder og evaluer Scheme frå ein IPFS-CID
+help-actor-wc =   (define x (@actor:verb arg))  hald RPC-svar i sesjonsmiljøet
+help-actor-wc-l =   .my.scheme.ma!edit           rediger lagra Scheme-hjelparar for denne identiteten
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Del ei lenkje som opnar zion med ferdig utfylt mottakar:
 help-url-msg =   ?msg=<did>                   fyller inn: @<did>!msg (tekstmelding)
 help-url-say =   ?say=<did>                   fyller inn: @<did>!say (si-verb)
 help-url-emote =   ?emote=<did>                 fyller inn: @<did>!emote (emote-verb)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma =   ?ma=<did-or-url>              førehandsfyll runtime-DID / HTTP-URL
+help-url-enter =   ?enter=<runtime>             gå inn i runtime-verda etter innlogging
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Inputfeltet vert fylt ut, men vert ikkje sendt — trykk Enter for å sende.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -375,19 +375,24 @@ help-publish-ma = For å publisere treng du ma (lokal køyretid) installert. Han
 help-publish-steps = Steg: køyr '.ma [port]' for å oppdage din lokale ma, deretter '.my.identity!publish @ma'.
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
 profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity!publish @ma' fyrst, deretter '!publish' profilen din
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-update-done = profilen er oppdatert — { $n } nøklar slått saman frå CID
+profile-delete-needs-name = oppgje eit profilnamn: .profiles.<name>:
+profile-publish-sent = profilen er kryptert og send til IPFS; DID-dokumentet blir oppdatert når CID kjem
+profile-publish-done = profil publisert — DID-dokumentet er oppdatert med ma.agent-CID
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Samlar batch — skriv kommandoar, avslutt med .batch
+batch-already-collecting = Samlar allereie ein batch — avslutt med .batch først
+batch-empty = Batchen var tom — ingenting å køyre
+batch-running = Køyrer batch…
+batch-step-timeout = batch-steg tidsavbrote
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch ferdig på { $secs }s — { $steps } steg
+batch-done-error = Batch ferdig med feil på { $secs }s — { $steps } steg
+msg-timeout = Meldinga fekk tidsavbrot (ingen svar på 60s)
+err-unknown-command = ukjend kommando: { $path }
+err-read-only-path = { $path } er skriveverna
+help-cmd-batch-async =   .batch:async / .batch        evaluer kladdedokument parallelt
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

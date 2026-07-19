@@ -44,10 +44,10 @@ msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID δημοσιεύτηκε μέσω τοπικού ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = προσπαθούμε να σε συνδέσουμε στο 間trix
+msg-local-ma-claimed = το τοπικό 間 διεκδικήθηκε
+msg-local-ma-already-claimed = το τοπικό 間 έχει ήδη διεκδικηθεί
+msg-local-ma-claim-failed = αποτυχία διεκδίκησης του τοπικού 間
 msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '.my.identity!publish @ma'. Πληκτρολόγησε '.help/publish' για λεπτομέρειες.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   ψευδώνυμο @ma δημιουργήθηκε — εκτέλεσε '.my.identity!publish @ma' για να δημοσιεύσεις την ταυτότητά σου.
 claim-success = Το περιβάλλον εκτέλεσης διεκδικήθηκε για { $did }
 claim-conflict = Το περιβάλλον εκτέλεσης έχει ήδη διεκδικηθεί από άλλη ταυτότητα
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Το Runtime έχει ήδη διεκδικηθεί από αυτήν την ταυτότητα
 claim-http-failed = η διεκδίκηση απέτυχε: HTTP { $status }
 claim-error = η διεκδίκηση απέτυχε: { $e }
 claim-no-session = δεν έχετε συνδεθεί· συνδεθείτε πρώτα για να διεκδικήσετε το περιβάλλον εκτέλεσης
@@ -145,14 +145,14 @@ doc-publish-failed = δημοσίευση { $path }: { $e }
 doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
 doc-publish-error-detail = η δημοσίευση απέτυχε [{ $code }]: { $err }
 doc-publish-error-hint = Υπόδειξη: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = συνδεθείτε ξανά ώστε το ego να έχει πρόσβαση στα κλειδιά ταυτότητάς σας
+doc-publish-hint-target = χρησιμοποιήστε ένα έγκυρο DID εκδότη ή ψευδώνυμο που καταλήγει σε γυμνό 57
+doc-publish-hint-network = βεβαιωθείτε ότι ο χρόνος εκτέλεσης του 7 και το 22 είναι προσβάσιμα και, στη συνέχεια, δοκιμάστε ξανά
+doc-publish-hint-resolve = βεβαιωθείτε ότι το έγγραφο DID του εκδότη είναι δημοσιευμένο και περιέχει ένα προσβάσιμο τελικό σημείο
+doc-publish-hint-acl = ζητήστε από τον χειριστή του εκδότη να επιτρέψει το DID σας στο 48
+doc-publish-hint-runtime = Ο χρόνος εκτέλεσης/πρόσθετο απέρριψε το αίτημα. επιθεωρήστε τον λόγο και δοκιμάστε ξανά μετά τη διόρθωση της οντότητας/χρόνου εκτέλεσης
+doc-publish-hint-ipfs = ελέγξτε την τοπική υγεία 12/17 και την κατάσταση χρόνου εκτέλεσης εκδότη
+doc-publish-hint-unknown = επιθεωρήστε τα αρχεία καταγραφής χρόνου εκτέλεσης για λεπτομερή αιτία και δοκιμάστε ξανά
 doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
@@ -170,9 +170,9 @@ help-header-config = ── τοπική γραμματική διαμόρφωσ
 help-header-common = ── συνήθεις διαδρομές ────────────────────────────────────────────────────
 help-header-inbox = ── εισερχόμενα ───────────────────────────────────────────────────────────
 help-header-documents = ── έγγραφα ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── γλώσσα ────────────────────── ─────────────────────-
+help-header-ma = ── 3-χώρος ─────────────────────- ─────────────────────-
+help-header-ma-entry = ── είσοδος στο 間-space ─────────────────────── ──────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        αυτό το κείμενο
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       εκκαθάριση τερμα�
 help-cmd-panic =   .panic                       τελευταία λύση — χρησιμοποιήστε αν αντιμετωπίζετε πρόβλημα
 help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
 help-cmd-logout =   .logout                      αποσύνδεση
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       εκτέλεση πρόχειρου εγγράφου παράλληλα
+help-cmd-batch-sync =   .batch:sync / .batch         εκτέλεση πρόχειρου εγγράφου γραμμή-γραμμή
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID/DID-URL (δεν αποστέλλεται μήνυμα)
 help-msg-send =   @alias!msg body / @alias:verb args           αποστολή μηνύματος / RPC σε ηθοποιό
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<όνομα>!cid            εμφάνιση αποθη
 help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγράφου
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = Το .my.i18n αποθηκεύει την προτίμηση γλώσσας που συνδέεται με την ταυτότητά σας.
+help-i18n-set = .my.i18n: <code>             επιλέξτε τη γλώσσα που χρησιμοποιεί το 20 για αυτήν την ταυτότητα
+help-i18n-list = .my.i18n!list               λίστα των διαθέσιμων κωδικών γλώσσας
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Το δωμάτιο 間 είναι ο χώρος ανάμεσα στις ταυτότητες 間. Το ma επιτρέπει σε αυτές τις ταυτότητες να βρίσκουν η μία την άλλη και να επικοινωνούν· μόλις δημοσιευτεί η ταυτότητά σου, μπορείς να συμμετέχεις.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = αποτυχία ανάκτησης επεξεργασί
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = δεν υπάρχει ενεργή συνεδρία — δεν είναι δυνατή η διαγραφή του προφίλ
 profile-delete-error = η διαγραφή του προφίλ απέτυχε: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = δεν μπορείτε να ορίσετε το 11 για άλλο προφίλ — μόνο το δικό σας
+profile-wrong-user-name = δεν μπορείτε να ορίσετε το 11 για το 19 — μόνο το δικό σας προφίλ
+profile-no-ma = δεν έχει ρυθμιστεί χρόνος εκτέλεσης 3 — εκτελέστε πρώτα το 31
+profile-no-cid = δεν έχει αποθηκευτεί 3 για αυτό το προφίλ — εκτελέστε πρώτα το 37
+profile-no-cid-in-doc = δεν βρέθηκε προφίλ 11 στο έγγραφο DID — εκτελέστε πρώτα το 43
+profile-publish-sent = το προφίλ κρυπτογραφήθηκε και στάλθηκε στο IPFS· το έγγραφο DID θα ενημερωθεί όταν φτάσει το CID
+profile-publish-done = το προφίλ δημοσιεύτηκε — το έγγραφο DID ενημερώθηκε με ma.agent CID
+profile-publish-failed = Η δημοσίευση προφίλ απέτυχε: 24
+profile-fetch-done = λήφθηκε το προφίλ — Τα κλειδιά 18 φορτώθηκαν από το 43
+profile-fetch-failed = Η ανάκτηση προφίλ απέτυχε: 22
+msg-identity-exists = Η ταυτότητα έχει ήδη δημοσιευτεί — το προφίλ είναι ενημερωμένο
+profile-import-exists = Το προφίλ 8 υπάρχει ήδη — διαγράψτε το πρώτα
+profile-import-wrong-user = Το αρχείο περιέχει προφίλ 22, αναμενόμενο 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = δυαδικό περιεχόμενο (δεν εμφανίζεται)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = απέτυχε η ανάκτηση περιεχομένου: 25
+cid-op-unknown = λειτουργία άγνωστου περιεχομένου: 27
+cid-op-wc = { $lines } γραμμές 18 λέξεις 36 χαρακτήρες
 profiles-empty = (κανένα)
 profiles-deleted = το προφίλ { $name } διαγράφηκε
 profiles-not-found = το προφίλ δεν βρέθηκε: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- θέματα -- πληκτρολογήστε .help/<topic> για λεπτομέρειες
+help-topic-msg =   .help/msg                    μηνύματα
+help-topic-ma = .help/ma                     ma-χώρος, δημοσίευση και είσοδος
+help-topic-path = .help/path                   τοπική γραμματική με τελείες
+help-topic-my =   .help/my                     προσωπική config
+help-topic-inbox =   .help/inbox                  εισερχόμενα
+help-topic-doc =   .help/doc                    έγγραφα
+help-topic-actor =   .help/actor                  απομακρυσμένος actor
+help-unknown-topic =   .help/{ $topic }: άγνωστο θέμα
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- απομακρυσμένοι actors
+help-actor-echo =   @actor                       εμφάνιση επιλυμένου DID
+help-actor-text = @actor[#entity]!msg|!say|!emote body         αποστολή άμεσου μηνύματος/συνομιλίας/συναγερμού
+help-actor-ping = @actor:ping                  ping ζωντάνιας
+help-actor-entities =   @actor/entities              λίστα entities
+help-actor-entities-get = @actor/entities/<n>          λήψη κόμβου οντότητας
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ορίστε οντότητα με αναφορά 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     επεξεργασία entity
+help-actor-entities-del = @actor/entities/<n>:         διαγραφή οντότητας
+help-actor-config-get =   @actor/config/<key>          λήψη τιμής config
+help-actor-config-set =   @actor/config/<key>: val     ορισμός τιμής config
+help-actor-acl = @actor/acl                   πάρτε 4
+help-actor-acl-edit =   @actor/acl!edit              επεξεργασία ACL
+help-actor-fragment =   @actor#entity                αποστολή στο plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC στο plugin
+help-header-cid-ops = ── 3 κλήσεις ηθοποιών ─────────────────────── ───────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  καλέστε μια οντότητα 15 από την 24 και περιμένετε την απάντησή της
+help-actor-head = (@actor/path)                ανάκτηση απομακρυσμένου περιεχομένου CRUD από το 31
+help-actor-tail = (<bafy...>)                  συμπεριλάβετε και αξιολογήστε το 21 από ένα 36 41
+help-actor-wc = (define x (@actor:verb arg))  κρατήστε 5 απαντήσεις στο περιβάλλον περιόδου λειτουργίας
+help-actor-wc-l = .my.scheme.ma!edit           επεξεργαστείτε τους αποθηκευμένους βοηθούς 11 για αυτήν την ταυτότητα
 
 help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   γλωσσική προτίμηση για την ταυτότητά σας
 help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
 help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
 help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did>!msg (απλό μήνυμα)
 help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>!say (ρήμα say)
 help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>!emote (ρήμα emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              URL χρόνου εκτέλεσης προπλήρωσης DID / 23
+help-url-enter = ?enter=<runtime>             μπείτε στον κόσμο του χρόνου εκτέλεσης μετά τη σύνδεση
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Η είσοδος είναι προσυμπληρωμένη αλλά δεν έχει σταλεί — πάτα Enter για αποστολή.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = Η δημοσίευση κάνει την ταυτότητ�
 help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το ma (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.
 help-publish-steps = Βήματα: εκτέλεσε '.ma [port]' για ανίχνευση του τοπικού ma, μετά '.my.identity!publish @ma'.
 help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = Δεν έχει δημοσιευθεί ακόμα — εκτελέστε πρώτα το 28 και μετά το 67 το προφίλ σας
+profile-update-done = το προφίλ ενημερώθηκε — Τα κλειδιά 18 συγχωνεύτηκαν από το 43
+profile-delete-needs-name = καθορίστε όνομα προφίλ: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Συλλογή παρτίδας — πληκτρολογήστε εντολές, τελειώστε με .batch
+batch-already-collecting = Ήδη συλλέγεται μια παρτίδα — τερματίστε πρώτα με το .batch
+batch-empty = Η παρτίδα ήταν άδεια — δεν υπήρχε τίποτα για εκτέλεση
+batch-running = Εκτέλεση batch…
+batch-step-timeout = Λήξη χρονικού ορίου του βήματος παρτίδας
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Το batch ολοκληρώθηκε σε { $secs }s — { $steps } βήματα
+batch-done-error = Το batch ολοκληρώθηκε με σφάλματα σε { $secs }s — { $steps } βήματα
+msg-timeout = Το μήνυμα έληξε (καμία απάντηση σε 60s)
+err-unknown-command = άγνωστη εντολή: { $path }
+err-read-only-path = το { $path } είναι μόνο για ανάγνωση
+help-cmd-batch-async =   .batch:async / .batch        εκτέλεση πρόχειρου εγγράφου παράλληλα
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

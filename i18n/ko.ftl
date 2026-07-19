@@ -44,10 +44,10 @@ msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID가 로컬 ma ({ $url })를 통해 게시되었습니다
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = 間trix에 연결하는 중입니다
+msg-local-ma-claimed = 로컬 間 청구됨
+msg-local-ma-already-claimed = 로컬 間이 이미 청구됨
+msg-local-ma-claim-failed = 로컬 間 청구 실패
 msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '.my.identity!publish @ma'를 실행하세요. 자세한 내용은 '.help/publish'를 입력하세요.
 msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
 msg-focus-cleared = 포커스가 해제됨
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   별칭 @ma 생성됨 — '.my.identity!publish @ma'를 실행하여 신원을 게시하세요.
 claim-success = { $did }에 대한 런타임 청구됨
 claim-conflict = 런타임이 이미 다른 신원에 의해 청구됨
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime이 이미 이 신원에 의해 청구됨
 claim-http-failed = 청구 실패: HTTP { $status }
 claim-error = 청구 실패: { $e }
 claim-no-session = 로그인되지 않음; 런타임을 청구하려면 먼저 로그인하세요
@@ -170,9 +170,9 @@ help-header-config = ── 로컬 설정 문법 ──────────�
 help-header-common = ── 공통 경로 ─────────────────────────────────────────────────────────────
 help-header-inbox = ── 받은 편지함 ────────────────────────────────────────────────────────────
 help-header-documents = ── 문서 ──────────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── 언어 ─────────────────────────────────────────────────────────
+help-header-ma = ── 3-공간 ───────────────────────────────────────────────────────────
+help-header-ma-entry = ── 사이공간 진입 ────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── 도움말 — zion 명령어 ──────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       터미널 지우기
 help-cmd-panic =   .panic                       최후 수단 — 문제 발생 시 사용
 help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
 help-cmd-logout =   .logout                      로그아웃
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       스크래치 문서를 병렬 평가
+help-cmd-batch-sync =   .batch:sync / .batch         스크래치 문서를 줄 단위로 평가
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       확인된 DID/DID-URL 표시 (메시지는 전송되지 않음)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            저장된 CID 표시
 help-doc-del =   .my.doc.<name>:              문서 삭제
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n는 귀하의 신원과 관련된 언어 기본 설정을 저장합니다.
+help-i18n-set = .my.i18n: <code>             20가 이 ID에 사용하는 언어를 선택하세요.
+help-i18n-list = .my.i18n!list               사용 가능한 언어 코드 나열
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 방은 間 정체성들 사이의 공간입니다. ma는 그 정체성들이 서로를 찾고 통신할 수 있게 합니다. 당신의 정체성이 게시되면 참여할 수 있습니다.
@@ -301,72 +301,72 @@ err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = 활성 세션이 없습니다 — 프로필을 삭제할 수 없습니다
 profile-delete-error = 프로필 삭제 실패: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 다른 프로필에는 11를 설정할 수 없습니다. 자신의 프로필에만 해당됩니다.
+profile-wrong-user-name = 19에 대해 11를 설정할 수 없습니다. 자신의 프로필만 가능합니다.
+profile-no-ma = 3 런타임이 구성되지 않음 - 31를 먼저 실행
+profile-no-cid = 이 프로필에 대해 저장된 3가 없습니다. 먼저 37를 실행하세요.
+profile-no-cid-in-doc = DID 문서에 11 프로필이 없습니다. 먼저 43를 실행하세요.
+profile-publish-sent = 프로필이 암호화되어 IPFS로 전송되었습니다. CID가 도착하면 DID 문서가 업데이트됩니다
+profile-publish-done = 프로필이 게시되었습니다 — DID 문서가 ma.agent CID로 업데이트되었습니다
+profile-publish-failed = 프로필 게시 실패: 24
+profile-fetch-done = 가져온 프로필 — 43에서 로드된 18 키
+profile-fetch-failed = 프로필 가져오기 실패: 22
+msg-identity-exists = 신원이 이미 게시됨 - 프로필이 최신 상태임
+profile-import-exists = 8 프로필이 이미 존재합니다. 먼저 삭제하세요.
+profile-import-wrong-user = 파일에 22 프로필이 포함되어 있으며 42로 예상됩니다.
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = 바이너리 콘텐츠(표시되지 않음)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = 콘텐츠를 가져오지 못했습니다: 25
+cid-op-unknown = 알 수 없는 콘텐츠 작업: 27
+cid-op-wc = { $lines } 라인 18 단어 36 문자
 profiles-empty = (없음)
 profiles-deleted = 프로필 { $name } 삭제됨
 profiles-not-found = 프로필을 찾을 수 없음: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- 주제 -- 자세한 내용은 .help/<topic> 입력
+help-topic-msg =   .help/msg                    메시지
+help-topic-ma = .help/ma                     ma-공간, 게시 및 항목
+help-topic-path = .help/path                   로컬 도트 경로 문법
+help-topic-my =   .help/my                     개인 config
+help-topic-inbox =   .help/inbox                  받은편지함
+help-topic-doc =   .help/doc                    문서
+help-topic-actor =   .help/actor                  원격 actor
 help-topic-url =   .help/url                    URL 링크로 zion 열기
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   귀하의 신원에 대한 언어 기본 설정
+help-unknown-topic =   .help/{ $topic }: 알 수 없는 주제
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- 원격 actor
+help-actor-echo =   @actor                       해석된 DID 표시
+help-actor-text = @actor[#entity]!msg|!say|!emote body         다이렉트/채팅/감정 메시지 보내기
+help-actor-ping = @actor:ping                  활성 핑
+help-actor-entities =   @actor/entities              entity 목록
+help-actor-entities-get = @actor/entities/<n>          엔터티 노드 가져오기
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 참조로 엔터티 설정
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity 편집
+help-actor-entities-del = @actor/entities/<n>:         엔터티 삭제
+help-actor-config-get =   @actor/config/<key>          config 값 가져오기
+help-actor-config-set =   @actor/config/<key>: val     config 값 설정
+help-actor-acl = @actor/acl                   4를 얻으세요
+help-actor-acl-edit =   @actor/acl!edit              ACL 편집
+help-actor-fragment =   @actor#entity                plugin으로 전송
+help-actor-fragment-verb =   @actor#entity:verb [args]    plugin으로 RPC
+help-header-cid-ops = ── 3 액터 호출 ─────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  24에서 엔터티 15를 호출하고 응답을 기다립니다.
+help-actor-head = (@actor/path)                31에서 원격 CRUD 콘텐츠 가져오기
+help-actor-tail = (<bafy...>)                  36 41에서 21를 포함하고 평가합니다.
+help-actor-wc = (define x (@actor:verb arg))  세션 환경에서 5 응답 유지
+help-actor-wc-l = .my.scheme.ma!edit           이 ID에 대해 저장된 11 도우미를 편집합니다.
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)
 help-url-say =   ?say=<did>                   미리 채움: @<did>!say (say 동사)
 help-url-emote =   ?emote=<did>                 미리 채움: @<did>!emote (emote 동사)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              사전 채우기 런타임 DID / 23 URL
+help-url-enter = ?enter=<runtime>             로그인 후 런타임 월드에 진입
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -376,20 +376,23 @@ help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습
 help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.
 help-publish-steps = 단계: '.ma [port]'로 로컬 ma를 감지한 후 '.my.identity!publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = 아직 게시되지 않았습니다. 먼저 28를 실행한 다음 프로필 67를 실행하세요.
+profile-update-done = 프로필 업데이트 — 43에서 병합된 18 키
+profile-delete-needs-name = 프로필 이름을 지정하세요: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = 일괄 수집 — 명령 입력, .batch로 끝남
+batch-already-collecting = 이미 배치를 수집 중입니다. 먼저 .batch로 끝납니다.
+batch-empty = 배치가 비어 있습니다. 실행할 것이 없습니다.
+batch-running = batch 실행 중…
+batch-step-timeout = 일괄 단계 시간이 초과되었습니다.
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch 완료: { $secs }s — { $steps } 단계
+batch-done-error = batch가 오류와 함께 완료됨: { $secs }s — { $steps } 단계
+msg-timeout = 메시지 시간 초과(60s 동안 응답 없음)
+err-unknown-command = 알 수 없는 명령: { $path }
+err-read-only-path = { $path }은(는) 읽기 전용입니다
+help-cmd-batch-async =   .batch:async / .batch        스크래치 문서를 병렬 평가
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

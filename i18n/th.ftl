@@ -44,10 +44,10 @@ msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ถูกเผยแพร่ผ่าน ma ในเครื่อง ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = กำลังพยายามเชื่อมต่อคุณกับ 間trix
+msg-local-ma-claimed = อ้างสิทธิ์ 間 ในเครื่องแล้ว
+msg-local-ma-already-claimed = 間 ในเครื่องถูกอ้างสิทธิ์แล้ว
+msg-local-ma-claim-failed = อ้างสิทธิ์ 間 ในเครื่องไม่สำเร็จ
 msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '.my.identity!publish @ma' พิมพ์ '.help/publish' เพื่อดูรายละเอียด
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   สร้างชื่อแทน @ma แล้ว — รัน '.my.identity!publish @ma' เพื่อเผยแพร่ตัวตนของคุณ
 claim-success = Runtime ถูกอ้างสิทธิ์สำหรับ { $did }
 claim-conflict = Runtime ถูกอ้างสิทธิ์โดยตัวตนอื่นแล้ว
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime ถูกอ้างสิทธิ์โดยตัวตนนี้แล้ว
 claim-http-failed = คำขอล้มเหลว: HTTP { $status }
 claim-error = คำขอล้มเหลว: { $e }
 claim-no-session = ยังไม่ได้เข้าสู่ระบบ; โปรดเข้าสู่ระบบก่อนอ้างสิทธิ์ runtime
@@ -145,14 +145,14 @@ doc-publish-failed = เผยแพร่ { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = เผยแพร่ล้มเหลว [{ $code }]: { $err }
 doc-publish-error-hint = คำแนะนำ: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = เข้าสู่ระบบอีกครั้งเพื่อให้อีโก้สามารถเข้าถึงรหัสประจำตัวของคุณได้
+doc-publish-hint-target = ใช้ DID หรือนามแฝงของผู้จัดพิมพ์ที่ถูกต้องซึ่งแปลงเป็น 57
+doc-publish-hint-network = ตรวจสอบรันไทม์ 7 และ 22 สามารถเข้าถึงได้ จากนั้นลองอีกครั้ง
+doc-publish-hint-resolve = ตรวจสอบว่าเอกสาร DID ของผู้จัดพิมพ์ได้รับการเผยแพร่และมีปลายทางที่สามารถเข้าถึงได้
+doc-publish-hint-acl = ขอให้ผู้จัดพิมพ์อนุญาต DID ของคุณใน 48
+doc-publish-hint-runtime = รันไทม์/ปลั๊กอินปฏิเสธคำขอ ตรวจสอบเหตุผลและลองอีกครั้งหลังจากแก้ไขเอนทิตี/รันไทม์แล้ว
+doc-publish-hint-ipfs = ตรวจสอบความสมบูรณ์ของ 12/17 ในเครื่องและสถานะรันไทม์ของผู้เผยแพร่
+doc-publish-hint-unknown = ตรวจสอบบันทึกรันไทม์เพื่อดูสาเหตุโดยละเอียดแล้วลองอีกครั้ง
 doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-fetch-done = ดึง { $cid } แล้ว → { $path }.content (ยังไม่รัน)
@@ -168,11 +168,11 @@ help-header-zion = ── คำสั่ง zion ──────────
 help-header-messaging = ── การส่งข้อความ ──────────────────────────────────────────────────────────
 help-header-config = ── ไวยากรณ์การกำหนดค่าท้องถิ่น ─────────────────────────────────────────
 help-header-common = ── path ที่ใช้บ่อย ─────────────────────────────────────────────────────
-help-header-inbox = ── inbox ────────────────────────────────────────────────────────────────
+help-header-inbox = ── กล่องจดหมาย ────────────────────────────────────────────────────────────────
 help-header-documents = ── เอกสาร ────────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ภาษา ──────────────────────────────────────────────────────────────
+help-header-ma = ── 3 พื้นที่ ───────────────────────────────────────────────────────────────
+help-header-ma-entry = ── เข้าสู่ 間-พื้นที่ ──────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── ช่วยเหลือ — คำสั่ง zion ─────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       ล้าง terminal
 help-cmd-panic =   .panic                       ทางเลือกสุดท้าย — ใช้เมื่อมีปัญหา
 help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       ประเมินเอกสาร scratch แบบขนาน
+help-cmd-batch-sync =   .batch:sync / .batch         ประเมินเอกสาร scratch ทีละบรรทัด
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID/DID-URL ที่แก้แล้ว (ไม่ส่งข้อความ)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            แสดง CID ที่บั�
 help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n จัดเก็บการตั้งค่าภาษาที่เชื่อมโยงกับข้อมูลประจำตัวของคุณ
+help-i18n-set = .my.i18n: <code>             เลือกภาษาที่ 20 ใช้สำหรับข้อมูลระบุตัวตนนี้
+help-i18n-list = .my.i18n!list               แสดงรายการรหัสภาษาที่มีอยู่
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = ห้อง 間 คือพื้นที่ระหว่างอัตลักษณ์ 間 ma ทำให้อัตลักษณ์เหล่านั้นพบกันและสื่อสารกันได้ เมื่อเผยแพร่อัตลักษณ์ของคุณแล้ว คุณก็เข้าร่วมได้
@@ -301,73 +301,73 @@ err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเ
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ไม่มีเซสชันที่ใช้งานอยู่ — ไม่สามารถลบโปรไฟล์ได้
 profile-delete-error = การลบโปรไฟล์ล้มเหลว: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = ไม่สามารถตั้งค่า 11 สำหรับโปรไฟล์อื่นได้ — เฉพาะของคุณเองเท่านั้น
+profile-wrong-user-name = ไม่สามารถตั้งค่า 11 สำหรับ 19 ได้ — เฉพาะโปรไฟล์ของคุณเองเท่านั้น
+profile-no-ma = ไม่มีการกำหนดค่ารันไทม์ 3 — รัน 31 ก่อน
+profile-no-cid = ไม่มี 3 เก็บไว้สำหรับโปรไฟล์นี้ — รัน 37 ก่อน
+profile-no-cid-in-doc = ไม่พบโปรไฟล์ 11 ในเอกสาร DID — รัน 43 ก่อน
+profile-publish-sent = โปรไฟล์ถูกเข้ารหัสและส่งไปยัง IPFS แล้ว; เอกสาร DID จะอัปเดตเมื่อ CID มาถึง
+profile-publish-done = เผยแพร่โปรไฟล์แล้ว — อัปเดตเอกสาร DID ด้วย ma.agent CID แล้ว
+profile-publish-failed = การเผยแพร่โปรไฟล์ล้มเหลว: 24
+profile-fetch-done = ดึงโปรไฟล์แล้ว — คีย์ 18 โหลดจาก 43
+profile-fetch-failed = การดึงโปรไฟล์ล้มเหลว: 22
+msg-identity-exists = เผยแพร่ข้อมูลประจำตัวแล้ว — โปรไฟล์เป็นปัจจุบัน
+profile-import-exists = มีโปรไฟล์ 8 อยู่แล้ว — ลบออกก่อน
+profile-import-wrong-user = ไฟล์มีโปรไฟล์ 22 คาดว่า 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = เนื้อหาไบนารี (ไม่แสดง)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = ไม่สามารถเรียกเนื้อหา: 25
+cid-op-unknown = การดำเนินการเนื้อหาที่ไม่รู้จัก: 27
+cid-op-wc = { $lines } บรรทัด 18 คำ 36 ตัวอักษร
 profiles-empty = (ไม่มี)
 profiles-deleted = โปรไฟล์ { $name } ถูกลบแล้ว
 profiles-not-found = ไม่พบโปรไฟล์: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- หัวข้อ -- พิมพ์ .help/<topic> เพื่อดูรายละเอียด
+help-topic-msg =   .help/msg                    ข้อความ
+help-topic-ma = .help/ma                     ma-ช่องว่าง การเผยแพร่ และรายการ
+help-topic-path = .help/path                   ไวยากรณ์จุดเส้นทางท้องถิ่น
+help-topic-my =   .help/my                     config ส่วนตัว
+help-topic-inbox =   .help/inbox                  กล่องขาเข้า
+help-topic-doc =   .help/doc                    เอกสาร
+help-topic-actor =   .help/actor                  actor ระยะไกล
+help-unknown-topic =   .help/{ $topic }: หัวข้อที่ไม่รู้จัก
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- actor ระยะไกล
+help-actor-echo =   @actor                       แสดง DID ที่แก้ไขแล้ว
+help-actor-text = @actor[#entity]!msg|!say|!emote body         ส่งข้อความโดยตรง/แชท/แสดงอารมณ์
+help-actor-ping = @actor:ping                  ปิงความมีชีวิตชีวา
+help-actor-entities =   @actor/entities              แสดงรายการ entity
+help-actor-entities-get = @actor/entities/<n>          รับโหนดเอนทิตี
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ตั้งค่าเอนทิตีโดยการอ้างอิง 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     แก้ไข entity
+help-actor-entities-del = @actor/entities/<n>:         ลบเอนทิตี
+help-actor-config-get =   @actor/config/<key>          รับค่า config
+help-actor-config-set =   @actor/config/<key>: val     ตั้งค่า config
+help-actor-acl = @actor/acl                   รับ 4
+help-actor-acl-edit =   @actor/acl!edit              แก้ไข ACL
+help-actor-fragment =   @actor#entity                ส่งไปยัง plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ไปยัง plugin
+help-header-cid-ops = ── 3 นักแสดงเรียก ────────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  โทรหาเอนทิตี 15 จาก 24 และรอการตอบกลับ
+help-actor-head = (@actor/path)                ดึงเนื้อหา CRUD ระยะไกลจาก 31
+help-actor-tail = (<bafy...>)                  รวมและประเมิน 21 จาก 36 41
+help-actor-wc = (define x (@actor:verb arg))  ให้ 5 ตอบกลับในสภาพแวดล้อมเซสชัน
+help-actor-wc-l = .my.scheme.ma!edit           แก้ไขตัวช่วย 11 ที่บันทึกไว้สำหรับข้อมูลระบุตัวตนนี้
 
 help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   การตั้งค่าภาษาสำหรับตัวตนของคุณ
 help-header-url = ── พารามิเตอร์ URL ───────────────────────────────────────────────────────────────
 help-url-intro =   แบ่งปันลิงก์ที่เปิด zion พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
 help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did>!msg (ข้อความธรรมดา)
 help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>!say (กริยา say)
 help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>!emote (กริยา emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              กรอกรันไทม์ DID / 23 URL ไว้ล่วงหน้า
+help-url-enter = ?enter=<runtime>             เข้าสู่โลกรันไทม์หลังจากเข้าสู่ระบบ
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = การเผยแพร่ทำให้ตัวต�
 help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
 help-publish-steps = ขั้นตอน: รัน '.ma [port]' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity!publish @ma'
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = ยังไม่ได้เผยแพร่ — รัน 28 ก่อน จากนั้นจึง 67 โปรไฟล์ของคุณ
+profile-update-done = อัปเดตโปรไฟล์แล้ว — คีย์ 18 ถูกรวมจาก 43
+profile-delete-needs-name = ระบุชื่อโปรไฟล์: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = การรวบรวมแบทช์ — พิมพ์คำสั่ง ลงท้ายด้วย .batch
+batch-already-collecting = รวบรวมชุดแล้ว — ปิดท้ายด้วย .batch ก่อน
+batch-empty = แบตช์ว่างเปล่า — ไม่มีอะไรให้รัน
+batch-running = กำลังรัน batch…
+batch-step-timeout = ขั้นตอนแบทช์หมดเวลา
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch เสร็จใน { $secs }s — { $steps } ขั้นตอน
+batch-done-error = batch เสร็จพร้อมข้อผิดพลาดใน { $secs }s — { $steps } ขั้นตอน
+msg-timeout = ข้อความหมดเวลา (ไม่มีคำตอบใน 60s)
+err-unknown-command = คำสั่งที่ไม่รู้จัก: { $path }
+err-read-only-path = { $path } เป็นแบบอ่านอย่างเดียว
+help-cmd-batch-async =   .batch:async / .batch        ประเมินเอกสาร scratch แบบขนาน
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -46,10 +46,10 @@ msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID push out, local ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = du ta xitim fo konek to da 間trix
+msg-local-ma-claimed = local 間 ta klaim
+msg-local-ma-already-claimed = local 間 ta klaim bifo
+msg-local-ma-claim-failed = local 間 klaim na go
 msg-identity-not-published = Inyalowda pashang nowit kewe na la tube — si ma besh da gut, run '.ma [port]' den '.my.identity!publish @ma'. Slip '.help/publish' fo detay.
 msg-blocked = ⊗ hamma [{ $cap }]: { $from }
 msg-focus-cleared = fokus na du
@@ -112,16 +112,16 @@ discover-json-error = diskova hámfalla: mal JSON from { $url }: { $e }
 discover-missing-did = diskova hámfalla: status.json na tenye `did`
 discover-invalid-did = diskova hámfalla: `did` gonya showxa did:ma: diching, towa `{ $did }`
 discover-no-endpoint = diskova beleti: `endpoint_id` na finyish wit status.json; DID oyedeng hol
-discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
-discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
-discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
-discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
+discover-hint-endpoint-not-found = Hint: endpoint na du find. Check im `ma` show /status.json na port 5003.
+discover-hint-server-error = Hint: runtime gi server error. Check `ma` log im en try again.
+discover-hint-network = Dica: problema de rede/conectividade. Inicie 40, verifique se localhost:5003 está acessível e permita acesso local 101 no navegador.
+discover-hint-generic = Dica: verifique se 13 e 25 Desktop estão em execução e tente novamente 59.
 discover-success = ma diskova at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias kowl da — run '.my.identity!publish @ma' fo pashang inyalowda setara.
 claim-success = Runtime klaim fo { $did }
 claim-conflict = Runtime ta klaim by bifo selfmang
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime ta klaim by dis selfmang
 claim-http-failed = kolowda hámfalla: HTTP { $status }
 claim-error = kolowda hámfalla: { $e }
 claim-no-session = na ingang; ingang diching fo klaim runtime
@@ -147,14 +147,14 @@ doc-publish-failed = sendowt { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish hámfalla [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = faça login novamente para que o ego possa acessar suas chaves de selfmang
+doc-publish-hint-target = use um DID ou alias de editor válido que resolva apenas 57
+doc-publish-hint-network = verifique se o tempo de execução 7 e 22 estão acessíveis e tente novamente
+doc-publish-hint-resolve = verifique se o documento DID do editor foi sendowt e contém um endpoint acessível
+doc-publish-hint-acl = peça ao operador do editor para permitir seu DID em 48
+doc-publish-hint-runtime = runtime/plugin rejeitou a solicitação; inspecione o motivo e tente novamente após corrigir a entidade/tempo de execução
+doc-publish-hint-ipfs = verifique a integridade local do 12/17 e o status do tempo de execução do editor
+doc-publish-hint-unknown = inspecione os logs de tempo de execução para obter a causa detalhada e tente novamente
 doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-fetch-done = { $cid } fech finyish → { $path }.content (na du-im)
@@ -170,11 +170,11 @@ help-header-zion = ── zion komands ─────────────�
 help-header-messaging = ── showxa ───────────────────────────────────────────────────────────────
 help-header-config = ── konfig naxwe ──────────────────────────────────────────────────────────
 help-header-common = ── kowl paj du ──────────────────────────────────────────────────────────
-help-header-inbox = ── inbox ────────────────────────────────────────────────────────────────
+help-header-inbox = ── caixa de entrada ──────────────────────────────── ────────────────────────────────
 help-header-documents = ── dokuments ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── idioma ────────────────────────────── ───────────────────────────────
+help-header-ma = ── Espaço 3 ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── entrando no 間-espaço ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Halp — zion komands ───────────────────────────────────────────────────
@@ -183,8 +183,8 @@ help-cmd-clear =   .clear                       kel terminal
 help-cmd-panic =   .panic                       owkwa keting — du wit problem
 help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
 help-cmd-logout =   .logout                      tek-out
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       run scratch document parallel
+help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       lit resolved DID/DID-URL (na send message)
@@ -237,21 +237,21 @@ help-doc-cid =   .my.doc.<name>!cid            lit hol CID
 help-doc-del =   .my.doc.<name>:              na-du dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n armazena a preferência de idioma vinculada à sua selfmang.
+help-i18n-set = .my.i18n: <code>             escolha o idioma que 20 usa para esta selfmang
+help-i18n-list = .my.i18n!list               listar códigos de idioma disponíveis
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Da 間 room im da space between 間 identities. ma du da identities find each other and talk; once your identity im published, you can join.
-help-ma-command =   .ma [port]                   connect to your local ma runtime, read /status.json, and save .ma.ctx.*
-help-ma-publish =   .my.identity!publish @ma     publish your DID document so others can resolve your keys and endpoint
+help-ma-command = .ma [port]                   conecte-se ao seu tempo de execução local 22, leia /status.json e salve .QXQ1XQX.ctx.*
+help-ma-publish = .my.identity!publish @ma     publique seu documento DID para que outros possam resolver suas chaves e endpoint
 help-ma-security = Da clearest trust boundary im your own ma runtime with your own IPFS Desktop/Kubo. Remote publisher can help, but then you depend on another service.
 help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
 help-ma-entry-topic =   .help/ma/entry             how to enter da 間 room
 
 # ── Help text — ma-space entry ────────────────────────────────────────────
 help-ma-entry-intro = When your identity im known, .enter @ma let you step into 間. Find a world, go in, and join from there.
-help-ma-entry-steps = Start IPFS Desktop and ma, then run .ma. Publish with .my.identity!publish @ma, find a world, and enter with .enter @ma.
+help-ma-entry-steps = Inicie 6 Desktop e 23, depois execute .QXQ2XQX. Publicar com .my.identity!publish @QXQ3XQX, encontre um mundo e entre com .enter @QXQ4XQX.
 help-ma-entry-command =   .enter @ma                  enter 間 through da @ma runtime
 help-ma-entry-leave =   .leave                       leave da room; your identity stays active, and you remain logged in
 help-ma-entry-url =   ?enter=<runtime>             enter after login from shared URL
@@ -264,23 +264,23 @@ msg-send-failed = sako nah bringin: { $e }
 msg-not-logged-in = inyalowda nah owkwa
 
 # ── CBOR / YAML codec errors ──────────────────────────────────────────────
-yaml-parse-error = YAML parse error: { $e }
+yaml-parse-error = Erro de análise YAML: 18
 yaml-not-mapping = YAML mus bi mapping (keya: valyu pɛr); plen tèks an skalas no kɛn bi stòrd as DAG-CBOR
-dagcbor-encode-error = DAG-CBOR encode error: { $e }
-cbor-decode-error = CBOR decode error: { $e }
-cbor-json-error = CBOR to JSON error: { $e }
-yaml-serialize-error = YAML serialize error: { $e }
-edit-reply-invalid = invalid edit reply
+dagcbor-encode-error = Erro de codificação DAG-CBOR: 23
+cbor-decode-error = Erro de decodificação CBOR: 19
+cbor-json-error = Erro CBOR para 8: 20
+yaml-serialize-error = Erro de serialização YAML: 22
+edit-reply-invalid = resposta de edição inválida
 doc-publish-ipld-error = IPLD publish failed: { $e }
 
 # ── Internal / session errors ─────────────────────────────────────────────
-err-inbox-prune-persist = inbox prune persist: { $e }
-err-config-load = config load error: { $e }
-err-lang-persist = lang persist: { $e }
-err-history-parse = history parse error: { $e }
-err-history-load = history load error: { $e }
-err-ipfs-reply-decode = IPFS reply decode failed: { $e }
-err-edit-cbor = edit CBOR error: { $e }
+err-inbox-prune-persist = a remoção da caixa de entrada persiste: 21
+err-config-load = erro de carregamento de configuração: 19
+err-lang-persist = persistir idioma: 14
+err-history-parse = erro de análise de histórico: 21
+err-history-load = erro de carregamento de histórico: 20
+err-ipfs-reply-decode = Falha na decodificação da resposta IPFS: 26
+err-edit-cbor = editar erro 5: 17
 err-popup-blocked = popup block by browser
 status-publishing = publishin
 
@@ -303,73 +303,73 @@ err-edit-fetch-failed = edit: fot fetch: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no session kopeng — no pensa dele profil
 profile-delete-error = profil dele bek no go: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = não é possível definir 11 para outro profayel — apenas o seu
+profile-wrong-user-name = não é possível definir 11 para 19 – apenas seu próprio profayel
+profile-no-ma = nenhum tempo de execução 3 configurado - execute 31 primeiro
+profile-no-cid = nenhum 3 armazenado para este profayel — execute 37 primeiro
+profile-no-cid-in-doc = nenhum profayel 11 encontrado no documento DID — execute 43 primeiro
+profile-publish-sent = profile du encrypt im send na IPFS; DID doc pensa update when CID kom
+profile-publish-done = profile publish — DID doc update wit ma.agent CID
+profile-publish-failed = falha na publicação do profayel: 24
+profile-fetch-done = profayel obtido — chaves 18 carregadas de 43
+profile-fetch-failed = falha na busca do profayel: 22
+msg-identity-exists = selfmang já publicada — profayel atualizado
+profile-import-exists = o profayel 8 já existe — exclua-o primeiro
+profile-import-wrong-user = arquivo contém profayel 22, esperado 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = conteúdo binário (não exibido)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
-profiles-empty = (none)
+cid-op-fetch-failed = falha ao buscar conteúdo: 25
+cid-op-unknown = operação de conteúdo desconhecido: 27
+cid-op-wc = Linhas { $lines } Palavras 18 Caracteres 36
+profiles-empty = (nenhum)
 profiles-deleted = profil { $name } dele go
 profiles-not-found = profil no found: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- topics -- type .help/<topic> for detail
+help-topic-msg =   .help/msg                    message-talk
+help-topic-ma = .help/ma                     ma-espaço, publicação e entrada
+help-topic-path = .help/path                   gramática de caminho de ponto local
+help-topic-my =   .help/my                     own config
+help-topic-inbox =   .help/inbox                  message box
+help-topic-doc =   .help/doc                    docu dem
+help-topic-actor =   .help/actor                  far actor
+help-unknown-topic =   .help/{ $topic }: topic na du sabe
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- remote actor dem
+help-actor-echo =   @actor                       show DID wey resolve
+help-actor-text = @actor[#entity]!msg|!say|!emote body         enviar showxa direta/chat/emote
+help-actor-ping = @actor:ping                  ping de vivacidade
+help-actor-entities =   @actor/entities              show entity-list
+help-actor-entities-get = @actor/entities/<n>          obter nó de entidade
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   definir entidade por referência 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     change entity
+help-actor-entities-del = @actor/entities/<n>:         excluir entidade
+help-actor-config-get =   @actor/config/<key>          take config value
+help-actor-config-set =   @actor/config/<key>: val     put config value
+help-actor-acl = @actor/acl                   obter 4
+help-actor-acl-edit =   @actor/acl!edit              change ACL
+help-actor-fragment =   @actor#entity                send go plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
+help-header-cid-ops = ── Chamadas do ator 3 ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  ligue para uma entidade 15 de 24 e aguarde sua resposta
+help-actor-head = (@actor/path)                buscar conteúdo CRUD remoto de 31
+help-actor-tail = (<bafy...>)                  incluir e avaliar 21 de um 36 41
+help-actor-wc = (define x (@actor:verb arg))  mantenha as respostas 5 no ambiente da sessão
+help-actor-wc-l = .my.scheme.ma!edit           editar auxiliares 11 salvos para esta selfmang
 
 help-topic-url =   .help/url                    open zion tru URL peng
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   preferência de idioma para sua selfmang
 help-header-url = ── URL pamitim ──────────────────────────────────────────────────────────────────
 help-url-intro =   Fo peng fo open zion wit belter wating already fill:
 help-url-msg =   ?msg=<did>                   fill befo: @<did>!msg (basic palabras)
 help-url-say =   ?say=<did>                   fill befo: @<did>!say (say verd)
 help-url-emote =   ?emote=<did>                 fill befo: @<did>!emote (emote verd)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pré-preencher tempo de execução DID / URL 23
+help-url-enter = ?enter=<runtime>             entre no mundo do tempo de execução após o login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di input fill but no sen — peng Enter fo sen.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -379,20 +379,23 @@ help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID iny
 help-publish-ma = Fo pashang, ma (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
 help-publish-steps = Stap: run '.ma [port]' fo find local ma, den '.my.identity!publish @ma'.
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID ainda não sendowt – execute 28 primeiro e depois 67 seu profayel
+profile-update-done = profayel atualizado – chaves 18 mescladas de 43
+profile-delete-needs-name = set profile nem: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Coletando lote — digite komands, termine com .batch
+batch-already-collecting = Já coletando um lote – termine primeiro com .batch
+batch-empty = O lote estava vazio – nada para executar
+batch-running = Batch dey run…
+batch-step-timeout = a etapa do lote expirou
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch don finish for { $secs }s — { $steps } steps
+batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
+msg-timeout = Message time don pass (no reply for 60s)
+err-unknown-command = komang na du sabe: { $path }
+err-read-only-path = { $path } pensa read-only
+help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

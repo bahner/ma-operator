@@ -44,10 +44,10 @@ msg-connecting = iroh உடன் இணைக்கப்படுகிறத
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID உள்ளூர் ma ({ $url }) வழியாக வெளியிடப்பட்டது
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = உங்களை 間trix உடன் இணைக்க முயல்கிறது
+msg-local-ma-claimed = உள்ளூர் 間 கோரப்பட்டது
+msg-local-ma-already-claimed = உள்ளூர் 間 ஏற்கனவே கோரப்பட்டுள்ளது
+msg-local-ma-claim-failed = உள்ளூர் 間 கோர முடியவில்லை
 msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '.my.identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help/publish' தட்டச்சு செய்யவும்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   புனைப்பெயர் @ma உருவாக்கப்பட்டது — உங்கள் அடையாளத்தை வெளியிட '.my.identity!publish @ma' இயக்கவும்.
 claim-success = { $did } க்கு இயக்க நேரம் கோரப்பட்டது
 claim-conflict = இயக்க நேரம் ஏற்கனவே மற்றொரு அடையாளத்தால் கோரப்பட்டுள்ளது
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = இந்த அடையாளம் Runtime-ஐ ஏற்கனவே கோரியுள்ளது
 claim-http-failed = கோரிக்கை தோல்வியடைந்தது: HTTP { $status }
 claim-error = கோரிக்கை தோல்வியடைந்தது: { $e }
 claim-no-session = உள்நுழையவில்லை; இயக்க நேரம் கோர முதலில் உள்நுழையவும்
@@ -145,14 +145,14 @@ doc-publish-failed = வெளியீடு { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = வெளியிடல் தோல்வியடைந்தது [{ $code }]: { $err }
 doc-publish-error-hint = குறிப்பு: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = மீண்டும் உள்நுழைக, அதனால் ஈகோ உங்கள் அடையாள விசைகளை அணுக முடியும்
+doc-publish-hint-target = 57 என்பதைத் தீர்க்கும் சரியான வெளியீட்டாளர் DID அல்லது மாற்றுப் பெயரைப் பயன்படுத்தவும்
+doc-publish-hint-network = 7 இயக்க நேரத்தைச் சரிபார்த்து, 22 அணுகக்கூடியதா என்பதைச் சரிபார்த்து, மீண்டும் முயற்சிக்கவும்
+doc-publish-hint-resolve = வெளியீட்டாளர் DID ஆவணம் வெளியிடப்பட்டது மற்றும் அடையக்கூடிய இறுதிப் புள்ளியைக் கொண்டுள்ளது என்பதைச் சரிபார்க்கவும்
+doc-publish-hint-acl = 48 இல் உங்கள் DIDஐ அனுமதிக்க வெளியீட்டாளர் ஆபரேட்டரிடம் கேளுங்கள்
+doc-publish-hint-runtime = இயக்க நேரம்/சொருகி கோரிக்கையை நிராகரித்தது; காரணத்தை சரிபார்த்து, நிறுவனம்/இயக்க நேரத்தை சரிசெய்த பிறகு மீண்டும் முயற்சிக்கவும்
+doc-publish-hint-ipfs = உள்ளூர் 12/17 உடல்நலம் மற்றும் வெளியீட்டாளர் இயக்க நேர நிலையைச் சரிபார்க்கவும்
+doc-publish-hint-unknown = விரிவான காரணத்திற்காக இயக்க நேர பதிவுகளை ஆய்வு செய்து மீண்டும் முயற்சிக்கவும்
 doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
@@ -170,9 +170,9 @@ help-header-config = ── உள்ளூர் அமைவு இலக்�
 help-header-common = ── பொதுவான பாதைகள் ──────────────────────────────────────────────────────
 help-header-inbox = ── உள்வரவு ──────────────────────────────────────────────────────────────
 help-header-documents = ── ஆவணங்கள் ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── மொழி ──────────────────────────── ─────────────────────────────
+help-header-ma = ── 3-இடம் ───────────────────────────── ─────────────────────────────
+help-header-ma-entry = ── 間-வெளியில் நுழைகிறது ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── உதவி — zion கட்டளைகள் ────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       முனையம் அழி�
 help-cmd-panic =   .panic                       கடைசி வழி — சிக்கலில் பயன்படுத்தவும்
 help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
 help-cmd-logout =   .logout                      வெளியேறவும்
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       scratch ஆவணத்தை இணையாக மதிப்பிடு
+help-cmd-batch-sync =   .batch:sync / .batch         scratch ஆவணத்தை வரி வரியாக மதிப்பிடு
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID/DID-URL காட்டு (செய்தி அனுப்பப்படாது)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            சேமித்த CID கா�
 help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவும்
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n உங்கள் அடையாளத்துடன் இணைக்கப்பட்ட மொழி விருப்பத்தை சேமிக்கிறது.
+help-i18n-set = .my.i18n: <code>             இந்த அடையாளத்திற்காக 20 பயன்படுத்தும் மொழியைத் தேர்ந்தெடுக்கவும்
+help-i18n-list = .my.i18n!list               கிடைக்கக்கூடிய மொழி குறியீடுகளை பட்டியலிடுங்கள்
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 அறை என்பது 間 அடையாளங்களுக்கிடையிலான இடம். ma அவை ஒன்றையொன்று கண்டுபிடித்து தொடர்பு கொள்ள உதவுகிறது; உங்கள் அடையாளம் வெளியிடப்பட்டதும் நீங்கள் பங்கேற்கலாம்.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = திருத்தம்: பெறுவதில்
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = செயலில் உள்ள அமர்வு இல்லை — சுயவிவரத்தை நீக்க முடியாது
 profile-delete-error = சுயவிவர நீக்கம் தோல்வியடைந்தது: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = மற்றொரு சுயவிவரத்திற்கு 11 ஐ அமைக்க முடியாது - உங்களுடையது மட்டுமே
+profile-wrong-user-name = 19க்கு 11 ஐ அமைக்க முடியாது - உங்கள் சொந்த சுயவிவரம் மட்டுமே
+profile-no-ma = 3 இயக்க நேரம் கட்டமைக்கப்படவில்லை - முதலில் 31 ஐ இயக்கவும்
+profile-no-cid = இந்த சுயவிவரத்திற்காக 3 சேமிக்கப்படவில்லை - முதலில் 37 ஐ இயக்கவும்
+profile-no-cid-in-doc = DID ஆவணத்தில் எந்த சுயவிவரமும் 11 இல்லை - முதலில் 43 ஐ இயக்கவும்
+profile-publish-sent = சுயவிவரம் குறியாக்கப்பட்டு IPFS-க்கு அனுப்பப்பட்டது; CID வந்ததும் DID ஆவணம் புதுப்பிக்கப்படும்
+profile-publish-done = சுயவிவரம் வெளியிடப்பட்டது — DID ஆவணம் ma.agent CID உடன் புதுப்பிக்கப்பட்டது
+profile-publish-failed = சுயவிவரத்தை வெளியிடுவதில் தோல்வி: 24
+profile-fetch-done = சுயவிவரம் பெறப்பட்டது - 18 விசைகள் 43 இலிருந்து ஏற்றப்பட்டது
+profile-fetch-failed = சுயவிவரத்தைப் பெறுவதில் தோல்வி: 22
+msg-identity-exists = அடையாளம் ஏற்கனவே வெளியிடப்பட்டது - புதுப்பித்த சுயவிவரம்
+profile-import-exists = சுயவிவரம் 8 ஏற்கனவே உள்ளது - முதலில் அதை நீக்கவும்
+profile-import-wrong-user = கோப்பில் சுயவிவரம் 22 உள்ளது, எதிர்பார்க்கப்படும் 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = பைனரி உள்ளடக்கம் (காட்டப்படவில்லை)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = உள்ளடக்கத்தைப் பெறுவதில் தோல்வி: 25
+cid-op-unknown = அறியப்படாத உள்ளடக்க செயல்பாடு: 27
+cid-op-wc = { $lines } வரிகள் 18 வார்த்தைகள் 36 எழுத்துகள்
 profiles-empty = (எதுவுமில்லை)
 profiles-deleted = சுயவிவரம் { $name } நீக்கப்பட்டது
 profiles-not-found = சுயவிவரம் கிடைக்கவில்லை: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- தலைப்புகள் -- விவரங்களுக்கு .help/<topic> தட்டச்சிடவும்
+help-topic-msg =   .help/msg                    செய்திகள்
+help-topic-ma = .help/ma                     ma-இடம், வெளியீடு மற்றும் நுழைவு
+help-topic-path = .help/path                   உள்ளூர் புள்ளி-பாதை இலக்கணம்
+help-topic-my =   .help/my                     தனிப்பட்ட config
+help-topic-inbox =   .help/inbox                  உள்வரவு
+help-topic-doc =   .help/doc                    ஆவணங்கள்
+help-topic-actor =   .help/actor                  தொலை actor
+help-unknown-topic =   .help/{ $topic }: தெரியாத தலைப்பு
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- தொலை actor-கள்
+help-actor-echo =   @actor                       தீர்க்கப்பட்ட DID ஐ காட்டு
+help-actor-text = @actor[#entity]!msg|!say|!emote body         நேரடி/அரட்டை/எமோட் செய்தியை அனுப்பவும்
+help-actor-ping = @actor:ping                  உயிரோட்டம் பிங்
+help-actor-entities =   @actor/entities              entity-களை பட்டியலிடு
+help-actor-entities-get = @actor/entities/<n>          நிறுவன முனையைப் பெறுங்கள்
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 குறிப்பு மூலம் உட்பொருளை அமைக்கவும்
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity-ஐ திருத்து
+help-actor-entities-del = @actor/entities/<n>:         நிறுவனத்தை நீக்கு
+help-actor-config-get =   @actor/config/<key>          config மதிப்பைப் பெறு
+help-actor-config-set =   @actor/config/<key>: val     config மதிப்பை அமை
+help-actor-acl = @actor/acl                   4 கிடைக்கும்
+help-actor-acl-edit =   @actor/acl!edit              ACL திருத்து
+help-actor-fragment =   @actor#entity                plugin-க்கு அனுப்பு
+help-actor-fragment-verb =   @actor#entity:verb [args]    plugin-க்கு RPC
+help-header-cid-ops = ── 3 நடிகர் அழைப்புகள் ──────────────────────── ─────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  24 இலிருந்து 15 நிறுவனத்தை அழைத்து அதன் பதிலுக்காக காத்திருக்கவும்
+help-actor-head = (@actor/path)                31 இலிருந்து தொலை CRUD உள்ளடக்கத்தைப் பெறவும்
+help-actor-tail = (<bafy...>)                  36 41 இலிருந்து 21 ஐச் சேர்த்து மதிப்பிடவும்
+help-actor-wc = (define x (@actor:verb arg))  அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
+help-actor-wc-l = .my.scheme.ma!edit           இந்த அடையாளத்திற்காக சேமித்த 11 உதவியாளர்களைத் திருத்தவும்
 
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   உங்கள் அடையாளத்திற்கான மொழி விருப்பம்
 help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
 help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
 help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did>!msg (எளிய செய்தி)
 help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>!say (say வினை)
 help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>!emote (emote வினை)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              முன் நிரப்பு இயக்க நேரம் DID / 23 URL
+help-url-enter = ?enter=<runtime>             உள்நுழைந்த பிறகு இயக்க உலகத்தை உள்ளிடவும்
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = வெளியீடு உங்கள் அடையா
 help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
 help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.ma [port]' இயக்கவும், பின்னர் '.my.identity!publish @ma'.
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = இன்னும் வெளியிடப்படவில்லை — முதலில் 28 ஐ இயக்கவும், பின்னர் 67 உங்கள் சுயவிவரத்தை இயக்கவும்
+profile-update-done = சுயவிவரம் புதுப்பிக்கப்பட்டது - 18 விசைகள் 43 இலிருந்து இணைக்கப்பட்டது
+profile-delete-needs-name = சுயவிவரப் பெயரை குறிப்பிடவும்: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = கலெக்டிங் பேட்ச் — வகை கட்டளைகள், .batch உடன் முடிவடையும்
+batch-already-collecting = ஏற்கனவே ஒரு தொகுதியை சேகரித்து வருகிறது — முதலில் .batch உடன் முடிக்கவும்
+batch-empty = தொகுதி காலியாக இருந்தது - இயக்க எதுவும் இல்லை
+batch-running = batch இயங்குகிறது…
+batch-step-timeout = தொகுதி படி நேரம் முடிந்தது
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch { $secs }s-ல் முடிந்தது — { $steps } படிகள்
+batch-done-error = batch பிழைகளுடன் { $secs }s-ல் முடிந்தது — { $steps } படிகள்
+msg-timeout = செய்தி நேரம் முடிந்தது (60s-ல் பதில் இல்லை)
+err-unknown-command = தெரியாத கட்டளை: { $path }
+err-read-only-path = { $path } வாசிக்க மட்டும்
+help-cmd-batch-async =   .batch:async / .batch        scratch ஆவணத்தை இணையாக மதிப்பிடு
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

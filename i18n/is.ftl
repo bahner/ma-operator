@@ -44,10 +44,10 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt í gegnum staðbundið ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = reyni að tengja þig við 間trix
+msg-local-ma-claimed = staðbundið 間 gert tilkall til
+msg-local-ma-already-claimed = staðbundið 間 er þegar gert tilkall til
+msg-local-ma-claim-failed = tókst ekki að gera tilkall til staðbundins 間
 msg-identity-not-published = Auðkenni finnst ekki á netinu — ef ma er uppsett á þessum tölvu, keyrðu '.ma [port]' og svo '.my.identity!publish @ma'. Skrifaðu '.help/publish' fyrir frekari upplýsingar.
 msg-blocked = ⊗ lokað á [{ $cap }]: { $from }
 msg-focus-cleared = fókus hreinsaður
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   gælunafn @ma búið til — keyrðu '.my.identity!publish @ma' til að birta auðkenni þitt.
 claim-success = Keyrsluumhverfi gert tilkall til fyrir { $did }
 claim-conflict = Keyrsluumhverfi þegar gert tilkall til af annarri auðkenni
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime hefur þegar verið gert tilkall til af þessu auðkenni
 claim-http-failed = tilkall mistókst: HTTP { $status }
 claim-error = tilkall mistókst: { $e }
 claim-no-session = ekki innskráður; skráðu þig inn fyrst til að gera tilkall til keyrsluumhverfis
@@ -145,14 +145,14 @@ doc-publish-failed = birting { $path }: { $e }
 doc-publish-ipld-failed = ipld-birting { $path }: { $e }
 doc-publish-error-detail = birting mistókst [{ $code }]: { $err }
 doc-publish-error-hint = Ábending: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = skráðu þig inn aftur svo egó geti nálgast auðkennislyklana þína
+doc-publish-hint-target = notaðu gilt útgefanda-DID eða samnefni sem leysir upp 57
+doc-publish-hint-network = staðfestu að hægt sé að ná í 7 keyrslutíma og 22, reyndu síðan aftur
+doc-publish-hint-resolve = staðfestu að DID skjal útgefanda sé birt og inniheldur endapunkt sem hægt er að ná til
+doc-publish-hint-acl = biðja útgefanda að leyfa DID þinn í 48
+doc-publish-hint-runtime = runtime/plugin hafnaði beiðninni; skoðaðu ástæðuna og reyndu aftur eftir að eining/keyrslutími hefur verið lagaður
+doc-publish-hint-ipfs = athuga staðbundna 12/17 heilsu og útgefanda keyrslutíma stöðu
+doc-publish-hint-unknown = skoðaðu runtime logs fyrir nákvæmar orsakir og reyndu aftur
 doc-store-sent = geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
 doc-ipld-store-sent = IPLD-geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
 doc-fetch-done = sótti { $cid } → { $path }.content (ekki keyrt)
@@ -170,9 +170,9 @@ help-header-config = ── staðbundin stillingarfræðikerfis ─────�
 help-header-common = ── algengar slóðir ───────────────────────────────────────────────────────
 help-header-inbox = ── pósthólf ──────────────────────────────────────────────────────────────
 help-header-documents = ── skjöl ─────────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── tungumál ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-rými ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── inn í 間-rými ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        þessi texti
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       hreinsa útstöðina
 help-cmd-panic =   .panic                       síðasta úrræði — notaðu ef þú ert í vandræðum
 help-cmd-history =   .history                     skipanasaga (samhliða endurtekningar sameinaðar)
 help-cmd-logout =   .logout                      skrá út
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
+help-cmd-batch-sync =   .batch:sync / .batch         evaluer kladdedokument linje for linje
 
 help-msg-echo =   @alias                       sýna leyst DID/DID-URL (engin skilaboð send)
 help-msg-send =   @alias!msg body / @alias:verb args           senda skilaboð / RPC til leikara
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<nafn>!cid            sýna vistað CID
 help-doc-del =   .my.doc.<nafn>:              eyða skjali
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n geymir tungumálavalið sem tengist auðkenni þínu.
+help-i18n-set = .my.i18n: <code>             veldu tungumálið sem 20 notar fyrir þessa auðkenni
+help-i18n-list = .my.i18n!list               listi tiltæka tungumálakóða
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間-herbergið er rýmið á milli 間-auðkenna. ma sér til þess að þessi auðkenni geti fundið hvert annað og átt samskipti; þegar auðkennið þitt hefur verið birt geturðu tekið þátt.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = engin virk lota — ekki hægt að eyða notandaprófíl
 profile-delete-error = eyðing notandaprófíls mistókst: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = getur ekki stillt 11 fyrir annað snið — aðeins þitt eigið
+profile-wrong-user-name = getur ekki stillt 11 fyrir 19 — aðeins þinn eigin prófíl
+profile-no-ma = enginn 3 keyrslutími stilltur - keyrðu 31 fyrst
+profile-no-cid = engin 3 geymd fyrir þetta snið - keyrðu 37 fyrst
+profile-no-cid-in-doc = enginn prófíll 11 fannst í DID skjalinu — keyrðu fyrst 43
+profile-publish-sent = prófíll dulkóðaður og sendur til IPFS; DID-skjalið verður uppfært þegar CID berst
+profile-publish-done = prófíll birtur — DID-skjal uppfært með ma.agent CID
+profile-publish-failed = útgáfu prófíls mistókst: 24
+profile-fetch-done = snið sótt — 18 lyklar hlaðnir frá 43
+profile-fetch-failed = Ekki tókst að sækja prófíl: 22
+msg-identity-exists = auðkenni þegar birt — prófíllinn uppfærður
+profile-import-exists = prófíllinn 8 er þegar til — eyddu því fyrst
+profile-import-wrong-user = skráin inniheldur sniðið 22, væntanlegt 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = tvöfalt efni (ekki birt)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = tókst ekki að sækja efni: 25
+cid-op-unknown = óþekkt efnisaðgerð: 27
+cid-op-wc = { $lines } línur 18 orð 36 stafir
 profiles-empty = (ekkert)
 profiles-deleted = notandaprófíll { $name } eytt
 profiles-not-found = notandaprófíll finnst ekki: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- emner -- skriv .help/<topic> for detaljer
+help-topic-msg =   .help/msg                    beskeder
+help-topic-ma = .help/ma                     ma-rými, útgáfa og innganga
+help-topic-path = .help/path                   staðbundin punktabrautarmálfræði
+help-topic-my =   .help/my                     personlig config
+help-topic-inbox =   .help/inbox                  indbakke
+help-topic-doc =   .help/doc                    dokumenter
+help-topic-actor =   .help/actor                  fjern actor
+help-unknown-topic =   .help/{ $topic }: ukendt emne
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- fjernaktører
+help-actor-echo =   @actor                       vis opløst DID
+help-actor-text = @actor[#entity]!msg|!say|!emote body         senda bein/spjall/emote skilaboð
+help-actor-ping = @actor:ping                  lífleika ping
+help-actor-entities =   @actor/entities              vis entiteter
+help-actor-entities-get = @actor/entities/<n>          fá einingarhnút
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   stilltu einingu með 14 tilvísun
+help-actor-entities-edit =   @actor/entities/<n>!edit     rediger entitet
+help-actor-entities-del = @actor/entities/<n>:         eyða einingu
+help-actor-config-get =   @actor/config/<key>          hent config-værdi
+help-actor-config-set =   @actor/config/<key>: val     sæt config-værdi
+help-actor-acl = @actor/acl                   fáðu 4
+help-actor-acl-edit =   @actor/acl!edit              rediger ACL
+help-actor-fragment =   @actor#entity                send til plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC til plugin
+help-header-cid-ops = ── 3 leikari hringir ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  hringdu í aðila 15 frá 24 og bíddu eftir svari hennar
+help-actor-head = (@actor/path)                sæktu fjarlægt CRUD efni frá 31
+help-actor-tail = (<bafy...>)                  innihalda og meta 21 frá 36 41
+help-actor-wc = (define x (@actor:verb arg))  haltu 5 svörum í lotuumhverfinu
+help-actor-wc-l = .my.scheme.ma!edit           breyta vistuðum 11 aðstoðarmönnum fyrir þessa auðkenni
 
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   tungumálaval fyrir sjálfsmynd þína
 help-header-url = ── URL-breytur ──────────────────────────────────────────────────────────────────
 help-url-intro =   Deildu tengli sem opnar zion með fyrirfram fylltan viðtakanda:
 help-url-msg =   ?msg=<did>                   fyllir fyrirfram: @<did>!msg (venjuleg skilaboð)
 help-url-say =   ?say=<did>                   fyllir fyrirfram: @<did>!say (sagnorð say)
 help-url-emote =   ?emote=<did>                 fyllir fyrirfram: @<did>!emote (sagnorð emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-enter = ?enter=<runtime>             sláðu inn runtime heim eftir innskráningu
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Inntakið er fyrirfram fyllt en ekki sent — ýttu á Enter til að senda.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = Birting gerir auðkenni þitt leitanlegt á netinu. Aðrir 
 help-publish-ma = Til að birta þarftu ma (staðbundið keyrsluumhverfi) uppsett. Það tengir ego við IPFS/IPNS fyrir þína hönd.
 help-publish-steps = Skref: keyrðu '.ma [port]' til að finna staðbundið ma, síðan '.my.identity!publish @ma'.
 help-publish-without = Án birtingar geta aðrir ekki náð í þig — jafnvel þótt þeir þekki DID þitt geta þeir ekki leyst upp endpoint þinn.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = VAR ekki birt enn — keyrðu fyrst 28 og síðan 67 prófílinn þinn
+profile-update-done = snið uppfært — 18 lyklar sameinaðar úr 43
+profile-delete-needs-name = tilgreindu heiti prófíls: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Safna lotu — sláðu inn skipanir, endaðu með .batch
+batch-already-collecting = Þegar verið er að safna lotu - enda með .batch fyrst
+batch-empty = Lotan var tóm - ekkert að keyra
+batch-running = Kører batch…
+batch-step-timeout = lotuskref rann út
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch færdig på { $secs }s — { $steps } trin
+batch-done-error = Batch færdig med fejl på { $secs }s — { $steps } trin
+msg-timeout = Beskeden fik timeout (intet svar på 60s)
+err-unknown-command = óþekkt skipun: { $path }
+err-read-only-path = { $path } er aðeins til lestrar
+help-cmd-batch-async =   .batch:async / .batch        evaluer kladdedokument parallelt
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

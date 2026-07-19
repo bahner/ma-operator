@@ -44,10 +44,10 @@ msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID స్థానిక ma ({ $url }) ద్వారా ప్రచురించబడింది
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = మిమ్మల్ని 間trix కి కనెక్ట్ చేయడానికి ప్రయత్నిస్తోంది
+msg-local-ma-claimed = స్థానిక 間 క్లెయిమ్ చేయబడింది
+msg-local-ma-already-claimed = స్థానిక 間 ఇప్పటికే క్లెయిమ్ చేయబడింది
+msg-local-ma-claim-failed = స్థానిక 間 క్లెయిమ్ చేయలేకపోయింది
 msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '.my.identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help/publish' టైప్ చేయండి.
 msg-blocked = ⊗ నిరోధించబడింది [{ $cap }]: { $from }
 msg-focus-cleared = ఫోకస్ తొలగించబడింది
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   మారుపేరు @ma సృష్టించబడింది — మీ గుర్తింపు ప్రచురించడానికి '.my.identity!publish @ma' అమలు చేయండి.
 claim-success = { $did } కోసం రన్‌టైమ్ క్లెయిమ్ చేయబడింది
 claim-conflict = రన్‌టైమ్ ఇప్పటికే మరొక గుర్తింపు ద్వారా క్లెయిమ్ చేయబడింది
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime ఇప్పటికే ఈ గుర్తింపు ద్వారా క్లెయిమ్ చేయబడింది
 claim-http-failed = క్లెయిమ్ విఫలమైంది: HTTP { $status }
 claim-error = క్లెయిమ్ విఫలమైంది: { $e }
 claim-no-session = లాగిన్ కాలేదు; రన్‌టైమ్ క్లెయిమ్ చేయడానికి ముందు లాగిన్ చేయండి
@@ -145,14 +145,14 @@ doc-publish-failed = ప్రచురణ { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ప్రచురణ విఫలమైంది [{ $code }]: { $err }
 doc-publish-error-hint = సూచన: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = మళ్లీ లాగిన్ అవ్వండి, తద్వారా అహం మీ గుర్తింపు కీలను యాక్సెస్ చేయగలదు
+doc-publish-hint-target = చెల్లుబాటు అయ్యే పబ్లిషర్ DIDని లేదా అలియాస్‌ని బేర్ 57ని పరిష్కరిస్తుంది
+doc-publish-hint-network = 7 రన్‌టైమ్‌ని ధృవీకరించండి మరియు 22 చేరుకోగలిగింది, ఆపై మళ్లీ ప్రయత్నించండి
+doc-publish-hint-resolve = ప్రచురణకర్త DID పత్రం ప్రచురించబడిందని మరియు చేరుకోగల ముగింపు బిందువును కలిగి ఉందని ధృవీకరించండి
+doc-publish-hint-acl = 48లో మీ DIDని అనుమతించమని ప్రచురణకర్త ఆపరేటర్‌ని అడగండి
+doc-publish-hint-runtime = రన్‌టైమ్/ప్లగ్ఇన్ అభ్యర్థనను తిరస్కరించింది; కారణాన్ని పరిశీలించి, ఎంటిటీ/రన్‌టైమ్‌ని పరిష్కరించిన తర్వాత మళ్లీ ప్రయత్నించండి
+doc-publish-hint-ipfs = స్థానిక 12/17 ఆరోగ్యం మరియు ప్రచురణకర్త రన్‌టైమ్ స్థితిని తనిఖీ చేయండి
+doc-publish-hint-unknown = వివరణాత్మక కారణం కోసం రన్‌టైమ్ లాగ్‌లను తనిఖీ చేసి, మళ్లీ ప్రయత్నించండి
 doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-fetch-done = { $cid } తెచ్చబడింది → { $path }.content (అమలు చేయలేదు)
@@ -170,9 +170,9 @@ help-header-config = ── స్థానిక కాన్ఫిగ్ వ�
 help-header-common = ── సాధారణ మార్గాలు ──────────────────────────────────────────────────────────
 help-header-inbox = ── ఇన్‌బాక్స్ ────────────────────────────────────────────────────────────────
 help-header-documents = ── డాక్యుమెంట్‌లు ──────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── భాష ───────────────────────────── ──────────────────────────────
+help-header-ma = ── 3-స్పేస్ ────────────────────────────── ──────────────────────────────
+help-header-ma-entry = ── 間-స్పేస్‌లోకి ప్రవేశిస్తోంది ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── సహాయం — zion ఆదేశాలు ────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       టెర్మినల్ క�
 help-cmd-panic =   .panic                       చివరి మార్గం — సమస్య వస్తే వాడండి
 help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
 help-cmd-logout =   .logout                      లాగ్ అవుట్
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
+help-cmd-batch-sync =   .batch:sync / .batch         scratch పత్రాన్ని పంక్తి పంక్తిగా అమలు చేయి
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID/DID-URL చూపించు (సందేశం పంపబడదు)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            స్టోర్ చేసి�
 help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ తొలగించు
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n మీ గుర్తింపుతో ముడిపడి ఉన్న భాషా ప్రాధాన్యతను నిల్వ చేస్తుంది.
+help-i18n-set = .my.i18n: <code>             ఈ గుర్తింపు కోసం 20 ఉపయోగించే భాషను ఎంచుకోండి
+help-i18n-list = .my.i18n!list               అందుబాటులో ఉన్న భాషా కోడ్‌లను జాబితా చేయండి
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 గది అనేది 間 గుర్తింపుల మధ్య ఉన్న స్థలం. ma ఆ గుర్తింపులు ఒకదానిని ఒకటి కనుగొని మాట్లాడుకునేలా చేస్తుంది; నీ గుర్తింపు ప్రచురించబడిన తర్వాత నీవు పాల్గొనవచ్చు.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = సవరణ: పొందడం విఫలమైం�
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = క్రియాశీల సెషన్ లేదు — ప్రొఫైల్ తొలగించడం సాధ్యం కాదు
 profile-delete-error = ప్రొఫైల్ తొలగింపు విఫలమైంది: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = మరొక ప్రొఫైల్ కోసం 11 సెట్ చేయలేరు — మీ స్వంతం మాత్రమే
+profile-wrong-user-name = 19 కోసం 11 సెట్ చేయలేరు — మీ స్వంత ప్రొఫైల్ మాత్రమే
+profile-no-ma = 3 రన్‌టైమ్ కాన్ఫిగర్ చేయబడలేదు — ముందుగా 31ని అమలు చేయండి
+profile-no-cid = ఈ ప్రొఫైల్ కోసం 3 నిల్వ చేయబడలేదు — ముందుగా 37ని అమలు చేయండి
+profile-no-cid-in-doc = DID పత్రంలో 11 ఏ ప్రొఫైల్ కనుగొనబడలేదు — ముందుగా 43ని అమలు చేయండి
+profile-publish-sent = ప్రొఫైల్ గుప్తీకరించి IPFS కు పంపబడింది; CID వచ్చినప్పుడు DID పత్రం నవీకరించబడుతుంది
+profile-publish-done = ప్రొఫైల్ ప్రచురించబడింది — DID పత్రం ma.agent CID తో నవీకరించబడింది
+profile-publish-failed = ప్రొఫైల్ ప్రచురణ విఫలమైంది: 24
+profile-fetch-done = ప్రొఫైల్ పొందబడింది — 18 కీలు 43 నుండి లోడ్ చేయబడ్డాయి
+profile-fetch-failed = ప్రొఫైల్ పొందడం విఫలమైంది: 22
+msg-identity-exists = గుర్తింపు ఇప్పటికే ప్రచురించబడింది — ప్రొఫైల్ తాజాగా ఉంది
+profile-import-exists = ప్రొఫైల్ 8 ఇప్పటికే ఉంది — ముందుగా దాన్ని తొలగించండి
+profile-import-wrong-user = ఫైల్ 22 ప్రొఫైల్‌ను కలిగి ఉంది, ఊహించిన 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = బైనరీ కంటెంట్ (ప్రదర్శించబడలేదు)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = కంటెంట్‌ని పొందడంలో విఫలమైంది: 25
+cid-op-unknown = తెలియని కంటెంట్ ఆపరేషన్: 27
+cid-op-wc = { $lines } పంక్తులు 18 పదాలు 36 అక్షరాలు
 profiles-empty = (ఏదీ లేదు)
 profiles-deleted = ప్రొఫైల్ { $name } తొలగించబడింది
 profiles-not-found = ప్రొఫైల్ కనుగొనబడలేదు: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- విషయాలు -- వివరాలకు .help/<topic> టైప్ చేయండి
+help-topic-msg =   .help/msg                    సందేశాలు
+help-topic-ma = .help/ma                     ma-స్పేస్, పబ్లిషింగ్ మరియు ఎంట్రీ
+help-topic-path = .help/path                   స్థానిక డాట్-పాత్ వ్యాకరణం
+help-topic-my =   .help/my                     వ్యక్తిగత config
+help-topic-inbox =   .help/inbox                  ఇన్‌బాక్స్
+help-topic-doc =   .help/doc                    పత్రాలు
+help-topic-actor =   .help/actor                  దూర actor
+help-unknown-topic =   .help/{ $topic }: తెలియని విషయం
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- దూర actorలు
+help-actor-echo =   @actor                       పరిష్కరించిన DID చూపు
+help-actor-text = @actor[#entity]!msg|!say|!emote body         డైరెక్ట్/చాట్/ఎమోట్ మెసేజ్ పంపండి
+help-actor-ping = @actor:ping                  సజీవత పింగ్
+help-actor-entities =   @actor/entities              entityలను జాబితా చేయి
+help-actor-entities-get = @actor/entities/<n>          ఎంటిటీ నోడ్‌ని పొందండి
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 సూచన ద్వారా ఎంటిటీని సెట్ చేయండి
+help-actor-entities-edit =   @actor/entities/<n>!edit     entityని సవరించు
+help-actor-entities-del = @actor/entities/<n>:         ఎంటిటీని తొలగించండి
+help-actor-config-get =   @actor/config/<key>          config విలువను తెచ్చు
+help-actor-config-set =   @actor/config/<key>: val     config విలువను సెట్ చేయి
+help-actor-acl = @actor/acl                   4 పొందండి
+help-actor-acl-edit =   @actor/acl!edit              ACL సవరించు
+help-actor-fragment =   @actor#entity                pluginకు పంపు
+help-actor-fragment-verb =   @actor#entity:verb [args]    pluginకు RPC
+help-header-cid-ops = ── 3 నటుడు కాల్స్ ──────────────────────── ─────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  24 నుండి 15 ఎంటిటీకి కాల్ చేయండి మరియు దాని ప్రత్యుత్తరం కోసం వేచి ఉండండి
+help-actor-head = (@actor/path)                31 నుండి రిమోట్ CRUD కంటెంట్‌ని పొందండి
+help-actor-tail = (<bafy...>)                  36 41 నుండి 21ని చేర్చండి మరియు మూల్యాంకనం చేయండి
+help-actor-wc = (define x (@actor:verb arg))  సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
+help-actor-wc-l = .my.scheme.ma!edit           ఈ గుర్తింపు కోసం సేవ్ చేయబడిన 11 సహాయకులను సవరించండి
 
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   మీ గుర్తింపు కోసం భాష ప్రాధాన్యత
 help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
 help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
 help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did>!msg (సాధారణ సందేశం)
 help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>!say (say క్రియ)
 help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>!emote (emote క్రియ)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              ప్రీ-ఫిల్ రన్‌టైమ్ DID / 23 URL
+help-url-enter = ?enter=<runtime>             లాగిన్ అయిన తర్వాత రన్‌టైమ్ ప్రపంచాన్ని నమోదు చేయండి
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = ప్రచురణ మీ గుర్తింపున
 help-publish-ma = ప్రచురించడానికి ma (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.
 help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.ma [port]' అమలు చేయండి, తర్వాత '.my.identity!publish @ma'.
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = ఇంకా ప్రచురించబడలేదు — ముందుగా 28ని అమలు చేయండి, ఆపై మీ ప్రొఫైల్ 67ని అమలు చేయండి
+profile-update-done = ప్రొఫైల్ నవీకరించబడింది — 18 కీలు 43 నుండి విలీనం చేయబడ్డాయి
+profile-delete-needs-name = ప్రొఫైల్ పేరును పేర్కొనండి: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = కలెక్టింగ్ బ్యాచ్ — టైప్ ఆదేశాలు, .batchతో ముగుస్తుంది
+batch-already-collecting = ఇప్పటికే బ్యాచ్‌ని సేకరిస్తోంది — ముందుగా .batchతో ముగించండి
+batch-empty = బ్యాచ్ ఖాళీగా ఉంది - అమలు చేయడానికి ఏమీ లేదు
+batch-running = batch నడుస్తోంది…
+batch-step-timeout = బ్యాచ్ దశ సమయం ముగిసింది
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch { $secs }sలో పూర్తయింది — { $steps } దశలు
+batch-done-error = batch లోపాలతో { $secs }sలో పూర్తయింది — { $steps } దశలు
+msg-timeout = సందేశం గడువు ముగిసింది (60sలో ప్రత్యుత్తరం లేదు)
+err-unknown-command = తెలియని ఆదేశం: { $path }
+err-read-only-path = { $path } చదవడానికి మాత్రమే
+help-cmd-batch-async =   .batch:async / .batch        scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

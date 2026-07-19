@@ -44,10 +44,10 @@ msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID được xuất bản qua ma cục bộ ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = đang cố kết nối bạn vào 間trix
+msg-local-ma-claimed = đã yêu cầu 間 cục bộ
+msg-local-ma-already-claimed = 間 cục bộ đã được yêu cầu
+msg-local-ma-claim-failed = không thể yêu cầu 間 cục bộ
 msg-identity-not-published = Không tìm thấy danh tính trực tuyến — nếu ma được cài đặt cục bộ, hãy chạy '.ma [port]' rồi '.my.identity!publish @ma'. Gõ '.help/publish' để xem chi tiết.
 msg-blocked = ⊗ bị chặn [{ $cap }]: { $from }
 msg-focus-cleared = đã xóa tiêu điểm
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   bí danh @ma đã được tạo — chạy '.my.identity!publish @ma' để xuất bản danh tính của bạn.
 claim-success = Runtime đã được yêu cầu cho { $did }
 claim-conflict = Runtime đã được yêu cầu bởi danh tính khác
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime đã được yêu cầu bởi danh tính này
 claim-http-failed = yêu cầu thất bại: HTTP { $status }
 claim-error = yêu cầu thất bại: { $e }
 claim-no-session = chưa đăng nhập; đăng nhập trước để yêu cầu runtime
@@ -145,14 +145,14 @@ doc-publish-failed = xuất bản { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = xuất bản thất bại [{ $code }]: { $err }
 doc-publish-error-hint = Gợi ý: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = đăng nhập lại để cái tôi có thể truy cập vào khóa nhận dạng của bạn
+doc-publish-hint-target = sử dụng DID nhà xuất bản hợp lệ hoặc bí danh phân giải thành 57 trần
+doc-publish-hint-network = xác minh thời gian chạy 7 và 22 có thể truy cập được, sau đó thử lại
+doc-publish-hint-resolve = xác minh tài liệu DID của nhà xuất bản đã được xuất bản và chứa điểm cuối có thể truy cập
+doc-publish-hint-acl = yêu cầu nhà điều hành nhà xuất bản cho phép DID của bạn trong 48
+doc-publish-hint-runtime = thời gian chạy/plugin từ chối yêu cầu; kiểm tra lý do và thử lại sau khi sửa thực thể/thời gian chạy
+doc-publish-hint-ipfs = kiểm tra trạng thái thời gian chạy của nhà xuất bản và tình trạng 12/17 cục bộ
+doc-publish-hint-unknown = kiểm tra nhật ký thời gian chạy để biết nguyên nhân chi tiết và thử lại
 doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-fetch-done = đã tải { $cid } → { $path }.content (chưa chạy)
@@ -170,9 +170,9 @@ help-header-config = ── cú pháp cấu hình cục bộ ──────�
 help-header-common = ── đường dẫn thông dụng ────────────────────────────────────────────────
 help-header-inbox = ── hộp thư đến ────────────────────────────────────────────────────────────
 help-header-documents = ── tài liệu ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ngôn ngữ ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-không gian ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── tiến vào 間-không gian ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Trợ giúp — lệnh zion ─────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       xóa terminal
 help-cmd-panic =   .panic                       phương án cuối cùng — dùng khi gặp sự cố
 help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
 help-cmd-logout =   .logout                      đăng xuất
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       đánh giá tài liệu nháp song song
+help-cmd-batch-sync =   .batch:sync / .batch         đánh giá tài liệu nháp từng dòng
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hiển thị DID/DID-URL đã phân giải (không gửi tin nhắn)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            hiển thị CID đã lưu
 help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n lưu trữ tùy chọn ngôn ngữ gắn liền với danh tính của bạn.
+help-i18n-set = .my.i18n: <code>             chọn ngôn ngữ 20 sử dụng cho danh tính này
+help-i18n-list = .my.i18n!list               liệt kê các mã ngôn ngữ có sẵn
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Phòng 間 là không gian giữa các danh tính 間. ma giúp các danh tính đó tìm thấy nhau và giao tiếp; khi danh tính của bạn đã được công bố, bạn có thể tham gia.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = không có phiên hoạt động — không thể xóa hồ sơ
 profile-delete-error = xóa hồ sơ thất bại: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = không thể đặt 11 cho cấu hình khác - chỉ của riêng bạn
+profile-wrong-user-name = không thể đặt 11 cho 19 - chỉ hồ sơ của riêng bạn
+profile-no-ma = không có cấu hình thời gian chạy 3 - trước tiên hãy chạy 31
+profile-no-cid = không có 3 nào được lưu trữ cho cấu hình này - trước tiên hãy chạy 37
+profile-no-cid-in-doc = không tìm thấy hồ sơ 11 trong tài liệu DID - trước tiên hãy chạy 43
+profile-publish-sent = hồ sơ đã được mã hóa và gửi tới IPFS; tài liệu DID sẽ được cập nhật khi CID đến
+profile-publish-done = hồ sơ đã xuất bản — tài liệu DID đã cập nhật với ma.agent CID
+profile-publish-failed = xuất bản hồ sơ không thành công: 24
+profile-fetch-done = đã tìm nạp hồ sơ - Khóa 18 được tải từ 43
+profile-fetch-failed = tìm nạp hồ sơ không thành công: 22
+msg-identity-exists = danh tính đã được công bố - hồ sơ cập nhật
+profile-import-exists = hồ sơ 8 đã tồn tại - hãy xóa nó trước
+profile-import-wrong-user = tệp chứa hồ sơ 22, dự kiến là 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = nội dung nhị phân (không hiển thị)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = không tìm nạp được nội dung: 25
+cid-op-unknown = hoạt động nội dung không xác định: 27
+cid-op-wc = { $lines } dòng 18 từ 36 ký tự
 profiles-empty = (không có)
 profiles-deleted = hồ sơ { $name } đã xóa
 profiles-not-found = không tìm thấy hồ sơ: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- chủ đề -- nhập .help/<topic> để xem chi tiết
+help-topic-msg =   .help/msg                    nhắn tin
+help-topic-ma = .help/ma                     ma-không gian, xuất bản và nhập cảnh
+help-topic-path = .help/path                   ngữ pháp đường dẫn chấm cục bộ
+help-topic-my =   .help/my                     config cá nhân
+help-topic-inbox =   .help/inbox                  hộp thư đến
+help-topic-doc =   .help/doc                    tài liệu
+help-topic-actor =   .help/actor                  actor từ xa
+help-unknown-topic =   .help/{ $topic }: chủ đề không xác định
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- actor từ xa
+help-actor-echo =   @actor                       hiển thị DID đã phân giải
+help-actor-text = @actor[#entity]!msg|!say|!emote body         gửi tin nhắn trực tiếp/trò chuyện/biểu tượng cảm xúc
+help-actor-ping = @actor:ping                  ping sống động
+help-actor-entities =   @actor/entities              liệt kê entity
+help-actor-entities-get = @actor/entities/<n>          lấy nút thực thể
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   đặt thực thể theo tham chiếu 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     sửa entity
+help-actor-entities-del = @actor/entities/<n>:         xóa thực thể
+help-actor-config-get =   @actor/config/<key>          lấy giá trị config
+help-actor-config-set =   @actor/config/<key>: val     đặt giá trị config
+help-actor-acl = @actor/acl                   nhận được 4
+help-actor-acl-edit =   @actor/acl!edit              sửa ACL
+help-actor-fragment =   @actor#entity                gửi tới plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC tới plugin
+help-header-cid-ops = ── Cuộc gọi diễn viên 3 ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  gọi một thực thể 15 từ 24 và chờ phản hồi của nó
+help-actor-head = (@actor/path)                tìm nạp nội dung CRUD từ xa từ 31
+help-actor-tail = (<bafy...>)                  bao gồm và đánh giá 21 từ 36 41
+help-actor-wc = (define x (@actor:verb arg))  giữ các câu trả lời 5 trong môi trường phiên
+help-actor-wc-l = .my.scheme.ma!edit           chỉnh sửa người trợ giúp 11 đã lưu cho danh tính này
 
 help-topic-url =   .help/url                    mở zion thông qua liên kết URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   ưu tiên ngôn ngữ cho danh tính của bạn
 help-header-url = ── tham số URL ──────────────────────────────────────────────────────────────────
 help-url-intro =   Chia sẻ một liên kết mở zion với người nhận đã được điền sẵn:
 help-url-msg =   ?msg=<did>                   điền sẵn: @<did>!msg (tin nhắn thông thường)
 help-url-say =   ?say=<did>                   điền sẵn: @<did>!say (động từ say)
 help-url-emote =   ?emote=<did>                 điền sẵn: @<did>!emote (động từ emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              thời gian chạy điền trước URL DID / 23
+help-url-enter = ?enter=<runtime>             bước vào thế giới thời gian chạy sau khi đăng nhập
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Xuất bản giúp danh tính của bạn được tìm th�
 help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
 help-publish-steps = Các bước: chạy '.ma [port]' để phát hiện ma cục bộ, sau đó '.my.identity!publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID chưa được xuất bản - trước tiên hãy chạy 28, sau đó là 67 hồ sơ của bạn
+profile-update-done = đã cập nhật hồ sơ - Khóa 18 được hợp nhất từ 43
+profile-delete-needs-name = chỉ định tên hồ sơ: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Thu thập hàng loạt - gõ lệnh, kết thúc bằng .batch
+batch-already-collecting = Đã thu thập một đợt - trước tiên hãy kết thúc bằng .batch
+batch-empty = Lô trống - không có gì để chạy
+batch-running = Đang chạy batch…
+batch-step-timeout = bước hàng loạt đã hết thời gian
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch hoàn tất trong { $secs }s — { $steps } bước
+batch-done-error = Batch hoàn tất với lỗi trong { $secs }s — { $steps } bước
+msg-timeout = Tin nhắn hết thời gian chờ (không có trả lời trong 60s)
+err-unknown-command = lệnh không xác định: { $path }
+err-read-only-path = { $path } chỉ đọc
+help-cmd-batch-async =   .batch:async / .batch        đánh giá tài liệu nháp song song
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

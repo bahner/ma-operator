@@ -44,10 +44,10 @@ msg-connecting = iroh-এ সংযুক্ত হচ্ছে...
 msg-iroh-ready = iroh এন্ডপয়েন্ট প্রস্তুত
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID স্থানীয় ma ({ $url }) এর মাধ্যমে প্রকাশিত হয়েছে
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = আপনাকে 間trix-এ যুক্ত করার চেষ্টা চলছে
+msg-local-ma-claimed = স্থানীয় 間 দাবি করা হয়েছে
+msg-local-ma-already-claimed = স্থানীয় 間 ইতিমধ্যে দাবি করা হয়েছে
+msg-local-ma-claim-failed = স্থানীয় 間 দাবি করা যায়নি
 msg-identity-not-published = পরিচয় অনলাইনে পাওয়া যায়নি — যদি ma স্থানীয়ভাবে ইনস্টল থাকে, '.ma [port]' তারপর '.my.identity!publish @ma' চালান। বিস্তারিত জানতে '.help/publish' লিখুন।
 msg-blocked = ⊗ অবরুদ্ধ [{ $cap }]: { $from }
 msg-focus-cleared = ফোকাস সরানো হয়েছে
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   ছদ্মনাম @ma তৈরি হয়েছে — আপনার পরিচয় প্রকাশ করতে '.my.identity!publish @ma' চালান।
 claim-success = { $did }-এর জন্য রানটাইম দাবি করা হয়েছে
 claim-conflict = রানটাইম ইতিমধ্যে অন্য পরিচয় দ্বারা দাবি করা হয়েছে
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = রানটাইম ইতিমধ্যে এই পরিচয় দ্বারা দাবি করা হয়েছে
 claim-http-failed = দাবি ব্যর্থ: HTTP { $status }
 claim-error = দাবি ব্যর্থ: { $e }
 claim-no-session = লগ ইন করা নেই; রানটাইম দাবি করতে আগে লগ ইন করুন
@@ -145,14 +145,14 @@ doc-publish-failed = প্রকাশনা { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = প্রকাশ ব্যর্থ [{ $code }]: { $err }
 doc-publish-error-hint = ইঙ্গিত: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = আবার লগ ইন করুন যাতে অহং আপনার পরিচয় কীগুলি অ্যাক্সেস করতে পারে
+doc-publish-hint-target = একটি বৈধ প্রকাশক DID বা উপনাম ব্যবহার করুন যা বেয়ার 57 সমাধান করে৷
+doc-publish-hint-network = 7 রানটাইম যাচাই করুন এবং 22 পৌঁছানো যায়, তারপর আবার চেষ্টা করুন
+doc-publish-hint-resolve = যাচাই করুন প্রকাশক DID নথি প্রকাশিত হয়েছে এবং একটি পৌঁছানো যায় এমন এন্ডপয়েন্ট রয়েছে৷
+doc-publish-hint-acl = প্রকাশক অপারেটরকে আপনার ডিআইডি 48-এ অনুমতি দিতে বলুন
+doc-publish-hint-runtime = রানটাইম/প্লাগইন অনুরোধ প্রত্যাখ্যান করেছে; কারণটি পরীক্ষা করুন এবং সত্তা/রানটাইম ঠিক করার পরে পুনরায় চেষ্টা করুন
+doc-publish-hint-ipfs = স্থানীয় 12/17 স্বাস্থ্য এবং প্রকাশকের রানটাইম স্থিতি পরীক্ষা করুন৷
+doc-publish-hint-unknown = বিস্তারিত কারণের জন্য রানটাইম লগ পরিদর্শন করুন এবং পুনরায় চেষ্টা করুন
 doc-store-sent = সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-ipld-store-sent = IPLD সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-fetch-done = { $cid } আনা হয়েছে → { $path }.content (চালানো হয়নি)
@@ -170,9 +170,9 @@ help-header-config = ── স্থানীয় কনফিগ ব্য�
 help-header-common = ── সাধারণ পথ ─────────────────────────────────────────────────────────────
 help-header-inbox = ── ইনবক্স ────────────────────────────────────────────────────────────────
 help-header-documents = ── ডকুমেন্ট ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ভাষা ───────────────────────────────── ──────────────────────────────────
+help-header-ma = ── 3-স্পেস ────────────────────────────────── ──────────────────────────────────
+help-header-ma-entry = ── 間-স্পেসে প্রবেশ করা ───────────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── সহায়তা — zion কমান্ড ─────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       টার্মিনাল প�
 help-cmd-panic =   .panic                       শেষ অবলম্বন — সমস্যায় ব্যবহার করুন
 help-cmd-history =   .history                     কমান্ড ইতিহাস (ক্রমাগত পুনরাবৃত্তি একত্রিত)
 help-cmd-logout =   .logout                      লগ আউট
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       scratch दस्तावेज़ समानांतर चलाएँ
+help-cmd-batch-sync =   .batch:sync / .batch         scratch दस्तावेज़ पंक्ति-दर-पंक्ति चलाएँ
 
 # ── সহায়তা — বার্তাপ্রেরণ ────────────────────────────────────────────────
 help-msg-echo =   @alias                       সমাধান করা DID/DID-URL দেখান (কোনো বার্তা পাঠানো হয় না)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            সংরক্ষিত CID দ�
 help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছুন
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n আপনার পরিচয়ের সাথে সংযুক্ত ভাষা পছন্দ সংরক্ষণ করে।
+help-i18n-set = .my.i18n: <code>             এই পরিচয়ের জন্য 20 ব্যবহার করা ভাষা বেছে নিন
+help-i18n-list = .my.i18n!list               উপলব্ধ ভাষা কোড তালিকা
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 ঘর হলো 間 পরিচয়গুলোর মাঝের স্থান। ma এই পরিচয়গুলোকে একে অন্যকে খুঁজে পেতে ও যোগাযোগ করতে সাহায্য করে; তোমার পরিচয় প্রকাশিত হলে তুমি অংশ নিতে পারবে।
@@ -301,73 +301,73 @@ err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = কোনো সক্রিয় সেশন নেই — প্রোফাইল মুছে ফেলা সম্ভব নয়
 profile-delete-error = প্রোফাইল মুছতে ব্যর্থ হয়েছে: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = অন্য প্রোফাইলের জন্য 11 সেট করতে পারবেন না — শুধুমাত্র আপনার নিজের৷
+profile-wrong-user-name = 19 এর জন্য 11 সেট করা যাবে না — শুধুমাত্র আপনার নিজের প্রোফাইল৷
+profile-no-ma = কোন 3 রানটাইম কনফিগার করা নেই — প্রথমে 31 চালান
+profile-no-cid = এই প্রোফাইলের জন্য কোন 3 সংরক্ষিত নেই — প্রথমে 37 চালান৷
+profile-no-cid-in-doc = DID নথিতে কোন প্রোফাইল 11 পাওয়া যায়নি — প্রথমে 43 চালান
+profile-publish-sent = প্রোফাইল এনক্রিপ্ট করে IPFS-এ পাঠানো হয়েছে; CID এলে DID নথি আপডেট হবে
+profile-publish-done = প্রোফাইল প্রকাশিত হয়েছে — DID নথি ma.agent CID দিয়ে আপডেট হয়েছে
+profile-publish-failed = প্রোফাইল প্রকাশ ব্যর্থ হয়েছে: 24
+profile-fetch-done = প্রোফাইল আনা হয়েছে — 18 কী 43 থেকে লোড করা হয়েছে
+profile-fetch-failed = প্রোফাইল আনা ব্যর্থ হয়েছে: 22
+msg-identity-exists = পরিচয় ইতিমধ্যেই প্রকাশিত হয়েছে — প্রোফাইল আপ টু ডেট
+profile-import-exists = প্রোফাইল 8 ইতিমধ্যেই বিদ্যমান — প্রথমে এটি মুছুন
+profile-import-wrong-user = ফাইলটিতে 22 প্রোফাইল রয়েছে, প্রত্যাশিত 42৷
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = বাইনারি বিষয়বস্তু (প্রদর্শিত নয়)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = সামগ্রী আনতে ব্যর্থ হয়েছে: 25
+cid-op-unknown = অজানা বিষয়বস্তু অপারেশন: 27
+cid-op-wc = { $lines } লাইন 18 শব্দ 36 অক্ষর
 profiles-empty = (কিছু নেই)
 profiles-deleted = প্রোফাইল { $name } মুছে ফেলা হয়েছে
 profiles-not-found = প্রোফাইল পাওয়া যায়নি: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- विषय -- विवरण के लिए .help/<topic> लिखें
+help-topic-msg =   .help/msg                    संदेश
+help-topic-ma = .help/ma                     ma-স্থান, প্রকাশনা, এবং এন্ট্রি
+help-topic-path = .help/path                   স্থানীয় ডট-পাথ ব্যাকরণ
+help-topic-my =   .help/my                     निजी config
+help-topic-inbox =   .help/inbox                  इनबॉक्स
+help-topic-doc =   .help/doc                    दस्तावेज़
+help-topic-actor =   .help/actor                  दूरस्थ actor
+help-unknown-topic =   .help/{ $topic }: अज्ञात विषय
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- दूरस्थ actor
+help-actor-echo =   @actor                       हल किया DID दिखाएँ
+help-actor-text = @actor[#entity]!msg|!say|!emote body         সরাসরি/চ্যাট/ইমোট বার্তা পাঠান
+help-actor-ping = @actor:ping                  সজীবতা পিং
+help-actor-entities =   @actor/entities              entity सूचीबद्ध करें
+help-actor-entities-get = @actor/entities/<n>          সত্তা নোড পান
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 রেফারেন্স দ্বারা সত্তা সেট করুন
+help-actor-entities-edit =   @actor/entities/<n>!edit     entity संपादित करें
+help-actor-entities-del = @actor/entities/<n>:         সত্তা মুছে ফেলুন
+help-actor-config-get =   @actor/config/<key>          config मान लें
+help-actor-config-set =   @actor/config/<key>: val     config मान सेट करें
+help-actor-acl = @actor/acl                   4 পান
+help-actor-acl-edit =   @actor/acl!edit              ACL संपादित करें
+help-actor-fragment =   @actor#entity                plugin को भेजें
+help-actor-fragment-verb =   @actor#entity:verb [args]    plugin को RPC
+help-header-cid-ops = ── 3 অভিনেতা কল ───────────────────────── ─────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  24 থেকে একটি সত্তা 15 কল করুন এবং এর উত্তরের জন্য অপেক্ষা করুন৷
+help-actor-head = (@actor/path)                31 থেকে দূরবর্তী CRUD সামগ্রী আনুন
+help-actor-tail = (<bafy...>)                  একটি 36 41 থেকে 21 অন্তর্ভুক্ত এবং মূল্যায়ন করুন
+help-actor-wc = (define x (@actor:verb arg))  সেশন পরিবেশে 5 উত্তর রাখুন
+help-actor-wc-l = .my.scheme.ma!edit           এই পরিচয়ের জন্য সংরক্ষিত 11 সাহায্যকারী সম্পাদনা করুন৷
 
 help-topic-url =   .help/url                    URL লিঙ্কের মাধ্যমে zion খোলা
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   আপনার পরিচয়ের জন্য ভাষা পছন্দ
 help-header-url = ── URL প্যারামিটার ────────────────────────────────────────────────────────────────
 help-url-intro =   পূর্বভরণকৃত প্রাপকসহ zion খোলার লিঙ্ক শেয়ার করুন:
 help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did>!msg (সাধারণ বার্তা)
 help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>!say (say ক্রিয়া)
 help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>!emote (emote ক্রিয়া)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              প্রি-ফিল রানটাইম DID / 23 URL
+help-url-enter = ?enter=<runtime>             লগইন করার পরে রানটাইম জগতে প্রবেশ করুন
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ইনপুট পূর্বভরণ করা হয়েছে কিন্তু পাঠানো হয়নি — পাঠাতে Enter চাপুন।
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = প্রকাশ করলে আপনার পরি�
 help-publish-ma = প্রকাশ করতে ma (স্থানীয় রানটাইম) ইনস্টল করা দরকার। এটি আপনার হয়ে ego-কে IPFS/IPNS-এর সাথে সংযুক্ত করে।
 help-publish-steps = ধাপ: স্থানীয় ma সনাক্ত করতে '.ma [port]' চালান, তারপর '.my.identity!publish @ma'।
 help-publish-without = প্রকাশ না করলে অন্যরা আপনার কাছে পৌঁছাতে পারবে না — DID জানলেও তারা আপনার endpoint খুঁজে বের করতে পারবে না।
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = এখনও প্রকাশিত হয়নি — প্রথমে 28 চালান, তারপর 67 আপনার প্রোফাইল৷
+profile-update-done = প্রোফাইল আপডেট করা হয়েছে — 18 কীগুলি 43 থেকে একত্রিত হয়েছে৷
+profile-delete-needs-name = একটি প্রোফাইলের নাম দিন: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = ব্যাচ সংগ্রহ করা — টাইপ কমান্ড, .batch দিয়ে শেষ করুন
+batch-already-collecting = ইতিমধ্যেই একটি ব্যাচ সংগ্রহ করা হচ্ছে — প্রথমে .batch দিয়ে শেষ করুন
+batch-empty = ব্যাচ খালি ছিল - চালানোর কিছু নেই
+batch-running = batch चल रहा है…
+batch-step-timeout = ব্যাচ ধাপ সময় শেষ
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch { $secs }s में पूरा — { $steps } चरण
+batch-done-error = batch त्रुटियों के साथ { $secs }s में पूरा — { $steps } चरण
+msg-timeout = संदेश समयसीमा पार (60s में कोई उत्तर नहीं)
+err-unknown-command = অজানা কমান্ড: { $path }
+err-read-only-path = { $path } শুধু-পাঠযোগ্য
+help-cmd-batch-async =   .batch:async / .batch        scratch दस्तावेज़ समानांतर चलाएँ
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

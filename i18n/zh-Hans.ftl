@@ -44,10 +44,10 @@ msg-connecting = 正在连接到 iroh...
 msg-iroh-ready = iroh 端点就绪
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 已通过本地 ma ({ $url }) 发布
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = 正在尝试将你连接到 間trix
+msg-local-ma-claimed = 已声明本地 間
+msg-local-ma-already-claimed = 本地 間 已被声明
+msg-local-ma-claim-failed = 无法声明本地 間
 msg-identity-not-published = 未在线找到身份 — 如果本地安装了 ma，请运行 '.ma [port]' 然后 '.my.identity!publish @ma'。输入 '.help/publish' 查看详情。
 msg-blocked = ⊗ 已拦截 [{ $cap }]: { $from }
 msg-focus-cleared = 焦点已清除
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   已创建别名 @ma — 运行 '.my.identity!publish @ma' 以发布你的身份。
 claim-success = 运行时已为 { $did } 声明
 claim-conflict = 运行时已被另一身份声明
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime 已被此身份声明
 claim-http-failed = 声明失败：HTTP { $status }
 claim-error = 声明失败: { $e }
 claim-no-session = 未登录；请先登录后再声明运行时
@@ -170,9 +170,9 @@ help-header-config = ── 本地配置语法 ───────────
 help-header-common = ── 常用路径 ──────────────────────────────────────────────────────────────
 help-header-inbox = ── 收件箱 ────────────────────────────────────────────────────────────────
 help-header-documents = ── 文档 ──────────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── 语言────────────────────────────────────────────────────────────────
+help-header-ma = ── 3-空间──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── 进入间空间──────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── 帮助文本 — zion 命令 ──────────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       清屏
 help-cmd-panic =   .panic                       最后手段 — 遇到问题时使用
 help-cmd-history =   .history                     命令历史（连续重复项已合并）
 help-cmd-logout =   .logout                      退出登录
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       并行执行临时文档
+help-cmd-batch-sync =   .batch:sync / .batch         逐行执行临时文档
 
 # ── 帮助文本 — 消息传递 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       显示已解析的 DID/DID-URL（不发送消息）
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            显示已存储的 CID
 help-doc-del =   .my.doc.<name>:              删除文档
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n 存储与您的身份相关的语言偏好。
+help-i18n-set = .my.i18n: <code>             选择 20 用于此身份的语言
+help-i18n-list = .my.i18n!list               列出可用的语言代码
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間 房间是 間 身份之间的空间。ma 让这些身份能够找到彼此并通信；当你的身份发布后，你就可以参与其中。
@@ -301,72 +301,72 @@ err-edit-fetch-failed = 编辑: 获取失败: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = 无活动会话 — 无法删除个人资料
 profile-delete-error = 个人资料删除失败: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 无法为其他配置文件设置 11 — 只能为您自己的配置文件设置
+profile-wrong-user-name = 无法为 19 设置 11 — 仅限您自己的配置文件
+profile-no-ma = 未配置 3 运行时 — 首先运行 31
+profile-no-cid = 没有为此配置文件存储 3 — 首先运行 37
+profile-no-cid-in-doc = DID 文档中未找到配置文件 11 — 首先运行 43
+profile-publish-sent = 配置文件已加密并发送到 IPFS；CID 到达后将更新 DID 文档
+profile-publish-done = 配置文件已发布 — DID 文档已使用 ma.agent CID 更新
+profile-publish-failed = 配置文件发布失败：24
+profile-fetch-done = 已获取配置文件 — 从 43 加载 18 密钥
+profile-fetch-failed = 配置文件获取失败：22
+msg-identity-exists = 身份已发布 - 个人资料已更新
+profile-import-exists = 配置文件 8 已存在 - 首先将其删除
+profile-import-wrong-user = 文件包含配置文件 22，预期为 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = 二进制内容（不显示）
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = 获取内容失败：25
+cid-op-unknown = 未知内容操作：27
+cid-op-wc = { $lines } 行 18 字 36 字符
 profiles-empty = (无)
 profiles-deleted = 个人资料 { $name } 已删除
 profiles-not-found = 未找到个人资料: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- 主题 -- 输入 .help/<topic> 查看详情
+help-topic-msg =   .help/msg                    消息
+help-topic-ma = .help/ma                     ma-空间、发布、入口
+help-topic-path = .help/path                   局部点路径语法
+help-topic-my =   .help/my                     个人 config
+help-topic-inbox =   .help/inbox                  收件箱
+help-topic-doc =   .help/doc                    文档
+help-topic-actor =   .help/actor                  远程 actor
 help-topic-url =   .help/url                    通过 URL 链接打开 zion
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   您身份的语言偏好
+help-unknown-topic =   .help/{ $topic }: 未知主题
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- 远程 actor
+help-actor-echo =   @actor                       显示已解析 DID
+help-actor-text = @actor[#entity]!msg|!say|!emote body         发送直接/聊天/表情消息
+help-actor-ping = @actor:ping                  活跃度
+help-actor-entities =   @actor/entities              列出 entity
+help-actor-entities-get = @actor/entities/<n>          获取实体节点
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   通过 14 参考设置实体
+help-actor-entities-edit =   @actor/entities/<n>!edit     编辑 entity
+help-actor-entities-del = @actor/entities/<n>:         删除实体
+help-actor-config-get =   @actor/config/<key>          获取 config 值
+help-actor-config-set =   @actor/config/<key>: val     设置 config 值
+help-actor-acl = @actor/acl                   得到4
+help-actor-acl-edit =   @actor/acl!edit              编辑 ACL
+help-actor-fragment =   @actor#entity                发送到 plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC 到 plugin
+help-header-cid-ops = ── 3 演员呼叫────────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  从 24 调用实体 15 并等待其回复
+help-actor-head = (@actor/path)                从 31 获取远程 CRUD 内容
+help-actor-tail = (<bafy...>)                  包含并评估来自 36 41 的 21
+help-actor-wc = (define x (@actor:verb arg))  在会话环境中保留 5 回复
+help-actor-wc-l = .my.scheme.ma!edit           编辑此身份已保存的 11 助手
 help-header-url = ── URL 参数 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一个链接，打开 zion 时自动填入收件人：
 help-url-msg =   ?msg=<did>                   预填：@<did>!msg（文本消息）
 help-url-say =   ?say=<did>                   预填：@<did>!say（say 动词）
 help-url-emote =   ?emote=<did>                 预填：@<did>!emote（emote 动词）
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              预填充运行时 DID / 23 URL
+help-url-enter = ?enter=<runtime>             登录后进入运行时世界
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   输入框被预填但不会发送 — 按 Enter 键发送。
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -376,20 +376,23 @@ help-publish-intro = 发布使你的身份在网络上可被发现。其他人�
 help-publish-ma = 发布需要安装 ma（本地运行时）。它代表你将 ego 连接到 IPFS/IPNS。
 help-publish-steps = 步骤：运行 '.ma [port]' 检测本地 ma，然后 '.my.identity!publish @ma'。
 help-publish-without = 未发布时，其他人无法联系你 — 即使知道你的 DID，也无法解析你的 endpoint。
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = 尚未发布 - 首先运行 28，然后运行 67 您的个人资料
+profile-update-done = 配置文件更新 — 18 密钥从 43 合并
+profile-delete-needs-name = 请指定配置文件名：.profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = 收集batch-type命令，以.batch结尾
+batch-already-collecting = 已收集一批 — 首先以 .batch 结尾
+batch-empty = 批次为空 — 没有可运行的内容
+batch-running = 正在运行 batch…
+batch-step-timeout = 批处理步骤超时
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = batch 已完成，用时 { $secs }s — { $steps } 步
+batch-done-error = batch 已完成但有错误，用时 { $secs }s — { $steps } 步
+msg-timeout = 消息超时（60s 内无回复）
+err-unknown-command = 未知命令：{ $path }
+err-read-only-path = { $path } 为只读
+help-cmd-batch-async =   .batch:async / .batch        并行执行临时文档
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

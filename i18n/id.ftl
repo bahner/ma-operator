@@ -44,10 +44,10 @@ msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID diterbitkan melalui ma lokal ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = mencoba menghubungkanmu ke 間trix
+msg-local-ma-claimed = 間 lokal diklaim
+msg-local-ma-already-claimed = 間 lokal sudah diklaim
+msg-local-ma-claim-failed = gagal mengklaim 間 lokal
 msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '.my.identity!publish @ma'. Ketik '.help/publish' untuk detail.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma dibuat — jalankan '.my.identity!publish @ma' untuk mempublikasikan identitas Anda.
 claim-success = Runtime diklaim untuk { $did }
 claim-conflict = Runtime sudah diklaim oleh identitas lain
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime sudah diklaim oleh identitas ini
 claim-http-failed = klaim gagal: HTTP { $status }
 claim-error = klaim gagal: { $e }
 claim-no-session = belum masuk; masuk dulu untuk mengklaim runtime
@@ -145,14 +145,14 @@ doc-publish-failed = penerbitan { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikasi gagal [{ $code }]: { $err }
 doc-publish-error-hint = Petunjuk: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = masuk lagi agar ego dapat mengakses kunci identitas Anda
+doc-publish-hint-target = gunakan DID penerbit yang valid atau alias yang memutuskan untuk menghapus 57
+doc-publish-hint-network = verifikasi runtime 7 dan 22 dapat dijangkau, lalu coba lagi
+doc-publish-hint-resolve = verifikasi dokumen DID penerbit diterbitkan dan berisi titik akhir yang dapat dijangkau
+doc-publish-hint-acl = minta operator penerbit untuk mengizinkan DID Anda di 48
+doc-publish-hint-runtime = runtime/plugin menolak permintaan; periksa alasannya dan coba lagi setelah memperbaiki entitas/runtime
+doc-publish-hint-ipfs = periksa kesehatan 12/17 lokal dan status runtime penerbit
+doc-publish-hint-unknown = periksa log waktu proses untuk mengetahui penyebab detailnya dan coba lagi
 doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-fetch-done = mengambil { $cid } → { $path }.content (tidak dijalankan)
@@ -170,9 +170,9 @@ help-header-config = ── sintaks konfigurasi lokal ────────�
 help-header-common = ── jalur umum ───────────────────────────────────────────────────────────
 help-header-inbox = ── kotak masuk ──────────────────────────────────────────────────────────
 help-header-documents = ── dokumen ──────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── bahasa ─────────────────────────────────────────────────────────────────
+help-header-ma = ── Ruang 3 ───────────────────────────────────────────────────────────────────
+help-header-ma-entry = ── memasuki 間-ruang ─────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Bantuan — perintah zion ───────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       bersihkan terminal
 help-cmd-panic =   .panic                       pilihan terakhir — gunakan saat bermasalah
 help-cmd-history =   .history                     riwayat perintah (duplikat berurutan digabung)
 help-cmd-logout =   .logout                      keluar
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
+help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       tampilkan DID/DID-URL yang diselesaikan (tidak mengirim pesan)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            tampilkan CID tersimpan
 help-doc-del =   .my.doc.<name>:              hapus dokumen
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n menyimpan preferensi bahasa yang terkait dengan identitas Anda.
+help-i18n-set = .my.i18n: <code>             pilih bahasa yang digunakan 20 untuk identitas ini
+help-i18n-list = .my.i18n!list               daftar kode bahasa yang tersedia
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Ruang 間 adalah ruang di antara identitas 間. ma membuat identitas-identitas itu dapat saling menemukan dan berkomunikasi; setelah identitasmu dipublikasikan, kamu bisa ikut serta.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = tidak ada sesi aktif — profil tidak dapat dihapus
 profile-delete-error = penghapusan profil gagal: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = tidak dapat menyetel 11 untuk profil lain — hanya profil Anda sendiri
+profile-wrong-user-name = tidak dapat menyetel 11 untuk 19 — hanya profil Anda sendiri
+profile-no-ma = tidak ada runtime 3 yang dikonfigurasi — jalankan 31 terlebih dahulu
+profile-no-cid = tidak ada 3 yang disimpan untuk profil ini — jalankan 37 terlebih dahulu
+profile-no-cid-in-doc = tidak ada profil 11 yang ditemukan di dokumen DID — jalankan 43 terlebih dahulu
+profile-publish-sent = profil dienkripsi dan dikirim ke IPFS; dokumen DID akan diperbarui saat CID tiba
+profile-publish-done = profil diterbitkan — dokumen DID diperbarui dengan ma.agent CID
+profile-publish-failed = penerbitan profil gagal: 24
+profile-fetch-done = profil diambil — Kunci 18 dimuat dari 43
+profile-fetch-failed = pengambilan profil gagal: 22
+msg-identity-exists = identitas sudah diterbitkan — profil terkini
+profile-import-exists = profil 8 sudah ada — hapus dulu
+profile-import-wrong-user = file berisi profil 22, diharapkan 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = konten biner (tidak ditampilkan)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = gagal mengambil konten: 25
+cid-op-unknown = operasi konten yang tidak diketahui: 27
+cid-op-wc = { $lines } baris 18 kata 36 karakter
 profiles-empty = (tidak ada)
 profiles-deleted = profil { $name } dihapus
 profiles-not-found = profil tidak ditemukan: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- topik -- ketik .help/<topic> untuk detail
+help-topic-msg =   .help/msg                    pesan
+help-topic-ma = .help/ma                     ma-ruang, penerbitan, dan entri
+help-topic-path = .help/path                   tata bahasa jalur titik lokal
+help-topic-my =   .help/my                     config pribadi
+help-topic-inbox =   .help/inbox                  kotak masuk
+help-topic-doc =   .help/doc                    dokumen
+help-topic-actor =   .help/actor                  actor jarak jauh
+help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- aktor jarak jauh
+help-actor-echo =   @actor                       tampilkan DID yang diselesaikan
+help-actor-text = @actor[#entity]!msg|!say|!emote body         kirim pesan langsung/obrolan/emote
+help-actor-ping = @actor:ping                  ping keaktifan
+help-actor-entities =   @actor/entities              daftar entitas
+help-actor-entities-get = @actor/entities/<n>          dapatkan simpul entitas
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   atur entitas dengan referensi 14
+help-actor-entities-edit =   @actor/entities/<n>!edit     edit entitas
+help-actor-entities-del = @actor/entities/<n>:         hapus entitas
+help-actor-config-get =   @actor/config/<key>          ambil nilai config
+help-actor-config-set =   @actor/config/<key>: val     atur nilai config
+help-actor-acl = @actor/acl                   dapatkan 4
+help-actor-acl-edit =   @actor/acl!edit              sunting ACL
+help-actor-fragment =   @actor#entity                kirim ke plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-header-cid-ops = ── Aktor 3 memanggil ───────────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  memanggil entitas 15 dari 24 dan menunggu balasannya
+help-actor-head = (@actor/path)                mengambil konten CRUD jarak jauh dari 31
+help-actor-tail = (<bafy...>)                  memasukkan dan mengevaluasi 21 dari 36 41
+help-actor-wc = (define x (@actor:verb arg))  simpan balasan 5 di lingkungan sesi
+help-actor-wc-l = .my.scheme.ma!edit           edit pembantu 11 yang disimpan untuk identitas ini
 
 help-topic-url =   .help/url                    membuka zion melalui tautan URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   preferensi bahasa untuk identitas Anda
 help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
 help-url-msg =   ?msg=<did>                   isi otomatis: @<did>!msg (pesan biasa)
 help-url-say =   ?say=<did>                   isi otomatis: @<did>!say (kata kerja say)
 help-url-emote =   ?emote=<did>                 isi otomatis: @<did>!emote (kata kerja emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              URL DID runtime pra-pengisian / 23
+help-url-enter = ?enter=<runtime>             masuk ke dunia runtime setelah login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringa
 help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
 help-publish-steps = Langkah: jalankan '.ma [port]' untuk mendeteksi ma lokal, lalu '.my.identity!publish @ma'.
 help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID belum dipublikasikan — jalankan 28 terlebih dahulu, lalu 67 profil Anda
+profile-update-done = profil diperbarui — Kunci 18 digabungkan dari 43
+profile-delete-needs-name = tentukan nama profil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Mengumpulkan batch — ketik perintah, akhiri dengan .batch
+batch-already-collecting = Sudah mengumpulkan batch — akhiri dengan .batch terlebih dahulu
+batch-empty = Batch kosong — tidak ada yang dijalankan
+batch-running = Menjalankan batch…
+batch-step-timeout = langkah batch habis waktunya
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
+batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
+msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+err-unknown-command = perintah tidak dikenal: { $path }
+err-read-only-path = { $path } hanya-baca
+help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -44,10 +44,10 @@ msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publikigita per loka ma ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = provas konekti vin al la 間trix
+msg-local-ma-claimed = loka 間 reklamita
+msg-local-ma-already-claimed = loka 間 jam reklamita
+msg-local-ma-claim-failed = malsukcesis reklami lokan 間
 msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '.my.identity!publish @ma'. Skribu '.help/publish' por detaloj.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
@@ -110,16 +110,16 @@ discover-json-error = malkovro malsukcesis: nevalida JSON de { $url }: { $e }
 discover-missing-did = malkovro malsukcesis: status.json mankas bezonata kampo `did`
 discover-invalid-did = malkovro malsukcesis: atendis `did` komenci per did:ma:, ricevis `{ $did }`
 discover-no-endpoint = malkovro-averto: `endpoint_id` mankas en status.json; nur DID konservita
-discover-hint-endpoint-not-found = Hint: endpoint not found. Check that `ma` exposes /status.json on port 5003.
-discover-hint-server-error = Hint: runtime returned a server error. Check `ma` logs and retry.
-discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
-discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
+discover-hint-endpoint-not-found = Konsilo: endpoint ne trovita. Kontrolu ke `ma` montras /status.json ĉe pordo 5003.
+discover-hint-server-error = Konsilo: runtime respondis per servila eraro. Kontrolu la `ma`-protokolojn kaj reprovu.
+discover-hint-network = Sugesto: problemo pri reto/konekteco. Komencu 40, konfirmu ke localhost:5003 estas atingebla, kaj permesu lokan 101-aliron en la retumilo.
+discover-hint-generic = Sugesto: kontrolu 13 kaj 25 Labortablo funkcias, tiam reprovu 59.
 discover-success = ma malkovrita ĉe { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   kromnomo @ma kreita — rulu '.my.identity!publish @ma' por publikigi vian identecon.
 claim-success = Rultempo reklamita por { $did }
 claim-conflict = Rultempo jam reklamita de alia identeco
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Rultempo jam reklamita de ĉi tiu identeco
 claim-http-failed = reklamo malsukcesis: HTTP { $status }
 claim-error = reklamo malsukcesis: { $e }
 claim-no-session = ne ensalutita; ensalutu unue por reklami rultemon
@@ -143,16 +143,16 @@ doc-publish-usage = uzado: .my.doc.<nomo>!publish <eldonisto>
 doc-publish-ipld-usage = uzado: .my.doc.<nomo>!publish-ipld <eldonisto>
 doc-publish-failed = publikigi { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
-doc-publish-error-detail = publish failed [{ $code }]: { $err }
+doc-publish-error-detail = publikigo malsukcesa [16]: 28
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = ensalutu denove por ke ego povu aliri viajn identajn ŝlosilojn
+doc-publish-hint-target = uzu validan eldoniston DID aŭ kaŝnomon kiu solvas nur 57
+doc-publish-hint-network = konfirmu la rultempon de 7 kaj 22 estas atingeblaj, tiam reprovu
+doc-publish-hint-resolve = kontrolu, ke la eldonisto DID-dokumento estas publikigita kaj enhavas atingeblan finpunkton
+doc-publish-hint-acl = petu la eldonan operatoron permesi vian DID en 48
+doc-publish-hint-runtime = rultempo/kromaĵo malakceptis la peton; inspektu la kialon kaj reprovu post fiksado de ento/rultempo
+doc-publish-hint-ipfs = kontrolu lokan 12/17 sanon kaj eldonan rultempan staton
+doc-publish-hint-unknown = inspektu rultempajn protokolojn por detala kaŭzo kaj reprovu
 doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-fetch-done = elŝutita { $cid } → { $path }.content (ne efektivigita)
@@ -174,17 +174,17 @@ help-header-config = ── loka agordo-gramatiko ──────────
 help-header-common = ── komunaj vojoj ──────────────────────────────────────────────────────────
 help-header-inbox = ── poŝtkesto ──────────────────────────────────────────────────────────────
 help-header-documents = ── dokumentoj (.my.doc.*) ─────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── lingvo ────────────────────────────── ───────────────────────────────
+help-header-ma = ── 3-spaco ─────────────────────────────── ───────────────────────────────
+help-header-ma-entry = ── enirante 間-spacon ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        ĉi tiu teksto
 help-cmd-clear =   .clear                       malplenigu terminalon
 help-cmd-panic =   .panic                       lasta rimedo — uzu se vi perdas sin
 help-cmd-history =   .history                     komanda historio (sinsekvaj duplikaĵoj kunfanditaj)
 help-cmd-logout =   .logout                      elsaluti
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       evaluar documento temporal en paralelo
+help-cmd-batch-sync =   .batch:sync / .batch         evaluar documento temporal línea por línea
 help-msg-echo =   @alias                       montri solvitajn DID/DID-URL (neniu mesaĝo sendita)
 help-msg-send =   @alias!msg body / @alias:verb args           sendi mesaĝon / RPC al aktoro
 help-msg-fragment =   @alias#fragment:verb body  sendi al alias kun eksplicita DID-fragmento
@@ -225,9 +225,9 @@ help-doc-cid =   .my.doc.<name>!cid            montri konservitan CID
 help-doc-del =   .my.doc.<name>:              forigi dokumenton
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n konservas la lingvopreferon ligitan al via identeco.
+help-i18n-set = .my.i18n: <code>             elektu la lingvon, kiun 20 uzas por ĉi tiu identeco
+help-i18n-list = .my.i18n!list               listigu disponeblajn lingvokodojn
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = La 間-ĉambro estas la spaco inter 間-identecoj. ma helpas tiujn identecojn trovi unu la alian kaj komuniki; kiam via identeco estas publikigita, vi povas partopreni.
@@ -287,72 +287,72 @@ err-edit-fetch-failed = redaktado: prena eraro: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = neniu aktiva sesio — ne eblas forigi profilon
 profile-delete-error = forigo de profilo malsukcesis: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = ne povas agordi 11 por alia profilo — nur via propra
+profile-wrong-user-name = ne povas agordi 11 por 19 — nur vian propran profilon
+profile-no-ma = neniu 3 rultempo agordita — rulu 31 unue
+profile-no-cid = neniu 3 stokita por ĉi tiu profilo — rulu 37 unue
+profile-no-cid-in-doc = neniu profilo 11 trovita en DID-dokumento — rulu 43 unue
+profile-publish-sent = profilo ĉifrita kaj sendita al IPFS; la DID-dokumento estos ĝisdatigita kiam CID alvenos
+profile-publish-done = profilo publikigita — DID-dokumento ĝisdatigita per ma.agent CID
+profile-publish-failed = profilpublikigo malsukcesis: 24
+profile-fetch-done = profilo akirita — 18-ŝlosiloj ŝarĝitaj de 43
+profile-fetch-failed = malsukcesa serĉo de profilo: 22
+msg-identity-exists = identeco jam publikigita — profilo ĝisdatigita
+profile-import-exists = profilo 8 jam ekzistas — unue forigu ĝin
+profile-import-wrong-user = dosiero enhavas profilon 22, atenditan 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = binara enhavo (ne montrata)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = malsukcesis alporti enhavon: 25
+cid-op-unknown = nekonata enhavoperacio: 27
+cid-op-wc = { $lines } linioj 18 vortoj 36 signoj
 profiles-empty = (neniu)
 profiles-deleted = profilo { $name } forigita
 profiles-not-found = profilo ne trovita: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
+help-header-topics = -- temas -- escribe .help/<topic> para detalles
+help-topic-msg =   .help/msg                    mensajería
+help-topic-ma = .help/ma                     ma-spaco, eldonado kaj eniro
+help-topic-path = .help/path                   loka punkto-voja gramatiko
+help-topic-my =   .help/my                     config personal
+help-topic-inbox =   .help/inbox                  bandeja de entrada
+help-topic-doc =   .help/doc                    documentos
+help-topic-actor =   .help/actor                  actor remoto
 help-topic-url =   .help/url                    malfermi zion per URL-ligilo
-help-topic-i18n =   .help/i18n                   language preference for your identity
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-topic-i18n = .help/i18n                   lingvoprefero por via identeco
+help-unknown-topic =   .help/{ $topic }: tema desconocido
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- actores remotos
+help-actor-echo =   @actor                       mostrar DID resuelto
+help-actor-text = @actor[#entity]!msg|!say|!emote body         sendu rektan/babili/emotigan mesaĝon
+help-actor-ping = @actor:ping                  viveco ping
+help-actor-entities =   @actor/entities              listar entidades
+help-actor-entities-get = @actor/entities/<n>          akiri entan nodon
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   agordi enton per 14-referenco
+help-actor-entities-edit =   @actor/entities/<n>!edit     editar entidad
+help-actor-entities-del = @actor/entities/<n>:         forigi enton
+help-actor-config-get =   @actor/config/<key>          obtener valor de config
+help-actor-config-set =   @actor/config/<key>: val     establecer valor de config
+help-actor-acl = @actor/acl                   akiri 4
+help-actor-acl-edit =   @actor/acl!edit              editar ACL
+help-actor-fragment =   @actor#entity                enviar al plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC al plugin
+help-header-cid-ops = ── 3 aktoro vokas ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  voku enton 15 de 24 kaj atendu ĝian respondon
+help-actor-head = (@actor/path)                alportu foran CRUD-enhavon de 31
+help-actor-tail = (<bafy...>)                  inkluzivi kaj taksi 21 de 36 41
+help-actor-wc = (define x (@actor:verb arg))  konservu 5 respondojn en la seanca medio
+help-actor-wc-l = .my.scheme.ma!edit           redakti konservitajn helpantojn de 11 por ĉi tiu identeco
 help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
 help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
 help-url-msg =   ?msg=<did>                   antaŭplenigas: @<did>!msg (teksta mesaĝo)
 help-url-say =   ?say=<did>                   antaŭplenigas: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>!emote (verbo emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              antaŭplenigi rultempon DID / 23 URL
+help-url-enter = ?enter=<runtime>             eniru rultempan mondon post ensaluto
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter por sendi.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -362,20 +362,23 @@ help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj p
 help-publish-ma = Por publikigi, vi bezonas instalitan ma (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.
 help-publish-steps = Paŝoj: rulu '.ma [port]' por detekti lokan ma, poste '.my.identity!publish @ma'.
 help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID ankoraŭ ne publikigita — rulu 28 unue, poste 67 vian profilon
+profile-update-done = profilo ĝisdatigita — 18-ŝlosiloj kunfanditaj de 43
+profile-delete-needs-name = specifu profilnomon: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Kolektado de batch — tajpu komandojn, finiĝu per .batch
+batch-already-collecting = Jam kolektante aron - unue finiĝu per .batch
+batch-empty = Aro estis malplena - nenio kurebla
+batch-running = Ejecutando lote…
+batch-step-timeout = batpaŝo elĉerpita
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Lote completado en { $secs }s — { $steps } pasos
+batch-done-error = Lote terminado con errores en { $secs }s — { $steps } pasos
+msg-timeout = Mensaje agotado (sin respuesta en 60s)
+err-unknown-command = nekonata komando: { $path }
+err-read-only-path = { $path } estas nurlega
+help-cmd-batch-async =   .batch:async / .batch        evaluar documento temporal en paralelo
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

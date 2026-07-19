@@ -44,10 +44,10 @@ msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID julkaistu paikallisen ma:n kautta ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = yritetään yhdistää sinut 間trixiin
+msg-local-ma-claimed = paikallinen 間 varattu
+msg-local-ma-already-claimed = paikallinen 間 on jo varattu
+msg-local-ma-claim-failed = paikallisen 間 varaaminen epäonnistui
 msg-identity-not-published = Henkilöllisyyttä ei löydetty verkosta — jos ma on asennettu paikallisesti, aja '.ma [port]' sitten '.my.identity!publish @ma'. Kirjoita '.help/publish' yksityiskohtia varten.
 msg-blocked = ⊗ estetty [{ $cap }]: { $from }
 msg-focus-cleared = kohdistus tyhjennetty
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma luotu — aja '.my.identity!publish @ma' julkaistaksesi henkilöllisyytesi.
 claim-success = Ajonaikainen varattu kohteelle { $did }
 claim-conflict = Ajonaikainen on jo varattu toiselle identiteetille
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Ajonaikainen on jo tämän identiteetin varaama
 claim-http-failed = varaus epäonnistui: HTTP { $status }
 claim-error = varaus epäonnistui: { $e }
 claim-no-session = ei kirjautunut sisään; kirjaudu ensin varataksesi ajonaikaisen
@@ -170,9 +170,9 @@ help-header-config = ── paikallinen kokoonpanokielioppi ──────�
 help-header-common = ── yleiset polut ─────────────────────────────────────────────────────────
 help-header-inbox = ── postilaatikko ─────────────────────────────────────────────────────────
 help-header-documents = ── asiakirjat ────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── kieli ───────────────────────────── ─────────────────────────────
+help-header-ma = ── 3-tila ───────────────────────────── ─────────────────────────────
+help-header-ma-entry = ── syöttämällä 間-välilyöntiä ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        tämä teksti
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       tyhjennä terminaali
 help-cmd-panic =   .panic                       viimeinen keino — käytä jos olet pulassa
 help-cmd-history =   .history                     komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty)
 help-cmd-logout =   .logout                      kirjaudu ulos
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakkain
+help-cmd-batch-sync =   .batch:sync / .batch         arvioi luonnosdokumentti riveittäin
 
 help-msg-echo =   @alias                       näytä ratkaistu DID/DID-URL (ei viestiä lähetetty)
 help-msg-send =   @alias!msg body / @alias:verb args           lähetä viesti / RPC toimijalle
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<nimi>!cid            näytä tallennettu CID
 help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = .my.i18n tallentaa henkilöllisyytesi mukaiset kieliasetukset.
+help-i18n-set = .my.i18n: <code>             valitse kieli, jota 20 käyttää tälle henkilöllisyydelle
+help-i18n-list = .my.i18n!list               luettelo käytettävissä olevista kielikoodeista
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間-huone on tila 間-identiteettien välissä. ma auttaa näitä identiteettejä löytämään toisensa ja kommunikoimaan; kun identiteettisi on julkaistu, voit osallistua.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = muokkaus: haku epäonnistui: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ei aktiivista istuntoa — profiilia ei voi poistaa
 profile-delete-error = profiilin poistaminen epäonnistui: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = 11:tä ei voi asettaa toiselle profiilille – vain omallesi
+profile-wrong-user-name = ei voi asettaa 11:tä 19:lle — vain oma profiilisi
+profile-no-ma = 3-ajonaikaa ei ole määritetty — suorita 31 ensin
+profile-no-cid = tälle profiilille ei ole tallennettu 3:tä — suorita 37 ensin
+profile-no-cid-in-doc = profiilia 11 ei löydy DID-asiakirjasta — suorita 43 ensin
+profile-publish-sent = profiili salattiin ja lähetettiin IPFS:ään; DID-asiakirja päivitetään, kun CID saapuu
+profile-publish-done = profiili julkaistu — DID-asiakirja päivitetty ma.agent-CID:llä
+profile-publish-failed = profiilin julkaisu epäonnistui: 24
+profile-fetch-done = profiili haettu — 18-avaimet ladattu 43:stä
+profile-fetch-failed = profiilin haku epäonnistui: 22
+msg-identity-exists = identiteetti on jo julkaistu — profiili ajan tasalla
+profile-import-exists = profiili 8 on jo olemassa – poista se ensin
+profile-import-wrong-user = tiedosto sisältää profiilin 22, odotettu 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = binäärisisältö (ei näytetä)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = sisällön nouto epäonnistui: 25
+cid-op-unknown = tuntematon sisältötoiminto: 27
+cid-op-wc = { $lines } rivit 18 sanat 36 merkkiä
 profiles-empty = (ei mitään)
 profiles-deleted = profiili { $name } poistettu
 profiles-not-found = profiilia ei löydy: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- aiheet -- kirjoita .help/<topic> saadaksesi tiedot
+help-topic-msg =   .help/msg                    viestit
+help-topic-ma = .help/ma                     ma-avaruus, julkaisu ja merkintä
+help-topic-path = .help/path                   paikallinen pistepolun kielioppi
+help-topic-my =   .help/my                     henkilökohtainen config
+help-topic-inbox =   .help/inbox                  saapuneet
+help-topic-doc =   .help/doc                    dokumentit
+help-topic-actor =   .help/actor                  etä-actor
+help-unknown-topic =   .help/{ $topic }: tuntematon aihe
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- etätoimijat
+help-actor-echo =   @actor                       näytä ratkaistu DID
+help-actor-text = @actor[#entity]!msg|!say|!emote body         lähetä suora/chat/emote viesti
+help-actor-ping = @actor:ping                  elävyyden ping
+help-actor-entities =   @actor/entities              listaa entiteetit
+help-actor-entities-get = @actor/entities/<n>          hanki entiteettisolmu
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   aseta entiteetti 14-viittauksella
+help-actor-entities-edit =   @actor/entities/<n>!edit     muokkaa entiteettiä
+help-actor-entities-del = @actor/entities/<n>:         poista kokonaisuus
+help-actor-config-get =   @actor/config/<key>          hae config-arvo
+help-actor-config-set =   @actor/config/<key>: val     aseta config-arvo
+help-actor-acl = @actor/acl                   hanki 4
+help-actor-acl-edit =   @actor/acl!edit              muokkaa ACL:ää
+help-actor-fragment =   @actor#entity                lähetä pluginille
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginille
+help-header-cid-ops = ── 3 näyttelijä kutsuu ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  soita entiteetille 15 kohteesta 24 ja odota sen vastausta
+help-actor-head = (@actor/path)                noutaa etä-CRUD-sisältöä 31:stä
+help-actor-tail = (<bafy...>)                  sisällyttää ja arvioida 21 36 41:stä
+help-actor-wc = (define x (@actor:verb arg))  säilyttää 5-vastaukset istuntoympäristössä
+help-actor-wc-l = .my.scheme.ma!edit           muokkaa tämän identiteetin tallennettuja 11-apuohjelmia
 
 help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   kieliasetus identiteettiäsi varten
 help-header-url = ── URL-parametrit ───────────────────────────────────────────────────────────────
 help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla:
 help-url-msg =   ?msg=<did>                   esitäyttää: @<did>!msg (tekstiviesti)
 help-url-say =   ?say=<did>                   esitäyttää: @<did>!say (verbi say)
 help-url-emote =   ?emote=<did>                 esitäyttää: @<did>!emote (verbi emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              esitäytön ajonaikainen DID / 23 URL
+help-url-enter = ?enter=<runtime>             Siirry ajonaikaiseen maailmaan kirjautumisen jälkeen
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi ver
 help-publish-ma = Julkaisemiseen tarvitset ma:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
 help-publish-steps = Vaiheet: aja '.ma [port]' paikallisen ma:n havaitsemiseksi, sitten '.my.identity!publish @ma'.
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = EI ole vielä julkaistu – suorita ensin 28 ja sitten profiilisi 67
+profile-update-done = profiili päivitetty — 18-avaimet yhdistetty 43:stä
+profile-delete-needs-name = anna profiilin nimi: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Kerää erää — kirjoita komennot, päättyy .batch
+batch-already-collecting = Kerää jo erää – lopeta ensin .batch
+batch-empty = Erä oli tyhjä – ei mitään ajamista
+batch-running = Ajetaan erää…
+batch-step-timeout = erävaihe aikakatkaistiin
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Erä valmis { $secs }s ajassa — { $steps } vaihetta
+batch-done-error = Erä päättyi virheisiin { $secs }s ajassa — { $steps } vaihetta
+msg-timeout = Viestin aika loppui (ei vastausta 60s aikana)
+err-unknown-command = tuntematon komento: { $path }
+err-read-only-path = { $path } on vain luettavissa
+help-cmd-batch-async =   .batch:async / .batch        arvioi luonnosdokumentti rinnakkain
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

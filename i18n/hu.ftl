@@ -44,10 +44,10 @@ msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID közzétéve helyi ma-n keresztül ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = megpróbálunk csatlakoztatni a 間trixhoz
+msg-local-ma-claimed = helyi 間 igénybe véve
+msg-local-ma-already-claimed = a helyi 間 már igénybe van véve
+msg-local-ma-claim-failed = nem sikerült igénybe venni a helyi 間-t
 msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '.my.identity!publish @ma'. Írd '.help/publish' a részletekért.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias létrehozva — futtasd '.my.identity!publish @ma' az identitásod közzétételéhez.
 claim-success = Futtatókörnyezet igénybe véve: { $did }
 claim-conflict = A futtatókörnyezetet már egy másik identitás igénybe vette
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = A Runtime-ot már ez az identitás igénybe vette
 claim-http-failed = igénybevétel sikertelen: HTTP { $status }
 claim-error = igénybevétel sikertelen: { $e }
 claim-no-session = nincs bejelentkezés; a futtatókörnyezet igénybevételéhez először jelentkezzen be
@@ -145,14 +145,14 @@ doc-publish-failed = közzététel { $path }: { $e }
 doc-publish-ipld-failed = IPLD közzététel { $path }: { $e }
 doc-publish-error-detail = közzététel sikertelen [{ $code }]: { $err }
 doc-publish-error-hint = Tipp: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = jelentkezzen be újra, hogy az ego hozzáférhessen a személyazonossági kulcsaihoz
+doc-publish-hint-target = használjon érvényes kiadói DID-t vagy álnevet, amely feloldása a csupasz 57
+doc-publish-hint-network = ellenőrizze, hogy a 7 futási környezet és a 22 elérhető-e, majd próbálkozzon újra
+doc-publish-hint-resolve = ellenőrizze, hogy a kiadói DID-dokumentum megjelent-e, és tartalmaz-e elérhető végpontot
+doc-publish-hint-acl = kérje meg a kiadó üzemeltetőjét, hogy engedélyezze a DID-jét a 48-ben
+doc-publish-hint-runtime = runtime/plugin elutasította a kérést; ellenőrizze az okot, és próbálja újra az entitás/futásidő javítása után
+doc-publish-hint-ipfs = ellenőrizze a helyi 12/17 állapotot és a megjelenítői futásidejű állapotot
+doc-publish-hint-unknown = ellenőrizze a futásidejű naplókat a részletes okokért, és próbálkozzon újra
 doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-fetch-done = { $cid } letöltve → { $path }.content (nem futtatva)
@@ -170,9 +170,9 @@ help-header-config = ── helyi konfigurációs szintaxis ──────�
 help-header-common = ── általános útvonalak ───────────────────────────────────────────────────
 help-header-inbox = ── bejövő üzenetek ──────────────────────────────────────────────────────
 help-header-documents = ── dokumentumok ─────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── nyelv ───────────────────────────── ──────────────────────────────
+help-header-ma = ── 3-tér ────────────────────────────── ──────────────────────────────
+help-header-ma-entry = ── 間-szóköz beírása ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 help-cmd-help =   .help                        ez a szöveg
@@ -180,8 +180,8 @@ help-cmd-clear =   .clear                       terminál törlése
 help-cmd-panic =   .panic                       végső megoldás — ha bajban van, használja
 help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
 help-cmd-logout =   .logout                      kijelentkezés
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       vázlatdokumentum párhuzamos kiértékelése
+help-cmd-batch-sync =   .batch:sync / .batch         vázlatdokumentum soronkénti kiértékelése
 
 help-msg-echo =   @alias                       feloldott DID/DID-URL megjelenítése (nincs üzenetküldés)
 help-msg-send =   @alias!msg body / @alias:verb args           üzenet / RPC küldése szereplőnek
@@ -228,9 +228,9 @@ help-doc-cid =   .my.doc.<név>!cid            mentett CID megjelenítése
 help-doc-del =   .my.doc.<név>:              dokumentum törlése
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = A .my.i18n az Ön személyazonosságához kötött nyelvi beállításokat tárolja.
+help-i18n-set = .my.i18n: <code>             válassza ki a 20 által ehhez az identitáshoz használt nyelvet
+help-i18n-list = .my.i18n!list               listázza ki az elérhető nyelvkódokat
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = A 間 szoba a 間 identitások közötti tér. A ma segít ezeknek az identitásoknak megtalálni egymást és kommunikálni; amint az identitásod publikálva van, részt vehetsz.
@@ -294,73 +294,73 @@ err-edit-fetch-failed = szerkesztés: betöltési hiba: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nincs aktív munkamenet — a profil nem törölhető
 profile-delete-error = a profil törlése sikertelen: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = nem állítható be a 11 másik profilhoz – csak a saját profiljához
+profile-wrong-user-name = nem állítható be a 11 a 19 értékhez – csak a saját profilja
+profile-no-ma = nincs konfigurálva 3 futási idő — először futtassa a 31-et
+profile-no-cid = ehhez a profilhoz nincs tárolva 3 – először futtassa a 37 fájlt
+profile-no-cid-in-doc = nem található 11 profil a DID dokumentumban – először futtassa a 43 fájlt
+profile-publish-sent = a profil titkosítva és elküldve az IPFS-re; a DID-dokumentum frissül, amikor megérkezik a CID
+profile-publish-done = profil közzétéve — a DID-dokumentum frissítve ma.agent CID-del
+profile-publish-failed = a profil közzététele nem sikerült: 24
+profile-fetch-done = profil lekérve — 18 kulcsok betöltve a 43 webhelyről
+profile-fetch-failed = A profillekérés sikertelen: 22
+msg-identity-exists = személyazonossága már közzétett – a profil naprakész
+profile-import-exists = A 8 profil már létezik – először törölje
+profile-import-wrong-user = a fájl 22 profilt tartalmaz, várhatóan 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = bináris tartalom (nem jelenik meg)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = nem sikerült lekérni a tartalmat: 25
+cid-op-unknown = ismeretlen tartalomművelet: 27
+cid-op-wc = { $lines } sorok 18 szavak 36 karakterek
 profiles-empty = (nincs)
 profiles-deleted = a(z) { $name } profil törölve
 profiles-not-found = a profil nem található: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- témák -- részletekhez írd be: .help/<topic>
+help-topic-msg =   .help/msg                    üzenetek
+help-topic-ma = .help/ma                     ma-tér, közzététel és bejegyzés
+help-topic-path = .help/path                   helyi pont-útvonal nyelvtan
+help-topic-my =   .help/my                     személyes config
+help-topic-inbox =   .help/inbox                  bejövő
+help-topic-doc =   .help/doc                    dokumentumok
+help-topic-actor =   .help/actor                  távoli actor
+help-unknown-topic =   .help/{ $topic }: ismeretlen téma
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- távoli actorok
+help-actor-echo =   @actor                       feloldott DID megjelenítése
+help-actor-text = @actor[#entity]!msg|!say|!emote body         közvetlen/chat/emote üzenet küldése
+help-actor-ping = @actor:ping                  elevenség ping
+help-actor-entities =   @actor/entities              entitások listázása
+help-actor-entities-get = @actor/entities/<n>          entitáscsomópont beszerzése
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   entitás beállítása 14 hivatkozással
+help-actor-entities-edit =   @actor/entities/<n>!edit     entitás szerkesztése
+help-actor-entities-del = @actor/entities/<n>:         entitás törlése
+help-actor-config-get =   @actor/config/<key>          config érték lekérése
+help-actor-config-set =   @actor/config/<key>: val     config érték beállítása
+help-actor-acl = @actor/acl                   kapja meg a 4-et
+help-actor-acl-edit =   @actor/acl!edit              ACL szerkesztése
+help-actor-fragment =   @actor#entity                küldés pluginnek
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginnek
+help-header-cid-ops = ── 3 színész hív ───────────────────────── ──────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  hívjon fel egy 15 entitást a 24 csoportból, és várja meg a válaszát
+help-actor-head = (@actor/path)                távoli CRUD-tartalom letöltése a 31-ről
+help-actor-tail = (<bafy...>)                  tartalmazza és kiértékeli a 21-et egy 36 41-ből
+help-actor-wc = (define x (@actor:verb arg))  tartsa a 5 válaszokat a munkamenet környezetben
+help-actor-wc-l = .my.scheme.ma!edit           mentett 11 segítők szerkesztése ehhez az identitáshoz
 
 help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   identitásod nyelvi preferenciája
 help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
 help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
 help-url-msg =   ?msg=<did>                   előre kitölti: @<did>!msg (egyszerű üzenet)
 help-url-say =   ?say=<did>                   előre kitölti: @<did>!say (say ige)
 help-url-emote =   ?emote=<did>                 előre kitölti: @<did>!emote (emote ige)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              előre kitöltött futásidejű DID / 23 URL
+help-url-enter = ?enter=<runtime>             bejelentkezés után lépjen be a futásidejű világba
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve — nyomj Enter-t a küldéshez.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -370,20 +370,23 @@ help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a
 help-publish-ma = A közzétételhez szükséges a ma (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
 help-publish-steps = Lépések: futtasd '.ma [port]' a helyi ma megtalálásához, majd '.my.identity!publish @ma'.
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = Még nem tették közzé – először futtassa a 28 fájlt, majd a 67 profilt
+profile-update-done = profil frissítve — 18 kulcsok egyesítve a 43-ből
+profile-delete-needs-name = adjon meg profilnevet: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Köteg begyűjtése — írja be a parancsokat, a végén .batch
+batch-already-collecting = Már gyűjtött egy köteget – először fejezze be .batch-el
+batch-empty = A köteg üres volt – nincs mit futtatni
+batch-running = Batch futtatása…
+batch-step-timeout = köteglépés időtúllépés
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = Batch kész { $secs }s alatt — { $steps } lépés
+batch-done-error = Batch hibákkal fejeződött be { $secs }s alatt — { $steps } lépés
+msg-timeout = Az üzenet időtúllépett (nincs válasz 60s alatt)
+err-unknown-command = ismeretlen parancs: { $path }
+err-read-only-path = { $path } csak olvasható
+help-cmd-batch-async =   .batch:async / .batch        vázlatdokumentum párhuzamos kiértékelése
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

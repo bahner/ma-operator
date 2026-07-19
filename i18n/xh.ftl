@@ -44,10 +44,10 @@ msg-connecting = iyaxhuma ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungele
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ipapashiwe nge-ma yendawo ({ $url })
-msg-ma-connecting-matrix = trying to connect you to the 間trix
-msg-local-ma-claimed = claimed local 間
-msg-local-ma-already-claimed = local 間 already claimed
-msg-local-ma-claim-failed = failed to claim local 間
+msg-ma-connecting-matrix = sizama ukukudibanisa ne-間trix
+msg-local-ma-claimed = i-間 yendawo ibisiwe
+msg-local-ma-already-claimed = i-間 yendawo sele ibisiwe
+msg-local-ma-claim-failed = akuphumelelanga ukubisa i-間 yendawo
 msg-identity-not-published = Ubuzwe abufumanisekanga ku-intanethi — ukuba u-ma ufakiwe endaweni, qhuba '.ma [port]' wulandelise '.my.identity!publish @ma'. Bhala '.help/publish' ngenkcazelo.
 msg-blocked = ⊗ ivalelwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kucinyiwe
@@ -119,7 +119,7 @@ discover-did-line = DID: { $did }
 discover-alias-hint =   i-alias @ma yenziwe — qhuba '.my.identity!publish @ma' ukupapasha ubuzwe bakho.
 claim-success = Runtime ibiselwe ku-{ $did }
 claim-conflict = Runtime isebiselwe ubunjani obuphela
-claim-already-owned = Runtime already claimed by this identity
+claim-already-owned = Runtime sele ibisiwe sesi sazisi
 claim-http-failed = isicelo sihlulekile: HTTP { $status }
 claim-error = isicelo sihlulekile: { $e }
 claim-no-session = akungeniwe; ngena kuqala ukufumana i-runtime
@@ -145,14 +145,14 @@ doc-publish-failed = ukushicilela { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = upapasho lusilele [{ $code }]: { $err }
 doc-publish-error-hint = Icebiso: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
-doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
-doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
-doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
+doc-publish-hint-session = ngena kwakhona ukuze i-ego ikwazi ukufikelela izitshixo zakho zesazisi
+doc-publish-hint-target = sebenzisa umshicileli osebenzayo we-DID okanye i-alias ethatha isigqibo sokukhupha i-57
+doc-publish-hint-network = qinisekisa ukuba i-7 ixesha lokusebenza kunye ne-22 ziyafikeleleka, uze uzame kwakhona
+doc-publish-hint-resolve = qinisekisa ukuba uxwebhu lweDID lompapashi lupapashiwe kwaye luqulethe isiphelo esifikelelekayo
+doc-publish-hint-acl = cela umshicileli ukuba avumele i-DID yakho kwi-48
+doc-publish-hint-runtime = ixesha lokusebenza/i-plugin yaliwe isicelo; hlola isizathu kwaye uzame kwakhona emva kokulungisa iziko/ixesha lokusebenza
+doc-publish-hint-ipfs = khangela indawo ye-12/17 yempilo kunye nemo yexesha lokusebenza komshicileli
+doc-publish-hint-unknown = NONE
 doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
 doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
 doc-fetch-done = { $cid } ilandwe → { $path }.content (ayenziwanga)
@@ -170,9 +170,9 @@ help-header-config = ── inkqubo yokuphatha indawo ────────�
 help-header-common = ── iindlela ezisetshenziswa kakhulu ───────────────────────────────────────
 help-header-inbox = ── isibhengezo sokufika ──────────────────────────────────────────────────
 help-header-documents = ── imibhalo ─────────────────────────────────────────────────────────────
-help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
-help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-i18n = ── ulwimi ──────────────────────────── ──────────────────────────────
+help-header-ma = ── 3-isithuba ────────────────────────────── ──────────────────────────────
+help-header-ma-entry = ── ukungena 間-isithuba ───────────────────────── ─────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Uncedo — imiyalelo ye-zion ────────────────────────────────────────────
@@ -181,8 +181,8 @@ help-cmd-clear =   .clear                       coca i-terminal
 help-cmd-panic =   .panic                       indlela yokugqibela — sebenzisa xa uneengxaki
 help-cmd-history =   .history                     imbali yemiyalelo (izinto eziphindwayo ezilandelanayo zidityanisiwe)
 help-cmd-logout =   .logout                      phuma
-help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch =   .batch                       hlola idokhumenti ye-scratch ngokuhambisana
+help-cmd-batch-sync =   .batch:sync / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
 
 # ── Uncedo — ukuthumela ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       bonisa i-DID/DID-URL esonjululiweyo (akuthunyelwa myalezo)
@@ -235,9 +235,9 @@ help-doc-cid =   .my.doc.<name>!cid            bonisa i-CID egciniweyo
 help-doc-del =   .my.doc.<name>:              cima umbhalo
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
-help-i18n-list =   .my.i18n!list               list available language codes
+help-i18n-intro = I-.my.i18n igcina ulwimi olukhethwayo olubotshelelwe kwisazisi sakho.
+help-i18n-set = .my.i18n: <code>             khetha ulwimi olusetyenziswa ngu20 kolu phawu
+help-i18n-list = .my.i18n!list               dwelisa iikhowudi zolwimi ezikhoyo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Igumbi le-間 yindawo ephakathi kwezazisi ze-間. ma yenza ezo zazisi zifumanane kwaye zinxibelelane; xa isazisi sakho sipapashiwe, ungathatha inxaxheba.
@@ -301,73 +301,73 @@ err-edit-fetch-failed = uyilelo: ukufumana akuphumelelanga: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = akukho iseshoni esiyenzekayo — ayinakususwa iprofayile
 profile-delete-error = ukususa iprofayile kuhlulekile: { $e }
-profile-wrong-user = cannot set CID for another profile — only your own
-profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
-profile-no-cid = no CID stored for this profile — run '!publish' first
-profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
-profile-publish-sent = profile encrypted and sent to IPFS; DID document will be updated when CID arrives
-profile-publish-done = profile published — DID document updated with ma.agent CID
-profile-publish-failed = profile publish failed: { $e }
-profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
-profile-fetch-failed = profile fetch failed: { $e }
-msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile '{ $name }' already exists — delete it first
-profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
+profile-wrong-user = ayinakuseta i-11 kwenye iprofayile — eyakho kuphela
+profile-wrong-user-name = ayinakuseta i-11 ye-19 — iprofayile yakho kuphela
+profile-no-ma = akukho 3 ixesha lokusebenza limiselweyo — sebenzisa i-31 kuqala
+profile-no-cid = akukho 3 egcinwe kule profayile — sebenzisa i-37 kuqala
+profile-no-cid-in-doc = akukho profayile 11 efunyenwe kuxwebhu lwe-DID — sebenzisa i-43 kuqala
+profile-publish-sent = iprofayile ifihliwe yaza yathunyelwa kwi-IPFS; uxwebhu lwe-DID luza kuhlaziywa xa i-CID ifika
+profile-publish-done = iprofayile ipapashiwe — uxwebhu lwe-DID luhlaziywe nge-ma.agent CID
+profile-publish-failed = iprofayile yokupapasha ayiphumelelanga: 24
+profile-fetch-done = iprofayile ilandiwe — 18 izitshixo zilayishwe ku43
+profile-fetch-failed = Ukuthathwa kweprofayile akuphumelelanga: 22
+msg-identity-exists = isazisi sele sipapashiwe — iprofayile isexesheni
+profile-import-exists = iprofayile 8 sele ikhona — yicime kuqala
+profile-import-wrong-user = ifayile iqulathe iprofayile 22, elindelekileyo 42
 
 # -- CID content operations
-cid-op-binary = binary content (not displayed)
+cid-op-binary = umxholo wokubini (awuboniswanga)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: { $e }
-cid-op-unknown = unknown content operation: { $op }
-cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+cid-op-fetch-failed = ayiphumelelanga ukulanda umxholo: 25
+cid-op-unknown = umsebenzi ongaziwayo womxholo: 27
+cid-op-wc = { $lines } imigca 18 amagama 36 chars
 profiles-empty = (akukho)
 profiles-deleted = iprofayile { $name } isusiwe
 profiles-not-found = iprofayile ayifumanekanga: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    messaging
-help-topic-ma =   .help/ma                     ma-space, publishing, and entry
-help-topic-path =   .help/path                   local dot-path grammar
-help-topic-my =   .help/my                     personal config
-help-topic-inbox =   .help/inbox                  inbox
-help-topic-doc =   .help/doc                    documents
-help-topic-actor =   .help/actor                  remote actor
-help-unknown-topic =   .help/{ $topic }: unknown topic
+help-header-topics = -- izihloko -- thayipha .help/<topic> ukuze uthole imininingwane
+help-topic-msg =   .help/msg                    imiyalezo
+help-topic-ma = .help/ma                     ma-isithuba, upapasho, kunye nokungena
+help-topic-path = .help/path                   igramma ye-dot-path yendawo
+help-topic-my =   .help/my                     config yomuntu siqu
+help-topic-inbox =   .help/inbox                  ibhokisi lokungenayo
+help-topic-doc =   .help/doc                    amadokhumenti
+help-topic-actor =   .help/actor                  actor ekude
+help-unknown-topic =   .help/{ $topic }: isihloko esingaziwa
 
 # -- Help actor section
-help-header-actor = -- remote actors
-help-actor-echo =   @actor                       echo resolved DID
-help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
-help-actor-ping =   @actor:ping                  liveness ping
-help-actor-entities =   @actor/entities              list entities
-help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
-help-actor-entities-edit =   @actor/entities/<n>!edit     edit entity
-help-actor-entities-del =   @actor/entities/<n>:         delete entity
-help-actor-config-get =   @actor/config/<key>          get config value
-help-actor-config-set =   @actor/config/<key>: val     set config value
-help-actor-acl =   @actor/acl                   get ACL
-help-actor-acl-edit =   @actor/acl!edit              edit ACL
-help-actor-fragment =   @actor#entity                send to plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to plugin
-help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
-help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
-help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-header-actor = -- ama-actor akude
+help-actor-echo =   @actor                       bonisa i-DID exazululiwe
+help-actor-text = @actor[#entity]!msg|!say|!emote body         thumela umyalezo othe ngqo/incoko/emowuti
+help-actor-ping = @actor:ping                  ukuphila ping
+help-actor-entities =   @actor/entities              bala ama-entity
+help-actor-entities-get = @actor/entities/<n>          fumana indawo yequmrhu
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   seta umbutho ngereferensi ye-14
+help-actor-entities-edit =   @actor/entities/<n>!edit     hlela i-entity
+help-actor-entities-del = @actor/entities/<n>:         cima into
+help-actor-config-get =   @actor/config/<key>          thola inani le-config
+help-actor-config-set =   @actor/config/<key>: val     setha inani le-config
+help-actor-acl = @actor/acl                   Fumana i-4
+help-actor-acl-edit =   @actor/acl!edit              hlela i-ACL
+help-actor-fragment =   @actor#entity                thumela ku-plugin
+help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ku-plugin
+help-header-cid-ops = ── 3 umdlali iminxeba ─────────────────────── ─────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  fowunela iziko 15 ukusuka 24 kwaye ulindele impendulo yalo
+help-actor-head = (@actor/path)                landa umxholo we-CRUD okude kwi-31
+help-actor-tail = (<bafy...>)                  bandakanya kwaye uvavanye i-21 ukusuka kwi-36 41
+help-actor-wc = (define x (@actor:verb arg))  gcina iimpendulo ze-5 kwindawo yeseshoni
+help-actor-wc-l = .my.scheme.ma!edit           hlela abancedisi abagciniweyo be-11 kolu phawu
 
 help-topic-url =   .help/url                    ukuvula zion ngosixokelelwano lwe-URL
-help-topic-i18n =   .help/i18n                   language preference for your identity
+help-topic-i18n = .help/i18n                   ulwimi olukhethayo kwisazisi sakho
 help-header-url = ── izihlomelo ze-URL ────────────────────────────────────────────────────────────
 help-url-intro =   Yabelana ngosixokelelwano esivula zion onomakenke obhaliwe ngaphambili:
 help-url-msg =   ?msg=<did>                   gcwalisa ngaphambili: @<did>!msg (umyalezo olula)
 help-url-say =   ?say=<did>                   gcwalisa ngaphambili: @<did>!say (isenzo say)
 help-url-emote =   ?emote=<did>                 gcwalisa ngaphambili: @<did>!emote (isenzo emote)
-help-url-ma =   ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
-help-url-enter =   ?enter=<runtime>             enter runtime world after login
+help-url-ma = ?ma=<did-or-url>              gcwalisa kwangaphambili ixesha lokusebenza DID / 23 URL
+help-url-enter = ?enter=<runtime>             ngenisa ixesha lehlabathi emva kokungena
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ingeniso igcwaliswe ngaphambili kodwa ayithunywanga — cofa Enter ukuthumela.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -377,20 +377,23 @@ help-publish-intro = Ukupapasha kwenza ubuzwe bakho bube nokufunyanwa kwi-networ
 help-publish-ma = Ukupapasha, ufuna u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
 help-publish-steps = Amanyathelo: qhuba '.ma [port]' ukufumana u-ma wendawo, wulandelise '.my.identity!publish @ma'.
 help-publish-without = Ngaphandle kokupapasha, abanye abanakufikelela kuwe — nangona bazi i-DID yakho, abanakuyisombulula i-endpoint yakho.
-profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
-profile-update-done = profile updated — { $n } keys merged from CID
+profile-fetch-did-resolve-failed = DID ayipapashwa okwangoku — sebenzisa i-28 kuqala, emva koko 67 iprofayile yakho
+profile-update-done = iprofayile ihlaziywe — 18 amaqhosha adityanisiwe ukusuka 43
+profile-delete-needs-name = chaza igama leprofayile: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
-batch-collecting-started = Collecting batch — type commands, end with .batch
-batch-already-collecting = Already collecting a batch — end with .batch first
-batch-empty = Batch was empty — nothing to run
-batch-running = Running batch sequentially…
-batch-step-timeout = batch step timed out
+batch-collecting-started = Ukuqokelela ibhetshi — chwetheza imiyalelo, iphele ngo.batch
+batch-already-collecting = Sele uqokelele ibhetshi — gqiba nge.batch kuqala
+batch-empty = Ibhetshi yayingenanto - akukho nto inokubaleka
+batch-running = I-batch iyasebenza…
+batch-step-timeout = Inyathelo lebhetshi liphelelwe lixesha
 
-batch-done = batch-done
-batch-done-error = batch-done-error
-msg-timeout = msg-timeout
-help-cmd-batch-async = help-cmd-batch-async
+batch-done = I-batch iphelile ngo-{ $secs }s — { $steps } izinyathelo
+batch-done-error = I-batch iphelile ngamaphutha ngo-{ $secs }s — { $steps } izinyathelo
+msg-timeout = Umlayezo uphelelwe isikhathi (akukho mpendulo ku-60s)
+err-unknown-command = umyalelo ongaziwayo: { $path }
+err-read-only-path = { $path } yeyokufunda kuphela
+help-cmd-batch-async =   .batch:async / .batch        hlola idokhumenti ye-scratch ngokuhambisana
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
