@@ -133,6 +133,26 @@ Makefile
 
 ---
 
+## Focus shorthand routing contract
+
+In focus mode, zion expands plain terminal shorthand before parsing and queues
+an `ActorArgs` RPC. The target is part of the protocol contract:
+
+- Commands without a leading colon are avatar-mediated user commands. If
+  `.my.ctx.avatar` is set, send them to the avatar actor; otherwise fall back
+  to the focus target. Examples: `look`, `say hello`, `go north`, `dig east`.
+- Commands with a leading colon are direct methods on the focused room/target.
+  Never send these to the avatar just because `.my.ctx.avatar` exists. Examples:
+  `:prop name Garden`, `:prop description ...`, `:look`.
+- The leading colon is stripped only from the verb sent on the wire; it still
+  controls routing. Keep `dispatch::focus_command_target` and its tests in sync
+  with this rule.
+
+This boundary matters because avatar actors are command proxies, while
+colon-prefixed methods are metadata/control methods for the addressed actor.
+
+---
+
 ## Scheme evaluator — `src/scheme/`
 
 Any command line containing `(…)` is pre-processed before normal parsing.

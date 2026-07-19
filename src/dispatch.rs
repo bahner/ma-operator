@@ -542,7 +542,7 @@ fn dispatch_eval_line(
                     return None;
                 }
             };
-            let target = f.avatar_actor.as_deref().unwrap_or(&f.target);
+            let target = focus_command_target(f, line);
             if target.contains('#') {
                 match enqueue_focus_command(target, line, parsed.verb, parsed.args, state) {
                     Ok(cmd_id) => {
@@ -617,6 +617,14 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.starts_with('/')
         && !line.starts_with('(')
         && !line.trim().is_empty()
+}
+
+fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, line: &str) -> &'a str {
+    if line.trim_start().starts_with(':') {
+        &focus.target
+    } else {
+        focus.avatar_actor.as_deref().unwrap_or(&focus.target)
+    }
 }
 
 fn enqueue_focus_command(
@@ -704,7 +712,8 @@ fn parse_config_root(raw: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_focus_shorthand_command;
+    use super::{focus_command_target, parse_focus_shorthand_command};
+    use crate::state::FocusMode;
 
     #[test]
     fn focus_shorthand_normalizes_bare_and_colon_methods() {
@@ -730,5 +739,30 @@ mod tests {
         let dig = parse_focus_shorthand_command("dig north to garden").unwrap();
         assert_eq!(dig.verb, "dig");
         assert_eq!(dig.args, vec!["north", "to", "garden"]);
+    }
+
+    #[test]
+    fn focus_colon_methods_target_room_not_avatar() {
+        let focus = FocusMode {
+            runtime: "did:ma:runtime".to_string(),
+            room: Some("#room".to_string()),
+            target: "did:ma:runtime#room".to_string(),
+            root_actor: Some("did:ma:runtime#root".to_string()),
+            avatar_actor: Some("did:ma:runtime#avatar".to_string()),
+            prompt: "me@ma".to_string(),
+        };
+
+        assert_eq!(
+            focus_command_target(&focus, "look"),
+            "did:ma:runtime#avatar"
+        );
+        assert_eq!(
+            focus_command_target(&focus, ":prop name Garden"),
+            "did:ma:runtime#room"
+        );
+        assert_eq!(
+            focus_command_target(&focus, "  :prop description"),
+            "did:ma:runtime#room"
+        );
     }
 }
