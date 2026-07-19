@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             วิธีเข้าส�
 help-ma-entry-intro = เมื่ออัตลักษณ์ของคุณเป็นที่รู้จักแล้ว .enter @ma จะพาคุณเข้าสู่ 間 หา world สักแห่ง เข้าไปในนั้น แล้วมีส่วนร่วมจากตรงนั้น
 help-ma-entry-steps = เริ่ม IPFS Desktop และ ma จากนั้นรัน .ma เผยแพร่ด้วย .my.identity!publish @ma หา world แล้วเข้าสู่ด้วย .enter @ma
 help-ma-entry-command =   .enter @ma                  เข้าสู่ 間 ผ่าน @ma runtime
-help-ma-entry-leave =   .leave                       ออกจากห้อง; อัตลักษณ์ของคุณยังทำงานอยู่ และคุณยัง logged in
+help-ma-entry-toggle =   .enter                       เปิดหรือปิดโฟกัสห้อง; อัตลักษณ์ของคุณยังทำงานอยู่
 help-ma-entry-url =   ?enter=<runtime>             เข้าหลัง login จาก URL ที่แชร์
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             間 방에 들어가는 방�
 help-ma-entry-intro = 당신의 정체성이 알려지면 .enter @ma로 間에 들어갈 수 있습니다. world를 찾고 들어간 뒤, 그곳에서 참여하세요.
 help-ma-entry-steps = IPFS Desktop과 ma를 시작한 뒤 .ma를 실행하세요. .my.identity!publish @ma로 게시하고, world를 찾은 다음 .enter @ma로 들어갑니다.
 help-ma-entry-command =   .enter @ma                  @ma runtime을 통해 間에 들어가기
-help-ma-entry-leave =   .leave                       방을 떠납니다. 정체성은 계속 활성 상태이고 로그인도 유지됩니다
+help-ma-entry-toggle =   .enter                       방 포커스를 켜거나 끕니다. 정체성은 계속 활성 상태입니다
 help-ma-entry-url =   ?enter=<runtime>             공유 URL에서 로그인한 뒤 들어가기
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

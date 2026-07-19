@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             hvordan du går ind i 間-rum
 help-ma-entry-intro = Når din identitet er kendt, lader .enter @ma dig træde ind i 間. Find en verden, gå ind i den, og deltag derfra.
 help-ma-entry-steps = Start IPFS Desktop og ma, kør derefter .ma. Publicer med .my.identity!publish @ma, find en verden, og gå ind med .enter @ma.
 help-ma-entry-command =   .enter @ma                  træd ind i 間 gennem @ma-runtime
-help-ma-entry-leave =   .leave                       gå ud af rummet; din identitet forbliver aktiv, og du er stadig logget ind
+help-ma-entry-toggle =   .enter                       slå rumfokus til eller fra; din identitet forbliver aktiv
 help-ma-entry-url =   ?enter=<runtime>             gå ind efter login fra en delt URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

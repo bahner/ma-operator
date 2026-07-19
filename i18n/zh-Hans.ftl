@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             如何进入 間 房间
 help-ma-entry-intro = 当你的身份已被知晓时，.enter @ma 会让你进入 間。找到一个 world，进入它，并从那里参与。
 help-ma-entry-steps = 启动 IPFS Desktop 和 ma，然后运行 .ma。用 .my.identity!publish @ma 发布，找到一个 world，再用 .enter @ma 进入。
 help-ma-entry-command =   .enter @ma                  通过 @ma runtime 进入 間
-help-ma-entry-leave =   .leave                       离开房间；你的身份保持活跃，并且仍保持登录
+help-ma-entry-toggle =   .enter                       开启或关闭房间焦点；你的身份保持活跃
 help-ma-entry-url =   ?enter=<runtime>             从共享 URL 登录后进入
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

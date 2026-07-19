@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             cum intri în camera 間
 help-ma-entry-intro = Când identitatea ta este cunoscută, .enter @ma te lasă să intri în 間. Găsește o lume, intră în ea și participă de acolo.
 help-ma-entry-steps = Pornește IPFS Desktop și ma, apoi rulează .ma. Publică cu .my.identity!publish @ma, găsește o lume și intră cu .enter @ma.
 help-ma-entry-command =   .enter @ma                  intră în 間 prin runtime-ul @ma
-help-ma-entry-leave =   .leave                       părăsește camera; identitatea ta rămâne activă și rămâi autentificat
+help-ma-entry-toggle =   .enter                       activează sau dezactivează focalizarea camerei; identitatea ta rămâne activă
 help-ma-entry-url =   ?enter=<runtime>             intră după autentificare dintr-un URL partajat
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

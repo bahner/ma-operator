@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             jinsi ya kuingia chumba cha �
 help-ma-entry-intro = Utambulisho wako ukijulikana, .enter @ma hukuruhusu kuingia 間. Tafuta ulimwengu, ingia ndani yake, na shiriki ukiwa hapo.
 help-ma-entry-steps = Anzisha IPFS Desktop na ma, kisha endesha .ma. Chapisha kwa .my.identity!publish @ma, tafuta ulimwengu, na ingia kwa .enter @ma.
 help-ma-entry-command =   .enter @ma                  ingia 間 kupitia @ma runtime
-help-ma-entry-leave =   .leave                       ondoka kwenye chumba; utambulisho wako unabaki hai na unabaki umeingia
+help-ma-entry-toggle =   .enter                       washa au zima fokasi ya chumba; utambulisho wako unabaki hai
 help-ma-entry-url =   ?enter=<runtime>             ingia baada ya login kutoka URL iliyoshirikiwa
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

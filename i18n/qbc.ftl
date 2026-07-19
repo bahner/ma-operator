@@ -253,7 +253,7 @@ help-ma-entry-topic =   .help/ma/entry             how to enter da 間 room
 help-ma-entry-intro = When your identity im known, .enter @ma let you step into 間. Find a world, go in, and join from there.
 help-ma-entry-steps = Inicie 6 Desktop e 23, depois execute .QXQ2XQX. Publicar com .my.identity!publish @QXQ3XQX, encontre um mundo e entre com .enter @QXQ4XQX.
 help-ma-entry-command =   .enter @ma                  enter 間 through da @ma runtime
-help-ma-entry-leave =   .leave                       leave da room; your identity stays active, and you remain logged in
+help-ma-entry-toggle =   .enter                       toggle da room focus on or off; yer identity stays active
 help-ma-entry-url =   ?enter=<runtime>             enter after login from shared URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

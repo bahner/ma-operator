@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             ወደ 間 ክፍል እን�
 help-ma-entry-intro = ማንነትህ ከታወቀ በኋላ፣ .enter @ma ወደ 間 እንድትገባ ያስችልሃል። ዓለም ፈልግ፣ ወደዚያ ግባ፣ እና ከዚያ ተሳተፍ።
 help-ma-entry-steps = IPFS Desktop እና ma ጀምር፣ ከዚያ .ma አስኪድ። በ .my.identity!publish @ma አትም፣ ዓለም ፈልግ፣ እና በ .enter @ma ግባ።
 help-ma-entry-command =   .enter @ma                  በ @ma runtime በኩል ወደ 間 ግባ
-help-ma-entry-leave =   .leave                       ከክፍሉ ውጣ፤ ማንነትህ ንቁ ይቆያል፣ እና ገብተህ ትቆያለህ
+help-ma-entry-toggle =   .enter                       የክፍል ትኩረትን አብራ ወይም አጥፋ፤ ማንነትህ ንቁ ይቆያል
 help-ma-entry-url =   ?enter=<runtime>             ከተጋራ URL ከገባህ በኋላ ግባ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

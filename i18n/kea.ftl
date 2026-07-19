@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             modi di entra na sala 間
 help-ma-entry-intro = Ora ki bu identidadi é konxidu, .enter @ma ta dexabu entra na 間. Atxa un mundu, entra nel, y partisipa di li.
 help-ma-entry-steps = Inisia IPFS Desktop y ma, dipos roda .ma. Publika ku .my.identity!publish @ma, atxa un mundu, y entra ku .enter @ma.
 help-ma-entry-command =   .enter @ma                  entra na 間 através di @ma runtime
-help-ma-entry-leave =   .leave                       sai di sala; bu identidadi ta fika ativu, y bu ta kontinua logadu
+help-ma-entry-toggle =   .enter                       liga ô disliga fokusu di sala; bu identidadi ta fika ativu
 help-ma-entry-url =   ?enter=<runtime>             entra dipos di login di un URL partilhadu
 
 msg-send-failed = falhadu pa manda: { $e }

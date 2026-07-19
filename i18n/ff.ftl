@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             hol no naatirta e suudu 間
 help-ma-entry-intro = So identite maa anndaama, .enter @ma maa yamira naatde e 間. Yiylo aduna, naatu ɗo, tee seŋo ɗoon.
 help-ma-entry-steps = Hurmin IPFS Desktop e ma, caggal mum dogin .ma. Jaɓɓin e .my.identity!publish @ma, yiylo aduna, tee naat e .enter @ma.
 help-ma-entry-command =   .enter @ma                  naat e 間 rewde @ma runtime
-help-ma-entry-leave =   .leave                       yal e suudu; identite maa heddii hurminnde, tee a heddii e login
+help-ma-entry-toggle =   .enter                       hurmin walla ñifin hakkille suudu; identite maa heddii hurminnde
 help-ma-entry-url =   ?enter=<runtime>             naat caggal login iwde e URL lollinaango
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

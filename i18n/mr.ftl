@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             間 खोलीत कसे
 help-ma-entry-intro = तुझी ओळख ज्ञात झाल्यावर .enter @ma तुला 間 मध्ये पाऊल ठेवू देते. एखादे जग शोध, त्यात प्रवेश कर, आणि तिथून सहभागी हो.
 help-ma-entry-steps = IPFS Desktop आणि ma सुरू कर, मग .ma चालव. .my.identity!publish @ma ने प्रकाशित कर, एखादे जग शोध, आणि .enter @ma ने प्रवेश कर.
 help-ma-entry-command =   .enter @ma                  @ma runtime मार्गे 間 मध्ये प्रवेश कर
-help-ma-entry-leave =   .leave                       खोलीतून बाहेर पड; तुझी ओळख सक्रिय राहते आणि तू logged in राहतोस
+help-ma-entry-toggle =   .enter                       खोलीचा फोकस चालू किंवा बंद कर; तुझी ओळख सक्रिय राहते
 help-ma-entry-url =   ?enter=<runtime>             सामायिक URL वरून login केल्यानंतर प्रवेश कर
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

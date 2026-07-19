@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             πώς να μπεις στο
 help-ma-entry-intro = Όταν η ταυτότητά σου είναι γνωστή, το .enter @ma σε αφήνει να μπεις στο 間. Βρες έναν κόσμο, μπες σε αυτόν και συμμετείχε από εκεί.
 help-ma-entry-steps = Ξεκίνα το IPFS Desktop και το ma, έπειτα τρέξε .ma. Δημοσίευσε με .my.identity!publish @ma, βρες έναν κόσμο και μπες με .enter @ma.
 help-ma-entry-command =   .enter @ma                  μπες στο 間 μέσω του @ma runtime
-help-ma-entry-leave =   .leave                       φύγε από το δωμάτιο· η ταυτότητά σου μένει ενεργή και παραμένεις συνδεδεμένος
+help-ma-entry-toggle =   .enter                       ενεργοποίησε ή απενεργοποίησε την εστίαση στο δωμάτιο· η ταυτότητά σου μένει ενεργή
 help-ma-entry-url =   ?enter=<runtime>             μπες μετά τη σύνδεση από κοινόχρηστο URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

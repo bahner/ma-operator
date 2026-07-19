@@ -229,8 +229,8 @@ Once your identity is published, you can enter the room through your runtime:
 .enter @ma
 ```
 
-`.leave` steps back out of that room without logging you out or changing your
-identity.
+Running `.enter` again toggles room focus off without logging you out or
+changing your identity. Run `.enter` once more to return to the saved context.
 
 ---
 
@@ -243,7 +243,7 @@ ego is early-stage but usable. These things work today:
 - Full inbox with reply, open, and delete
 - Local documents with a code editor
 - Peer-to-peer transport via [iroh QUIC](https://github.com/n0-computer/iroh)
-- Focus mode for runtime worlds via `.enter @runtime` / `.leave`
+- Focus mode for runtime worlds via `.enter @runtime` / `.enter`
 - Everything persists across browser restarts
 
 Coming soon: alias colour rendering in the input field and a publish workflow

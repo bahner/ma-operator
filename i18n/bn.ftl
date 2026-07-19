@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             কীভাবে 間 ঘর
 help-ma-entry-intro = তোমার পরিচয় পরিচিত হলে .enter @ma তোমাকে 間-এ প্রবেশ করতে দেয়। একটি world খুঁজে নাও, তাতে ঢুকো, আর সেখান থেকে অংশ নাও।
 help-ma-entry-steps = IPFS Desktop ও ma চালু করো, তারপর .ma চালাও। .my.identity!publish @ma দিয়ে প্রকাশ করো, একটি world খুঁজে নাও, এবং .enter @ma দিয়ে প্রবেশ করো।
 help-ma-entry-command =   .enter @ma                  @ma runtime দিয়ে 間-এ প্রবেশ করো
-help-ma-entry-leave =   .leave                       ঘর ছাড়ো; তোমার পরিচয় সক্রিয় থাকে, এবং তুমি লগইন অবস্থায় থাকো
+help-ma-entry-toggle =   .enter                       ঘরের ফোকাস চালু বা বন্ধ করো; তোমার পরিচয় সক্রিয় থাকে
 help-ma-entry-url =   ?enter=<runtime>             শেয়ার করা URL থেকে লগইনের পর প্রবেশ করো
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

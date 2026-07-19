@@ -306,7 +306,7 @@ help-ma-entry-topic =   .help/ma/entry             how to enter di 間 room
 help-ma-entry-intro = When your identity don known, .enter @ma go let you step into 間. Find world, enter am, and join from there.
 help-ma-entry-steps = Start IPFS Desktop and ma, then run .ma. Publish with .my.identity!publish @ma, find world, and enter with .enter @ma.
 help-ma-entry-command =   .enter @ma                  enter 間 through di @ma runtime
-help-ma-entry-leave =   .leave                       leave di room; your identity stay active, and you remain logged in
+help-ma-entry-toggle =   .enter                       turn room focus on or off; your identity dey active
 help-ma-entry-url =   ?enter=<runtime>             enter after login from shared URL
 
 msg-send-failed = send no work: { $e }

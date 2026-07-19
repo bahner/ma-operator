@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             hvussu tú fert inn í 間-r�
 help-ma-entry-intro = Tá tín samleiki er kendur, letur .enter @ma teg stíga inn í 間. Finn tær ein heim, far inn í hann, og luttak haðani.
 help-ma-entry-steps = Starta IPFS Desktop og ma, koyr síðan .ma. Almannakunnger við .my.identity!publish @ma, finn ein heim, og far inn við .enter @ma.
 help-ma-entry-command =   .enter @ma                  far inn í 間 gjøgnum @ma-runtime
-help-ma-entry-leave =   .leave                       far úr rúminum; tín samleiki er framvegis virkin, og tú ert enn innritaður
+help-ma-entry-toggle =   .enter                       tendra ella sløkk rúmfokus; tín samleiki er framvegis virkin
 help-ma-entry-url =   ?enter=<runtime>             far inn eftir innritan frá einum deildum URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

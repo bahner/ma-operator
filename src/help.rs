@@ -76,7 +76,7 @@ fn ma_entry() -> Vec<String> {
         t("help-ma-entry-intro"),
         t("help-ma-entry-steps"),
         t("help-ma-entry-command"),
-        t("help-ma-entry-leave"),
+        t("help-ma-entry-toggle"),
         t("help-ma-entry-url"),
         t("help-footer"),
     ]

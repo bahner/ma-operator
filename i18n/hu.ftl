@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             hogyan lépj be a 間 szobáb
 help-ma-entry-intro = Ha az identitásod ismert, a .enter @ma beenged a 間 térbe. Keress egy világot, lépj be, és onnan vegyél részt.
 help-ma-entry-steps = Indítsd el az IPFS Desktopot és a ma-t, majd futtasd a .ma parancsot. Publikálj a .my.identity!publish @ma paranccsal, keress egy világot, és lépj be a .enter @ma paranccsal.
 help-ma-entry-command =   .enter @ma                  belépés a 間 térbe az @ma runtime-on keresztül
-help-ma-entry-leave =   .leave                       kilépés a szobából; az identitásod aktív marad, és bejelentkezve maradsz
+help-ma-entry-toggle =   .enter                       a szobafókusz be- vagy kikapcsolása; az identitásod aktív marad
 help-ma-entry-url =   ?enter=<runtime>             belépés megosztott URL-ből való bejelentkezés után
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

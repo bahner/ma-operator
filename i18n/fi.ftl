@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             miten 間-huoneeseen mennää
 help-ma-entry-intro = Kun identiteettisi tunnetaan, .enter @ma päästää sinut astumaan 間-tilaan. Etsi maailma, mene siihen ja osallistu sieltä.
 help-ma-entry-steps = Käynnistä IPFS Desktop ja ma, aja sitten .ma. Julkaise komennolla .my.identity!publish @ma, etsi maailma ja mene sisään komennolla .enter @ma.
 help-ma-entry-command =   .enter @ma                  astu 間-tilaan @ma-runtimen kautta
-help-ma-entry-leave =   .leave                       poistu huoneesta; identiteettisi pysyy aktiivisena ja pysyt kirjautuneena
+help-ma-entry-toggle =   .enter                       kytke huonefokus päälle tai pois; identiteettisi pysyy aktiivisena
 help-ma-entry-url =   ?enter=<runtime>             mene sisään kirjautumisen jälkeen jaetusta URL:sta
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

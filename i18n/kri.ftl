@@ -262,7 +262,7 @@ help-ma-entry-topic =   .help/ma/entry             aw fo ɛnta di 間 rum
 help-ma-entry-intro = Wɛn pipul sabi yu identity, .enter @ma go mek yu step insay 間. Fɛn wan wɔld, ɛnta am, ɛn jɔin frɔm de.
 help-ma-entry-steps = Stat IPFS Desktop ɛn ma, den rɔn .ma. Publish wit .my.identity!publish @ma, fɛn wan wɔld, ɛn ɛnta wit .enter @ma.
 help-ma-entry-command =   .enter @ma                  ɛnta 間 tru di @ma runtime
-help-ma-entry-leave =   .leave                       lef di rum; yu identity stil active, ɛn yu stil logged in
+help-ma-entry-toggle =   .enter                       tɔn di rum focus ɔn ɔf ɔf; yu identity stil active
 help-ma-entry-url =   ?enter=<runtime>             ɛnta afta login frɔm shared URL
 
 msg-send-failed = sen no go: { $e }

@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             otu esi abanye n’ụlọ �
 help-ma-entry-intro = Mgbe a maara njirimara gị, .enter @ma na-ahapụ gị ịbanye na 間. Chọta ụwa, banye na ya, sonye site n’ebe ahụ.
 help-ma-entry-steps = Malite IPFS Desktop na ma, mgbe ahụ gbaa .ma. Bipụta site na .my.identity!publish @ma, chọta ụwa, banye na .enter @ma.
 help-ma-entry-command =   .enter @ma                  banye na 間 site na @ma runtime
-help-ma-entry-leave =   .leave                       hapụ ụlọ ahụ; njirimara gị ka na-arụ ọrụ, ị ka nọkwa logged in
+help-ma-entry-toggle =   .enter                       gbanye ma ọ bụ gbanyụọ nlebara anya ụlọ; njirimara gị ka na-arụ ọrụ
 help-ma-entry-url =   ?enter=<runtime>             banye mgbe ị banyere site na URL ekekọrịtara
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

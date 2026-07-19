@@ -271,7 +271,7 @@ help-ma-entry-topic =   .help/ma/entry             як увійти до кім
 help-ma-entry-intro = Коли твою ідентичність уже знають, .enter @ma дозволяє увійти в 間. Знайди світ, увійди в нього й бери участь звідти.
 help-ma-entry-steps = Запусти IPFS Desktop і ma, потім виконай .ma. Опублікуй через .my.identity!publish @ma, знайди світ і увійди через .enter @ma.
 help-ma-entry-command =   .enter @ma                  увійти в 間 через runtime @ma
-help-ma-entry-leave =   .leave                       вийти з кімнати; твоя ідентичність лишається активною, і ти лишаєшся в системі
+help-ma-entry-toggle =   .enter                       увімкнути або вимкнути фокус кімнати; твоя ідентичність лишається активною
 help-ma-entry-url =   ?enter=<runtime>             увійти після входу зі спільного URL
 
 # ── Довідка — параметри URL ───────────────────────────────────────────────

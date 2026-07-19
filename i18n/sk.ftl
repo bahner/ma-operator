@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             ako vstúpiť do miestnosti �
 help-ma-entry-intro = Keď je tvoja identita známa, .enter @ma ti umožní vstúpiť do 間. Nájdi svet, vstúp doň a zapoj sa odtiaľ.
 help-ma-entry-steps = Spusti IPFS Desktop a ma, potom spusti .ma. Publikuj pomocou .my.identity!publish @ma, nájdi svet a vstúp pomocou .enter @ma.
 help-ma-entry-command =   .enter @ma                  vstúpiť do 間 cez runtime @ma
-help-ma-entry-leave =   .leave                       opusti miestnosť; tvoja identita ostáva aktívna a ostávaš prihlásený
+help-ma-entry-toggle =   .enter                       zapni alebo vypni fokus miestnosti; tvoja identita ostáva aktívna
 help-ma-entry-url =   ?enter=<runtime>             vstúpiť po prihlásení zo zdieľanej URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             bí a ṣe ń wọ yàrá 間
 help-ma-entry-intro = Nígbà tí ìdánimọ̀ rẹ bá ti mọ̀, .enter @ma yóò jẹ́ kí o wọ 間. Wa ayé kan, wọ inú rẹ, kí o sì kópa láti ibẹ̀.
 help-ma-entry-steps = Bẹrẹ IPFS Desktop àti ma, lẹ́yìn náà ṣiṣẹ́ .ma. Tẹ jáde pẹ̀lú .my.identity!publish @ma, wa ayé kan, kí o wọ pẹ̀lú .enter @ma.
 help-ma-entry-command =   .enter @ma                  wọ 間 nípasẹ̀ @ma runtime
-help-ma-entry-leave =   .leave                       jáde kúrò nínú yàrá; ìdánimọ̀ rẹ ń ṣiṣẹ́ síbẹ̀, o sì ṣì wà logged in
+help-ma-entry-toggle =   .enter                       tan tàbí pa ìfojúsí yàrá; ìdánimọ̀ rẹ ń ṣiṣẹ́ síbẹ̀
 help-ma-entry-url =   ?enter=<runtime>             wọlé lẹ́yìn login láti URL tí a pín
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

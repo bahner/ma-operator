@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             hvernig á að ganga inn í �
 help-ma-entry-intro = Þegar auðkennið þitt er þekkt leyfir .enter @ma þér að stíga inn í 間. Finndu þér heim, farðu inn í hann og taktu þátt þaðan.
 help-ma-entry-steps = Ræstu IPFS Desktop og ma, keyrðu síðan .ma. Birtu með .my.identity!publish @ma, finndu heim og farðu inn með .enter @ma.
 help-ma-entry-command =   .enter @ma                  ganga inn í 間 í gegnum @ma-runtime
-help-ma-entry-leave =   .leave                       farðu úr herberginu; auðkennið þitt er áfram virkt og þú ert áfram innskráð/ur
+help-ma-entry-toggle =   .enter                       kveiktu eða slökktu á herbergisfókus; auðkennið þitt er áfram virkt
 help-ma-entry-url =   ?enter=<runtime>             ganga inn eftir innskráningu frá deildri URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

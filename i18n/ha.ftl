@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             yadda ake shiga ɗakin 間
 help-ma-entry-intro = Idan an san shaidarka, .enter @ma zai baka damar shiga 間. Nemo duniya, shiga cikinta, ka kuma shiga daga can.
 help-ma-entry-steps = Fara IPFS Desktop da ma, sannan ka gudanar da .ma. Wallafa da .my.identity!publish @ma, nemo duniya, ka shiga da .enter @ma.
 help-ma-entry-command =   .enter @ma                  shiga 間 ta @ma runtime
-help-ma-entry-leave =   .leave                       fita daga ɗakin; shaidarka tana nan a kunne, kuma kana nan a shiga
+help-ma-entry-toggle =   .enter                       kunna ko kashe mayar da hankali ga ɗaki; shaidarka tana nan a kunne
 help-ma-entry-url =   ?enter=<runtime>             shiga bayan login daga URL da aka raba
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

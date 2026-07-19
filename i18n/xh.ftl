@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             indlela yokungena kwigumbi le
 help-ma-entry-intro = Xa isazisi sakho sisaziwa, .enter @ma ikuvumela ungene ku-間. Fumana ihlabathi, ungene kulo, uze uthathe inxaxheba apho.
 help-ma-entry-steps = Qalisa IPFS Desktop kunye ne ma, emva koko sebenzisa .ma. Papasha ngo .my.identity!publish @ma, fumana ihlabathi, ungene ngo .enter @ma.
 help-ma-entry-command =   .enter @ma                  ngena ku-間 nge @ma runtime
-help-ma-entry-leave =   .leave                       phuma egumbini; isazisi sakho sihlala sisebenza, kwaye uhlala logged in
+help-ma-entry-toggle =   .enter                       vula okanye ucime ugxininiso lwegumbi; isazisi sakho sihlala sisebenza
 help-ma-entry-url =   ?enter=<runtime>             ngena emva kwe-login kwi-URL ekwabelwana ngayo
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

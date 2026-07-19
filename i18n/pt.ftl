@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             como entrar na sala 間
 help-ma-entry-intro = Quando a tua identidade é conhecida, .enter @ma deixa-te entrar em 間. Encontra um mundo, entra nele e participa a partir daí.
 help-ma-entry-steps = Inicia o IPFS Desktop e o ma, depois executa .ma. Publica com .my.identity!publish @ma, encontra um mundo e entra com .enter @ma.
 help-ma-entry-command =   .enter @ma                  entrar em 間 através do runtime @ma
-help-ma-entry-leave =   .leave                       sair da sala; a tua identidade continua ativa e continuas autenticado
+help-ma-entry-toggle =   .enter                       ativar ou desativar o foco da sala; a tua identidade continua ativa
 help-ma-entry-url =   ?enter=<runtime>             entrar depois do login a partir de uma URL partilhada
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             kā ieiet 間 telpā
 help-ma-entry-intro = Kad tava identitāte ir zināma, .enter @ma ļauj tev ieiet 間. Atrodi pasauli, ieej tajā un piedalies no turienes.
 help-ma-entry-steps = Palaid IPFS Desktop un ma, pēc tam izpildi .ma. Publicē ar .my.identity!publish @ma, atrodi pasauli un ieej ar .enter @ma.
 help-ma-entry-command =   .enter @ma                  ieiet 間 caur @ma runtime
-help-ma-entry-leave =   .leave                       atstāj telpu; tava identitāte paliek aktīva un tu paliec pieteicies
+help-ma-entry-toggle =   .enter                       ieslēdz vai izslēdz telpas fokusu; tava identitāte paliek aktīva
 help-ma-entry-url =   ?enter=<runtime>             ieiet pēc pieteikšanās no koplietota URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

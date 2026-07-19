@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             kako ući u sobu 間
 help-ma-entry-intro = Kad je tvoj identitet poznat, .enter @ma omogućuje ti ulazak u 間. Pronađi svijet, uđi u njega i sudjeluj odande.
 help-ma-entry-steps = Pokreni IPFS Desktop i ma, zatim pokreni .ma. Objavi s .my.identity!publish @ma, pronađi svijet i uđi s .enter @ma.
 help-ma-entry-command =   .enter @ma                  uđi u 間 kroz @ma runtime
-help-ma-entry-leave =   .leave                       izađi iz sobe; tvoj identitet ostaje aktivan i ostaješ prijavljen
+help-ma-entry-toggle =   .enter                       uključi ili isključi fokus sobe; tvoj identitet ostaje aktivan
 help-ma-entry-url =   ?enter=<runtime>             uđi nakon prijave iz dijeljenog URL-a
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

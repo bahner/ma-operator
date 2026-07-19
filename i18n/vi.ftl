@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             cách vào phòng 間
 help-ma-entry-intro = Khi danh tính của bạn đã được biết đến, .enter @ma cho phép bạn bước vào 間. Hãy tìm một thế giới, vào đó và tham gia từ đó.
 help-ma-entry-steps = Khởi động IPFS Desktop và ma, rồi chạy .ma. Công bố bằng .my.identity!publish @ma, tìm một thế giới và vào bằng .enter @ma.
 help-ma-entry-command =   .enter @ma                  vào 間 qua runtime @ma
-help-ma-entry-leave =   .leave                       rời phòng; danh tính của bạn vẫn hoạt động và bạn vẫn đăng nhập
+help-ma-entry-toggle =   .enter                       bật hoặc tắt tiêu điểm phòng; danh tính của bạn vẫn hoạt động
 help-ma-entry-url =   ?enter=<runtime>             vào sau khi đăng nhập từ URL được chia sẻ
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

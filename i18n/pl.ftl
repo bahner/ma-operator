@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             jak wejść do pokoju 間
 help-ma-entry-intro = Gdy twoja tożsamość jest znana, .enter @ma pozwala wejść do 間. Znajdź świat, wejdź do niego i uczestnicz stamtąd.
 help-ma-entry-steps = Uruchom IPFS Desktop i ma, potem wykonaj .ma. Opublikuj przez .my.identity!publish @ma, znajdź świat i wejdź przez .enter @ma.
 help-ma-entry-command =   .enter @ma                  wejść do 間 przez runtime @ma
-help-ma-entry-leave =   .leave                       opuść pokój; twoja tożsamość pozostaje aktywna i nadal jesteś zalogowany
+help-ma-entry-toggle =   .enter                       włącz lub wyłącz fokus pokoju; twoja tożsamość pozostaje aktywna
 help-ma-entry-url =   ?enter=<runtime>             wejść po logowaniu ze współdzielonego URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

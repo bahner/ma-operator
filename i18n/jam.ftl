@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             how fi enter di 間 room
 help-ma-entry-intro = When yuh identity known, .enter @ma mek yuh step into 間. Find a world, go inna it, an join in from deh.
 help-ma-entry-steps = Start IPFS Desktop an ma, den run .ma. Publish wid .my.identity!publish @ma, find a world, an enter wid .enter @ma.
 help-ma-entry-command =   .enter @ma                  enter 間 through di @ma runtime
-help-ma-entry-leave =   .leave                       leave di room; yuh identity stay active, an yuh still logged in
+help-ma-entry-toggle =   .enter                       ton di room focus on or off; yuh identity stay active
 help-ma-entry-url = ?enter=<runtime>             antre apre ou fin konekte nan yon URL pataje
 
 msg-send-failed = send nuh work: { $e }

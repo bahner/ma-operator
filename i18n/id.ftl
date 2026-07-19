@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             cara masuk ke ruang 間
 help-ma-entry-intro = Setelah identitasmu dikenal, .enter @ma membiarkanmu masuk ke 間. Temukan sebuah dunia, masuklah ke dalamnya, dan ikutlah dari sana.
 help-ma-entry-steps = Jalankan IPFS Desktop dan ma, lalu jalankan .ma. Publikasikan dengan .my.identity!publish @ma, temukan dunia, dan masuk dengan .enter @ma.
 help-ma-entry-command =   .enter @ma                  masuk ke 間 melalui runtime @ma
-help-ma-entry-leave =   .leave                       keluar dari ruang; identitasmu tetap aktif dan kamu tetap masuk
+help-ma-entry-toggle =   .enter                       aktifkan atau nonaktifkan fokus ruang; identitasmu tetap aktif
 help-ma-entry-url =   ?enter=<runtime>             masuk setelah login dari URL bersama
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

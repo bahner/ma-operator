@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             kaip įeiti į 間 kambarį
 help-ma-entry-intro = Kai tavo tapatybė žinoma, .enter @ma leidžia įžengti į 間. Susirask pasaulį, įeik į jį ir dalyvauk iš ten.
 help-ma-entry-steps = Paleisk IPFS Desktop ir ma, tada vykdyk .ma. Paskelbk su .my.identity!publish @ma, susirask pasaulį ir įeik su .enter @ma.
 help-ma-entry-command =   .enter @ma                  įeiti į 間 per @ma runtime
-help-ma-entry-leave =   .leave                       palikti kambarį; tavo tapatybė lieka aktyvi, o tu lieki prisijungęs
+help-ma-entry-toggle =   .enter                       įjunk arba išjunk kambario fokusą; tavo tapatybė lieka aktyvi
 help-ma-entry-url =   ?enter=<runtime>             įeiti po prisijungimo iš bendrinamo URL
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

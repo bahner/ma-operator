@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             كيفية الدخول إل�
 help-ma-entry-intro = بعد أن تصبح هويتك معروفة، يتيح لك .enter @ma أن تدخل إلى 間. ابحث عن عالم، وادخل إليه، وشارك من هناك.
 help-ma-entry-steps = شغّل IPFS Desktop و ma، ثم نفّذ .ma. انشر باستخدام .my.identity!publish @ma، وابحث عن عالم، وادخل باستخدام .enter @ma.
 help-ma-entry-command =   .enter @ma                  ادخل إلى 間 عبر وقت تشغيل @ma
-help-ma-entry-leave =   .leave                       غادر الغرفة؛ تبقى هويتك نشطة وتبقى مسجّل الدخول
+help-ma-entry-toggle =   .enter                       بدّل تركيز الغرفة تشغيلًا أو إيقافًا؛ تبقى هويتك نشطة
 help-ma-entry-url =   ?enter=<runtime>             ادخل بعد تسجيل الدخول من URL مشترك
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

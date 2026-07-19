@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             fomba hidirana ao amin’ny e
 help-ma-entry-intro = Rehefa fantatra ny maha-izy anao, .enter @ma dia mamela anao hiditra ao amin’ny 間. Mitadiava tontolo, midira ao, ary mandraisa anjara avy eo.
 help-ma-entry-steps = Alefaso IPFS Desktop sy ma, avy eo alefaso .ma. Avoahy amin’ny .my.identity!publish @ma, mitadiava tontolo, ary midira amin’ny .enter @ma.
 help-ma-entry-command =   .enter @ma                  midira ao amin’ny 間 amin’ny alalan’ny @ma runtime
-help-ma-entry-leave =   .leave                       miala amin’ny efitra; mbola mavitrika ny maha-izy anao ary mbola tafiditra ianao
+help-ma-entry-toggle =   .enter                       alefaso na vonoy ny fifantohana amin’ny efitra; mbola mavitrika ny maha-izy anao
 help-ma-entry-url =   ?enter=<runtime>             midira aorian’ny login avy amin’ny URL nozaraina
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

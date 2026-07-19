@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             間 గదిలోకి ఎ
 help-ma-entry-intro = నీ గుర్తింపు తెలిసిన తర్వాత, .enter @ma నిన్ను 間 లోకి అడుగుపెట్టనిస్తుంది. ఒక world కనుగొని దానిలోకి ప్రవేశించి, అక్కడి నుంచి పాల్గొను.
 help-ma-entry-steps = IPFS Desktop మరియు ma ప్రారంభించు, ఆపై .ma నడుపు. .my.identity!publish @ma తో ప్రచురించు, ఒక world కనుగొను, .enter @ma తో ప్రవేశించు.
 help-ma-entry-command =   .enter @ma                  @ma runtime ద్వారా 間 లోకి ప్రవేశించు
-help-ma-entry-leave =   .leave                       గది నుండి బయటకు వెళ్ళు; నీ గుర్తింపు సక్రియంగానే ఉంటుంది, నీవు logged in గా ఉంటావు
+help-ma-entry-toggle =   .enter                       గది ఫోకస్‌ను ఆన్ లేదా ఆఫ్ చేయి; నీ గుర్తింపు సక్రియంగానే ఉంటుంది
 help-ma-entry-url =   ?enter=<runtime>             పంచుకున్న URL నుండి login తరువాత ప్రవేశించు
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

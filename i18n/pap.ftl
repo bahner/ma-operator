@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             kon pa drenta den e kamber �
 help-ma-entry-intro = Ora bo identidad ta konosí, .enter @ma ta laga bo drenta den 間. Haña un mundu, drenta aden, i partisipá for di ei.
 help-ma-entry-steps = Start IPFS Desktop i ma, despues kore .ma. Publiká ku .my.identity!publish @ma, haña un mundu, i drenta ku .enter @ma.
 help-ma-entry-command =   .enter @ma                  drenta den 間 via e @ma runtime
-help-ma-entry-leave =   .leave                       sali for di kamber; bo identidad ta keda aktivo, i bo ta keda logged in
+help-ma-entry-toggle =   .enter                       sende òf paga fokùs di kamber; bo identidad ta keda aktivo
 help-ma-entry-url =   ?enter=<runtime>             drenta despues di login for di un URL kompartí
 
 msg-send-failed = mandamentu a faya: { $e }

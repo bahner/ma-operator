@@ -1,7 +1,7 @@
 /// Command parser for ego terminal input.
 ///
 /// Grammar:
-///   .cmd                 → DotCommand      (control command: .ma, .enter, .leave, .help, …)
+///   .cmd                 → DotCommand      (control command: .ma, .enter, .help, …)
 ///   .cmd!verb [args]     → DotCommand::Meta
 ///   .my.path             → LocalCrud::Get  (local profile config)
 ///   .ma.ctx.path         → LocalCrud::Get  (local ma runtime context)
@@ -50,7 +50,7 @@ pub enum RemoteCrudOp {
 #[derive(Debug, Clone, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum Command {
-    /// A closed-set hidden control command (`.ma`, `.enter`, `.leave`, `.help`, …).
+    /// A closed-set hidden control command (`.ma`, `.enter`, `.help`, …).
     /// Never a data path — those live under `LocalCrud`.
     DotCommand {
         path: String,

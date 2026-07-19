@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             olsem wanem long go insait lo
 help-ma-entry-intro = Taim identity bilong yu i known, .enter @ma i larim yu step insait long 間. Painim wanpela world, go insait, na join long hap.
 help-ma-entry-steps = Startim IPFS Desktop na ma, bihain runim .ma. Publish long .my.identity!publish @ma, painim world, na enter long .enter @ma.
 help-ma-entry-command =   .enter @ma                  enter 間 long @ma runtime
-help-ma-entry-leave =   .leave                       lusim rum; identity bilong yu i stap active, na yu stap logged in
+help-ma-entry-toggle =   .enter                       tanim rum focus i go on o off; identity bilong yu i stap active
 help-ma-entry-url =   ?enter=<runtime>             enter bihain login long shared URL
 
 msg-send-failed = salim i no wok: { $e }

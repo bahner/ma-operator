@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             kiel eniri la 間-ĉambron
 help-ma-entry-intro = Kiam via identeco estas konata, .enter @ma lasas vin enpaŝi en 間. Trovu mondon, eniru ĝin, kaj partoprenu de tie.
 help-ma-entry-steps = Startigu IPFS Desktop kaj ma, poste rulu .ma. Publikigu per .my.identity!publish @ma, trovu mondon, kaj eniru per .enter @ma.
 help-ma-entry-command =   .enter @ma                  eniri 間 tra la @ma-runtime
-help-ma-entry-leave =   .leave                       forlasi la ĉambron; via identeco restas aktiva kaj vi restas ensalutinta
+help-ma-entry-toggle =   .enter                       ŝaltu aŭ malŝaltu ĉambran fokuson; via identeco restas aktiva
 help-ma-entry-url =   ?enter=<runtime>             eniri post ensaluto el kundividita URL
 
 msg-send-failed = sendo malsukcesis: { $e }

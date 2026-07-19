@@ -241,7 +241,7 @@ help-ma-entry-topic =   .help/ma/entry             kijan pou antre nan chanm 間
 help-ma-entry-intro = Lè yo konnen idantite ou, .enter @ma pèmèt ou antre nan 間. Jwenn yon mond, antre ladan l, epi patisipe depi la.
 help-ma-entry-steps = Kòmanse IPFS Desktop ak ma, apre sa kouri .ma. Pibliye ak .my.identity!publish @ma, jwenn yon mond, epi antre ak .enter @ma.
 help-ma-entry-command =   .enter @ma                  antre nan 間 atravè runtime @ma
-help-ma-entry-leave =   .leave                       kite chanm lan; idantite ou rete aktif, epi ou rete konekte
+help-ma-entry-toggle =   .enter                       aktive oswa dezaktive fokis chanm lan; idantite ou rete aktif
 help-ma-entry-url =   ?enter=<runtime>             antre apre login soti nan yon URL pataje
 
 msg-send-failed = echèk voye: { $e }

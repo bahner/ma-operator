@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             間 அறைக்குள�
 help-ma-entry-intro = உங்கள் அடையாளம் அறியப்பட்டதும், .enter @ma உங்களை 間-க்குள் செல்ல விடும். ஒரு world-ஐ கண்டுபிடித்து அதில் நுழைந்து, அங்கிருந்து பங்கேற்குங்கள்.
 help-ma-entry-steps = IPFS Desktop மற்றும் ma தொடங்கு, பின்னர் .ma இயக்கு. .my.identity!publish @ma மூலம் வெளியிடு, ஒரு world-ஐ கண்டுபிடி, .enter @ma மூலம் நுழை.
 help-ma-entry-command =   .enter @ma                  @ma runtime வழியாக 間-க்குள் நுழை
-help-ma-entry-leave =   .leave                       அறையை விட்டு வெளியேறு; உங்கள் அடையாளம் செயலில் இருக்கும், நீங்கள் logged in ஆக இருப்பீர்கள்
+help-ma-entry-toggle =   .enter                       அறை கவனத்தை இயக்கவும் அல்லது அணைக்கவும்; உங்கள் அடையாளம் செயலில் இருக்கும்
 help-ma-entry-url =   ?enter=<runtime>             பகிரப்பட்ட URL-இல் login ஆன பின் நுழை
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             間 odasına nasıl girilir
 help-ma-entry-intro = Kimliğin bilindiğinde .enter @ma seni 間 içine sokar. Bir dünya bul, içine gir ve oradan katıl.
 help-ma-entry-steps = IPFS Desktop ve ma’yı başlat, sonra .ma çalıştır. .my.identity!publish @ma ile yayımla, bir dünya bul ve .enter @ma ile gir.
 help-ma-entry-command =   .enter @ma                  @ma runtime üzerinden 間 içine gir
-help-ma-entry-leave =   .leave                       odadan çık; kimliğin aktif kalır ve oturumun açık kalır
+help-ma-entry-toggle =   .enter                       oda odağını aç veya kapat; kimliğin aktif kalır
 help-ma-entry-url =   ?enter=<runtime>             paylaşılan URL’den giriş yaptıktan sonra gir
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

@@ -251,7 +251,7 @@ help-ma-entry-topic =   .help/ma/entry             sida loo galo qolka 間
 help-ma-entry-intro = Marka aqoonsigaaga la yaqaan, .enter @ma wuxuu kuu oggolaanayaa inaad gasho 間. Hel adduun, geli, kana qayb qaado halkaas.
 help-ma-entry-steps = Bilow IPFS Desktop iyo ma, kadib orod .ma. Ku daabac .my.identity!publish @ma, hel adduun, kuna gal .enter @ma.
 help-ma-entry-command =   .enter @ma                  gal 間 adigoo maraya @ma runtime
-help-ma-entry-leave =   .leave                       ka bax qolka; aqoonsigaagu wuu sii shaqaynayaa, adiguna login ayaad ku sii jirtaa
+help-ma-entry-toggle =   .enter                       shid ama dami diiradda qolka; aqoonsigaagu wuu sii shaqaynayaa
 help-ma-entry-url =   ?enter=<runtime>             gal kadib login laga soo galay URL la wadaagay
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

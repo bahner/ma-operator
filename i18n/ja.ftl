@@ -244,7 +244,7 @@ help-ma-entry-topic =   .help/ma/entry             間の部屋への入り方
 help-ma-entry-intro = あなたのアイデンティティが知られると、.enter @ma で 間 に入れます。world を見つけてそこに入り、そこから参加します。
 help-ma-entry-steps = IPFS Desktop と ma を起動し、.ma を実行します。.my.identity!publish @ma で公開し、world を見つけ、.enter @ma で入ります。
 help-ma-entry-command =   .enter @ma                  @ma runtime 経由で 間 に入る
-help-ma-entry-leave =   .leave                       部屋を離れる。アイデンティティは有効なままで、ログイン状態も続きます
+help-ma-entry-toggle =   .enter                       部屋フォーカスをオンまたはオフにします。アイデンティティは有効なままです
 help-ma-entry-url =   ?enter=<runtime>             共有 URL からログインしたあとに入る
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────

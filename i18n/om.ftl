@@ -264,7 +264,7 @@ help-ma-entry-topic =   .help/ma/entry             akkamitti kutaa 間 seenuu ak
 help-ma-entry-intro = Eenyummaan kee yoo beekame, .enter @ma gara 間 akka seentu si taasisa. Addunyaa barbaadi, itti seeni, achirraa hirmaadhu.
 help-ma-entry-steps = IPFS Desktop fi ma jalqabi, achiin .ma hojjedhu. .my.identity!publish @ma tiin maxxansi, addunyaa barbaadi, .enter @ma tiin seeni.
 help-ma-entry-command =   .enter @ma                  @ma runtime keessa gara 間 seeni
-help-ma-entry-leave =   .leave                       kutaa keessaa ba’i; eenyummaan kee hojiirra jiraata, ati immoo logged in taatee turta
+help-ma-entry-toggle =   .enter                       xiyyeeffannoo kutaa bani yookaan cufi; eenyummaan kee hojiirra jiraata
 help-ma-entry-url =   ?enter=<runtime>             URL qoodame irraa login booda seeni
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
