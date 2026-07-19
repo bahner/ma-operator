@@ -169,8 +169,8 @@ pub(crate) async fn connect_ma_runtime(
     let published = if options.full_profile_publish {
         do_publish(did.clone(), config, &state, None).await
     } else {
-        match crate::transport::send_identity_publish(&did).await {
-            Ok(_) => {
+        match send_identity_publish_and_wait(&did).await {
+            Ok(()) => {
                 state.push_system(tf("msg-auto-published", &[("url", &ma_base)]));
                 true
             }
@@ -201,11 +201,20 @@ async fn publish_fallback_did(
     let published = if options.full_profile_publish {
         do_publish(did.clone(), config, state, None).await
     } else {
-        crate::transport::send_identity_publish(&did).await.is_ok()
+        send_identity_publish_and_wait(&did).await.is_ok()
     };
     if published {
         crate::views::landing::save_last_runtime(&did);
         state.push_system(tf("msg-auto-published", &[("url", &did)]));
+    }
+}
+
+async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
+    let msg_id = crate::transport::send_identity_publish(publisher).await?;
+    let rx = crate::state::AwaitingReply::register(msg_id);
+    futures::select! {
+        reply = rx.fuse() => reply.map(|_| ()).map_err(|_| "identity publish reply was cancelled".to_string()),
+        _ = gloo_timers::future::TimeoutFuture::new(60_000).fuse() => Err("identity publish timed out".to_string()),
     }
 }
 

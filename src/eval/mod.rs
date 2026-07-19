@@ -17,7 +17,7 @@ use crate::{
     i18n::{t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
-    state::{AppState, AwaitingReply, FocusMode},
+    state::{AppState, FocusMode},
     transport,
     views::editor::EditorContext,
 };
@@ -317,6 +317,11 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     }
     let target_actor = resolved.clone();
+    let effective_nick = requested_nick.or_else(|| {
+        cfg.get(".my.ctx.nick")
+            .filter(|nick| !nick.is_empty())
+            .map(str::to_string)
+    });
 
     let state2 = state.clone();
     let entered = raw.clone();
@@ -327,23 +332,34 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
             .unwrap_or_else(|| (target_actor.clone(), None));
         let entry_runtime = entry_runtime.to_string();
-        let root = resolve_enter_root(&entry_runtime)
-            .await
-            .unwrap_or_else(|_| format!("{entry_runtime}#root"));
-        let enter_args = match (room_actor.as_deref(), requested_nick.as_deref()) {
-            (Some(room), Some(nick)) => vec![room, nick],
-            (Some(room), None) => vec![room],
-            (None, Some(nick)) => vec!["", nick],
-            (None, None) => Vec::new(),
-        };
+        let root = format!("{entry_runtime}#root");
+        let enter_args = enter_args(room_actor.as_deref(), effective_nick.as_deref());
+        config.update(|c| {
+            c.set(".my.ctx.use", "true");
+            c.set(".my.ctx.runtime", &entry_runtime);
+            c.set(".my.ctx.root", &root);
+            c.delete(".my.ctx.avatar");
+            c.delete(".my.ctx.room");
+        });
+        let cfg = config.get_untracked();
+        apply_ctx_focus(&cfg, &state2);
         match transport::send_rpc(&root, "enter", &enter_args).await {
-            Ok(_) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
+            Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
             Err(e) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                 state2.push_error(tf("msg-send-failed", &[("e", &e)]));
             }
         }
     });
+}
+
+fn enter_args<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a str> {
+    match (room_actor, nick) {
+        (Some(room), Some(nick)) => vec![room, nick],
+        (Some(room), None) => vec![room],
+        (None, Some(nick)) => vec!["", nick],
+        (None, None) => Vec::new(),
+    }
 }
 
 fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
@@ -374,7 +390,7 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{focus_target_for_room, parse_enter_target, validate_alias_set};
+    use super::{enter_args, focus_target_for_room, parse_enter_target, validate_alias_set};
 
     #[test]
     fn validate_alias_set_accepts_did_url() {
@@ -441,6 +457,24 @@ mod tests {
     }
 
     #[test]
+    fn enter_args_include_nick_when_available() {
+        assert_eq!(
+            enter_args(Some("did:ma:k51runtime#room"), Some("klaim")),
+            vec!["did:ma:k51runtime#room", "klaim"]
+        );
+        assert_eq!(enter_args(None, Some("klaim")), vec!["", "klaim"]);
+    }
+
+    #[test]
+    fn enter_args_allow_room_without_nick() {
+        assert_eq!(
+            enter_args(Some("did:ma:k51runtime#room"), None),
+            vec!["did:ma:k51runtime#room"]
+        );
+        assert!(enter_args(None, None).is_empty());
+    }
+
+    #[test]
     fn focus_target_requires_full_room_did_url() {
         let runtime = "did:ma:k51runtime";
         assert_eq!(
@@ -468,27 +502,6 @@ fn clear_focus(state: &AppState, config: RwSignal<EgoConfig>) {
     config.update(|c| c.set(".my.ctx.use", "false"));
     state.focus_actor.set(None);
     state.push_system(t("msg-focus-cleared"));
-}
-
-async fn resolve_enter_root(runtime: &str) -> Result<String, String> {
-    let msg_id = transport::send_crud_get(runtime, "/config/root").await?;
-    let rx = AwaitingReply::register(msg_id);
-    let raw = rx
-        .await
-        .map_err(|_| "root discovery reply was cancelled".to_string())?;
-    parse_config_root(&raw)
-        .ok_or_else(|| "runtime /config/root is not a full actor DID-URL".to_string())
-}
-
-fn parse_config_root(raw: &str) -> Option<String> {
-    let trimmed = raw.trim();
-    let actor = serde_yaml::from_str::<String>(trimmed).unwrap_or_else(|_| trimmed.to_string());
-    let actor = actor.trim().to_string();
-    if actor.starts_with("did:ma:") && actor.contains('#') {
-        Some(actor)
-    } else {
-        None
-    }
 }
 
 fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {

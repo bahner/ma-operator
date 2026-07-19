@@ -560,18 +560,21 @@ fn dispatch_eval_line(
                 }
             } else {
                 let runtime = f.runtime.clone();
-                let line = line.to_string();
-                let state2 = state.clone();
-                let config2 = config;
-                wasm_bindgen_futures::spawn_local(async move {
-                    let actor = resolve_focus_root_actor(&runtime, config2, &state2).await;
-                    if let Err(e) =
-                        enqueue_focus_command(&actor, &line, parsed.verb, parsed.args, &state2)
-                    {
-                        state2.push_error(format!("'{line}': {e}"));
+                let actor = focus_fallback_target(&runtime, state);
+                match enqueue_focus_command(&actor, line, parsed.verb, parsed.args, state) {
+                    Ok(cmd_id) => {
+                        if let Some(bid) = batch_id {
+                            state.cmd_to_batch.update(|m| {
+                                m.insert(cmd_id, bid);
+                            });
+                        }
+                        return Some(cmd_id);
                     }
-                });
-                return None;
+                    Err(e) => {
+                        state.push_error(format!("'{line}': {e}"));
+                        return None;
+                    }
+                }
             }
         } else {
             line.to_string()
@@ -666,48 +669,12 @@ fn parse_focus_shorthand_command(line: &str) -> Result<ParsedFocusCommand, Strin
     })
 }
 
-async fn resolve_focus_root_actor(
-    runtime: &str,
-    config: RwSignal<EgoConfig>,
-    state: &AppState,
-) -> String {
-    match crate::transport::send_crud_get(runtime, "/config/root").await {
-        Ok(msg_id) => {
-            let rx = crate::state::AwaitingReply::register(msg_id);
-            match rx.await {
-                Ok(actor) => match parse_config_root(&actor) {
-                    Some(actor) => {
-                        config.update(|c| c.set(".my.ctx.root", &actor));
-                        let cfg = config.get_untracked();
-                        crate::eval::apply_ctx_focus(&cfg, state);
-                        actor
-                    }
-                    None => focus_fallback_target(runtime, state),
-                },
-                Err(_) => focus_fallback_target(runtime, state),
-            }
-        }
-        Err(_) => focus_fallback_target(runtime, state),
-    }
-}
-
 fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
     state
         .focus_actor
         .get_untracked()
-        .map(|f| f.target)
+        .and_then(|f| f.root_actor.or(Some(f.target)))
         .unwrap_or_else(|| runtime.to_string())
-}
-
-fn parse_config_root(raw: &str) -> Option<String> {
-    let trimmed = raw.trim();
-    let actor = serde_yaml::from_str::<String>(trimmed).unwrap_or_else(|_| trimmed.to_string());
-    let actor = actor.trim().to_string();
-    if actor.starts_with("did:ma:") && actor.contains('#') {
-        Some(actor)
-    } else {
-        None
-    }
 }
 
 #[cfg(test)]

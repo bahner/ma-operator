@@ -40,26 +40,27 @@ pub fn Terminal() -> impl IntoView {
         });
     }
 
-    // Load config from IndexedDB on mount
+    // Load config, then start iroh/connect. Connect may need aliases and .ma.ctx
+    // from the restored config, and ?enter= must run after connect/publish.
     if let Some(sess) = state.session.get_untracked() {
         crate::scheme::init_session_env();
-        spawn_local(startup_load_config(
-            state.clone(),
-            config,
-            sess.username,
-            sess.sender_did,
-        ));
+        let startup_ma = state.startup_ma.update_untracked(|v| v.take());
+        let startup_state = state.clone();
+        spawn_local(async move {
+            startup_load_config(
+                startup_state.clone(),
+                config,
+                sess.username.clone(),
+                sess.sender_did.clone(),
+            )
+            .await;
+            startup_connect(startup_state, config, sess, startup_ma).await;
+        });
     }
 
     // Restore command history from IndexedDB
     if let Some(sess) = state.session.get_untracked() {
         spawn_local(startup_load_history(state.clone(), sess.username));
-    }
-
-    // Start iroh endpoint. Consume startup_ma here so it is passed to startup_connect.
-    if let Some(sess) = state.session.get_untracked() {
-        let startup_ma = state.startup_ma.update_untracked(|v| v.take());
-        spawn_local(startup_connect(state.clone(), config, sess, startup_ma));
     }
 
     // Inbox polling loop

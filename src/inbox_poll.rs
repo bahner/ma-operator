@@ -100,6 +100,17 @@ fn dispatch_reply(
         return;
     }
 
+    if let Some(items) =
+        client_term_array(&incoming).filter(|items| term_head(items) == Some(":ctx"))
+    {
+        let kind = state.take_pending(msg_id);
+        handle_ctx_receipt(items.get(1), &incoming, state, config);
+        if let Some(PendingKind::Simple { cmd_id }) = kind {
+            state.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Replied(String::new()));
+        }
+        return;
+    }
+
     let Some(kind) = state.take_pending(msg_id) else {
         web_sys::console::warn_1(
             &format!("[inbox] dropping stale reply (reply_to={msg_id}): {display}").into(),
@@ -176,6 +187,22 @@ fn handle_client_term(
     }
 }
 
+fn client_term_array(incoming: &IncomingMessage) -> Option<Vec<ciborium::Value>> {
+    if incoming.message_type != ma_core::MESSAGE_TYPE_RPC
+        || incoming.content_type != ma_core::CONTENT_TYPE_TERM
+    {
+        return None;
+    }
+    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..]).ok()? {
+        ciborium::Value::Array(items) => Some(items),
+        _ => None,
+    }
+}
+
+fn term_head(items: &[ciborium::Value]) -> Option<&str> {
+    items.first().and_then(cbor_text)
+}
+
 fn handle_client_term_array(
     items: Vec<ciborium::Value>,
     incoming: &IncomingMessage,
@@ -208,22 +235,37 @@ fn handle_ctx_receipt(
     config: RwSignal<EgoConfig>,
 ) {
     let cfg = config.get_untracked();
-    let Some(root) = cfg.get(".my.ctx.root") else {
-        return;
-    };
-    if incoming.from != root {
-        return;
-    }
     let Some(ciborium::Value::Array(pairs)) = payload else {
         return;
     };
     let root = ctx_value(pairs, ":root").map(str::to_string);
+    let expected_root = cfg.get(".my.ctx.root").map(str::to_string);
+    let trusted = expected_root
+        .as_deref()
+        .is_some_and(|expected| incoming.from == expected)
+        || root.as_deref().is_some_and(|root| incoming.from == root);
+    if !trusted {
+        return;
+    }
     let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
     let nick = ctx_value(pairs, ":nick").map(str::to_string);
     let room = ctx_value(pairs, ":room").map(str::to_string);
     let text = ctx_value(pairs, ":text").map(str::to_string);
+    let confirmed_avatar = avatar.as_deref().is_some_and(|avatar| !avatar.is_empty());
+    let runtime = root
+        .as_deref()
+        .or(Some(incoming.from.as_str()))
+        .and_then(|actor| {
+            actor
+                .split_once('#')
+                .map(|(runtime, _)| runtime.to_string())
+        });
 
     config.update(|c| {
+        c.set(".my.ctx.use", "true");
+        if let Some(runtime) = &runtime {
+            c.set(".my.ctx.runtime", runtime);
+        }
         if let Some(root) = &root {
             c.set(".my.ctx.root", root);
         }
@@ -243,7 +285,7 @@ fn handle_ctx_receipt(
                 c.delete(".my.ctx.alias");
             }
         }
-        if let Some(room) = &room {
+        if let Some(room) = &room.filter(|_| confirmed_avatar) {
             if room.is_empty() {
                 c.delete(".my.ctx.room");
             } else {

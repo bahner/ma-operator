@@ -89,6 +89,7 @@ pub(crate) async fn startup_local_ma(
     username: String,
     sender_did: String,
     startup_ma: Option<String>,
+    startup_enter: Option<String>,
 ) {
     let should_publish = auto_publish_enabled(config);
     let ma_url = startup_ma_url(config, startup_ma.as_deref());
@@ -96,6 +97,8 @@ pub(crate) async fn startup_local_ma(
         .as_deref()
         .filter(|did| did.starts_with("did:ma:"))
         .map(ToString::to_string);
+    let fallback_did =
+        fallback_did.or_else(|| startup_enter_publish_did(config, startup_enter.as_deref()));
     crate::parser::verbs::ma::connect_ma_runtime(
         state,
         config,
@@ -144,8 +147,9 @@ pub(crate) async fn startup_load_config(
             let now = js_sys::Date::now() / 1000.0;
             let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
             crate::eval::apply_config_to_dom(&cfg);
-            // Restore focus context if .my.ctx.use was true last session.
-            crate::eval::apply_ctx_focus(&cfg, &state);
+            // Persisted ctx is an enter intent, not confirmed focus. Root will
+            // repair and return the authoritative ctx after startup connect.
+            state.focus_actor.set(None);
             // Apply log level from config if set.
             if let Some(level) = cfg.get(".my.config.log.level") {
                 crate::apply_log_level(level);
@@ -189,16 +193,6 @@ pub(crate) async fn startup_load_config(
         ],
     ));
     state.push_system(t("msg-type-help"));
-    // Apply ?enter= URL param: enter the specified runtime world.
-    if let Some(runtime) = state
-        .startup_enter
-        .update_untracked(|v| v.take())
-        .map(normalize_startup_enter)
-    {
-        state
-            .input_queue
-            .update(|q| q.push_back(format!(".enter {runtime}")));
-    }
 }
 
 fn normalize_startup_enter(runtime: String) -> String {
@@ -209,9 +203,73 @@ fn normalize_startup_enter(runtime: String) -> String {
     }
 }
 
+fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
+    if cfg.get(".my.ctx.use") != Some("true") {
+        return None;
+    }
+    let runtime = cfg.get(".my.ctx.runtime")?.trim();
+    if runtime.is_empty() {
+        return None;
+    }
+    let room = cfg
+        .get(".my.ctx.room")
+        .map(str::trim)
+        .filter(|room| room.starts_with(&format!("{runtime}#")))
+        .unwrap_or(runtime);
+    let nick = cfg.get(".my.ctx.nick").map(str::trim).filter(|nick| {
+        !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
+    });
+    Some(match nick {
+        Some(nick) => format!("{nick}@{room}"),
+        None => normalize_startup_enter(room.to_string()),
+    })
+}
+
+fn startup_enter_publish_did(
+    config: RwSignal<EgoConfig>,
+    startup_enter: Option<&str>,
+) -> Option<String> {
+    let raw = normalize_startup_enter(startup_enter?.to_string());
+    let target = if let Some(stripped) = raw.strip_prefix('@') {
+        stripped
+    } else {
+        raw.split_once('@')?.1
+    };
+    let runtime = target
+        .split_once('#')
+        .map(|(did, _)| did)
+        .unwrap_or(target)
+        .trim();
+    if runtime.starts_with("did:ma:") {
+        return Some(runtime.to_string());
+    }
+    let cfg = config.get_untracked();
+    let resolved = cfg.resolve_alias(runtime)?;
+    let did = resolved
+        .split_once('#')
+        .map(|(did, _)| did)
+        .unwrap_or(resolved)
+        .trim();
+    did.starts_with("did:ma:").then(|| did.to_string())
+}
+
+fn queue_startup_enter(state: &AppState, config: RwSignal<EgoConfig>) {
+    let explicit = state
+        .startup_enter
+        .update_untracked(|v| v.take())
+        .map(normalize_startup_enter);
+    let runtime = explicit.or_else(|| startup_ctx_enter(&config.get_untracked()));
+    if let Some(runtime) = runtime {
+        state
+            .input_queue
+            .update(|q| q.push_back(format!(".enter {runtime}")));
+    }
+}
+
 #[cfg(test)]
 mod tests {
-    use super::normalize_startup_enter;
+    use super::{normalize_startup_enter, startup_ctx_enter};
+    use crate::config::EgoConfig;
 
     #[test]
     fn normalize_startup_enter_accepts_url_did_and_alias_forms() {
@@ -224,6 +282,32 @@ mod tests {
         assert_eq!(
             normalize_startup_enter("Armageddon@sky".to_string()),
             "Armageddon@sky"
+        );
+    }
+
+    #[test]
+    fn startup_ctx_enter_reestablishes_nick_runtime_room_intent() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.ctx.use", "true");
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+        cfg.set(".my.ctx.nick", "klaim");
+        assert_eq!(
+            startup_ctx_enter(&cfg),
+            Some("klaim@did:ma:k51runtime#construct".to_string())
+        );
+    }
+
+    #[test]
+    fn startup_ctx_enter_falls_back_to_runtime_without_safe_nick_or_room() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.ctx.use", "true");
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51other#construct");
+        cfg.set(".my.ctx.nick", "bad nick");
+        assert_eq!(
+            startup_ctx_enter(&cfg),
+            Some("@did:ma:k51runtime".to_string())
         );
     }
 }
@@ -267,7 +351,17 @@ pub(crate) async fn startup_connect(
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
-            startup_local_ma(state.clone(), config, username, sender_did, startup_ma).await;
+            let startup_enter = state.startup_enter.get_untracked();
+            startup_local_ma(
+                state.clone(),
+                config,
+                username,
+                sender_did,
+                startup_ma,
+                startup_enter,
+            )
+            .await;
+            queue_startup_enter(&state, config);
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }
