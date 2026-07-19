@@ -30,6 +30,8 @@ publish: dist
 	@ipfs add -r dist 2>&1 | tee /tmp/zion-ipfs-add.txt
 	@tail -1 /tmp/zion-ipfs-add.txt | awk '{print $$2}' > .cid
 	@echo "CID: $$(cat .cid)"
+	@echo "Publishing Zion IPNS name..."
+	@ipfs name publish --key=zion "$$(cat .cid)"
 	@echo "Open: ipfs://$$(cat .cid)"
 	@touch .publish.sh
 	@sh .publish.sh
