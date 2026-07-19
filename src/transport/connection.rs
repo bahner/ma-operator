@@ -16,12 +16,27 @@ use crate::state::{
     SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use std::rc::Rc;
+use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
 
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
+
+pub fn gateway_base_url() -> String {
+    let Some(window) = web_sys::window() else {
+        return LOCAL_GATEWAY_URL.to_string();
+    };
+    let location = window.location();
+    let pathname = location.pathname().unwrap_or_default();
+    if pathname == "/zion" || pathname.starts_with("/zion/") {
+        if let Ok(origin) = location.origin() {
+            return format!("{}/", origin.trim_end_matches('/'));
+        }
+    }
+    LOCAL_GATEWAY_URL.to_string()
+}
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
 
@@ -60,9 +75,11 @@ pub async fn connect(
     // Create a single shared resolver so its positive-cache is reused across
     // all concurrent sends — the DID document is fetched from the gateway
     // exactly once and then served from cache for subsequent sends.
-    // Prefer local Kubo gateway for fresh IPNS updates; fall back to dweb.link
-    // at send-time when local resolution is unavailable.
-    let resolver = Rc::new(IpfsGatewayResolver::default());
+    // Prefer the runtime's same-origin gateway when zion is served from /zion;
+    // otherwise use local Kubo, then the resolver's public fallbacks.
+    let resolver = Rc::new(
+        IpfsGatewayResolver::new(gateway_base_url()).with_localhost_cooldown(Duration::ZERO),
+    );
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())

@@ -3,7 +3,7 @@
 //! These are the only HTTP primitives in the codebase. All other modules
 //! import from here rather than rolling their own fetch.
 
-use crate::transport::connection::LOCAL_GATEWAY_URL;
+use crate::transport::connection::gateway_base_url;
 
 pub struct HttpTextResponse {
     pub status: u16,
@@ -78,14 +78,14 @@ pub async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
     Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
 }
 
-/// Fetch raw bytes for a bare CID from the local IPFS gateway.
+/// Fetch raw bytes for a bare CID from the active IPFS gateway.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    fetch_url_bytes(&format!("{LOCAL_GATEWAY_URL}ipfs/{cid}")).await
+    fetch_url_bytes(&format!("{}ipfs/{cid}", gateway_base_url())).await
 }
 
-/// Fetch text for a bare CID from the local IPFS gateway.
+/// Fetch text for a bare CID from the active IPFS gateway.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    fetch_url_text(&format!("{LOCAL_GATEWAY_URL}ipfs/{cid}")).await
+    fetch_url_text(&format!("{}ipfs/{cid}", gateway_base_url())).await
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
@@ -94,12 +94,12 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 /// resolves `/ipns/` transparently — no client-side resolution needed.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    fetch_url_bytes(&format!("{LOCAL_GATEWAY_URL}{arg}")).await
+    fetch_url_bytes(&format!("{}{arg}", gateway_base_url())).await
 }
 
 /// Fetch text for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    fetch_url_text(&format!("{LOCAL_GATEWAY_URL}{arg}")).await
+    fetch_url_text(&format!("{}{arg}", gateway_base_url())).await
 }

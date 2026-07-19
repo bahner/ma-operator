@@ -104,6 +104,17 @@ pub(crate) async fn claim_ma(ma_base: &str, our_did: &str) -> ClaimResult {
     }
 }
 
+fn should_continue_after_claim(result: &ClaimResult) -> bool {
+    matches!(
+        result,
+        ClaimResult::Claimed
+            | ClaimResult::AlreadyOwned
+            | ClaimResult::OwnedByOther
+            | ClaimResult::Unavailable
+            | ClaimResult::UnexpectedStatus(_)
+    )
+}
+
 fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
     serde_json::from_str::<serde_json::Value>(body)
         .ok()
@@ -126,17 +137,20 @@ pub(crate) async fn connect_ma_runtime(
     fallback_did: Option<String>,
     options: ConnectMaOptions,
 ) {
-    match claim_ma(&ma_base, &our_did).await {
+    let claim_result = claim_ma(&ma_base, &our_did).await;
+    match &claim_result {
         ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
         ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
         ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
             state.push_system(t("msg-local-ma-claim-failed"));
-            return;
         }
         ClaimResult::Unavailable => {
-            publish_fallback_did(&state, config, fallback_did, options).await;
-            return;
+            state.push_system(t("msg-local-ma-claim-failed"));
         }
+    }
+    if !should_continue_after_claim(&claim_result) {
+        publish_fallback_did(&state, config, fallback_did, options).await;
+        return;
     }
 
     let did = match rediscover_ma(&ma_base, config).await {
@@ -383,5 +397,14 @@ mod tests {
         let body = r#"{"error":"already claimed","owners":["did:ma:one"]}"#;
 
         assert!(!conflict_contains_owner(body, "did:ma:two"));
+    }
+
+    #[test]
+    fn claim_failures_do_not_abort_publish_path() {
+        assert!(should_continue_after_claim(&ClaimResult::OwnedByOther));
+        assert!(should_continue_after_claim(&ClaimResult::UnexpectedStatus(
+            500
+        )));
+        assert!(should_continue_after_claim(&ClaimResult::Unavailable));
     }
 }
