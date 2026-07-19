@@ -211,10 +211,41 @@ pub(crate) async fn startup_load_config(
     ));
     state.push_system(t("msg-type-help"));
     // Apply ?enter= URL param: enter the specified runtime world.
-    if let Some(runtime) = state.startup_enter.update_untracked(|v| v.take()) {
+    if let Some(runtime) = state
+        .startup_enter
+        .update_untracked(|v| v.take())
+        .map(normalize_startup_enter)
+    {
         state
             .input_queue
             .update(|q| q.push_back(format!(".enter {runtime}")));
+    }
+}
+
+fn normalize_startup_enter(runtime: String) -> String {
+    if runtime.starts_with('@') || runtime.contains('@') {
+        runtime
+    } else {
+        format!("@{runtime}")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::normalize_startup_enter;
+
+    #[test]
+    fn normalize_startup_enter_accepts_url_did_and_alias_forms() {
+        assert_eq!(
+            normalize_startup_enter("did:ma:k51example".to_string()),
+            "@did:ma:k51example"
+        );
+        assert_eq!(normalize_startup_enter("sky".to_string()), "@sky");
+        assert_eq!(normalize_startup_enter("@sky".to_string()), "@sky");
+        assert_eq!(
+            normalize_startup_enter("Armageddon@sky".to_string()),
+            "Armageddon@sky"
+        );
     }
 }
 

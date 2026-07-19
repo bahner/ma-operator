@@ -75,18 +75,14 @@ pub fn Landing() -> impl IntoView {
 
     // Runtime field: DID or HTTP URL to connect to after login.
     // Seeded from `?ma=` URL param (already in state.startup_ma) or localStorage.
-    let url_ma_did: Option<String> = state
-        .startup_ma
-        .get_untracked()
-        .filter(|v| v.starts_with("did:ma:"));
+    let startup_ma = state.startup_ma.get_untracked();
+    let url_ma_did: Option<String> = startup_ma.clone().filter(|v| v.starts_with("did:ma:"));
     let prev_runtime = load_last_runtime();
-    let ma_input = RwSignal::new(prev_runtime.clone());
-    // If ?ma= was an HTTP URL (not a DID), pre-fill the runtime field with it.
-    if let Some(ref url_val) = state.startup_ma.get_untracked() {
-        if url_val.starts_with("http") {
-            ma_input.set(url_val.clone());
-        }
-    }
+    let ma_input = RwSignal::new(
+        startup_ma
+            .filter(|v| v.starts_with("did:ma:") || v.starts_with("http"))
+            .unwrap_or_else(|| prev_runtime.clone()),
+    );
 
     // Background music.
     Effect::new(move |_| {
@@ -484,6 +480,7 @@ pub fn Landing() -> impl IntoView {
                                 view! {
                                     <select
                                         class="runtime-select"
+                                        prop:value=move || ma_input.get()
                                         on:change=move |ev| {
                                             use wasm_bindgen::JsCast;
                                             let sel = ev.target().unwrap()

@@ -443,7 +443,10 @@ mod tests {
     #[test]
     fn focus_target_requires_full_room_did_url() {
         let runtime = "did:ma:k51runtime";
-        assert_eq!(focus_target_for_room(runtime, ""), Some(runtime.to_string()));
+        assert_eq!(
+            focus_target_for_room(runtime, ""),
+            Some(runtime.to_string())
+        );
         assert_eq!(focus_target_for_room(runtime, "#construct"), None);
         assert_eq!(focus_target_for_room(runtime, "construct"), None);
         assert_eq!(
