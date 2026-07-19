@@ -5,6 +5,11 @@
 
 use crate::transport::connection::LOCAL_GATEWAY_URL;
 
+pub struct HttpTextResponse {
+    pub status: u16,
+    pub body: String,
+}
+
 /// GET a URL and return the response body as text.
 pub async fn fetch_url_text(url: &str) -> Result<String, String> {
     use wasm_bindgen::JsCast;
@@ -24,6 +29,34 @@ pub async fn fetch_url_text(url: &str) -> Result<String, String> {
     text_val
         .as_string()
         .ok_or_else(|| "response is not a string".to_string())
+}
+
+/// POST a JSON body and return both status and response body as text.
+pub async fn post_json_text(url: &str, body: &str) -> Result<HttpTextResponse, String> {
+    use wasm_bindgen::JsCast;
+    use wasm_bindgen_futures::JsFuture;
+
+    let window = web_sys::window().ok_or("no window")?;
+    let headers = web_sys::Headers::new().map_err(|e| format!("{e:?}"))?;
+    headers
+        .set("Content-Type", "application/json")
+        .map_err(|e| format!("{e:?}"))?;
+    let opts = web_sys::RequestInit::new();
+    opts.set_method("POST");
+    opts.set_body(&wasm_bindgen::JsValue::from_str(body));
+    opts.set_headers(&headers);
+    let request =
+        web_sys::Request::new_with_str_and_init(url, &opts).map_err(|e| format!("{e:?}"))?;
+    let resp_val = JsFuture::from(window.fetch_with_request(&request))
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    let status = resp.status();
+    let text_val = JsFuture::from(resp.text().map_err(|e| format!("{e:?}"))?)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let body = text_val.as_string().unwrap_or_default();
+    Ok(HttpTextResponse { status, body })
 }
 
 /// GET a URL and return the response body as raw bytes.

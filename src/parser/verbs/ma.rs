@@ -1,6 +1,6 @@
 use super::{resolve_bare_did, MA_URL};
 use crate::config::EgoConfig;
-use crate::http::fetch_url_text;
+use crate::http::{fetch_url_text, post_json_text};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::{AppState, PendingKind};
@@ -29,32 +29,40 @@ pub(super) fn handle_ma(
         .ok_or_else(|| t("msg-not-logged-in"))?;
 
     let raw = args.first().map(|s| s.as_str()).unwrap_or("");
-    // @alias or did: → publish directly to that runtime, skip discover.
-    if raw.starts_with('@') || raw.starts_with("did:") {
-        let publisher = resolve_bare_did(raw, &config.get_untracked())?;
-        let state2 = state.clone();
-        let publisher_for_storage = publisher.clone();
-        leptos::task::spawn_local(async move {
-            if do_publish(publisher, config, &state2, None).await {
-                crate::views::landing::save_last_runtime(&publisher_for_storage);
-            }
-        });
-        return Ok(());
-    }
-    // No arg or port number → discover then publish.
-    let port = args.first().and_then(|s| s.parse::<u16>().ok());
-    let ma_base = ma_base_from_port(port, &config.get_untracked());
-    let our_did = state
+    let cfg = config.get_untracked();
+    let ma_base = ma_base_from_arg(raw, &cfg);
+    let fallback_did = fallback_did_from_arg(raw, &cfg)?;
+    let session = state
         .session
         .get_untracked()
-        .map(|s| s.sender_did.clone())
-        .unwrap_or_default();
-    do_ma_connect(ma_base, our_did, config, state.clone());
+        .ok_or_else(|| t("msg-not-logged-in"))?;
+    let username = session.username;
+    let our_did = session.sender_did;
+    let state2 = state.clone();
+    state.push_system(t("msg-ma-connecting-matrix"));
+    leptos::task::spawn_local(async move {
+        connect_ma_runtime(
+            state2,
+            config,
+            username,
+            our_did,
+            ma_base,
+            fallback_did,
+            ConnectMaOptions {
+                publish: true,
+                full_profile_publish: true,
+            },
+        )
+        .await;
+    });
     Ok(())
 }
 
-fn ma_base_from_port(port: Option<u16>, cfg: &EgoConfig) -> String {
-    if let Some(p) = port {
+fn ma_base_from_arg(raw: &str, cfg: &EgoConfig) -> String {
+    if raw.starts_with("http") {
+        return raw.trim_end_matches('/').to_string();
+    }
+    if let Ok(p) = raw.parse::<u16>() {
         return format!("http://localhost:{p}");
     }
     cfg.get(".ma.ctx.url")
@@ -63,50 +71,134 @@ fn ma_base_from_port(port: Option<u16>, cfg: &EgoConfig) -> String {
         .to_string()
 }
 
-fn do_ma_connect(ma_base: String, our_did: String, config: RwSignal<EgoConfig>, state: AppState) {
-    leptos::task::spawn_local(async move {
-        // Claim (200 = new, 409 = already owned; errors silently skipped).
-        let claim_url = format!("{ma_base}/claim");
-        let body = format!(r#"{{"owner":"{}"}}"#, our_did);
-        match fetch_post_json(&claim_url, &body).await {
-            Ok(200) | Ok(409) | Err(_) => {}
-            Ok(status) => {
-                state.push_error(tf("claim-http-failed", &[("status", &status.to_string())]));
-                return;
+fn fallback_did_from_arg(raw: &str, cfg: &EgoConfig) -> Result<Option<String>, String> {
+    if raw.starts_with('@') || raw.starts_with("did:") {
+        return resolve_bare_did(raw, cfg).map(Some);
+    }
+    Ok(None)
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum ClaimResult {
+    Claimed,
+    AlreadyOwned,
+    OwnedByOther,
+    Unavailable,
+    UnexpectedStatus(u16),
+}
+
+pub(crate) async fn claim_ma(ma_base: &str, our_did: &str) -> ClaimResult {
+    let claim_url = format!("{ma_base}/claim");
+    let body = format!(r#"{{"owner":"{}"}}"#, our_did);
+    match post_json_text(&claim_url, &body).await {
+        Ok(resp) if resp.status == 200 => ClaimResult::Claimed,
+        Ok(resp) if resp.status == 409 => {
+            if conflict_contains_owner(&resp.body, our_did) {
+                ClaimResult::AlreadyOwned
+            } else {
+                ClaimResult::OwnedByOther
             }
         }
-        // Discover — populate .ma.ctx.* and .my.aliases.ma.
-        let did = match rediscover_ma(&ma_base, config).await {
-            Ok(did) => {
-                crate::views::landing::save_last_runtime(&ma_base);
-                if let Some(sess) = state.session.get_untracked() {
-                    let username = sess.username.clone();
-                    let cfg = config.get_untracked();
-                    leptos::task::spawn_local(async move {
-                        let _ = crate::config::persist_config(&username, &cfg).await;
-                    });
-                }
-                did
+        Ok(resp) => ClaimResult::UnexpectedStatus(resp.status),
+        Err(_) => ClaimResult::Unavailable,
+    }
+}
+
+fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
+    serde_json::from_str::<serde_json::Value>(body)
+        .ok()
+        .and_then(|json| json.get("owners").and_then(|v| v.as_array()).cloned())
+        .is_some_and(|owners| owners.iter().any(|owner| owner.as_str() == Some(our_did)))
+}
+
+#[derive(Clone, Copy)]
+pub(crate) struct ConnectMaOptions {
+    pub publish: bool,
+    pub full_profile_publish: bool,
+}
+
+pub(crate) async fn connect_ma_runtime(
+    state: AppState,
+    config: RwSignal<EgoConfig>,
+    username: String,
+    our_did: String,
+    ma_base: String,
+    fallback_did: Option<String>,
+    options: ConnectMaOptions,
+) {
+    match claim_ma(&ma_base, &our_did).await {
+        ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
+        ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
+        ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
+            state.push_system(t("msg-local-ma-claim-failed"));
+            return;
+        }
+        ClaimResult::Unavailable => {
+            publish_fallback_did(&state, config, fallback_did, options).await;
+            return;
+        }
+    }
+
+    let did = match rediscover_ma(&ma_base, config).await {
+        Ok(did) => did,
+        Err(_) => {
+            publish_fallback_did(&state, config, fallback_did, options).await;
+            return;
+        }
+    };
+    crate::views::landing::save_last_runtime(&ma_base);
+    let cfg = config.get_untracked();
+    let _ = crate::config::persist_config(&username, &cfg).await;
+    if !options.publish {
+        return;
+    }
+    let published = if options.full_profile_publish {
+        do_publish(did.clone(), config, &state, None).await
+    } else {
+        match crate::transport::send_identity_publish(&did).await {
+            Ok(_) => {
+                state.push_system(tf("msg-auto-published", &[("url", &ma_base)]));
+                true
             }
-            Err(e) => {
-                let status_url = format!("{ma_base}/status.json");
-                state.push_error(tf(
-                    "discover-fetch-failed",
-                    &[("url", &status_url), ("e", &e)],
-                ));
-                state.push_error(discover_fetch_hint(&e));
-                return;
-            }
-        };
-        // Publish profile + DID. 間 arrives via inbox reply when done.
-        do_publish(did, config, &state, None).await;
-    });
+            Err(_) => false,
+        }
+    };
+    if !published {
+        publish_fallback_did(&state, config, fallback_did, options).await;
+    }
+}
+
+async fn publish_fallback_did(
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    fallback_did: Option<String>,
+    options: ConnectMaOptions,
+) {
+    if !options.publish {
+        return;
+    }
+    let did = config
+        .get_untracked()
+        .get(".ma.ctx.did")
+        .filter(|did| did.starts_with("did:ma:"))
+        .map(|did| did.to_string())
+        .or(fallback_did);
+    let Some(did) = did else { return };
+    let published = if options.full_profile_publish {
+        do_publish(did.clone(), config, state, None).await
+    } else {
+        crate::transport::send_identity_publish(&did).await.is_ok()
+    };
+    if published {
+        crate::views::landing::save_last_runtime(&did);
+        state.push_system(tf("msg-auto-published", &[("url", &did)]));
+    }
 }
 
 /// Build and upload the profile blob to IPFS, then queue the DID republish.
 /// Returns `true` if the request was sent, `false` if an error was pushed.
 /// Pass `cmd_id = Some(id)` to track the operation as a terminal command.
-pub(super) async fn do_publish(
+pub(crate) async fn do_publish(
     publisher: String,
     config: RwSignal<EgoConfig>,
     state: &AppState,
@@ -192,7 +284,7 @@ pub(super) async fn do_publish(
     }
 }
 
-pub(super) async fn rediscover_ma(
+pub(crate) async fn rediscover_ma(
     ma_base: &str,
     config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
 ) -> Result<String, String> {
@@ -275,75 +367,21 @@ pub(super) async fn rediscover_ma(
     Ok(did)
 }
 
-pub(super) fn discover_fetch_hint(err: &str) -> String {
-    t(discover_fetch_hint_key(err))
-}
-
-fn discover_fetch_hint_key(err: &str) -> &'static str {
-    if err.contains("HTTP 404") {
-        "discover-hint-endpoint-not-found"
-    } else if err.contains("HTTP 5") {
-        "discover-hint-server-error"
-    } else if err.contains("TypeError") || err.contains("Failed to fetch") {
-        "discover-hint-network"
-    } else {
-        "discover-hint-generic"
-    }
-}
-
-async fn fetch_post_json(url: &str, body: &str) -> Result<u16, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-
-    let window = web_sys::window().ok_or("no window")?;
-    let headers = web_sys::Headers::new().map_err(|e| format!("{e:?}"))?;
-    headers
-        .set("Content-Type", "application/json")
-        .map_err(|e| format!("{e:?}"))?;
-    let opts = web_sys::RequestInit::new();
-    opts.set_method("POST");
-    opts.set_body(&wasm_bindgen::JsValue::from_str(body));
-    opts.set_headers(&headers);
-    let request =
-        web_sys::Request::new_with_str_and_init(url, &opts).map_err(|e| format!("{e:?}"))?;
-    let promise = window.fetch_with_request(&request);
-    let resp_val = JsFuture::from(promise)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    Ok(resp.status())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
-    fn discover_fetch_hint_key_classifies_http_404() {
-        assert_eq!(
-            discover_fetch_hint_key("HTTP 404"),
-            "discover-hint-endpoint-not-found"
-        );
+    fn conflict_contains_owner_matches_existing_owner() {
+        let body = r#"{"error":"already claimed","owners":["did:ma:one","did:ma:two"]}"#;
+
+        assert!(conflict_contains_owner(body, "did:ma:two"));
     }
 
     #[test]
-    fn discover_fetch_hint_key_classifies_server_error() {
-        assert_eq!(
-            discover_fetch_hint_key("HTTP 503"),
-            "discover-hint-server-error"
-        );
-    }
+    fn conflict_contains_owner_rejects_missing_owner() {
+        let body = r#"{"error":"already claimed","owners":["did:ma:one"]}"#;
 
-    #[test]
-    fn discover_fetch_hint_key_classifies_browser_fetch_error() {
-        assert_eq!(
-            discover_fetch_hint_key("TypeError: Failed to fetch"),
-            "discover-hint-network"
-        );
-    }
-
-    #[test]
-    fn discover_fetch_hint_key_classifies_fallback() {
-        assert_eq!(discover_fetch_hint_key("boom"), "discover-hint-generic");
+        assert!(!conflict_contains_owner(body, "did:ma:two"));
     }
 }

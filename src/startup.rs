@@ -5,7 +5,7 @@ use ma_core::DidDocumentResolver;
 
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
-    http::{fetch_cid_bytes, fetch_url_text},
+    http::fetch_cid_bytes,
     i18n::{t, tf},
     identity::storage::load_history,
     state::{AppState, SessionState},
@@ -63,64 +63,52 @@ pub(crate) async fn startup_profile_exists(
     let _ = persist_config(&username, &cfg).await;
 }
 
-pub(crate) async fn startup_no_document(
+fn auto_publish_enabled(config: RwSignal<EgoConfig>) -> bool {
+    config
+        .get_untracked()
+        .get(".my.identity.auto-publish")
+        .map(|value| value != "false")
+        .unwrap_or(true)
+}
+
+fn startup_ma_url(config: RwSignal<EgoConfig>, startup_ma: Option<&str>) -> String {
+    if let Some(url) = startup_ma.filter(|v| v.starts_with("http")) {
+        return url.trim_end_matches('/').to_string();
+    }
+    config
+        .get_untracked()
+        .get(".ma.ctx.url")
+        .unwrap_or("http://localhost:5003")
+        .trim_end_matches('/')
+        .to_string()
+}
+
+pub(crate) async fn startup_local_ma(
     state: AppState,
     config: RwSignal<EgoConfig>,
+    username: String,
+    sender_did: String,
     startup_ma: Option<String>,
 ) {
-    // Skip if a remote DID was explicitly chosen — startup_connect will queue .ma!connect <did>.
-    if startup_ma
+    let should_publish = auto_publish_enabled(config);
+    let ma_url = startup_ma_url(config, startup_ma.as_deref());
+    let fallback_did = startup_ma
         .as_deref()
-        .is_some_and(|v| v.starts_with("did:ma:"))
-    {
-        return;
-    }
-    // If an explicit HTTP URL was provided, use it; otherwise fall back to config / default.
-    let ma_url = if let Some(url) = startup_ma.as_deref().filter(|v| v.starts_with("http")) {
-        url.trim_end_matches('/').to_string()
-    } else {
-        let cfg = config.get_untracked();
-        cfg.get(".ma.ctx.url")
-            .unwrap_or("http://localhost:5003")
-            .trim_end_matches('/')
-            .to_string()
-    };
-    let status_url = format!("{ma_url}/status.json");
-    let json_str = match fetch_url_text(&status_url).await {
-        Ok(s) => s,
-        Err(_) => return, // No local ma — silent.
-    };
-    let json = match serde_json::from_str::<serde_json::Value>(&json_str) {
-        Ok(v) => v,
-        Err(_) => return,
-    };
-    let ma_did = match json
-        .get("did")
-        .and_then(|v| v.as_str())
-        .filter(|s| s.starts_with("did:ma:"))
-    {
-        Some(d) => d.to_string(),
-        None => return,
-    };
-    let endpoint_id = json
-        .get("endpoint_id")
-        .and_then(|v| v.as_str())
-        .unwrap_or("")
-        .to_string();
-    config.update(|cfg| {
-        cfg.set(".ma.ctx.did", &ma_did);
-        if !endpoint_id.is_empty() {
-            cfg.set(".ma.ctx.endpoint_id", &endpoint_id);
-        }
-        cfg.set(".my.aliases.ma", &ma_did);
-    });
-    if let Some(sess) = state.session.get_untracked() {
-        let cfg = config.get_untracked();
-        let _ = persist_config(&sess.username, &cfg).await;
-    }
-    if transport::send_identity_publish(&ma_did).await.is_ok() {
-        state.push_system(tf("msg-auto-published", &[("url", &ma_url)]));
-    }
+        .filter(|did| did.starts_with("did:ma:"))
+        .map(ToString::to_string);
+    crate::parser::verbs::ma::connect_ma_runtime(
+        state,
+        config,
+        username,
+        sender_did,
+        ma_url,
+        fallback_did,
+        crate::parser::verbs::ma::ConnectMaOptions {
+            publish: should_publish,
+            full_profile_publish: false,
+        },
+    )
+    .await;
 }
 
 pub(crate) async fn startup_did_sync(
@@ -128,20 +116,11 @@ pub(crate) async fn startup_did_sync(
     username: String,
     state: AppState,
     config: RwSignal<EgoConfig>,
-    startup_ma: Option<String>,
 ) {
     let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
     let Some(resolver) = resolver else { return };
-    match (*resolver).resolve(&own_did).await {
-        Ok(doc) => startup_profile_exists(doc, username, state, config).await,
-        Err(_) => {
-            // Only publish if SESSION_AGENT_CID is not yet set, meaning the
-            // document was never published from this device.
-            let has_local_cid = crate::state::SESSION_AGENT_CID.with(|c| c.borrow().is_some());
-            if !has_local_cid {
-                startup_no_document(state, config, startup_ma).await;
-            }
-        }
+    if let Ok(doc) = (*resolver).resolve(&own_did).await {
+        startup_profile_exists(doc, username, state, config).await;
     }
 }
 
@@ -287,22 +266,8 @@ pub(crate) async fn startup_connect(
         Ok(()) => {
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
-            startup_did_sync(
-                sender_did,
-                username,
-                state.clone(),
-                config,
-                startup_ma.clone(),
-            )
-            .await;
-            // If a remote DID was explicitly chosen on the landing page, queue auto-connect.
-            if let Some(ref ma_val) = startup_ma {
-                if ma_val.starts_with("did:ma:") {
-                    state
-                        .input_queue
-                        .update(|q| q.push_back(format!(".ma!connect {ma_val}")));
-                }
-            }
+            startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
+            startup_local_ma(state.clone(), config, username, sender_did, startup_ma).await;
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }

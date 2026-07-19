@@ -6,7 +6,7 @@ mod acl;
 mod doc;
 mod identity;
 mod inbox;
-mod ma;
+pub(crate) mod ma;
 mod scheme;
 
 use crate::config::EgoConfig;
