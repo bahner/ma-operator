@@ -135,10 +135,13 @@ pub fn InputBar(
     };
 
     let on_input = move |ev: web_sys::Event| {
-        let target = ev.target().unwrap();
-        let input = target.unchecked_into::<HtmlInputElement>();
-        hist_idx.set(None);
-        value.set(input.value());
+        if let Some(input) = ev
+            .target()
+            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+        {
+            hist_idx.set(None);
+            value.set(input.value());
+        }
     };
 
     let prompt_text = move || {

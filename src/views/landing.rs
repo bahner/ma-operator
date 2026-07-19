@@ -403,15 +403,21 @@ pub fn Landing() -> impl IntoView {
 
     // ── File selection (Import mode) ──────────────────────────────────────
     let on_file_change = move |ev: web_sys::Event| {
-        let target = ev.target().unwrap();
-        let input = target.unchecked_into::<HtmlInputElement>();
+        let Some(input) = ev
+            .target()
+            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+        else {
+            return;
+        };
         if let Some(files) = input.files() {
             if let Some(file) = files.get(0) {
                 let reader = FileReader::new().unwrap();
                 let reader2 = reader.clone();
                 let onload =
                     wasm_bindgen::closure::Closure::wrap(Box::new(move |_: web_sys::Event| {
-                        let result = reader2.result().unwrap();
+                        let Ok(result) = reader2.result() else {
+                            return;
+                        };
                         if let Some(text) = result.as_string() {
                             let raw = text.into_bytes();
                             spawn_local(async move {
@@ -482,10 +488,11 @@ pub fn Landing() -> impl IntoView {
                                         class="runtime-select"
                                         prop:value=move || ma_input.get()
                                         on:change=move |ev| {
-                                            use wasm_bindgen::JsCast;
-                                            let sel = ev.target().unwrap()
-                                                .unchecked_into::<web_sys::HtmlSelectElement>();
-                                            ma_input.set(sel.value());
+                                            if let Some(sel) = ev.target()
+                                                .and_then(|target| target.dyn_into::<web_sys::HtmlSelectElement>().ok())
+                                            {
+                                                ma_input.set(sel.value());
+                                            }
                                         }
                                     >
                                         <option value={prev.clone()}>{prev.clone()}</option>
@@ -499,10 +506,11 @@ pub fn Landing() -> impl IntoView {
                                         prop:value=move || ma_input.get()
                                         placeholder=move || { let _ = lang.get(); t("label-runtime-placeholder") }
                                         on:input=move |ev| {
-                                            use wasm_bindgen::JsCast;
-                                            let target = ev.target().unwrap();
-                                            let input = target.unchecked_into::<HtmlInputElement>();
-                                            ma_input.set(input.value());
+                                            if let Some(input) = ev.target()
+                                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                            {
+                                                ma_input.set(input.value());
+                                            }
                                         }
                                     />
                                 }.into_any()
@@ -536,9 +544,11 @@ pub fn Landing() -> impl IntoView {
                         prop:readOnly=move || mode.get() == Mode::New
                         placeholder="did:ma:..."
                         on:input=move |ev| {
-                            let target = ev.target().unwrap();
-                            let input = target.unchecked_into::<HtmlInputElement>();
-                            did_input.set(input.value());
+                            if let Some(input) = ev.target()
+                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                            {
+                                did_input.set(input.value());
+                            }
                         }
                     />
                 </div>
@@ -567,9 +577,11 @@ pub fn Landing() -> impl IntoView {
                             type="password"
                             placeholder="••••••••"
                             on:input=move |ev| {
-                                let target = ev.target().unwrap();
-                                let input = target.unchecked_into::<HtmlInputElement>();
-                                password.set(input.value());
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    password.set(input.value());
+                                }
                             }
                         />
                     </div>
@@ -583,9 +595,11 @@ pub fn Landing() -> impl IntoView {
                             type="password"
                             placeholder="••••••••"
                             on:input=move |ev| {
-                                let target = ev.target().unwrap();
-                                let input = target.unchecked_into::<HtmlInputElement>();
-                                confirm_password.set(input.value());
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    confirm_password.set(input.value());
+                                }
                             }
                         />
                     </div>
@@ -627,15 +641,25 @@ fn trigger_download(filename: &str, content: &str) {
     };
     let bag = web_sys::BlobPropertyBag::new();
     bag.set_type("application/json");
-    let blob = web_sys::Blob::new_with_str_sequence_and_options(
+    let Ok(blob) = web_sys::Blob::new_with_str_sequence_and_options(
         &js_sys::Array::of1(&wasm_bindgen::JsValue::from_str(content)),
         &bag,
-    )
-    .unwrap();
-    let url = web_sys::Url::create_object_url_with_blob(&blob).unwrap();
-    let anchor: web_sys::HtmlAnchorElement = document.create_element("a").unwrap().unchecked_into();
+    ) else {
+        return;
+    };
+    let Ok(url) = web_sys::Url::create_object_url_with_blob(&blob) else {
+        return;
+    };
+    let Some(anchor) = document
+        .create_element("a")
+        .ok()
+        .and_then(|element| element.dyn_into::<web_sys::HtmlAnchorElement>().ok())
+    else {
+        let _ = web_sys::Url::revoke_object_url(&url);
+        return;
+    };
     anchor.set_href(&url);
     anchor.set_download(filename);
     anchor.click();
-    web_sys::Url::revoke_object_url(&url).unwrap();
+    let _ = web_sys::Url::revoke_object_url(&url);
 }

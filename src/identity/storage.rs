@@ -167,7 +167,9 @@ pub async fn load_config(username: &str) -> Result<Option<String>, String> {
     if val.is_undefined() || val.is_null() {
         return Ok(None);
     }
-    Ok(val.as_string())
+    val.as_string()
+        .map(Some)
+        .ok_or_else(|| "invalid config value in IndexedDB".to_string())
 }
 
 pub async fn save_history(username: &str, history_json: &str) -> Result<(), String> {
@@ -204,5 +206,7 @@ pub async fn load_history(username: &str) -> Result<Option<String>, String> {
     if val.is_undefined() || val.is_null() {
         return Ok(None);
     }
-    Ok(val.as_string())
+    val.as_string()
+        .map(Some)
+        .ok_or_else(|| "invalid history value in IndexedDB".to_string())
 }
