@@ -341,18 +341,17 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             Err(e) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                 state2.push_error(tf("msg-send-failed", &[("e", &e)]));
-                return;
             }
         }
     });
 }
 
 fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
-    if raw.starts_with('@') {
+    if let Some(stripped) = raw.strip_prefix('@') {
         if raw.len() == 1 {
             return Err("usage: .enter [nick]@runtime[#room]".to_string());
         }
-        if raw[1..].contains('@') {
+        if stripped.contains('@') {
             return Err("usage: .enter [nick]@runtime[#room]".to_string());
         }
         return Ok((None, raw.to_string()));
@@ -375,7 +374,7 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::{parse_enter_target, validate_alias_set};
+    use super::{focus_target_for_room, parse_enter_target, validate_alias_set};
 
     #[test]
     fn validate_alias_set_accepts_did_url() {
@@ -440,6 +439,18 @@ mod tests {
             ))
         );
     }
+
+    #[test]
+    fn focus_target_requires_full_room_did_url() {
+        let runtime = "did:ma:k51runtime";
+        assert_eq!(focus_target_for_room(runtime, ""), Some(runtime.to_string()));
+        assert_eq!(focus_target_for_room(runtime, "#construct"), None);
+        assert_eq!(focus_target_for_room(runtime, "construct"), None);
+        assert_eq!(
+            focus_target_for_room(runtime, "did:ma:k51runtime#construct"),
+            Some("did:ma:k51runtime#construct".to_string())
+        );
+    }
 }
 
 fn eval_leave(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
@@ -472,6 +483,17 @@ fn parse_config_root(raw: &str) -> Option<String> {
     let actor = actor.trim().to_string();
     if actor.starts_with("did:ma:") && actor.contains('#') {
         Some(actor)
+    } else {
+        None
+    }
+}
+
+fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {
+    let room = room.trim();
+    if room.is_empty() {
+        Some(runtime.to_string())
+    } else if room.starts_with("did:ma:") {
+        Some(room.to_string())
     } else {
         None
     }
@@ -773,10 +795,9 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         .or_else(|| cfg.get(".my.ctx.alias"))
         .unwrap_or("")
         .to_string();
-    let target = if room.is_empty() {
-        runtime.clone()
-    } else {
-        format!("{runtime}{room}") // room already carries '#' prefix
+    let Some(target) = focus_target_for_room(&runtime, &room) else {
+        state.focus_actor.set(None);
+        return;
     };
     let base_prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
         format!("@{alias}")
