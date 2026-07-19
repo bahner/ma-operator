@@ -39,7 +39,7 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
                 continue;
             }
 
-            // Pass-through full DIDs
+            // Pass-through full DIDs and DID-URLs.
             if token.starts_with("did:") {
                 result.push('@');
                 result.push_str(&token);
@@ -53,6 +53,9 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
                 }
                 match cfg.resolve_alias(alias) {
                     Some(did) => {
+                        if did.contains('#') {
+                            return Err(format!("alias already has fragment: @{alias}"));
+                        }
                         result.push_str(did);
                         result.push('#');
                         result.push_str(fragment);
@@ -124,6 +127,20 @@ mod tests {
         let cfg = cfg_with_alias("alice", "did:ma:alice123");
         let result = resolve_targets("@alice#sign", &cfg).unwrap();
         assert_eq!(result, "did:ma:alice123#sign");
+    }
+
+    #[test]
+    fn alias_can_resolve_to_did_url() {
+        let cfg = cfg_with_alias("home", "did:ma:alice123#room");
+        let result = resolve_targets("@home", &cfg).unwrap();
+        assert_eq!(result, "did:ma:alice123#room");
+    }
+
+    #[test]
+    fn alias_with_stored_fragment_rejects_extra_fragment() {
+        let cfg = cfg_with_alias("home", "did:ma:alice123#room");
+        let result = resolve_targets("@home#other", &cfg);
+        assert!(result.is_err());
     }
 
     #[test]

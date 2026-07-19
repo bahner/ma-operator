@@ -63,8 +63,8 @@ msg-link-key-not-found = ключ `{ $key }` не найден в связанн
 err-alias-name-empty = имя псевдонима не может быть пустым
 err-alias-has-dot = имена псевдонимов не могут содержать '.'
 err-alias-has-fragment = имена псевдонимов не могут содержать '#'
-err-alias-value-fragment = значение псевдонима должно быть bare did:ma:<ipns> (без фрагмента)
-err-alias-value-path = значение псевдонима должно быть bare did:ma:<ipns> (без пути)
+err-alias-value-fragment = значение псевдонима может содержать не более одного непустого фрагмента DID-URL
+err-alias-value-path = значение псевдонима должно быть DID did:ma:<ipns> или DID-URL (без пути)
 err-alias-not-did = значение псевдонима должно начинаться с did:ma:
 err-unknown-alias = неизвестный псевдоним: @{ $name }
 err-bare-did = ожидался bare did:ma:<ipns> (без фрагмента или пути), получено { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Справка — сообщения ───────────────────────────────────────────────────
-help-msg-echo =   @alias                       вывести DID (без отправки)
+help-msg-echo =   @alias                       показать разрешённый DID/DID-URL (сообщение не отправляется)
 help-msg-send =   @alias!msg body / @alias:verb args           отправить сообщение / RPC актору
 help-msg-fragment =   @alias#fragment:verb body  отправить с явным фрагментом DID
 help-msg-escape =   \@name                       буквальный @name (без поиска псевдонима)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            вызвать локальн�
 # ── Справка — общие пути ──────────────────────────────────────────────────
 help-my =   .my                          показать личную конфигурацию
 help-aliases =   .my.aliases                  список псевдонимов
-help-aliases-set =   .my.aliases.<name>: <did>    добавить/обновить псевдоним
+help-aliases-set =   .my.aliases.<name>: <did-url>    добавить/обновить псевдоним (DID или DID-URL)
 help-aliases-del =   .my.aliases.<name>:          удалить псевдоним
 help-runtime-discover =   .ma [port]          обнаружить локальную среду и создать @ma
 help-runtime-claim =   .ma [port]             заявить права на среду выполнения

@@ -63,8 +63,8 @@ msg-link-key-not-found = ba a samu maɓalli `{ $key }` a cikin takarda da aka ha
 err-alias-name-empty = sunan laƙabi ba zai iya zama fanko ba
 err-alias-has-dot = sunayen laƙabi ba su iya ƙunsar '.' ba
 err-alias-has-fragment = sunayen laƙabi ba su iya ƙunsar '#' ba
-err-alias-value-fragment = ƙimar laƙabi dole ne ta kasance bare did:ma:<ipns> (babu fragment)
-err-alias-value-path = ƙimar laƙabi dole ne ta kasance bare did:ma:<ipns> (babu path)
+err-alias-value-fragment = ƙimar laƙabi na iya ƙunsar fragment DID-URL guda ɗaya mara komai aƙalla
+err-alias-value-path = ƙimar laƙabi dole ne ta kasance did:ma:<ipns> DID ko DID-URL (babu path)
 err-alias-not-did = ƙimar laƙabi dole ne ta fara da did:ma:
 err-unknown-alias = laƙabi da ba a sani ba: @{ $name }
 err-bare-did = ana tsammanin bare did:ma:<ipns> (babu fragment ko path), an samu { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Rubutun taimako — aikawasiku ──────────────────────────────────────────
-help-msg-echo =   @alias                       nuna DID da aka warware (babu aika saƙo)
+help-msg-echo =   @alias                       nuna DID/DID-URL da aka warware (ba a aika saƙo ba)
 help-msg-send =   @alias!msg body / @alias:verb args           aika saƙo / RPC zuwa ɗan wasa
 help-msg-fragment =   @alias#fragment:verb body  aika da fragment DID bayyananne
 help-msg-escape =   \@name                       @name na zahiri (babu binciken laƙabi)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            kira aikatau gida
 # ── Rubutun taimako — hanyoyin gama gari ─────────────────────────────────
 help-my =   .my                          nuna duk saitunan sirri
 help-aliases =   .my.aliases                  jera laƙabai
-help-aliases-set =   .my.aliases.<name>: <did>    ƙara/sabunta laƙabi (bare DID, babu #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    ƙara/sabunta laƙabi (DID ko DID-URL)
 help-aliases-del =   .my.aliases.<name>:          cire laƙabi
 help-runtime-discover =   .ma [port]          gano runtime na gida kuma samar da laƙabi @ma
 help-runtime-claim =   .ma [port]             ɗauki mallakar runtime da DID ɗinka

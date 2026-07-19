@@ -96,7 +96,7 @@ fn dispatch_reply(
         } else {
             text_opt.unwrap_or_default()
         };
-        let _ = sender.send(cfg.substitute_dids(&result));
+        let _ = sender.send(cfg.substitute_display_dids(&result));
         return;
     }
 
@@ -147,7 +147,7 @@ fn dispatch_reply(
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             state.resolve_command_by_id(cmd_id, status);
             if let Some(text) = text_opt {
-                let text = config.get_untracked().substitute_dids(&text);
+                let text = config.get_untracked().substitute_display_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
             }
         }
@@ -188,7 +188,7 @@ fn handle_client_term_array(
     match head.as_str() {
         ":print" => {
             if let Some(text) = items.get(1).and_then(cbor_text) {
-                let text = config.get_untracked().substitute_dids(text);
+                let text = config.get_untracked().substitute_display_dids(text);
                 state.push_incoming(text, None, false);
             }
             true
@@ -264,7 +264,7 @@ fn handle_ctx_receipt(
         });
     }
     if let Some(text) = text {
-        state.push_incoming(cfg.substitute_dids(&text), None, false);
+        state.push_incoming(cfg.substitute_display_dids(&text), None, false);
     }
 }
 
@@ -379,8 +379,9 @@ fn loopback_suppress(incoming: &IncomingMessage) -> bool {
 /// Build the display string for an incoming message (alias substitution).
 fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
+    let mut display = cfg.substitute_display_dids(&incoming.display);
     let Some((alias, frag)) = cfg.split_alias(&incoming.from) else {
-        return incoming.display.clone();
+        return display;
     };
     let bare = incoming.message_type == ma_core::MESSAGE_TYPE_EMOTE
         || incoming.message_type == ma_core::MESSAGE_TYPE_CHAT;
@@ -390,22 +391,73 @@ fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> St
         (false, Some(f)) => format!("@{alias}#{f}"),
         (false, None) => format!("@{alias}"),
     };
-    incoming.display.replace(&incoming.from, &replacement)
+    display = display.replace(&incoming.from, &replacement);
+    display
 }
 
 /// Format a `did:ma:<id>[#fragment]` DID-URL for display, substituting a
 /// known alias (`@alias` / `@alias#fragment`) when one exists, or falling
 /// back to the DID-URL unchanged. Shared by `acl_gate` and `display_sender`.
 fn alias_display(cfg: &EgoConfig, did_url: &str) -> String {
-    match cfg.split_alias(did_url) {
-        Some((alias, Some(frag))) => format!("@{alias}#{frag}"),
-        Some((alias, None)) => format!("@{alias}"),
-        None => did_url.to_string(),
-    }
+    cfg.alias_display(did_url)
+        .unwrap_or_else(|| did_url.to_string())
 }
 
 /// Alias-resolved sender string for display in inbox notifications.
 fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
     alias_display(&cfg, &incoming.from)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::messages::IncomingMessage;
+
+    fn incoming(from: &str, display: &str) -> IncomingMessage {
+        IncomingMessage {
+            message_id: "msg".to_string(),
+            message_type: ma_core::MESSAGE_TYPE_RPC.to_string(),
+            from: from.to_string(),
+            to: "did:ma:self".to_string(),
+            reply_to: None,
+            content_type: "text/plain".to_string(),
+            content: Vec::new(),
+            created_at: 0,
+            exp: 0,
+            display: display.to_string(),
+            is_error: false,
+        }
+    }
+
+    #[test]
+    fn format_display_shortens_did_url_in_text() {
+        let _runtime = leptos::prelude::Owner::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| cfg.set(".my.aliases.sky", "did:ma:k51qzabc"));
+        assert_eq!(
+            format_display(
+                &incoming("did:ma:room", "did:ma:k51qzabc#room arrives."),
+                config,
+            ),
+            "@sky#room arrives."
+        );
+    }
+
+    #[test]
+    fn format_display_prefers_exact_did_url_alias() {
+        let _runtime = leptos::prelude::Owner::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| {
+            cfg.set(".my.aliases.sky", "did:ma:k51qzabc");
+            cfg.set(".my.aliases.home", "did:ma:k51qzabc#room");
+        });
+        assert_eq!(
+            format_display(
+                &incoming("did:ma:room", "did:ma:k51qzabc#room arrives."),
+                config,
+            ),
+            "@home arrives."
+        );
+    }
 }

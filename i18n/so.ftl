@@ -63,8 +63,8 @@ msg-link-key-not-found = furaha `{ $key }` dokumantigii la xidhay lama helin
 err-alias-name-empty = magaca magaca kale ma noqon karo mid maran
 err-alias-has-dot = magacyada kale kuma jiri karaan '.'
 err-alias-has-fragment = magacyada kale kuma jiri karaan '#'
-err-alias-value-fragment = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (fragment la'aan)
-err-alias-value-path = qiimaha magaca kale waa inuu noqdaa bare did:ma:<ipns> (path la'aan)
+err-alias-value-fragment = qiimaha magaca kale wuxuu yeelan karaa ugu badnaan hal fragment DID-URL oo aan madhnayn
+err-alias-value-path = qiimaha magaca kale waa inuu noqdaa did:ma:<ipns> DID ama DID-URL (path la’aan)
 err-alias-not-did = qiimaha magaca kale waa inuu ku billowdo did:ma:
 err-unknown-alias = magaca kale aan la garanin: @{ $name }
 err-bare-did = bare did:ma:<ipns> ayaa la filaayay (fragment ama path la'aan), { $did } ayaa la helay
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Gargaarku — farriin diridda ───────────────────────────────────────────
-help-msg-echo =   @alias                       tus DID la xalliyay (farriin la dirin)
+help-msg-echo =   @alias                       muuji DID/DID-URL la xaliyay (farriin lama diro)
 help-msg-send =   @alias!msg body / @alias:verb args           dir farriin / RPC u sheegto actor
 help-msg-fragment =   @alias#fragment:verb body  dir xidhmad leh DID fragment cad
 help-msg-escape =   \@name                       @name dhab ah (raadinta magaca kale ma jirto)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            wac ficilka deegaanka
 # ── Gargaarku — wadooyinka caadiga ah ────────────────────────────────────
 help-my =   .my                          tus dhammaan dejintada shakhsiga
 help-aliases =   .my.aliases                  liisko magacyada kale
-help-aliases-set =   .my.aliases.<name>: <did>    ku dar/cusbooneysii magaca kale (bare DID, #fragment la'aan)
+help-aliases-set =   .my.aliases.<name>: <did-url>    ku dar/cusbooneysii magaca kale (DID ama DID-URL)
 help-aliases-del =   .my.aliases.<name>:          ka saar magaca kale
 help-runtime-discover =   .ma [port]          ogaw runtime deegaanka oo abuur magaca kale @ma
 help-runtime-claim =   .ma [port]             hantida runtime DID-kaagana

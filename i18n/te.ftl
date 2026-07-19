@@ -63,8 +63,8 @@ msg-link-key-not-found = లింక్ చేసిన డాక్యుమ�
 err-alias-name-empty = మారుపేరు ఖాళీగా ఉండకూడదు
 err-alias-has-dot = మారుపేర్లలో '.' ఉండకూడదు
 err-alias-has-fragment = మారుపేర్లలో '#' ఉండకూడదు
-err-alias-value-fragment = మారుపేరు విలువ bare did:ma:<ipns> అయి ఉండాలి (ఫ్రాగ్మెంట్ లేదు)
-err-alias-value-path = మారుపేరు విలువ bare did:ma:<ipns> అయి ఉండాలి (పాత్ లేదు)
+err-alias-value-fragment = మారుపేరు విలువలో గరిష్ఠంగా ఒక ఖాళీ కాని DID-URL ఫ్రాగ్మెంట్ ఉండవచ్చు
+err-alias-value-path = మారుపేరు విలువ did:ma:<ipns> DID లేదా DID-URL అయి ఉండాలి (path లేదు)
 err-alias-not-did = మారుపేరు విలువ did:ma: తో మొదలవ్వాలి
 err-unknown-alias = తెలియని మారుపేరు: @{ $name }
 err-bare-did = bare did:ma:<ipns> (ఫ్రాగ్మెంట్ లేదా పాత్ లేదు) అపేక్షించబడింది, పొందింది { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
-help-msg-echo =   @alias                       పరిష్కరించిన DID చూపించు (సందేశం పంపలేదు)
+help-msg-echo =   @alias                       పరిష్కరించిన DID/DID-URL చూపించు (సందేశం పంపబడదు)
 help-msg-send =   @alias!msg body / @alias:verb args           నటుడికి సందేశం / RPC పంపండి
 help-msg-fragment =   @alias#fragment:verb body  స్పష్టమైన DID ఫ్రాగ్మెంట్‌తో పంపండి
 help-msg-escape =   \@name                       అక్షరార్థ @name (మారుపేరు శోధన లేదు)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            స్థానిక క్�
 # ── సహాయం — సాధారణ మార్గాలు ──────────────────────────────────────────────
 help-my =   .my                          అన్ని వ్యక్తిగత కాన్ఫిగ్ చూపించు
 help-aliases =   .my.aliases                  మారుపేర్ల జాబితా
-help-aliases-set =   .my.aliases.<name>: <did>    మారుపేరు జోడించు/అప్‌డేట్ చేయి
+help-aliases-set =   .my.aliases.<name>: <did-url>    మారుపేరు జోడించు/నవీకరించు (DID లేదా DID-URL)
 help-aliases-del =   .my.aliases.<name>:          మారుపేరు తొలగించు
 help-runtime-discover =   .ma [port]          స్థానిక రన్‌టైమ్ కనుగొనండి మరియు @ma సృష్టించండి
 help-runtime-claim =   .ma [port]             మీ DID తో రన్‌టైమ్ క్లెయిమ్ చేయండి

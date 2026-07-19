@@ -63,8 +63,8 @@ msg-link-key-not-found = tsy hita ny fanalahidy `{ $key }` ao amin'ny antontan-t
 err-alias-name-empty = tsy afaka ho foana ny anarana fanampiny
 err-alias-has-dot = ny anarana fanampiny dia tsy afaka misy '.'
 err-alias-has-fragment = ny anarana fanampiny dia tsy afaka misy '#'
-err-alias-value-fragment = ny sanda fanampiny dia tsy maintsy bare did:ma:<ipns> (tsy misy fragment)
-err-alias-value-path = ny sanda fanampiny dia tsy maintsy bare did:ma:<ipns> (tsy misy path)
+err-alias-value-fragment = ny sanda fanampiny dia afaka manana fragment DID-URL iray tsy foana farafahabetsany
+err-alias-value-path = ny sanda fanampiny dia tsy maintsy did:ma:<ipns> DID na DID-URL (tsy misy path)
 err-alias-not-did = ny sanda fanampiny dia tsy maintsy manomboka amin'ny did:ma:
 err-unknown-alias = anarana fanampiny tsy fantatra: @{ $name }
 err-bare-did = nandry bare did:ma:<ipns> (tsy misy fragment na path), nahazo { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       asehoy DID nonadihina (tsy nalefa hafatra)
+help-msg-echo =   @alias                       asehoy DID/DID-URL voavaha (tsy misy hafatra alefa)
 help-msg-send =   @alias!msg body / @alias:verb args           alefa hafatra / RPC any amin'ny mpilalao
 help-msg-fragment =   @alias#fragment:verb body  alefa misy DID fragment mazava
 help-msg-escape =   \@name                       @name ara-bakiteny (tsy mikaroka anarana fanampiny)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            antsoy ny fiasa toerana
 # ── Fanampiana — lalan-kely mahazatra ────────────────────────────────────
 help-my =   .my                          asehoy ny fikajiana manokana rehetra
 help-aliases =   .my.aliases                  lisitra anarana fanampiny
-help-aliases-set =   .my.aliases.<name>: <did>    ampiana/havaozina anarana fanampiny (bare DID, tsy misy #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    ampiana/havaozina anarana fanampiny (DID na DID-URL)
 help-aliases-del =   .my.aliases.<name>:          esorina ny anarana fanampiny
 help-runtime-discover =   .ma [port]          ahitana runtime toerana ary mamorona anarana fanampiny @ma
 help-runtime-claim =   .ma [port]             alao runtime amin'ny DID anao

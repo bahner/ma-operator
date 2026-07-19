@@ -63,8 +63,8 @@ msg-link-key-not-found = ቁልፍ `{ $key }` በተያያዘው ሰነድ ው�
 err-alias-name-empty = የቅፅል ስም ባዶ ሊሆን አይችልም
 err-alias-has-dot = የቅፅል ስሞች '.' ሊይዙ አይችሉም
 err-alias-has-fragment = የቅፅል ስሞች '#' ሊይዙ አይችሉም
-err-alias-value-fragment = የቅፅል ስም ዋጋ bare did:ma:<ipns> መሆን አለበት (fragment የለም)
-err-alias-value-path = የቅፅል ስም ዋጋ bare did:ma:<ipns> መሆን አለበት (path የለም)
+err-alias-value-fragment = የቅፅል ስም ዋጋ ቢበዛ አንድ ባዶ ያልሆነ DID-URL fragment ሊኖረው ይችላል
+err-alias-value-path = የቅፅል ስም ዋጋ did:ma:<ipns> DID ወይም DID-URL መሆን አለበት (path የለም)
 err-alias-not-did = የቅፅል ስም ዋጋ did:ma: ለ መጀምር አለበት
 err-unknown-alias = ያልታወቀ ቅፅል ስም: @{ $name }
 err-bare-did = bare did:ma:<ipns> ይጠበቅ ነበር (fragment ወይም path የለም), { $did } ተገኘ
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
-help-msg-echo =   @alias                       የተፈታ DID አሳይ (ምንም መልዕክት አልተላከም)
+help-msg-echo =   @alias                       የተፈታ DID/DID-URL አሳይ (መልዕክት አይላክም)
 help-msg-send =   @alias!msg body / @alias:verb args           ወደ ተዋናይ መልዕክት / RPC ይላኩ
 help-msg-fragment =   @alias#fragment:verb body  ግልጽ DID fragment ባለው ቅፅል ስም ይላኩ
 help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም ፍለጋ የለም)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            ሁናቴ ተግባር ይጥ�
 # ── እርዳታ — ተሎ ጥቅም ላይ የሚዋሉ ─────────────────────────────────────────
 help-my =   .my                          ሁሉንም የግል ቅንብሮች አሳይ
 help-aliases =   .my.aliases                  ቅፅል ስሞችን ዘርዝር
-help-aliases-set =   .my.aliases.<name>: <did>    ቅፅል ስም ጨምር/አዘምን (bare DID, #fragment የለም)
+help-aliases-set =   .my.aliases.<name>: <did-url> ቅፅል ስም ጨምር/አዘምን (DID ወይም DID-URL)
 help-aliases-del =   .my.aliases.<name>:          ቅፅል ስም አስወግድ
 help-runtime-discover =   .ma [port]          ሁናቴ runtime ፈልግ እና ቅፅል ስም @ma ፍጠር
 help-runtime-claim =   .ma [port]             DIDዎ በ runtime ባለቤትነት ጠይቁ

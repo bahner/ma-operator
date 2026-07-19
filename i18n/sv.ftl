@@ -63,8 +63,8 @@ msg-link-key-not-found = nyckeln `{ $key }` hittades inte i länkat dokument
 err-alias-name-empty = aliasnamn kan inte vara tomt
 err-alias-has-dot = aliasnamn kan inte innehålla '.'
 err-alias-has-fragment = aliasnamn kan inte innehålla '#'
-err-alias-value-fragment = aliasvärde måste vara bart did:ma:<ipns> (inget fragment)
-err-alias-value-path = aliasvärde måste vara bart did:ma:<ipns> (ingen sökväg)
+err-alias-value-fragment = aliasvärde får innehålla högst ett icke-tomt DID-URL-fragment
+err-alias-value-path = aliasvärde måste vara en did:ma:<ipns>-DID eller DID-URL (ingen sökväg)
 err-alias-not-did = aliasvärde måste börja med did:ma:
 err-unknown-alias = okänt alias: @{ $name }
 err-bare-did = förväntade bart did:ma:<ipns> (inget fragment eller sökväg), fick { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────
-help-msg-echo =   @alias                       visa löst DID (inget meddelande skickat)
+help-msg-echo =   @alias                       visa löst DID/DID-URL (inget meddelande skickas)
 help-msg-send =   @alias!msg body / @alias:verb args           skicka meddelande / RPC till aktör
 help-msg-fragment =   @alias#fragment:verb body  skicka till alias med explicit DID-fragment
 help-msg-escape =   \@name                       bokstavlig @name (ingen alias-sökning)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            kör lokalt verb
 # ── Hjälptext — vanliga sökvägar ─────────────────────────────────────────
 help-my =   .my                          visa all personlig konfiguration
 help-aliases =   .my.aliases                  lista alias
-help-aliases-set =   .my.aliases.<name>: <did>    lägg till/uppdatera alias (bart DID, inget #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    lägg till/uppdatera alias (DID eller DID-URL)
 help-aliases-del =   .my.aliases.<name>:          ta bort alias
 help-runtime-discover =   .ma [port]          identifiera lokal körtid och skapa @ma-alias
 help-runtime-claim =   .ma [port]             gör anspråk på körtid med din DID

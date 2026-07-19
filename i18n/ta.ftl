@@ -63,8 +63,8 @@ msg-link-key-not-found = இணைக்கப்பட்ட ஆவணத்த
 err-alias-name-empty = புனைப்பெயர் வெறுமையாக இருக்க முடியாது
 err-alias-has-dot = புனைப்பெயர்களில் '.' இருக்க முடியாது
 err-alias-has-fragment = புனைப்பெயர்களில் '#' இருக்க முடியாது
-err-alias-value-fragment = புனைப்பெயர் மதிப்பு bare did:ma:<ipns> ஆக இருக்க வேண்டும் (துண்டு இல்லை)
-err-alias-value-path = புனைப்பெயர் மதிப்பு bare did:ma:<ipns> ஆக இருக்க வேண்டும் (பாதை இல்லை)
+err-alias-value-fragment = புனைப்பெயர் மதிப்பில் அதிகபட்சம் ஒரு காலியாகாத DID-URL துண்டு இருக்கலாம்
+err-alias-value-path = புனைப்பெயர் மதிப்பு did:ma:<ipns> DID அல்லது DID-URL ஆக இருக்க வேண்டும் (path இல்லை)
 err-alias-not-did = புனைப்பெயர் மதிப்பு did:ma: உடன் தொடங்க வேண்டும்
 err-unknown-alias = அறியப்படாத புனைப்பெயர்: @{ $name }
 err-bare-did = bare did:ma:<ipns> (துண்டு அல்லது பாதை இல்லாமல்) எதிர்பார்க்கப்பட்டது, கிடைத்தது { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID காட்டு (செய்தி இல்லை)
+help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID/DID-URL காட்டு (செய்தி அனுப்பப்படாது)
 help-msg-send =   @alias!msg body / @alias:verb args           நடிகருக்கு செய்தி / RPC அனுப்பவும்
 help-msg-fragment =   @alias#fragment:verb body  வெளிப்படையான DID துண்டுடன் அனுப்பவும்
 help-msg-escape =   \@name                       நேரடி @name (புனைப்பெயர் தேடல் இல்லை)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            உள்ளூர் வி�
 # ── உதவி — பொதுவான பாதைகள் ──────────────────────────────────────────────
 help-my =   .my                          அனைத்து தனிப்பட்ட அமைவுகளை காட்டவும்
 help-aliases =   .my.aliases                  புனைப்பெயர்கள் பட்டியல்
-help-aliases-set =   .my.aliases.<name>: <did>    புனைப்பெயர் சேர்/புதுப்பிக்கவும்
+help-aliases-set =   .my.aliases.<name>: <did-url>    புனைப்பெயரை சேர்/புதுப்பி (DID அல்லது DID-URL)
 help-aliases-del =   .my.aliases.<name>:          புனைப்பெயர் நீக்கவும்
 help-runtime-discover =   .ma [port]          உள்ளூர் இயக்க நேரம் கண்டுபிடிக்கவும் மற்றும் @ma உருவாக்கவும்
 help-runtime-claim =   .ma [port]             உங்கள் DID உடன் இயக்க நேரம் கோரவும்

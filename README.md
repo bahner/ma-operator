@@ -97,7 +97,11 @@ get theirs, and save it as an alias:
 .my.aliases.alice: did:ma:Qm...
 ```
 
-Aliases must store a bare DID only. Fragments are not allowed in alias values.
+Aliases may store either a DID or a DID-URL with a fragment:
+
+```
+.my.aliases.home: did:ma:Qm...#room
+```
 
 Now sending is simple:
 
@@ -119,6 +123,9 @@ To target a specific entity fragment while still using an alias:
 ```
 @alice#fortune:fortune
 ```
+
+Appending a fragment is only valid when the alias stores a DID. If an alias
+already stores a DID-URL, use the alias directly.
 
 ---
 

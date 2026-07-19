@@ -63,8 +63,8 @@ msg-link-key-not-found = keblal `{ $key }` tawaaka e takka ɗannol
 err-alias-name-empty = innde hesbu taa fotde luuro
 err-alias-has-dot = innde hesbu taa fotde '.'
 err-alias-has-fragment = innde hesbu taa fotde '#'
-err-alias-value-fragment = njamu hesbu fotde bare did:ma:<ipns> (yimɓe fragment)
-err-alias-value-path = njamu hesbu fotde bare did:ma:<ipns> (yimɓe path)
+err-alias-value-fragment = njamu hesbu ena waawi jogaade ko ɓuri gooto fragment DID-URL mo wonaa meho
+err-alias-value-path = njamu hesbu ena foti wonde did:ma:<ipns> DID walla DID-URL (alaa laawol)
 err-alias-not-did = njamu hesbu fotde fuɗɗoraade did:ma:
 err-unknown-alias = hesbu ɓurnataa: @{ $name }
 err-bare-did = bare did:ma:<ipns> laanaama (yimɓe fragment walla path), tawi { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       hollu DID tuugniingal (koɗe nanndinkaaka)
+help-msg-echo =   @alias                       hollu DID/DID-URL ɗaaɓtunde (ɓatakuru neldaaka)
 help-msg-send =   @alias!msg body / @alias:verb args           nawtu koɗe / RPC e actor
 help-msg-fragment =   @alias#fragment:verb body  nawtu e DID fragment baɗaaɗo
 help-msg-escape =   \@name                       @name haqiiqaajo (yiytude hesbu alaa)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            noddu baɗe tiiɗnde
 # ── Ballal — laabi caggal ─────────────────────────────────────────────────
 help-my =   .my                          hollu poti fikaji neɗɗaagu
 help-aliases =   .my.aliases                  listal hesbu
-help-aliases-set =   .my.aliases.<name>: <did>    tottiri/hollintu hesbu (bare DID, alaa #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url> tottiri/hollintu hesbu (DID walla DID-URL)
 help-aliases-del =   .my.aliases.<name>:          yaltina hesbu
 help-runtime-discover =   .ma [port]          yiytude runtime tiiɗnde e hobbaade hesbu @ma
 help-runtime-claim =   .ma [port]             ɗaɓɓude runtime DID maa

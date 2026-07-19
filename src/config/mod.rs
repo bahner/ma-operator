@@ -143,21 +143,25 @@ impl EgoConfig {
         self.tree.get(&key).map(|s| s.as_str())
     }
 
-    /// Reverse-lookup: given a DID, return the alias name (without `@`), if any.
-    pub fn reverse_alias<'a>(&'a self, did: &str) -> Option<&'a str> {
+    /// Reverse-lookup: given a DID or DID-URL, return the alias name (without `@`), if any.
+    pub fn reverse_alias<'a>(&'a self, did_url: &str) -> Option<&'a str> {
         const PREFIX: &str = ".my.aliases.";
         self.tree
             .iter()
-            .find(|(k, v)| k.starts_with(PREFIX) && v.as_str() == did)
+            .find(|(k, v)| k.starts_with(PREFIX) && v.as_str() == did_url)
             .map(|(k, _)| &k[PREFIX.len()..])
     }
 
-    /// Split `did_url` (a bare `did:ma:<id>` or a `did:ma:<id>#fragment`
-    /// DID-URL) into `(alias, fragment)` when the base DID has a known
-    /// alias. `alias` is returned without any `@` prefix so callers can
+    /// Split `did_url` (a `did:ma:<id>` DID or a `did:ma:<id>#fragment`
+    /// DID-URL) into `(alias, fragment)` when a known alias matches. Exact
+    /// DID-URL aliases win; otherwise a DID alias is reused with the fragment
+    /// preserved. `alias` is returned without any `@` prefix so callers can
     /// format it as needed (plain for emote/chat text, `@alias` otherwise).
-    /// Returns `None` when the base DID has no matching alias.
+    /// Returns `None` when no matching alias exists.
     pub fn split_alias(&self, did_url: &str) -> Option<(String, Option<String>)> {
+        if let Some(alias) = self.reverse_alias(did_url) {
+            return Some((alias.to_string(), None));
+        }
         let (base, frag) = did_url.split_once('#').unwrap_or((did_url, ""));
         let alias = self.reverse_alias(base)?.to_string();
         let frag = if frag.is_empty() {
@@ -166,6 +170,72 @@ impl EgoConfig {
             Some(frag.to_string())
         };
         Some((alias, frag))
+    }
+
+    pub fn alias_display(&self, did_url: &str) -> Option<String> {
+        match self.split_alias(did_url) {
+            Some((alias, Some(frag))) => Some(format!("@{alias}#{frag}")),
+            Some((alias, None)) => Some(format!("@{alias}")),
+            None => None,
+        }
+    }
+
+    fn did_token_len(text: &str) -> usize {
+        const PREFIX: &str = "did:ma:";
+        if !text.starts_with(PREFIX) {
+            return 0;
+        }
+        let after_prefix = &text[PREFIX.len()..];
+        let id_len = after_prefix
+            .find(|c: char| !c.is_ascii_alphanumeric())
+            .unwrap_or(after_prefix.len());
+        let mut len = PREFIX.len() + id_len;
+        let tail = &text[len..];
+        if let Some(stripped) = tail.strip_prefix('#') {
+            let frag_len = stripped
+                .find(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '-'))
+                .unwrap_or(stripped.len());
+            if frag_len > 0 {
+                len += 1 + frag_len;
+            }
+        }
+        len
+    }
+
+    pub fn substitute_display_dids(&self, text: &str) -> String {
+        const PREFIX: &str = "did:ma:";
+        let mut out = String::with_capacity(text.len());
+        let mut rest = text;
+        loop {
+            let Some(pos) = rest.find(PREFIX) else {
+                out.push_str(rest);
+                return out;
+            };
+            let actor_ref = pos > 0 && rest.as_bytes()[pos - 1] == b'@';
+            let before_end = if actor_ref { pos - 1 } else { pos };
+            out.push_str(&rest[..before_end]);
+
+            let token_len = Self::did_token_len(&rest[pos..]);
+            if token_len == 0 {
+                if actor_ref {
+                    out.push('@');
+                }
+                out.push_str(PREFIX);
+                rest = &rest[pos + PREFIX.len()..];
+                continue;
+            }
+            let did_url = &rest[pos..pos + token_len];
+            match self.alias_display(did_url) {
+                Some(alias) => out.push_str(&alias),
+                None => {
+                    if actor_ref {
+                        out.push('@');
+                    }
+                    out.push_str(did_url);
+                }
+            }
+            rest = &rest[pos + token_len..];
+        }
     }
 
     /// Scan free-form text for `@did:ma:<id>[#fragment]` occurrences — i.e.
@@ -181,6 +251,7 @@ impl EgoConfig {
     /// outbound `\@name` convention in `parser/alias.rs::resolve_targets`:
     /// `\@did:ma:…` has the backslash stripped and is never alias-substituted,
     /// even when a matching alias exists.
+    #[cfg(test)]
     pub fn substitute_dids(&self, text: &str) -> String {
         const PREFIX: &str = "@did:ma:";
         let mut out = String::with_capacity(text.len());
@@ -200,25 +271,8 @@ impl EgoConfig {
                 continue;
             }
             out.push_str(&rest[..pos]);
-            let after_prefix = &rest[pos + PREFIX.len()..];
-            let id_len = after_prefix
-                .find(|c: char| !c.is_ascii_alphanumeric())
-                .unwrap_or(after_prefix.len());
-            let (id, mut tail) = after_prefix.split_at(id_len);
-            let mut frag: Option<&str> = None;
-            if let Some(stripped) = tail.strip_prefix('#') {
-                let frag_len = stripped
-                    .find(|c: char| !(c.is_ascii_alphanumeric() || c == '_' || c == '-'))
-                    .unwrap_or(stripped.len());
-                if frag_len > 0 {
-                    frag = Some(&stripped[..frag_len]);
-                    tail = &stripped[frag_len..];
-                }
-            }
-            let did_url = match frag {
-                Some(f) => format!("did:ma:{id}#{f}"),
-                None => format!("did:ma:{id}"),
-            };
+            let token_len = Self::did_token_len(&rest[pos + 1..]);
+            let did_url = &rest[pos + 1..pos + 1 + token_len];
             out.push('@');
             match self.split_alias(&did_url) {
                 Some((alias, Some(f))) => {
@@ -229,7 +283,7 @@ impl EgoConfig {
                 Some((alias, None)) => out.push_str(&alias),
                 None => out.push_str(&did_url),
             }
-            rest = tail;
+            rest = &rest[pos + 1 + token_len..];
         }
     }
 
@@ -659,6 +713,13 @@ mod tests {
     }
 
     #[test]
+    fn reverse_alias_finds_did_url() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.home", "did:ma:abc#room");
+        assert_eq!(cfg.reverse_alias("did:ma:abc#room"), Some("home"));
+    }
+
+    #[test]
     fn reverse_alias_missing() {
         assert!(bare().reverse_alias("did:ma:unknown").is_none());
     }
@@ -686,6 +747,21 @@ mod tests {
     }
 
     #[test]
+    fn split_alias_exact_did_url_wins() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.sky", "did:ma:abc");
+        cfg.set(".my.aliases.home", "did:ma:abc#room");
+        assert_eq!(
+            cfg.split_alias("did:ma:abc#room"),
+            Some(("home".to_string(), None))
+        );
+        assert_eq!(
+            cfg.split_alias("did:ma:abc#garden"),
+            Some(("sky".to_string(), Some("garden".to_string())))
+        );
+    }
+
+    #[test]
     fn split_alias_missing() {
         assert!(bare().split_alias("did:ma:unknown").is_none());
     }
@@ -709,6 +785,42 @@ mod tests {
         assert_eq!(
             cfg.substitute_dids("target is @did:ma:k51qzabc#room"),
             "target is @sky#room"
+        );
+    }
+
+    #[test]
+    fn substitute_dids_prefers_exact_did_url_alias() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.sky", "did:ma:k51qzabc");
+        cfg.set(".my.aliases.home", "did:ma:k51qzabc#room");
+        assert_eq!(
+            cfg.substitute_dids("target is @did:ma:k51qzabc#room"),
+            "target is @home"
+        );
+    }
+
+    #[test]
+    fn substitute_display_dids_replaces_bare_did_url() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.sky", "did:ma:k51qzabc");
+        assert_eq!(
+            cfg.substitute_display_dids("did:ma:k51qzabc#room arrives."),
+            "@sky#room arrives."
+        );
+    }
+
+    #[test]
+    fn substitute_display_dids_prefers_exact_did_url_alias() {
+        let mut cfg = bare();
+        cfg.set(".my.aliases.sky", "did:ma:k51qzabc");
+        cfg.set(".my.aliases.home", "did:ma:k51qzabc#room");
+        assert_eq!(
+            cfg.substitute_display_dids("did:ma:k51qzabc#room arrives."),
+            "@home arrives."
+        );
+        assert_eq!(
+            cfg.substitute_display_dids("@did:ma:k51qzabc#room arrives."),
+            "@home arrives."
         );
     }
 

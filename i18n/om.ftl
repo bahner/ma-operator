@@ -63,8 +63,8 @@ msg-link-key-not-found = furtuun `{ $key }` galmee walitti hidhametti hin argamn
 err-alias-name-empty = maqaan moggaasaa duwwaa ta'uu hin danda'u
 err-alias-has-dot = maqaalee moggaasaa '.' qabaachuu hin danda'an
 err-alias-has-fragment = maqaalee moggaasaa '#' qabaachuu hin danda'an
-err-alias-value-fragment = gatiin moggaasaa bare did:ma:<ipns> ta'uu qaba (fragment hin qabu)
-err-alias-value-path = gatiin moggaasaa bare did:ma:<ipns> ta'uu qaba (path hin qabu)
+err-alias-value-fragment = gatiin moggaasaa yoo baay’ate fragment DID-URL tokko duwwaa hin taane qabaachuu danda’a
+err-alias-value-path = gatiin moggaasaa did:ma:<ipns> DID yookaan DID-URL ta’uu qaba (path hin qabu)
 err-alias-not-did = gatiin moggaasaa did:ma: irraa eegaluu qaba
 err-unknown-alias = moggaasi beekamu hin jiru: @{ $name }
 err-bare-did = bare did:ma:<ipns> eegama ture (fragment ykn path hin qabu), { $did } argame
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Gargaarsa — ergaa erguuf ──────────────────────────────────────────────
-help-msg-echo =   @alias                       DID hiikame agarsiisi (ergaan hin ergamu)
+help-msg-echo =   @alias                       DID/DID-URL furame agarsiisi (ergaan hin ergamu)
 help-msg-send =   @alias!msg body / @alias:verb args           ergaa / RPC ergaan seera taphataan
 help-msg-fragment =   @alias#fragment:verb body  fragment DID ifaa wajjin ergi
 help-msg-escape =   \@name                       @name dhugaa (moggaasni hin barbaadamu)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            gochaa naannoo waami
 # ── Gargaarsa — karaalee waliigalaa ──────────────────────────────────────
 help-my =   .my                          qindaa'ina dhuunfaa hunda agarsiisi
 help-aliases =   .my.aliases                  moggaasalee tarreessi
-help-aliases-set =   .my.aliases.<name>: <did>    moggaasa ida'i/haaromsi (bare DID, #fragment hin qabu)
+help-aliases-set =   .my.aliases.<name>: <did-url> moggaasa ida’i/haaromsi (DID yookaan DID-URL)
 help-aliases-del =   .my.aliases.<name>:          moggaasa haaqami
 help-runtime-discover =   .ma [port]          runtime naannoo argadhu kaanis moggaasa @ma uumi
 help-runtime-claim =   .ma [port]             DID keetiin runtime fudhadhu

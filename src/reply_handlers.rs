@@ -432,7 +432,7 @@ pub(crate) fn handle_crud_confirm(
     let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, display);
     state.resolve_command_by_id(cmd_id, status);
     if let Some(text) = push_opt {
-        let text = config.get_untracked().substitute_dids(&text);
+        let text = config.get_untracked().substitute_display_dids(&text);
         state.push_incoming(text, Some(cmd_id), incoming.is_error);
     }
 }

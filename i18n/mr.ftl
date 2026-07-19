@@ -63,8 +63,8 @@ msg-link-key-not-found = जोडलेल्या दस्तऐवजात
 err-alias-name-empty = टोपणनाव रिकामे असू शकत नाही
 err-alias-has-dot = टोपणनावांमध्ये '.' असू शकत नाही
 err-alias-has-fragment = टोपणनावांमध्ये '#' असू शकत नाही
-err-alias-value-fragment = टोपणनावाचे मूल्य bare did:ma:<ipns> असणे आवश्यक आहे (कोणतेही तुकडे नाही)
-err-alias-value-path = टोपणनावाचे मूल्य bare did:ma:<ipns> असणे आवश्यक आहे (कोणताही मार्ग नाही)
+err-alias-value-fragment = टोपणनावाच्या मूल्यात जास्तीत जास्त एक रिकामा नसलेला DID-URL तुकडा असू शकतो
+err-alias-value-path = टोपणनावाचे मूल्य did:ma:<ipns> DID किंवा DID-URL असणे आवश्यक आहे (path नाही)
 err-alias-not-did = टोपणनावाचे मूल्य did:ma: ने सुरू होणे आवश्यक आहे
 err-unknown-alias = अज्ञात टोपणनाव: @{ $name }
 err-bare-did = bare did:ma:<ipns> (कोणताही तुकडा किंवा मार्ग नाही) अपेक्षित, मिळाले { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── मदत — संदेशन ──────────────────────────────────────────────────────────
-help-msg-echo =   @alias                       निराकरण केलेले DID दाखवा (संदेश पाठवला नाही)
+help-msg-echo =   @alias                       सोडवलेला DID/DID-URL दाखवा (संदेश पाठवला जात नाही)
 help-msg-send =   @alias!msg body / @alias:verb args           अभिनेत्याला संदेश / RPC पाठवा
 help-msg-fragment =   @alias#fragment:verb body  स्पष्ट DID तुकड्यासह पाठवा
 help-msg-escape =   \@name                       शब्दशः @name (कोणता टोपणनाव शोध नाही)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            स्थानिक क्�
 # ── मदत — सामान्य मार्ग ───────────────────────────────────────────────────
 help-my =   .my                          सर्व वैयक्तिक कॉन्फिग दाखवा
 help-aliases =   .my.aliases                  टोपणनावांची यादी
-help-aliases-set =   .my.aliases.<name>: <did>    टोपणनाव जोडा/अपडेट करा
+help-aliases-set =   .my.aliases.<name>: <did-url>    टोपणनाव जोडा/अद्यतनित करा (DID किंवा DID-URL)
 help-aliases-del =   .my.aliases.<name>:          टोपणनाव काढा
 help-runtime-discover =   .ma [port]          स्थानिक रनटाइम शोधा आणि @ma तयार करा
 help-runtime-claim =   .ma [port]             तुमच्या DID ने रनटाइम दाखल करा

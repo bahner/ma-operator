@@ -63,8 +63,8 @@ msg-link-key-not-found = kunci `{ $key }` tidak ditemukan dalam dokumen tertaut
 err-alias-name-empty = nama alias tidak boleh kosong
 err-alias-has-dot = nama alias tidak boleh mengandung '.'
 err-alias-has-fragment = nama alias tidak boleh mengandung '#'
-err-alias-value-fragment = nilai alias harus berupa did:ma:<ipns> tanpa fragmen
-err-alias-value-path = nilai alias harus berupa did:ma:<ipns> tanpa jalur
+err-alias-value-fragment = nilai alias boleh berisi paling banyak satu fragmen DID-URL yang tidak kosong
+err-alias-value-path = nilai alias harus berupa DID did:ma:<ipns> atau DID-URL (tanpa path)
 err-alias-not-did = nilai alias harus dimulai dengan did:ma:
 err-unknown-alias = alias tidak dikenal: @{ $name }
 err-bare-did = diharapkan did:ma:<ipns> tanpa fragmen atau jalur, mendapat { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────
-help-msg-echo =   @alias                       tampilkan DID yang diselesaikan (tidak kirim pesan)
+help-msg-echo =   @alias                       tampilkan DID/DID-URL yang diselesaikan (tidak mengirim pesan)
 help-msg-send =   @alias!msg body / @alias:verb args           kirim pesan / RPC ke aktor
 help-msg-fragment =   @alias#fragment:verb body  kirim ke alias dengan fragmen DID eksplisit
 help-msg-escape =   \@name                       literal @name (tidak ada pencarian alias)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            panggil kata kerja lokal
 # ── Bantuan — jalur umum ──────────────────────────────────────────────────
 help-my =   .my                          tampilkan semua konfigurasi pribadi
 help-aliases =   .my.aliases                  daftar alias
-help-aliases-set =   .my.aliases.<name>: <did>    tambah/perbarui alias (DID tanpa fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    tambah/perbarui alias (DID atau DID-URL)
 help-aliases-del =   .my.aliases.<name>:          hapus alias
 help-runtime-discover =   .ma [port]          temukan runtime lokal dan buat alias @ma
 help-runtime-claim =   .ma [port]             klaim kepemilikan runtime dengan DID Anda

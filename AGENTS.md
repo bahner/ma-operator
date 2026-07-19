@@ -297,12 +297,16 @@ map naturally to `/kinds/ma/avatar/0.0.1`.
 
 ## Alias rules
 
-- Stored at `.my.aliases.<name>` — bare DID only, no fragment.
+- Stored at `.my.aliases.<name>` — either a DID (`did:ma:…`) or a DID-URL
+  with exactly one fragment (`did:ma:…#fragment`); slash paths are forbidden.
 - CRUD via generic dot grammar (`.my.aliases.fjodor: did:ma:…` / `.my.aliases.fjodor:`).
-- `@name` in a command expands to the stored DID.
-  Fragment can be appended: `@name#fragment` → `did:ma:…#fragment`.
+- `@name` in a command expands to the stored DID or DID-URL.
+  Fragment can be appended only when `@name` stores a DID:
+  `@name#fragment` → `did:ma:…#fragment`.
+- Reverse display checks exact DID-URL aliases first, then DID aliases with
+  the fragment preserved (`did:ma:…#fragment` → `@name#fragment`).
 - `\@name` escapes expansion — literal `@name` text in output.
-- Unknown `@name` that is not itself a DID is a hard error.
+- Unknown `@name` that is not itself a DID or DID-URL is a hard error.
 - Only leaf aliases expand; subtree-only paths are an error.
 
 ---

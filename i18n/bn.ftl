@@ -63,8 +63,8 @@ msg-link-key-not-found = লিঙ্ক করা ডকুমেন্টে `
 err-alias-name-empty = উপনামের নাম খালি হতে পারবে না
 err-alias-has-dot = উপনামে '.' থাকতে পারবে না
 err-alias-has-fragment = উপনামে '#' থাকতে পারবে না
-err-alias-value-fragment = উপনামের মান bare did:ma:<ipns> হতে হবে (কোনো ফ্র্যাগমেন্ট নেই)
-err-alias-value-path = উপনামের মান bare did:ma:<ipns> হতে হবে (কোনো পথ নেই)
+err-alias-value-fragment = উপনামের মানে সর্বোচ্চ একটি অ-খালি DID-URL ফ্র্যাগমেন্ট থাকতে পারে
+err-alias-value-path = উপনামের মান did:ma:<ipns> DID অথবা DID-URL হতে হবে (কোনো path নয়)
 err-alias-not-did = উপনামের মান did:ma: দিয়ে শুরু হতে হবে
 err-unknown-alias = অজানা উপনাম: @{ $name }
 err-bare-did = bare did:ma:<ipns> (কোনো ফ্র্যাগমেন্ট বা পথ নেই) প্রত্যাশিত, পাওয়া গেছে { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── সহায়তা — বার্তাপ্রেরণ ────────────────────────────────────────────────
-help-msg-echo =   @alias                       সমাধান করা DID দেখান (কোনো বার্তা পাঠানো হয় না)
+help-msg-echo =   @alias                       সমাধান করা DID/DID-URL দেখান (কোনো বার্তা পাঠানো হয় না)
 help-msg-send =   @alias!msg body / @alias:verb args           অভিনেতাকে বার্তা / RPC পাঠান
 help-msg-fragment =   @alias#fragment:verb body  স্পষ্ট DID ফ্র্যাগমেন্ট সহ পাঠান
 help-msg-escape =   \@name                       আক্ষরিক @name (কোনো উপনাম অনুসন্ধান নেই)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            স্থানীয় ক�
 # ── সহায়তা — সাধারণ পথ ───────────────────────────────────────────────────
 help-my =   .my                          সমস্ত ব্যক্তিগত কনফিগ দেখান
 help-aliases =   .my.aliases                  উপনামের তালিকা
-help-aliases-set =   .my.aliases.<name>: <did>    উপনাম যোগ/আপডেট করুন
+help-aliases-set =   .my.aliases.<name>: <did-url>    উপনাম যোগ/হালনাগাদ করুন (DID অথবা DID-URL)
 help-aliases-del =   .my.aliases.<name>:          উপনাম মুছুন
 help-runtime-discover =   .ma [port]          স্থানীয় রানটাইম আবিষ্কার করুন এবং @ma তৈরি করুন
 help-runtime-claim =   .ma [port]             আপনার DID দিয়ে রানটাইম দাবি করুন

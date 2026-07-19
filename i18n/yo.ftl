@@ -63,8 +63,8 @@ msg-link-key-not-found = a kò rí bọ́tìnnì `{ $key }` nínú ìwé tí a s
 err-alias-name-empty = orúkọ àpèlé kò lè ṣofo
 err-alias-has-dot = orúkọ àpèlé kò lè ní '.'
 err-alias-has-fragment = orúkọ àpèlé kò lè ní '#'
-err-alias-value-fragment = iye àpèlé gbọdọ̀ jẹ́ bare did:ma:<ipns> (kò sí fragment)
-err-alias-value-path = iye àpèlé gbọdọ̀ jẹ́ bare did:ma:<ipns> (kò sí path)
+err-alias-value-fragment = iye àpèlé lè ní fragment DID-URL kan ṣoṣo tí kò ṣofo
+err-alias-value-path = iye àpèlé gbọdọ̀ jẹ́ did:ma:<ipns> DID tàbí DID-URL (kò sí path)
 err-alias-not-did = iye àpèlé gbọdọ̀ bẹ̀rẹ̀ pẹ̀lú did:ma:
 err-unknown-alias = àpèlé tí a kò mọ̀: @{ $name }
 err-bare-did = a ní láti rí bare did:ma:<ipns> (kò sí fragment tàbí path), a rí { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       ṣàfihàn DID tí a yanjú (kò sí ìfiránṣẹ́)
+help-msg-echo =   @alias                       ṣàfihàn DID/DID-URL tí a túmọ̀ (a kò fi ifiranṣẹ ranṣẹ)
 help-msg-send =   @alias!msg body / @alias:verb args           ránsẹ́ / RPC sí onísẹ̀
 help-msg-fragment =   @alias#fragment:verb body  ránsẹ́ sí àpèlé pẹ̀lú fragment DID àfihàn
 help-msg-escape =   \@name                       @name gangan (kò sí ìwádìí àpèlé)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            pè ìgbésẹ̀ ẹbí
 # ── Ìrànlọ́wọ́ — àwọn ọ̀nà ti ó wọ́pọ̀ ─────────────────────────────────
 help-my =   .my                          ṣàfihàn gbogbo ìtúpalẹ̀ ara ẹni
 help-aliases =   .my.aliases                  ṣàkójọ àwọn àpèlé
-help-aliases-set =   .my.aliases.<name>: <did>    ṣàfikún/ṣàtúnṣe àpèlé (bare DID, kò sí #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    ṣàfikún/ṣàtúnṣe àpèlé (DID tàbí DID-URL)
 help-aliases-del =   .my.aliases.<name>:          yọ àpèlé kúrò
 help-runtime-discover =   .ma [port]          ṣàwárí runtime ẹbí kí o sì ṣẹ̀dá àpèlé @ma
 help-runtime-claim =   .ma [port]             gba ẹ̀tọ́ runtime pẹ̀lú DID rẹ

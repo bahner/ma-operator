@@ -38,8 +38,21 @@ fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
     if name.contains('#') {
         return Err(t("err-alias-has-fragment"));
     }
-    if value.contains('#') {
+    if value.chars().any(char::is_whitespace) {
+        return Err(t("err-alias-not-did"));
+    }
+    let fragment_count = value.matches('#').count();
+    if fragment_count > 1 || value.ends_with('#') {
         return Err(t("err-alias-value-fragment"));
+    }
+    if let Some((_, fragment)) = value.split_once('#') {
+        if fragment.is_empty()
+            || fragment
+                .chars()
+                .any(|c| !(c.is_ascii_alphanumeric() || c == '_' || c == '-'))
+        {
+            return Err(t("err-alias-value-fragment"));
+        }
     }
     if value.contains('/') {
         return Err(t("err-alias-value-path"));
@@ -362,7 +375,21 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
 
 #[cfg(test)]
 mod tests {
-    use super::parse_enter_target;
+    use super::{parse_enter_target, validate_alias_set};
+
+    #[test]
+    fn validate_alias_set_accepts_did_url() {
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#room").is_ok());
+    }
+
+    #[test]
+    fn validate_alias_set_rejects_malformed_did_url() {
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#").is_err());
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#room#other").is_err());
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#bad fragment").is_err());
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#bad.fragment").is_err());
+        assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example/path").is_err());
+    }
 
     #[test]
     fn parse_enter_target_accepts_nick_at_alias() {

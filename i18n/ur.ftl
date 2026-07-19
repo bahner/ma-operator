@@ -63,8 +63,8 @@ msg-link-key-not-found = منسلک دستاویز میں کلید `{ $key }` ن
 err-alias-name-empty = عرفی نام خالی نہیں ہو سکتا
 err-alias-has-dot = عرفی ناموں میں '.' نہیں ہو سکتا
 err-alias-has-fragment = عرفی ناموں میں '#' نہیں ہو سکتا
-err-alias-value-fragment = عرفی نام کی قدر bare did:ma:<ipns> ہونی چاہیے (کوئی فریگمنٹ نہیں)
-err-alias-value-path = عرفی نام کی قدر bare did:ma:<ipns> ہونی چاہیے (کوئی راستہ نہیں)
+err-alias-value-fragment = عرفی نام کی قدر میں زیادہ سے زیادہ ایک غیر خالی DID-URL فریگمنٹ ہو سکتا ہے
+err-alias-value-path = عرفی نام کی قدر did:ma:<ipns> DID یا DID-URL ہونی چاہیے (کوئی path نہیں)
 err-alias-not-did = عرفی نام کی قدر did:ma: سے شروع ہونی چاہیے
 err-unknown-alias = نامعلوم عرفی نام: @{ $name }
 err-bare-did = bare did:ma:<ipns> (بغیر فریگمنٹ یا راستے) متوقع تھا، ملا { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── مدد — پیغام رسانی ─────────────────────────────────────────────────────
-help-msg-echo =   @alias                       حل شدہ DID دکھائیں (پیغام نہیں بھیجا)
+help-msg-echo =   @alias                       حل شدہ DID/DID-URL دکھائیں (کوئی پیغام نہیں بھیجا جاتا)
 help-msg-send =   @alias!msg body / @alias:verb args           اداکار کو پیغام / RPC بھیجیں
 help-msg-fragment =   @alias#fragment:verb body  واضح DID فریگمنٹ کے ساتھ بھیجیں
 help-msg-escape =   \@name                       لفظی @name (عرفی نام تلاش نہیں)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            مقامی فعل کال کر�
 # ── مدد — عام راستے ───────────────────────────────────────────────────────
 help-my =   .my                          تمام ذاتی ترتیب دکھائیں
 help-aliases =   .my.aliases                  عرفی ناموں کی فہرست
-help-aliases-set =   .my.aliases.<name>: <did>    عرفی نام شامل/اپ ڈیٹ کریں
+help-aliases-set =   .my.aliases.<name>: <did-url>    عرفی نام شامل/اپ ڈیٹ کریں (DID یا DID-URL)
 help-aliases-del =   .my.aliases.<name>:          عرفی نام ہٹائیں
 help-runtime-discover =   .ma [port]          مقامی رن ٹائم دریافت کریں اور @ma بنائیں
 help-runtime-claim =   .ma [port]             اپنے DID سے رن ٹائم کا دعوی کریں

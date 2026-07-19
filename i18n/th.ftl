@@ -63,8 +63,8 @@ msg-link-key-not-found = ไม่พบคีย์ `{ $key }` ในเอก�
 err-alias-name-empty = ชื่อนามแฝงต้องไม่ว่างเปล่า
 err-alias-has-dot = ชื่อนามแฝงต้องไม่มี '.'
 err-alias-has-fragment = ชื่อนามแฝงต้องไม่มี '#'
-err-alias-value-fragment = ค่านามแฝงต้องเป็น bare did:ma:<ipns> (ไม่มี fragment)
-err-alias-value-path = ค่านามแฝงต้องเป็น bare did:ma:<ipns> (ไม่มี path)
+err-alias-value-fragment = ค่านามแฝงมี fragment DID-URL ที่ไม่ว่างได้ไม่เกินหนึ่งรายการ
+err-alias-value-path = ค่านามแฝงต้องเป็น DID did:ma:<ipns> หรือ DID-URL (ไม่มี path)
 err-alias-not-did = ค่านามแฝงต้องขึ้นต้นด้วย did:ma:
 err-unknown-alias = ไม่พบนามแฝง: @{ $name }
 err-bare-did = ต้องการ bare did:ma:<ipns> (ไม่มี fragment หรือ path), ได้รับ { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
-help-msg-echo =   @alias                       แสดง DID ที่แก้ไขแล้ว (ไม่ส่งข้อความ)
+help-msg-echo =   @alias                       แสดง DID/DID-URL ที่แก้แล้ว (ไม่ส่งข้อความ)
 help-msg-send =   @alias!msg body / @alias:verb args           ส่งข้อความ / RPC ไปยัง actor
 help-msg-fragment =   @alias#fragment:verb body  ส่งพร้อม DID fragment ที่ระบุ
 help-msg-escape =   \@name                       @name ตามตัวอักษร (ไม่ค้นหานามแฝง)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            เรียกใช้กร
 # ── ช่วยเหลือ — path ที่ใช้บ่อย ─────────────────────────────────────────
 help-my =   .my                          แสดงการกำหนดค่าส่วนตัวทั้งหมด
 help-aliases =   .my.aliases                  แสดงรายการนามแฝง
-help-aliases-set =   .my.aliases.<name>: <did>    เพิ่ม/อัปเดตนามแฝง
+help-aliases-set =   .my.aliases.<name>: <did-url>    เพิ่ม/อัปเดตนามแฝง (DID หรือ DID-URL)
 help-aliases-del =   .my.aliases.<name>:          ลบนามแฝง
 help-runtime-discover =   .ma [port]          ค้นหา runtime ท้องถิ่นและสร้าง @ma
 help-runtime-claim =   .ma [port]             อ้างสิทธิ์ runtime ด้วย DID ของคุณ

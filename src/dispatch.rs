@@ -545,33 +545,33 @@ fn dispatch_eval_line(
             let target = f.avatar_actor.as_deref().unwrap_or(&f.target);
             if target.contains('#') {
                 match enqueue_focus_command(target, line, parsed.verb, parsed.args, state) {
-                        Ok(cmd_id) => {
-                            if let Some(bid) = batch_id {
-                                state.cmd_to_batch.update(|m| {
-                                    m.insert(cmd_id, bid);
-                                });
-                            }
-                            return Some(cmd_id);
+                    Ok(cmd_id) => {
+                        if let Some(bid) = batch_id {
+                            state.cmd_to_batch.update(|m| {
+                                m.insert(cmd_id, bid);
+                            });
                         }
-                        Err(e) => {
-                            state.push_error(format!("'{line}': {e}"));
-                            return None;
-                        }
+                        return Some(cmd_id);
                     }
+                    Err(e) => {
+                        state.push_error(format!("'{line}': {e}"));
+                        return None;
+                    }
+                }
             } else {
-                    let runtime = f.runtime.clone();
-                    let line = line.to_string();
-                    let state2 = state.clone();
-                    let config2 = config;
-                    wasm_bindgen_futures::spawn_local(async move {
-                        let actor = resolve_focus_root_actor(&runtime, config2, &state2).await;
-                        if let Err(e) =
-                            enqueue_focus_command(&actor, &line, parsed.verb, parsed.args, &state2)
-                        {
-                            state2.push_error(format!("'{line}': {e}"));
-                        }
-                    });
-                    return None;
+                let runtime = f.runtime.clone();
+                let line = line.to_string();
+                let state2 = state.clone();
+                let config2 = config;
+                wasm_bindgen_futures::spawn_local(async move {
+                    let actor = resolve_focus_root_actor(&runtime, config2, &state2).await;
+                    if let Err(e) =
+                        enqueue_focus_command(&actor, &line, parsed.verb, parsed.args, &state2)
+                    {
+                        state2.push_error(format!("'{line}': {e}"));
+                    }
+                });
+                return None;
             }
         } else {
             line.to_string()

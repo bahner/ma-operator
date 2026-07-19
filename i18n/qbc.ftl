@@ -65,8 +65,8 @@ msg-link-key-not-found = ki `{ $key }` na finyish wit im link-dok
 err-alias-name-empty = alias nim na owkwa im nating
 err-alias-has-dot = alias nim na tenye '.'
 err-alias-has-fragment = alias nim na tenye '#'
-err-alias-value-fragment = alias sanda gonya bare did:ma:<ipns> (na wit fragment)
-err-alias-value-path = alias sanda gonya bare did:ma:<ipns> (na wit path)
+err-alias-value-fragment = alias sanda gonya na mowt wang non-empty DID-URL fragment
+err-alias-value-path = alias sanda gonya did:ma:<ipns> DID unte DID-URL (na path)
 err-alias-not-did = alias sanda gonya showxa did:ma: diching
 err-unknown-alias = alias na sasa: @{ $name }
 err-bare-did = bare did:ma:<ipns> kolowda (na wit fragment oyedeng path), towa { $did }
@@ -182,7 +182,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
-help-msg-echo =   @alias                       lit DID im (na showxa message)
+help-msg-echo =   @alias                       lit resolved DID/DID-URL (na send message)
 help-msg-send =   @alias!msg body / @alias:verb args           showxa message / RPC fo actor
 help-msg-fragment =   @alias#fragment:verb body  showxa wit DID fragment cler
 help-msg-escape =   \@name                       @name leshi (na du alias)
@@ -199,7 +199,7 @@ help-config-verb =   .path!verb [args]            kol lokal verb
 # ── Halp — kowl paj du ───────────────────────────────────────────────────
 help-my =   .my                          lit kowl selfmang konfig
 help-aliases =   .my.aliases                  lit alias kowl
-help-aliases-set =   .my.aliases.<name>: <did>    mek/update alias (bare DID, na wit #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url> mek/update alias (DID unte DID-URL)
 help-aliases-del =   .my.aliases.<name>:          na-du alias
 help-runtime-discover =   .ma [port]          diskova lokal runtime unte mek @ma alias
 help-runtime-claim =   .ma [port]             klaim runtime wit yu DID

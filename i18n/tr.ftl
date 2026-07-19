@@ -63,8 +63,8 @@ msg-link-key-not-found = bağlantılı belgede `{ $key }` anahtarı bulunamadı
 err-alias-name-empty = takma ad boş olamaz
 err-alias-has-dot = takma adlar '.' içeremez
 err-alias-has-fragment = takma adlar '#' içeremez
-err-alias-value-fragment = takma ad değeri salt did:ma:<ipns> olmalıdır (parça yok)
-err-alias-value-path = takma ad değeri salt did:ma:<ipns> olmalıdır (yol yok)
+err-alias-value-fragment = takma ad değeri en fazla bir boş olmayan DID-URL parçası içerebilir
+err-alias-value-path = takma ad değeri did:ma:<ipns> DID veya DID-URL olmalıdır (yol yok)
 err-alias-not-did = takma ad değeri did:ma: ile başlamalıdır
 err-unknown-alias = bilinmeyen takma ad: @{ $name }
 err-bare-did = salt did:ma:<ipns> (parça veya yol yok) beklendi, alındı: { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
-help-msg-echo =   @alias                       çözümlenen DID'yi göster (mesaj gönderilmez)
+help-msg-echo =   @alias                       çözümlenen DID/DID-URL göster (mesaj gönderilmez)
 help-msg-send =   @alias!msg body / @alias:verb args           aktöre mesaj / RPC gönder
 help-msg-fragment =   @alias#fragment:verb body  açık DID parçasıyla gönder
 help-msg-escape =   \@name                       değişmez @name (takma ad araması yok)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            yerel fiil çağır
 # ── Yardım — yaygın yollar ────────────────────────────────────────────────
 help-my =   .my                          tüm kişisel yapılandırmayı göster
 help-aliases =   .my.aliases                  takma adları listele
-help-aliases-set =   .my.aliases.<name>: <did>    takma ad ekle/güncelle (salt DID)
+help-aliases-set =   .my.aliases.<name>: <did-url>    takma ad ekle/güncelle (DID veya DID-URL)
 help-aliases-del =   .my.aliases.<name>:          takma adı kaldır
 help-runtime-discover =   .ma [port]          yerel çalışma zamanını keşfet ve @ma oluştur
 help-runtime-claim =   .ma [port]             DID'inle çalışma zamanı sahipliği talep et

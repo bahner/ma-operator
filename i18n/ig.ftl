@@ -63,8 +63,8 @@ msg-link-key-not-found = achịghị igodo `{ $key }` n'akwụkwọ ejikọrọ
 err-alias-name-empty = aha nchọkwa enweghị ike ịbụ efu
 err-alias-has-dot = aha nchọkwa enweghị ike inwe '.'
 err-alias-has-fragment = aha nchọkwa enweghị ike inwe '#'
-err-alias-value-fragment = uru nchọkwa ga-abụ bare did:ma:<ipns> (enweghị fragment)
-err-alias-value-path = uru nchọkwa ga-abụ bare did:ma:<ipns> (enweghị path)
+err-alias-value-fragment = uru nchọkwa nwere ike ịnwe naanị otu fragment DID-URL na-adịghị efu
+err-alias-value-path = uru nchọkwa ga-abụ did:ma:<ipns> DID ma ọ bụ DID-URL (enweghị ụzọ)
 err-alias-not-did = uru nchọkwa ga-amalite na did:ma:
 err-unknown-alias = nchọkwa amaghị: @{ $name }
 err-bare-did = a tọọ bare did:ma:<ipns> (enweghị fragment ma ọ bụ path), nwetara { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       gosi DID ezatara (ezitaraghị ozi)
+help-msg-echo =   @alias                       gosi DID/DID-URL e dozierela (ezigaghị ozi)
 help-msg-send =   @alias!msg body / @alias:verb args           ziga ozi / RPC na onye na-eme ihe
 help-msg-fragment =   @alias#fragment:verb body  ziga na nchọkwa nwere fragment DID ọkụkọ
 help-msg-escape =   \@name                       @name n'okwu n'okwu (ọ chọghị nchọkwa)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            kpọọ ọrụ obibi
 # ── Enyemaka — ụzọ a na-ejikarị ──────────────────────────────────────────
 help-my =   .my                          gosi nhazi nke onwe gị niile
 help-aliases =   .my.aliases                  depụta nchọkwa
-help-aliases-set =   .my.aliases.<name>: <did>    tinye/mezigharị nchọkwa (bare DID, enweghị #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    tinye/melite nchọkwa (DID ma ọ bụ DID-URL)
 help-aliases-del =   .my.aliases.<name>:          wepu nchọkwa
 help-runtime-discover =   .ma [port]          chọpụta runtime obibi ma mepụtakwa nchọkwa @ma
 help-runtime-claim =   .ma [port]             kwụa akwụ runtime site na DID gị

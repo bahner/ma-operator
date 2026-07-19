@@ -66,8 +66,8 @@ msg-link-key-not-found = ключ `{ $key }` не знайдено у пов'я�
 err-alias-name-empty = ім'я псевдоніму не може бути порожнім
 err-alias-has-dot = імена псевдонімів не можуть містити '.'
 err-alias-has-fragment = імена псевдонімів не можуть містити '#'
-err-alias-value-fragment = значення псевдоніму має бути bare did:ma:<ipns> (без фрагменту)
-err-alias-value-path = значення псевдоніму має бути bare did:ma:<ipns> (без шляху)
+err-alias-value-fragment = значення псевдоніму може містити щонайбільше один непорожній фрагмент DID-URL
+err-alias-value-path = значення псевдоніму має бути DID did:ma:<ipns> або DID-URL (без шляху)
 err-alias-not-did = значення псевдоніму має починатися з did:ma:
 err-unknown-alias = невідомий псевдонім: @{ $name }
 err-bare-did = очікувався bare did:ma:<ipns> (без фрагменту або шляху), отримано { $did }
@@ -200,7 +200,7 @@ help-topic-i18n =   .help/i18n                   language preference for your id
 help-unknown-topic =   .help/{ $topic }: невідома тема — спробуйте .help для списку
 
 # ── Довідка — повідомлення ────────────────────────────────────────────────
-help-msg-echo =   @alias                       показати DID (без надсилання)
+help-msg-echo =   @alias                       показати розв’язаний DID/DID-URL (повідомлення не надсилається)
 help-msg-send =   @alias!msg body / @alias:verb args           надіслати повідомлення / RPC актору
 help-msg-fragment =   @alias#fragment:verb body  надіслати з явним фрагментом DID
 help-msg-escape =   \@name                       буквальний @name (без пошуку псевдоніму)
@@ -217,7 +217,7 @@ help-config-verb =   .path!verb [args]            викликати локал�
 # ── Довідка — загальні шляхи ──────────────────────────────────────────────
 help-my =   .my                          показати особисту конфігурацію
 help-aliases =   .my.aliases                  список псевдонімів
-help-aliases-set =   .my.aliases.<name>: <did>    додати/оновити псевдонім (bare DID, без #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    додати/оновити псевдонім (DID або DID-URL)
 help-aliases-del =   .my.aliases.<name>:          видалити псевдонім
 help-runtime-discover =   .ma [port]                   підключити локальне середовище → .ma.ctx.* (порт за замовчуванням 5003)
 help-runtime-claim =   .ma [port]                   (те ж саме — заявка та виявлення об'єднані)

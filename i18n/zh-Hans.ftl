@@ -63,8 +63,8 @@ msg-link-key-not-found = 在链接文档中找不到键 `{ $key }`
 err-alias-name-empty = 别名不能为空
 err-alias-has-dot = 别名不能包含 '.'
 err-alias-has-fragment = 别名不能包含 '#'
-err-alias-value-fragment = 别名值必须是纯 did:ma:<ipns>（无片段）
-err-alias-value-path = 别名值必须是纯 did:ma:<ipns>（无路径）
+err-alias-value-fragment = 别名值最多可包含一个非空 DID-URL 片段
+err-alias-value-path = 别名值必须是 did:ma:<ipns> DID 或 DID-URL（无路径）
 err-alias-not-did = 别名值必须以 did:ma: 开头
 err-unknown-alias = 未知别名: @{ $name }
 err-bare-did = 期望纯 did:ma:<ipns>（无片段或路径），得到 { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── 帮助文本 — 消息传递 ───────────────────────────────────────────────────
-help-msg-echo =   @alias                       回显已解析的 DID（不发送消息）
+help-msg-echo =   @alias                       显示已解析的 DID/DID-URL（不发送消息）
 help-msg-send =   @alias!msg body / @alias:verb args           发送消息 / RPC 给角色
 help-msg-fragment =   @alias#fragment:verb body  发送到带显式 DID 片段的别名
 help-msg-escape =   \@name                       字面 @name（不查找别名）
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            调用本地动词
 # ── 帮助文本 — 常用路径 ───────────────────────────────────────────────────
 help-my =   .my                          显示所有个人配置
 help-aliases =   .my.aliases                  列出别名
-help-aliases-set =   .my.aliases.<name>: <did>    添加/更新别名（纯 DID，无 #fragment）
+help-aliases-set =   .my.aliases.<name>: <did-url>    添加/更新别名（DID 或 DID-URL）
 help-aliases-del =   .my.aliases.<name>:          删除别名
 help-runtime-discover =   .ma [port]          发现本地运行时并创建 @ma 别名
 help-runtime-claim =   .ma [port]             用您的 DID 声明运行时所有权

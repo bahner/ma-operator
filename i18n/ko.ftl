@@ -63,8 +63,8 @@ msg-link-key-not-found = 연결된 문서에서 키 `{ $key }`를 찾을 수 없
 err-alias-name-empty = 별칭 이름은 비어있을 수 없습니다
 err-alias-has-dot = 별칭 이름에 '.'을 포함할 수 없습니다
 err-alias-has-fragment = 별칭 이름에 '#'을 포함할 수 없습니다
-err-alias-value-fragment = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (프래그먼트 없음)
-err-alias-value-path = 별칭 값은 bare did:ma:<ipns>이어야 합니다 (경로 없음)
+err-alias-value-fragment = 별칭 값에는 비어 있지 않은 DID-URL 프래그먼트가 최대 하나만 포함될 수 있습니다
+err-alias-value-path = 별칭 값은 did:ma:<ipns> DID 또는 DID-URL이어야 합니다 (경로 없음)
 err-alias-not-did = 별칭 값은 did:ma:로 시작해야 합니다
 err-unknown-alias = 알 수 없는 별칭: @{ $name }
 err-bare-did = bare did:ma:<ipns> (프래그먼트나 경로 없음) 필요, 받은 값: { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
-help-msg-echo =   @alias                       해석된 DID 표시 (메시지 전송 없음)
+help-msg-echo =   @alias                       확인된 DID/DID-URL 표시 (메시지는 전송되지 않음)
 help-msg-send =   @alias!msg body / @alias:verb args           액터에게 메시지 / RPC 전송
 help-msg-fragment =   @alias#fragment:verb body  명시적 DID 프래그먼트로 전송
 help-msg-escape =   \@name                       리터럴 @name (별칭 조회 없음)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            로컬 동사 호출
 # ── 도움말 — 공통 경로 ────────────────────────────────────────────────────
 help-my =   .my                          모든 개인 설정 표시
 help-aliases =   .my.aliases                  별칭 목록
-help-aliases-set =   .my.aliases.<name>: <did>    별칭 추가/업데이트
+help-aliases-set =   .my.aliases.<name>: <did-url>    별칭 추가/업데이트 (DID 또는 DID-URL)
 help-aliases-del =   .my.aliases.<name>:          별칭 제거
 help-runtime-discover =   .ma [port]          로컬 런타임 검색 및 @ma 생성
 help-runtime-claim =   .ma [port]             DID로 런타임 소유권 청구

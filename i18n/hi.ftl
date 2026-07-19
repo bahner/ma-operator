@@ -63,8 +63,8 @@ msg-link-key-not-found = लिंक किए गए दस्तावेज�
 err-alias-name-empty = उपनाम नाम खाली नहीं हो सकता
 err-alias-has-dot = उपनाम नामों में '.' नहीं हो सकता
 err-alias-has-fragment = उपनाम नामों में '#' नहीं हो सकता
-err-alias-value-fragment = उपनाम मान bare did:ma:<ipns> होना चाहिए (कोई फ़्रैगमेंट नहीं)
-err-alias-value-path = उपनाम मान bare did:ma:<ipns> होना चाहिए (कोई पथ नहीं)
+err-alias-value-fragment = उपनाम मान में अधिकतम एक गैर-रिक्त DID-URL फ़्रैगमेंट हो सकता है
+err-alias-value-path = उपनाम मान did:ma:<ipns> DID या DID-URL होना चाहिए (कोई path नहीं)
 err-alias-not-did = उपनाम मान did:ma: से शुरू होना चाहिए
 err-unknown-alias = अज्ञात उपनाम: @{ $name }
 err-bare-did = bare did:ma:<ipns> (कोई फ़्रैगमेंट या पथ नहीं) अपेक्षित, मिला { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── सहायता — संदेश ────────────────────────────────────────────────────────
-help-msg-echo =   @alias                       हल किया DID दिखाएं (संदेश नहीं भेजा)
+help-msg-echo =   @alias                       हल किया गया DID/DID-URL दिखाएँ (कोई संदेश नहीं भेजा गया)
 help-msg-send =   @alias!msg body / @alias:verb args           अभिनेता को संदेश / RPC भेजें
 help-msg-fragment =   @alias#fragment:verb body  स्पष्ट DID फ़्रैगमेंट के साथ भेजें
 help-msg-escape =   \@name                       शाब्दिक @name (कोई उपनाम खोज नहीं)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            स्थानीय क्�
 # ── सहायता — सामान्य पथ ──────────────────────────────────────────────────
 help-my =   .my                          सभी व्यक्तिगत कॉन्फ़िग दिखाएं
 help-aliases =   .my.aliases                  उपनाम सूची
-help-aliases-set =   .my.aliases.<name>: <did>    उपनाम जोड़ें/अपडेट करें
+help-aliases-set =   .my.aliases.<name>: <did-url>    उपनाम जोड़ें/अपडेट करें (DID या DID-URL)
 help-aliases-del =   .my.aliases.<name>:          उपनाम हटाएं
 help-runtime-discover =   .ma [port]          स्थानीय रनटाइम खोजें और @ma बनाएं
 help-runtime-claim =   .ma [port]             अपने DID से रनटाइम का दावा करें

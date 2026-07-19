@@ -63,8 +63,8 @@ msg-link-key-not-found = isitshixo `{ $key }` safumaneka kwimveliso yexhumaniso
 err-alias-name-empty = igama legama elikhawulezayo alikwazi ukuba ngenaluto
 err-alias-has-dot = amagama amafutshane awakwazi ukuba ne-'.'
 err-alias-has-fragment = amagama amafutshane awakwazi ukuba ne-'#'
-err-alias-value-fragment = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwe-fragment)
-err-alias-value-path = ixabiso legama elikhawulezayo kufuneka libe bare did:ma:<ipns> (ngaphandle kwepath)
+err-alias-value-fragment = ixabiso legama elikhawulezayo linokuba ne-fragment ye-DID-URL enye kuphela engagcwalanga
+err-alias-value-path = ixabiso legama elikhawulezayo kufuneka libe yi-did:ma:<ipns> DID okanye DID-URL (akukho path)
 err-alias-not-did = ixabiso legama elikhawulezayo kufuneka liqale nge-did:ma:
 err-unknown-alias = igama elikhawulezayo elingaziwa: @{ $name }
 err-bare-did = kulindele bare did:ma:<ipns> (ngaphandle kwe-fragment okanye path), ifumene { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Uncedo — ukuthumela ───────────────────────────────────────────────────
-help-msg-echo =   @alias                       bonisa DID ephumliwe (akukho imiyalezo ithunyelwayo)
+help-msg-echo =   @alias                       bonisa i-DID/DID-URL esonjululiweyo (akuthunyelwa myalezo)
 help-msg-send =   @alias!msg body / @alias:verb args           thumela imiyalezo / RPC ku-actor
 help-msg-fragment =   @alias#fragment:verb body  thumela nge-DID fragment ecacileyo
 help-msg-escape =   \@name                       @name ngokunyaniseka (akukho uphendulo lwegama elikhawulezayo)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            biza isenzo sendawo
 # ── Uncedo — iindlela ezisetshenziswa kakhulu ────────────────────────────
 help-my =   .my                          bonisa zonke izikhokelo zobunjani
 help-aliases =   .my.aliases                  bala amagama amafutshane
-help-aliases-set =   .my.aliases.<name>: <did>    yongeza/buyekeza igama elikhawulezayo (bare DID, ngaphandle kwe-#fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url>    yongeza/buyekeza igama elikhawulezayo (DID okanye DID-URL)
 help-aliases-del =   .my.aliases.<name>:          susa igama elikhawulezayo
 help-runtime-discover =   .ma [port]          fumana i-runtime yendawo yile kwaye yila igama elikhawulezayo @ma
 help-runtime-claim =   .ma [port]             zimisele nge-runtime nge-DID yakho

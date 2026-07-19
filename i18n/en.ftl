@@ -68,8 +68,8 @@ msg-link-key-not-found = key `{ $key }` not found in linked document
 err-alias-name-empty = alias name cannot be empty
 err-alias-has-dot = alias names cannot contain '.'
 err-alias-has-fragment = alias names cannot contain '#'
-err-alias-value-fragment = alias value must be bare did:ma:<ipns> (no fragment)
-err-alias-value-path = alias value must be bare did:ma:<ipns> (no path)
+err-alias-value-fragment = alias value may contain at most one non-empty DID-URL fragment
+err-alias-value-path = alias value must be a did:ma:<ipns> DID or DID-URL (no path)
 err-alias-not-did = alias value must start with did:ma:
 err-unknown-alias = unknown alias: @{ $name }
 err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
@@ -202,7 +202,7 @@ help-topic-i18n =   .help/i18n                   language preference for your id
 help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
-help-msg-echo =   @alias                       echo resolved DID (no message sent)
+help-msg-echo =   @alias                       show resolved DID/DID-URL (no message sent)
 help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to actor
 help-msg-fragment =   @alias#fragment:verb body  send to alias with explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no alias lookup)
@@ -233,7 +233,7 @@ help-config-verb =   .path!verb [args]            invoke local verb
 # ── Help text — common paths ──────────────────────────────────────────────
 help-my =   .my                          show all personal config
 help-aliases =   .my.aliases                  list aliases
-help-aliases-set =   .my.aliases.<name>: <did>    add/update alias (bare DID, no #fragment)
+help-aliases-set =   .my.aliases.<name>: <did-url> add/update alias (DID or DID-URL)
 help-aliases-del =   .my.aliases.<name>:          remove alias
 help-runtime-discover =   .ma [port]                   connect/claim local runtime → .ma.ctx.* (default port 5003)
 help-runtime-claim =   .ma [port]                   (same as above — claim and discover are merged)

@@ -63,8 +63,8 @@ msg-link-key-not-found = المفتاح `{ $key }` غير موجود في الم
 err-alias-name-empty = لا يمكن أن يكون اسم الاسم المستعار فارغاً
 err-alias-has-dot = لا يمكن أن تحتوي الأسماء المستعارة على '.'
 err-alias-has-fragment = لا يمكن أن تحتوي الأسماء المستعارة على '#'
-err-alias-value-fragment = يجب أن تكون قيمة الاسم المستعار did:ma:<ipns> خالصاً (بلا مقطع)
-err-alias-value-path = يجب أن تكون قيمة الاسم المستعار did:ma:<ipns> خالصاً (بلا مسار)
+err-alias-value-fragment = قد تحتوي قيمة الاسم المستعار على مقطع DID-URL واحد غير فارغ كحد أقصى
+err-alias-value-path = يجب أن تكون قيمة الاسم المستعار DID بصيغة did:ma:<ipns> أو DID-URL (بلا مسار)
 err-alias-not-did = يجب أن تبدأ قيمة الاسم المستعار بـ did:ma:
 err-unknown-alias = اسم مستعار غير معروف: @{ $name }
 err-bare-did = متوقع did:ma:<ipns> خالصاً (بلا مقطع أو مسار)، تم استلام { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
-help-msg-echo =   @alias                       عرض DID المُحلَّل (لا رسالة مرسلة)
+help-msg-echo =   @alias                       اعرض DID/DID-URL المحلول (لا تُرسل رسالة)
 help-msg-send =   @alias!msg body / @alias:verb args           إرسال رسالة / RPC إلى ممثل
 help-msg-fragment =   @alias#fragment:verb body  إرسال مع مقطع DID صريح
 help-msg-escape =   \@name                       @name حرفياً (بلا بحث عن اسم مستعار)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            استدعاء فعل محلي
 # ── المساعدة — المسارات الشائعة ──────────────────────────────────────────
 help-my =   .my                          عرض جميع الضبط الشخصي
 help-aliases =   .my.aliases                  قائمة الأسماء المستعارة
-help-aliases-set =   .my.aliases.<name>: <did>    إضافة/تحديث اسم مستعار
+help-aliases-set =   .my.aliases.<name>: <did-url>    إضافة/تحديث اسم مستعار (DID أو DID-URL)
 help-aliases-del =   .my.aliases.<name>:          إزالة اسم مستعار
 help-runtime-discover =   .ma [port]          اكتشاف وقت التشغيل المحلي وإنشاء @ma
 help-runtime-claim =   .ma [port]             المطالبة بملكية وقت التشغيل

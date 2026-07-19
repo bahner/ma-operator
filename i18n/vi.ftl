@@ -63,8 +63,8 @@ msg-link-key-not-found = không tìm thấy khóa `{ $key }` trong tài liệu �
 err-alias-name-empty = tên bí danh không được để trống
 err-alias-has-dot = tên bí danh không được chứa '.'
 err-alias-has-fragment = tên bí danh không được chứa '#'
-err-alias-value-fragment = giá trị bí danh phải là bare did:ma:<ipns> (không có phân mảnh)
-err-alias-value-path = giá trị bí danh phải là bare did:ma:<ipns> (không có đường dẫn)
+err-alias-value-fragment = giá trị bí danh có thể chứa tối đa một phân mảnh DID-URL không rỗng
+err-alias-value-path = giá trị bí danh phải là DID did:ma:<ipns> hoặc DID-URL (không có đường dẫn)
 err-alias-not-did = giá trị bí danh phải bắt đầu bằng did:ma:
 err-unknown-alias = bí danh không xác định: @{ $name }
 err-bare-did = yêu cầu bare did:ma:<ipns> (không có phân mảnh hoặc đường dẫn), nhận được { $did }
@@ -180,7 +180,7 @@ help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
-help-msg-echo =   @alias                       hiển thị DID đã phân giải (không gửi tin)
+help-msg-echo =   @alias                       hiển thị DID/DID-URL đã phân giải (không gửi tin nhắn)
 help-msg-send =   @alias!msg body / @alias:verb args           gửi tin nhắn / RPC tới diễn viên
 help-msg-fragment =   @alias#fragment:verb body  gửi với phân mảnh DID rõ ràng
 help-msg-escape =   \@name                       @name theo nghĩa đen (không tra bí danh)
@@ -197,7 +197,7 @@ help-config-verb =   .path!verb [args]            gọi động từ cục bộ
 # ── Trợ giúp — đường dẫn thông dụng ─────────────────────────────────────
 help-my =   .my                          hiển thị tất cả cấu hình cá nhân
 help-aliases =   .my.aliases                  danh sách bí danh
-help-aliases-set =   .my.aliases.<name>: <did>    thêm/cập nhật bí danh
+help-aliases-set =   .my.aliases.<name>: <did-url>    thêm/cập nhật bí danh (DID hoặc DID-URL)
 help-aliases-del =   .my.aliases.<name>:          xóa bí danh
 help-runtime-discover =   .ma [port]          khám phá runtime cục bộ và tạo @ma
 help-runtime-claim =   .ma [port]             yêu cầu quyền sở hữu runtime bằng DID
