@@ -205,8 +205,10 @@ Then run one command in zion:
 .ma
 ```
 
-This probes `http://localhost:5003/status.json`, reads `ma`'s DID and endpoint,
-stores them under `.ma.ctx.*`, and creates the alias `@ma` for you automatically.
+This probes `http://localhost:5003/status.json` with a short timeout, reads
+`ma`'s DID and endpoint, stores them under `.ma.ctx.*`, and creates the alias
+`@ma` for you automatically. If local `ma` is not running, zion reports that
+quickly instead of waiting for the normal message timeout.
 
 After that, publishing your identity is just:
 

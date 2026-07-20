@@ -4,6 +4,10 @@
 //! import from here rather than rolling their own fetch.
 
 use crate::transport::connection::gateway_base_url;
+use futures::{pin_mut, FutureExt as _};
+use gloo_timers::future::TimeoutFuture;
+use wasm_bindgen::JsCast;
+use wasm_bindgen_futures::JsFuture;
 
 pub struct HttpTextResponse {
     pub status: u16,
@@ -12,14 +16,71 @@ pub struct HttpTextResponse {
 
 /// GET a URL and return the response body as text.
 pub async fn fetch_url_text(url: &str) -> Result<String, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-
     let window = web_sys::window().ok_or("no window")?;
     let resp_val = JsFuture::from(window.fetch_with_str(url))
         .await
         .map_err(|e| format!("{e:?}"))?;
     let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
+    response_text(resp).await
+}
+
+/// GET a URL and return the response body as text, aborting the request on timeout.
+pub async fn fetch_url_text_timeout(url: &str, timeout_ms: u32) -> Result<String, String> {
+    let opts = web_sys::RequestInit::new();
+    opts.set_method("GET");
+    let resp = fetch_with_timeout(url, &opts, timeout_ms).await?;
+    response_text(resp).await
+}
+
+/// POST a JSON body and return both status and response body as text, aborting on timeout.
+pub async fn post_json_text_timeout(
+    url: &str,
+    body: &str,
+    timeout_ms: u32,
+) -> Result<HttpTextResponse, String> {
+    let headers = web_sys::Headers::new().map_err(|e| format!("{e:?}"))?;
+    headers
+        .set("Content-Type", "application/json")
+        .map_err(|e| format!("{e:?}"))?;
+    let opts = web_sys::RequestInit::new();
+    opts.set_method("POST");
+    opts.set_body(&wasm_bindgen::JsValue::from_str(body));
+    opts.set_headers(&headers);
+    let resp = fetch_with_timeout(url, &opts, timeout_ms).await?;
+    let status = resp.status();
+    let text_val = JsFuture::from(resp.text().map_err(|e| format!("{e:?}"))?)
+        .await
+        .map_err(|e| format!("{e:?}"))?;
+    let body = text_val.as_string().unwrap_or_default();
+    Ok(HttpTextResponse { status, body })
+}
+
+async fn fetch_with_timeout(
+    url: &str,
+    opts: &web_sys::RequestInit,
+    timeout_ms: u32,
+) -> Result<web_sys::Response, String> {
+    let window = web_sys::window().ok_or("no window")?;
+    let controller = web_sys::AbortController::new().map_err(|e| format!("{e:?}"))?;
+    opts.set_signal(Some(&controller.signal()));
+    let request =
+        web_sys::Request::new_with_str_and_init(url, opts).map_err(|e| format!("{e:?}"))?;
+    let fetch = JsFuture::from(window.fetch_with_request(&request)).fuse();
+    let timeout = TimeoutFuture::new(timeout_ms).fuse();
+    pin_mut!(fetch, timeout);
+    futures::select! {
+        resp_val = fetch => {
+            let resp_val = resp_val.map_err(|e| format!("{e:?}"))?;
+            resp_val.dyn_into().map_err(|_| "not a Response".to_string())
+        }
+        _ = timeout => {
+            controller.abort();
+            Err(format!("timeout after {timeout_ms}ms"))
+        }
+    }
+}
+
+async fn response_text(resp: web_sys::Response) -> Result<String, String> {
     if !resp.ok() {
         return Err(format!("HTTP {}", resp.status()));
     }
@@ -31,39 +92,8 @@ pub async fn fetch_url_text(url: &str) -> Result<String, String> {
         .ok_or_else(|| "response is not a string".to_string())
 }
 
-/// POST a JSON body and return both status and response body as text.
-pub async fn post_json_text(url: &str, body: &str) -> Result<HttpTextResponse, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-
-    let window = web_sys::window().ok_or("no window")?;
-    let headers = web_sys::Headers::new().map_err(|e| format!("{e:?}"))?;
-    headers
-        .set("Content-Type", "application/json")
-        .map_err(|e| format!("{e:?}"))?;
-    let opts = web_sys::RequestInit::new();
-    opts.set_method("POST");
-    opts.set_body(&wasm_bindgen::JsValue::from_str(body));
-    opts.set_headers(&headers);
-    let request =
-        web_sys::Request::new_with_str_and_init(url, &opts).map_err(|e| format!("{e:?}"))?;
-    let resp_val = JsFuture::from(window.fetch_with_request(&request))
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    let status = resp.status();
-    let text_val = JsFuture::from(resp.text().map_err(|e| format!("{e:?}"))?)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let body = text_val.as_string().unwrap_or_default();
-    Ok(HttpTextResponse { status, body })
-}
-
 /// GET a URL and return the response body as raw bytes.
 pub async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
-    use wasm_bindgen::JsCast;
-    use wasm_bindgen_futures::JsFuture;
-
     let window = web_sys::window().ok_or("no window")?;
     let resp_val = JsFuture::from(window.fetch_with_str(url))
         .await

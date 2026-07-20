@@ -377,6 +377,10 @@ Command:
 - `.ma [port]` — fetches `<.ma.ctx.url>/status.json` or the given port, reads `did`
   and `endpoint_id`, writes the above leaves, creates alias `@ma`, persists config.
   Reports an actionable error if `ma` is not running.
+- Startup and `.ma` discovery use a short HTTP timeout for `.ma.ctx.url` and
+  then ping existing runtime DID context before automatic publish/entry. Do not
+  blindly fall back to stale `.ma.ctx.did` after a local URL failure; only use a
+  stored DID for automatic flow after a successful `:ping` preflight.
 
 After discovery:
 ```

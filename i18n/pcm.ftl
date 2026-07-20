@@ -58,6 +58,11 @@ iroh ɛndpɔynt rɛdi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don publish through local ma ({ $url })
 msg-ma-connecting-matrix = e dey try connect you to di 間trix
+msg-ma-checking-url = ma: { $url }
+msg-local-ma-unreachable = ma: { $url } × { $seconds }s
+msg-runtime-pinging = ping: { $did }
+msg-runtime-ping-timeout = ping: { $did } × { $seconds }s
+msg-startup-enter-skipped = ↛ { $target }
 msg-local-ma-claimed = local 間 don claim
 msg-local-ma-already-claimed = local 間 don already claim
 msg-local-ma-claim-failed = e no fit claim local 間

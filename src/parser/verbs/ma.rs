@@ -1,12 +1,16 @@
 use super::{resolve_bare_did, MA_URL};
 use crate::config::EgoConfig;
-use crate::http::{fetch_url_text, post_json_text};
+use crate::http::{fetch_url_text_timeout, post_json_text_timeout};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::{AppState, PendingKind};
+use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
+
+pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
+pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
 
 pub(super) fn handle_ma(
     path: &str,
@@ -90,7 +94,7 @@ pub(crate) enum ClaimResult {
 pub(crate) async fn claim_ma(ma_base: &str, our_did: &str) -> ClaimResult {
     let claim_url = format!("{ma_base}/claim");
     let body = format!(r#"{{"owner":"{}"}}"#, our_did);
-    match post_json_text(&claim_url, &body).await {
+    match post_json_text_timeout(&claim_url, &body, LOCAL_MA_HTTP_TIMEOUT_MS).await {
         Ok(resp) if resp.status == 200 => ClaimResult::Claimed,
         Ok(resp) if resp.status == 409 => {
             if conflict_contains_owner(&resp.body, our_did) {
@@ -101,6 +105,26 @@ pub(crate) async fn claim_ma(ma_base: &str, our_did: &str) -> ClaimResult {
         }
         Ok(resp) => ClaimResult::UnexpectedStatus(resp.status),
         Err(_) => ClaimResult::Unavailable,
+    }
+}
+
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub(crate) enum ConnectMaOutcome {
+    Ready { did: String },
+    Unavailable { target: String },
+    PingTimedOut { did: String },
+}
+
+impl ConnectMaOutcome {
+    pub(crate) fn allows_startup_enter(&self) -> bool {
+        matches!(self, Self::Ready { .. })
+    }
+
+    pub(crate) fn target(&self) -> &str {
+        match self {
+            Self::Ready { did } | Self::PingTimedOut { did } => did,
+            Self::Unavailable { target } => target,
+        }
     }
 }
 
@@ -136,7 +160,9 @@ pub(crate) async fn connect_ma_runtime(
     ma_base: String,
     fallback_did: Option<String>,
     options: ConnectMaOptions,
-) {
+) -> ConnectMaOutcome {
+    let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
+    state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
     let claim_result = claim_ma(&ma_base, &our_did).await;
     match &claim_result {
         ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
@@ -149,22 +175,30 @@ pub(crate) async fn connect_ma_runtime(
         }
     }
     if !should_continue_after_claim(&claim_result) {
-        publish_fallback_did(&state, config, fallback_did, options).await;
-        return;
+        return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
     }
 
     let did = match rediscover_ma(&ma_base, config).await {
         Ok(did) => did,
         Err(_) => {
-            publish_fallback_did(&state, config, fallback_did, options).await;
-            return;
+            state.push_error(tf(
+                "msg-local-ma-unreachable",
+                &[
+                    ("url", &ma_base),
+                    ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
+                ],
+            ));
+            return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options)
+                .await;
         }
     };
+    state.push_system(tf("discover-success", &[("url", &ma_base)]));
+    state.push_system(tf("discover-did-line", &[("did", &did)]));
     crate::views::landing::save_last_runtime(&ma_base);
     let cfg = config.get_untracked();
     let _ = crate::config::persist_config(&username, &cfg).await;
     if !options.publish {
-        return;
+        return ConnectMaOutcome::Ready { did };
     }
     let published = if options.full_profile_publish {
         do_publish(did.clone(), config, &state, None).await
@@ -178,26 +212,52 @@ pub(crate) async fn connect_ma_runtime(
         }
     };
     if !published {
-        publish_fallback_did(&state, config, fallback_did, options).await;
+        return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
     }
+    ConnectMaOutcome::Ready { did }
 }
 
-async fn publish_fallback_did(
-    state: &AppState,
+fn fallback_did_candidate(
     config: RwSignal<EgoConfig>,
     fallback_did: Option<String>,
-    options: ConnectMaOptions,
-) {
-    if !options.publish {
-        return;
-    }
-    let did = config
+) -> Option<String> {
+    fallback_did.or_else(|| {
+        config
         .get_untracked()
         .get(".ma.ctx.did")
         .filter(|did| did.starts_with("did:ma:"))
         .map(|did| did.to_string())
-        .or(fallback_did);
-    let Some(did) = did else { return };
+    })
+}
+
+async fn ping_and_publish_fallback(
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    fallback_did: Option<String>,
+    unavailable_target: &str,
+    options: ConnectMaOptions,
+) -> ConnectMaOutcome {
+    let Some(did) = fallback_did_candidate(config, fallback_did) else {
+        return ConnectMaOutcome::Unavailable {
+            target: unavailable_target.to_string(),
+        };
+    };
+    match ping_runtime(state, &did).await {
+        Ok(()) => {}
+        Err(_) => {
+            state.push_error(tf(
+                "msg-runtime-ping-timeout",
+                &[
+                    ("did", &did),
+                    ("seconds", &(RUNTIME_PING_TIMEOUT_MS / 1_000).to_string()),
+                ],
+            ));
+            return ConnectMaOutcome::PingTimedOut { did };
+        }
+    }
+    if !options.publish {
+        return ConnectMaOutcome::Ready { did };
+    }
     let published = if options.full_profile_publish {
         do_publish(did.clone(), config, state, None).await
     } else {
@@ -206,6 +266,25 @@ async fn publish_fallback_did(
     if published {
         crate::views::landing::save_last_runtime(&did);
         state.push_system(tf("msg-auto-published", &[("url", &did)]));
+    }
+    ConnectMaOutcome::Ready { did }
+}
+
+async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
+    state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
+    let send_and_wait = async move {
+        let msg_id = transport::send_rpc(did, "ping", &[]).await?;
+        let rx = crate::state::AwaitingReply::register(msg_id);
+        rx.await
+            .map(|_| ())
+            .map_err(|_| "runtime ping reply was cancelled".to_string())
+    }
+    .fuse();
+    let timeout = gloo_timers::future::TimeoutFuture::new(RUNTIME_PING_TIMEOUT_MS).fuse();
+    futures::pin_mut!(send_and_wait, timeout);
+    futures::select! {
+        result = send_and_wait => result,
+        _ = timeout => Err("runtime ping timed out".to_string()),
     }
 }
 
@@ -312,7 +391,7 @@ pub(crate) async fn rediscover_ma(
     config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
 ) -> Result<String, String> {
     let status_url = format!("{ma_base}/status.json");
-    let json_str = fetch_url_text(&status_url).await?;
+    let json_str = fetch_url_text_timeout(&status_url, LOCAL_MA_HTTP_TIMEOUT_MS).await?;
     let json: serde_json::Value = serde_json::from_str(&json_str).map_err(|e| e.to_string())?;
 
     let did = json
@@ -415,5 +494,34 @@ mod tests {
             500
         )));
         assert!(should_continue_after_claim(&ClaimResult::Unavailable));
+    }
+
+    #[test]
+    fn connect_outcome_reports_target_for_startup_messages() {
+        assert_eq!(
+            ConnectMaOutcome::Ready {
+                did: "did:ma:k51runtime".to_string()
+            }
+            .target(),
+            "did:ma:k51runtime"
+        );
+        assert_eq!(
+            ConnectMaOutcome::Unavailable {
+                target: "http://localhost:5003".to_string()
+            }
+            .target(),
+            "http://localhost:5003"
+        );
+    }
+
+    #[test]
+    fn explicit_fallback_did_wins_over_stored_ma_context() {
+        let config = RwSignal::new(EgoConfig::default());
+        config.update_untracked(|cfg| cfg.set(".ma.ctx.did", "did:ma:stored"));
+
+        assert_eq!(
+            fallback_did_candidate(config, Some("did:ma:explicit".to_string())),
+            Some("did:ma:explicit".to_string())
+        );
     }
 }

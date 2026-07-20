@@ -8,6 +8,7 @@ use crate::{
     http::fetch_cid_bytes,
     i18n::{t, tf},
     identity::storage::load_history,
+    parser::verbs::ma::ConnectMaOutcome,
     state::{AppState, SessionState},
     transport,
 };
@@ -90,7 +91,7 @@ pub(crate) async fn startup_local_ma(
     sender_did: String,
     startup_ma: Option<String>,
     startup_enter: Option<String>,
-) {
+) -> ConnectMaOutcome {
     let should_publish = auto_publish_enabled(config);
     let ma_url = startup_ma_url(config, startup_ma.as_deref());
     let fallback_did = startup_ma
@@ -111,7 +112,7 @@ pub(crate) async fn startup_local_ma(
             full_profile_publish: false,
         },
     )
-    .await;
+    .await
 }
 
 pub(crate) async fn startup_did_sync(
@@ -266,10 +267,19 @@ fn queue_startup_enter(state: &AppState, config: RwSignal<EgoConfig>) {
     }
 }
 
+fn should_queue_startup_enter(outcome: &ConnectMaOutcome) -> bool {
+    outcome.allows_startup_enter()
+}
+
+fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
+    tf("msg-startup-enter-skipped", &[("target", outcome.target())])
+}
+
 #[cfg(test)]
 mod tests {
-    use super::{normalize_startup_enter, startup_ctx_enter};
+    use super::{normalize_startup_enter, should_queue_startup_enter, startup_ctx_enter};
     use crate::config::EgoConfig;
+    use crate::parser::verbs::ma::ConnectMaOutcome;
 
     #[test]
     fn normalize_startup_enter_accepts_url_did_and_alias_forms() {
@@ -309,6 +319,23 @@ mod tests {
             startup_ctx_enter(&cfg),
             Some("@did:ma:k51runtime".to_string())
         );
+    }
+
+    #[test]
+    fn startup_enter_requires_ready_ma_outcome() {
+        assert!(should_queue_startup_enter(&ConnectMaOutcome::Ready {
+            did: "did:ma:k51runtime".to_string(),
+        }));
+        assert!(!should_queue_startup_enter(
+            &ConnectMaOutcome::PingTimedOut {
+                did: "did:ma:k51runtime".to_string(),
+            }
+        ));
+        assert!(!should_queue_startup_enter(
+            &ConnectMaOutcome::Unavailable {
+                target: "http://localhost:5003".to_string(),
+            }
+        ));
     }
 }
 
@@ -352,7 +379,7 @@ pub(crate) async fn startup_connect(
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
             let startup_enter = state.startup_enter.get_untracked();
-            startup_local_ma(
+            let ma_outcome = startup_local_ma(
                 state.clone(),
                 config,
                 username,
@@ -361,7 +388,14 @@ pub(crate) async fn startup_connect(
                 startup_enter,
             )
             .await;
-            queue_startup_enter(&state, config);
+            if should_queue_startup_enter(&ma_outcome) {
+                queue_startup_enter(&state, config);
+            } else {
+                state.startup_enter.update_untracked(|v| {
+                    let _ = v.take();
+                });
+                state.push_system(skip_startup_enter_message(&ma_outcome));
+            }
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }
