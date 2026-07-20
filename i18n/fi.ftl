@@ -176,7 +176,7 @@ help-header-common = ── yleiset polut ────────────�
 help-header-inbox = ── postilaatikko ─────────────────────────────────────────────────────────
 help-header-documents = ── asiakirjat ────────────────────────────────────────────────────────────
 help-header-i18n = ── kieli ───────────────────────────── ─────────────────────────────
-help-header-ma = ── 3-tila ───────────────────────────── ─────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── syöttämällä 間-välilyöntiä ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n tallentaa henkilöllisyytesi mukaiset kieliasetukset.
-help-i18n-set = .my.i18n: <code>             valitse kieli, jota 20 käyttää tälle henkilöllisyydelle
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               luettelo käytettävissä olevista kielikoodeista
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = muokkaus: haku epäonnistui: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ei aktiivista istuntoa — profiilia ei voi poistaa
 profile-delete-error = profiilin poistaminen epäonnistui: { $e }
-profile-wrong-user = 11:tä ei voi asettaa toiselle profiilille – vain omallesi
-profile-wrong-user-name = ei voi asettaa 11:tä 19:lle — vain oma profiilisi
-profile-no-ma = 3-ajonaikaa ei ole määritetty — suorita 31 ensin
-profile-no-cid = tälle profiilille ei ole tallennettu 3:tä — suorita 37 ensin
-profile-no-cid-in-doc = profiilia 11 ei löydy DID-asiakirjasta — suorita 43 ensin
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profiili salattiin ja lähetettiin IPFS:ään; DID-asiakirja päivitetään, kun CID saapuu
 profile-publish-done = profiili julkaistu — DID-asiakirja päivitetty ma.agent-CID:llä
-profile-publish-failed = profiilin julkaisu epäonnistui: 24
-profile-fetch-done = profiili haettu — 18-avaimet ladattu 43:stä
-profile-fetch-failed = profiilin haku epäonnistui: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identiteetti on jo julkaistu — profiili ajan tasalla
-profile-import-exists = profiili 8 on jo olemassa – poista se ensin
-profile-import-wrong-user = tiedosto sisältää profiilin 22, odotettu 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binäärisisältö (ei näytetä)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = sisällön nouto epäonnistui: 25
-cid-op-unknown = tuntematon sisältötoiminto: 27
-cid-op-wc = { $lines } rivit 18 sanat 36 merkkiä
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ei mitään)
 profiles-deleted = profiili { $name } poistettu
 profiles-not-found = profiilia ei löydy: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     henkilökohtainen config
 help-topic-inbox =   .help/inbox                  saapuneet
 help-topic-doc =   .help/doc                    dokumentit
 help-topic-actor =   .help/actor                  etä-actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               rivinsisäiset Scheme-lausekkeet ja dokumentaatio
 help-unknown-topic =   .help/{ $topic }: tuntematon aihe
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         lähetä suora/ch
 help-actor-ping = @actor:ping                  elävyyden ping
 help-actor-entities =   @actor/entities              listaa entiteetit
 help-actor-entities-get = @actor/entities/<n>          hanki entiteettisolmu
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   aseta entiteetti 14-viittauksella
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     muokkaa entiteettiä
 help-actor-entities-del = @actor/entities/<n>:         poista kokonaisuus
 help-actor-config-get =   @actor/config/<key>          hae config-arvo
 help-actor-config-set =   @actor/config/<key>: val     aseta config-arvo
-help-actor-acl = @actor/acl                   hanki 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              muokkaa ACL:ää
 help-actor-fragment =   @actor#entity                lähetä pluginille
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginille
-help-header-cid-ops = ── 3 näyttelijä kutsuu ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  soita entiteetille 15 kohteesta 24 ja odota sen vastausta
-help-actor-head = (@actor/path)                noutaa etä-CRUD-sisältöä 31:stä
-help-actor-tail = (<bafy...>)                  sisällyttää ja arvioida 21 36 41:stä
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  säilyttää 5-vastaukset istuntoympäristössä
-help-actor-wc-l = .my.scheme.ma!edit           muokkaa tämän identiteetin tallennettuja 11-apuohjelmia
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
 help-topic-i18n = .help/i18n                   kieliasetus identiteettiäsi varten
@@ -365,7 +365,7 @@ help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla
 help-url-msg =   ?msg=<did>                   esitäyttää: @<did>!msg (tekstiviesti)
 help-url-say =   ?say=<did>                   esitäyttää: @<did>!say (verbi say)
 help-url-emote =   ?emote=<did>                 esitäyttää: @<did>!emote (verbi emote)
-help-url-ma = ?ma=<did-or-url>              esitäytön ajonaikainen DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             Siirry ajonaikaiseen maailmaan kirjautumisen jälkeen
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina Enter lähettääksesi.
@@ -376,8 +376,8 @@ help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi ver
 help-publish-ma = Julkaisemiseen tarvitset ma:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
 help-publish-steps = Vaiheet: aja '.ma [port]' paikallisen ma:n havaitsemiseksi, sitten '.my.identity!publish @ma'.
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
-profile-fetch-did-resolve-failed = EI ole vielä julkaistu – suorita ensin 28 ja sitten profiilisi 67
-profile-update-done = profiili päivitetty — 18-avaimet yhdistetty 43:stä
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = anna profiilin nimi: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Varoitus: IPNS-yksityisavaimesi lähetetään tälle suorituspalvelulle henkilöllisyytesi julkaisemiseen. Käytä vain suorituspalvelua, johon luotat täysin.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme arvioi zion-komentoihin upotetut Scheme-lausekkeet ja liittää tuloksen riville ennen lähettämistä.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    rivinsisäinen esimerkki; lähettää "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             määrittelyt säilyvät nykyisen kirjautumisistunnon ajan
+help-zscheme-doc = Dokumentaatio: https://github.com/bahner/rust-ma-zscheme

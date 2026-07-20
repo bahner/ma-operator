@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikasi gagal [{ $code }]: { $err }
 doc-publish-error-hint = Petunjuk: { $hint }
 doc-publish-hint-session = masuk lagi agar ego dapat mengakses kunci identitas Anda
-doc-publish-hint-target = gunakan DID penerbit yang valid atau alias yang memutuskan untuk menghapus 57
-doc-publish-hint-network = verifikasi runtime 7 dan 22 dapat dijangkau, lalu coba lagi
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifikasi dokumen DID penerbit diterbitkan dan berisi titik akhir yang dapat dijangkau
-doc-publish-hint-acl = minta operator penerbit untuk mengizinkan DID Anda di 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin menolak permintaan; periksa alasannya dan coba lagi setelah memperbaiki entitas/runtime
-doc-publish-hint-ipfs = periksa kesehatan 12/17 lokal dan status runtime penerbit
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = periksa log waktu proses untuk mengetahui penyebab detailnya dan coba lagi
 doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
@@ -176,7 +176,7 @@ help-header-common = ── jalur umum ─────────────�
 help-header-inbox = ── kotak masuk ──────────────────────────────────────────────────────────
 help-header-documents = ── dokumen ──────────────────────────────────────────────────────────────
 help-header-i18n = ── bahasa ─────────────────────────────────────────────────────────────────
-help-header-ma = ── Ruang 3 ───────────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── memasuki 間-ruang ─────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              hapus dokumen
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n menyimpan preferensi bahasa yang terkait dengan identitas Anda.
-help-i18n-set = .my.i18n: <code>             pilih bahasa yang digunakan 20 untuk identitas ini
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               daftar kode bahasa yang tersedia
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = pengeditan: gagal mengambil: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = tidak ada sesi aktif — profil tidak dapat dihapus
 profile-delete-error = penghapusan profil gagal: { $e }
-profile-wrong-user = tidak dapat menyetel 11 untuk profil lain — hanya profil Anda sendiri
-profile-wrong-user-name = tidak dapat menyetel 11 untuk 19 — hanya profil Anda sendiri
-profile-no-ma = tidak ada runtime 3 yang dikonfigurasi — jalankan 31 terlebih dahulu
-profile-no-cid = tidak ada 3 yang disimpan untuk profil ini — jalankan 37 terlebih dahulu
-profile-no-cid-in-doc = tidak ada profil 11 yang ditemukan di dokumen DID — jalankan 43 terlebih dahulu
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profil dienkripsi dan dikirim ke IPFS; dokumen DID akan diperbarui saat CID tiba
 profile-publish-done = profil diterbitkan — dokumen DID diperbarui dengan ma.agent CID
-profile-publish-failed = penerbitan profil gagal: 24
-profile-fetch-done = profil diambil — Kunci 18 dimuat dari 43
-profile-fetch-failed = pengambilan profil gagal: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identitas sudah diterbitkan — profil terkini
-profile-import-exists = profil 8 sudah ada — hapus dulu
-profile-import-wrong-user = file berisi profil 22, diharapkan 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = konten biner (tidak ditampilkan)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = gagal mengambil konten: 25
-cid-op-unknown = operasi konten yang tidak diketahui: 27
-cid-op-wc = { $lines } baris 18 kata 36 karakter
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (tidak ada)
 profiles-deleted = profil { $name } dihapus
 profiles-not-found = profil tidak ditemukan: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config pribadi
 help-topic-inbox =   .help/inbox                  kotak masuk
 help-topic-doc =   .help/doc                    dokumen
 help-topic-actor =   .help/actor                  actor jarak jauh
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ekspresi Scheme sebaris dan dokumentasi
 help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         kirim pesan langs
 help-actor-ping = @actor:ping                  ping keaktifan
 help-actor-entities =   @actor/entities              daftar entitas
 help-actor-entities-get = @actor/entities/<n>          dapatkan simpul entitas
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   atur entitas dengan referensi 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entitas
 help-actor-entities-del = @actor/entities/<n>:         hapus entitas
 help-actor-config-get =   @actor/config/<key>          ambil nilai config
 help-actor-config-set =   @actor/config/<key>: val     atur nilai config
-help-actor-acl = @actor/acl                   dapatkan 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              sunting ACL
 help-actor-fragment =   @actor#entity                kirim ke plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
-help-header-cid-ops = ── Aktor 3 memanggil ───────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  memanggil entitas 15 dari 24 dan menunggu balasannya
-help-actor-head = (@actor/path)                mengambil konten CRUD jarak jauh dari 31
-help-actor-tail = (<bafy...>)                  memasukkan dan mengevaluasi 21 dari 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  simpan balasan 5 di lingkungan sesi
-help-actor-wc-l = .my.scheme.ma!edit           edit pembantu 11 yang disimpan untuk identitas ini
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    membuka zion melalui tautan URL
 help-topic-i18n = .help/i18n                   preferensi bahasa untuk identitas Anda
@@ -372,7 +372,7 @@ help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah d
 help-url-msg =   ?msg=<did>                   isi otomatis: @<did>!msg (pesan biasa)
 help-url-say =   ?say=<did>                   isi otomatis: @<did>!say (kata kerja say)
 help-url-emote =   ?emote=<did>                 isi otomatis: @<did>!emote (kata kerja emote)
-help-url-ma = ?ma=<did-or-url>              URL DID runtime pra-pengisian / 23
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             masuk ke dunia runtime setelah login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk mengirim.
@@ -383,8 +383,8 @@ help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringa
 help-publish-ma = Untuk mempublikasikan, Anda memerlukan ma (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
 help-publish-steps = Langkah: jalankan '.ma [port]' untuk mendeteksi ma lokal, lalu '.my.identity!publish @ma'.
 help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.
-profile-fetch-did-resolve-failed = DID belum dipublikasikan — jalankan 28 terlebih dahulu, lalu 67 profil Anda
-profile-update-done = profil diperbarui — Kunci 18 digabungkan dari 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = tentukan nama profil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Peringatan: Kunci privat IPNS Anda akan dikirim ke runtime ini untuk penerbitan identitas. Gunakan hanya runtime yang sepenuhnya Anda percayai.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme mengevaluasi ekspresi Scheme yang disisipkan dalam perintah zion dan menyisipkan hasilnya ke baris sebelum dikirim.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    contoh sebaris; mengirim "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definisi tetap ada selama sesi login saat ini
+help-zscheme-doc = Dokumentasi: https://github.com/bahner/rust-ma-zscheme

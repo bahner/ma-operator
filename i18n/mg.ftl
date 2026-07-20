@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = famoahana tsy nahomby [{ $code }]: { $err }
 doc-publish-error-hint = Torohevitra: { $hint }
 doc-publish-hint-session = midira indray mba ahafahan'i ego miditra amin'ny fanalahidin'ny mombamomba anao
-doc-publish-hint-target = Mampiasà mpamoaka lahatsoratra manan-kery DID na solon'anarana izay manapa-kevitra ny hamoaka 57
-doc-publish-hint-network = manamarina fa azo tratrarina ny 7 ary ny 22 dia azo tratrarina, dia andramo indray
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = manamarina fa navoaka ny antontan-taratasin'ny mpanonta DID ary misy teboka farany azo tratrarina
-doc-publish-hint-acl = angataho ny mpandraharaha mpamoaka mba hamela ny DID-nao amin'ny 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Nolavin'ny runtime/plugin ny fangatahana; diniho ny antony ary andramo indray aorian'ny fanamboarana ny entity / runtime
-doc-publish-hint-ipfs = jereo ny 12/17 eo an-toerana sy ny toe-pahasalaman'ny mpanonta
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = jereo ny diarin'ny fotoam-pivoriana mba hahitana antony amin'ny antsipiriany ary andramo indray
 doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
 doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
@@ -176,7 +176,7 @@ help-header-common = ── lalan-kely mahazatra ──────────�
 help-header-inbox = ── boaty fidirana ──────────────────────────────────────────────────────────
 help-header-documents = ── antontan-taratasy ────────────────────────────────────────────────────
 help-header-i18n = ── fiteny ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-space ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── miditra 間-space ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n dia mitahiry ny safidin'ny fiteny mifamatotra amin'ny mombamomba anao.
-help-i18n-set = .my.i18n: <code>             safidio ny fiteny ampiasain'ny 20 amin'ity famantarana ity
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               mitanisa kaody fiteny misy
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = fanandramana: tsy nahomby ny faka: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = tsy misy fotoana miasa — tsy azo fafana ny profily
 profile-delete-error = tsy nahomby ny famafana profily: { $e }
-profile-wrong-user = tsy afaka mametraka 11 ho an'ny mombamomba hafa — ny anao irery ihany
-profile-wrong-user-name = tsy afaka mametraka 11 ho an'ny 19 — ny mombamomba anao manokana ihany
-profile-no-ma = tsy misy 3 runtime configured — mandehana 31 aloha
-profile-no-cid = tsy misy 3 voatahiry ho an'ity mombamomba ity — mandehana 37 aloha
-profile-no-cid-in-doc = tsy misy mombamomba 11 hita ao amin'ny antontan-taratasin'ny DID — mandehana 43 aloha
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = nafenina ny profil ary nalefa tany amin'ny IPFS; havaozina ny antontan-taratasy DID rehefa tonga ny CID
 profile-publish-done = navoaka ny profil — nohavaozina tamin'ny ma.agent CID ny antontan-taratasy DID
-profile-publish-failed = Tsy nahomby ny famoahana ny mombamomba azy: 24
-profile-fetch-done = nalaina ny mombamomba — 18 fanalahidin'ny 43
-profile-fetch-failed = tsy nahomby ny fakana ny mombamomba: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = efa navoaka ny mombamomba azy — ny mombamomba azy hatramin'izao
-profile-import-exists = efa misy ny profil 8 — vonoy aloha
-profile-import-wrong-user = Ny rakitra dia misy mombamomba 22, antenaina 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = atiny binary (tsy aseho)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = tsy nahavita naka votoaty: 25
-cid-op-unknown = asa votoaty tsy fantatra: 27
-cid-op-wc = Ireo singa mifandraika amin'ny { $lines } 18
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (tsy misy)
 profiles-deleted = profily { $name } nafafa
 profiles-not-found = tsy hita ny profily: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config personnelle
 help-topic-inbox =   .help/inbox                  boîte de réception
 help-topic-doc =   .help/doc                    antontan-taratasy
 help-topic-actor =   .help/actor                  acteur distant
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               fanehoana Scheme anaty andalana sy tahiry
 help-unknown-topic =   .help/{ $topic }: sujet inconnu
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         mandefa hafatra m
 help-actor-ping = @actor:ping                  fiainana ping
 help-actor-entities =   @actor/entities              lister les entités
 help-actor-entities-get = @actor/entities/<n>          mahazo node entity
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   amboary amin'ny alàlan'ny fanondroana 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     modifier l’entité
 help-actor-entities-del = @actor/entities/<n>:         vonoy entity
 help-actor-config-get =   @actor/config/<key>          obtenir la valeur de config
 help-actor-config-set =   @actor/config/<key>: val     définir la valeur de config
-help-actor-acl = @actor/acl                   Vidio ny 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              modifier ACL
 help-actor-fragment =   @actor#entity                envoyer au plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC vers le plugin
-help-header-cid-ops = ── Miantso ny mpilalao 3 ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  miantsoa orinasa 15 avy amin'ny 24 ary miandry ny valiny
-help-actor-head = (@actor/path)                maka votoaty CRUD lavitra avy amin'ny 31
-help-actor-tail = (<bafy...>)                  ampidiro sy tombana ny 21 avy amin'ny 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  mitazona valiny 5 ao amin'ny tontolon'ny session
-help-actor-wc-l = .my.scheme.ma!edit           ovay ny mpanampy 11 voatahiry ho an'ity famantarana ity
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
 help-topic-i18n = .help/i18n                   safidin'ny fiteny amin'ny maha-ianao anao
@@ -372,7 +372,7 @@ help-url-intro =   Zarao rohy hanokafana zion miaraka amin'ny mpandray efa voato
 help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did>!msg (hafatra tsotra)
 help-url-say =   ?say=<did>                   fenoina mialoha: @<did>!say (matoanteny say)
 help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>!emote (matoanteny emote)
-help-url-ma = ?ma=<did-or-url>              URL DID / 23 alohan'ny famenoana
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             miditra ny tontolon'ny runtime aorian'ny fidirana
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter handefa.
@@ -383,8 +383,8 @@ help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'n
 help-publish-ma = Mba hamoahana, mila ny ma (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.
 help-publish-steps = Dingana: ampiasao '.ma [port]' hikaroana ny ma eo an-toerana, ary '.my.identity!publish @ma'.
 help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.
-profile-fetch-did-resolve-failed = TSY mbola navoaka — mandehana 28 aloha, avy eo 67 ny mombamomba anao
-profile-update-done = nohavaozina ny mombamomba — 18 fanalahidy natambatra avy amin'ny 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = lazao ny anaran'ny profil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Fampitandremana: Ny fanalahidinao tsiambaratelon'ny IPNS hateriny amin'ity runtime ity hamoaham-pankamantatra. Ampiasao fotsiny runtime izay itokianao tanteraka.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme manombana fanehoana Scheme tafiditra ao amin’ny baikon’i zion ary mampiditra ny valiny ao amin’ilay andalana alohan’ny handefasana azy.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ohatra anaty andalana; mandefa "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             mitoetra mandritra ny fidirana ankehitriny ny famaritana
+help-zscheme-doc = Tahiry: https://github.com/bahner/rust-ma-zscheme

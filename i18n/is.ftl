@@ -151,12 +151,12 @@ doc-publish-ipld-failed = ipld-birting { $path }: { $e }
 doc-publish-error-detail = birting mistókst [{ $code }]: { $err }
 doc-publish-error-hint = Ábending: { $hint }
 doc-publish-hint-session = skráðu þig inn aftur svo egó geti nálgast auðkennislyklana þína
-doc-publish-hint-target = notaðu gilt útgefanda-DID eða samnefni sem leysir upp 57
-doc-publish-hint-network = staðfestu að hægt sé að ná í 7 keyrslutíma og 22, reyndu síðan aftur
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = staðfestu að DID skjal útgefanda sé birt og inniheldur endapunkt sem hægt er að ná til
-doc-publish-hint-acl = biðja útgefanda að leyfa DID þinn í 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin hafnaði beiðninni; skoðaðu ástæðuna og reyndu aftur eftir að eining/keyrslutími hefur verið lagaður
-doc-publish-hint-ipfs = athuga staðbundna 12/17 heilsu og útgefanda keyrslutíma stöðu
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = skoðaðu runtime logs fyrir nákvæmar orsakir og reyndu aftur
 doc-store-sent = geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
 doc-ipld-store-sent = IPLD-geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
@@ -176,7 +176,7 @@ help-header-common = ── algengar slóðir ───────────�
 help-header-inbox = ── pósthólf ──────────────────────────────────────────────────────────────
 help-header-documents = ── skjöl ─────────────────────────────────────────────────────────────────
 help-header-i18n = ── tungumál ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-rými ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── inn í 間-rými ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<nafn>:              eyða skjali
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n geymir tungumálavalið sem tengist auðkenni þínu.
-help-i18n-set = .my.i18n: <code>             veldu tungumálið sem 20 notar fyrir þessa auðkenni
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               listi tiltæka tungumálakóða
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = ritvinnsla: sækingarvilla: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = engin virk lota — ekki hægt að eyða notandaprófíl
 profile-delete-error = eyðing notandaprófíls mistókst: { $e }
-profile-wrong-user = getur ekki stillt 11 fyrir annað snið — aðeins þitt eigið
-profile-wrong-user-name = getur ekki stillt 11 fyrir 19 — aðeins þinn eigin prófíl
-profile-no-ma = enginn 3 keyrslutími stilltur - keyrðu 31 fyrst
-profile-no-cid = engin 3 geymd fyrir þetta snið - keyrðu 37 fyrst
-profile-no-cid-in-doc = enginn prófíll 11 fannst í DID skjalinu — keyrðu fyrst 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = prófíll dulkóðaður og sendur til IPFS; DID-skjalið verður uppfært þegar CID berst
 profile-publish-done = prófíll birtur — DID-skjal uppfært með ma.agent CID
-profile-publish-failed = útgáfu prófíls mistókst: 24
-profile-fetch-done = snið sótt — 18 lyklar hlaðnir frá 43
-profile-fetch-failed = Ekki tókst að sækja prófíl: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = auðkenni þegar birt — prófíllinn uppfærður
-profile-import-exists = prófíllinn 8 er þegar til — eyddu því fyrst
-profile-import-wrong-user = skráin inniheldur sniðið 22, væntanlegt 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = tvöfalt efni (ekki birt)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = tókst ekki að sækja efni: 25
-cid-op-unknown = óþekkt efnisaðgerð: 27
-cid-op-wc = { $lines } línur 18 orð 36 stafir
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ekkert)
 profiles-deleted = notandaprófíll { $name } eytt
 profiles-not-found = notandaprófíll finnst ekki: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     personlig config
 help-topic-inbox =   .help/inbox                  indbakke
 help-topic-doc =   .help/doc                    dokumenter
 help-topic-actor =   .help/actor                  fjern actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               innfelld Scheme-segð og skjölun
 help-unknown-topic =   .help/{ $topic }: ukendt emne
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         senda bein/spjall
 help-actor-ping = @actor:ping                  lífleika ping
 help-actor-entities =   @actor/entities              vis entiteter
 help-actor-entities-get = @actor/entities/<n>          fá einingarhnút
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   stilltu einingu með 14 tilvísun
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     rediger entitet
 help-actor-entities-del = @actor/entities/<n>:         eyða einingu
 help-actor-config-get =   @actor/config/<key>          hent config-værdi
 help-actor-config-set =   @actor/config/<key>: val     sæt config-værdi
-help-actor-acl = @actor/acl                   fáðu 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              rediger ACL
 help-actor-fragment =   @actor#entity                send til plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC til plugin
-help-header-cid-ops = ── 3 leikari hringir ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  hringdu í aðila 15 frá 24 og bíddu eftir svari hennar
-help-actor-head = (@actor/path)                sæktu fjarlægt CRUD efni frá 31
-help-actor-tail = (<bafy...>)                  innihalda og meta 21 frá 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  haltu 5 svörum í lotuumhverfinu
-help-actor-wc-l = .my.scheme.ma!edit           breyta vistuðum 11 aðstoðarmönnum fyrir þessa auðkenni
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-topic-i18n = .help/i18n                   tungumálaval fyrir sjálfsmynd þína
@@ -365,7 +365,7 @@ help-url-intro =   Deildu tengli sem opnar zion með fyrirfram fylltan viðtakan
 help-url-msg =   ?msg=<did>                   fyllir fyrirfram: @<did>!msg (venjuleg skilaboð)
 help-url-say =   ?say=<did>                   fyllir fyrirfram: @<did>!say (sagnorð say)
 help-url-emote =   ?emote=<did>                 fyllir fyrirfram: @<did>!emote (sagnorð emote)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             sláðu inn runtime heim eftir innskráningu
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Inntakið er fyrirfram fyllt en ekki sent — ýttu á Enter til að senda.
@@ -376,8 +376,8 @@ help-publish-intro = Birting gerir auðkenni þitt leitanlegt á netinu. Aðrir 
 help-publish-ma = Til að birta þarftu ma (staðbundið keyrsluumhverfi) uppsett. Það tengir ego við IPFS/IPNS fyrir þína hönd.
 help-publish-steps = Skref: keyrðu '.ma [port]' til að finna staðbundið ma, síðan '.my.identity!publish @ma'.
 help-publish-without = Án birtingar geta aðrir ekki náð í þig — jafnvel þótt þeir þekki DID þitt geta þeir ekki leyst upp endpoint þinn.
-profile-fetch-did-resolve-failed = VAR ekki birt enn — keyrðu fyrst 28 og síðan 67 prófílinn þinn
-profile-update-done = snið uppfært — 18 lyklar sameinaðar úr 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = tilgreindu heiti prófíls: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Viðvörun: Einkalykill IPNS þinn verður sendur á þennan keyrslutengil til útgáfu á auðkenningu. Notaðu eingöngu keyrslutengil sem þú treystir að fullu.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme metur Scheme-segðir sem eru felldar inn í zion-skipanir og setur niðurstöðuna inn í línuna áður en hún er send.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    innfellt dæmi; sendir "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             skilgreiningar haldast í núverandi innskráningarlotu
+help-zscheme-doc = Skjölun: https://github.com/bahner/rust-ma-zscheme

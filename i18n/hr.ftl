@@ -151,12 +151,12 @@ doc-publish-ipld-failed = objavljivanje IPLD { $path }: { $e }
 doc-publish-error-detail = objava nije uspjela [{ $code }]: { $err }
 doc-publish-error-hint = Savjet: { $hint }
 doc-publish-hint-session = ponovno se prijavite kako bi ego mogao pristupiti vašim identifikacijskim ključevima
-doc-publish-hint-target = koristite važeći DID izdavača ili alias koji se razrješava na goli 57
-doc-publish-hint-network = provjerite jesu li 7 runtime i 22 dostupni, zatim pokušajte ponovno
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = provjerite je li izdavač DID dokument objavljen i sadrži dohvatljivu krajnju točku
-doc-publish-hint-acl = zamolite operatera izdavača da vam dopusti DID u 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin odbio je zahtjev; provjerite razlog i pokušajte ponovno nakon popravka entiteta/vremena izvođenja
-doc-publish-hint-ipfs = provjerite lokalno zdravlje 12/17 i status vremena izvođenja izdavača
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = pregledajte zapisnike vremena izvođenja radi detaljnog uzroka i pokušajte ponovno
 doc-store-sent = zahtjev za pohranom poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
 doc-ipld-store-sent = zahtjev za pohranom IPLD poslan ({ $id }) → { $publisher }; CID će stići u odgovoru RPC
@@ -176,7 +176,7 @@ help-header-common = ── uobičajene putanje ──────────�
 help-header-inbox = ── pristigla pošta ───────────────────────────────────────────────────────
 help-header-documents = ── dokumenti ────────────────────────────────────────────────────────────
 help-header-i18n = ── jezik ───────────────────────────────────────────────────────────────
-help-header-ma = ── 3-razmak ─────────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── unos 間-razmaka ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<naziv>:              obriši dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n pohranjuje postavke jezika povezane s vašim identitetom.
-help-i18n-set = .my.i18n: <code>             odaberite jezik koji 20 koristi za ovaj identitet
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               popis dostupnih jezičnih kodova
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = uređivanje: pogreška dohvata: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nema aktivne sesije — profil nije moguće izbrisati
 profile-delete-error = brisanje profila nije uspjelo: { $e }
-profile-wrong-user = ne možete postaviti 11 za drugi profil — samo svoj
-profile-wrong-user-name = ne može postaviti 11 za 19 — samo svoj profil
-profile-no-ma = nije konfigurirano vrijeme izvođenja 3 — prvo pokrenite 31
-profile-no-cid = nema pohranjenih 3 za ovaj profil — prvo pokrenite 37
-profile-no-cid-in-doc = nije pronađen profil 11 u DID dokumentu — prvo pokrenite 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profil je šifriran i poslan na IPFS; DID dokument ažurirat će se kad stigne CID
 profile-publish-done = profil objavljen — DID dokument ažuriran je s ma.agent CID-om
-profile-publish-failed = objava profila nije uspjela: 24
-profile-fetch-done = profil dohvaćen — 18 ključevi učitani iz 43
-profile-fetch-failed = dohvaćanje profila nije uspjelo: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identitet već objavljen — profil ažuriran
-profile-import-exists = profil 8 već postoji — prvo ga izbrišite
-profile-import-wrong-user = datoteka sadrži profil 22, očekivano 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binarni sadržaj (nije prikazan)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = nije uspio dohvatiti sadržaj: 25
-cid-op-unknown = operacija nepoznatog sadržaja: 27
-cid-op-wc = { $lines } linije 18 riječi 36 znakovi
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (nijedan)
 profiles-deleted = profil { $name } izbrisan
 profiles-not-found = profil nije pronađen: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     osobna config
 help-topic-inbox =   .help/inbox                  ulazna pošta
 help-topic-doc =   .help/doc                    dokumenti
 help-topic-actor =   .help/actor                  udaljeni actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               umetnuti Scheme izrazi i dokumentacija
 help-unknown-topic =   .help/{ $topic }: nepoznata tema
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         pošalji izravnu/
 help-actor-ping = @actor:ping                  živost ping
 help-actor-entities =   @actor/entities              ispiši entitete
 help-actor-entities-get = @actor/entities/<n>          dobiti čvor entiteta
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   postaviti entitet 14 referencom
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     uredi entitet
 help-actor-entities-del = @actor/entities/<n>:         izbrisati entitet
 help-actor-config-get =   @actor/config/<key>          dohvati config vrijednost
 help-actor-config-set =   @actor/config/<key>: val     postavi config vrijednost
-help-actor-acl = @actor/acl                   dobiti 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              uredi ACL
 help-actor-fragment =   @actor#entity                pošalji pluginu
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC prema pluginu
-help-header-cid-ops = ── 3 glumac zove ────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  pozvati entitet 15 iz 24 i čekati njegov odgovor
-help-actor-head = (@actor/path)                dohvaća udaljeni CRUD sadržaj od 31
-help-actor-tail = (<bafy...>)                  uključi i procijeni 21 iz 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  zadržati 5 odgovore u okruženju sesije
-help-actor-wc-l = .my.scheme.ma!edit           uredi spremljene 11 pomagače za ovaj identitet
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    otvaranje ziona putem URL veze
 help-topic-i18n = .help/i18n                   preferencija jezika za vaš identitet
@@ -365,7 +365,7 @@ help-url-intro =   Podijeli vezu koja otvara zion s unaprijed ispunjenim primate
 help-url-msg =   ?msg=<did>                   unaprijed ispunjava: @<did>!msg (obična poruka)
 help-url-say =   ?say=<did>                   unaprijed ispunjava: @<did>!say (glagol say)
 help-url-emote =   ?emote=<did>                 unaprijed ispunjava: @<did>!emote (glagol emote)
-help-url-ma = ?ma=<did-or-url>              unaprijed popunjeno vrijeme izvođenja DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             uđite u runtime svijet nakon prijave
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Unos je unaprijed ispunjen ali nije poslan — pritisni Enter za slanje.
@@ -376,8 +376,8 @@ help-publish-intro = Objavljivanje čini tvoj identitet pronađljivim u mreži. 
 help-publish-ma = Za objavu trebaš instaliran ma (lokalno izvršno okruženje). Ono povezuje ego s IPFS/IPNS u tvoje ime.
 help-publish-steps = Koraci: pokreni '.ma [port]' za otkrivanje lokalnog ma, zatim '.my.identity!publish @ma'.
 help-publish-without = Bez objave drugi te ne mogu doseći — čak i ako znaju tvoj DID, ne mogu razriješiti tvoj endpoint.
-profile-fetch-did-resolve-failed = DID još nije objavljen — prvo pokrenite 28, a zatim 67 svoj profil
-profile-update-done = profil ažuriran — 18 ključevi spojeni iz 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = navedite naziv profila: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Upozorenje: Vaš privatni IPNS ključ bit će poslan ovom izvršnom okruženju radi objave identiteta. Koristite samo izvršno okruženje kojemu u potpunosti vjerujete.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme vrednuje Scheme izraze ugrađene u zion naredbe i umeće rezultat u redak prije slanja.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    umetnuti primjer; šalje "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definicije ostaju tijekom trenutne prijavne sesije
+help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme

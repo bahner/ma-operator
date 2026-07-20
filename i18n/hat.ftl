@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = piblikasyon echwe [{ $code }]: { $err }
 doc-publish-error-hint = Sijesyon: { $hint }
 doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle idantite w yo
-doc-publish-hint-target = sèvi ak yon piblikatè valab DID oswa alyas ki rezoud nan bare 57
-doc-publish-hint-network = verifye 7 ègzekutabl ak 22 yo ka jwenn, Lè sa a, reesye
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifye dokiman DID piblikatè a pibliye epi li gen yon pwen final ki ka jwenn
-doc-publish-hint-acl = mande operatè piblikatè a pou pèmèt DID ou nan 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin te rejte demann lan; enspekte rezon an epi eseye refè apre ranje antite / ègzekutabl
-doc-publish-hint-ipfs = tcheke sante lokal 12/17 ak estati egzekite Piblikatè
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
 doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
@@ -180,7 +180,7 @@ help-header-common = ── chemen komen ─────────────
 help-header-inbox = ── bwat resepsyon ─────────────────────────────────────────────────────────
 help-header-documents = ── dokiman (.my.doc.*) ────────────────────────────────────────────────────
 help-header-i18n = ── lang ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-espas ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── k ap antre nan 間-espas ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        teks sa a
@@ -231,7 +231,7 @@ help-doc-del =   .my.doc.<name>:              efase dokiman
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak idantite w.
-help-i18n-set = .my.i18n: <code>             chwazi lang 20 itilize pou idantite sa a
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -292,26 +292,26 @@ err-edit-fetch-failed = edisyon: echèk chajman: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = pa gen sesyon aktif — pa kapab efase pwofil la
 profile-delete-error = efaseman pwofil echwe: { $e }
-profile-wrong-user = pa ka mete 11 pou yon lòt pwofil - sèlman pwòp ou a
-profile-wrong-user-name = pa ka mete 11 pou 19 — sèlman pwòp pwofil ou
-profile-no-ma = pa gen 3 ègzekutabl konfigirasyon - kouri 31 an premye
-profile-no-cid = pa gen 3 ki estoke pou pwofil sa a — kouri 37 an premye
-profile-no-cid-in-doc = pa gen okenn pwofil 11 yo jwenn nan dokiman DID — kouri 43 an premye
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = pwofil la ankode epi voye sou IPFS; dokiman DID la ap mete ajou lè CID la rive
 profile-publish-done = pwofil la pibliye — dokiman DID la mete ajou ak CID ma.agent
-profile-publish-failed = pwofil pibliye echwe: 24
-profile-fetch-done = pwofil chache — kle 18 chaje soti nan 43
-profile-fetch-failed = chache pwofil echwe: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = idantite deja pibliye - pwofil jiska dat
-profile-import-exists = pwofil 8 deja egziste — efase li an premye
-profile-import-wrong-user = dosye gen pwofil 22, espere 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = kontni binè (pa parèt)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = echwe pou jwenn kontni: 25
-cid-op-unknown = operasyon kontni enkoni: 27
-cid-op-wc = { $lines } liy 18 mo 36 karaktè
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (okenn)
 profiles-deleted = pwofil { $name } efase
 profiles-not-found = pwofil pa jwenn: { $name }
@@ -325,7 +325,7 @@ help-topic-my =   .help/my                     konfig pèsonèl
 help-topic-inbox =   .help/inbox                  bwat resepsyon
 help-topic-doc =   .help/doc                    dokiman
 help-topic-actor =   .help/actor                  aktè adistans
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ekspresyon Scheme anliy ak dokiman
 help-unknown-topic =   .help/{ $topic }: sijè enkoni
 
 # -- Help actor section
@@ -335,21 +335,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         voye mesaj dirèk
 help-actor-ping = @actor:ping                  lavi ping
 help-actor-entities =   @actor/entities              lis antite yo
 help-actor-entities-get = @actor/entities/<n>          jwenn node antite
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   mete antite pa referans 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     modifye antite
 help-actor-entities-del = @actor/entities/<n>:         efase antite
 help-actor-config-get =   @actor/config/<key>          pran valè config
 help-actor-config-set =   @actor/config/<key>: val     mete valè config
-help-actor-acl = @actor/acl                   jwenn 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              modifye ACL
 help-actor-fragment =   @actor#entity                voye bay plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC bay plugin
-help-header-cid-ops = ── 3 aktè rele ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  rele yon antite 15 soti nan 24 epi tann repons li
-help-actor-head = (@actor/path)                chache kontni CRUD aleka nan 31
-help-actor-tail = (<bafy...>)                  enkli ak evalye 21 soti nan yon 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  kenbe repons 5 nan anviwònman sesyon an
-help-actor-wc-l = .my.scheme.ma!edit           edite ki te sove 11 asistan yo pou idantite sa a
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
 help-topic-i18n = .help/i18n                   preferans lang pou idantite w
@@ -358,7 +358,7 @@ help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli dav
 help-url-msg =   ?msg=<did>                   ranpli davans: @<did>!msg (mesaj senp)
 help-url-say =   ?say=<did>                   ranpli davans: @<did>!say (vèb say)
 help-url-emote =   ?emote=<did>                 ranpli davans: @<did>!emote (vèb emote)
-help-url-ma = ?ma=<did-or-url>              pre-ranpli ègzekutabl DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             antre nan mond lan apre konekte
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
@@ -369,8 +369,8 @@ help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka 
 help-publish-ma = Pou pibliye, ou bezwen ma (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.
 help-publish-steps = Etap: kouri '.ma [port]' pou detekte ma lokal, epi '.my.identity!publish @ma'.
 help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.
-profile-fetch-did-resolve-failed = DID pa pibliye ankò — kouri 28 an premye, apre sa 67 pwofil ou a
-profile-update-done = pwofil mete ajou - kle 18 fizyone soti nan 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = presize non pwofil la: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -399,8 +399,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Avètisman: Kle prive IPNS ou a ap voye nan sèvis runtime sa a pou pibliye idantite ou. Sèlman itilize yon runtime ou fè konfyans nèt.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme evalye ekspresyon Scheme ki antre nan kòmand zion yo, epi li kole rezilta a nan liy lan anvan li voye l.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    egzanp anliy; li voye "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definisyon yo rete pou sesyon koneksyon aktyèl la
+help-zscheme-doc = Dokiman: https://github.com/bahner/rust-ma-zscheme

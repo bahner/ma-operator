@@ -151,12 +151,12 @@ doc-publish-ipld-failed = публикуване IPLD { $path }: { $e }
 doc-publish-error-detail = публикуването е неуспешно [{ $code }]: { $err }
 doc-publish-error-hint = Подсказка: { $hint }
 doc-publish-hint-session = влезте отново, за да може егото да има достъп до ключовете ви за самоличност
-doc-publish-hint-target = използвайте валиден DID на издателя или псевдоним, който се разрешава на гол 57
-doc-publish-hint-network = проверете дали времето за изпълнение на 7 и 22 са достъпни, след което опитайте отново
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = проверете дали документът DID на издателя е публикуван и съдържа достижима крайна точка
-doc-publish-hint-acl = помолете оператора на издателя да разреши вашия DID в 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin отхвърли заявката; проверете причината и опитайте отново след коригиране на обекта/времето за изпълнение
-doc-publish-hint-ipfs = проверете локалното състояние на 12/17 и състоянието на време на изпълнение на издателя
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = проверете регистрационните файлове по време на изпълнение за подробна причина и опитайте отново
 doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
 doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
@@ -176,7 +176,7 @@ help-header-common = ── чести пътища ─────────�
 help-header-inbox = ── входяща поща ──────────────────────────────────────────────────────────
 help-header-documents = ── документи ────────────────────────────────────────────────────────────
 help-header-i18n = ── език ───────────────────────────────────────────────────────────────
-help-header-ma = ── 3-интервал ─────────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── въвеждане на 間-интервал ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<ime>:              изтрива документ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n съхранява езиковите предпочитания, свързани с вашата самоличност.
-help-i18n-set = .my.i18n: <code>             изберете езика, който 20 използва за тази самоличност
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               избройте наличните езикови кодове
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = грешка при зареждане: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = няма активна сесия — профилът не може да бъде изтрит
 profile-delete-error = изтриването на профила не бе успешно: { $e }
-profile-wrong-user = не можете да зададете 11 за друг профил — само за вашия собствен
-profile-wrong-user-name = не може да зададе 11 за 19 — само вашият собствен профил
-profile-no-ma = няма конфигурирано време за изпълнение на 3 — първо стартирайте 31
-profile-no-cid = няма съхранен 3 за този профил — първо стартирайте 37
-profile-no-cid-in-doc = няма намерен профил 11 в DID документ — първо стартирайте 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = профилът е шифрован и изпратен към IPFS; DID документът ще бъде обновен, когато пристигне CID
 profile-publish-done = профилът е публикуван — DID документът е обновен с ma.agent CID
-profile-publish-failed = неуспешно публикуване на профил: 24
-profile-fetch-done = извлечен профил — 18 ключове, заредени от 43
-profile-fetch-failed = неуспешно извличане на профил: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = самоличността вече е публикувана — профилът е актуален
-profile-import-exists = профил 8 вече съществува — първо го изтрийте
-profile-import-wrong-user = файлът съдържа профил 22, очаква се 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = двоично съдържание (не се показва)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = не успя да извлече съдържание: 25
-cid-op-unknown = операция с неизвестно съдържание: 27
-cid-op-wc = { $lines } редове 18 думи 36 символи
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (никой)
 profiles-deleted = профил { $name } изтрит
 profiles-not-found = профилът не е намерен: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     лична config
 help-topic-inbox =   .help/inbox                  входяща кутия
 help-topic-doc =   .help/doc                    документи
 help-topic-actor =   .help/actor                  отдалечен actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               вградени Scheme изрази и документация
 help-unknown-topic =   .help/{ $topic }: непозната тема
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         изпращан�
 help-actor-ping = @actor:ping                  живост пинг
 help-actor-entities =   @actor/entities              изброй обектите
 help-actor-entities-get = @actor/entities/<n>          вземете възел на обект
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   задайте обект чрез препратка 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     редактирай обект
 help-actor-entities-del = @actor/entities/<n>:         изтриване на обект
 help-actor-config-get =   @actor/config/<key>          вземи стойност на config
 help-actor-config-set =   @actor/config/<key>: val     задай стойност на config
-help-actor-acl = @actor/acl                   вземете 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редактирай ACL
 help-actor-fragment =   @actor#entity                изпрати към plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC към plugin
-help-header-cid-ops = ── 3 актьор се обажда ────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  извикване на обект 15 от 24 и изчакване на неговия отговор
-help-actor-head = (@actor/path)                извлича отдалечено CRUD съдържание от 31
-help-actor-tail = (<bafy...>)                  включва и оценява 21 от 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  запазва 5 отговорите в средата на сесията
-help-actor-wc-l = .my.scheme.ma!edit           редактирайте запазените 11 помощници за тази самоличност
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    отваряне на zion чрез URL връзка
 help-topic-i18n = .help/i18n                   езикови предпочитания за вашата идентичност
@@ -365,7 +365,7 @@ help-url-intro =   Сподели връзка, която отваря zion с 
 help-url-msg =   ?msg=<did>                   предварително попълва: @<did>!msg (обикновено съобщение)
 help-url-say =   ?say=<did>                   предварително попълва: @<did>!say (глагол say)
 help-url-emote =   ?emote=<did>                 предварително попълва: @<did>!emote (глагол emote)
-help-url-ma = ?ma=<did-or-url>              предварително попълване на времето за изпълнение DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             влезте в света на изпълнение след влизане
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Полето е предварително попълнено, но не изпратено — натисни Enter за изпращане.
@@ -376,8 +376,8 @@ help-publish-intro = Публикуването прави самоличнос�
 help-publish-ma = За публикуване е необходим инсталиран ma (локален runtime). Той свързва ego с IPFS/IPNS от твое име.
 help-publish-steps = Стъпки: изпълни '.ma [port]' за намиране на локалния ma, след което '.my.identity!publish @ma'.
 help-publish-without = Без публикуване другите не могат да те достигнат — дори да знаят твоя DID, не могат да разрешат твоя endpoint.
-profile-fetch-did-resolve-failed = DID все още не е публикуван — първо стартирайте 28, след това 67 вашия профил
-profile-update-done = профилът е актуализиран — ключовете 18 са обединени от 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = посочете име на профил: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Предупреждение: Вашият частен IPNS ключ ще бъде изпратен към тази среда за изпълнение за публикуване на самоличност. Използвайте само среда за изпълнение, на която напълно се доверявате.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme оценява Scheme изрази, вградени в zion команди, и вмъква резултата в реда, преди той да бъде изпратен.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    вграден пример; изпраща "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             дефинициите остават за текущата сесия
+help-zscheme-doc = Документация: https://github.com/bahner/rust-ma-zscheme

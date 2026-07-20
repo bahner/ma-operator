@@ -151,12 +151,12 @@ doc-publish-ipld-failed = ipld publikavimas { $path }: { $e }
 doc-publish-error-detail = publikavimas nepavyko [{ $code }]: { $err }
 doc-publish-error-hint = Užuomina: { $hint }
 doc-publish-hint-session = prisijunkite dar kartą, kad ego galėtų pasiekti jūsų tapatybės raktus
-doc-publish-hint-target = naudokite galiojantį leidėjo DID arba slapyvardį, kuris išsprendžiamas kaip 57
-doc-publish-hint-network = patikrinkite, ar 7 vykdymo laikas ir 22 pasiekiami, tada bandykite dar kartą
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = patikrinkite, ar leidėjo DID dokumentas yra paskelbtas ir jame yra pasiekiamas galutinis taškas
-doc-publish-hint-acl = paprašykite leidėjo operatoriaus leisti jūsų DID 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = vykdymo laikas / papildinys atmetė užklausą; patikrinkite priežastį ir ištaisę objektą / vykdymo laiką bandykite dar kartą
-doc-publish-hint-ipfs = patikrinkite vietinę 12 / 17 būklę ir leidėjo vykdymo būseną
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = patikrinkite vykdymo laiko žurnalus, kad sužinotumėte išsamią priežastį, ir bandykite dar kartą
 doc-store-sent = saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-ipld-store-sent = IPLD saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
@@ -176,7 +176,7 @@ help-header-common = ── dažni keliai ────────────�
 help-header-inbox = ── pašto dėžutė ──────────────────────────────────────────────────────────
 help-header-documents = ── dokumentai ───────────────────────────────────────────────────────────
 help-header-i18n = ── kalba ──────────────────────────── ─────────────────────────────
-help-header-ma = ── 3-tarpas ───────────────────────────── ─────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── įvedant 間 tarpą ────────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n išsaugo kalbos nuostatas, susietas su jūsų tapatybe.
-help-i18n-set = .my.i18n: <code>             pasirinkite kalbą, kurią 20 naudoja šiai tapatybei
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               galimų kalbų kodų sąrašas
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = redagavimas: gavimo klaida: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nėra aktyvios sesijos — profilio negalima ištrinti
 profile-delete-error = profilio ištrynimas nepavyko: { $e }
-profile-wrong-user = negalite nustatyti 11 kitam profiliui – tik savo
-profile-wrong-user-name = negalite nustatyti 11 kaip 19 – tik jūsų profilis
-profile-no-ma = 3 vykdymo laikas nesukonfigūruotas – pirmiausia paleiskite 31
-profile-no-cid = Šiam profiliui nėra saugoma 3 – pirmiausia paleiskite 37
-profile-no-cid-in-doc = DID dokumente nerasta 11 profilio – pirmiausia paleiskite 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profilis užšifruotas ir išsiųstas į IPFS; DID dokumentas bus atnaujintas, kai ateis CID
 profile-publish-done = profilis paskelbtas — DID dokumentas atnaujintas su ma.agent CID
-profile-publish-failed = profilio paskelbimas nepavyko: 24
-profile-fetch-done = gautas profilis – 18 raktai įkelti iš 43
-profile-fetch-failed = Nepavyko gauti profilio: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = tapatybė jau paskelbta – profilis atnaujintas
-profile-import-exists = profilis 8 jau yra – pirmiausia jį ištrinkite
-profile-import-wrong-user = faile yra profilis 22, numatomas 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = dvejetainis turinys (nerodomas)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = nepavyko gauti turinio: 25
-cid-op-unknown = nežinomo turinio operacija: 27
-cid-op-wc = { $lines } eilutės 18 žodžiai 36 simboliai
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (nėra)
 profiles-deleted = profilis { $name } ištrintas
 profiles-not-found = profilis nerastas: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     osobista config
 help-topic-inbox =   .help/inbox                  skrzynka odbiorcza
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  zdalny actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               įterptos Scheme išraiškos ir dokumentacija
 help-unknown-topic =   .help/{ $topic }: nieznany temat
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         siųsti tiesiogin
 help-actor-ping = @actor:ping                  gyvumo ping
 help-actor-entities =   @actor/entities              wyświetl encje
 help-actor-entities-get = @actor/entities/<n>          gauti objekto mazgą
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   nustatyti objektą pagal 14 nuorodą
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edytuj encję
 help-actor-entities-del = @actor/entities/<n>:         ištrinti subjektą
 help-actor-config-get =   @actor/config/<key>          pobierz wartość config
 help-actor-config-set =   @actor/config/<key>: val     ustaw wartość config
-help-actor-acl = @actor/acl                   gauti 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edytuj ACL
 help-actor-fragment =   @actor#entity                wyślij do pluginu
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
-help-header-cid-ops = ── 3 aktorius skambina ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  paskambinkite subjektui 15 iš 24 ir laukite jo atsakymo
-help-actor-head = (@actor/path)                gauti nuotolinį CRUD turinį iš 31
-help-actor-tail = (<bafy...>)                  įtraukti ir įvertinti 21 iš 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  laikykite 5 atsakymus seanso aplinkoje
-help-actor-wc-l = .my.scheme.ma!edit           redaguoti išsaugotus šios tapatybės 11 pagalbininkus
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion atidarymas per URL nuorodą
 help-topic-i18n = .help/i18n                   jūsų tapatybės pirmenybė
@@ -365,7 +365,7 @@ help-url-intro =   Pasidalinkite nuoroda, kuri atidaro zion su iš anksto užpil
 help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did>!msg (paprastas pranešimas)
 help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>!say (veiksmažodis say)
 help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>!emote (veiksmažodis emote)
-help-url-ma = ?ma=<did-or-url>              išankstinio užpildymo vykdymo laiko DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             įeikite į vykdymo pasaulį po prisijungimo
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Enter siųsti.
@@ -376,8 +376,8 @@ help-publish-intro = Paskelbimas padaro tavo tapatybę randamą tinkle. Kiti gal
 help-publish-ma = Paskelbimui reikia įdiegto ma (vietinė vykdymo aplinka). Ji sujungia ego su IPFS/IPNS tavo vardu.
 help-publish-steps = Žingsniai: paleisk '.ma [port]' vietiniam ma aptikti, tada '.my.identity!publish @ma'.
 help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.
-profile-fetch-did-resolve-failed = Dar nepaskelbta – pirmiausia paleiskite 28, tada 67 savo profilį
-profile-update-done = profilis atnaujintas – 18 raktai sujungti iš 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = nurodykite profilio pavadinimą: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Įspėjimas: Jūsų IPNS privatus raktas bus išsiųstas į šią vykdymo aplinką tapatybei paskelbti. Naudokite tik vykdymo aplinką, kuriai visiškai pasitikite.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme įvertina į zion komandas įterptas Scheme išraiškas ir prieš siunčiant įrašo rezultatą į eilutę.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    įterptas pavyzdys; siunčia "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             apibrėžimai išlieka dabartinės prisijungimo sesijos metu
+help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme

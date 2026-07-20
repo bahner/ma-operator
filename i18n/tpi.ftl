@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish i no wok [{ $code }]: { $err }
 doc-publish-error-hint = Toksave: { $hint }
 doc-publish-hint-session = log in gen bai ego i ken kisim ol aidentiti ki bilong yu
-doc-publish-hint-target = yusim wanpela gutpela pablisa DID o 'alias' we i makim 'bare 57'
-doc-publish-hint-network = sekim 7 rantaim na 22 i ken kamap, na bihain traim gen
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = sekim olsem pablisa DID pepa i pablisim pinis na i gat wanpela 'reachable endpoint'
-doc-publish-hint-acl = askim pablisa opereta long larim DID bilong yu i go insait long 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin i sakim askim; sekim as na traim gen bihain long stretim entiti/rantaim
-doc-publish-hint-ipfs = sekim lokal 12/17 helt na pablisa rantaim status
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = sekim ol 'runtime' log bilong painimaut as bilong en na traim gen
 doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
@@ -180,7 +180,7 @@ help-header-common = ── rot bilong olgeta ───────────�
 help-header-inbox = ── bokis bilong mesej ─────────────────────────────────────────────────────
 help-header-documents = ── pepa (.my.doc.*) ───────────────────────────────────────────────────────
 help-header-i18n = ── tokples ─────────────────────────────── ────────────────────────────────
-help-header-ma = ── 3-spes ──────────────────────────────── ────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── putim 間-spes ─────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dispela tok
@@ -231,7 +231,7 @@ help-doc-del =   .my.doc.<name>:              rausim pepa
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n i save putim ol tokples yu laikim we i stap wantaim aidentiti bilong yu.
-help-i18n-set = .my.i18n: <code>             makim tokples 20 i yusim long dispela aidentiti
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               listim ol tokples kod we i stap
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -292,26 +292,26 @@ err-edit-fetch-failed = senisim: rong long kisim: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = i no gat wok taim — no inap rausim profil
 profile-delete-error = rausim profil i no wok: { $e }
-profile-wrong-user = yu no inap long putim 11 long narapela profail — bilong yu yet tasol
-profile-wrong-user-name = i no inap long setim 11 bilong 19 — tasol profail bilong yu yet
-profile-no-ma = nogat 3 rantaim i stap — ranim 31 pastaim
-profile-no-cid = nogat 3 i stap long dispela profail — ranim 37 pastaim
-profile-no-cid-in-doc = nogat profail 11 i stap insait long DID pepa — ranim 43 pastaim
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profail i bin lok na salim i go long IPFS; DID pepa bai kamap nupela taim CID i kam
 profile-publish-done = profail i publish pinis — DID pepa i kisim ma.agent CID
-profile-publish-failed = profail pablisim i no inap: 24
-profile-fetch-done = profail i kisim — 18 ki i kam long 43
-profile-fetch-failed = 'profile fetch' i no inap: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = aidentiti i kamap pinis — profail i stap nau
-profile-import-exists = profail 8 i stap pinis — rausim pastaim
-profile-import-wrong-user = fail i gat profail 22, ekspektim 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binary konten (i no soim)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = i no inap long kisim ol samting: 25
-cid-op-unknown = wok bilong konten we yu no save long en: 27
-cid-op-wc = { $lines } lain 18 wod 36 leta
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (nogat)
 profiles-deleted = profil { $name } rausim pinis
 profiles-not-found = profil i no stap: { $name }
@@ -325,7 +325,7 @@ help-topic-my =   .help/my                     config bilong mi
 help-topic-inbox =   .help/inbox                  bokis mesij
 help-topic-doc =   .help/doc                    ol dokumen
 help-topic-actor =   .help/actor                  actor longwe
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               Scheme tok insait long lain na docs
 help-unknown-topic =   .help/{ $topic }: topik i no save
 
 # -- Help actor section
@@ -335,21 +335,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         salim dairekt/tok
 help-actor-ping = @actor:ping                  laipnes ping
 help-actor-entities =   @actor/entities              soim ol entity
 help-actor-entities-get = @actor/entities/<n>          kisim entiti node
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   Setim samting long 14 refrens
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     editim entity
 help-actor-entities-del = @actor/entities/<n>:         rausim samting
 help-actor-config-get =   @actor/config/<key>          kisim config value
 help-actor-config-set =   @actor/config/<key>: val     putim config value
-help-actor-acl = @actor/acl                   kisim 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editim ACL
 help-actor-fragment =   @actor#entity                send go plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
-help-header-cid-ops = ── 3 akta i singaut ───────────────────────── ───────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  ringim wanpela entiti 15 long 24 na wetim bekim bilong em
-help-actor-head = (@actor/path)                kisim CRUD konten long 31
-help-actor-tail = (<bafy...>)                  inkludim na skelim 21 long wanpela 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  holim 5 bekim insait long sesen envairomen
-help-actor-wc-l = .my.scheme.ma!edit           stretim ol sevim 11 helpim bilong dispela aidentiti
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opim zion long URL link
 help-topic-i18n = .help/i18n                   tokples yu laikim long aidentiti bilong yu
@@ -358,7 +358,7 @@ help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim 
 help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did>!msg (simol meses)
 help-url-say =   ?say=<did>                   pulapim pastaim: @<did>!say (vep say)
 help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>!emote (vep emote)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             go insait long rantaim wol bihain long login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong salim.
@@ -369,8 +369,8 @@ help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol a
 help-publish-ma = Bilong putim nem antap, yu nidim ma (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.
 help-publish-steps = Ol hap: ran '.ma [port]' bilong painim local ma, na '.my.identity!publish @ma'.
 help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.
-profile-fetch-did-resolve-failed = I no bin pablisim yet — ranim 28 pastaim, bihain 67 long profail bilong yu
-profile-update-done = profail i kamap nupela — 18 ki i bung wantaim long 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = givim nem bilong profail: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -399,8 +399,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Woning: Praivit ki bilong IPNS bilong yu bai i go long runtime ia bilong publisim aideniti. Usum tasol runtime yu trastim tru.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme i skelim Scheme tok i stap insait long zion koman, na putim bek risal long lain bipo em i salim.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    eksampel insait long lain; salim "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             ol definition i stap yet long dispela login session
+help-zscheme-doc = Dokumen: https://github.com/bahner/rust-ma-zscheme

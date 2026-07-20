@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = فشل النشر [{ $code }]: { $err }
 doc-publish-error-hint = تلميح: { $hint }
 doc-publish-hint-session = log in again so ego can access your identity keys
-doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare 57
-doc-publish-hint-network = verify 7 runtime and 22 are reachable, then retry
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
-doc-publish-hint-acl = ask the publisher operator to allow your DID in 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
-doc-publish-hint-ipfs = check local 12/17 health and publisher runtime status
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
@@ -176,7 +176,7 @@ help-header-common = ── المسارات الشائعة ──────�
 help-header-inbox = ── صندوق الوارد ──────────────────────────────────────────────────────────
 help-header-documents = ── المستندات ─────────────────────────────────────────────────────────────
 help-header-i18n = ── language ─────────────────────────────────────────────────────────────
-help-header-ma = ── 3-space ──────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              حذف المستند
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set = .my.i18n: <code>             choose the language 20 uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list =   .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = فشل جلب التحرير: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = لا توجد جلسة نشطة — لا يمكن حذف الملف الشخصي
 profile-delete-error = فشل حذف الملف الشخصي: { $e }
-profile-wrong-user = cannot set 11 for another profile — only your own
-profile-wrong-user-name = cannot set 11 for 19 — only your own profile
-profile-no-ma = no 3 runtime configured — run 31 first
-profile-no-cid = no 3 stored for this profile — run 37 first
-profile-no-cid-in-doc = no profile 11 found in DID document — run 43 first
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = تم تشفير الملف الشخصي وإرساله إلى IPFS؛ سيُحدَّث مستند DID عند وصول CID
 profile-publish-done = نُشر الملف الشخصي — حُدِّث مستند DID بمعرّف ma.agent CID
-profile-publish-failed = profile publish failed: 24
-profile-fetch-done = profile fetched — 18 keys loaded from 43
-profile-fetch-failed = profile fetch failed: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identity already published — profile up to date
-profile-import-exists = profile 8 already exists — delete it first
-profile-import-wrong-user = file contains profile 22, expected 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binary content (not displayed)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = failed to fetch content: 25
-cid-op-unknown = unknown content operation: 27
-cid-op-wc = { $lines } lines  18 words  36 chars
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (لا شيء)
 profiles-deleted = تم حذف الملف الشخصي { $name }
 profiles-not-found = الملف الشخصي غير موجود: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     الإعداد الشخصي
 help-topic-inbox =   .help/inbox                  الوارد
 help-topic-doc =   .help/doc                    المستندات
 help-topic-actor =   .help/actor                  ممثل بعيد
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               تعابير Scheme المضمنة والوثائق
 help-topic-url =   .help/url                    فتح zion عبر رابط URL
 help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: موضوع غير معروف
@@ -351,27 +351,27 @@ help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/cha
 help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              اسرد الكيانات
 help-actor-entities-get =   @actor/entities/<n>          get entity node
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by 14 reference
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     حرّر الكيان
 help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          احصل على قيمة الإعداد
 help-actor-config-set =   @actor/config/<key>: val     عيّن قيمة الإعداد
-help-actor-acl = @actor/acl                   get 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              حرّر ACL
 help-actor-fragment =   @actor#entity                أرسل إلى الإضافة
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC إلى الإضافة
-help-header-cid-ops = ── 3 actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity 15 from 24 and await its reply
-help-actor-head = (@actor/path)                fetch remote CRUD content from 31
-help-actor-tail = (<bafy...>)                  include and evaluate 21 from an 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  keep 5 replies in the session environment
-help-actor-wc-l = .my.scheme.ma!edit           edit saved 11 helpers for this identity
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
 help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
 help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did>!msg (رسالة نصية)
 help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>!say (فعل say)
 help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>!emote (فعل emote)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter =   ?enter=<runtime>             enter runtime world after login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل — اضغط Enter للإرسال.
@@ -382,8 +382,8 @@ help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف 
 help-publish-ma = للنشر تحتاج إلى تثبيت ma (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
 help-publish-steps = الخطوات: شغّل '.ma [port]' للكشف عن ma المحلي، ثم '.my.identity!publish @ma'.
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
-profile-fetch-did-resolve-failed = DID not published yet — run 28 first, then 67 your profile
-profile-update-done = profile updated — 18 keys merged from 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = حدّد اسم ملف شخصي: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -412,8 +412,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = تحذير: سيتم إرسال مفتاحك الخاص IPNS إلى بيئة التشغيل هذه لنشر هويتك. استخدم فقط بيئة تشغيل تثق بها تمامًا.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = يقيم zscheme تعابير Scheme المضمنة داخل أوامر zion ويدمج النتيجة في السطر قبل إرساله.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    مثال مضمن؛ يرسل "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             تبقى التعريفات خلال جلسة تسجيل الدخول الحالية
+help-zscheme-doc = الوثائق: https://github.com/bahner/rust-ma-zscheme

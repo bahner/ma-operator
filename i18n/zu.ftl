@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ukushicilela kuhlulekile [{ $code }]: { $err }
 doc-publish-error-hint = Icebiso: { $hint }
 doc-publish-hint-session = ngena futhi ukuze i-ego ikwazi ukufinyelela okhiye bakho kamazisi
-doc-publish-hint-target = sebenzisa i-DID yomshicileli evumelekile noma isibizo esinquma ukuphumela obala nge-57
-doc-publish-hint-network = qinisekisa ukuthi i-7 isikhathi sokusebenza kanye ne-22 iyafinyeleleka, bese uyazama futhi
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = qinisekisa ukuthi idokhumenti ye-DID yomshicileli ishicilelwe futhi iqukethe isiphetho esifinyelelekayo
-doc-publish-hint-acl = cela u-opharetha womshicileli ukuthi avumele i-DID yakho ku-48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = isikhathi sokusebenza/i-plugin inqabe isicelo; hlola isizathu bese uzama futhi ngemva kokulungisa ibhizinisi/isikhathi sokusebenza
-doc-publish-hint-ipfs = hlola impilo ye-12/17 yendawo kanye nesimo sesikhathi sokusebenza somshicileli
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = hlola amalogi esikhathi sokusebenza ukuze uthole imbangela enemininingwane bese uzama futhi
 doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
 doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
@@ -176,7 +176,7 @@ help-header-common = ── izindlela ezisetshenziswa kakhulu ──────
 help-header-inbox = ── ibhokisi lokufika ──────────────────────────────────────────────────────
 help-header-documents = ── imibhalo ──────────────────────────────────────────────────────────────
 help-header-i18n = ── ulimi ───────────────────────────── ──────────────────────────────
-help-header-ma = ── 3-isikhala ────────────────────────────── ──────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── ingena 間-space ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              susa umbhalo
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = I-.my.i18n igcina izintandokazi zolimi eziboshelwe kubunikazi bakho.
-help-i18n-set = .my.i18n: <code>             khetha ulimi olusetshenziswa yi-20 kulobu bunikazi
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               bhala amakhodi olimi atholakalayo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = ukuhlelwa: ukuthola kwehlulekile: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ayikho iseshini esisebenzayo — iprofile ayikwazi ukususwa
 profile-delete-error = ukususa iprofile kuhlulekile: { $e }
-profile-wrong-user = ayikwazi ukusetha i-11 kwenye iphrofayela — eyakho kuphela
-profile-wrong-user-name = ayikwazi ukusetha i-11 ye-19 — iphrofayela yakho kuphela
-profile-no-ma = asikho isikhathi sokusebenza se-3 esimisiwe — sebenzisa i-31 kuqala
-profile-no-cid = ayikho i-3 egcinelwe le phrofayela — sebenzisa i-37 kuqala
-profile-no-cid-in-doc = ayikho iphrofayela 11 etholwe kudokhumenti ye-DID — sebenzisa i-43 kuqala
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = iphrofayela ibethelwe yathunyelwa ku-IPFS; idokhumenti ye-DID izobuyekezwa lapho i-CID ifika
 profile-publish-done = iphrofayela ishicilelwe — idokhumenti ye-DID ibuyekezwe nge-ma.agent CID
-profile-publish-failed = ukushicilelwa kwephrofayela kwehlulekile: 24
-profile-fetch-done = Iphrofayili ilandiwe — okhiye be-18 balayishwe ku-43
-profile-fetch-failed = ukulanda kwephrofayela kuhlulekile: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = umazisi usuvele ushicilelwe — iphrofayili isesikhathini samanje
-profile-import-exists = Iphrofayili ethi 8 isivele ikhona — yisuse kuqala
-profile-import-wrong-user = ifayela liqukethe iphrofayela 22, okulindelekile 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = okuqukethwe kanambambili (akubonisiwe)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = yehlulekile ukulanda okuqukethwe: 25
-cid-op-unknown = ukusebenza kokuqukethwe okungaziwa: 27
-cid-op-wc = Imigqa ye-{ $lines } 18 amagama 36 amashadi
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (akunamuntu)
 profiles-deleted = iprofile { $name } isusiwe
 profiles-not-found = iprofile ayitholakali: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config yomuntu siqu
 help-topic-inbox =   .help/inbox                  ibhokisi lokungenayo
 help-topic-doc =   .help/doc                    amadokhumenti
 help-topic-actor =   .help/actor                  actor ekude
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               izisho ze-Scheme emgqeni namadokhumenti
 help-unknown-topic =   .help/{ $topic }: isihloko esingaziwa
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         thumela umlayezo 
 help-actor-ping = @actor:ping                  ukuphila ping
 help-actor-entities =   @actor/entities              bala ama-entity
 help-actor-entities-get = @actor/entities/<n>          thola i-node yebhizinisi
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   setha ibhizinisi ngereferensi ye-14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     hlela i-entity
 help-actor-entities-del = @actor/entities/<n>:         susa ibhizinisi
 help-actor-config-get =   @actor/config/<key>          thola inani le-config
 help-actor-config-set =   @actor/config/<key>: val     setha inani le-config
-help-actor-acl = @actor/acl                   Thola i-4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              hlela i-ACL
 help-actor-fragment =   @actor#entity                thumela ku-plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ku-plugin
-help-header-cid-ops = ── 3 umlingisi izingcingo ──────────────────────── ─────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  shayela ibhizinisi i-15 kusuka ku-24 bese ulinda impendulo yalo
-help-actor-head = (@actor/path)                landa okuqukethwe kwe-CRUD okukude ku-31
-help-actor-tail = (<bafy...>)                  faka futhi uhlole i-21 kusuka ku-36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  gcina izimpendulo ze-5 endaweni yeseshini
-help-actor-wc-l = .my.scheme.ma!edit           hlela abasizi be-11 abalondoloziwe kulobu bunikazi
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    ukuvula zion ngesixhokelelwano se-URL
 help-topic-i18n = .help/i18n                   ulimi oluncamelayo ngobuwena
@@ -372,7 +372,7 @@ help-url-intro =   Yabelana ngesixhokelelwano esivula zion enomamukeli osegcwali
 help-url-msg =   ?msg=<did>                   gcwalisa phambilini: @<did>!msg (umlayezo olula)
 help-url-say =   ?say=<did>                   gcwalisa phambilini: @<did>!say (isenzo say)
 help-url-emote =   ?emote=<did>                 gcwalisa phambilini: @<did>!emote (isenzo emote)
-help-url-ma = ?ma=<did-or-url>              gcwalisa ngaphambili isikhathi sokusebenza se-DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             faka umhlaba wesikhathi sokusebenza ngemuva kokungena ngemvume
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ukufakwa kugcwaliswe phambilini kodwa akuthunyiswanga — cindezela Enter ukuthumela.
@@ -383,8 +383,8 @@ help-publish-intro = Ukushicilela kwenza ubunikazi bakho butholakale ku-network.
 help-publish-ma = Ukushicilela, udinga u-ma (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
 help-publish-steps = Izinyathelo: qhuba '.ma [port]' ukuze uthole u-ma wendawo, bese '.my.identity!publish @ma'.
 help-publish-without = Ngaphandle kokushicilela, abanye abanakukufinyelela — ngisho noma bazi i-DID yakho, abanakuxazulula i-endpoint yakho.
-profile-fetch-did-resolve-failed = Ayikashicilelwa okwamanje — sebenzisa i-28 kuqala, bese u-67 iphrofayela yakho
-profile-update-done = iphrofayili ibuyekeziwe — okhiye be-18 bahlanganiswe kusuka ku-43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = cacisa igama lephrofayela: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Isexwayiso: Ikhiye yakho yimfihlo ye-IPNS iyothumelwa ku-runtime ukuze ishicilelwe isinakiso. Sebenzisa kuphela i-runtime oyethembayo ngokugcwele.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme ihlola izisho ze-Scheme ezifakwe emiyalweni ye-zion bese ifaka umphumela emgqeni ngaphambi kokuthumela.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    isibonelo emgqeni; ithumela "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             izincazelo zihlala ngesikhathi seseshini yokungena yamanje
+help-zscheme-doc = Amadokhumenti: https://github.com/bahner/rust-ma-zscheme

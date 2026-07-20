@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = เผยแพร่ล้มเหลว [{ $code }]: { $err }
 doc-publish-error-hint = คำแนะนำ: { $hint }
 doc-publish-hint-session = เข้าสู่ระบบอีกครั้งเพื่อให้อีโก้สามารถเข้าถึงรหัสประจำตัวของคุณได้
-doc-publish-hint-target = ใช้ DID หรือนามแฝงของผู้จัดพิมพ์ที่ถูกต้องซึ่งแปลงเป็น 57
-doc-publish-hint-network = ตรวจสอบรันไทม์ 7 และ 22 สามารถเข้าถึงได้ จากนั้นลองอีกครั้ง
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = ตรวจสอบว่าเอกสาร DID ของผู้จัดพิมพ์ได้รับการเผยแพร่และมีปลายทางที่สามารถเข้าถึงได้
-doc-publish-hint-acl = ขอให้ผู้จัดพิมพ์อนุญาต DID ของคุณใน 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = รันไทม์/ปลั๊กอินปฏิเสธคำขอ ตรวจสอบเหตุผลและลองอีกครั้งหลังจากแก้ไขเอนทิตี/รันไทม์แล้ว
-doc-publish-hint-ipfs = ตรวจสอบความสมบูรณ์ของ 12/17 ในเครื่องและสถานะรันไทม์ของผู้เผยแพร่
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ตรวจสอบบันทึกรันไทม์เพื่อดูสาเหตุโดยละเอียดแล้วลองอีกครั้ง
 doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
@@ -176,7 +176,7 @@ help-header-common = ── path ที่ใช้บ่อย ─────�
 help-header-inbox = ── กล่องจดหมาย ────────────────────────────────────────────────────────────────
 help-header-documents = ── เอกสาร ────────────────────────────────────────────────────────────────
 help-header-i18n = ── ภาษา ──────────────────────────────────────────────────────────────
-help-header-ma = ── 3 พื้นที่ ───────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── เข้าสู่ 間-พื้นที่ ──────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n จัดเก็บการตั้งค่าภาษาที่เชื่อมโยงกับข้อมูลประจำตัวของคุณ
-help-i18n-set = .my.i18n: <code>             เลือกภาษาที่ 20 ใช้สำหรับข้อมูลระบุตัวตนนี้
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               แสดงรายการรหัสภาษาที่มีอยู่
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = แก้ไข: ดึงข้อมูลล้มเ
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ไม่มีเซสชันที่ใช้งานอยู่ — ไม่สามารถลบโปรไฟล์ได้
 profile-delete-error = การลบโปรไฟล์ล้มเหลว: { $e }
-profile-wrong-user = ไม่สามารถตั้งค่า 11 สำหรับโปรไฟล์อื่นได้ — เฉพาะของคุณเองเท่านั้น
-profile-wrong-user-name = ไม่สามารถตั้งค่า 11 สำหรับ 19 ได้ — เฉพาะโปรไฟล์ของคุณเองเท่านั้น
-profile-no-ma = ไม่มีการกำหนดค่ารันไทม์ 3 — รัน 31 ก่อน
-profile-no-cid = ไม่มี 3 เก็บไว้สำหรับโปรไฟล์นี้ — รัน 37 ก่อน
-profile-no-cid-in-doc = ไม่พบโปรไฟล์ 11 ในเอกสาร DID — รัน 43 ก่อน
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = โปรไฟล์ถูกเข้ารหัสและส่งไปยัง IPFS แล้ว; เอกสาร DID จะอัปเดตเมื่อ CID มาถึง
 profile-publish-done = เผยแพร่โปรไฟล์แล้ว — อัปเดตเอกสาร DID ด้วย ma.agent CID แล้ว
-profile-publish-failed = การเผยแพร่โปรไฟล์ล้มเหลว: 24
-profile-fetch-done = ดึงโปรไฟล์แล้ว — คีย์ 18 โหลดจาก 43
-profile-fetch-failed = การดึงโปรไฟล์ล้มเหลว: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = เผยแพร่ข้อมูลประจำตัวแล้ว — โปรไฟล์เป็นปัจจุบัน
-profile-import-exists = มีโปรไฟล์ 8 อยู่แล้ว — ลบออกก่อน
-profile-import-wrong-user = ไฟล์มีโปรไฟล์ 22 คาดว่า 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = เนื้อหาไบนารี (ไม่แสดง)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = ไม่สามารถเรียกเนื้อหา: 25
-cid-op-unknown = การดำเนินการเนื้อหาที่ไม่รู้จัก: 27
-cid-op-wc = { $lines } บรรทัด 18 คำ 36 ตัวอักษร
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ไม่มี)
 profiles-deleted = โปรไฟล์ { $name } ถูกลบแล้ว
 profiles-not-found = ไม่พบโปรไฟล์: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config ส่วนตัว
 help-topic-inbox =   .help/inbox                  กล่องขาเข้า
 help-topic-doc =   .help/doc                    เอกสาร
 help-topic-actor =   .help/actor                  actor ระยะไกล
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               นิพจน์ Scheme แบบแทรกในบรรทัดและเอกสาร
 help-unknown-topic =   .help/{ $topic }: หัวข้อที่ไม่รู้จัก
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         ส่งข้�
 help-actor-ping = @actor:ping                  ปิงความมีชีวิตชีวา
 help-actor-entities =   @actor/entities              แสดงรายการ entity
 help-actor-entities-get = @actor/entities/<n>          รับโหนดเอนทิตี
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ตั้งค่าเอนทิตีโดยการอ้างอิง 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     แก้ไข entity
 help-actor-entities-del = @actor/entities/<n>:         ลบเอนทิตี
 help-actor-config-get =   @actor/config/<key>          รับค่า config
 help-actor-config-set =   @actor/config/<key>: val     ตั้งค่า config
-help-actor-acl = @actor/acl                   รับ 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              แก้ไข ACL
 help-actor-fragment =   @actor#entity                ส่งไปยัง plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ไปยัง plugin
-help-header-cid-ops = ── 3 นักแสดงเรียก ────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  โทรหาเอนทิตี 15 จาก 24 และรอการตอบกลับ
-help-actor-head = (@actor/path)                ดึงเนื้อหา CRUD ระยะไกลจาก 31
-help-actor-tail = (<bafy...>)                  รวมและประเมิน 21 จาก 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  ให้ 5 ตอบกลับในสภาพแวดล้อมเซสชัน
-help-actor-wc-l = .my.scheme.ma!edit           แก้ไขตัวช่วย 11 ที่บันทึกไว้สำหรับข้อมูลระบุตัวตนนี้
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
 help-topic-i18n = .help/i18n                   การตั้งค่าภาษาสำหรับตัวตนของคุณ
@@ -372,7 +372,7 @@ help-url-intro =   แบ่งปันลิงก์ที่เปิด zio
 help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did>!msg (ข้อความธรรมดา)
 help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>!say (กริยา say)
 help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>!emote (กริยา emote)
-help-url-ma = ?ma=<did-or-url>              กรอกรันไทม์ DID / 23 URL ไว้ล่วงหน้า
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             เข้าสู่โลกรันไทม์หลังจากเข้าสู่ระบบ
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ช่องอินพุตถูกกรอกไว้ล่วงหน้าแต่ยังไม่ได้ส่ง — กด Enter เพื่อส่ง
@@ -383,8 +383,8 @@ help-publish-intro = การเผยแพร่ทำให้ตัวต�
 help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง ma (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
 help-publish-steps = ขั้นตอน: รัน '.ma [port]' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity!publish @ma'
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
-profile-fetch-did-resolve-failed = ยังไม่ได้เผยแพร่ — รัน 28 ก่อน จากนั้นจึง 67 โปรไฟล์ของคุณ
-profile-update-done = อัปเดตโปรไฟล์แล้ว — คีย์ 18 ถูกรวมจาก 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = ระบุชื่อโปรไฟล์: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = คำเตือน: กุญแจส่วนตัว IPNS ของคุณจะถูกส่งไปยังรันไทม์นี้เพื่อเผยแพร่ข้อมูลประจำตัว ใช้เฉพาะรันไทม์ที่คุณไว้วางใจอย่างเต็มที่เท่านั้น
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme ประเมินนิพจน์ Scheme ที่ฝังอยู่ในคำสั่ง zion แล้วแทรกผลลัพธ์กลับเข้าไปในบรรทัดก่อนส่ง
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ตัวอย่างแบบแทรกในบรรทัด; ส่ง "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             คำนิยามจะคงอยู่ในเซสชันเข้าสู่ระบบปัจจุบัน
+help-zscheme-doc = เอกสาร: https://github.com/bahner/rust-ma-zscheme

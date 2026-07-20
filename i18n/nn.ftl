@@ -337,7 +337,7 @@ help-topic-my =   .help/my                     personleg config
 help-topic-inbox =   .help/inbox                  innboks
 help-topic-doc =   .help/doc                    dokument
 help-topic-actor =   .help/actor                  ekstern actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               Scheme-uttrykk i kommandoar og dokumentasjon
 help-topic-url =   .help/url                    opne zion via ei URL-lenkje
 help-topic-i18n =   .help/i18n                   språkval for identiteten din
 help-unknown-topic =   .help/{ $topic }: ukjent emne
@@ -412,8 +412,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Åtvaring: Den private IPNS-nøkkelen din vil bli send til dette køyretidsmiljøet for identitetspublisering. Bruk berre eit køyretidsmiljø du stolar fullt og heilt på.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme evaluerer Scheme-uttrykk som er skrivne inn i zion-kommandoar, og flettar resultatet inn i linja før ho blir send.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    døme i linja; sender "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definisjonar blir verande i gjeldande innloggingsøkt
+help-zscheme-doc = Dokumentasjon: https://github.com/bahner/rust-ma-zscheme

@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ማተም አልተሳካም [{ $code }]: { $err }
 doc-publish-error-hint = ፍንጭ: { $hint }
 doc-publish-hint-session = ኢጎ የማንነት ቁልፎችዎን መድረስ እንዲችል እንደገና ይግቡ
-doc-publish-hint-target = 57 ለመራቆት የሚፈታ ትክክለኛ አታሚ DID ወይም ቅጽል ይጠቀሙ
-doc-publish-hint-network = 7 የሩጫ ጊዜ እና 22 ሊደረስባቸው የሚችሉ መሆናቸውን ያረጋግጡ እና እንደገና ይሞክሩ
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = የአሳታሚው ዲአይዲ ሰነድ መታተሙን እና ሊደረስበት የሚችል የመጨረሻ ነጥብ እንዳለው ያረጋግጡ
 doc-publish-hint-acl = በ48 ውስጥ የእርስዎን DID እንዲፈቅድ የአታሚውን ኦፕሬተር ይጠይቁ
 doc-publish-hint-runtime = Runtime/plugin ጥያቄውን ውድቅ አደረገው; ምክንያቱን ይመርምሩ እና ህጋዊውን / የአሂድ ጊዜን ካስተካከሉ በኋላ እንደገና ይሞክሩ
-doc-publish-hint-ipfs = የአካባቢያዊ 12/17 ጤና እና የአሳታሚ የአሂድ ጊዜ ሁኔታን ያረጋግጡ
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ለዝርዝር ምክንያት የሩጫ ጊዜ መዝገቦችን ይፈትሹ እና እንደገና ይሞክሩ
 doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
@@ -176,7 +176,7 @@ help-header-common = ── ተሎ ጥቅም ላይ የሚዋሉ ዱካዎች �
 help-header-inbox = ── የገቢ ሳጥን ────────────────────────────────────────────────────────────
 help-header-documents = ── ሰነዶች ─────────────────────────────────────────────────────────────
 help-header-i18n = ── ቋንቋ ───────────── ─────────────
-help-header-ma = ── 3-ቦታ ───────────── ─────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = 間-ቦታ በመግባት ላይ ──────────── ─────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ከማንነትዎ ጋር የተያያዘውን የቋንቋ ምርጫ ያከማቻል።
-help-i18n-set = .my.i18n: <code>             ለዚህ ማንነት 20 የሚጠቀመውን ቋንቋ ይምረጡ
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               የሚገኙ የቋንቋ ኮዶችን ይዘርዝሩ
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = ማርትዕ: ማምጣት አልተሳካም: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ንቁ ክፍለ ጊዜ የለም — ፕሮፋይልን መሰረዝ አይቻልም
 profile-delete-error = ፕሮፋይልን መሰረዝ አልተሳካም: { $e }
-profile-wrong-user = 11 ለሌላ መገለጫ ማዋቀር አይቻልም - የእራስዎ ብቻ
-profile-wrong-user-name = 11 ለ19 ማዋቀር አይቻልም - የራስዎን መገለጫ ብቻ
-profile-no-ma = ምንም የ3 አሂድ ጊዜ አልተዋቀረም - መጀመሪያ 31 አሂድ
-profile-no-cid = ለዚህ መገለጫ ምንም 3 አልተቀመጠም - መጀመሪያ 37 ን ያሂዱ
-profile-no-cid-in-doc = በዲአይዲ ሰነድ ውስጥ 11 ምንም መገለጫ አልተገኘም - መጀመሪያ 43 ን ያሂዱ
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = መገለጫው ተመስጥሮ ወደ IPFS ተልኳል፤ CID ሲመጣ DID ሰነዱ ይዘምናል
 profile-publish-done = መገለጫው ታትሟል — DID ሰነዱ በ ma.agent CID ተዘምኗል
-profile-publish-failed = የመገለጫ ህትመት አልተሳካም፡ 24
-profile-fetch-done = ፕሮፋይል ተገኘ - ከ43 የተጫኑ የ18 ቁልፎች
-profile-fetch-failed = ፕሮፋይል ማምጣት አልተሳካም፡ 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = ማንነት አስቀድሞ ታትሟል - የዘመነ መገለጫ
-profile-import-exists = መገለጫ 8 አስቀድሞ አለ - መጀመሪያ ይሰርዙት።
-profile-import-wrong-user = ፋይሉ 22 ፕሮፋይል ይዟል፣ የሚጠበቀው 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = ሁለትዮሽ ይዘት (አይታይም)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = ይዘት ማምጣት አልተሳካም: 25
-cid-op-unknown = ያልታወቀ የይዘት አሠራር፡ 27
-cid-op-wc = { $lines } መስመሮች 18 ቃላት 36 ቻርሶች
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ምንም)
 profiles-deleted = ፕሮፋይል { $name } ተሰርዟል
 profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               የScheme መግለጫዎች በመስመር ውስጥ እና ሰነዶች
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         ቀጥተኛ/ቻ�
 help-actor-ping = @actor:ping                  ሕያውነት ፒንግ
 help-actor-entities =   @actor/entities              entitiy ዘርዝር
 help-actor-entities-get = @actor/entities/<n>          አካል መስቀለኛ መንገድ ያግኙ
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   አካል በ 14 ማጣቀሻ
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity አርትዕ
 help-actor-entities-del = @actor/entities/<n>:         አካል ሰርዝ
 help-actor-config-get =   @actor/config/<key>          config እሴት አግኝ
 help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘጋጅ
-help-actor-acl = @actor/acl                   4 ያግኙ
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
-help-header-cid-ops = ── 3 የተዋናይ ጥሪ ──────────── ────────────
-help-actor-cat = (@actor#entity:verb arg...)  ከ24 ለሆነ አካል 15 ይደውሉ እና መልሱን ይጠብቁ
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
 help-actor-head = (@actor/path)                የርቀት CRUD ይዘትን ከ31 ያግኙ
-help-actor-tail = (<bafy...>)                  21ን ከ36 41 ያካትቱ እና ይገምግሙ
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
-help-actor-wc-l = .my.scheme.ma!edit           ለዚህ ማንነት የተቀመጡ 11 ረዳቶችን አርትዕ ያድርጉ
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
 help-topic-i18n = .help/i18n                   ለማንነትዎ የቋንቋ ምርጫ
@@ -372,7 +372,7 @@ help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ �
 help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did>!msg (ቀላል መልዕክት)
 help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>!say (say ቃሉ)
 help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>!emote (emote ቃሉ)
-help-url-ma = ?ma=<did-or-url>              ቅድመ-ሙላ አሂድ ጊዜ DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             ከገቡ በኋላ ወደ ሩጫው ዓለም ይግቡ
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላከም — ለመላክ Enter ይጫኑ።
@@ -383,8 +383,8 @@ help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊ�
 help-publish-ma = ለማሳተም ma (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
 help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.ma [port]' ያሂዱ፣ ከዚያም '.my.identity!publish @ma'።
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
-profile-fetch-did-resolve-failed = ገና አልታተመም - በመጀመሪያ 28 ን ከዚያ መገለጫዎን 67 ያሂዱ
-profile-update-done = መገለጫ ተዘምኗል - የ18 ቁልፎች ከ43 ተዋህደዋል
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = የመገለጫ ስም ይግለጹ፦ .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = ማስጠንቀቂያ፡ የእርስዎ IPNS የግል ቁልፍ ለማንነት ህትመት ወደ ይህ runtime ይላካል። ሙሉ በሙሉ የሚያምኑትን runtime ብቻ ይጠቀሙ።
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme በzion ትእዛዞች ውስጥ የተካተቱ የScheme መግለጫዎችን ይገምግማል፣ ከመላኩም በፊት ውጤቱን በመስመሩ ውስጥ ያስገባል።
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    የመስመር ውስጥ ምሳሌ፤ "say 7 + 5 = 12" ይልካል
+help-zscheme-define =   (define x 12)             መግለጫዎች ለአሁኑ የመግቢያ ክፍለ ጊዜ ይቆያሉ
+help-zscheme-doc = ሰነድ: https://github.com/bahner/rust-ma-zscheme

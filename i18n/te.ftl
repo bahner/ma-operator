@@ -152,11 +152,11 @@ doc-publish-error-detail = ప్రచురణ విఫలమైంది [{ 
 doc-publish-error-hint = సూచన: { $hint }
 doc-publish-hint-session = మళ్లీ లాగిన్ అవ్వండి, తద్వారా అహం మీ గుర్తింపు కీలను యాక్సెస్ చేయగలదు
 doc-publish-hint-target = చెల్లుబాటు అయ్యే పబ్లిషర్ DIDని లేదా అలియాస్‌ని బేర్ 57ని పరిష్కరిస్తుంది
-doc-publish-hint-network = 7 రన్‌టైమ్‌ని ధృవీకరించండి మరియు 22 చేరుకోగలిగింది, ఆపై మళ్లీ ప్రయత్నించండి
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = ప్రచురణకర్త DID పత్రం ప్రచురించబడిందని మరియు చేరుకోగల ముగింపు బిందువును కలిగి ఉందని ధృవీకరించండి
 doc-publish-hint-acl = 48లో మీ DIDని అనుమతించమని ప్రచురణకర్త ఆపరేటర్‌ని అడగండి
 doc-publish-hint-runtime = రన్‌టైమ్/ప్లగ్ఇన్ అభ్యర్థనను తిరస్కరించింది; కారణాన్ని పరిశీలించి, ఎంటిటీ/రన్‌టైమ్‌ని పరిష్కరించిన తర్వాత మళ్లీ ప్రయత్నించండి
-doc-publish-hint-ipfs = స్థానిక 12/17 ఆరోగ్యం మరియు ప్రచురణకర్త రన్‌టైమ్ స్థితిని తనిఖీ చేయండి
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = వివరణాత్మక కారణం కోసం రన్‌టైమ్ లాగ్‌లను తనిఖీ చేసి, మళ్లీ ప్రయత్నించండి
 doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
@@ -176,7 +176,7 @@ help-header-common = ── సాధారణ మార్గాలు ──�
 help-header-inbox = ── ఇన్‌బాక్స్ ────────────────────────────────────────────────────────────────
 help-header-documents = ── డాక్యుమెంట్‌లు ──────────────────────────────────────────────────────────
 help-header-i18n = ── భాష ───────────────────────────── ──────────────────────────────
-help-header-ma = ── 3-స్పేస్ ────────────────────────────── ──────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 間-స్పేస్‌లోకి ప్రవేశిస్తోంది ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ 
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n మీ గుర్తింపుతో ముడిపడి ఉన్న భాషా ప్రాధాన్యతను నిల్వ చేస్తుంది.
-help-i18n-set = .my.i18n: <code>             ఈ గుర్తింపు కోసం 20 ఉపయోగించే భాషను ఎంచుకోండి
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               అందుబాటులో ఉన్న భాషా కోడ్‌లను జాబితా చేయండి
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = సవరణ: పొందడం విఫలమైం�
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = క్రియాశీల సెషన్ లేదు — ప్రొఫైల్ తొలగించడం సాధ్యం కాదు
 profile-delete-error = ప్రొఫైల్ తొలగింపు విఫలమైంది: { $e }
-profile-wrong-user = మరొక ప్రొఫైల్ కోసం 11 సెట్ చేయలేరు — మీ స్వంతం మాత్రమే
-profile-wrong-user-name = 19 కోసం 11 సెట్ చేయలేరు — మీ స్వంత ప్రొఫైల్ మాత్రమే
-profile-no-ma = 3 రన్‌టైమ్ కాన్ఫిగర్ చేయబడలేదు — ముందుగా 31ని అమలు చేయండి
-profile-no-cid = ఈ ప్రొఫైల్ కోసం 3 నిల్వ చేయబడలేదు — ముందుగా 37ని అమలు చేయండి
-profile-no-cid-in-doc = DID పత్రంలో 11 ఏ ప్రొఫైల్ కనుగొనబడలేదు — ముందుగా 43ని అమలు చేయండి
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = ప్రొఫైల్ గుప్తీకరించి IPFS కు పంపబడింది; CID వచ్చినప్పుడు DID పత్రం నవీకరించబడుతుంది
 profile-publish-done = ప్రొఫైల్ ప్రచురించబడింది — DID పత్రం ma.agent CID తో నవీకరించబడింది
-profile-publish-failed = ప్రొఫైల్ ప్రచురణ విఫలమైంది: 24
-profile-fetch-done = ప్రొఫైల్ పొందబడింది — 18 కీలు 43 నుండి లోడ్ చేయబడ్డాయి
-profile-fetch-failed = ప్రొఫైల్ పొందడం విఫలమైంది: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = గుర్తింపు ఇప్పటికే ప్రచురించబడింది — ప్రొఫైల్ తాజాగా ఉంది
-profile-import-exists = ప్రొఫైల్ 8 ఇప్పటికే ఉంది — ముందుగా దాన్ని తొలగించండి
-profile-import-wrong-user = ఫైల్ 22 ప్రొఫైల్‌ను కలిగి ఉంది, ఊహించిన 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = బైనరీ కంటెంట్ (ప్రదర్శించబడలేదు)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = కంటెంట్‌ని పొందడంలో విఫలమైంది: 25
-cid-op-unknown = తెలియని కంటెంట్ ఆపరేషన్: 27
-cid-op-wc = { $lines } పంక్తులు 18 పదాలు 36 అక్షరాలు
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ఏదీ లేదు)
 profiles-deleted = ప్రొఫైల్ { $name } తొలగించబడింది
 profiles-not-found = ప్రొఫైల్ కనుగొనబడలేదు: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     వ్యక్తిగత confi
 help-topic-inbox =   .help/inbox                  ఇన్‌బాక్స్
 help-topic-doc =   .help/doc                    పత్రాలు
 help-topic-actor =   .help/actor                  దూర actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ఇన్‌లైన్ Scheme వ్యక్తీకరణలు మరియు పత్రాలు
 help-unknown-topic =   .help/{ $topic }: తెలియని విషయం
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         డైరెక�
 help-actor-ping = @actor:ping                  సజీవత పింగ్
 help-actor-entities =   @actor/entities              entityలను జాబితా చేయి
 help-actor-entities-get = @actor/entities/<n>          ఎంటిటీ నోడ్‌ని పొందండి
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 సూచన ద్వారా ఎంటిటీని సెట్ చేయండి
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entityని సవరించు
 help-actor-entities-del = @actor/entities/<n>:         ఎంటిటీని తొలగించండి
 help-actor-config-get =   @actor/config/<key>          config విలువను తెచ్చు
 help-actor-config-set =   @actor/config/<key>: val     config విలువను సెట్ చేయి
-help-actor-acl = @actor/acl                   4 పొందండి
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL సవరించు
 help-actor-fragment =   @actor#entity                pluginకు పంపు
 help-actor-fragment-verb =   @actor#entity:verb [args]    pluginకు RPC
-help-header-cid-ops = ── 3 నటుడు కాల్స్ ──────────────────────── ─────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  24 నుండి 15 ఎంటిటీకి కాల్ చేయండి మరియు దాని ప్రత్యుత్తరం కోసం వేచి ఉండండి
-help-actor-head = (@actor/path)                31 నుండి రిమోట్ CRUD కంటెంట్‌ని పొందండి
-help-actor-tail = (<bafy...>)                  36 41 నుండి 21ని చేర్చండి మరియు మూల్యాంకనం చేయండి
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
-help-actor-wc-l = .my.scheme.ma!edit           ఈ గుర్తింపు కోసం సేవ్ చేయబడిన 11 సహాయకులను సవరించండి
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
 help-topic-i18n = .help/i18n                   మీ గుర్తింపు కోసం భాష ప్రాధాన్యత
@@ -372,7 +372,7 @@ help-url-intro =   ముందే నింపిన గ్రాహకుడ�
 help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did>!msg (సాధారణ సందేశం)
 help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>!say (say క్రియ)
 help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>!emote (emote క్రియ)
-help-url-ma = ?ma=<did-or-url>              ప్రీ-ఫిల్ రన్‌టైమ్ DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             లాగిన్ అయిన తర్వాత రన్‌టైమ్ ప్రపంచాన్ని నమోదు చేయండి
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ఇన్‌పుట్ ముందే నింపబడింది కానీ పంపబడలేదు — పంపడానికి Enter నొక్కండి.
@@ -384,7 +384,7 @@ help-publish-ma = ప్రచురించడానికి ma (స్థా
 help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.ma [port]' అమలు చేయండి, తర్వాత '.my.identity!publish @ma'.
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
 profile-fetch-did-resolve-failed = ఇంకా ప్రచురించబడలేదు — ముందుగా 28ని అమలు చేయండి, ఆపై మీ ప్రొఫైల్ 67ని అమలు చేయండి
-profile-update-done = ప్రొఫైల్ నవీకరించబడింది — 18 కీలు 43 నుండి విలీనం చేయబడ్డాయి
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = ప్రొఫైల్ పేరును పేర్కొనండి: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = హెచ్చరిక: మీ IPNS ప్రైవేట్ కీ గుర్తింపు ప్రచురణ కోసం ఈ రన్‌టైమ్‌కు పంపబడుతుంది. మీరు పూర్తిగా విశ్వసించే రన్‌టైమ్‌ మాత్రమే ఉపయోగించండి.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme zion ఆదేశాల్లో చొప్పించిన Scheme వ్యక్తీకరణలను మూల్యాంకనం చేసి, పంపే ముందు ఫలితాన్ని అదే పంక్తిలో చేర్చుతుంది.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ఇన్‌లైన్ ఉదాహరణ; "say 7 + 5 = 12" పంపుతుంది
+help-zscheme-define =   (define x 12)             నిర్వచనలు ప్రస్తుత లాగిన్ సెషన్‌లో కొనసాగుతాయి
+help-zscheme-doc = పత్రాలు: https://github.com/bahner/rust-ma-zscheme

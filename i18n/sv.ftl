@@ -176,7 +176,7 @@ help-header-common = ── vanliga sökvägar ───────────
 help-header-inbox = ── inkorg ───────────────────────────────────────────────────────────────
 help-header-documents = ── dokument ─────────────────────────────────────────────────────────────
 help-header-i18n = ── språk ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-mellanslag ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── går in i 間-utrymmet ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<namn>:              radera dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n lagrar språkinställningen kopplad till din identitet.
-help-i18n-set = .my.i18n: <code>             välj språket som 20 använder för denna identitet
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               lista tillgängliga språkkoder
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = redigering: hämtningsfel: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ingen aktiv session — profilen kan inte raderas
 profile-delete-error = radering av profil misslyckades: { $e }
-profile-wrong-user = kan inte ställa in 11 för en annan profil - bara din egen
-profile-wrong-user-name = kan inte ställa in 11 för 19 — bara din egen profil
-profile-no-ma = ingen 3 körtid konfigurerad — kör 31 först
-profile-no-cid = ingen 3 lagrad för denna profil — kör 37 först
-profile-no-cid-in-doc = ingen profil 11 hittades i DID-dokumentet — kör 43 först
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profilen krypterades och skickades till IPFS; DID-dokumentet uppdateras när CID kommer
 profile-publish-done = profilen publicerad — DID-dokumentet uppdaterat med ma.agent-CID
-profile-publish-failed = profilpublicering misslyckades: 24
-profile-fetch-done = profil hämtad — 18-nycklar laddade från 43
-profile-fetch-failed = profilhämtningen misslyckades: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identitet redan publicerad — profilen uppdaterad
-profile-import-exists = profilen 8 finns redan — ta bort den först
-profile-import-wrong-user = filen innehåller profilen 22, förväntad 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binärt innehåll (visas inte)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = det gick inte att hämta innehåll: 25
-cid-op-unknown = okänt innehållsåtgärd: 27
-cid-op-wc = { $lines } rader 18 ord 36 tecken
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ingen)
 profiles-deleted = profil { $name } raderad
 profiles-not-found = profil hittades inte: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     personlig config
 help-topic-inbox =   .help/inbox                  inkorg
 help-topic-doc =   .help/doc                    dokument
 help-topic-actor =   .help/actor                  fjärr-actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               inbäddade Scheme-uttryck och dokumentation
 help-topic-url =   .help/url                    öppna zion via en URL-länk
 help-topic-i18n = .help/i18n                   språkpreferens för din identitet
 help-unknown-topic =   .help/{ $topic }: okänt ämne
@@ -351,27 +351,27 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         skicka direkt/cha
 help-actor-ping = @actor:ping                  livlighet ping
 help-actor-entities =   @actor/entities              lista entiteter
 help-actor-entities-get = @actor/entities/<n>          hämta entitetsnod
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ställ in enhet med 14-referens
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     redigera entitet
 help-actor-entities-del = @actor/entities/<n>:         ta bort enhet
 help-actor-config-get =   @actor/config/<key>          hämta config-värde
 help-actor-config-set =   @actor/config/<key>: val     ställ in config-värde
-help-actor-acl = @actor/acl                   skaffa 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              redigera ACL
 help-actor-fragment =   @actor#entity                skicka till plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC till plugin
-help-header-cid-ops = ── 3 skådespelare ringer ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  ring en enhet 15 från 24 och invänta dess svar
-help-actor-head = (@actor/path)                hämta fjärr-CRUD-innehåll från 31
-help-actor-tail = (<bafy...>)                  inkludera och utvärdera 21 från en 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  behålla 5-svar i sessionsmiljön
-help-actor-wc-l = .my.scheme.ma!edit           redigera sparade 11-hjälpare för denna identitet
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
 help-url-msg =   ?msg=<did>                   fyller i: @<did>!msg (textmeddelande)
 help-url-say =   ?say=<did>                   fyller i: @<did>!say (say-verb)
 help-url-emote =   ?emote=<did>                 fyller i: @<did>!emote (emote-verb)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             gå in i runtime-världen efter inloggning
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Inmatningsfältet fylls i men skickas inte — tryck Enter för att skicka.
@@ -382,8 +382,8 @@ help-publish-intro = Publicering gör din identitet sökbar på nätverket. Andr
 help-publish-ma = För att publicera behöver du ma (lokal körtid) installerat. Det kopplar ego till IPFS/IPNS åt dig.
 help-publish-steps = Steg: kör '.ma [port]' för att hitta din lokala ma, sedan '.my.identity!publish @ma'.
 help-publish-without = Utan publicering kan andra inte nå dig — även om de känner ditt DID kan de inte slå upp din endpoint.
-profile-fetch-did-resolve-failed = Har inte publicerats ännu — kör 28 först, sedan 67 din profil
-profile-update-done = profil uppdaterad — 18-nycklar sammanslagna från 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = ange ett profilnamn: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -412,8 +412,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Varning: Din privata IPNS-nyckel kommer att skickas till denna körningstjänst för publicering av din identitet. Använd bara en körningstjänst som du litar helt på.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme utvärderar Scheme-uttryck som är inbäddade i zion-kommandon och infogar resultatet i raden innan den skickas.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inbäddat exempel; skickar "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitioner finns kvar under den aktuella inloggningssessionen
+help-zscheme-doc = Dokumentation: https://github.com/bahner/rust-ma-zscheme

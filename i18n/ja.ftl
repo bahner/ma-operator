@@ -176,7 +176,7 @@ help-header-common = ── よく使うパス ───────────
 help-header-inbox = ── 受信トレイ ──────────────────────────────────────────────────────────────
 help-header-documents = ── ドキュメント ────────────────────────────────────────────────────────────
 help-header-i18n = ── 言語 ───────────────────
-help-header-ma = ── 3-space ─────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 間に入ります ─────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n には、ユーザーの ID に関連付けられた言語設定が保存されます。
-help-i18n-set = .my.i18n: <code>             20 がこの ID に使用する言語を選択します
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               利用可能な言語コードをリストする
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = 編集: 取得失敗: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = アクティブなセッションがありません — プロフィールを削除できません
 profile-delete-error = プロフィールの削除に失敗しました: { $e }
-profile-wrong-user = 別のプロファイルに 11 を設定することはできません。自分のプロファイルにのみ設定できます
-profile-wrong-user-name = 19 に 11 を設定することはできません - 自分のプロファイルのみを設定します
-profile-no-ma = 3 ランタイムが構成されていません - 最初に 31 を実行します
-profile-no-cid = このプロファイルには 3 が保存されていません - 最初に 37 を実行してください
-profile-no-cid-in-doc = DID ドキュメントにプロファイル 11 が見つかりません - 最初に 43 を実行してください
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = プロファイルは暗号化されて IPFS に送信されました。CID が届くと DID ドキュメントが更新されます
 profile-publish-done = プロファイルを公開しました — DID ドキュメントを ma.agent CID で更新しました
-profile-publish-failed = プロファイルの公開に失敗しました: 24
-profile-fetch-done = プロファイルが取得されました — 43 からロードされた 18 キー
-profile-fetch-failed = プロファイルの取得に失敗しました: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = 身元はすでに公開されています - プロフィールは最新です
-profile-import-exists = プロファイル 8 はすでに存在します - 最初に削除してください
-profile-import-wrong-user = ファイルにはプロファイル 22 が含まれていますが、予期される 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = バイナリコンテンツ (表示されません)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = コンテンツの取得に失敗しました: 25
-cid-op-unknown = 不明なコンテンツ操作: 27
-cid-op-wc = { $lines } 行 18 ワード 36 文字
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (なし)
 profiles-deleted = プロフィール { $name } を削除しました
 profiles-not-found = プロフィールが見つかりません: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  受信箱
 help-topic-doc =   .help/doc                    文書
 help-topic-actor =   .help/actor                  リモート actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               インライン Scheme 式とドキュメント
 help-topic-url =   .help/url                    URLリンクからzionを開く
 help-topic-i18n = .help/i18n                   自分のアイデンティティに合わせた言語設定
 help-unknown-topic =   .help/{ $topic }: 不明なトピック
@@ -344,7 +344,7 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         ダイレクト/�
 help-actor-ping = @actor:ping                  活性ピング
 help-actor-entities =   @actor/entities              entity を一覧表示
 help-actor-entities-get = @actor/entities/<n>          エンティティノードを取得する
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 参照によるエンティティの設定
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity を編集
 help-actor-entities-del = @actor/entities/<n>:         エンティティの削除
 help-actor-config-get =   @actor/config/<key>          config 値を取得
@@ -353,18 +353,18 @@ help-actor-acl = @actor/acl                   4を取得
 help-actor-acl-edit =   @actor/acl!edit              ACL を編集
 help-actor-fragment =   @actor#entity                plugin に送信
 help-actor-fragment-verb =   @actor#entity:verb [args]    plugin への RPC
-help-header-cid-ops = ── 3 アクターコール ───────────────
-help-actor-cat = (@actor#entity:verb arg...)  24 からエンティティ 15 を呼び出し、その応答を待ちます
-help-actor-head = (@actor/path)                31 からリモート CRUD コンテンツを取得します
-help-actor-tail = (<bafy...>)                  36 41 から 21 を含めて評価します
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  5 応答をセッション環境に保持する
-help-actor-wc-l = .my.scheme.ma!edit           この ID の保存された 11 ヘルパーを編集します
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
 help-url-say =   ?say=<did>                   事前入力: @<did>!say（say動詞）
 help-url-emote =   ?emote=<did>                 事前入力: @<did>!emote（emote動詞）
-help-url-ma = ?ma=<did-or-url>              事前入力ランタイム DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             ログイン後にランタイムワールドに入る
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   入力欄は事前入力されますが送信はされません — Enterを押して送信。
@@ -375,8 +375,8 @@ help-publish-intro = 公開することでネットワーク上で身元を見�
 help-publish-ma = 公開するにはma（ローカルランタイム）がインストールされている必要があります。egをIPFS/IPNSに橋渡しします。
 help-publish-steps = 手順：'.ma [port]'でローカルmaを検出し、'.my.identity!publish @ma'を実行してください。
 help-publish-without = 公開しないと他の人はあなたに連絡できません — DIDを知っていてもendpointを解決できないためです。
-profile-fetch-did-resolve-failed = DID はまだ公開されていません — 最初に 28 を実行し、次に 67 プロファイルを実行します
-profile-update-done = プロファイルが更新されました — 43 から 18 キーがマージされました
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = プロファイル名を指定してください: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -405,8 +405,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 警告：あなたのIPNSプライベートキーはこのランタイムにアイデンティティを公開するために送信されます。完全に信頼するランタイムのみを使用してください。
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme は zion コマンドに埋め込まれた Scheme 式を評価し、送信前に結果をその行へ差し込みます。
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    インライン例。"say 7 + 5 = 12" を送信します
+help-zscheme-define =   (define x 12)             定義は現在のログインセッション中保持されます
+help-zscheme-doc = ドキュメント: https://github.com/bahner/rust-ma-zscheme

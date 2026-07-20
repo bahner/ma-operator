@@ -119,8 +119,8 @@ discover-invalid-did = diskova hámfalla: `did` gonya showxa did:ma: diching, to
 discover-no-endpoint = diskova beleti: `endpoint_id` na finyish wit status.json; DID oyedeng hol
 discover-hint-endpoint-not-found = Hint: endpoint na du find. Check im `ma` show /status.json na port 5003.
 discover-hint-server-error = Hint: runtime gi server error. Check `ma` log im en try again.
-discover-hint-network = Dica: problema de rede/conectividade. Inicie 40, verifique se localhost:5003 está acessível e permita acesso local 101 no navegador.
-discover-hint-generic = Dica: verifique se 13 e 25 Desktop estão em execução e tente novamente 59.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma diskova at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   @ma alias kowl da — run '.my.identity!publish @ma' fo pashang inyalowda setara.
@@ -153,13 +153,13 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish hámfalla [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
 doc-publish-hint-session = faça login novamente para que o ego possa acessar suas chaves de selfmang
-doc-publish-hint-target = use um DID ou alias de editor válido que resolva apenas 57
-doc-publish-hint-network = verifique se o tempo de execução 7 e 22 estão acessíveis e tente novamente
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifique se o documento DID do editor foi sendowt e contém um endpoint acessível
-doc-publish-hint-acl = peça ao operador do editor para permitir seu DID em 48
-doc-publish-hint-runtime = runtime/plugin rejeitou a solicitação; inspecione o motivo e tente novamente após corrigir a entidade/tempo de execução
-doc-publish-hint-ipfs = verifique a integridade local do 12/17 e o status do tempo de execução do editor
-doc-publish-hint-unknown = inspecione os logs de tempo de execução para obter a causa detalhada e tente novamente
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-fetch-done = { $cid } fech finyish → { $path }.content (na du-im)
@@ -263,29 +263,29 @@ help-ma-entry-url =   ?enter=<runtime>             enter after login from shared
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Belter languages (.my.i18n: <code> fo set):
-err-lang-not-found = langue introuvable : { $lang }
+err-lang-not-found = language not found: { $lang }
 
 msg-send-failed = sako nah bringin: { $e }
 msg-not-logged-in = inyalowda nah owkwa
 
 # ── CBOR / YAML codec errors ──────────────────────────────────────────────
-yaml-parse-error = Erro de análise YAML: 18
+yaml-parse-error = YAML parse error: { $e }
 yaml-not-mapping = YAML mus bi mapping (keya: valyu pɛr); plen tèks an skalas no kɛn bi stòrd as DAG-CBOR
-dagcbor-encode-error = Erro de codificação DAG-CBOR: 23
-cbor-decode-error = Erro de decodificação CBOR: 19
-cbor-json-error = Erro CBOR para 8: 20
-yaml-serialize-error = Erro de serialização YAML: 22
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
 edit-reply-invalid = resposta de edição inválida
 doc-publish-ipld-error = IPLD publish failed: { $e }
 
 # ── Internal / session errors ─────────────────────────────────────────────
-err-inbox-prune-persist = a remoção da caixa de entrada persiste: 21
-err-config-load = erro de carregamento de configuração: 19
-err-lang-persist = persistir idioma: 14
-err-history-parse = erro de análise de histórico: 21
-err-history-load = erro de carregamento de histórico: 20
-err-ipfs-reply-decode = Falha na decodificação da resposta IPFS: 26
-err-edit-cbor = editar erro 5: 17
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by browser
 status-publishing = publishin
 
@@ -308,27 +308,27 @@ err-edit-fetch-failed = edit: fot fetch: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no session kopeng — no pensa dele profil
 profile-delete-error = profil dele bek no go: { $e }
-profile-wrong-user = não é possível definir 11 para outro profayel — apenas o seu
-profile-wrong-user-name = não é possível definir 11 para 19 – apenas seu próprio profayel
-profile-no-ma = nenhum tempo de execução 3 configurado - execute 31 primeiro
-profile-no-cid = nenhum 3 armazenado para este profayel — execute 37 primeiro
-profile-no-cid-in-doc = nenhum profayel 11 encontrado no documento DID — execute 43 primeiro
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile du encrypt im send na IPFS; DID doc pensa update when CID kom
 profile-publish-done = profile publish — DID doc update wit ma.agent CID
-profile-publish-failed = falha na publicação do profayel: 24
-profile-fetch-done = profayel obtido — chaves 18 carregadas de 43
-profile-fetch-failed = falha na busca do profayel: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = selfmang já publicada — profayel atualizado
-profile-import-exists = o profayel 8 já existe — exclua-o primeiro
-profile-import-wrong-user = arquivo contém profayel 22, esperado 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
-cid-op-binary = conteúdo binário (não exibido)
+cid-op-binary = binary content (not displayed)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = falha ao buscar conteúdo: 25
-cid-op-unknown = operação de conteúdo desconhecido: 27
-cid-op-wc = Linhas { $lines } Palavras 18 Caracteres 36
-profiles-empty = (nenhum)
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
+profiles-empty = (none)
 profiles-deleted = profil { $name } dele go
 profiles-not-found = profil no found: { $name }
 
@@ -341,7 +341,7 @@ help-topic-my =   .help/my                     own config
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    docu dem
 help-topic-actor =   .help/actor                  far actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               Scheme komang insid line unte docs
 help-unknown-topic =   .help/{ $topic }: topic na du sabe
 
 # -- Help actor section
@@ -385,8 +385,8 @@ help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID iny
 help-publish-ma = Fo pashang, ma (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
 help-publish-steps = Stap: run '.ma [port]' fo find local ma, den '.my.identity!publish @ma'.
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
-profile-fetch-did-resolve-failed = DID ainda não sendowt – execute 28 primeiro e depois 67 seu profayel
-profile-update-done = profayel atualizado – chaves 18 mescladas de 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = set profile nem: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -415,8 +415,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Belte wok: Da IPNS priv-key du senye go na dis runtime fo pashang identity. Kowl yuse runtime du fulding trust, walowda.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme du Scheme komang wey im insid zion komang, den splice result im da line bifo sendowt.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insid-line example; sendowt "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             define dem stay fo dis ingang session
+help-zscheme-doc = Doku: https://github.com/bahner/rust-ma-zscheme

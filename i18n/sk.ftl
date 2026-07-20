@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publikovanie IPLD { $path }: { $e }
 doc-publish-error-detail = publikovanie zlyhalo [{ $code }]: { $err }
 doc-publish-error-hint = Tip: { $hint }
 doc-publish-hint-session = prihláste sa znova, aby ego malo prístup k vašim kľúčom identity
-doc-publish-hint-target = použite platný identifikátor DID alebo alias vydavateľa, ktorý sa rozlišuje na holý 57
-doc-publish-hint-network = overte, či sú 7 runtime a 22 dosiahnuteľné, potom to skúste znova
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = overiť, či je dokument DID vydavateľa zverejnený a obsahuje dosiahnuteľný koncový bod
-doc-publish-hint-acl = požiadajte operátora vydavateľa o povolenie vášho DID v 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin odmietol požiadavku; skontrolujte dôvod a skúste to znova po oprave entity/runtime
-doc-publish-hint-ipfs = skontrolujte stav lokálneho 12/17 a stav spustenia vydavateľa
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = skontrolujte protokoly runtime pre podrobnú príčinu a skúste to znova
 doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
 doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
@@ -176,7 +176,7 @@ help-header-common = ── bežné cesty ────────────�
 help-header-inbox = ── doručená pošta ────────────────────────────────────────────────────────
 help-header-documents = ── dokumenty ────────────────────────────────────────────────────────────
 help-header-i18n = ── jazyk ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-medzera ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── zadanie 間-medzera ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<názov>:              vymazať dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ukladá preferencie jazyka spojené s vašou identitou.
-help-i18n-set = .my.i18n: <code>             vyberte jazyk, ktorý 20 používa pre túto identitu
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               zoznam dostupných jazykových kódov
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = úprava: chyba načítania: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = žiadna aktívna relácia — profil nie je možné odstrániť
 profile-delete-error = odstránenie profilu zlyhalo: { $e }
-profile-wrong-user = nemožno nastaviť 11 pre iný profil – iba pre váš vlastný
-profile-wrong-user-name = nemožno nastaviť 11 pre 19 — iba váš vlastný profil
-profile-no-ma = nie je nakonfigurované žiadne runtime 3 – najskôr spustite 31
-profile-no-cid = pre tento profil nie je uložený žiadny 3 – najskôr spustite 37
-profile-no-cid-in-doc = v dokumente DID sa nenašiel žiadny profil 11 – najskôr spustite 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profil bol zašifrovaný a odoslaný do IPFS; dokument DID sa aktualizuje, keď príde CID
 profile-publish-done = profil zverejnený — dokument DID aktualizovaný o ma.agent CID
-profile-publish-failed = Zverejnenie profilu zlyhalo: 24
-profile-fetch-done = profil načítaný — kľúče 18 načítané z 43
-profile-fetch-failed = načítanie profilu zlyhalo: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identita už zverejnená — profil je aktuálny
-profile-import-exists = profil 8 už existuje – najskôr ho odstráňte
-profile-import-wrong-user = súbor obsahuje profil 22, očakávaný 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binárny obsah (nezobrazuje sa)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = nepodarilo sa načítať obsah: 25
-cid-op-unknown = operácia s neznámym obsahom: 27
-cid-op-wc = { $lines } riadky 18 slová 36 znakov
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (žiadny)
 profiles-deleted = profil { $name } odstránený
 profiles-not-found = profil sa nenašiel: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     osobní konfigurace
 help-topic-inbox =   .help/inbox                  schránka
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  vzdálený actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               vložené výrazy Scheme a dokumentácia
 help-unknown-topic =   .help/{ $topic }: neznámé téma
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         odoslať priamu/c
 help-actor-ping = @actor:ping                  živosť ping
 help-actor-entities =   @actor/entities              vypsat entity
 help-actor-entities-get = @actor/entities/<n>          získať uzol entity
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   nastaviť entitu odkazom 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     upravit entitu
 help-actor-entities-del = @actor/entities/<n>:         odstrániť entitu
 help-actor-config-get =   @actor/config/<key>          získat hodnotu konfigurace
 help-actor-config-set =   @actor/config/<key>: val     nastavit hodnotu konfigurace
-help-actor-acl = @actor/acl                   získajte 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              upravit ACL
 help-actor-fragment =   @actor#entity                odeslat do pluginu
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
-help-header-cid-ops = ── 3 herec volá ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  zavolajte entitu 15 z 24 a počkajte na jej odpoveď
-help-actor-head = (@actor/path)                načítať vzdialený obsah CRUD z 31
-help-actor-tail = (<bafy...>)                  zahrnúť a vyhodnotiť 21 z 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  uchovávať odpovede 5 v prostredí relácie
-help-actor-wc-l = .my.scheme.ma!edit           upraviť uložených pomocníkov 11 pre túto identitu
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    otvorenie zion cez URL odkaz
 help-topic-i18n = .help/i18n                   jazykové preferencie pre vašu identitu
@@ -365,7 +365,7 @@ help-url-intro =   Zdieľaj odkaz, ktorý otvorí zion s vopred vyplneným príj
 help-url-msg =   ?msg=<did>                   vopred vyplní: @<did>!msg (jednoduchá správa)
 help-url-say =   ?say=<did>                   vopred vyplní: @<did>!say (sloveso say)
 help-url-emote =   ?emote=<did>                 vopred vyplní: @<did>!emote (sloveso emote)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             po prihlásení vstúpte do runtime sveta
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Pole je vopred vyplnené, ale neodoslané — stlač Enter na odoslanie.
@@ -376,8 +376,8 @@ help-publish-intro = Zverejnenie sprístupní tvoju identitu v sieti. Ostatní m
 help-publish-ma = Na zverejnenie potrebuješ nainštalované ma (lokálny runtime). Prepája ego s IPFS/IPNS v tvojom mene.
 help-publish-steps = Kroky: spusti '.ma [port]' na zistenie lokálneho ma, potom '.my.identity!publish @ma'.
 help-publish-without = Bez zverejnenia ťa ostatní nemôžu kontaktovať — aj keď poznajú tvoj DID, nedokážu rozlíšiť tvoj endpoint.
-profile-fetch-did-resolve-failed = Ešte nebolo zverejnené – najskôr spustite 28 a potom 67 svoj profil
-profile-update-done = profil aktualizovaný — kľúče 18 sa zlúčili z 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = zadajte názov profilu: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Upozornenie: Váš súkromný kľúč IPNS bude odoslaný do tohto runtime prostredia na publikovanie identity. Používajte iba runtime prostredie, ktorému plne dôverujete.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme vyhodnocuje výrazy Scheme vložené do príkazov zion a pred odoslaním vloží výsledok do riadka.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vložený príklad; odošle "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definície pretrvávajú počas aktuálnej prihlasovacej relácie
+help-zscheme-doc = Dokumentácia: https://github.com/bahner/rust-ma-zscheme

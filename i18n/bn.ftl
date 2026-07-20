@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = প্রকাশ ব্যর্থ [{ $code }]: { $err }
 doc-publish-error-hint = ইঙ্গিত: { $hint }
 doc-publish-hint-session = আবার লগ ইন করুন যাতে অহং আপনার পরিচয় কীগুলি অ্যাক্সেস করতে পারে
-doc-publish-hint-target = একটি বৈধ প্রকাশক DID বা উপনাম ব্যবহার করুন যা বেয়ার 57 সমাধান করে৷
-doc-publish-hint-network = 7 রানটাইম যাচাই করুন এবং 22 পৌঁছানো যায়, তারপর আবার চেষ্টা করুন
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = যাচাই করুন প্রকাশক DID নথি প্রকাশিত হয়েছে এবং একটি পৌঁছানো যায় এমন এন্ডপয়েন্ট রয়েছে৷
-doc-publish-hint-acl = প্রকাশক অপারেটরকে আপনার ডিআইডি 48-এ অনুমতি দিতে বলুন
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = রানটাইম/প্লাগইন অনুরোধ প্রত্যাখ্যান করেছে; কারণটি পরীক্ষা করুন এবং সত্তা/রানটাইম ঠিক করার পরে পুনরায় চেষ্টা করুন
-doc-publish-hint-ipfs = স্থানীয় 12/17 স্বাস্থ্য এবং প্রকাশকের রানটাইম স্থিতি পরীক্ষা করুন৷
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = বিস্তারিত কারণের জন্য রানটাইম লগ পরিদর্শন করুন এবং পুনরায় চেষ্টা করুন
 doc-store-sent = সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
 doc-ipld-store-sent = IPLD সংরক্ষণ অনুরোধ পাঠানো হয়েছে ({ $id }) → { $publisher }; CID RPC উত্তরের মাধ্যমে আসবে
@@ -176,7 +176,7 @@ help-header-common = ── সাধারণ পথ ────────�
 help-header-inbox = ── ইনবক্স ────────────────────────────────────────────────────────────────
 help-header-documents = ── ডকুমেন্ট ──────────────────────────────────────────────────────────────
 help-header-i18n = ── ভাষা ───────────────────────────────── ──────────────────────────────────
-help-header-ma = ── 3-স্পেস ────────────────────────────────── ──────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 間-স্পেসে প্রবেশ করা ───────────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              ডকুমেন্ট মুছ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n আপনার পরিচয়ের সাথে সংযুক্ত ভাষা পছন্দ সংরক্ষণ করে।
-help-i18n-set = .my.i18n: <code>             এই পরিচয়ের জন্য 20 ব্যবহার করা ভাষা বেছে নিন
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               উপলব্ধ ভাষা কোড তালিকা
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = সম্পাদনা আনয়ন ব্যর্
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = কোনো সক্রিয় সেশন নেই — প্রোফাইল মুছে ফেলা সম্ভব নয়
 profile-delete-error = প্রোফাইল মুছতে ব্যর্থ হয়েছে: { $e }
-profile-wrong-user = অন্য প্রোফাইলের জন্য 11 সেট করতে পারবেন না — শুধুমাত্র আপনার নিজের৷
-profile-wrong-user-name = 19 এর জন্য 11 সেট করা যাবে না — শুধুমাত্র আপনার নিজের প্রোফাইল৷
-profile-no-ma = কোন 3 রানটাইম কনফিগার করা নেই — প্রথমে 31 চালান
-profile-no-cid = এই প্রোফাইলের জন্য কোন 3 সংরক্ষিত নেই — প্রথমে 37 চালান৷
-profile-no-cid-in-doc = DID নথিতে কোন প্রোফাইল 11 পাওয়া যায়নি — প্রথমে 43 চালান
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = প্রোফাইল এনক্রিপ্ট করে IPFS-এ পাঠানো হয়েছে; CID এলে DID নথি আপডেট হবে
 profile-publish-done = প্রোফাইল প্রকাশিত হয়েছে — DID নথি ma.agent CID দিয়ে আপডেট হয়েছে
-profile-publish-failed = প্রোফাইল প্রকাশ ব্যর্থ হয়েছে: 24
-profile-fetch-done = প্রোফাইল আনা হয়েছে — 18 কী 43 থেকে লোড করা হয়েছে
-profile-fetch-failed = প্রোফাইল আনা ব্যর্থ হয়েছে: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = পরিচয় ইতিমধ্যেই প্রকাশিত হয়েছে — প্রোফাইল আপ টু ডেট
-profile-import-exists = প্রোফাইল 8 ইতিমধ্যেই বিদ্যমান — প্রথমে এটি মুছুন
-profile-import-wrong-user = ফাইলটিতে 22 প্রোফাইল রয়েছে, প্রত্যাশিত 42৷
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = বাইনারি বিষয়বস্তু (প্রদর্শিত নয়)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = সামগ্রী আনতে ব্যর্থ হয়েছে: 25
-cid-op-unknown = অজানা বিষয়বস্তু অপারেশন: 27
-cid-op-wc = { $lines } লাইন 18 শব্দ 36 অক্ষর
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (কিছু নেই)
 profiles-deleted = প্রোফাইল { $name } মুছে ফেলা হয়েছে
 profiles-not-found = প্রোফাইল পাওয়া যায়নি: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     निजी config
 help-topic-inbox =   .help/inbox                  इनबॉक्स
 help-topic-doc =   .help/doc                    दस्तावेज़
 help-topic-actor =   .help/actor                  दूरस्थ actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ইনলাইন Scheme এক্সপ্রেশন ও নথি
 help-unknown-topic =   .help/{ $topic }: अज्ञात विषय
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         সরাসর�
 help-actor-ping = @actor:ping                  সজীবতা পিং
 help-actor-entities =   @actor/entities              entity सूचीबद्ध करें
 help-actor-entities-get = @actor/entities/<n>          সত্তা নোড পান
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 রেফারেন্স দ্বারা সত্তা সেট করুন
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity संपादित करें
 help-actor-entities-del = @actor/entities/<n>:         সত্তা মুছে ফেলুন
 help-actor-config-get =   @actor/config/<key>          config मान लें
 help-actor-config-set =   @actor/config/<key>: val     config मान सेट करें
-help-actor-acl = @actor/acl                   4 পান
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL संपादित करें
 help-actor-fragment =   @actor#entity                plugin को भेजें
 help-actor-fragment-verb =   @actor#entity:verb [args]    plugin को RPC
-help-header-cid-ops = ── 3 অভিনেতা কল ───────────────────────── ─────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  24 থেকে একটি সত্তা 15 কল করুন এবং এর উত্তরের জন্য অপেক্ষা করুন৷
-help-actor-head = (@actor/path)                31 থেকে দূরবর্তী CRUD সামগ্রী আনুন
-help-actor-tail = (<bafy...>)                  একটি 36 41 থেকে 21 অন্তর্ভুক্ত এবং মূল্যায়ন করুন
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  সেশন পরিবেশে 5 উত্তর রাখুন
-help-actor-wc-l = .my.scheme.ma!edit           এই পরিচয়ের জন্য সংরক্ষিত 11 সাহায্যকারী সম্পাদনা করুন৷
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL লিঙ্কের মাধ্যমে zion খোলা
 help-topic-i18n = .help/i18n                   আপনার পরিচয়ের জন্য ভাষা পছন্দ
@@ -372,7 +372,7 @@ help-url-intro =   পূর্বভরণকৃত প্রাপকসহ zi
 help-url-msg =   ?msg=<did>                   পূর্বভরণ: @<did>!msg (সাধারণ বার্তা)
 help-url-say =   ?say=<did>                   পূর্বভরণ: @<did>!say (say ক্রিয়া)
 help-url-emote =   ?emote=<did>                 পূর্বভরণ: @<did>!emote (emote ক্রিয়া)
-help-url-ma = ?ma=<did-or-url>              প্রি-ফিল রানটাইম DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             লগইন করার পরে রানটাইম জগতে প্রবেশ করুন
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   ইনপুট পূর্বভরণ করা হয়েছে কিন্তু পাঠানো হয়নি — পাঠাতে Enter চাপুন।
@@ -383,8 +383,8 @@ help-publish-intro = প্রকাশ করলে আপনার পরি�
 help-publish-ma = প্রকাশ করতে ma (স্থানীয় রানটাইম) ইনস্টল করা দরকার। এটি আপনার হয়ে ego-কে IPFS/IPNS-এর সাথে সংযুক্ত করে।
 help-publish-steps = ধাপ: স্থানীয় ma সনাক্ত করতে '.ma [port]' চালান, তারপর '.my.identity!publish @ma'।
 help-publish-without = প্রকাশ না করলে অন্যরা আপনার কাছে পৌঁছাতে পারবে না — DID জানলেও তারা আপনার endpoint খুঁজে বের করতে পারবে না।
-profile-fetch-did-resolve-failed = এখনও প্রকাশিত হয়নি — প্রথমে 28 চালান, তারপর 67 আপনার প্রোফাইল৷
-profile-update-done = প্রোফাইল আপডেট করা হয়েছে — 18 কীগুলি 43 থেকে একত্রিত হয়েছে৷
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = একটি প্রোফাইলের নাম দিন: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = সতর্কতা: পরিচয় প্রকাশের জন্য আপনার IPNS ব্যক্তিগত কী এই রানটাইমে পাঠানো হবে। শুধুমাত্র এমন রানটাইম ব্যবহার করুন যার উপর আপনি সম্পূর্ণ বিশ্বাস রাখেন।
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme zion কমান্ডের ভিতরে থাকা Scheme এক্সপ্রেশন মূল্যায়ন করে এবং পাঠানোর আগে ফলাফলটি লাইনে বসিয়ে দেয়।
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ইনলাইন উদাহরণ; "say 7 + 5 = 12" পাঠায়
+help-zscheme-define =   (define x 12)             বর্তমান লগইন সেশনে সংজ্ঞাগুলি থাকে
+help-zscheme-doc = নথি: https://github.com/bahner/rust-ma-zscheme

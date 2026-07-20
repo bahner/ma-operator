@@ -176,7 +176,7 @@ help-header-common = ── 常用路徑 ─────────────
 help-header-inbox = ── 收件匣 ────────────────────────────────────────────────────────────────
 help-header-documents = ── 文件 ──────────────────────────────────────────────────────────────────
 help-header-i18n = ── 語言──────────────────────────────────────────────────────────────
-help-header-ma = ── 3-空間────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 進入間空間────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              刪除文件
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n 儲存與您的身分相關的語言偏好。
-help-i18n-set = .my.i18n: <code>             選擇 20 用於此身分的語言
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               列出可用的語言程式碼
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = 編輯: 取得失敗: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = 無活動工作階段 — 無法刪除個人資料
 profile-delete-error = 個人資料刪除失敗: { $e }
-profile-wrong-user = 無法為其他設定檔設定 11 — 只能為您自己的設定檔設定
-profile-wrong-user-name = 無法為 19 設定 11 — 僅限您自己的設定文件
-profile-no-ma = 未設定 3 運行時 — 首先執行 31
-profile-no-cid = 沒有為此設定檔儲存 3 — 首先執行 37
-profile-no-cid-in-doc = DID 文件中未找到設定檔 11 — 首先執行 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = 設定檔已加密並送往 IPFS；CID 到達後會更新 DID 文件
 profile-publish-done = 設定檔已發布 — DID 文件已使用 ma.agent CID 更新
-profile-publish-failed = 設定檔發布失敗：24
-profile-fetch-done = 已取得設定檔 — 從 43 載入 18 金鑰
-profile-fetch-failed = 設定檔取得失敗：22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = 身分已發布 - 個人資料已更新
-profile-import-exists = 設定檔 8 已存在 - 首先將其刪除
-profile-import-wrong-user = 檔案包含設定檔 22，預期為 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = 二進位內容（不顯示）
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = 取得內容失敗：25
-cid-op-unknown = 未知內容操作：27
-cid-op-wc = { $lines } 行 18 字 36 字符
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (無)
 profiles-deleted = 個人資料 { $name } 已刪除
 profiles-not-found = 找不到個人資料: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  收件匣
 help-topic-doc =   .help/doc                    文件
 help-topic-actor =   .help/actor                  遠端 actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               內嵌 Scheme 表達式與文件
 help-topic-url =   .help/url                    透過 URL 連結開啟 zion
 help-topic-i18n = .help/i18n                   您身分的語言偏好
 help-unknown-topic =   .help/{ $topic }: 未知主題
@@ -351,7 +351,7 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         發送直接/聊�
 help-actor-ping = @actor:ping                  活躍度
 help-actor-entities =   @actor/entities              列出 entity
 help-actor-entities-get = @actor/entities/<n>          取得實體節點
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   透過 14 參考設定實體
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     編輯 entity
 help-actor-entities-del = @actor/entities/<n>:         刪除實體
 help-actor-config-get =   @actor/config/<key>          取得 config 值
@@ -360,18 +360,18 @@ help-actor-acl = @actor/acl                   得到4
 help-actor-acl-edit =   @actor/acl!edit              編輯 ACL
 help-actor-fragment =   @actor#entity                傳送到 plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC 到 plugin
-help-header-cid-ops = ── 3 演員呼叫──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  從 24 呼叫實體 15 並等待其回复
-help-actor-head = (@actor/path)                從 31 取得遠端 CRUD 內容
-help-actor-tail = (<bafy...>)                  包含並評估來自 36 41 的 21
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  在會話環境中保留 5 回复
-help-actor-wc-l = .my.scheme.ma!edit           編輯此身分已儲存的 11 助手
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
 help-url-msg =   ?msg=<did>                   預填：@<did>!msg（文字訊息）
 help-url-say =   ?say=<did>                   預填：@<did>!say（say 動詞）
 help-url-emote =   ?emote=<did>                 預填：@<did>!emote（emote 動詞）
-help-url-ma = ?ma=<did-or-url>              預填執行階段 DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             登入後進入運行世界
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。
@@ -382,8 +382,8 @@ help-publish-intro = 發布使你的身份在網路上可被找到。其他人�
 help-publish-ma = 發布需要安裝 ma（本地執行環境）。它代表你將 ego 連接到 IPFS/IPNS。
 help-publish-steps = 步驟：執行 '.ma [port]' 偵測本地 ma，然後 '.my.identity!publish @ma'。
 help-publish-without = 未發布時，其他人無法聯繫你 — 即使知道你的 DID，也無法解析你的 endpoint。
-profile-fetch-did-resolve-failed = 尚未發布 - 首先運行 28，然後運行 67 您的個人資料
-profile-update-done = 設定檔更新 — 18 金鑰從 43 合併
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = 請指定設定檔名稱：.profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -412,8 +412,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 警告：您的IPNS私鑰將被傳送至此執行環境以進行身份發布。請僅使用您完全信任的執行環境。
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme 會求值嵌入在 zion 指令中的 Scheme 表達式，並在送出前把結果接回該行。
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    內嵌範例；送出 "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             定義會在目前登入工作階段中保留
+help-zscheme-doc = 文件: https://github.com/bahner/rust-ma-zscheme

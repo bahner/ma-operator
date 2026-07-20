@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikashon a fayá [{ $code }]: { $err }
 doc-publish-error-hint = Pista: { $hint }
 doc-publish-hint-session = log in atrobe pa asina ego por haña akseso na bo yabinan di identidat
-doc-publish-hint-target = usa un DID òf alias di publikadó bálido ku ta resolvé pa desnudo 57
-doc-publish-hint-network = verifiká e tempu di ehekushon di 7 i 22 ta alkansabel, despues purba di nobo
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifiká ku e dokumento di DID di e publikadó ta publiká i ta kontené un punto final alkansabel
-doc-publish-hint-acl = pidi e operadó di publikadó pa permití bo DID den 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin a rechasá e petishon; inspekshoná e motibu i bolbe purba despues di drecha entidat/tempu di ehekushon
-doc-publish-hint-ipfs = kontrolá e estado di salú i e tempu di ehekushon di e publikadó lokal di 12/17
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspekshoná e registronan di tempu di ehekushon pa kousa detayá i purba di nobo
 doc-store-sent = petishon di almacenamentu mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
 doc-ipld-store-sent = petishon di almacenamentu IPLD mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
@@ -180,7 +180,7 @@ help-header-common = ── kaminon komun ────────────�
 help-header-inbox = ── kasita di entrada ──────────────────────────────────────────────────────
 help-header-documents = ── dokumentonan (.my.doc.*) ───────────────────────────────────────────────
 help-header-i18n = ── idioma ────────────────────────────── ────────────────────────────────
-help-header-ma = ── 3-espasio ──────────────────────────────── ────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── drentando 間-espasio ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        e teksto aki
@@ -231,7 +231,7 @@ help-doc-del =   .my.doc.<name>:              bòrá dokumento
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ta warda e preferensia di idioma mará na bo identidat.
-help-i18n-set = .my.i18n: <code>             skohe e idioma ku 20 ta usa pa e identidat aki
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               lista kódigonan di idioma disponibel
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -292,26 +292,26 @@ err-edit-fetch-failed = edishon: faya di karga: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no tin sesjon aktivo — no por borra perfil
 profile-delete-error = borramentu di perfil a faya: { $e }
-profile-wrong-user = no por pone 11 pa un otro profil — solamente bo mes
-profile-wrong-user-name = no por pone 11 pa 19 — solamente bo mes profil
-profile-no-ma = no tin tempu di ehekushon di 3 konfigurá — kore 31 promé
-profile-no-cid = no tin 3 wardá pa e profil aki — kore 37 promé
-profile-no-cid-in-doc = no a haña profil 11 den dokumento DID — kore 43 promé
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profil kriptá i mandá na IPFS; dokumento DID ta aktualisá ora CID yega
 profile-publish-done = profil publiká — dokumento DID aktualisá ku ma.agent CID
-profile-publish-failed = publikashon di profil a frakasá: 24
-profile-fetch-done = profil buska — 18 yabi kargá for di 43
-profile-fetch-failed = buskamentu di profil a frakasá: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identidat publiká kaba — profil ta aktualisá
-profile-import-exists = profil 8 ta eksistí kaba — eliminá esaki promé
-profile-import-wrong-user = archivo ta kontené profil 22, 42 sperá
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = kontenido binario (no ta wòrdu mustra)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = no a logra buska kontenido: 25
-cid-op-unknown = operashon di kontenido deskonosí: 27
-cid-op-wc = { $lines } liñanan 18 palabranan 36 karakternan
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (nada)
 profiles-deleted = perfil { $name } a wordu borra
 profiles-not-found = perfil no a haña: { $name }
@@ -325,7 +325,7 @@ help-topic-my =   .help/my                     config pessoal
 help-topic-inbox =   .help/inbox                  caixa de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ekspreshon Scheme den liña i dokumentashon
 help-unknown-topic =   .help/{ $topic }: tópico desconhecido
 
 # -- Help actor section
@@ -335,21 +335,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         manda mensahe dir
 help-actor-ping = @actor:ping                  ping di bida
 help-actor-entities =   @actor/entities              listar entidades
 help-actor-entities-get = @actor/entities/<n>          haña nodo di entidat
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   pone entidat pa referensia 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     editar entidade
 help-actor-entities-del = @actor/entities/<n>:         eliminá entidat
 help-actor-config-get =   @actor/config/<key>          obter valor de config
 help-actor-config-set =   @actor/config/<key>: val     definir valor de config
-help-actor-acl = @actor/acl                   haña 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar ao plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ao plugin
-help-header-cid-ops = ── 3 aktor ta yama ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  yama un entidat 15 for di 24 i warda su kontesta
-help-actor-head = (@actor/path)                buska kontenido di CRUD remoto for di 31
-help-actor-tail = (<bafy...>)                  inkluí i evaluá 21 for di un 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  warda kontesta 5 den e ambiente di seshon
-help-actor-wc-l = .my.scheme.ma!edit           editá yudadónan 11 wardá pa e identidat aki
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    habri zion via un link URL
 help-topic-i18n = .help/i18n                   preferensia di idioma pa bo identidat
@@ -358,7 +358,7 @@ help-url-intro =   Parti un link ku habri zion ku un destinatario ya yená:
 help-url-msg =   ?msg=<did>                   yena di antemano: @<did>!msg (mensahe simpel)
 help-url-say =   ?say=<did>                   yena di antemano: @<did>!say (verbu say)
 help-url-emote =   ?emote=<did>                 yena di antemano: @<did>!emote (verbu emote)
-help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             drenta mundu di tempu di ehekushon despues di login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.
@@ -369,8 +369,8 @@ help-publish-intro = Publikashon ta hasi bo identidad enkontrable riba e red. Ot
 help-publish-ma = Pa publiká, bo mester tin ma (runtime lokal) instalá. E ta konektá ego ku IPFS/IPNS na nòmber di bo.
 help-publish-steps = Pasónan: drenta '.ma [port]' pa detektá e ma lokal, despues '.my.identity!publish @ma'.
 help-publish-without = Sin publikashon, otronan no por alkanso bo — no importa si nan konosé bo DID, nan no por risòlbe bo endpoint.
-profile-fetch-did-resolve-failed = NO a publiká ainda — kore 28 promé, despues 67 bo profil
-profile-update-done = profil aktualisá — yabi 18 a wòrdu kombiná for di 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = spesifiká nòmber di profil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -399,8 +399,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Aviso: Bo yabi privá IPNS lo wordo manda na e runtime aki pa pública identidad. Sòlamente uza un runtime ku bo konfía tur-tur.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme ta evaluá ekspreshonnan Scheme den komandanan zion i ta pone e resultado den e liña promé ku manda.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ehèmpel den liña; ta manda "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definishonnan ta keda durante e seshon di login aktual
+help-zscheme-doc = Dokumentashon: https://github.com/bahner/rust-ma-zscheme

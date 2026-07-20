@@ -151,12 +151,12 @@ doc-publish-ipld-failed = ipld-publicēšana { $path }: { $e }
 doc-publish-error-detail = publicēšana neizdevās [{ $code }]: { $err }
 doc-publish-error-hint = Padoms: { $hint }
 doc-publish-hint-session = piesakieties vēlreiz, lai ego varētu piekļūt jūsu identitātes atslēgām
-doc-publish-hint-target = izmantojiet derīgu izdevēja DID vai aizstājvārdu, kas atrisina tukšu 57
-doc-publish-hint-network = pārbaudiet, vai 7 izpildlaiks un 22 ir sasniedzami, un pēc tam mēģiniet vēlreiz
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = pārbaudiet, vai izdevēja DID dokuments ir publicēts un satur sasniedzamu galapunktu
-doc-publish-hint-acl = palūdziet izdevēja operatoram atļaut jūsu DID formātā 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = izpildlaiks/spraudnis noraidīja pieprasījumu; pārbaudiet iemeslu un pēc entītijas/izpildlaika noteikšanas mēģiniet vēlreiz
-doc-publish-hint-ipfs = pārbaudiet vietējo 12/17 stāvokli un izdevēja izpildlaika statusu
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = pārbaudiet izpildlaika žurnālus, lai uzzinātu detalizētu iemeslu, un mēģiniet vēlreiz
 doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
 doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
@@ -176,7 +176,7 @@ help-header-common = ── biežākie ceļi ───────────�
 help-header-inbox = ── iesūtne ───────────────────────────────────────────────────────────────
 help-header-documents = ── dokumenti ────────────────────────────────────────────────────────────
 help-header-i18n = ── valoda ───────────────────────────── ─────────────────────────────
-help-header-ma = ── 3-space ───────────────────────────── ─────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── ievadot 間-atstarpi ────────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n saglabā valodas preferences, kas saistītas ar jūsu identitāti.
-help-i18n-set = .my.i18n: <code>             izvēlieties valodu, ko 20 izmanto šai identitātei
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               uzskaitiet pieejamos valodu kodus
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -299,26 +299,26 @@ err-edit-fetch-failed = rediģēšana: iegūšanas kļūda: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = nav aktīvas sesijas — profilu nevar dzēst
 profile-delete-error = profila dzēšana neizdevās: { $e }
-profile-wrong-user = nevar iestatīt 11 citam profilam — tikai savam
-profile-wrong-user-name = nevar iestatīt 11 priekš 19 — tikai jūsu profils
-profile-no-ma = nav konfigurēts 3 izpildlaiks — vispirms palaidiet 31
-profile-no-cid = šim profilam nav saglabāts 3 — vispirms palaidiet 37
-profile-no-cid-in-doc = DID dokumentā nav atrasts profils 11 — vispirms palaidiet 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profils šifrēts un nosūtīts uz IPFS; DID dokuments tiks atjaunināts, kad pienāks CID
 profile-publish-done = profils publicēts — DID dokuments atjaunināts ar ma.agent CID
-profile-publish-failed = profila publicēšana neizdevās: 24
-profile-fetch-done = Ienests profils — 18 atslēgas ielādētas no 43
-profile-fetch-failed = profila ielāde neizdevās: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identitāte jau publicēta — profils ir atjaunināts
-profile-import-exists = profils 8 jau pastāv — vispirms izdzēsiet to
-profile-import-wrong-user = fails satur profilu 22, paredzams 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = binārais saturs (nav parādīts)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = neizdevās ienest saturu: 25
-cid-op-unknown = nezināma satura darbība: 27
-cid-op-wc = { $lines } rindas 18 vārdi 36 rakstzīmes
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (nav)
 profiles-deleted = profils { $name } dzēsts
 profiles-not-found = profils nav atrasts: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     osobista config
 help-topic-inbox =   .help/inbox                  skrzynka odbiorcza
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  zdalny actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               iekļautas Scheme izteiksmes un dokumentācija
 help-unknown-topic =   .help/{ $topic }: nieznany temat
 
 # -- Help actor section
@@ -342,21 +342,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         nosūtīt tiešo/
 help-actor-ping = @actor:ping                  dzīvīguma ping
 help-actor-entities =   @actor/entities              wyświetl encje
 help-actor-entities-get = @actor/entities/<n>          iegūt entītijas mezglu
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   iestatīt entītiju pēc 14 atsauces
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edytuj encję
 help-actor-entities-del = @actor/entities/<n>:         dzēst entītiju
 help-actor-config-get =   @actor/config/<key>          pobierz wartość config
 help-actor-config-set =   @actor/config/<key>: val     ustaw wartość config
-help-actor-acl = @actor/acl                   iegūstiet 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edytuj ACL
 help-actor-fragment =   @actor#entity                wyślij do pluginu
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
-help-header-cid-ops = ── 3 aktieris aicina ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  piezvaniet uz entītiju 15 no 24 un gaidiet tās atbildi
-help-actor-head = (@actor/path)                ienesiet attālo CRUD saturu no 31
-help-actor-tail = (<bafy...>)                  iekļaut un novērtēt 21 no 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  saglabāt 5 atbildes sesijas vidē
-help-actor-wc-l = .my.scheme.ma!edit           rediģēt saglabātos 11 palīgus šai identitātei
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion atvēršana, izmantojot URL saiti
 help-topic-i18n = .help/i18n                   valodas izvēle jūsu identitātei
@@ -365,7 +365,7 @@ help-url-intro =   Dalies ar saiti, kas atver zion ar iepriekš aizpildītu saņ
 help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did>!msg (parasta ziņa)
 help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>!say (darbības vārds say)
 help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>!emote (darbības vārds emote)
-help-url-ma = ?ma=<did-or-url>              pirmsaizpildes izpildlaika DID/23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             pēc pieteikšanās ievadiet izpildlaika pasauli
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospied Enter, lai nosūtītu.
@@ -376,8 +376,8 @@ help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Cit
 help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts ma (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.
 help-publish-steps = Soļi: izpildi '.ma [port]', lai noteiktu vietējo ma, pēc tam '.my.identity!publish @ma'.
 help-publish-without = Bez publicēšanas citi nevar tevi sasniegt — pat zinot tavu DID, viņi nevar atrisināt tavu endpoint.
-profile-fetch-did-resolve-failed = Vēl nav publicēts — vispirms palaidiet 28, pēc tam 67 savu profilu
-profile-update-done = profils atjaunināts — 18 atslēgas apvienotas no 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = norādiet profila nosaukumu: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -406,8 +406,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Brīdinājums: Jūsu IPNS privātā atslēga tiks nosūtīta uz šo izpildes vidi identitātes publicēšanai. Izmantojiet tikai izpildes vidi, kurai pilnībā uzticaties.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme izvērtē zion komandās iekļautas Scheme izteiksmes un pirms nosūtīšanas ievieto rezultātu rindā.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    iekļauts piemērs; nosūta "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definīcijas saglabājas pašreizējā pieteikšanās sesijā
+help-zscheme-doc = Dokumentācija: https://github.com/bahner/rust-ma-zscheme

@@ -158,12 +158,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = публікація не вдалася [{ $code }]: { $err }
 doc-publish-error-hint = Підказка: { $hint }
 doc-publish-hint-session = увійдіть знову, щоб ego міг отримати доступ до ваших ідентифікаційних ключів
-doc-publish-hint-target = використовуйте дійсний DID видавця або псевдонім, який розкривається як 57
-doc-publish-hint-network = переконайтеся, що час виконання 7 і 22 доступні, а потім повторіть спробу
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = перевірити, що документ видавця DID опубліковано та містить доступну кінцеву точку
-doc-publish-hint-acl = попросіть оператора видавця дозволити ваш DID у 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = середовище виконання/плагін відхилив запит; перевірте причину та повторіть спробу після виправлення сутності/середовища виконання
-doc-publish-hint-ipfs = перевірте локальний стан 12/17 і стан часу виконання видавця
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = перевірте журнали виконання для детальної інформації про причину та повторіть спробу
 doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
@@ -183,7 +183,7 @@ help-header-common = ── загальні шляхи ────────
 help-header-inbox = ── вхідні ───────────────────────────────────────────────────────────────
 help-header-documents = ── документи ────────────────────────────────────────────────────────────
 help-header-i18n = ── мова ───────────────────────────────────────────────────────────────
-help-header-ma = ── 3-пробіл ─────────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── введення 間-пробілу ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -205,7 +205,7 @@ help-topic-my =   .help/my                     особиста конфігур
 help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
 help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               вбудовані вирази Scheme і документація
 help-topic-url =   .help/url                    відкрити zion через URL
 help-topic-i18n = .help/i18n                   мовні переваги для вашої особистості
 help-unknown-topic =   .help/{ $topic }: невідома тема — спробуйте .help для списку
@@ -262,7 +262,7 @@ help-doc-del =   .my.doc.<name>:              видалити документ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n зберігає налаштування мови, пов’язані з вашою ідентичністю.
-help-i18n-set = .my.i18n: <code>             вибрати мову, яку 20 використовує для цієї ідентифікації
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               список доступних кодів мов
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -371,21 +371,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         надіслат�
 help-actor-ping =   @actor:ping                  перевірка доступності
 help-actor-entities =   @actor/entities              список усіх об'єктів
 help-actor-entities-get = @actor/entities/<n>          отримати вузол сутності
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   встановити сутність за посиланням 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     редагувати об'єкт в редакторі
 help-actor-entities-del =   @actor/entities/<n>:         видалити об'єкт
 help-actor-config-get =   @actor/config/<key>          отримати значення конфігурації
 help-actor-config-set =   @actor/config/<key>: val     встановити значення конфігурації
-help-actor-acl = @actor/acl                   отримати 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редагувати ACL в редакторі
 help-actor-fragment =   @actor#entity                надіслати до плагіну об'єкту
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC до дієслова плагіну
-help-header-cid-ops = ── 3 актор дзвонить ─────────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  викликати сутність 15 з 24 і чекати її відповіді
-help-actor-head = (@actor/path)                отримати віддалений вміст CRUD від 31
-help-actor-tail = (<bafy...>)                  включити та оцінити 21 з 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  зберігати відповіді 5 у середовищі сеансу
-help-actor-wc-l = .my.scheme.ma!edit           редагувати збережені помічники 11 для цього ідентифікатора
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 # ── Довідка — публікація ──────────────────────────────────────────────────
 help-topic-publish =   .help/publish                публікація особистості в мережі
@@ -414,8 +414,8 @@ scheme-include-error = include: { $reason }
 scheme-not-a-cid = Недійсний CID: { $value }
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme обчислює вирази Scheme, вбудовані в команди zion, і вставляє результат у рядок перед надсиланням.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    вбудований приклад; надсилає "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             визначення зберігаються протягом поточного сеансу входу
+help-zscheme-doc = Документація: https://github.com/bahner/rust-ma-zscheme

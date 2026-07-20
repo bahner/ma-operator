@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = xuất bản thất bại [{ $code }]: { $err }
 doc-publish-error-hint = Gợi ý: { $hint }
 doc-publish-hint-session = đăng nhập lại để cái tôi có thể truy cập vào khóa nhận dạng của bạn
-doc-publish-hint-target = sử dụng DID nhà xuất bản hợp lệ hoặc bí danh phân giải thành 57 trần
-doc-publish-hint-network = xác minh thời gian chạy 7 và 22 có thể truy cập được, sau đó thử lại
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = xác minh tài liệu DID của nhà xuất bản đã được xuất bản và chứa điểm cuối có thể truy cập
-doc-publish-hint-acl = yêu cầu nhà điều hành nhà xuất bản cho phép DID của bạn trong 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = thời gian chạy/plugin từ chối yêu cầu; kiểm tra lý do và thử lại sau khi sửa thực thể/thời gian chạy
-doc-publish-hint-ipfs = kiểm tra trạng thái thời gian chạy của nhà xuất bản và tình trạng 12/17 cục bộ
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = kiểm tra nhật ký thời gian chạy để biết nguyên nhân chi tiết và thử lại
 doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
@@ -176,7 +176,7 @@ help-header-common = ── đường dẫn thông dụng ───────�
 help-header-inbox = ── hộp thư đến ────────────────────────────────────────────────────────────
 help-header-documents = ── tài liệu ──────────────────────────────────────────────────────────────
 help-header-i18n = ── ngôn ngữ ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-không gian ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── tiến vào 間-không gian ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n lưu trữ tùy chọn ngôn ngữ gắn liền với danh tính của bạn.
-help-i18n-set = .my.i18n: <code>             chọn ngôn ngữ 20 sử dụng cho danh tính này
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               liệt kê các mã ngôn ngữ có sẵn
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = chỉnh sửa: tải thất bại: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = không có phiên hoạt động — không thể xóa hồ sơ
 profile-delete-error = xóa hồ sơ thất bại: { $e }
-profile-wrong-user = không thể đặt 11 cho cấu hình khác - chỉ của riêng bạn
-profile-wrong-user-name = không thể đặt 11 cho 19 - chỉ hồ sơ của riêng bạn
-profile-no-ma = không có cấu hình thời gian chạy 3 - trước tiên hãy chạy 31
-profile-no-cid = không có 3 nào được lưu trữ cho cấu hình này - trước tiên hãy chạy 37
-profile-no-cid-in-doc = không tìm thấy hồ sơ 11 trong tài liệu DID - trước tiên hãy chạy 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = hồ sơ đã được mã hóa và gửi tới IPFS; tài liệu DID sẽ được cập nhật khi CID đến
 profile-publish-done = hồ sơ đã xuất bản — tài liệu DID đã cập nhật với ma.agent CID
-profile-publish-failed = xuất bản hồ sơ không thành công: 24
-profile-fetch-done = đã tìm nạp hồ sơ - Khóa 18 được tải từ 43
-profile-fetch-failed = tìm nạp hồ sơ không thành công: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = danh tính đã được công bố - hồ sơ cập nhật
-profile-import-exists = hồ sơ 8 đã tồn tại - hãy xóa nó trước
-profile-import-wrong-user = tệp chứa hồ sơ 22, dự kiến là 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = nội dung nhị phân (không hiển thị)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = không tìm nạp được nội dung: 25
-cid-op-unknown = hoạt động nội dung không xác định: 27
-cid-op-wc = { $lines } dòng 18 từ 36 ký tự
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (không có)
 profiles-deleted = hồ sơ { $name } đã xóa
 profiles-not-found = không tìm thấy hồ sơ: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config cá nhân
 help-topic-inbox =   .help/inbox                  hộp thư đến
 help-topic-doc =   .help/doc                    tài liệu
 help-topic-actor =   .help/actor                  actor từ xa
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               biểu thức Scheme nội tuyến và tài liệu
 help-unknown-topic =   .help/{ $topic }: chủ đề không xác định
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         gửi tin nhắn 
 help-actor-ping = @actor:ping                  ping sống động
 help-actor-entities =   @actor/entities              liệt kê entity
 help-actor-entities-get = @actor/entities/<n>          lấy nút thực thể
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   đặt thực thể theo tham chiếu 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     sửa entity
 help-actor-entities-del = @actor/entities/<n>:         xóa thực thể
 help-actor-config-get =   @actor/config/<key>          lấy giá trị config
 help-actor-config-set =   @actor/config/<key>: val     đặt giá trị config
-help-actor-acl = @actor/acl                   nhận được 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              sửa ACL
 help-actor-fragment =   @actor#entity                gửi tới plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC tới plugin
-help-header-cid-ops = ── Cuộc gọi diễn viên 3 ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  gọi một thực thể 15 từ 24 và chờ phản hồi của nó
-help-actor-head = (@actor/path)                tìm nạp nội dung CRUD từ xa từ 31
-help-actor-tail = (<bafy...>)                  bao gồm và đánh giá 21 từ 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  giữ các câu trả lời 5 trong môi trường phiên
-help-actor-wc-l = .my.scheme.ma!edit           chỉnh sửa người trợ giúp 11 đã lưu cho danh tính này
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    mở zion thông qua liên kết URL
 help-topic-i18n = .help/i18n                   ưu tiên ngôn ngữ cho danh tính của bạn
@@ -372,7 +372,7 @@ help-url-intro =   Chia sẻ một liên kết mở zion với người nhận �
 help-url-msg =   ?msg=<did>                   điền sẵn: @<did>!msg (tin nhắn thông thường)
 help-url-say =   ?say=<did>                   điền sẵn: @<did>!say (động từ say)
 help-url-emote =   ?emote=<did>                 điền sẵn: @<did>!emote (động từ emote)
-help-url-ma = ?ma=<did-or-url>              thời gian chạy điền trước URL DID / 23
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             bước vào thế giới thời gian chạy sau khi đăng nhập
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — nhấn Enter để gửi.
@@ -383,8 +383,8 @@ help-publish-intro = Xuất bản giúp danh tính của bạn được tìm th�
 help-publish-ma = Để xuất bản, bạn cần cài đặt ma (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
 help-publish-steps = Các bước: chạy '.ma [port]' để phát hiện ma cục bộ, sau đó '.my.identity!publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
-profile-fetch-did-resolve-failed = DID chưa được xuất bản - trước tiên hãy chạy 28, sau đó là 67 hồ sơ của bạn
-profile-update-done = đã cập nhật hồ sơ - Khóa 18 được hợp nhất từ 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = chỉ định tên hồ sơ: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Cảnh báo: Khóa riêng tư IPNS của bạn sẽ được gửi đến môi trường chạy này để xuất bản danh tính. Chỉ sử dụng môi trường chạy mà bạn hoàn toàn tin tưởng.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme đánh giá các biểu thức Scheme được nhúng trong lệnh zion và chèn kết quả vào dòng trước khi gửi.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ví dụ nội tuyến; gửi "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             các định nghĩa tồn tại trong phiên đăng nhập hiện tại
+help-zscheme-doc = Tài liệu: https://github.com/bahner/rust-ma-zscheme

@@ -176,7 +176,7 @@ help-header-common = ── rutas comunes ────────────�
 help-header-inbox = ── bandeja de entrada ────────────────────────────────────────────────────
 help-header-documents = ── documentos ───────────────────────────────────────────────────────────
 help-header-i18n = ── idioma ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-espacio ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── entrando en el 間-espacio ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -234,7 +234,7 @@ help-doc-del =   .my.doc.<nombre>:              eliminar documento
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n almacena la preferencia de idioma vinculada a su identidad.
-help-i18n-set = .my.i18n: <code>             elija el idioma que 20 usa para esta identidad
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               listar códigos de idioma disponibles
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -282,7 +282,7 @@ status-publishing = publicando
 
 # ── RPC / redigering ─────────────────────────────────────────────────────
 rpc-error = error
-rpc-error-detail = error: 7
+rpc-error-detail = error: { $detail }
 msg-new-message = ← [{ $from }] nuevo mensaje — { $count } en bandeja de entrada
 msg-chat = { $sender } dice { $body }
 
@@ -299,26 +299,26 @@ err-edit-fetch-failed = edición: fallo de carga: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no hay sesión activa — no se puede eliminar el perfil
 profile-delete-error = error al eliminar el perfil: { $e }
-profile-wrong-user = No se puede configurar 11 para otro perfil, solo el tuyo
-profile-wrong-user-name = no se puede configurar 11 para 19: solo su propio perfil
-profile-no-ma = no hay tiempo de ejecución 3 configurado: ejecute 31 primero
-profile-no-cid = no hay 3 almacenado para este perfil; ejecute 37 primero
-profile-no-cid-in-doc = no se encontró ningún perfil 11 en el documento DID: ejecute 43 primero
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = perfil cifrado y enviado a IPFS; el documento DID se actualizará cuando llegue el CID
 profile-publish-done = perfil publicado — documento DID actualizado con el CID de ma.agent
-profile-publish-failed = Error en la publicación del perfil: 24
-profile-fetch-done = perfil obtenido: claves 18 cargadas desde 43
-profile-fetch-failed = Error al recuperar el perfil: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = identidad ya publicada — perfil actualizado
-profile-import-exists = El perfil 8 ya existe: elimínelo primero.
-profile-import-wrong-user = El archivo contiene el perfil 22, se espera 42.
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = contenido binario (no mostrado)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = no se pudo recuperar el contenido: 25
-cid-op-unknown = operación de contenido desconocido: 27
-cid-op-wc = { $lines } líneas 18 palabras 36 caracteres
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ninguno)
 profiles-deleted = perfil { $name } eliminado
 profiles-not-found = perfil no encontrado: { $name }
@@ -332,7 +332,7 @@ help-topic-my =   .help/my                     config personal
 help-topic-inbox =   .help/inbox                  bandeja de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               expresiones Scheme en línea y documentación
 help-topic-url =   .help/url                    abrir zion mediante un enlace URL
 help-topic-i18n = .help/i18n                   preferencia de idioma para su identidad
 help-unknown-topic =   .help/{ $topic }: tema desconocido
@@ -344,27 +344,27 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         enviar mensaje di
 help-actor-ping = @actor:ping                  ping de vida
 help-actor-entities =   @actor/entities              listar entidades
 help-actor-entities-get = @actor/entities/<n>          obtener nodo de entidad
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   establecer entidad por referencia 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     editar entidad
 help-actor-entities-del = @actor/entities/<n>:         eliminar entidad
 help-actor-config-get =   @actor/config/<key>          obtener valor de config
 help-actor-config-set =   @actor/config/<key>: val     establecer valor de config
-help-actor-acl = @actor/acl                   obtener 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar al plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC al plugin
-help-header-cid-ops = ── Llamadas del actor 3 ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  llamar a una entidad 15 desde 24 y esperar su respuesta
-help-actor-head = (@actor/path)                recuperar contenido CRUD remoto desde 31
-help-actor-tail = (<bafy...>)                  incluir y evaluar 21 desde un 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  mantener las respuestas 5 en el entorno de sesión
-help-actor-wc-l = .my.scheme.ma!edit           editar los ayudantes 11 guardados para esta identidad
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── parámetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Comparte un enlace que abre zion con un destinatario ya rellenado:
 help-url-msg =   ?msg=<did>                   rellena: @<did>!msg (mensaje de texto)
 help-url-say =   ?say=<did>                   rellena: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 rellena: @<did>!emote (verbo emote)
-help-url-ma = ?ma=<did-or-url>              tiempo de ejecución de precompletar DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             ingrese al mundo de ejecución después de iniciar sesión
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   El campo se rellena pero no se envía — pulsa Intro para enviar.
@@ -375,8 +375,8 @@ help-publish-intro = Publicar hace que tu identidad sea localizable en la red. O
 help-publish-ma = Para publicar necesitas ma (runtime local) instalado. Conecta ego con IPFS/IPNS en tu nombre.
 help-publish-steps = Pasos: ejecuta '.ma [port]' para detectar tu ma local, luego '.my.identity!publish @ma'.
 help-publish-without = Sin publicar, otros no pueden alcanzarte — aunque conozcan tu DID, no pueden resolver tu endpoint.
-profile-fetch-did-resolve-failed = DID aún no publicado: primero ejecute 28, luego 67 su perfil
-profile-update-done = perfil actualizado: claves 18 fusionadas de 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = indica un nombre de perfil: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -405,8 +405,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Advertencia: Tu clave privada IPNS se enviará a este entorno de ejecución para la publicación de identidad. Usa solo un entorno de ejecución en el que confíes plenamente.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme evalúa expresiones Scheme incrustadas en comandos de zion e inserta el resultado en la línea antes de enviarla.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ejemplo en línea; envía "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             las definiciones persisten durante la sesión actual
+help-zscheme-doc = Documentación: https://github.com/bahner/rust-ma-zscheme

@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = daabacaaddu way fashilantay [{ $code }]: { $err }
 doc-publish-error-hint = Tilmaan: { $hint }
 doc-publish-hint-session = mar kale gal si ego uu u galo furayaasha aqoonsigaga
-doc-publish-hint-target = adeegso daabacaad sax ah DID ama naaneeso go'aansa in aan qaawin 57
-doc-publish-hint-network = Hubi 7 runtime iyo 22 waa la gaari kara, ka dib isku day
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = xaqiiji in daabacaha DID dukumeentiga la daabacay oo ka kooban yahay barta dhamaadka la gaari karo
-doc-publish-hint-acl = Waydii hawlwadeenka daabacaha inuu ogolaado DID-gaaga 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Runtime/plugin ayaa diiday codsiga; kormeer sababta oo isku day dib u hagaajinta goobta/waqtiga runtu tahay
-doc-publish-hint-ipfs = hubi heerka shaqo-waqtiyeedka ee 12/17 deegaanka
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = baadh diiwaanka runtime sababta faahfaahsan oo dib u tijaabi
 doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
 doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
@@ -176,7 +176,7 @@ help-header-common = ── wadooyinka caadiga ah ──────────
 help-header-inbox = ── sanduuqa gelitaanka ────────────────────────────────────────────────────
 help-header-documents = ── dokumantigyada ────────────────────────────────────────────────────────
 help-header-i18n = ── luqadda ──────────────── ────────────────
-help-header-ma = ── 3-meel ──────────────── ────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ─ gelitaanka 間-space ──────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n waxay kaydisaa doorashada luqadda ee ku xidhan aqoonsigaaga.
-help-i18n-set = .my.i18n: <code>             dooro luqadda 20 u isticmaasho aqoonsigan
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               qor kood luqadeed ee la heli karo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = ma jirto fadhiga firfircoon — liiska ma la tirsan karo
 profile-delete-error = tirirka liiska wuu guul-dareystay: { $e }
-profile-wrong-user = Uma dhigi karo 11 profile kale - oo keliya adiga
-profile-wrong-user-name = Uma dhigi karo 11 19 - kaliya astaantaada gaarka ah
-profile-no-ma = ma jiro 3 runtime habaysan — marka hore u orod 31
-profile-no-cid = looma kaydin 3 profile-kan marka hore orod 37
-profile-no-cid-in-doc = wax profile 11 ah lagama helin dukumeentiga DID - marka hore u orod 43
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = astaanta waa la siray oo loo diray IPFS; dukumentiga DID waa la cusboonaysiin doonaa marka CID yimaado
 profile-publish-done = astaanta waa la daabacay — dukumentiga DID waxaa lagu cusboonaysiiyay ma.agent CID
-profile-publish-failed = Daabacaadda astaanta guud waa fashilantay: 24
-profile-fetch-done = profile la keenay - furayaasha 18 laga soo raray 43
-profile-fetch-failed = keenista astaanta ayaa ku guuldareysatay: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = aqoonsiga mar hore la daabacay - profile ilaa hadda
-profile-import-exists = profile 8 waa hore u jiray — marka hore tirtir
-profile-import-wrong-user = file ka kooban profile 22, 42 la filayo
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = nuxurka binary (aan la soo bandhigin)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = ku guuldarraystay in uu keeno nuxurka: 25
-cid-op-unknown = hawlgalka nuxurka aan la garanayn: 27
-cid-op-wc = { $lines } xarriiqyo 18 ereyada 36 xarriiqo
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (midna)
 profiles-deleted = liiska { $name } la tiriyey
 profiles-not-found = liiska lama helin: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               weedho Scheme oo safka ku jira iyo dukumenti
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         dir toos ah/sheek
 help-actor-ping = @actor:ping                  ping noolaanshaha
 help-actor-entities =   @actor/entities              entitiy ዘርዝር
 help-actor-entities-get = @actor/entities/<n>          hel node-ka xubinta
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   hay'ad dejisay iyadoo la tixraacayo 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity አርትዕ
 help-actor-entities-del = @actor/entities/<n>:         meesha tirtirto
 help-actor-config-get =   @actor/config/<key>          config እሴት አግኝ
 help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘጋጅ
-help-actor-acl = @actor/acl                   hel 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
-help-header-cid-ops = ── Jilaagii 3 wuu wacay ──────────────── ────────────────
-help-actor-cat = (@actor#entity:verb arg...)  ka wac koox 15 ah 24 oo sug jawaabteeda
-help-actor-head = (@actor/path)                ka soo qaado waxyaabaha fog ee CRUD ee 31
-help-actor-tail = (<bafy...>)                  ku dar oo qiimee 21 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  Ku hay jawaabaha 5 ee jawiga fadhiga
-help-actor-wc-l = .my.scheme.ma!edit           Wax ka beddel badbaadiyey caawiyeyaasha 11 aqoonsigan
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    furista zion adeegsiga xiriirka URL
 help-topic-i18n = .help/i18n                   doorashada luqadda ee aqoonsigaaga
@@ -372,7 +372,7 @@ help-url-intro =   La wadaag xiriir si loo furo zion oo leh qofka la xiriira ee 
 help-url-msg =   ?msg=<did>                   hore u buuxi: @<did>!msg (fariin fudud)
 help-url-say =   ?say=<did>                   hore u buuxi: @<did>!say (fal say)
 help-url-emote =   ?emote=<did>                 hore u buuxi: @<did>!emote (fal emote)
-help-url-ma = ?ma=<did-or-url>              pre-buuxinta runtime DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             gal runtime world ka dib login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si aad u dirto.
@@ -383,8 +383,8 @@ help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo s
 help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
 help-publish-steps = Tallaabooyinka: orod '.ma [port]' si aad u ogaato ma gudaha ah, ka dibna '.my.identity!publish @ma'.
 help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.
-profile-fetch-did-resolve-failed = Weli lama daabicin - ordi 28 marka hore, ka dibna 67 profile kaaga
-profile-update-done = profile updated - furayaasha 18 waxay ka midoobeen 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = sheeg magaca astaanta: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Digniin: Furahaada sirta ah ee IPNS waxaa loo diri doonaa runtime-kan si lagu daabaco aqoonsiga. Waxaad isticmaali kartaa oo keliya runtime aad si buuxda u aaminsan tahay.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme wuxuu qiimeeyaa weedhaha Scheme ee ku dhex jira amarada zion, kadibna natiijada ayuu safka ku daraa ka hor dirista.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    tusaale safka ku jira; wuxuu diraa "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             qeexitaannadu way sii jiraan inta lagu jiro fadhiga gelitaanka hadda
+help-zscheme-doc = Dukumenti: https://github.com/bahner/rust-ma-zscheme

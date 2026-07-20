@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = வெளியிடல் தோல்வியடைந்தது [{ $code }]: { $err }
 doc-publish-error-hint = குறிப்பு: { $hint }
 doc-publish-hint-session = மீண்டும் உள்நுழைக, அதனால் ஈகோ உங்கள் அடையாள விசைகளை அணுக முடியும்
-doc-publish-hint-target = 57 என்பதைத் தீர்க்கும் சரியான வெளியீட்டாளர் DID அல்லது மாற்றுப் பெயரைப் பயன்படுத்தவும்
-doc-publish-hint-network = 7 இயக்க நேரத்தைச் சரிபார்த்து, 22 அணுகக்கூடியதா என்பதைச் சரிபார்த்து, மீண்டும் முயற்சிக்கவும்
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = வெளியீட்டாளர் DID ஆவணம் வெளியிடப்பட்டது மற்றும் அடையக்கூடிய இறுதிப் புள்ளியைக் கொண்டுள்ளது என்பதைச் சரிபார்க்கவும்
-doc-publish-hint-acl = 48 இல் உங்கள் DIDஐ அனுமதிக்க வெளியீட்டாளர் ஆபரேட்டரிடம் கேளுங்கள்
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = இயக்க நேரம்/சொருகி கோரிக்கையை நிராகரித்தது; காரணத்தை சரிபார்த்து, நிறுவனம்/இயக்க நேரத்தை சரிசெய்த பிறகு மீண்டும் முயற்சிக்கவும்
-doc-publish-hint-ipfs = உள்ளூர் 12/17 உடல்நலம் மற்றும் வெளியீட்டாளர் இயக்க நேர நிலையைச் சரிபார்க்கவும்
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = விரிவான காரணத்திற்காக இயக்க நேர பதிவுகளை ஆய்வு செய்து மீண்டும் முயற்சிக்கவும்
 doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
@@ -176,7 +176,7 @@ help-header-common = ── பொதுவான பாதைகள் ──�
 help-header-inbox = ── உள்வரவு ──────────────────────────────────────────────────────────────
 help-header-documents = ── ஆவணங்கள் ────────────────────────────────────────────────────────────
 help-header-i18n = ── மொழி ──────────────────────────── ─────────────────────────────
-help-header-ma = ── 3-இடம் ───────────────────────────── ─────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 間-வெளியில் நுழைகிறது ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n உங்கள் அடையாளத்துடன் இணைக்கப்பட்ட மொழி விருப்பத்தை சேமிக்கிறது.
-help-i18n-set = .my.i18n: <code>             இந்த அடையாளத்திற்காக 20 பயன்படுத்தும் மொழியைத் தேர்ந்தெடுக்கவும்
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               கிடைக்கக்கூடிய மொழி குறியீடுகளை பட்டியலிடுங்கள்
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = திருத்தம்: பெறுவதில்
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = செயலில் உள்ள அமர்வு இல்லை — சுயவிவரத்தை நீக்க முடியாது
 profile-delete-error = சுயவிவர நீக்கம் தோல்வியடைந்தது: { $e }
-profile-wrong-user = மற்றொரு சுயவிவரத்திற்கு 11 ஐ அமைக்க முடியாது - உங்களுடையது மட்டுமே
-profile-wrong-user-name = 19க்கு 11 ஐ அமைக்க முடியாது - உங்கள் சொந்த சுயவிவரம் மட்டுமே
-profile-no-ma = 3 இயக்க நேரம் கட்டமைக்கப்படவில்லை - முதலில் 31 ஐ இயக்கவும்
-profile-no-cid = இந்த சுயவிவரத்திற்காக 3 சேமிக்கப்படவில்லை - முதலில் 37 ஐ இயக்கவும்
-profile-no-cid-in-doc = DID ஆவணத்தில் எந்த சுயவிவரமும் 11 இல்லை - முதலில் 43 ஐ இயக்கவும்
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = சுயவிவரம் குறியாக்கப்பட்டு IPFS-க்கு அனுப்பப்பட்டது; CID வந்ததும் DID ஆவணம் புதுப்பிக்கப்படும்
 profile-publish-done = சுயவிவரம் வெளியிடப்பட்டது — DID ஆவணம் ma.agent CID உடன் புதுப்பிக்கப்பட்டது
-profile-publish-failed = சுயவிவரத்தை வெளியிடுவதில் தோல்வி: 24
-profile-fetch-done = சுயவிவரம் பெறப்பட்டது - 18 விசைகள் 43 இலிருந்து ஏற்றப்பட்டது
-profile-fetch-failed = சுயவிவரத்தைப் பெறுவதில் தோல்வி: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = அடையாளம் ஏற்கனவே வெளியிடப்பட்டது - புதுப்பித்த சுயவிவரம்
-profile-import-exists = சுயவிவரம் 8 ஏற்கனவே உள்ளது - முதலில் அதை நீக்கவும்
-profile-import-wrong-user = கோப்பில் சுயவிவரம் 22 உள்ளது, எதிர்பார்க்கப்படும் 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = பைனரி உள்ளடக்கம் (காட்டப்படவில்லை)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = உள்ளடக்கத்தைப் பெறுவதில் தோல்வி: 25
-cid-op-unknown = அறியப்படாத உள்ளடக்க செயல்பாடு: 27
-cid-op-wc = { $lines } வரிகள் 18 வார்த்தைகள் 36 எழுத்துகள்
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (எதுவுமில்லை)
 profiles-deleted = சுயவிவரம் { $name } நீக்கப்பட்டது
 profiles-not-found = சுயவிவரம் கிடைக்கவில்லை: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     தனிப்பட்ட confi
 help-topic-inbox =   .help/inbox                  உள்வரவு
 help-topic-doc =   .help/doc                    ஆவணங்கள்
 help-topic-actor =   .help/actor                  தொலை actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               வரிக்குள் Scheme வெளிப்பாடுகள் மற்றும் ஆவணங்கள்
 help-unknown-topic =   .help/{ $topic }: தெரியாத தலைப்பு
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         நேரடி/�
 help-actor-ping = @actor:ping                  உயிரோட்டம் பிங்
 help-actor-entities =   @actor/entities              entity-களை பட்டியலிடு
 help-actor-entities-get = @actor/entities/<n>          நிறுவன முனையைப் பெறுங்கள்
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 குறிப்பு மூலம் உட்பொருளை அமைக்கவும்
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity-ஐ திருத்து
 help-actor-entities-del = @actor/entities/<n>:         நிறுவனத்தை நீக்கு
 help-actor-config-get =   @actor/config/<key>          config மதிப்பைப் பெறு
 help-actor-config-set =   @actor/config/<key>: val     config மதிப்பை அமை
-help-actor-acl = @actor/acl                   4 கிடைக்கும்
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL திருத்து
 help-actor-fragment =   @actor#entity                plugin-க்கு அனுப்பு
 help-actor-fragment-verb =   @actor#entity:verb [args]    plugin-க்கு RPC
-help-header-cid-ops = ── 3 நடிகர் அழைப்புகள் ──────────────────────── ─────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  24 இலிருந்து 15 நிறுவனத்தை அழைத்து அதன் பதிலுக்காக காத்திருக்கவும்
-help-actor-head = (@actor/path)                31 இலிருந்து தொலை CRUD உள்ளடக்கத்தைப் பெறவும்
-help-actor-tail = (<bafy...>)                  36 41 இலிருந்து 21 ஐச் சேர்த்து மதிப்பிடவும்
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
-help-actor-wc-l = .my.scheme.ma!edit           இந்த அடையாளத்திற்காக சேமித்த 11 உதவியாளர்களைத் திருத்தவும்
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
 help-topic-i18n = .help/i18n                   உங்கள் அடையாளத்திற்கான மொழி விருப்பம்
@@ -372,7 +372,7 @@ help-url-intro =   முன்னரே நிரப்பப்பட்ட �
 help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did>!msg (எளிய செய்தி)
 help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>!say (say வினை)
 help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>!emote (emote வினை)
-help-url-ma = ?ma=<did-or-url>              முன் நிரப்பு இயக்க நேரம் DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             உள்நுழைந்த பிறகு இயக்க உலகத்தை உள்ளிடவும்
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   உள்ளீடு முன்னரே நிரப்பப்பட்டது ஆனால் அனுப்பப்படவில்லை — அனுப்ப Enter அழுத்தவும்.
@@ -383,8 +383,8 @@ help-publish-intro = வெளியீடு உங்கள் அடையா
 help-publish-ma = வெளியிட ma (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
 help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.ma [port]' இயக்கவும், பின்னர் '.my.identity!publish @ma'.
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
-profile-fetch-did-resolve-failed = இன்னும் வெளியிடப்படவில்லை — முதலில் 28 ஐ இயக்கவும், பின்னர் 67 உங்கள் சுயவிவரத்தை இயக்கவும்
-profile-update-done = சுயவிவரம் புதுப்பிக்கப்பட்டது - 18 விசைகள் 43 இலிருந்து இணைக்கப்பட்டது
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = சுயவிவரப் பெயரை குறிப்பிடவும்: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = எச்சரிக்கை: உங்கள் IPNS தனியார் விசை அடையாளத்தை வெளியிட இந்த இயக்க நேர சேவைக்கு அனுப்பப்படும். நீங்கள் முழுமையாக நம்பும் இயக்க நேர சேவையை மட்டுமே பயன்படுத்துங்கள்.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme zion கட்டளைகளில் உள்ள Scheme வெளிப்பாடுகளை மதிப்பிட்டு, அனுப்புவதற்கு முன் முடிவை அந்த வரிக்குள் சேர்க்கிறது.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    வரிக்குள் எடுத்துக்காட்டு; "say 7 + 5 = 12" அனுப்பும்
+help-zscheme-define =   (define x 12)             வரையறைகள் தற்போதைய உள்நுழைவு அமர்வில் தொடரும்
+help-zscheme-doc = ஆவணங்கள்: https://github.com/bahner/rust-ma-zscheme

@@ -176,7 +176,7 @@ help-header-common = ── 공통 경로 ────────────�
 help-header-inbox = ── 받은 편지함 ────────────────────────────────────────────────────────────
 help-header-documents = ── 문서 ──────────────────────────────────────────────────────────────────
 help-header-i18n = ── 언어 ─────────────────────────────────────────────────────────
-help-header-ma = ── 3-공간 ───────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 사이공간 진입 ────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -307,25 +307,25 @@ err-edit-fetch-failed = 편집: 가져오기 실패: { $e }
 profile-delete-no-session = 활성 세션이 없습니다 — 프로필을 삭제할 수 없습니다
 profile-delete-error = 프로필 삭제 실패: { $e }
 profile-wrong-user = 다른 프로필에는 11를 설정할 수 없습니다. 자신의 프로필에만 해당됩니다.
-profile-wrong-user-name = 19에 대해 11를 설정할 수 없습니다. 자신의 프로필만 가능합니다.
-profile-no-ma = 3 런타임이 구성되지 않음 - 31를 먼저 실행
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
 profile-no-cid = 이 프로필에 대해 저장된 3가 없습니다. 먼저 37를 실행하세요.
-profile-no-cid-in-doc = DID 문서에 11 프로필이 없습니다. 먼저 43를 실행하세요.
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = 프로필이 암호화되어 IPFS로 전송되었습니다. CID가 도착하면 DID 문서가 업데이트됩니다
 profile-publish-done = 프로필이 게시되었습니다 — DID 문서가 ma.agent CID로 업데이트되었습니다
-profile-publish-failed = 프로필 게시 실패: 24
-profile-fetch-done = 가져온 프로필 — 43에서 로드된 18 키
-profile-fetch-failed = 프로필 가져오기 실패: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = 신원이 이미 게시됨 - 프로필이 최신 상태임
-profile-import-exists = 8 프로필이 이미 존재합니다. 먼저 삭제하세요.
-profile-import-wrong-user = 파일에 22 프로필이 포함되어 있으며 42로 예상됩니다.
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = 바이너리 콘텐츠(표시되지 않음)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = 콘텐츠를 가져오지 못했습니다: 25
-cid-op-unknown = 알 수 없는 콘텐츠 작업: 27
-cid-op-wc = { $lines } 라인 18 단어 36 문자
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (없음)
 profiles-deleted = 프로필 { $name } 삭제됨
 profiles-not-found = 프로필을 찾을 수 없음: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     개인 config
 help-topic-inbox =   .help/inbox                  받은편지함
 help-topic-doc =   .help/doc                    문서
 help-topic-actor =   .help/actor                  원격 actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               인라인 Scheme 식과 문서
 help-topic-url =   .help/url                    URL 링크로 zion 열기
 help-topic-i18n = .help/i18n                   귀하의 신원에 대한 언어 기본 설정
 help-unknown-topic =   .help/{ $topic }: 알 수 없는 주제
@@ -351,7 +351,7 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         다이렉트/채�
 help-actor-ping = @actor:ping                  활성 핑
 help-actor-entities =   @actor/entities              entity 목록
 help-actor-entities-get = @actor/entities/<n>          엔터티 노드 가져오기
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   14 참조로 엔터티 설정
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity 편집
 help-actor-entities-del = @actor/entities/<n>:         엔터티 삭제
 help-actor-config-get =   @actor/config/<key>          config 값 가져오기
@@ -360,18 +360,18 @@ help-actor-acl = @actor/acl                   4를 얻으세요
 help-actor-acl-edit =   @actor/acl!edit              ACL 편집
 help-actor-fragment =   @actor#entity                plugin으로 전송
 help-actor-fragment-verb =   @actor#entity:verb [args]    plugin으로 RPC
-help-header-cid-ops = ── 3 액터 호출 ─────────────────────────────────────────────────
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
 help-actor-cat = (@actor#entity:verb arg...)  24에서 엔터티 15를 호출하고 응답을 기다립니다.
 help-actor-head = (@actor/path)                31에서 원격 CRUD 콘텐츠 가져오기
-help-actor-tail = (<bafy...>)                  36 41에서 21를 포함하고 평가합니다.
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  세션 환경에서 5 응답 유지
-help-actor-wc-l = .my.scheme.ma!edit           이 ID에 대해 저장된 11 도우미를 편집합니다.
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)
 help-url-say =   ?say=<did>                   미리 채움: @<did>!say (say 동사)
 help-url-emote =   ?emote=<did>                 미리 채움: @<did>!emote (emote 동사)
-help-url-ma = ?ma=<did-or-url>              사전 채우기 런타임 DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             로그인 후 런타임 월드에 진입
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키를 눌러 전송하세요.
@@ -383,7 +383,7 @@ help-publish-ma = 게시하려면 ma(로컬 런타임)가 설치되어 있어야
 help-publish-steps = 단계: '.ma [port]'로 로컬 ma를 감지한 후 '.my.identity!publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
 profile-fetch-did-resolve-failed = 아직 게시되지 않았습니다. 먼저 28를 실행한 다음 프로필 67를 실행하세요.
-profile-update-done = 프로필 업데이트 — 43에서 병합된 18 키
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = 프로필 이름을 지정하세요: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -412,8 +412,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 경고: 귀하의 IPNS 개인 키가 신원 게시를 위해 이 런타임으로 전송됩니다. 완전히 신뢰하는 런타임만 사용하십시오.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme은 zion 명령에 포함된 Scheme 식을 평가하고, 보내기 전에 그 결과를 줄 안에 삽입합니다.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    인라인 예시; "say 7 + 5 = 12"를 보냅니다
+help-zscheme-define =   (define x 12)             정의는 현재 로그인 세션 동안 유지됩니다
+help-zscheme-doc = 문서: https://github.com/bahner/rust-ma-zscheme

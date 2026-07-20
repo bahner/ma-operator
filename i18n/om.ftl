@@ -151,20 +151,13 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = maxxansiisu hin milkoofne [{ $code }]: { $err }
 doc-publish-error-hint = Yaadachiisa: { $hint }
 doc-publish-hint-session = ammas seena kanaaf ego furtuu eenyummaa keessan argachuu danda'a
-doc-publish-hint-target = jedhamuun beekama
-DID maxxansaa sirrii ykn maqaa biraa kan 57 qullaa furgu fayyadami
-doc-publish-hint-network = jedhamuun beekama
-yeroo gaggeeffama 7 fi 22 dhaqqabamaa ta'uu isaanii mirkaneessi, sana booda irra deebi'ii yaali
-doc-publish-hint-resolve = jedhamuun beekama
-maxxansituu galmeen DID maxxanfamee fi qabxii xumuraa dhaqqabamaa ta'e of keessaa qabaachuu isaa mirkaneessi
-doc-publish-hint-acl = jedhamuun beekama
-Opereetara maxxansaa DID kee 48 keessatti akka hayyamu gaafadhu
-doc-publish-hint-runtime = jedhamuun beekama
-runtime/plugin gaaffii sana dide; sababa sakatta'ii erga qaama/yeroo gaggeeffamaa sirreessitee booda irra deebi'ii yaali
-doc-publish-hint-ipfs = jedhamuun beekama
-haala yeroo gaggeeffama fayyaa fi maxxansaa 12/17 naannoo ilaali
-doc-publish-hint-unknown = jedhamuun beekama
-sababa bal'aa galmeewwan yeroo gaggeeffamaa sakatta'ii irra deebi'ii yaali
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
+doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
+doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-fetch-done = { $cid } fiddame → { $path }.content (raawwatamuu dide)
@@ -182,12 +175,9 @@ help-header-config = ── giiraama qindaa'ina naannoo ────────
 help-header-common = ── karaalee waliigalaa ────────────────────────────────────────────────────
 help-header-inbox = ── fuudhaa ergaa ───────────────────────────────────────────────────────────
 help-header-documents = ── galmeelee ────────────────────────────────────────────────────────────
-help-header-i18n = jedhamuun beekama
-── afaan ────────────────────────────── ──────────────────────────────
-help-header-ma = jedhamuun beekama
-── 3-bakka ────────────────────────────── ──────────────────────────────
-help-header-ma-entry = jedhamuun beekama
-── 間-bakka seenuu ────────────────────────── ───────────────────────────
+help-header-i18n = ── language ─────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Gargaarsa — ajajoota zion ─────────────────────────────────────────────
@@ -250,12 +240,9 @@ help-doc-cid =   .my.doc.<name>!cid            CID kuufame agarsiisi
 help-doc-del =   .my.doc.<name>:              galmee haaqami
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro = jedhamuun beekama
-.my.i18n filannoo afaanii eenyummaa kee waliin hidhamee kuufata.
-help-i18n-set = .my.i18n: <code>             jedhamuun beekama
-afaan 20 eenyummaa kanaaf fayyadamu filadhu
-help-i18n-list = .my.i18n!list               jedhamuun beekama
-koodii afaanii jiran tarreessi
+help-i18n-intro = .my.i18n stores the language preference tied to your identity.
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-list = .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Kutaan 間 iddoo eenyummaa 間 gidduu jiru dha. ma eenyummaa kana akka wal arganii fi waliif qunnamaniif gargaara; eenyummaan kee erga maxxanfamee booda hirmaachuu dandeessa.
@@ -319,40 +306,26 @@ err-edit-fetch-failed = gulaala: dogoggora fida: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = waltajjii hojii hin jiru — profaayilii haaquu hin danda'amu
 profile-delete-error = haaquun profaayilii hin milkoofne: { $e }
-profile-wrong-user = jedhamuun beekama
-11 piroofaayilii biraatiif saaguu hin danda'u — kan kee qofa
-profile-wrong-user-name = jedhamuun beekama
-11 19 tiif saaguu hin danda'u — piroofaayilii mataa keetii qofa
-profile-no-ma = jedhamuun beekama
-yeroon gaggeeffama 3 hin qindaa'e — dursa 31 hojjedhu
-profile-no-cid = jedhamuun beekama
-3 piroofaayilii kanaaf kuufame hin jiru — dursa 37 hojjedhu
-profile-no-cid-in-doc = jedhamuun beekama
-piroofaayilii 11 galmee DID keessatti hin argamne — dursa 43 hojjedhu
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = piroofaayiliin iccitii gara IPFS ergame; galmeen DID yeroo CID dhufu ni haaromfama
 profile-publish-done = piroofaayiliin maxxanfame — galmeen DID ma.agent CID tiin haaromfame
-profile-publish-failed = jedhamuun beekama
-piroofaayilii maxxansuun hin milkoofne: 24
-profile-fetch-done = jedhamuun beekama
-piroofaayilii fudhatame — furtuuwwan 18 43 irraa fe'aman
-profile-fetch-failed = jedhamuun beekama
-piroofaayilii fiduun hin milkoofne: 22
-msg-identity-exists = jedhamuun beekama
-eenyummaa duraan maxxanfame — piroofaayilii yeroo ammaa
-profile-import-exists = jedhamuun beekama
-profile 8 duraan jira — dursitee haqi
-profile-import-wrong-user = faayilii piroofaayilii 22 of keessaa qaba, 42 eegama
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
+msg-identity-exists = identity already published — profile up to date
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
-cid-op-binary = jedhamuun beekama
-qabiyyee baayinarii (hin agarsiifamne) .
+cid-op-binary = binary content (not displayed)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = jedhamuun beekama
-qabiyyee fiduu hin dandeenye: 25
-cid-op-unknown = jedhamuun beekama
-hojii qabiyyee hin beekamne: 27
-cid-op-wc = jedhamuun beekama
-Sararoota { $lines } 18 jechoota 36 chars
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (hin jiru)
 profiles-deleted = profaayilii { $name } haqame
 profiles-not-found = profaayilii hin argamne: { $name }
@@ -360,64 +333,47 @@ profiles-not-found = profaayilii hin argamne: { $name }
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
 help-topic-msg =   .help/msg                    መልዕክት
-help-topic-ma = .help/ma                     jedhamuun beekama
-ma-bakka, maxxansaa, fi galtee
-help-topic-path = .help/path                   jedhamuun beekama
-caasluga daandii tuqaa naannoo
+help-topic-ma = .help/ma                     ma-space, publishing, and entry
+help-topic-path = .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               ibsa Scheme sarara keessa jiru fi galmee
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
 help-header-actor = -- ርቀት ተዋናዮች
 help-actor-echo =   @actor                       DID ፍቺን አሳይ
-help-actor-text = @actor[#entity]!msg|!say|!emote body         jedhamuun beekama
-ergaa kallattiin/chat/emote erguu
-help-actor-ping = @actor:ping                  jedhamuun beekama
-jiraachuu ping
+help-actor-text = @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
+help-actor-ping = @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              entitiy ዘርዝር
-help-actor-entities-get = @actor/entities/<n>          jedhamuun beekama
-noodi qaama argachuu
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   jedhamuun beekama
-qaama wabii 14 tiin saagi
+help-actor-entities-get = @actor/entities/<n>          get entity node
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     entity አርትዕ
-help-actor-entities-del = @actor/entities/<n>:         jedhamuun beekama
-qaama haquu
+help-actor-entities-del = @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          config እሴት አግኝ
 help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘጋጅ
-help-actor-acl = @actor/acl                   jedhamuun beekama
-4 argachuu
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
-help-header-cid-ops = jedhamuun beekama
-── 3 taphatichi bilbila ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  jedhamuun beekama
-qaama 15 24 irraa bilbiliitii deebii isaa eegi
-help-actor-head = (@actor/path)                jedhamuun beekama
-qabiyyee CRUD fagoo 31 irraa fiduu
-help-actor-tail = (<bafy...>)                  jedhamuun beekama
-21 36 41 irraa hammachuu fi madaaluu
-help-actor-wc = (define x (@actor:verb arg))  jedhamuun beekama
-deebii 5 naannoo turtii keessatti eeguu
-help-actor-wc-l = .my.scheme.ma!edit           jedhamuun beekama
-gargaartota 11 saagaman eenyummaa kanaaf gulaali
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
+help-actor-wc = (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion URL link tiin banuu
-help-topic-i18n = .help/i18n                   jedhamuun beekama
-filannoo afaanii eenyummaa keetiif
+help-topic-i18n = .help/i18n                   language preference for your identity
 help-header-url = ── ulaagalee URL ────────────────────────────────────────────────────────────────
 help-url-intro =   Fuullee itti sirraa'e wajjin zion banu link qoodi:
 help-url-msg =   ?msg=<did>                   dursee guuti: @<did>!msg (ergaa salphaa)
 help-url-say =   ?say=<did>                   dursee guuti: @<did>!say (jechi say)
 help-url-emote =   ?emote=<did>                 dursee guuti: @<did>!emote (jechi emote)
-help-url-ma = ?ma=<did-or-url>              jedhamuun beekama
-yeroo gaggeeffama dursee guutuu DID / 23 URL
-help-url-enter = ?enter=<runtime>             jedhamuun beekama
-erga seentee booda addunyaa yeroo gaggeeffamaa galchi
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
+help-url-enter = ?enter=<runtime>             enter runtime world after login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Galchi guutameera garuu hin ergamne — erguu Enter tuqi.
 # ── Help text — publishing ────────────────────────────────────────────────
@@ -427,21 +383,16 @@ help-publish-intro = Maxxansuun eenyummaa kee networki irratti argamuu danda'u t
 help-publish-ma = Maxxansuuf, ma (runtime naannoo) fe'amuu qaba. Ego fi IPFS/IPNS si bakka buusee walitti hidha.
 help-publish-steps = Tartiiba: ma naannoo argachuuf '.ma [port]' oofaa, itti aansuun '.my.identity!publish @ma'.
 help-publish-without = Maxxansuu malee namooni biroon si dhaqqabuu hin danda'an — DID kee beekaniiyyuu endpoint kee furuuf dandeetii hin qaban.
-profile-fetch-did-resolve-failed = jedhamuun beekama
-DID ammallee hin maxxanfamne — dursa 28 hojjedhu, sana booda 67 piroofaayilii kee
-profile-update-done = jedhamuun beekama
-piroofaayilii haaromfame — furtuuwwan 18 43 irraa walitti makaman
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = maqaa piroofaayilii ibsi: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
 batch-collecting-started = Tuuta walitti qabuu — ajajoota akaakuu, .batch waliin xumura
-batch-already-collecting = jedhamuun beekama
-Duraanis batch walitti qabuu — dursa .batch waliin xumura
-batch-empty = jedhamuun beekama
-Batch duwwaa ture — waan fiigu hin turre
+batch-already-collecting = Already collecting a batch — end with .batch first
+batch-empty = Batch was empty — nothing to run
 batch-running = batch በሂደት ላይ…
-batch-step-timeout = jedhamuun beekama
-tarkaanfii batch yeroon isaa darbe
+batch-step-timeout = batch step timed out
 
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
@@ -462,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Gorgorsiisa: Furtuun IPNS dhuunfaa keessan runtime kanaatti ergama eenyummaa maxxansuu. Fuula runtime amannu qofa fayyadamaa.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme ibsa Scheme ajajoota zion keessatti galfaman ni madaala, bu’aa isaas erguu dura sarara keessa ni galcha.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    fakkeenya sarara keessaa; "say 7 + 5 = 12" erga
+help-zscheme-define =   (define x 12)             hiikawwan yeroo seensa ammaa keessa ni turu
+help-zscheme-doc = Galmee: https://github.com/bahner/rust-ma-zscheme

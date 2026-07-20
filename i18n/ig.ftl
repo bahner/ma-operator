@@ -151,12 +151,12 @@ doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = mbipụta dara [{ $code }]: { $err }
 doc-publish-error-hint = Ndụmọdụ: { $hint }
 doc-publish-hint-session = banye ọzọ ka ego wee nweta igodo njirimara gị
-doc-publish-hint-target = jiri ezigbo onye nkwusa DID ma ọ bụ utu aha kpebiri ịgbara 57
-doc-publish-hint-network = nyochaa oge ọsọ 7 na 22 nwere ike iru, wee nwaa ọzọ
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = gosi na ebipụtara akwụkwọ DID onye mbipụta ma nwee ebe njedebe enwere ike iru
-doc-publish-hint-acl = Rịọ onye ọrụ mbipụta ka o kwe ka emee gị na 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Oge ojiri gaa/ngwa mgbakwunye jụrụ arịrịọ ahụ; nyochaa ihe kpatara ya wee nwaa mgbe edozichara ihe / oge ojiri gaa
-doc-publish-hint-ipfs = lelee ahụike 12/17 mpaghara yana ọkwa oge ojiri gaa
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = lelee ndekọ oge ojiri gaa maka ihe kpatara ya wee nwaa ọzọ
 doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
@@ -176,7 +176,7 @@ help-header-common = ── ụzọ a na-ejikarị ─────────�
 help-header-inbox = ── igbe ozi ─────────────────────────────────────────────────────────────
 help-header-documents = ── akwụkwọ ─────────────────────────────────────────────────────────────
 help-header-i18n = ── asụsụ ──────────────── ───────────────
-help-header-ma = ── 3-oghere ─────────────── ───────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── na-abanye 間-ohere ─────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -241,7 +241,7 @@ help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n na-echekwa mmasị asụsụ jikọtara na njirimara gị.
-help-i18n-set = .my.i18n: <code>             họrọ asụsụ 20 na-eji maka njirimara a
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               depụta koodu asụsụ dị
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -306,26 +306,26 @@ err-edit-fetch-failed = dezie: ọdịda nweta: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = enweghị nnọọ nọọọ — enweghị ike ihichapụ profaịlụ
 profile-delete-error = ihichapụ profaịlụ dara ada: { $e }
-profile-wrong-user = enweghị ike ịtọ 11 maka profaịlụ ọzọ - naanị nke gị
-profile-wrong-user-name = enweghị ike ịtọ 11 maka 19 - naanị profaịlụ nke gị
-profile-no-ma = Ọ dịghị 3 oge ojiri gaa ahazi-gbaa 31 mbụ
-profile-no-cid = ọ dịghị 3 echekwara maka profaịlụ a — gba ọsọ 37 mbụ
-profile-no-cid-in-doc = enweghị profaịlụ 11 achọtara na akwụkwọ DID - gbaa 43 mbụ
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = e zoro profaịlụ ma zigara ya IPFS; a ga-emelite akwụkwọ DID mgbe CID bịara
 profile-publish-done = ebipụtala profaịlụ — emelitela akwụkwọ DID na ma.agent CID
-profile-publish-failed = mbipụta profaịlụ dara: 24
-profile-fetch-done = profaịlụ ewepụtara - igodo 18 ebugoro na 43
-profile-fetch-failed = Nweta profaịlụ dara ada: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = njirimara ebipụtalarị - profaịlụ ruo ugbu a
-profile-import-exists = profaịlụ 8 adịlarị - buru ụzọ hichapụ ya
-profile-import-wrong-user = faịlụ nwere profaịlụ 22, 42 tụrụ anya
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = ọnụọgụ abụọ (anaghị egosipụta)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = enwetaghị ọdịnaya: 25
-cid-op-unknown = arụmọrụ ọdịnaya amaghi ama: 27
-cid-op-wc = Ahịrị { $lines } 18 okwu 36 chars
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (ọ dịghị)
 profiles-deleted = profaịlụ { $name } ahichapụrụ
 profiles-not-found = profaịlụ ahụghị: { $name }
@@ -339,7 +339,7 @@ help-topic-my =   .help/my                     config pribadi
 help-topic-inbox =   .help/inbox                  kotak masuk
 help-topic-doc =   .help/doc                    dokumen
 help-topic-actor =   .help/actor                  actor jarak jauh
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               okwu Scheme n’ime ahịrị na akwụkwọ
 help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
 # -- Help actor section
@@ -349,21 +349,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         zipu ozi ozugbo/ 
 help-actor-ping = @actor:ping                  ping dị ndụ
 help-actor-entities =   @actor/entities              daftar entitas
 help-actor-entities-get = @actor/entities/<n>          nweta ọnụ ụlọ
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   ntọala site na ntụnye aka 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit entitas
 help-actor-entities-del = @actor/entities/<n>:         ihichapụ ihe
 help-actor-config-get =   @actor/config/<key>          ambil nilai config
 help-actor-config-set =   @actor/config/<key>: val     atur nilai config
-help-actor-acl = @actor/acl                   nweta 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              dezie ACL
 help-actor-fragment =   @actor#entity                kirim ke plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
-help-header-cid-ops = ── 3 oku omee ────────────── ───────────────
-help-actor-cat = (@actor#entity:verb arg...)  kpọọ otu ụlọ ọrụ 15 site na 24 wee chere azịza ya
-help-actor-head = (@actor/path)                weta ọdịnaya CRUD dịpụrụ adịpụ site na 31
-help-actor-tail = (<bafy...>)                  gụnyere ma nyochaa 21 site na 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  debe nzaghachi 5 na gburugburu nnọkọ
-help-actor-wc-l = .my.scheme.ma!edit           dezie ndị enyemaka 11 echekwara maka njirimara a
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    mepee zion site na njikọ URL
 help-topic-i18n = .help/i18n                   mmasị asụsụ maka njirimara gị
@@ -372,7 +372,7 @@ help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
 help-url-msg =   ?msg=<did>                   deeye tupu: @<did>!msg (ozi dị mfe)
 help-url-say =   ?say=<did>                   deeye tupu: @<did>!say (ngwa ọrụ say)
 help-url-emote =   ?emote=<did>                 deeye tupu: @<did>!emote (ngwa ọrụ emote)
-help-url-ma = ?ma=<did-or-url>              pre-mejuputa oge ojiri gaa DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             banye runtime ụwa mgbe nbanye
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa Enter ịziga.
@@ -383,8 +383,8 @@ help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. 
 help-publish-ma = Iji bipute, ọ dị mkpa ịnwe ma (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
 help-publish-steps = Usoro: bido '.ma [port]' iji chọpụta ma nke mpaghara, wee mee '.my.identity!publish @ma'.
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
-profile-fetch-did-resolve-failed = Ebipụtabeghị - gbaa 28 mbụ, wee 67 profaịlụ gị
-profile-update-done = profaịlụ emelitere - igodo 18 jikọtara na 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = kọwaa aha profaịlụ: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -413,8 +413,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Ịdọ aka ná ntị: Igodo nzuzo IPNS gị ga-aziga runtime a maka nkwupụta njirimara. Jiri naanị runtime i kwere n'ezi obi nke ọma.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme na-enyocha okwu Scheme etinyere n’iwu zion ma tinye nsonaazụ ya n’ahịrị tupu ezipu ya.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    atụ n’ime ahịrị; na-eziga "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             nkọwa na-adịgide n’oge nnọkọ nbanye ugbu a
+help-zscheme-doc = Akwụkwọ: https://github.com/bahner/rust-ma-zscheme

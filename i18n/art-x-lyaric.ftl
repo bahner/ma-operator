@@ -42,7 +42,7 @@ error-profile-no-identity = I-dentity '{ $name }' nuh find — bring in I-dentit
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — entered as { $username }
 msg-type-help = Type .help fi a list of livity commands.
-msg-connecting = konekte ak 14...
+msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint irie
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published through I-an-I local ma ({ $url })
@@ -58,7 +58,7 @@ msg-local-ma-claim-failed = local 間 claim fall down
 msg-identity-not-published = Ites not inna di web — if ma install inna di machine, run '.ma [port]' den '.my.identity!publish @ma'. Write '.help/publish' fi di details.
 msg-blocked = ⊗ blocked by Zion [{ $cap }]: { $from }
 msg-focus-cleared = konsantre klè
-msg-focusing = konsantre 9 kòm 21
+msg-focusing = focusing { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = removed { $path } ({ $count } entries)
 msg-read-only = { $path } se lekti sèlman
@@ -74,11 +74,11 @@ msg-link-key-not-found = key `{ $key }` nuh find in linked document
 err-alias-name-empty = alias I-name cyan be empty
 err-alias-has-dot = alias I-name cyan contain '.'
 err-alias-has-fragment = alias I-name cyan contain '#'
-err-alias-value-fragment = valè alyas ka genyen omwen yon fragman 46 ki pa vid
-err-alias-value-path = valè alyas dwe yon 22 DID oswa 37 (pa gen okenn chemen)
-err-alias-not-did = valè alyas dwe kòmanse ak did:32:
-err-unknown-alias = alyas enkoni: @QXQ0XQX
-err-bare-did = espere bare 14 (pa gen okenn fragman oswa chemen), te resevwa 55
+err-alias-value-fragment = alias value may contain at most one non-empty DID-URL fragment
+err-alias-value-path = alias value must be a did:ma:<ipns> DID or DID-URL (no path)
+err-alias-not-did = alias value must start with did:ma:
+err-unknown-alias = unknown alias: @{ $name }
+err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
 
 # ── Editor ────────────────────────────────────────────────────────────────
 btn-save = Keep
@@ -119,8 +119,8 @@ discover-invalid-did = seeking fall: expected `did` fi start with did:ma:, got `
 discover-no-endpoint = seeking notice: `endpoint_id` missing in status.json; kept DID only
 discover-hint-endpoint-not-found = Hint: endpoint no found. Check seh `ma` expose /status.json pon port 5003.
 discover-hint-server-error = Hint: runtime gi server error. Check `ma` log dem and try again.
-discover-hint-network = Sijesyon: pwoblèm network/koneksyon. Kòmanse 40, verifye localhost:5003 ou ka jwenn, epi pèmèt lokal 101 aksè nan navigatè a.
-discover-hint-generic = Sijesyon: verifye 13 ak 25 Desktop ap fonksyone, apresa reesye 59.
+discover-hint-network = Hint: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Hint: verify `ma` and IPFS Desktop are running, then retry `.ma`.
 discover-success = ma found at { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   alias @ma create — run '.my.identity!publish @ma' fi publish di ites.
@@ -130,12 +130,12 @@ claim-already-owned = Runtime already claim by dis I-dentity
 claim-http-failed = claim fall: HTTP { $status }
 claim-error = claim fall: { $e }
 claim-no-session = nuh entered; enter first fi claim di runtime
-runtime-no-verb = pa gen okenn vèb 8 pou 24
+runtime-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
 acl-reset = .my.acl reset (fully irie and open)
 acl-persist-error = keeping trouble: { $e }
-acl-no-verb = pa gen okenn vèb 8 pou .my.acl
+acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
 publish-usage = livity: .my.identity!publish <did-or-alias>
@@ -153,12 +153,12 @@ doc-publish-ipld-failed = manifest-ipld { $path }: { $e }
 doc-publish-error-detail = publish fall [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
 doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle I-dentity w yo
-doc-publish-hint-target = sèvi ak yon piblikatè valab DID oswa alyas ki networkud nan bare 57
-doc-publish-hint-network = verifye 7 ègzekutabl ak 22 yo ka jwenn, Lè sa a, reesye
+doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
+doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifye dokiman DID piblikatè a manifest epi li gen yon pwen final ki ka jwenn
-doc-publish-hint-acl = mande operatè piblikatè a pou pèmèt DID ou nan 48
+doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin te rejte demann lan; enspekte networkn an epi eseye refè apre ranje antite / ègzekutabl
-doc-publish-hint-ipfs = tcheke sante lokal 12/17 ak estati egzekite Piblikatè
+doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
 doc-store-sent = store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
 doc-ipld-store-sent = IPLD store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
@@ -167,8 +167,8 @@ doc-fetch-failed = bringing { $cid }: { $e }
 doc-fetch-usage = livity: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid not set
-doc-no-verb = pa gen okenn vèb 8 pou 24
-path-no-verb = pa gen okenn vèb 8 pou 24
+doc-no-verb = no verb `{ $verb }` for { $path }
+path-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
 lang-list-header = Irie languages in Zion (set with .my.i18n: <code>):
@@ -182,7 +182,7 @@ help-header-common = ── I-paths ──────────────�
 help-header-inbox = ── I-box ──────────────────────────────────────────────────────────────────
 help-header-documents = ── I-writings (.my.doc.*) ─────────────────────────────────────────────────
 help-header-i18n = ── lang ────────────────────────────── ───────────────────────────────
-help-header-ma = ── 3-espas ─────────────────────────────── ───────────────────────────────
+help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── k ap antre nan 間-espas ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 help-cmd-help =   .help                        dis I-text
@@ -192,7 +192,7 @@ help-cmd-history =   .history                     I-command history (consecutive
 help-cmd-logout =   .logout                      depart from Zion
 help-cmd-batch =   .batch                       eval scratch dakiment parallel
 help-cmd-batch-sync =   .batch:sync / .batch         eval scratch dakiment lain bai lain
-help-msg-echo = @alias                       montre networkud DID/18 (pa gen okenn mesaj voye)
+help-msg-echo = @alias                       show resolved DID/DID-URL (no message sent)
 help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to I-dren
 help-msg-fragment =   @alias#fragment:verb body  send to I-name wid explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no I-name search)
@@ -203,7 +203,7 @@ help-config-delete =   .path:                       remove leaf or subtree
 help-config-verb =   .path!verb [args]            invoke I-local verb
 help-my =   .my                          sight all personal I-config
 help-aliases =   .my.aliases                  list I-names
-help-aliases-set = .my.aliases.<name>: <did-url> ajoute/mete ajou alyas (DID oswa 55)
+help-aliases-set = .my.aliases.<name>: <did-url> add/update alias (DID or DID-URL)
 help-aliases-del =   .my.aliases.<name>:          remove I-name
 help-runtime-discover =   .ma [port]          discover local runtime and manifest @ma I-name
 help-runtime-claim =   .ma [port]             claim runtime ownership with I and I DID
@@ -226,14 +226,14 @@ help-doc-edit =   .my.doc.<name>!edit           open editor with saved I-writing
 help-doc-edit-cid =   .my.doc.<name>!edit /ipfs/<cid>     fetch CID, open for I-sight only
 help-doc-eval =   .my.doc.<name>!eval           execute saved I-writing line by line
 help-doc-publish = .my.doc.<name>!publish @pub   magazen kòm blob anvan tout koreksyon (nenpòt kalite)
-help-doc-publish-ipld = .my.doc.<name>!publish-ipld @pub  magazen 6 kòm estrikti 25 34 ne
+help-doc-publish-ipld = .my.doc.<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bring in CID content (no execution)
 help-doc-cid =   .my.doc.<name>!cid            sight stored CID
 help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak I-dentity w.
-help-i18n-set = .my.i18n: <code>             chwazi lang 20 itilize pou I-dentity sa a
+help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -255,23 +255,23 @@ msg-send-failed = send nuh forward: { $e }
 msg-not-logged-in = I an I nuh log in, seen
 
 # ── CBOR / YAML codec errors ──────────────────────────────────────────────
-yaml-parse-error = YAML analiz erè: 18
+yaml-parse-error = YAML parse error: { $e }
 yaml-not-mapping = YAML dwe yon kat (kle: pè valè); tèks klè ak eskalatè vid yo pa ka estoke kòm 91
-dagcbor-encode-error = DAG-CBOR kode erè: 23
-cbor-decode-error = CBOR dekode erè: 19
-cbor-json-error = Erè CBOR pou 8: 20
-yaml-serialize-error = YAML seri erè: 22
+dagcbor-encode-error = DAG-CBOR encode error: { $e }
+cbor-decode-error = CBOR decode error: { $e }
+cbor-json-error = CBOR to JSON error: { $e }
+yaml-serialize-error = YAML serialize error: { $e }
 edit-reply-invalid = repons modifye pa valab
 doc-publish-ipld-error = IPLD publish failed: { $e }
 
 # ── Internal / session errors ─────────────────────────────────────────────
-err-inbox-prune-persist = bwat resepsyon taye pèsiste: 21
-err-config-load = erè chaj konfigirasyon: 19
-err-lang-persist = lang pèsiste: 14
-err-history-parse = erè analiz istwa: 21
-err-history-load = erè chaj istwa: 20
-err-ipfs-reply-decode = Dekode repons IPFS echwe: 26
-err-edit-cbor = modifye erè 5: 17
+err-inbox-prune-persist = inbox prune persist: { $e }
+err-config-load = config load error: { $e }
+err-lang-persist = lang persist: { $e }
+err-history-parse = history parse error: { $e }
+err-history-load = history load error: { $e }
+err-ipfs-reply-decode = IPFS reply decode failed: { $e }
+err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by di browser
 status-publishing = publishin
 
@@ -294,26 +294,26 @@ err-edit-fetch-failed = edit fetch fail: { $e }
 # ── Profile management ────────────────────────────────────────────────────
 profile-delete-no-session = no livity session — caan delete profile
 profile-delete-error = profile deletion fail up: { $e }
-profile-wrong-user = pa ka mete 11 pou yon lòt I-profile - sèlman pwòp ou a
-profile-wrong-user-name = pa ka mete 11 pou 19 — sèlman pwòp I-profile ou
-profile-no-ma = pa gen 3 ègzekutabl konfigirasyon - kouri 31 an premye
-profile-no-cid = pa gen 3 ki estoke pou I-profile sa a — kouri 37 an premye
-profile-no-cid-in-doc = pa gen okenn I-profile 11 yo jwenn nan dokiman DID — kouri 43 an premye
+profile-wrong-user = cannot set CID for another profile — only your own
+profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
+profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-cid = no CID stored for this profile — run '!publish' first
+profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = profile lock up an send to IPFS; DID document a go update when CID come
 profile-publish-done = profile publish — DID document update wid ma.agent CID
-profile-publish-failed = I-profile manifest echwe: 24
-profile-fetch-done = I-profile chache — kle 18 chaje soti nan 43
-profile-fetch-failed = chache I-profile echwe: 22
+profile-publish-failed = profile publish failed: { $e }
+profile-fetch-done = profile fetched — { $n } keys loaded from IPFS
+profile-fetch-failed = profile fetch failed: { $e }
 msg-identity-exists = I-dentity deja manifest - I-profile jiska dat
-profile-import-exists = I-profile 8 deja egziste — efase li an premye
-profile-import-wrong-user = dosye gen I-profile 22, espere 42
+profile-import-exists = profile '{ $name }' already exists — delete it first
+profile-import-wrong-user = file contains profile '{ $found }', expected '{ $expected }'
 
 # -- CID content operations
 cid-op-binary = kontni binè (pa parèt)
 cid-op-cat-truncated = ... (output truncated at { $n } lines)
-cid-op-fetch-failed = echwe pou jwenn kontni: 25
-cid-op-unknown = operasyon kontni enkoni: 27
-cid-op-wc = { $lines } liy 18 mo 36 karaktè
+cid-op-fetch-failed = failed to fetch content: { $e }
+cid-op-unknown = unknown content operation: { $op }
+cid-op-wc = { $lines } lines  { $words } words  { $chars } chars
 profiles-empty = (okenn)
 profiles-deleted = profile { $name } gone
 profiles-not-found = profile nuh deh: { $name }
@@ -327,7 +327,7 @@ help-topic-my =   .help/my                     personal settings
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    dakiment dem
 help-topic-actor =   .help/actor                  far actor
-help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
+help-topic-zscheme =   .help/zscheme               Scheme talk ina line an docs
 help-unknown-topic =   .help/{ $topic }: topic no known
 
 # -- Help actor section
@@ -337,21 +337,21 @@ help-actor-text = @actor[#entity]!msg|!say|!emote body         voye mesaj dirèk
 help-actor-ping = @actor:ping                  lavi ping
 help-actor-entities =   @actor/entities              lis entity dem
 help-actor-entities-get = @actor/entities/<n>          jwenn node antite
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   mete antite pa referans 14
+help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     edit di entity
 help-actor-entities-del = @actor/entities/<n>:         efase antite
 help-actor-config-get =   @actor/config/<key>          get config valyu
 help-actor-config-set =   @actor/config/<key>: val     set config valyu
-help-actor-acl = @actor/acl                   jwenn 4
+help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              fix ACL
 help-actor-fragment =   @actor#entity                sen go plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
-help-header-cid-ops = ── 3 aktè rele ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  rele yon antite 15 soti nan 24 epi tann repons li
-help-actor-head = (@actor/path)                chache kontni CRUD aleka nan 31
-help-actor-tail = (<bafy...>)                  enkli ak evalye 21 soti nan yon 36 41
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  kenbe repons 5 nan anviwònman sesyon an
-help-actor-wc-l = .my.scheme.ma!edit           edite ki te sove 11 asistan yo pou I-dentity sa a
+help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    open Zion tru a URL link
 help-topic-i18n = .help/i18n                   preferans lang pou I-dentity w
@@ -360,7 +360,7 @@ help-url-intro =   Share a link fi open Zion wid a I-recipient ready fill:
 help-url-msg =   ?msg=<did>                   fill up: @<did>!msg (I-message)
 help-url-say =   ?say=<did>                   fill up: @<did>!say (say verb)
 help-url-emote =   ?emote=<did>                 fill up: @<did>!emote (emote verb)
-help-url-ma = ?ma=<did-or-url>              pre-ranpli ègzekutabl DID / 23 URL
+help-url-ma = ?ma=<did-or-url>              pre-fill runtime DID / HTTP URL
 help-url-enter = ?enter=<runtime>             antre nan mond lan apre konekte
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di I-input fill up but not send — press Enter fi send.
@@ -371,8 +371,8 @@ help-publish-intro = Publishing mek di ites findable pon di network. Odda ones c
 help-publish-ma = Fi publish, InI need ma (local runtime) install. It bridge ego to IPFS/IPNS pon di behalf.
 help-publish-steps = Steps: run '.ma [port]' fi find di local ma, den '.my.identity!publish @ma'.
 help-publish-without = Without publishing, odda ones cannot reach — even knowing di DID, dem cannot resolve di endpoint.
-profile-fetch-did-resolve-failed = DID pa manifest ankò — kouri 28 an premye, apre sa 67 I-profile ou a
-profile-update-done = I-profile mete ajou - kle 18 fizyone soti nan 43
+profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
+profile-update-done = profile updated — { $n } keys merged from CID
 profile-delete-needs-name = name di profile: .profiles.<name>:
 
 # ── Batch mode ────────────────────────────────────────────────────────────
@@ -401,8 +401,8 @@ label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Watchout: Yuh IPNS private key ago sen to dis runtime fi publish yuh livity. Only use a runtime yuh fully trust, Iyah.
 
 # -- Help text -- zscheme
-help-header-zscheme-topic = -- zscheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
-help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
-help-zscheme-define =   (define x 12)             definitions persist for the current login session
-help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
+help-zscheme-intro = zscheme sight up Scheme speech inside zion command, an sew di answer ina di line before it send.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inna-line example; send "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definition dem stay fo dis login sitting
+help-zscheme-doc = Writings: https://github.com/bahner/rust-ma-zscheme
