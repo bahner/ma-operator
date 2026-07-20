@@ -535,23 +535,25 @@ pub fn Landing() -> impl IntoView {
                     >{move || { let _ = lang.get(); t("tab-import-profile") }}</button>
                 </div>
 
-                // ── DID field (always shown) ──────────────────────────────
-                <div class="form-row">
-                    <label>{move || { let _ = lang.get(); t("label-did") }}</label>
-                    <input
-                        type="text"
-                        prop:value=move || did_input.get()
-                        prop:readOnly=move || mode.get() == Mode::New
-                        placeholder="did:ma:..."
-                        on:input=move |ev| {
-                            if let Some(input) = ev.target()
-                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                            {
-                                did_input.set(input.value());
+                // ── DID field ─────────────────────────────────────────────
+                <Show when=move || mode.get() != Mode::New || !did_input.get().trim().is_empty()>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-did") }}</label>
+                        <input
+                            type="text"
+                            prop:value=move || did_input.get()
+                            prop:readOnly=move || mode.get() == Mode::New
+                            placeholder="did:ma:..."
+                            on:input=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    did_input.set(input.value());
+                                }
                             }
-                        }
-                    />
-                </div>
+                        />
+                    </div>
+                </Show>
 
                 // ── Import: file picker until file is loaded ──────────────
                 <Show when=move || mode.get() == Mode::Import && parsed.get().is_none()>
