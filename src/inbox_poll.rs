@@ -88,6 +88,25 @@ fn dispatch_reply(
         return;
     }
 
+    if let Some(items) = client_term_array(&incoming) {
+        let ctx_payload = ctx_payload_from_reply_items(&items);
+        if let Some(payload) = ctx_payload {
+            let kind = state.take_pending(msg_id);
+            handle_ctx_receipt(Some(payload), &incoming, state, config);
+            match kind {
+                Some(PendingKind::Simple { cmd_id }) => {
+                    state.resolve_command_by_id(
+                        cmd_id,
+                        crate::core::CommandStatus::Replied(String::new()),
+                    );
+                }
+                Some(PendingKind::StartupAvatarCtx { .. }) => {}
+                _ => {}
+            }
+            return;
+        }
+    }
+
     // One-shot RPC from `send_rpc_and_wait`: route reply to the oneshot channel.
     if let Some(sender) = crate::state::AwaitingReply::take(msg_id) {
         let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
@@ -99,21 +118,6 @@ fn dispatch_reply(
         };
         let _ = sender.send(cfg.substitute_display_dids(&result));
         return;
-    }
-
-    if let Some(items) = client_term_array(&incoming) {
-        let ctx_payload = ctx_payload_from_reply_items(&items);
-        if let Some(payload) = ctx_payload {
-            let kind = state.take_pending(msg_id);
-            handle_ctx_receipt(Some(payload), &incoming, state, config);
-            if let Some(PendingKind::Simple { cmd_id }) = kind {
-                state.resolve_command_by_id(
-                    cmd_id,
-                    crate::core::CommandStatus::Replied(String::new()),
-                );
-            }
-            return;
-        }
     }
 
     let Some(kind) = state.take_pending(msg_id) else {
@@ -172,6 +176,13 @@ fn dispatch_reply(
             if let Some(text) = text_opt {
                 let text = config.get_untracked().substitute_display_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
+            }
+        }
+        PendingKind::StartupAvatarCtx { fallback_enter } => {
+            if incoming.is_error {
+                state
+                    .input_queue
+                    .update(|q| q.push_back(format!(".enter {fallback_enter}")));
             }
         }
     }
@@ -271,15 +282,22 @@ fn handle_ctx_receipt(
         return;
     };
     let root = ctx_value(pairs, ":root").map(str::to_string);
+    let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
     let expected_root = cfg.get(".my.ctx.root").map(str::to_string);
+    let expected_avatar = cfg.get(".my.ctx.avatar").map(str::to_string);
     let trusted = expected_root
         .as_deref()
         .is_some_and(|expected| incoming.from == expected)
-        || root.as_deref().is_some_and(|root| incoming.from == root);
+        || root.as_deref().is_some_and(|root| incoming.from == root)
+        || expected_avatar
+            .as_deref()
+            .is_some_and(|expected| incoming.from == expected)
+        || avatar
+            .as_deref()
+            .is_some_and(|avatar| incoming.from == avatar);
     if !trusted {
         return;
     }
-    let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
     let nick = ctx_value(pairs, ":nick").map(str::to_string);
     let room = ctx_value(pairs, ":room").map(str::to_string);
     let text = ctx_value(pairs, ":text").map(str::to_string);
@@ -550,7 +568,7 @@ mod tests {
     }
 
     #[test]
-    fn enter_ctx_is_extracted_from_ok_reply_payload() {
+    fn avatar_ctx_is_extracted_from_ok_reply_payload() {
         let payload = ciborium::Value::Array(vec![ciborium::Value::Array(vec![
             ciborium::Value::Text(":root".to_string()),
             ciborium::Value::Text("did:ma:k51runtime#root".to_string()),

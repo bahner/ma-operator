@@ -75,6 +75,8 @@ pub struct FocusMode {
 pub enum PendingKind {
     /// One-shot send: just resolve the command status when the reply arrives.
     Simple { cmd_id: u64 },
+    /// Startup active-avatar ctx refresh. If the avatar is stale, fall back to root enter.
+    StartupAvatarCtx { fallback_enter: String },
     /// IPFS-store reply should trigger a CRUD SET (returned CID becomes the value).
     IpfsCrud {
         target_did: String,
@@ -111,6 +113,7 @@ impl PendingKind {
     pub fn cmd_id(&self) -> Option<u64> {
         match self {
             PendingKind::Simple { cmd_id } => Some(*cmd_id),
+            PendingKind::StartupAvatarCtx { .. } => None,
             PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
