@@ -340,8 +340,13 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         });
         let cfg = config.get_untracked();
         apply_ctx_focus(&cfg, &state2);
-        match transport::send_rpc(&root, "enter", &enter_args).await {
-            Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+        let bind_state = state2.clone();
+        match transport::send_rpc_with_msg_id(&root, "enter", &enter_args, move |msg_id| {
+            bind_state.bind_message_id(cmd_id, msg_id);
+        })
+        .await
+        {
+            Ok(_) => {}
             Err(e) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                 state2.push_error(tf("msg-send-failed", &[("e", &e)]));

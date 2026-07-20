@@ -223,10 +223,10 @@ fn fallback_did_candidate(
 ) -> Option<String> {
     fallback_did.or_else(|| {
         config
-        .get_untracked()
-        .get(".ma.ctx.did")
-        .filter(|did| did.starts_with("did:ma:"))
-        .map(|did| did.to_string())
+            .get_untracked()
+            .get(".ma.ctx.did")
+            .filter(|did| did.starts_with("did:ma:"))
+            .map(|did| did.to_string())
     })
 }
 
@@ -273,8 +273,20 @@ async fn ping_and_publish_fallback(
 async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
     state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
     let send_and_wait = async move {
-        let msg_id = transport::send_rpc(did, "ping", &[]).await?;
-        let rx = crate::state::AwaitingReply::register(msg_id);
+        let mut rx = None;
+        let mut registered_msg_id = None;
+        let send_result = transport::send_rpc_with_msg_id(did, "ping", &[], |msg_id| {
+            registered_msg_id = Some(msg_id.clone());
+            rx = Some(crate::state::AwaitingReply::register(msg_id));
+        })
+        .await;
+        if let Err(e) = send_result {
+            if let Some(msg_id) = registered_msg_id {
+                crate::state::AwaitingReply::take(&msg_id);
+            }
+            return Err(e);
+        }
+        let rx = rx.ok_or_else(|| "runtime ping reply was not registered".to_string())?;
         rx.await
             .map(|_| ())
             .map_err(|_| "runtime ping reply was cancelled".to_string())
@@ -289,8 +301,20 @@ async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
 }
 
 async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
-    let msg_id = crate::transport::send_identity_publish(publisher).await?;
-    let rx = crate::state::AwaitingReply::register(msg_id);
+    let mut rx = None;
+    let mut registered_msg_id = None;
+    let send_result = crate::transport::send_identity_publish_with_msg_id(publisher, |msg_id| {
+        registered_msg_id = Some(msg_id.clone());
+        rx = Some(crate::state::AwaitingReply::register(msg_id));
+    })
+    .await;
+    if let Err(e) = send_result {
+        if let Some(msg_id) = registered_msg_id {
+            crate::state::AwaitingReply::take(&msg_id);
+        }
+        return Err(e);
+    }
+    let rx = rx.ok_or_else(|| "identity publish reply was not registered".to_string())?;
     futures::select! {
         reply = rx.fuse() => reply.map(|_| ()).map_err(|_| "identity publish reply was cancelled".to_string()),
         _ = gloo_timers::future::TimeoutFuture::new(60_000).fuse() => Err("identity publish timed out".to_string()),
@@ -317,9 +341,21 @@ pub(crate) async fn do_publish(
     // current iroh endpoint.  Register a reply channel and wait for the ack
     // before sending the store — this guarantees the runtime has our endpoint
     // in doc_cache when the store reply needs to be delivered.
-    let did_pub_rx = match crate::transport::send_identity_publish(&publisher).await {
-        Ok(msg_id) => Some(crate::state::AwaitingReply::register(msg_id)),
-        Err(_) => None,
+    let mut did_pub_rx = None;
+    let mut did_pub_msg_id = None;
+    match crate::transport::send_identity_publish_with_msg_id(&publisher, |msg_id| {
+        did_pub_msg_id = Some(msg_id.clone());
+        did_pub_rx = Some(crate::state::AwaitingReply::register(msg_id));
+    })
+    .await
+    {
+        Ok(_) => {}
+        Err(_) => {
+            if let Some(msg_id) = did_pub_msg_id {
+                crate::state::AwaitingReply::take(&msg_id);
+            }
+            did_pub_rx = None;
+        }
     };
     if let Some(rx) = did_pub_rx {
         // Wait up to 60 s for the DID publish ack — timeout is fine, the

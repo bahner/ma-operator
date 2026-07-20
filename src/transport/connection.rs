@@ -185,6 +185,16 @@ pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> 
 
 /// Send an RPC message. Returns the dispatched `Message.id` on success.
 pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<String, String> {
+    send_rpc_with_msg_id(target_did, verb, args, |_| {}).await
+}
+
+/// Send an RPC message and expose its `Message.id` before network dispatch.
+pub async fn send_rpc_with_msg_id(
+    target_did: &str,
+    verb: &str,
+    args: &[&str],
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
@@ -217,6 +227,7 @@ pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<Str
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
@@ -285,6 +296,14 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
 /// `application/vnd.ma.identity.publish.request` CBOR envelope addressed to
 /// `publisher_did`.
 pub async fn send_identity_publish(publisher_did: &str) -> Result<String, String> {
+    send_identity_publish_with_msg_id(publisher_did, |_| {}).await
+}
+
+/// Send an identity-publish request and expose its `Message.id` before dispatch.
+pub async fn send_identity_publish_with_msg_id(
+    publisher_did: &str,
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
 
     let ipns_key = SESSION_IPNS_KEY
@@ -351,6 +370,7 @@ pub async fn send_identity_publish(publisher_did: &str) -> Result<String, String
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(publisher_did, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
