@@ -16,12 +16,21 @@ use leptos::prelude::*;
 pub(crate) fn eval_actor(
     target: String,
     verb: Option<String>,
+    meta: Option<String>,
     body: String,
     raw: &str,
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
     let cmd_id = state.push_command(raw);
+    if let Some(meta) = meta {
+        fail_cmd(
+            format!("unsupported local actor meta: !{meta}"),
+            cmd_id,
+            state,
+        );
+        return;
+    }
     state.outbox_queue.update(|q| {
         q.push_back(OutboxTask::Actor {
             target,
@@ -115,13 +124,20 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                 "msg" | "message" | "text" => Some(transport::send_text(&target, &body).await),
                 "say" | "chat" => Some(transport::send_chat(&target, &body).await),
                 "emote" => Some(transport::send_emote(&target, &body).await),
-                other => {
-                    fail_cmd(format!("unknown actor command: !{other}"), cmd_id, state);
-                    None
-                }
+                other => match crate::parser::command::shell_split(&body) {
+                    Ok(args) => {
+                        let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                        Some(transport::send_rpc(&target, other, &arg_refs).await)
+                    }
+                    Err(e) => Some(Err(e)),
+                },
             };
             if let Some(r) = result {
-                handle_send_result(r, None, cmd_id, state);
+                let reply_verb = match command.as_str() {
+                    "msg" | "message" | "text" | "say" | "chat" | "emote" => None,
+                    other => Some(other),
+                };
+                handle_send_result(r, reply_verb, cmd_id, state);
             }
         }
 

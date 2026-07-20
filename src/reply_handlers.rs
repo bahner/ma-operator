@@ -96,6 +96,49 @@ pub(crate) fn handle_ipfs_kind_reply(
     }
 }
 
+/// IPFS-store reply for an actor behaviour edit → call `:behaviour /ipfs/<cid>`.
+pub(crate) fn handle_ipfs_actor_behaviour_reply(
+    target: String,
+    cmd_id: Option<u64>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+) {
+    if incoming.is_error {
+        if let Some(cid) = cmd_id {
+            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
+        }
+        state.push_error(incoming.display.clone());
+        return;
+    }
+    match crate::messages::extract_ok_text(&incoming.content) {
+        Ok(cid) => {
+            let ipfs_ref = ipfs_ref_from_store_reply(&cid);
+            let state2 = state.clone();
+            spawn_local(async move {
+                match crate::transport::send_rpc(&target, "behaviour", &[&ipfs_ref]).await {
+                    Ok(msg_id) => {
+                        if let Some(id) = cmd_id {
+                            state2.bind_message_id(id, msg_id);
+                        }
+                    }
+                    Err(e) => {
+                        if let Some(id) = cmd_id {
+                            state2.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
+                        }
+                        state2.push_error(e);
+                    }
+                }
+            });
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
+        }
+    }
+}
+
 fn ipfs_ref_from_store_reply(reply: &str) -> String {
     let reply = reply.trim();
     if is_remote_fetch_root(reply) {
@@ -483,6 +526,7 @@ pub(crate) fn classify_reply(
         }
         Ok(V::Array(items)) => match (items.first(), items.get(1)) {
             (Some(V::Text(verb)), value) if verb == ":ok" => match value {
+                Some(V::Text(s)) if s.is_empty() => (CommandStatus::Done, None),
                 Some(V::Text(s)) => (CommandStatus::Replied(String::new()), Some(s.clone())),
                 Some(_) => (
                     CommandStatus::Replied(String::new()),

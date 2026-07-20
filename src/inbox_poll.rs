@@ -13,7 +13,8 @@ use crate::{
     messages::IncomingMessage,
     reply_handlers::{
         cbor_reply_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
-        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
+        handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
+        handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -131,6 +132,9 @@ fn dispatch_reply(
             cmd_id,
         } => {
             handle_ipfs_kind_reply(target_did, protocol_id, cmd_id, &incoming, state);
+        }
+        PendingKind::IpfsActorBehaviour { target, cmd_id } => {
+            handle_ipfs_actor_behaviour_reply(target, cmd_id, &incoming, state);
         }
         PendingKind::ProfilePublish {
             publisher_did,

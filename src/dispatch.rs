@@ -11,11 +11,13 @@ use crate::{
     config::EgoConfig,
     core::CommandStatus,
     eval::{actor_send::execute_outbox_task, eval},
+    http::fetch_path_bytes,
     i18n::{t, tf},
     identity::storage::save_history,
-    parser::command::parse,
-    state::{ActiveBatch, AppState, BatchMode, OnError, DEFAULT_TIMEOUT_MS},
-    views::editor::EditorContext,
+    parser::command::{parse, Command},
+    state::{ActiveBatch, AppState, AwaitingReply, BatchMode, OnError, DEFAULT_TIMEOUT_MS},
+    transport,
+    views::editor::{EditorContext, EditorMode},
 };
 
 const TICK_MS: u32 = 50;
@@ -543,6 +545,19 @@ fn dispatch_eval_line(
                 }
             };
             let target = focus_command_target(f, line);
+            if parsed.meta.as_deref() == Some("edit") && parsed.verb == "behaviour" {
+                if !target.contains('#') {
+                    state.push_error("behaviour editor requires a focused room actor".to_string());
+                    return None;
+                }
+                let cmd_id = open_actor_behaviour_editor(target, line, state, show_editor);
+                if let Some(bid) = batch_id {
+                    state.cmd_to_batch.update(|m| {
+                        m.insert(cmd_id, bid);
+                    });
+                }
+                return Some(cmd_id);
+            }
             if target.contains('#') {
                 match enqueue_focus_command(target, line, parsed.verb, parsed.args, state) {
                     Ok(cmd_id) => {
@@ -585,7 +600,12 @@ fn dispatch_eval_line(
 
     match parse(&expanded, &cfg) {
         Ok(cmd) => {
-            let is_actor = matches!(cmd, crate::parser::command::Command::ActorMessage { .. });
+            if let ActorRpcMetaDispatch::Handled(result) =
+                dispatch_actor_rpc_meta(&cmd, line, state, show_editor, batch_id)
+            {
+                return result;
+            }
+            let is_actor = matches!(cmd, Command::ActorMessage { .. });
             let before = state.peek_next_entry_id();
             eval(cmd, line, state, config, show_editor, on_eval);
             let after = state.peek_next_entry_id();
@@ -611,6 +631,78 @@ fn dispatch_eval_line(
             state.push_error(format!("'{line}': {e}"));
             None
         }
+    }
+}
+
+fn dispatch_actor_rpc_meta(
+    cmd: &Command,
+    line: &str,
+    state: &AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+    batch_id: Option<u64>,
+) -> ActorRpcMetaDispatch {
+    match actor_rpc_meta_action(cmd) {
+        Some(ActorRpcMetaAction::BehaviourEdit { target }) => {
+            let cmd_id = open_actor_behaviour_editor(target, line, state, show_editor);
+            attach_command_to_batch(state, cmd_id, batch_id);
+            ActorRpcMetaDispatch::Handled(Some(cmd_id))
+        }
+        Some(ActorRpcMetaAction::Unsupported { meta }) => {
+            state.push_error(format!("'{line}': unsupported local actor meta: !{meta}"));
+            ActorRpcMetaDispatch::Handled(None)
+        }
+        Some(ActorRpcMetaAction::Rejected { reason }) => {
+            state.push_error(format!("'{line}': {reason}"));
+            ActorRpcMetaDispatch::Handled(None)
+        }
+        None => ActorRpcMetaDispatch::NotMeta,
+    }
+}
+
+enum ActorRpcMetaDispatch {
+    NotMeta,
+    Handled(Option<u64>),
+}
+
+enum ActorRpcMetaAction<'a> {
+    BehaviourEdit { target: &'a str },
+    Unsupported { meta: &'a str },
+    Rejected { reason: &'static str },
+}
+
+fn actor_rpc_meta_action(cmd: &Command) -> Option<ActorRpcMetaAction<'_>> {
+    let Command::ActorMessage {
+        target,
+        verb: Some(verb),
+        meta: Some(meta),
+        body,
+    } = cmd
+    else {
+        return None;
+    };
+
+    if verb == "behaviour" && meta == "edit" {
+        if !body.trim().is_empty() {
+            return Some(ActorRpcMetaAction::Rejected {
+                reason: "behaviour editor does not accept arguments",
+            });
+        }
+        if !target.contains('#') {
+            return Some(ActorRpcMetaAction::Rejected {
+                reason: "behaviour editor requires a focused room actor",
+            });
+        }
+        return Some(ActorRpcMetaAction::BehaviourEdit { target });
+    }
+
+    Some(ActorRpcMetaAction::Unsupported { meta })
+}
+
+fn attach_command_to_batch(state: &AppState, cmd_id: u64, batch_id: Option<u64>) {
+    if let Some(bid) = batch_id {
+        state.cmd_to_batch.update(|m| {
+            m.insert(cmd_id, bid);
+        });
     }
 }
 
@@ -651,6 +743,7 @@ fn enqueue_focus_command(
 
 struct ParsedFocusCommand {
     verb: String,
+    meta: Option<String>,
     args: Vec<String>,
 }
 
@@ -659,14 +752,92 @@ fn parse_focus_shorthand_command(line: &str) -> Result<ParsedFocusCommand, Strin
     let Some((verb, args)) = tokens.split_first() else {
         return Err("empty command".to_string());
     };
-    let verb = verb.trim_start_matches(':').to_string();
+    let verb = verb.trim_start_matches(':');
+    let (verb, meta) = if let Some((verb, meta)) = verb.split_once('!') {
+        (verb.to_string(), Some(meta.to_string()))
+    } else {
+        (verb.to_string(), None)
+    };
     if verb.is_empty() {
         return Err("empty command".to_string());
     }
     Ok(ParsedFocusCommand {
         verb,
+        meta,
         args: args.to_vec(),
     })
+}
+
+fn open_actor_behaviour_editor(
+    target: &str,
+    line: &str,
+    state: &AppState,
+    show_editor: RwSignal<Option<EditorContext>>,
+) -> u64 {
+    let cmd_id = state.push_command(line);
+    let target = target.to_string();
+    let state2 = state.clone();
+    wasm_bindgen_futures::spawn_local(async move {
+        match fetch_actor_behaviour_source(&target).await {
+            Ok(initial) => {
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
+                show_editor.set(Some(
+                    EditorContext::new(":behaviour", initial)
+                        .with_save_to(format!("{target}:behaviour"))
+                        .with_language("scheme")
+                        .with_mode(EditorMode::ActorBehaviourEdit { target })
+                        .with_cmd_id(cmd_id),
+                ));
+            }
+            Err(e) => {
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                state2.push_error(e);
+            }
+        }
+    });
+    cmd_id
+}
+
+async fn fetch_actor_behaviour_source(target: &str) -> Result<String, String> {
+    let mut rx = None;
+    transport::send_rpc_with_msg_id(target, "behaviour", &[], |msg_id| {
+        rx = Some(AwaitingReply::register(msg_id));
+    })
+    .await?;
+    let Some(rx) = rx else {
+        return Err("behaviour reply channel was not registered".to_string());
+    };
+    let reply = rx
+        .await
+        .map_err(|_| "behaviour reply channel closed".to_string())?;
+    let reference = actor_behaviour_reference(&reply);
+    let Some(reference) = reference else {
+        return Ok(String::new());
+    };
+    let bytes = fetch_path_bytes(&reference).await?;
+    String::from_utf8(bytes).map_err(|e| format!("behaviour source is not valid UTF-8: {e}"))
+}
+
+fn actor_behaviour_reference(reply: &str) -> Option<String> {
+    let value = reply.trim();
+    value
+        .split(|c: char| c.is_whitespace() || matches!(c, '"' | '\'' | '`' | '<' | '>' | ','))
+        .find_map(normalize_ipfs_reference_token)
+}
+
+fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
+    let value = token
+        .trim()
+        .trim_matches(|c: char| matches!(c, '.' | ';' | ':' | '(' | ')' | '[' | ']' | '{' | '}'));
+    if let Some(path) = value.strip_prefix("/ipfs/") {
+        let cid = path.split('/').next().unwrap_or_default();
+        return cid::Cid::try_from(cid)
+            .is_ok()
+            .then(|| format!("/ipfs/{path}"));
+    }
+    cid::Cid::try_from(value)
+        .is_ok()
+        .then(|| format!("/ipfs/{value}"))
 }
 
 fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
@@ -686,15 +857,47 @@ mod tests {
     fn focus_shorthand_normalizes_bare_and_colon_methods() {
         let say = parse_focus_shorthand_command("say hello").unwrap();
         assert_eq!(say.verb, "say");
+        assert_eq!(say.meta, None);
         assert_eq!(say.args, vec!["hello"]);
 
         let look = parse_focus_shorthand_command(":look").unwrap();
         assert_eq!(look.verb, "look");
+        assert_eq!(look.meta, None);
         assert!(look.args.is_empty());
 
         let here = parse_focus_shorthand_command("here?").unwrap();
         assert_eq!(here.verb, "here?");
+        assert_eq!(here.meta, None);
         assert!(here.args.is_empty());
+
+        let edit = parse_focus_shorthand_command(":behaviour!edit").unwrap();
+        assert_eq!(edit.verb, "behaviour");
+        assert_eq!(edit.meta.as_deref(), Some("edit"));
+        assert!(edit.args.is_empty());
+    }
+
+    #[test]
+    fn behaviour_reference_is_extracted_from_plain_or_decorated_reply() {
+        let cid = "bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku";
+        let expected = format!("/ipfs/{cid}");
+
+        assert_eq!(
+            super::actor_behaviour_reference(cid).as_deref(),
+            Some(expected.as_str())
+        );
+        assert_eq!(
+            super::actor_behaviour_reference(&format!("/ipfs/{cid}")).as_deref(),
+            Some(expected.as_str())
+        );
+        assert_eq!(
+            super::actor_behaviour_reference(&format!("Current custom behaviour: /ipfs/{cid}."))
+                .as_deref(),
+            Some(expected.as_str())
+        );
+        assert_eq!(
+            super::actor_behaviour_reference("No custom behaviour is set for this room."),
+            None
+        );
     }
 
     #[test]
@@ -726,6 +929,10 @@ mod tests {
         assert_eq!(
             focus_command_target(&focus, ":prop name Garden"),
             "did:ma:runtime#room"
+        );
+        assert_eq!(
+            focus_command_target(&focus, "prop name Garden"),
+            "did:ma:runtime#avatar"
         );
         assert_eq!(
             focus_command_target(&focus, "  :prop description"),

@@ -108,6 +108,12 @@ pub enum EditorMode {
         /// Protocol ID (e.g. `/ma/stateful/python/0.0.1`).
         protocol_id: String,
     },
+    /// Edit one actor's own behaviour by publishing text to IPFS and then
+    /// calling the actor's `:behaviour /ipfs/<cid>` method.
+    ActorBehaviourEdit {
+        /// DID-URL of the actor whose behaviour should be updated.
+        target: String,
+    },
 }
 
 /// All the state needed to open an editor session for a document.
@@ -488,6 +494,25 @@ pub fn EditorModal(
         }
     };
 
+    // ActorBehaviourEdit — upload raw ma-scheme text to IPFS, then call
+    // `:behaviour /ipfs/<cid>` on the target actor when the store reply arrives.
+    let on_actor_behaviour_publish = {
+        let state = state.clone();
+        move |_| {
+            let text = js_editor_get_value(EDITOR_EL_ID);
+            let Some(ctx) = show.get_untracked() else {
+                return;
+            };
+            let EditorMode::ActorBehaviourEdit { target } = ctx.mode else {
+                return;
+            };
+            let cmd_id = ctx.cmd_id;
+            show.set(None);
+            let state2 = state.clone();
+            leptos::task::spawn_local(do_actor_behaviour_publish(text, target, cmd_id, state2));
+        }
+    };
+
     // Mode-test closures — capture only `show` (RwSignal, Copy), so they are
     // Copy themselves.  Nested `style=move ||…` will COPY them, not move them,
     // leaving `on_save` etc. in the outer <Show> children closure as `Fn`.
@@ -528,6 +553,12 @@ pub fn EditorModal(
         matches!(
             show.get().map(|c| c.mode),
             Some(EditorMode::CrudEdit { .. })
+        )
+    };
+    let is_actor_behaviour_edit = move || {
+        matches!(
+            show.get().map(|c| c.mode),
+            Some(EditorMode::ActorBehaviourEdit { .. })
         )
     };
 
@@ -649,6 +680,18 @@ pub fn EditorModal(
                     <button
                         class="editor-btn btn-cancel"
                         style=move || if is_crud_edit() { "" } else { "display:none" }
+                        on:click=on_cancel
+                    >{t("btn-cancel")}</button>
+                    // Publish — ActorBehaviourEdit mode
+                    <button
+                        class="editor-btn btn-save"
+                        style=move || if is_actor_behaviour_edit() { "" } else { "display:none" }
+                        on:click=on_actor_behaviour_publish.clone()
+                    >{t("btn-publish")}</button>
+                    // Cancel — ActorBehaviourEdit mode
+                    <button
+                        class="editor-btn btn-cancel"
+                        style=move || if is_actor_behaviour_edit() { "" } else { "display:none" }
                         on:click=on_cancel
                     >{t("btn-cancel")}</button>
                 </div>
@@ -901,6 +944,37 @@ async fn do_kind_publish(
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
             state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
+        }
+    }
+}
+
+fn actor_runtime_did(target: &str) -> &str {
+    target.split_once('#').map_or(target, |(did, _)| did)
+}
+
+async fn do_actor_behaviour_publish(
+    text: String,
+    target: String,
+    cmd_id: Option<u64>,
+    state: AppState,
+) {
+    let publisher = actor_runtime_did(&target).to_string();
+    match crate::transport::send_ipfs_store(&publisher, text.into_bytes(), "text/plain").await {
+        Ok(msg_id) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Publishing);
+            }
+            state.register_pending(
+                msg_id,
+                PendingKind::IpfsActorBehaviour { target, cmd_id },
+                None,
+            );
+        }
+        Err(e) => {
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
+            }
+            state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
         }
     }
 }

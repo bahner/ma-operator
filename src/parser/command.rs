@@ -74,6 +74,7 @@ pub enum Command {
     ActorMessage {
         target: String,
         verb: Option<String>,
+        meta: Option<String>,
         body: String,
     },
     ActorLocalCommand {
@@ -179,9 +180,7 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
 
     // Local actor command: `@actor!say text` chooses a zion-side workflow or
     // message type. It is not a remote method call; `:` remains remote RPC.
-    if let Some(bang) = head_stripped.find('!') {
-        let raw_target = &head_stripped[..bang];
-        let command = &head_stripped[bang + 1..];
+    if let Some((raw_target, command)) = split_local_actor_command(head_stripped) {
         if raw_target.is_empty() || command.is_empty() {
             return Err(format!("invalid actor command: @{head_stripped}"));
         }
@@ -195,9 +194,44 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     }
 
     let (raw_target, verb) = split_actor_head(head_stripped);
+    let (verb, meta) = split_actor_verb_meta(verb)?;
     let target = resolve_target(raw_target, cfg)?;
     let body = resolve_targets(&body_raw, cfg)?;
-    Ok(Command::ActorMessage { target, verb, body })
+    Ok(Command::ActorMessage {
+        target,
+        verb,
+        meta,
+        body,
+    })
+}
+
+fn split_local_actor_command(head: &str) -> Option<(&str, &str)> {
+    let bang = head.find('!')?;
+    if has_actor_rpc_delimiter_before_bang(head, bang) {
+        return None;
+    }
+    Some((&head[..bang], &head[bang + 1..]))
+}
+
+fn has_actor_rpc_delimiter_before_bang(head: &str, bang: usize) -> bool {
+    if head.starts_with("did:") {
+        head[..bang].chars().filter(|ch| *ch == ':').count() >= 3
+    } else {
+        head[..bang].contains(':')
+    }
+}
+
+fn split_actor_verb_meta(verb: Option<String>) -> Result<(Option<String>, Option<String>), String> {
+    let Some(verb) = verb else {
+        return Ok((None, None));
+    };
+    let Some((verb, meta)) = verb.split_once('!') else {
+        return Ok((Some(verb), None));
+    };
+    if verb.is_empty() || meta.is_empty() {
+        return Err(format!("invalid actor RPC meta syntax: {verb}!{meta}"));
+    }
+    Ok((Some(verb.to_string()), Some(meta.to_string())))
 }
 
 /// Parse the path+op from the `/path` portion of a remote CRUD command.
@@ -437,6 +471,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: None,
+                meta: None,
                 body: String::new(),
             }
         );
@@ -457,6 +492,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some("ping".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -478,6 +514,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some("entities.rms:edit".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -499,6 +536,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some(".ping".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -521,6 +559,7 @@ mod tests {
                     "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#fortune"
                         .to_string(),
                 verb: Some(".ping".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -542,6 +581,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some("acl:edit".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -563,6 +603,7 @@ mod tests {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
                 verb: Some("entities.rms:edit".to_string()),
+                meta: None,
                 body: String::new(),
             }
         );
@@ -628,7 +669,31 @@ mod tests {
                     "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
                         .to_string(),
                 verb: Some("emote".to_string()),
+                meta: None,
                 body: "danser".to_string(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_fragment_target_with_actor_rpc_meta() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky#room:behaviour!edit", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target:
+                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
+                        .to_string(),
+                verb: Some("behaviour".to_string()),
+                meta: Some("edit".to_string()),
+                body: String::new(),
             }
         );
     }

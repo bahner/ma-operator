@@ -96,6 +96,8 @@ pub enum PendingKind {
         protocol_id: String,
         cmd_id: Option<u64>,
     },
+    /// IPFS-store reply should set an actor's own behaviour via RPC.
+    IpfsActorBehaviour { target: String, cmd_id: Option<u64> },
     /// IPFS-store reply (profile blob) should trigger DID doc republish.
     ProfilePublish {
         publisher_did: String,
@@ -113,6 +115,7 @@ impl PendingKind {
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
             PendingKind::IpfsKindUpsert { cmd_id, .. } => *cmd_id,
+            PendingKind::IpfsActorBehaviour { cmd_id, .. } => *cmd_id,
             PendingKind::ProfilePublish { cmd_id, .. } => *cmd_id,
         }
     }

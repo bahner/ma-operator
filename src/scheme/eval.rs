@@ -112,7 +112,19 @@ impl SchemeCtx for EvalCtx {
             let cfg = self.config.get_untracked();
             let parsed = parse(&effective, &cfg).map_err(SchemeErr::MaError)?;
             let (target, verb, body) = match parsed {
-                Command::ActorMessage { target, verb, body } => (target, verb, body),
+                Command::ActorMessage {
+                    target,
+                    verb,
+                    meta: None,
+                    body,
+                } => (target, verb, body),
+                Command::ActorMessage {
+                    meta: Some(meta), ..
+                } => {
+                    return Err(SchemeErr::MaError(format!(
+                        "unsupported local actor meta: !{meta}"
+                    )))
+                }
                 _ => {
                     return Err(SchemeErr::MaError(format!(
                         "expected an actor message, got: {effective}"

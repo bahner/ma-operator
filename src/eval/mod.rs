@@ -187,8 +187,13 @@ pub(crate) fn eval(
             actor::eval_remote_crud(target, path, op, raw, state, show_editor, config);
         }
 
-        Command::ActorMessage { target, verb, body } => {
-            actor::eval_actor(target, verb, body, raw, state, config);
+        Command::ActorMessage {
+            target,
+            verb,
+            meta,
+            body,
+        } => {
+            actor::eval_actor(target, verb, meta, body, raw, state, config);
         }
 
         Command::ActorLocalCommand {
