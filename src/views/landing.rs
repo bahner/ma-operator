@@ -51,6 +51,12 @@ fn username_from_did(did: &str) -> String {
     did.strip_prefix("did:ma:").unwrap_or(did).to_string()
 }
 
+fn keyboard_event_key(ev: &KeyboardEvent) -> Option<String> {
+    js_sys::Reflect::get(ev.as_ref(), &wasm_bindgen::JsValue::from_str("key"))
+        .ok()
+        .and_then(|value| value.as_string())
+}
+
 #[derive(Clone, Copy, PartialEq)]
 enum Mode {
     Login,
@@ -443,7 +449,9 @@ pub fn Landing() -> impl IntoView {
     // Enter key triggers the action.
     let do_login_key = do_login.clone();
     let on_keydown = move |ev: KeyboardEvent| {
-        if ev.key() == "Enter" && mode.get_untracked() != Mode::Export {
+        if keyboard_event_key(&ev).as_deref() == Some("Enter")
+            && mode.get_untracked() != Mode::Export
+        {
             do_login_key();
         }
     };
