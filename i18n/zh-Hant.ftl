@@ -339,6 +339,7 @@ help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  收件匣
 help-topic-doc =   .help/doc                    文件
 help-topic-actor =   .help/actor                  遠端 actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    透過 URL 連結開啟 zion
 help-topic-i18n = .help/i18n                   您身分的語言偏好
 help-unknown-topic =   .help/{ $topic }: 未知主題
@@ -409,3 +410,10 @@ scheme-not-a-cid = 無效的 CID：{ $value }
 label-runtime = 馬
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 警告：您的IPNS私鑰將被傳送至此執行環境以進行身份發布。請僅使用您完全信任的執行環境。
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

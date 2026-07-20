@@ -325,6 +325,7 @@ help-topic-my =   .help/my                     config bilong mi
 help-topic-inbox =   .help/inbox                  bokis mesij
 help-topic-doc =   .help/doc                    ol dokumen
 help-topic-actor =   .help/actor                  actor longwe
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-unknown-topic =   .help/{ $topic }: topik i no save
 
 # -- Help actor section
@@ -396,3 +397,10 @@ scheme-not-a-cid = Dispela CID i no stret: { $value }
 label-runtime = ma
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Woning: Praivit ki bilong IPNS bilong yu bai i go long runtime ia bilong publisim aideniti. Usum tasol runtime yu trastim tru.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

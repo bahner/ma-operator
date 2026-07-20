@@ -339,6 +339,7 @@ help-topic-my =   .help/my                     தனிப்பட்ட confi
 help-topic-inbox =   .help/inbox                  உள்வரவு
 help-topic-doc =   .help/doc                    ஆவணங்கள்
 help-topic-actor =   .help/actor                  தொலை actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-unknown-topic =   .help/{ $topic }: தெரியாத தலைப்பு
 
 # -- Help actor section
@@ -410,3 +411,10 @@ scheme-not-a-cid = செல்லுபடியாகாத CID: { $value }
 label-runtime = மா
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = எச்சரிக்கை: உங்கள் IPNS தனியார் விசை அடையாளத்தை வெளியிட இந்த இயக்க நேர சேவைக்கு அனுப்பப்படும். நீங்கள் முழுமையாக நம்பும் இயக்க நேர சேவையை மட்டுமே பயன்படுத்துங்கள்.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

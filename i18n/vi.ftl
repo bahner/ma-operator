@@ -339,6 +339,7 @@ help-topic-my =   .help/my                     config cá nhân
 help-topic-inbox =   .help/inbox                  hộp thư đến
 help-topic-doc =   .help/doc                    tài liệu
 help-topic-actor =   .help/actor                  actor từ xa
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-unknown-topic =   .help/{ $topic }: chủ đề không xác định
 
 # -- Help actor section
@@ -410,3 +411,10 @@ scheme-not-a-cid = CID không hợp lệ: { $value }
 label-runtime = ma
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Cảnh báo: Khóa riêng tư IPNS của bạn sẽ được gửi đến môi trường chạy này để xuất bản danh tính. Chỉ sử dụng môi trường chạy mà bạn hoàn toàn tin tưởng.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

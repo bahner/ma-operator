@@ -339,6 +339,7 @@ help-topic-my =   .help/my                     개인 config
 help-topic-inbox =   .help/inbox                  받은편지함
 help-topic-doc =   .help/doc                    문서
 help-topic-actor =   .help/actor                  원격 actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    URL 링크로 zion 열기
 help-topic-i18n = .help/i18n                   귀하의 신원에 대한 언어 기본 설정
 help-unknown-topic =   .help/{ $topic }: 알 수 없는 주제
@@ -409,3 +410,10 @@ scheme-not-a-cid = 유효하지 않은 CID: { $value }
 label-runtime = 마
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 경고: 귀하의 IPNS 개인 키가 신원 게시를 위해 이 런타임으로 전송됩니다. 완전히 신뢰하는 런타임만 사용하십시오.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

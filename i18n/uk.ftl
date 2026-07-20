@@ -205,6 +205,7 @@ help-topic-my =   .help/my                     особиста конфігур
 help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
 help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    відкрити zion через URL
 help-topic-i18n = .help/i18n                   мовні переваги для вашої особистості
 help-unknown-topic =   .help/{ $topic }: невідома тема — спробуйте .help для списку
@@ -411,3 +412,10 @@ help-cmd-batch-async =   .batch:async / .batch        виконати кома�
 scheme-cid-fetch-error = Не вдалося отримати CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Недійсний CID: { $value }
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

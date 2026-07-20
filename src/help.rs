@@ -13,6 +13,7 @@ pub fn dispatch(subtopic: &str) -> Vec<String> {
         "inbox" => inbox(),
         "doc" => doc(),
         "actor" => actor(),
+        "zscheme" => zscheme(),
         "url" => url(),
         "publish" => publish(),
         "i18n" => i18n(),
@@ -39,6 +40,7 @@ fn overview() -> Vec<String> {
         t("help-topic-inbox"),
         t("help-topic-doc"),
         t("help-topic-actor"),
+        t("help-topic-zscheme"),
         t("help-topic-url"),
         t("help-topic-publish"),
         t("help-topic-i18n"),
@@ -173,6 +175,17 @@ fn actor() -> Vec<String> {
         t("help-actor-tail"),
         t("help-actor-wc"),
         t("help-actor-wc-l"),
+        t("help-footer"),
+    ]
+}
+
+fn zscheme() -> Vec<String> {
+    vec![
+        t("help-header-zscheme-topic"),
+        t("help-zscheme-intro"),
+        t("help-zscheme-inline"),
+        t("help-zscheme-define"),
+        t("help-zscheme-doc"),
         t("help-footer"),
     ]
 }

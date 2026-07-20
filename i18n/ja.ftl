@@ -332,6 +332,7 @@ help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  受信箱
 help-topic-doc =   .help/doc                    文書
 help-topic-actor =   .help/actor                  リモート actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    URLリンクからzionを開く
 help-topic-i18n = .help/i18n                   自分のアイデンティティに合わせた言語設定
 help-unknown-topic =   .help/{ $topic }: 不明なトピック
@@ -402,3 +403,10 @@ scheme-not-a-cid = 有効な CID ではありません: { $value }
 label-runtime = マ
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = 警告：あなたのIPNSプライベートキーはこのランタイムにアイデンティティを公開するために送信されます。完全に信頼するランタイムのみを使用してください。
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

@@ -339,6 +339,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
 # -- Help actor section
@@ -410,3 +411,10 @@ scheme-not-a-cid = የሚሰራ CID አይደለም፡ { $value }
 label-runtime = ማ
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = ማስጠንቀቂያ፡ የእርስዎ IPNS የግል ቁልፍ ለማንነት ህትመት ወደ ይህ runtime ይላካል። ሙሉ በሙሉ የሚያምኑትን runtime ብቻ ይጠቀሙ።
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

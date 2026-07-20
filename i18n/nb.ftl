@@ -338,6 +338,7 @@ help-topic-my =   .help/my                     personlig config
 help-topic-inbox =   .help/inbox                  innboks
 help-topic-doc =   .help/doc                    dokumenter
 help-topic-actor =   .help/actor                  ekstern actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    åpne zion via en URL-lenke
 help-topic-i18n =   .help/i18n                   språkvalg for identiteten din
 help-unknown-topic =   .help/{ $topic }: ukjent emne
@@ -410,3 +411,10 @@ scheme-not-a-cid = Ugyldig CID: { $value }
 label-runtime = ma
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Advarsel: Din private IPNS-nøkkel vil bli sendt til dette kjøretidsmiljøet for identitetspublisering. Bruk bare et kjøretidsmiljø du stoler fullt ut på.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme

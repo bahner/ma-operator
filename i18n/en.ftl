@@ -187,6 +187,7 @@ help-header-documents = ── content verbs (any .path with .content) ───
 help-header-i18n = ── language ─────────────────────────────────────────────────────────────
 help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
+help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Help text — zion commands ─────────────────────────────────────────────
@@ -207,6 +208,7 @@ help-topic-my =   .help/my                     personal config — .my.*, aliase
 help-topic-inbox =   .help/inbox                  inbox — .my.inbox.*
 help-topic-doc =   .help/doc                    content verbs — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  remote actor — CRUD, entities, CID ops
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-topic-url =   .help/url                    opening zion via a URL link
 help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
@@ -279,6 +281,12 @@ help-doc-del =   .my.doc.<name>:              delete document
 help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
 help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
 help-i18n-list =   .my.i18n!list               list available language codes
+
+# ── Help text — zscheme ──────────────────────────────────────────────────
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
 
 # ── Help text — URL parameters ──────────────────────────────────────────────
 help-header-url = ── URL parameters ─────────────────────────────────────────────────────────

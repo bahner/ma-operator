@@ -332,6 +332,7 @@ help-topic-my =   .help/my                     osobna config
 help-topic-inbox =   .help/inbox                  ulazna pošta
 help-topic-doc =   .help/doc                    dokumenti
 help-topic-actor =   .help/actor                  udaljeni actor
+help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
 help-unknown-topic =   .help/{ $topic }: nepoznata tema
 
 # -- Help actor section
@@ -403,3 +404,10 @@ scheme-not-a-cid = Neveljaven CID: { $value }
 label-runtime = ma
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Opozorilo: Vaš zasebni ključ IPNS bo poslan v to izvajalno okolje za objavo identitete. Uporabljajte samo izvajalno okolje, ki mu popolnoma zaupate.
+
+# -- Help text -- zscheme
+help-header-zscheme-topic = -- zscheme
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
+help-zscheme-define =   (define x 12)             definitions persist for the current login session
+help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
