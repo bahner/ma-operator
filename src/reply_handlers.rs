@@ -39,7 +39,7 @@ pub(crate) fn handle_ipfs_crud_reply(
     }
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
-            let ipfs_ref = format!("/ipfs/{cid}");
+            let ipfs_ref = ipfs_ref_from_store_reply(&cid);
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
@@ -77,11 +77,12 @@ pub(crate) fn handle_ipfs_kind_reply(
         Ok(cid) => {
             // Path: /kinds/ma/avatar/0.0.1 (strip leading / from protocol_id)
             let path = format!("/kinds{}", protocol_id);
+            let ipfs_ref = ipfs_ref_from_store_reply(&cid);
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
                     target_did,
                     crud_path: path,
-                    value: ciborium::Value::Text(format!("/ipfs/{cid}")),
+                    value: ciborium::Value::Text(ipfs_ref),
                     cmd_id,
                 });
             });
@@ -92,6 +93,15 @@ pub(crate) fn handle_ipfs_kind_reply(
             }
             state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
         }
+    }
+}
+
+fn ipfs_ref_from_store_reply(reply: &str) -> String {
+    let reply = reply.trim();
+    if is_remote_fetch_root(reply) {
+        reply.to_string()
+    } else {
+        format!("/ipfs/{reply}")
     }
 }
 
@@ -623,5 +633,17 @@ mod tests {
         let incoming = error_reply("acl-denied", "fot: acl-denied");
 
         assert!(!is_missing_for_creatable_edit(&incoming));
+    }
+
+    #[test]
+    fn ipfs_store_reply_normalizes_cid_and_path() {
+        assert_eq!(
+            ipfs_ref_from_store_reply("bafyreibarecid"),
+            "/ipfs/bafyreibarecid"
+        );
+        assert_eq!(
+            ipfs_ref_from_store_reply("/ipfs/bafyreipath\n"),
+            "/ipfs/bafyreipath"
+        );
     }
 }
