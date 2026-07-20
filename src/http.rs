@@ -6,6 +6,7 @@
 use crate::transport::connection::gateway_base_url;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
+use ma_core::{CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON};
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 
@@ -119,11 +120,11 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
-/// (user-facing path syntax). `/ipld/` is currently routed identically to
-/// `/ipfs/` (aliased, no separate DAG-CBOR handling yet). The gateway
-/// resolves `/ipns/` transparently — no client-side resolution needed.
+/// (user-facing path syntax). CIDv1 links with IPLD codecs are fetched via
+/// the runtime's explicit `/ipld/` helper so DAG-CBOR nodes are read as raw
+/// blocks instead of UnixFS file content.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
+    let arg = fetch_path_bytes_arg(path);
     fetch_url_bytes(&format!("{}{arg}", gateway_base_url())).await
 }
 
@@ -132,4 +133,57 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
     fetch_url_text(&format!("{}{arg}", gateway_base_url())).await
+}
+
+fn fetch_path_bytes_arg(path: &str) -> String {
+    if let Some(root_cid) = root_cid_from_ipfs_path(path) {
+        if cid_has_ipld_codec(root_cid) {
+            return format!("ipld/{}", path.trim_start_matches("/ipfs/"));
+        }
+    }
+    path.trim_start_matches('/').to_string()
+}
+
+fn root_cid_from_ipfs_path(path: &str) -> Option<&str> {
+    path.strip_prefix("/ipfs/")?
+        .split('/')
+        .next()
+        .filter(|cid| !cid.is_empty())
+}
+
+fn cid_has_ipld_codec(cid: &str) -> bool {
+    cid::Cid::try_from(cid).is_ok_and(|cid| {
+        matches!(
+            cid.codec(),
+            CODEC_CBOR | CODEC_DAG_CBOR | CODEC_DAG_JSON | CODEC_JSON
+        )
+    })
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn fetch_path_bytes_uses_ipld_for_ipld_cids() {
+        let ipld_cid = cid::Cid::new_v1(
+            ma_core::CODEC_DAG_CBOR,
+            cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
+        )
+        .to_string();
+        let raw_cid = cid::Cid::new_v1(
+            ma_core::CODEC_RAW,
+            cid::multihash::Multihash::wrap(0x12, &[99; 32]).unwrap(),
+        )
+        .to_string();
+
+        assert_eq!(
+            fetch_path_bytes_arg(&format!("/ipfs/{ipld_cid}")),
+            format!("ipld/{ipld_cid}")
+        );
+        assert_eq!(
+            fetch_path_bytes_arg(&format!("/ipfs/{raw_cid}")),
+            format!("ipfs/{raw_cid}")
+        );
+    }
 }
