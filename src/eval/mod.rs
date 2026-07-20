@@ -343,8 +343,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             c.delete(".my.ctx.avatar");
             c.delete(".my.ctx.room");
         });
-        let cfg = config.get_untracked();
-        apply_ctx_focus(&cfg, &state2);
+        state2.focus_actor.set(None);
         let bind_state = state2.clone();
         match transport::send_rpc_with_msg_id(&root, "enter", &enter_args, move |msg_id| {
             bind_state.bind_message_id(cmd_id, msg_id);
@@ -931,6 +930,11 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
     } else {
         format!("{avatar}{base_prompt}")
     };
+    log::debug!(
+        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} avatar={:?} prompt={prompt:?}",
+        cfg.get(".my.ctx.root"),
+        cfg.get(".my.ctx.avatar")
+    );
     state.focus_actor.set(Some(FocusMode {
         runtime,
         room: if room.is_empty() { None } else { Some(room) },

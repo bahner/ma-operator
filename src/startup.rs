@@ -55,21 +55,19 @@ pub(crate) async fn startup_profile_exists(
     }
     crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
     let n = config
-        .try_update(|cfg| cfg.merge_from_nested_profile(&profile_val))
+        .try_update(|cfg| {
+            let merged = cfg.merge_from_nested_profile(&profile_val);
+            if merged.is_ok() {
+                cfg.set(EgoConfig::PROFILE_CID_KEY, &remote_cid);
+            }
+            merged
+        })
         .and_then(|r| r.ok())
         .map(|(count, _)| count)
         .unwrap_or(0);
     state.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
     let cfg = config.get_untracked();
     let _ = persist_config(&username, &cfg).await;
-}
-
-fn auto_publish_enabled(config: RwSignal<EgoConfig>) -> bool {
-    config
-        .get_untracked()
-        .get(".my.identity.auto-publish")
-        .map(|value| value != "false")
-        .unwrap_or(true)
 }
 
 fn startup_ma_url(config: RwSignal<EgoConfig>, startup_ma: Option<&str>) -> String {
@@ -92,7 +90,6 @@ pub(crate) async fn startup_local_ma(
     startup_ma: Option<String>,
     startup_enter: Option<String>,
 ) -> ConnectMaOutcome {
-    let should_publish = auto_publish_enabled(config);
     let ma_url = startup_ma_url(config, startup_ma.as_deref());
     let fallback_did = startup_ma
         .as_deref()
@@ -108,7 +105,7 @@ pub(crate) async fn startup_local_ma(
         ma_url,
         fallback_did,
         crate::parser::verbs::ma::ConnectMaOptions {
-            publish: should_publish,
+            publish: false,
             full_profile_publish: false,
         },
     )
@@ -163,6 +160,14 @@ pub(crate) async fn startup_load_config(
             config.set(cfg);
         }
         Err(e) => state.push_error(tf("err-config-load", &[("e", &e)])),
+    }
+    if let Some(profile_cid) = config
+        .get_untracked()
+        .get(EgoConfig::PROFILE_CID_KEY)
+        .filter(|cid| !cid.is_empty())
+        .map(|cid| cid.to_string())
+    {
+        crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(profile_cid));
     }
     // Re-apply language preference from config if set.
     if let Some(lang) = config

@@ -175,7 +175,10 @@ pub(crate) fn handle_profile_publish_reply(
                 .to_iso_string()
                 .as_string()
                 .unwrap_or_default();
-            config.update(|c| c.set(EgoConfig::PROFILE_PUBLISHED_AT_KEY, &now));
+            config.update(|c| {
+                c.set(EgoConfig::PROFILE_CID_KEY, &cid_str);
+                c.set(EgoConfig::PROFILE_PUBLISHED_AT_KEY, &now);
+            });
             let username = state
                 .session
                 .get_untracked()

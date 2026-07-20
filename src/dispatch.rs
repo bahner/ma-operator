@@ -102,6 +102,7 @@ fn expire_pending_requests(state: &AppState) {
             })
             .collect()
     });
+    let should_reconnect = !expired.is_empty();
     for (msg_id, cmd_id_opt) in expired {
         // Remove first so inbox_poll can't also resolve it.
         state
@@ -117,6 +118,13 @@ fn expire_pending_requests(state: &AppState) {
                 msg_id
             );
         }
+    }
+    if should_reconnect {
+        leptos::task::spawn_local(async move {
+            if let Err(e) = transport::reconnect().await {
+                log::warn!("[transport] reconnect after pending timeout failed: {e}");
+            }
+        });
     }
     // Also expire stuck Scheme RPC senders so awaiting evaluator tasks can
     // return (:timeout) rather than blocking forever.
@@ -729,6 +737,7 @@ fn enqueue_focus_command(
     args: Vec<String>,
     state: &AppState,
 ) -> Result<u64, String> {
+    log::debug!("[focus] enqueue line={line:?} target={actor:?} verb={verb:?} args={args:?}");
     let cmd_id = state.push_command(line);
     state.outbox_queue.update(|q| {
         q.push_back(crate::state::OutboxTask::ActorArgs {

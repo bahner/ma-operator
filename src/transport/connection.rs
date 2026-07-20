@@ -1,10 +1,11 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
-    generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
-    CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT,
-    MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST,
-    MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
+    resolve_endpoint_for_protocol, Did, DidDocumentResolver, IpfsGatewayResolver, Ipld, Message,
+    SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID,
+    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE,
+    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
 
@@ -15,10 +16,12 @@ use crate::state::{
     SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_RESOLVER,
     SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
+use futures::FutureExt as _;
 use std::rc::Rc;
 use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
+const SEND_TIMEOUT_MS: u32 = 10_000;
 
 use log::info;
 
@@ -72,13 +75,12 @@ pub async fn connect(
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
-    // Create a single shared resolver so its positive-cache is reused across
-    // all concurrent sends — the DID document is fetched from the gateway
-    // exactly once and then served from cache for subsequent sends.
-    // Prefer the runtime's same-origin gateway when zion is served from /zion;
-    // otherwise use local Kubo, then the resolver's public fallbacks.
+    // Keep one resolver for configuration, but do not positive-cache DID docs:
+    // remote runtimes may restart with a new iroh endpoint after OOM/redeploy.
     let resolver = Rc::new(
-        IpfsGatewayResolver::new(gateway_base_url()).with_localhost_cooldown(Duration::ZERO),
+        IpfsGatewayResolver::new(gateway_base_url())
+            .with_localhost_cooldown(Duration::ZERO)
+            .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
     );
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
@@ -484,7 +486,22 @@ pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
     SESSION_RPC_INBOX.with(|i| {
         i.borrow_mut()
             .as_mut()
-            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
+            .map(|inbox| {
+                inbox
+                    .drain(now)
+                    .into_iter()
+                    .map(|msg| {
+                        log::debug!(
+                            "[rpc-inbox] drain id={} reply_to={:?} from={} type={}",
+                            msg.id,
+                            msg.reply_to,
+                            msg.from,
+                            msg.message_type
+                        );
+                        decode_incoming(msg)
+                    })
+                    .collect()
+            })
             .unwrap_or_default()
     })
 }
@@ -495,14 +512,32 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
     SESSION_CRUD_INBOX.with(|i| {
         i.borrow_mut()
             .as_mut()
-            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
+            .map(|inbox| {
+                inbox
+                    .drain(now)
+                    .into_iter()
+                    .map(|msg| {
+                        log::debug!(
+                            "[crud-inbox] drain id={} reply_to={:?} from={} type={}",
+                            msg.id,
+                            msg.reply_to,
+                            msg.from,
+                            msg.message_type
+                        );
+                        decode_incoming(msg)
+                    })
+                    .collect()
+            })
             .unwrap_or_default()
     })
 }
 
-/// CRUD get — read a value at `path` (e.g. `.config.i18n`).
-/// Payload: CBOR `[".path"]`
-pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, String> {
+/// CRUD get and expose its `Message.id` before network dispatch.
+pub async fn send_crud_get_with_msg_id(
+    target_did: &str,
+    path: &str,
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('/') {
@@ -523,6 +558,7 @@ pub async fn send_crud_get(target_did: &str, path: &str) -> Result<String, Strin
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
@@ -533,6 +569,16 @@ pub async fn send_crud_set(
     target_did: &str,
     path: &str,
     value: ciborium::Value,
+) -> Result<String, String> {
+    send_crud_set_with_msg_id(target_did, path, value, |_| {}).await
+}
+
+/// CRUD set and expose its `Message.id` before network dispatch.
+pub async fn send_crud_set_with_msg_id(
+    target_did: &str,
+    path: &str,
+    value: ciborium::Value,
+    on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
@@ -554,13 +600,17 @@ pub async fn send_crud_set(
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
 
-/// CRUD delete — remove the subtree at `path`.
-/// Payload: CBOR `[".path", ""]`
-pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, String> {
+/// CRUD delete and expose its `Message.id` before network dispatch.
+pub async fn send_crud_delete_with_msg_id(
+    target_did: &str,
+    path: &str,
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
     let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('/') {
@@ -584,13 +634,14 @@ pub async fn send_crud_delete(target_did: &str, path: &str) -> Result<String, St
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(target_did, CRUD_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
 
 /// Re-establish the iroh endpoint using the current session keys.
-/// Called automatically when a send fails due to a stale transport after long idle.
-async fn reconnect() -> Result<(), String> {
+/// Clears any cached iroh connections that may have gone stale or black-holed.
+pub async fn reconnect() -> Result<(), String> {
     let iroh_key = SESSION_IROH_KEY
         .with(|k| *k.borrow())
         .ok_or_else(|| "not logged in".to_string())?;
@@ -630,6 +681,19 @@ fn is_transport_error(e: &str) -> bool {
         || e.contains("ConnectionClosed")
 }
 
+async fn with_send_timeout<T>(
+    label: &str,
+    future: impl std::future::Future<Output = Result<T, String>>,
+) -> Result<T, String> {
+    let op = future.fuse();
+    let timeout = gloo_timers::future::TimeoutFuture::new(SEND_TIMEOUT_MS).fuse();
+    futures::pin_mut!(op, timeout);
+    futures::select! {
+        result = op => result,
+        _ = timeout => Err(format!("{label} timed out after {SEND_TIMEOUT_MS}ms")),
+    }
+}
+
 async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Result<(), String> {
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
@@ -638,20 +702,61 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
 
+    web_sys::console::info_1(
+        &format!(
+            "[send] start msg_id={} target={target_did} protocol={protocol}",
+            msg.id
+        )
+        .into(),
+    );
     log::debug!("[send] → {target_did} [{protocol}]");
-    let mut outbox = ep
-        .outbox(resolver.as_ref(), target_did, protocol)
-        .await
-        .map_err(|e| {
-            log::warn!("try_send_once: outbox failed for {target_did}: {e}");
-            e.to_string()
-        })?;
+    match resolver.resolve(target_did).await {
+        Ok(doc) => {
+            let services = doc
+                .ma
+                .as_ref()
+                .and_then(|ma| ma.get("services").ok().flatten())
+                .and_then(|services| serde_json::to_value(services).ok());
+            let endpoint = resolve_endpoint_for_protocol(services.as_ref(), protocol);
+            web_sys::console::info_1(
+                &format!(
+                    "[send] resolved msg_id={} endpoint={endpoint:?} target={target_did} protocol={protocol}",
+                    msg.id
+                )
+                .into(),
+            );
+            log::debug!(
+                "[send] resolved target={target_did} protocol={protocol} endpoint={endpoint:?} services={services:?}"
+            );
+        }
+        Err(e) => log::warn!("[send] resolve failed for {target_did}: {e}"),
+    }
+    let mut outbox = with_send_timeout("outbox open", async {
+        ep.outbox(resolver.as_ref(), target_did, protocol)
+            .await
+            .map_err(|e| {
+                log::warn!("try_send_once: outbox failed for {target_did}: {e}");
+                e.to_string()
+            })
+    })
+    .await?;
 
     log::debug!("try_send_once: outbox ready, sending msg id={}", msg.id);
-    let result = outbox.send(msg).await.map_err(|e| {
-        log::warn!("try_send_once: send failed for {target_did}: {e}");
-        e.to_string()
-    });
+    let result = with_send_timeout("outbox send", async {
+        outbox.send(msg).await.map_err(|e| {
+            log::warn!("try_send_once: send failed for {target_did}: {e}");
+            e.to_string()
+        })
+    })
+    .await;
+    web_sys::console::info_1(
+        &format!(
+            "[send] done msg_id={} ok={} target={target_did} protocol={protocol}",
+            msg.id,
+            result.is_ok()
+        )
+        .into(),
+    );
     log::debug!("[send] done ok={}", result.is_ok());
     result
 }

@@ -22,6 +22,11 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
         Some(Ipld::Map(map)) => match map.get("profile") {
             Some(Ipld::Link(c)) => Some(c.to_string()),
             Some(Ipld::String(s)) => Some(s.clone()),
+            Some(Ipld::Map(link)) => match link.get("/") {
+                Some(Ipld::String(s)) => Some(s.clone()),
+                Some(Ipld::Link(c)) => Some(c.to_string()),
+                _ => None,
+            },
             _ => None,
         },
         _ => None,

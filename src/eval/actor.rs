@@ -109,9 +109,25 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
             args,
             cmd_id,
         } => {
+            log::debug!(
+                "[outbox] execute ActorArgs cmd_id={cmd_id} target={target:?} verb={verb:?} args={args:?}"
+            );
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
-            let result = transport::send_rpc(&target, &verb, &arg_refs).await;
-            handle_send_result(result, Some(&verb), cmd_id, state);
+            let bind_state = state.clone();
+            let result =
+                transport::send_rpc_with_msg_id(&target, &verb, &arg_refs, move |msg_id| {
+                    bind_state.bind_message_id(cmd_id, msg_id);
+                })
+                .await;
+            log::debug!(
+                "[outbox] ActorArgs done cmd_id={cmd_id} result={:?}",
+                result.is_ok()
+            );
+            if let Err(e) = result {
+                state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                let display = e.replace("not logged in", &t("msg-not-logged-in"));
+                state.push_error(tf("msg-send-failed", &[("e", &display)]));
+            }
         }
 
         OutboxTask::ActorLocal {
@@ -127,7 +143,21 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                 other => match crate::parser::command::shell_split(&body) {
                     Ok(args) => {
                         let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                        Some(transport::send_rpc(&target, other, &arg_refs).await)
+                        let bind_state = state.clone();
+                        let result = transport::send_rpc_with_msg_id(
+                            &target,
+                            other,
+                            &arg_refs,
+                            move |msg_id| {
+                                bind_state.bind_message_id(cmd_id, msg_id);
+                            },
+                        )
+                        .await;
+                        if result.is_ok() {
+                            None
+                        } else {
+                            Some(result)
+                        }
                     }
                     Err(e) => Some(Err(e)),
                 },
@@ -146,10 +176,11 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
             crud_path,
             value,
             cmd_id,
-        } => match transport::send_crud_set(&target_did, &crud_path, value).await {
-            Ok(set_msg_id) => {
+        } => match transport::send_crud_set_with_msg_id(&target_did, &crud_path, value, {
+            let bind_state = state.clone();
+            move |set_msg_id| {
                 if let Some(original_cmd_id) = cmd_id {
-                    state.register_pending(
+                    bind_state.register_pending(
                         set_msg_id,
                         PendingKind::CrudConfirm {
                             cmd_id: original_cmd_id,
@@ -158,6 +189,10 @@ pub(crate) async fn execute_outbox_task(task: OutboxTask, state: &AppState) {
                     );
                 }
             }
+        })
+        .await
+        {
+            Ok(_) => {}
             Err(e) => {
                 if let Some(cid) = cmd_id {
                     state.resolve_command_by_id(cid, crate::core::CommandStatus::Error(e.clone()));
@@ -198,23 +233,37 @@ pub(crate) fn eval_remote_crud(
     let state2 = state.clone();
     leptos::task::spawn_local(async move {
         match op {
-            RemoteCrudOp::Get => match transport::send_crud_get(&target, &path).await {
-                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+            RemoteCrudOp::Get => match transport::send_crud_get_with_msg_id(&target, &path, {
+                let bind_state = state2.clone();
+                move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+            })
+            .await
+            {
+                Ok(_) => {}
                 Err(e) => fail_cmd(e, cmd_id, &state2),
             },
             RemoteCrudOp::Edit => {
                 let editor_mode = editor_mode_for_path(&path, &target);
-                match transport::send_crud_get(&target, &path).await {
-                    Ok(msg_id) => state2.register_pending(
-                        msg_id,
-                        PendingKind::EditOpen {
-                            target,
-                            crud_path: path,
-                            editor_mode,
-                            cmd_id,
-                        },
-                        None,
-                    ),
+                match transport::send_crud_get_with_msg_id(&target, &path, {
+                    let bind_state = state2.clone();
+                    let target = target.clone();
+                    let path = path.clone();
+                    move |msg_id| {
+                        bind_state.register_pending(
+                            msg_id,
+                            PendingKind::EditOpen {
+                                target,
+                                crud_path: path,
+                                editor_mode,
+                                cmd_id,
+                            },
+                            None,
+                        );
+                    }
+                })
+                .await
+                {
+                    Ok(_) => {}
                     Err(e) => fail_cmd(e, cmd_id, &state2),
                 }
             }
@@ -227,13 +276,28 @@ pub(crate) fn eval_remote_crud(
                             return;
                         }
                     };
-                match transport::send_crud_set(&target, &path, ciborium::Value::Text(value)).await {
-                    Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                match transport::send_crud_set_with_msg_id(
+                    &target,
+                    &path,
+                    ciborium::Value::Text(value),
+                    {
+                        let bind_state = state2.clone();
+                        move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+                    },
+                )
+                .await
+                {
+                    Ok(_) => {}
                     Err(e) => fail_cmd(e, cmd_id, &state2),
                 }
             }
-            RemoteCrudOp::Delete => match transport::send_crud_delete(&target, &path).await {
-                Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+            RemoteCrudOp::Delete => match transport::send_crud_delete_with_msg_id(&target, &path, {
+                let bind_state = state2.clone();
+                move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+            })
+            .await
+            {
+                Ok(_) => {}
                 Err(e) => fail_cmd(e, cmd_id, &state2),
             },
         }
@@ -289,14 +353,23 @@ async fn dispatch_verb_to_transport(
     v: &str,
     target: &str,
     body: &str,
-    _cmd_id: u64,
-    _state: &AppState,
+    cmd_id: u64,
+    state: &AppState,
     _config: RwSignal<EgoConfig>,
 ) -> Option<Result<String, String>> {
     match crate::parser::command::shell_split(body) {
         Ok(args) => {
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
-            Some(transport::send_rpc(target, v, &arg_refs).await)
+            let bind_state = state.clone();
+            let result = transport::send_rpc_with_msg_id(target, v, &arg_refs, move |msg_id| {
+                bind_state.bind_message_id(cmd_id, msg_id);
+            })
+            .await;
+            if result.is_ok() {
+                None
+            } else {
+                Some(result)
+            }
         }
         Err(e) => Some(Err(e)),
     }

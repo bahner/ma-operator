@@ -101,20 +101,28 @@ fn dispatch_reply(
         return;
     }
 
-    if let Some(items) =
-        client_term_array(&incoming).filter(|items| term_head(items) == Some(":ctx"))
-    {
-        let kind = state.take_pending(msg_id);
-        handle_ctx_receipt(items.get(1), &incoming, state, config);
-        if let Some(PendingKind::Simple { cmd_id }) = kind {
-            state.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Replied(String::new()));
+    if let Some(items) = client_term_array(&incoming) {
+        let ctx_payload = ctx_payload_from_reply_items(&items);
+        if let Some(payload) = ctx_payload {
+            let kind = state.take_pending(msg_id);
+            handle_ctx_receipt(Some(payload), &incoming, state, config);
+            if let Some(PendingKind::Simple { cmd_id }) = kind {
+                state.resolve_command_by_id(
+                    cmd_id,
+                    crate::core::CommandStatus::Replied(String::new()),
+                );
+            }
+            return;
         }
-        return;
     }
 
     let Some(kind) = state.take_pending(msg_id) else {
         web_sys::console::warn_1(
-            &format!("[inbox] dropping stale reply (reply_to={msg_id}): {display}").into(),
+            &format!(
+                "[inbox] dropping stale reply message_id={} reply_to={msg_id} from={} type={}: {display}",
+                incoming.message_id, incoming.from, incoming.message_type
+            )
+            .into(),
         );
         return;
     };
@@ -192,8 +200,10 @@ fn handle_client_term(
 }
 
 fn client_term_array(incoming: &IncomingMessage) -> Option<Vec<ciborium::Value>> {
-    if incoming.message_type != ma_core::MESSAGE_TYPE_RPC
-        || incoming.content_type != ma_core::CONTENT_TYPE_TERM
+    if !matches!(
+        incoming.message_type.as_str(),
+        ma_core::MESSAGE_TYPE_RPC | ma_core::MESSAGE_TYPE_RPC_REPLY
+    ) || incoming.content_type != ma_core::CONTENT_TYPE_TERM
     {
         return None;
     }
@@ -205,6 +215,24 @@ fn client_term_array(incoming: &IncomingMessage) -> Option<Vec<ciborium::Value>>
 
 fn term_head(items: &[ciborium::Value]) -> Option<&str> {
     items.first().and_then(cbor_text)
+}
+
+fn ctx_payload_from_items(items: &[ciborium::Value]) -> Option<&ciborium::Value> {
+    if term_head(items) == Some(":ctx") {
+        return items.get(1);
+    }
+    None
+}
+
+fn ctx_payload_from_reply_items(items: &[ciborium::Value]) -> Option<&ciborium::Value> {
+    let Some(ciborium::Value::Array(payload)) = items.get(1) else {
+        return None;
+    };
+    if term_head(items) == Some(":ok") && term_head(payload) == Some(":ctx") {
+        payload.get(1)
+    } else {
+        None
+    }
 }
 
 fn handle_client_term_array(
@@ -225,7 +253,7 @@ fn handle_client_term_array(
             true
         }
         ":ctx" => {
-            handle_ctx_receipt(items.get(1), incoming, state, config);
+            handle_ctx_receipt(ctx_payload_from_items(&items), incoming, state, config);
             true
         }
         _ => false,
@@ -505,5 +533,42 @@ mod tests {
             ),
             "@home arrives."
         );
+    }
+
+    #[test]
+    fn ctx_payload_is_extracted_from_direct_ctx_term() {
+        let payload = ciborium::Value::Array(vec![ciborium::Value::Array(vec![
+            ciborium::Value::Text(":root".to_string()),
+            ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+        ])]);
+        let items = vec![ciborium::Value::Text(":ctx".to_string()), payload];
+
+        assert!(matches!(
+            ctx_payload_from_items(&items),
+            Some(ciborium::Value::Array(_))
+        ));
+    }
+
+    #[test]
+    fn enter_ctx_is_extracted_from_ok_reply_payload() {
+        let payload = ciborium::Value::Array(vec![ciborium::Value::Array(vec![
+            ciborium::Value::Text(":root".to_string()),
+            ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+        ])]);
+        let ctx = ciborium::Value::Array(vec![ciborium::Value::Text(":ctx".to_string()), payload]);
+        let term = ciborium::Value::Array(vec![ciborium::Value::Text(":ok".to_string()), ctx]);
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(&term, &mut content).unwrap();
+        let mut incoming = incoming("did:ma:k51runtime#root", "");
+        incoming.message_type = ma_core::MESSAGE_TYPE_RPC_REPLY.to_string();
+        incoming.content_type = ma_core::CONTENT_TYPE_TERM.to_string();
+        incoming.content = content;
+
+        assert!(matches!(
+            client_term_array(&incoming)
+                .as_deref()
+                .and_then(ctx_payload_from_reply_items),
+            Some(ciborium::Value::Array(_))
+        ));
     }
 }

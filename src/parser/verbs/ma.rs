@@ -194,27 +194,40 @@ pub(crate) async fn connect_ma_runtime(
     };
     state.push_system(tf("discover-success", &[("url", &ma_base)]));
     state.push_system(tf("discover-did-line", &[("did", &did)]));
+    if let Err(e) = transport::reconnect().await {
+        web_sys::console::warn_1(
+            &format!("[transport] reconnect after ma discovery failed: {e}").into(),
+        );
+    }
     crate::views::landing::save_last_runtime(&ma_base);
     let cfg = config.get_untracked();
     let _ = crate::config::persist_config(&username, &cfg).await;
     if !options.publish {
         return ConnectMaOutcome::Ready { did };
     }
-    let published = if options.full_profile_publish {
-        do_publish(did.clone(), config, &state, None).await
-    } else {
-        match send_identity_publish_and_wait(&did).await {
-            Ok(()) => {
-                state.push_system(tf("msg-auto-published", &[("url", &ma_base)]));
-                true
-            }
-            Err(_) => false,
-        }
-    };
+    if !options.full_profile_publish {
+        send_identity_publish_background(did.clone(), state.clone(), ma_base.clone());
+        return ConnectMaOutcome::Ready { did };
+    }
+
+    let published = do_publish(did.clone(), config, &state, None).await;
     if !published {
         return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
     }
     ConnectMaOutcome::Ready { did }
+}
+
+fn send_identity_publish_background(publisher: String, state: AppState, label: String) {
+    leptos::task::spawn_local(async move {
+        match send_identity_publish_and_wait(&publisher).await {
+            Ok(()) => {
+                state.push_system(tf("msg-auto-published", &[("url", &label)]));
+            }
+            Err(e) => {
+                log::warn!("[ma] background identity publish failed: {e}");
+            }
+        }
+    });
 }
 
 fn fallback_did_candidate(

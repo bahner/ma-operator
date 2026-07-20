@@ -315,6 +315,10 @@ impl EgoConfig {
     /// Compared against `Document.updated_at` on startup to detect IPNS staleness.
     pub const PROFILE_PUBLISHED_AT_KEY: &'static str = ".my.profile.published_at";
 
+    /// The canonical key for the last published profile blob CID.
+    /// Restored into session state before DID document publishing.
+    pub const PROFILE_CID_KEY: &'static str = ".my.profile.cid";
+
     /// Expand `.my.*` flat keys into a nested JSON map, stripping the `.my.` prefix.
     /// `.my.config.colour.bg = "#fff"` → `{"config": {"colour": {"bg": "#fff"}}}`.
     /// Used when building the IPFS profile blob.
