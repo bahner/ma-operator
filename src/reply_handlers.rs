@@ -525,12 +525,23 @@ fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
         V::Bool(b) => SchemeVal::Bool(*b),
         V::Null => SchemeVal::Nil,
         V::Array(items) => SchemeVal::List(items.iter().map(cbor_to_scheme_val).collect()),
-        V::Map(pairs) => SchemeVal::List(
-            pairs
-                .iter()
-                .map(|(k, v)| SchemeVal::List(vec![cbor_to_scheme_val(k), cbor_to_scheme_val(v)]))
-                .collect(),
-        ),
+        V::Map(pairs) => {
+            let mut map = std::collections::BTreeMap::new();
+            for (key, value) in pairs {
+                let V::Text(key) = key else {
+                    return SchemeVal::List(
+                        pairs
+                            .iter()
+                            .map(|(k, v)| {
+                                SchemeVal::List(vec![cbor_to_scheme_val(k), cbor_to_scheme_val(v)])
+                            })
+                            .collect(),
+                    );
+                };
+                map.insert(key.clone(), cbor_to_scheme_val(value));
+            }
+            SchemeVal::Map(map)
+        }
         V::Tag(_, inner) => cbor_to_scheme_val(inner),
         _ => SchemeVal::Str(format!("{v:?}")),
     }
@@ -645,5 +656,29 @@ mod tests {
             ipfs_ref_from_store_reply("/ipfs/bafyreipath\n"),
             "/ipfs/bafyreipath"
         );
+    }
+
+    #[test]
+    fn cbor_map_decodes_to_scheme_map() {
+        let val = CborValue::Map(vec![
+            (
+                CborValue::Text("north".to_string()),
+                CborValue::Text("did:ma:test#north".to_string()),
+            ),
+            (
+                CborValue::Text("score".to_string()),
+                CborValue::Integer(7.into()),
+            ),
+        ]);
+
+        let SchemeVal::Map(map) = cbor_to_scheme_val(&val) else {
+            panic!("expected SchemeVal::Map");
+        };
+
+        assert!(matches!(
+            map.get("north"),
+            Some(SchemeVal::Str(value)) if value == "did:ma:test#north"
+        ));
+        assert!(matches!(map.get("score"), Some(SchemeVal::Int(7))));
     }
 }

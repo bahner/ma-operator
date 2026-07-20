@@ -284,7 +284,42 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
         SchemeVal::Bool(b) => V::Bool(*b),
         SchemeVal::Nil => V::Null,
         SchemeVal::List(items) => V::Array(items.iter().map(scheme_val_to_cbor).collect()),
+        SchemeVal::Map(map) => V::Map(
+            map.iter()
+                .map(|(key, value)| (V::Text(key.clone()), scheme_val_to_cbor(value)))
+                .collect(),
+        ),
         other => V::Text(other.display()),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ciborium::Value as V;
+
+    #[test]
+    fn scheme_map_encodes_as_cbor_map() {
+        let mut map = std::collections::BTreeMap::new();
+        map.insert(
+            "north".to_string(),
+            SchemeVal::Str("did:ma:test#north".to_string()),
+        );
+        map.insert("score".to_string(), SchemeVal::Int(7));
+
+        let V::Map(pairs) = scheme_val_to_cbor(&SchemeVal::Map(map)) else {
+            panic!("expected CBOR map");
+        };
+
+        assert_eq!(pairs.len(), 2);
+        assert!(pairs.iter().any(|(key, value)| {
+            matches!(key, V::Text(key) if key == "north")
+                && matches!(value, V::Text(value) if value == "did:ma:test#north")
+        }));
+        assert!(pairs.iter().any(|(key, value)| {
+            matches!(key, V::Text(key) if key == "score")
+                && matches!(value, V::Integer(value) if i128::from(*value) == 7)
+        }));
     }
 }
 

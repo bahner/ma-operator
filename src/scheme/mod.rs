@@ -52,6 +52,7 @@ fn val_to_define(name: &str, val: &SchemeVal) -> Option<String> {
             let elems: Vec<String> = items.iter().map(val_to_src).collect();
             Some(format!("(define {name} '({}))", elems.join(" ")))
         }
+        SchemeVal::Map(_) => Some(format!("(define {name} {})", val_to_src(val))),
         SchemeVal::Lambda {
             params, rest, body, ..
         } => {
@@ -82,6 +83,14 @@ fn val_to_src(val: &SchemeVal) -> String {
             "({})",
             items.iter().map(val_to_src).collect::<Vec<_>>().join(" ")
         ),
+        SchemeVal::Map(map) => {
+            let elems = map
+                .iter()
+                .map(|(key, value)| format!("{key:?} {}", val_to_src(value)))
+                .collect::<Vec<_>>()
+                .join(" ");
+            format!("(make-map {elems})")
+        }
         other => other.display(),
     }
 }
