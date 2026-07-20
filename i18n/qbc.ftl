@@ -175,11 +175,11 @@ help-header-zion = ── zion komands ─────────────�
 help-header-messaging = ── showxa ───────────────────────────────────────────────────────────────
 help-header-config = ── konfig naxwe ──────────────────────────────────────────────────────────
 help-header-common = ── kowl paj du ──────────────────────────────────────────────────────────
-help-header-inbox = ── caixa de entrada ──────────────────────────────── ────────────────────────────────
+help-header-inbox = ── message box ────────────────────────────────────────────────────────────
 help-header-documents = ── dokuments ────────────────────────────────────────────────────────────
-help-header-i18n = ── idioma ────────────────────────────── ───────────────────────────────
-help-header-ma = ── Espaço 3 ─────────────────────────────── ───────────────────────────────
-help-header-ma-entry = ── entrando no 間-espaço ────────────────────────── ───────────────────────────
+help-header-i18n = ── lang ───────────────────────────────────────────────────────────────────
+help-header-ma = ── ma-space ───────────────────────────────────────────────────────────────
+help-header-ma-entry = ── go inside 間-space ─────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
 # ── Halp — zion komands ───────────────────────────────────────────────────
@@ -242,21 +242,21 @@ help-doc-cid =   .my.doc.<name>!cid            lit hol CID
 help-doc-del =   .my.doc.<name>:              na-du dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
-help-i18n-intro = .my.i18n armazena a preferência de idioma vinculada à sua selfmang.
-help-i18n-set = .my.i18n: <code>             escolha o idioma que 20 usa para esta selfmang
-help-i18n-list = .my.i18n!list               listar códigos de idioma disponíveis
+help-i18n-intro =   .my.i18n keep lang choice fo dis selfmang.
+help-i18n-set =   .my.i18n: <code>             set which lang zion use fo dis selfmang
+help-i18n-list =   .my.i18n!list               show all lang codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Da 間 room im da space between 間 identities. ma du da identities find each other and talk; once your identity im published, you can join.
-help-ma-command = .ma [port]                   conecte-se ao seu tempo de execução local 22, leia /status.json e salve .QXQ1XQX.ctx.*
-help-ma-publish = .my.identity!publish @ma     publique seu documento DID para que outros possam resolver suas chaves e endpoint
+help-ma-command =   .ma [port]                   connect local ma runtime, read /status.json, save .ma.ctx.*
+help-ma-publish =   .my.identity!publish @ma     publish your DID document so felota can find your keys and endpoint
 help-ma-security = Da clearest trust boundary im your own ma runtime with your own IPFS Desktop/Kubo. Remote publisher can help, but then you depend on another service.
 help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
-help-ma-entry-topic =   .help/ma/entry             how to enter da 間 room
+help-ma-entry-topic =   .help/ma/entry             how fo go inside da 間 room
 
 # ── Help text — ma-space entry ────────────────────────────────────────────
 help-ma-entry-intro = When your identity im known, .enter @ma let you step into 間. Find a world, go in, and join from there.
-help-ma-entry-steps = Inicie 6 Desktop e 23, depois execute .QXQ2XQX. Publicar com .my.identity!publish @QXQ3XQX, encontre um mundo e entre com .enter @QXQ4XQX.
+help-ma-entry-steps = Start IPFS Desktop and ma, then run .ma. Publish wit .my.identity!publish @ma, find world, enter wit .enter @ma.
 help-ma-entry-command =   .enter @ma                  enter 間 through da @ma runtime
 help-ma-entry-toggle =   .enter                       toggle da room focus on or off; yer identity stays active
 help-ma-entry-url =   ?enter=<runtime>             enter after login from shared URL
@@ -333,10 +333,10 @@ profiles-deleted = profil { $name } dele go
 profiles-not-found = profil no found: { $name }
 
 # -- Help topics index
-help-header-topics = -- topics -- type .help/<topic> for detail
+help-header-topics = -- topics -- type .help/<topic> fo detail
 help-topic-msg =   .help/msg                    message-talk
-help-topic-ma = .help/ma                     ma-espaço, publicação e entrada
-help-topic-path = .help/path                   gramática de caminho de ponto local
+help-topic-ma =   .help/ma                     ma-space, publish, enter
+help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     own config
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    docu dem
@@ -347,35 +347,35 @@ help-unknown-topic =   .help/{ $topic }: topic na du sabe
 # -- Help actor section
 help-header-actor = -- remote actor dem
 help-actor-echo =   @actor                       show DID wey resolve
-help-actor-text = @actor[#entity]!msg|!say|!emote body         enviar showxa direta/chat/emote
-help-actor-ping = @actor:ping                  ping de vivacidade
+help-actor-text =   @actor[#entity]!msg|!say|!emote body         send direct/chat/emote message
+help-actor-ping =   @actor:ping                  liveness ping
 help-actor-entities =   @actor/entities              show entity-list
-help-actor-entities-get = @actor/entities/<n>          obter nó de entidade
-help-actor-entities-set = @actor/entities/<n>: /ipfs/<cid>   definir entidade por referência 14
+help-actor-entities-get =   @actor/entities/<n>          get entity node
+help-actor-entities-set =   @actor/entities/<n>: /ipfs/<cid>   set entity by IPFS reference
 help-actor-entities-edit =   @actor/entities/<n>!edit     change entity
-help-actor-entities-del = @actor/entities/<n>:         excluir entidade
+help-actor-entities-del =   @actor/entities/<n>:         delete entity
 help-actor-config-get =   @actor/config/<key>          take config value
 help-actor-config-set =   @actor/config/<key>: val     put config value
-help-actor-acl = @actor/acl                   obter 4
+help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              change ACL
 help-actor-fragment =   @actor#entity                send go plugin
 help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
-help-header-cid-ops = ── Chamadas do ator 3 ───────────────────────── ──────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  ligue para uma entidade 15 de 24 e aguarde sua resposta
-help-actor-head = (@actor/path)                buscar conteúdo CRUD remoto de 31
-help-actor-tail = (<bafy...>)                  incluir e avaliar 21 de um 36 41
-help-actor-wc = (define x (@actor:verb arg))  mantenha as respostas 5 no ambiente da sessão
-help-actor-wc-l = .my.scheme.ma!edit           editar auxiliares 11 salvos para esta selfmang
+help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
+help-actor-cat =   (@actor#entity:verb arg...)  call entity RPC from Scheme and wait fo reply
+help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
+help-actor-tail =   (<bafy...>)                  include and eval Scheme from IPFS CID
+help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in session env
+help-actor-wc-l =   .my.scheme.ma!edit           edit saved Scheme helpers fo dis selfmang
 
 help-topic-url =   .help/url                    open zion tru URL peng
-help-topic-i18n = .help/i18n                   preferência de idioma para sua selfmang
+help-topic-i18n =   .help/i18n                   lang choice fo yer selfmang
 help-header-url = ── URL pamitim ──────────────────────────────────────────────────────────────────
 help-url-intro =   Fo peng fo open zion wit belter wating already fill:
 help-url-msg =   ?msg=<did>                   fill befo: @<did>!msg (basic palabras)
 help-url-say =   ?say=<did>                   fill befo: @<did>!say (say verd)
 help-url-emote =   ?emote=<did>                 fill befo: @<did>!emote (emote verd)
-help-url-ma = ?ma=<did-or-url>              pré-preencher tempo de execução DID / URL 23
-help-url-enter = ?enter=<runtime>             entre no mundo do tempo de execução após o login
+help-url-ma =   ?ma=<did-or-url>              prefill runtime DID / HTTP URL
+help-url-enter =   ?enter=<runtime>             enter runtime world after login
 help-url-example =   https://ma.bahner.com/?enter=did:ma:k51…
 help-url-note =   Di input fill but no sen — peng Enter fo sen.
 # ── Help text — publishing ────────────────────────────────────────────────
