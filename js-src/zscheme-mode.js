@@ -4,7 +4,7 @@
  * zscheme is plain Scheme (S-expressions, `define`/`lambda`/`let`/`if`/...)
  * plus three natives layered on top, per rust-ma-zscheme / AGENTS.md:
  *
- *   @actor#fragment:verb   — actor reference (e.g. `@ma#house:enter`, `@sky`)
+ *   @actor#fragment:verb   — actor reference (e.g. `@ma#room:look`, `@sky`)
  *   .my.aliases.sky        — dot-path get/set (e.g. `.my.config.k: "v"`)
  *   <bafy...>              — CID / DID literal in angle brackets, callable
  *

@@ -175,7 +175,7 @@ then dispatched through the normal parser.
 | `(.my.aliases.sky)` | dot-path get — returns the config value |
 | `(.my.config.k: "v")` | dot-path set — writes config, returns nil |
 | `(.my.path!verb …)` | side-effect verb — queued to input_queue, returns nil |
-| `(@ma#house:enter #room)` | actor RPC — sends, awaits reply string |
+| `(@ma#room:look)` | actor RPC — sends, awaits reply string |
 | `(did:ma:abc#room:enter ticket)` | same, DID directly in function position |
 
 The head character determines dispatch:
@@ -186,14 +186,13 @@ The head character determines dispatch:
 ### Example
 
 ```
-@(.my.aliases.sky)#room:enter ((.my.aliases.ms)#house:enter #room)
+@(.my.aliases.sky)#room:look ((string-append "north" " gate"))
 ```
 
 Evaluation:
-1. `(.my.aliases.ms)` → `did:ma:abc` (sync config lookup)
-2. `(did:ma:abc#house:enter #room)` → RPC, awaits reply `"ticket-xyz"` (async)
-3. `(.my.aliases.sky)` → `did:ma:def` (sync)
-4. Expanded line: `@did:ma:def#room:enter ticket-xyz`
+1. `(.my.aliases.sky)` → `did:ma:def` (sync config lookup)
+2. `(string-append "north" " gate")` → `"north gate"`
+3. Expanded line: `@did:ma:def#room:look north gate`
 5. Dispatched as a normal actor message
 
 ### Scheme features
