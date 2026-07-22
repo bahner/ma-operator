@@ -258,7 +258,7 @@ yaml-not-mapping = YAML master ta un mapping (par di yabi: balor); tèks simpel 
 dagcbor-encode-error = Error di kodifikashon DAG-CBOR: { $e }
 cbor-decode-error = Error di dekodifikashon CBOR: { $e }
 cbor-json-error = Error CBOR pa JSON: { $e }
-yaml-serialize-error = Error di serializashon YAML: { $e }
+yaml-serialise-error = Error di serializashon YAML: { $e }
 edit-reply-invalid = Respuesta di edishan inválido
 doc-publish-ipld-error = Pablikashon IPLD a faya: { $e }
 

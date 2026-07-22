@@ -272,7 +272,7 @@ yaml-not-mapping = YAML ஒரு மேப்பிங் (விசை: மத
 dagcbor-encode-error = DAG-CBOR குறியாக்கல் பிழை: { $e }
 cbor-decode-error = CBOR மறைகுறியாக்கல் பிழை: { $e }
 cbor-json-error = CBOR முதல் JSON பிழை: { $e }
-yaml-serialize-error = YAML தொடர்வரிசைப்படுத்தல் பிழை: { $e }
+yaml-serialise-error = YAML தொடர்வரிசைப்படுத்தல் பிழை: { $e }
 edit-reply-invalid = செல்லாத திருத்த பதில்
 doc-publish-ipld-error = IPLD வெளியீடு தோல்வியடைந்தது: { $e }
 

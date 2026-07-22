@@ -272,7 +272,7 @@ yaml-not-mapping = YAML은 매핑(키: 값 쌍)이어야 합니다; 일반 텍�
 dagcbor-encode-error = DAG-CBOR 인코딩 오류: { $e }
 cbor-decode-error = CBOR 디코딩 오류: { $e }
 cbor-json-error = CBOR에서 JSON 오류: { $e }
-yaml-serialize-error = YAML 직렬화 오류: { $e }
+yaml-serialise-error = YAML 직렬화 오류: { $e }
 edit-reply-invalid = 잘못된 편집 응답
 doc-publish-ipld-error = IPLD 게시 실패: { $e }
 

@@ -258,7 +258,7 @@ yaml-not-mapping = YAML dwe yon mapping (pè kle: valè); tèks senp ak skalè p
 dagcbor-encode-error = Erè kodaj DAG-CBOR: { $e }
 cbor-decode-error = Erè dekodaj CBOR: { $e }
 cbor-json-error = Erè CBOR a JSON: { $e }
-yaml-serialize-error = Erè serializasyon YAML: { $e }
+yaml-serialise-error = Erè serializasyon YAML: { $e }
 edit-reply-invalid = Repons edisyon ki valid pa
 doc-publish-ipld-error = Piblikasyon IPLD echwe: { $e }
 

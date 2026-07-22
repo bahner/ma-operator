@@ -265,7 +265,7 @@ yaml-not-mapping = A YAML-nak mappingnek (kulcs: érték pároknak) kell lennie;
 dagcbor-encode-error = DAG-CBOR-kódolási hiba: { $e }
 cbor-decode-error = CBOR-dekódolási hiba: { $e }
 cbor-json-error = CBOR→JSON konverziós hiba: { $e }
-yaml-serialize-error = YAML-sorosítási hiba: { $e }
+yaml-serialise-error = YAML-sorosítási hiba: { $e }
 edit-reply-invalid = Érvénytelen szerkesztési válasz
 doc-publish-ipld-error = IPLD-közzététel sikertelen: { $e }
 

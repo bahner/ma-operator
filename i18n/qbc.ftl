@@ -274,7 +274,7 @@ yaml-not-mapping = YAML mus bi mapping (keya: valyu pɛr); plen tèks an skalas 
 dagcbor-encode-error = DAG-CBOR encode error: { $e }
 cbor-decode-error = CBOR decode error: { $e }
 cbor-json-error = CBOR to JSON error: { $e }
-yaml-serialize-error = YAML serialize error: { $e }
+yaml-serialise-error = YAML serialise error: { $e }
 edit-reply-invalid = resposta de edição inválida
 doc-publish-ipld-error = IPLD publish failed: { $e }
 

@@ -258,7 +258,7 @@ yaml-not-mapping = YAML ta di ser un mapping (par xavi: valor); tèkstu simples 
 dagcbor-encode-error = Erru di kodifikason DAG-CBOR: { $e }
 cbor-decode-error = Erru di dekodifikason CBOR: { $e }
 cbor-json-error = Erru CBOR pa JSON: { $e }
-yaml-serialize-error = Erru di serializason YAML: { $e }
+yaml-serialise-error = Erru di serializason YAML: { $e }
 edit-reply-invalid = Risposta di edisom invalidu
 doc-publish-ipld-error = Pablikason IPLD faliu: { $e }
 

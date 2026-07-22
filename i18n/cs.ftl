@@ -265,7 +265,7 @@ yaml-not-mapping = YAML musí být mapping (páry klíč: hodnota); prostý text
 dagcbor-encode-error = Chyba kódování DAG-CBOR: { $e }
 cbor-decode-error = Chyba dekódování CBOR: { $e }
 cbor-json-error = Chyba převodu CBOR na JSON: { $e }
-yaml-serialize-error = Chyba serializace YAML: { $e }
+yaml-serialise-error = Chyba serializace YAML: { $e }
 edit-reply-invalid = Neplatná odpověď na úpravu
 doc-publish-ipld-error = Publikování IPLD selhalo: { $e }
 

@@ -265,7 +265,7 @@ yaml-not-mapping = YAML peab olema mapping (võtme: väärtuse paarid); lihtteks
 dagcbor-encode-error = DAG-CBOR-kodeerimise viga: { $e }
 cbor-decode-error = CBOR-dekodeerimise viga: { $e }
 cbor-json-error = CBOR JSONi teisendamise viga: { $e }
-yaml-serialize-error = YAML-serialiseerimise viga: { $e }
+yaml-serialise-error = YAML-serialiseerimise viga: { $e }
 edit-reply-invalid = Vigane redigeerimise vastus
 doc-publish-ipld-error = IPLD avaldamine ebaõnnestus: { $e }
 

@@ -272,7 +272,7 @@ yaml-not-mapping = YAML должен быть mapping (пары ключ: зна
 dagcbor-encode-error = Ошибка кодирования DAG-CBOR: { $e }
 cbor-decode-error = Ошибка декодирования CBOR: { $e }
 cbor-json-error = Ошибка CBOR→JSON: { $e }
-yaml-serialize-error = Ошибка сериализации YAML: { $e }
+yaml-serialise-error = Ошибка сериализации YAML: { $e }
 edit-reply-invalid = Некорректный ответ на редактирование
 doc-publish-ipld-error = Ошибка публикации IPLD: { $e }
 

@@ -3,6 +3,12 @@
 ## Agent rules
 
 - **Never modify files outside the current workspace without explicit user approval.** Always ask first.
+- Use British English for project-owned naming and prose in Rust code, UI text,
+  i18n keys, docs, and local protocols. Prefer `behaviour`, `authorise`,
+  `authorised`, `authorisation`, `initialise`, `initialised`, `serialise`,
+  `colour`, and `licence`. Keep externally mandated API names unchanged, such
+  as Rust/serde `Serialize`/`Deserialize`, CSS `color`, canvas `center`, web
+  APIs, crate names, and third-party protocol terms.
 
 ---
 

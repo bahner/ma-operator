@@ -265,7 +265,7 @@ yaml-not-mapping = YAML moet een mapping zijn (sleutel: waarde-paren); platte te
 dagcbor-encode-error = DAG-CBOR-coderingsfout: { $e }
 cbor-decode-error = CBOR-decoderingsfout: { $e }
 cbor-json-error = CBOR naar JSON-fout: { $e }
-yaml-serialize-error = YAML-serialisatiefout: { $e }
+yaml-serialise-error = YAML-serialisatiefout: { $e }
 edit-reply-invalid = Ongeldige bewerkingreactie
 doc-publish-ipld-error = IPLD-publicatie mislukt: { $e }
 

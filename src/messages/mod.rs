@@ -66,7 +66,7 @@ pub fn cbor_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
     let json_val: serde_json::Value = serde_json::to_value(&cbor_val)
         .map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
     serde_yaml::to_string(&json_val)
-        .map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
+        .map_err(|e| tf("yaml-serialise-error", &[("e", &e.to_string())]))
 }
 
 /// Decode bytes fetched for a root CID into editor text using the CID's codec.
@@ -93,7 +93,7 @@ fn json_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
     let json_val: serde_json::Value = serde_json::from_slice(bytes)
         .map_err(|e| tf("json-parse-error", &[("e", &e.to_string())]))?;
     serde_yaml::to_string(&json_val)
-        .map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
+        .map_err(|e| tf("yaml-serialise-error", &[("e", &e.to_string())]))
 }
 
 /// Extract the text payload from a `[":ok", text_string]` CBOR reply.

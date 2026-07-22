@@ -258,7 +258,7 @@ yaml-not-mapping = YAML devas esti mapo (ŝlosilo: valoro-paroj); simpla teksto 
 dagcbor-encode-error = DAG-CBOR-kodado eraro: { $e }
 cbor-decode-error = CBOR-dekodado eraro: { $e }
 cbor-json-error = CBOR al JSON eraro: { $e }
-yaml-serialize-error = YAML-serialigado eraro: { $e }
+yaml-serialise-error = YAML-serialigado eraro: { $e }
 edit-reply-invalid = Nevalida redakta respondo
 doc-publish-ipld-error = IPLD-publikigo malsukcesis: { $e }
 

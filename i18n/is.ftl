@@ -265,7 +265,7 @@ yaml-not-mapping = YAML verður að vera mapping (lykill: gildis-par); venjulegt
 dagcbor-encode-error = DAG-CBOR-kóðunarvilla: { $e }
 cbor-decode-error = CBOR-afkóðunarvilla: { $e }
 cbor-json-error = CBOR í JSON-villa: { $e }
-yaml-serialize-error = YAML-raðgreiningarvilla: { $e }
+yaml-serialise-error = YAML-raðgreiningarvilla: { $e }
 edit-reply-invalid = Ógilt breytingarsvar
 doc-publish-ipld-error = IPLD-birting mistókst: { $e }
 

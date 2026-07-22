@@ -272,7 +272,7 @@ yaml-not-mapping = يجب أن يكون YAML تعيينًا (أزواج مفتا
 dagcbor-encode-error = خطأ في ترميز DAG-CBOR: { $e }
 cbor-decode-error = خطأ في فك ترميز CBOR: { $e }
 cbor-json-error = خطأ في تحويل CBOR إلى JSON: { $e }
-yaml-serialize-error = خطأ في تسلسل YAML: { $e }
+yaml-serialise-error = خطأ في تسلسل YAML: { $e }
 edit-reply-invalid = رد تعديل غير صالح
 doc-publish-ipld-error = فشل نشر IPLD: { $e }
 

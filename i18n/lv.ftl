@@ -265,7 +265,7 @@ yaml-not-mapping = YAML jābūt mapping (atslēga: vērtību pāri); vienkāršs
 dagcbor-encode-error = DAG-CBOR kodēšanas kļūda: { $e }
 cbor-decode-error = CBOR dekodēšanas kļūda: { $e }
 cbor-json-error = CBOR uz JSON kļūda: { $e }
-yaml-serialize-error = YAML serializācijas kļūda: { $e }
+yaml-serialise-error = YAML serializācijas kļūda: { $e }
 edit-reply-invalid = Nepareiza rediģēšanas atbilde
 doc-publish-ipld-error = IPLD publicēšana neizdevās: { $e }
 

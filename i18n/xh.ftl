@@ -272,7 +272,7 @@ yaml-not-mapping = I-YAML kufuneka ibe yimapping (amaqela okhiye: ixabiso); isic
 dagcbor-encode-error = Impazamo yokubhala i-DAG-CBOR: { $e }
 cbor-decode-error = Impazamo yokuvula i-CBOR: { $e }
 cbor-json-error = Impazamo yokuguqula i-CBOR ibe yi-JSON: { $e }
-yaml-serialize-error = Impazamo yokuthengisa i-YAML: { $e }
+yaml-serialise-error = Impazamo yokuthengisa i-YAML: { $e }
 edit-reply-invalid = Impendulo yokuhlela engafanelekanga
 doc-publish-ipld-error = Ukupapasha i-IPLD kuhlulekile: { $e }
 

@@ -272,7 +272,7 @@ yaml-not-mapping = YAML bir mapping (anahtar: değer çiftleri) olmalıdır; dü
 dagcbor-encode-error = DAG-CBOR kodlama hatası: { $e }
 cbor-decode-error = CBOR kod çözme hatası: { $e }
 cbor-json-error = CBOR'dan JSON'a hata: { $e }
-yaml-serialize-error = YAML serileştirme hatası: { $e }
+yaml-serialise-error = YAML serileştirme hatası: { $e }
 edit-reply-invalid = Geçersiz düzenleme yanıtı
 doc-publish-ipld-error = IPLD yayınlama başarısız oldu: { $e }
 

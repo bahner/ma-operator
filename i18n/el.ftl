@@ -265,7 +265,7 @@ yaml-not-mapping = Το YAML πρέπει να είναι mapping (ζεύγη κ
 dagcbor-encode-error = Σφάλμα κωδικοποίησης DAG-CBOR: { $e }
 cbor-decode-error = Σφάλμα αποκωδικοποίησης CBOR: { $e }
 cbor-json-error = Σφάλμα CBOR σε JSON: { $e }
-yaml-serialize-error = Σφάλμα σειριοποίησης YAML: { $e }
+yaml-serialise-error = Σφάλμα σειριοποίησης YAML: { $e }
 edit-reply-invalid = Μη έγκυρη απάντηση επεξεργασίας
 doc-publish-ipld-error = Αποτυχία δημοσίευσης IPLD: { $e }
 

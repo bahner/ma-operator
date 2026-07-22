@@ -272,7 +272,7 @@ yaml-not-mapping = YAML phải là một mapping (cặp khóa: giá trị); văn
 dagcbor-encode-error = Lỗi mã hóa DAG-CBOR: { $e }
 cbor-decode-error = Lỗi giải mã CBOR: { $e }
 cbor-json-error = Lỗi chuyển đổi CBOR sang JSON: { $e }
-yaml-serialize-error = Lỗi tuần tự hóa YAML: { $e }
+yaml-serialise-error = Lỗi tuần tự hóa YAML: { $e }
 edit-reply-invalid = Phản hồi chỉnh sửa không hợp lệ
 doc-publish-ipld-error = Xuất bản IPLD thất bại: { $e }
 

@@ -272,7 +272,7 @@ yaml-not-mapping = YAML ga-abụ mapping (ọpọ igodo: ọnọdụ); edemede n
 dagcbor-encode-error = Njehie ndenye DAG-CBOR: { $e }
 cbor-decode-error = Njehie denye CBOR: { $e }
 cbor-json-error = Njehie CBOR→JSON: { $e }
-yaml-serialize-error = Njehie serialization YAML: { $e }
+yaml-serialise-error = Njehie serialisation YAML: { $e }
 edit-reply-invalid = Nzaghachi mmezi na-arụ ọrụ
 doc-publish-ipld-error = Nkwuputa IPLD dara: { $e }
 

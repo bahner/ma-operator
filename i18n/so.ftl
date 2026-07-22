@@ -272,7 +272,7 @@ yaml-not-mapping = YAML waa inay tahay mapping (labojibbaar furaha: qiimaha); qo
 dagcbor-encode-error = Khalad koodiyeynta DAG-CBOR: { $e }
 cbor-decode-error = Khalad koodka-goynta CBOR: { $e }
 cbor-json-error = Khalad CBOR→JSON: { $e }
-yaml-serialize-error = Khalad taxnada YAML: { $e }
+yaml-serialise-error = Khalad taxnada YAML: { $e }
 edit-reply-invalid = Jawaab tafatirka ah oo aan saxnayn
 doc-publish-ipld-error = Daabacaadda IPLD waxay ku guuldarreysatay: { $e }
 

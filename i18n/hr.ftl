@@ -265,7 +265,7 @@ yaml-not-mapping = YAML mora biti mapping (parovi ključ: vrijednost); obični t
 dagcbor-encode-error = Greška kodiranja DAG-CBOR: { $e }
 cbor-decode-error = Greška dekodiranja CBOR: { $e }
 cbor-json-error = Greška pretvorbe CBOR u JSON: { $e }
-yaml-serialize-error = Greška serijalizacije YAML-a: { $e }
+yaml-serialise-error = Greška serijalizacije YAML-a: { $e }
 edit-reply-invalid = Nevažeći odgovor na uređivanje
 doc-publish-ipld-error = Objavljivanje IPLD-a nije uspjelo: { $e }
 

@@ -272,7 +272,7 @@ yaml-not-mapping = YAML हे mapping (की: मूल्य जोड्य�
 dagcbor-encode-error = DAG-CBOR एन्कोड त्रुटी: { $e }
 cbor-decode-error = CBOR डिकोड त्रुटी: { $e }
 cbor-json-error = CBOR ते JSON त्रुटी: { $e }
-yaml-serialize-error = YAML सिरियलायझेशन त्रुटी: { $e }
+yaml-serialise-error = YAML सिरियलायझेशन त्रुटी: { $e }
 edit-reply-invalid = अवैध संपादन उत्तर
 doc-publish-ipld-error = IPLD प्रकाशन अयशस्वी: { $e }
 

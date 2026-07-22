@@ -327,7 +327,7 @@ yaml-not-mapping = YAML must be a mapping (key: value pairs); plain text and bar
 dagcbor-encode-error = DAG-CBOR encode error: { $e }
 cbor-decode-error = CBOR decode error: { $e }
 cbor-json-error = CBOR to JSON error: { $e }
-yaml-serialize-error = YAML serialize error: { $e }
+yaml-serialise-error = YAML serialise error: { $e }
 edit-reply-invalid = invalid edit reply
 doc-publish-ipld-error = cannot publish-ipld: { $e }
 

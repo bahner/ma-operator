@@ -272,7 +272,7 @@ yaml-not-mapping = YAML tsy maintsy mapping (sanda: valeur-pair); teny tsotra sy
 dagcbor-encode-error = Hadisoana DAG-CBOR: { $e }
 cbor-decode-error = Hadisoana CBOR: { $e }
 cbor-json-error = Hadisoana CBOR→JSON: { $e }
-yaml-serialize-error = Hadisoana serialization YAML: { $e }
+yaml-serialise-error = Hadisoana serialisation YAML: { $e }
 edit-reply-invalid = Valiny fanavaozana tsy azo
 doc-publish-ipld-error = Tsy nisy fivoaran'ny IPLD: { $e }
 

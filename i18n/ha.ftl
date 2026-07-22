@@ -272,7 +272,7 @@ yaml-not-mapping = YAML dole ya kasance mapping (ma'aunin maɓalli: ƙima); rubu
 dagcbor-encode-error = Kuskuren lissafin DAG-CBOR: { $e }
 cbor-decode-error = Kuskuren lalata CBOR: { $e }
 cbor-json-error = Kuskuren juyawa CBOR zuwa JSON: { $e }
-yaml-serialize-error = Kuskuren jerin YAML: { $e }
+yaml-serialise-error = Kuskuren jerin YAML: { $e }
 edit-reply-invalid = Amsa gyara mara inganci
 doc-publish-ipld-error = Bugawa IPLD ta kasa: { $e }
 

@@ -11,7 +11,7 @@
 ///   .my.config.screensaver.timeout → 300
 ///
 /// The tree is stored as a flat HashMap<String, String> in IndexedDB
-/// (per-user) and serialized as JSON.
+/// (per-user) and serialised as JSON.
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
@@ -303,7 +303,7 @@ impl EgoConfig {
         serde_json::from_str(json).map_err(|e| e.to_string())
     }
 
-    // ── Profile serialization / merge ─────────────────────────────────────
+    // ── Profile serialisation / merge ─────────────────────────────────────
 
     /// Returns true if a key should be included in the profile blob.
     /// Profile is all of `.my.*` — no exceptions.

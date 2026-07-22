@@ -265,7 +265,7 @@ yaml-not-mapping = YAML трябва да бъде mapping (двойки клю�
 dagcbor-encode-error = Грешка при кодиране на DAG-CBOR: { $e }
 cbor-decode-error = Грешка при декодиране на CBOR: { $e }
 cbor-json-error = Грешка при конвертиране CBOR→JSON: { $e }
-yaml-serialize-error = Грешка при сериализиране на YAML: { $e }
+yaml-serialise-error = Грешка при сериализиране на YAML: { $e }
 edit-reply-invalid = Невалиден отговор за редактиране
 doc-publish-ipld-error = Неуспешно публикуване на IPLD: { $e }
 

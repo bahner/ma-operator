@@ -272,7 +272,7 @@ yaml-not-mapping = YAML ایک mapping (جوڑے کلید: قدر) ہونا چا
 dagcbor-encode-error = DAG-CBOR خفیہ کاری خرابی: { $e }
 cbor-decode-error = CBOR ڈی کوڈنگ خرابی: { $e }
 cbor-json-error = CBOR سے JSON خرابی: { $e }
-yaml-serialize-error = YAML سیریلائزیشن خرابی: { $e }
+yaml-serialise-error = YAML سیریلائزیشن خرابی: { $e }
 edit-reply-invalid = غلط ترمیم جواب
 doc-publish-ipld-error = IPLD اشاعت ناکام: { $e }
 

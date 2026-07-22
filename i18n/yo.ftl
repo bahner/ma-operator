@@ -272,7 +272,7 @@ yaml-not-mapping = YAML gbọdọ jẹ mapping (bata bọtini: iye); ọrọ ti 
 dagcbor-encode-error = Aṣiṣe ifaminsi DAG-CBOR: { $e }
 cbor-decode-error = Aṣiṣe iṣipopada CBOR: { $e }
 cbor-json-error = Aṣiṣe CBOR si JSON: { $e }
-yaml-serialize-error = Aṣiṣe silẹ YAML: { $e }
+yaml-serialise-error = Aṣiṣe silẹ YAML: { $e }
 edit-reply-invalid = Idahun atunse ti ko wulo
 doc-publish-ipld-error = Atejade IPLD kuna: { $e }
 

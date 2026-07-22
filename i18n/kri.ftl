@@ -258,7 +258,7 @@ yaml-not-mapping = YAML mas bi mapping (ki: valyu pɛr); plen tɛks ɛn skɛlɛ 
 dagcbor-encode-error = DAG-CBOR enkod ɛrɔ: { $e }
 cbor-decode-error = CBOR dɛkod ɛrɔ: { $e }
 cbor-json-error = CBOR tu JSON ɛrɔ: { $e }
-yaml-serialize-error = YAML sɛrialajz ɛrɔ: { $e }
+yaml-serialise-error = YAML sɛrialajz ɛrɔ: { $e }
 edit-reply-invalid = invalid ɛdit rɛpli
 doc-publish-ipld-error = IPLD pɔblish fɛl: { $e }
 

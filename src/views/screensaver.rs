@@ -14,7 +14,7 @@ use web_sys::{CanvasRenderingContext2d, HtmlCanvasElement};
 
 use crate::state::AppState;
 
-const HUD_COLORS: &[&str] = &[
+const HUD_COLOURS: &[&str] = &[
     "#00ff9f", // cyan-green
     "#00d4ff", // azure
     "#40ffb0", // seafoam
@@ -72,7 +72,7 @@ struct Entity {
     vx: f64,
     vy: f64,
     mode: EntityMode,
-    color_idx: usize,
+    colour_idx: usize,
     /// Frames remaining in current mode
     timer: f64,
     /// Per-entity phase for orbit jitter (advances each frame)
@@ -95,7 +95,7 @@ struct Actor {
     vx: f64,
     vy: f64,
     trail: Vec<(f64, f64)>,
-    color_idx: usize,
+    colour_idx: usize,
     /// Frames until this actor tries to attract entities
     attract_timer: f64,
 }
@@ -220,7 +220,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 vx: (js_sys::Math::random() - 0.5) * ACTOR_SPEED * 2.0,
                 vy: (js_sys::Math::random() - 0.5) * ACTOR_SPEED * 2.0,
                 trail: Vec::new(),
-                color_idx: i % HUD_COLORS.len(),
+                colour_idx: i % HUD_COLOURS.len(),
                 attract_timer: js_sys::Math::random() * 120.0,
             }
         })
@@ -239,7 +239,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 vx: (js_sys::Math::random() - 0.5) * FREE_SPEED * 2.0,
                 vy: (js_sys::Math::random() - 0.5) * FREE_SPEED * 2.0,
                 mode: EntityMode::Free,
-                color_idx: i % HUD_COLORS.len(),
+                colour_idx: i % HUD_COLOURS.len(),
                 timer: 0.0,
                 jitter_phase: js_sys::Math::random() * std::f64::consts::TAU,
                 jitter_amp: 7.0 + js_sys::Math::random() * 12.0,
@@ -380,7 +380,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                             orbit_r,
                         };
                         ev[ei].timer = GROUP_DURATION * (0.8 + js_sys::Math::random() * 0.4);
-                        ev[ei].color_idx = actor.color_idx; // inherit actor colour
+                        ev[ei].colour_idx = actor.colour_idx; // inherit actor colour
                     }
                 }
             }
@@ -566,10 +566,10 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     Transition::ArriveAt { actor_idx } => {
                         let angle = js_sys::Math::random() * std::f64::consts::TAU;
                         let orbit_r = 45.0 + js_sys::Math::random() * 35.0;
-                        ent.color_idx = av
+                        ent.colour_idx = av
                             .get(actor_idx)
-                            .map(|a| a.color_idx)
-                            .unwrap_or(ent.color_idx);
+                            .map(|a| a.colour_idx)
+                            .unwrap_or(ent.colour_idx);
                         ent.timer = GROUP_DURATION * (0.5 + js_sys::Math::random() * 0.6);
                         ent.mode = EntityMode::Grouped {
                             actor_idx,
@@ -593,7 +593,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                         let alpha = (1.0 - dist / max_prox) * 0.07;
                         ctx.save();
                         ctx.set_global_alpha(alpha);
-                        ctx.set_stroke_style_str(HUD_COLORS[actor.color_idx]);
+                        ctx.set_stroke_style_str(HUD_COLOURS[actor.colour_idx]);
                         ctx.set_line_width(0.4);
                         ctx.begin_path();
                         ctx.move_to(ex, ey);
@@ -610,7 +610,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                         if let Some(actor) = av.get(*actor_idx) {
                             ctx.save();
                             ctx.set_global_alpha(0.30);
-                            ctx.set_stroke_style_str(HUD_COLORS[actor.color_idx]);
+                            ctx.set_stroke_style_str(HUD_COLOURS[actor.colour_idx]);
                             ctx.set_line_width(0.9);
                             ctx.begin_path();
                             ctx.move_to(actor.x, actor.y);
@@ -627,7 +627,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                             );
                             ctx.save();
                             ctx.set_global_alpha(0.22);
-                            ctx.set_stroke_style_str(HUD_COLORS[ent.color_idx]);
+                            ctx.set_stroke_style_str(HUD_COLOURS[ent.colour_idx]);
                             ctx.set_line_width(0.7);
                             ctx.set_line_dash(&dash).unwrap_or(());
                             ctx.begin_path();
@@ -644,7 +644,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
 
             // ── 6. Draw actors: trail → widget box → DID label
             for actor in av.iter() {
-                let color = HUD_COLORS[actor.color_idx];
+                let colour = HUD_COLOURS[actor.colour_idx];
                 let trail_len = actor.trail.len();
 
                 // Trajectory trail (fading dots)
@@ -652,7 +652,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     let alpha = (ti as f64 / trail_len as f64) * 0.35;
                     ctx.save();
                     ctx.set_global_alpha(alpha);
-                    ctx.set_fill_style_str(color);
+                    ctx.set_fill_style_str(colour);
                     ctx.begin_path();
                     ctx.arc(*tx, *ty, 1.5, 0.0, std::f64::consts::TAU)
                         .unwrap_or(());
@@ -677,12 +677,12 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 rounded_rect(&ctx, bx, by, box_w, widget_h * 2.0, 5.0);
                 ctx.fill();
                 // Box border
-                ctx.set_stroke_style_str(color);
+                ctx.set_stroke_style_str(colour);
                 ctx.set_line_width(1.2);
                 rounded_rect(&ctx, bx, by, box_w, widget_h * 2.0, 5.0);
                 ctx.stroke();
                 // DID text
-                ctx.set_fill_style_str(color);
+                ctx.set_fill_style_str(colour);
                 ctx.set_font(&format!("{}px monospace", did_font_size as u32));
                 ctx.set_text_align("center");
                 ctx.set_text_baseline("middle");
@@ -705,7 +705,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
 
             // ── 7. Draw fragment labels
             for ent in ev.iter() {
-                let color = HUD_COLORS[ent.color_idx];
+                let colour = HUD_COLOURS[ent.colour_idx];
                 let (alpha, dot_r) = match &ent.mode {
                     EntityMode::Grouped { .. } => (0.90, 2.5),
                     EntityMode::Hopping { .. } => (0.75, 2.0),
@@ -714,7 +714,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 };
                 ctx.save();
                 ctx.set_global_alpha(alpha);
-                ctx.set_fill_style_str(color);
+                ctx.set_fill_style_str(colour);
                 // Anchor dot
                 ctx.begin_path();
                 ctx.arc(ent.x, ent.y, dot_r, 0.0, std::f64::consts::TAU)

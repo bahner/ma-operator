@@ -319,7 +319,7 @@ yaml-not-mapping = YAML має бути mapping (пари ключ: значен
 dagcbor-encode-error = Помилка кодування DAG-CBOR: { $e }
 cbor-decode-error = Помилка декодування CBOR: { $e }
 cbor-json-error = Помилка CBOR→JSON: { $e }
-yaml-serialize-error = Помилка серіалізації YAML: { $e }
+yaml-serialise-error = Помилка серіалізації YAML: { $e }
 edit-reply-invalid = Некоректна відповідь на редагування
 doc-publish-ipld-error = Помилка публікації IPLD: { $e }
 

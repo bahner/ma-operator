@@ -272,7 +272,7 @@ yaml-not-mapping = YAML 必須是映射（鍵：值對）；純文字和純量�
 dagcbor-encode-error = DAG-CBOR 編碼錯誤：{ $e }
 cbor-decode-error = CBOR 解碼錯誤：{ $e }
 cbor-json-error = CBOR 轉 JSON 錯誤：{ $e }
-yaml-serialize-error = YAML 序列化錯誤：{ $e }
+yaml-serialise-error = YAML 序列化錯誤：{ $e }
 edit-reply-invalid = 無效的編輯回覆
 doc-publish-ipld-error = IPLD 發布失敗：{ $e }
 

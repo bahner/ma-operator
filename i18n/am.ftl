@@ -272,7 +272,7 @@ yaml-not-mapping = YAML mapping (ቁልፍ፡ እሴት ጥንዶች) መሆን 
 dagcbor-encode-error = DAG-CBOR ምስጠራ ስህተት፡ { $e }
 cbor-decode-error = CBOR ፍቺ ስህተት፡ { $e }
 cbor-json-error = CBOR ወደ JSON ስህተት፡ { $e }
-yaml-serialize-error = YAML ተጨጭ ስህተት፡ { $e }
+yaml-serialise-error = YAML ተጨጭ ስህተት፡ { $e }
 edit-reply-invalid = ልክ ያልሆነ የማረሚያ ምላሽ
 doc-publish-ipld-error = IPLD መሰቀያ ያልተሳካ: { $e }
 

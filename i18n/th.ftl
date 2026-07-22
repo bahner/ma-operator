@@ -272,7 +272,7 @@ yaml-not-mapping = YAML ต้องเป็น mapping (คู่คีย์:
 dagcbor-encode-error = ข้อผิดพลาดการเข้ารหัส DAG-CBOR: { $e }
 cbor-decode-error = ข้อผิดพลาดการถอดรหัส CBOR: { $e }
 cbor-json-error = ข้อผิดพลาด CBOR เป็น JSON: { $e }
-yaml-serialize-error = ข้อผิดพลาดการเรียงลำดับ YAML: { $e }
+yaml-serialise-error = ข้อผิดพลาดการเรียงลำดับ YAML: { $e }
 edit-reply-invalid = การตอบกลับการแก้ไขไม่ถูกต้อง
 doc-publish-ipld-error = การเผยแพร่ IPLD ล้มเหลว: { $e }
 

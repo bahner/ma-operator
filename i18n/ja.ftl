@@ -265,7 +265,7 @@ yaml-not-mapping = YAMLはマッピング（キー：値のペア）でなけれ
 dagcbor-encode-error = DAG-CBORエンコードエラー: { $e }
 cbor-decode-error = CBORデコードエラー: { $e }
 cbor-json-error = CBORからJSONへの変換エラー: { $e }
-yaml-serialize-error = YAMLシリアル化エラー: { $e }
+yaml-serialise-error = YAMLシリアル化エラー: { $e }
 edit-reply-invalid = 無効な編集返信
 doc-publish-ipld-error = IPLD公開に失敗: { $e }
 

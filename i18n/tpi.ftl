@@ -258,7 +258,7 @@ yaml-not-mapping = YAML i mas stap mapping (pe ki: valu); tokples stret na skala
 dagcbor-encode-error = DAG-CBOR encode ero: { $e }
 cbor-decode-error = CBOR decode ero: { $e }
 cbor-json-error = CBOR i go JSON ero: { $e }
-yaml-serialize-error = YAML serialize ero: { $e }
+yaml-serialise-error = YAML serialize ero: { $e }
 edit-reply-invalid = bekim bilong stretim i no stret
 doc-publish-ipld-error = IPLD publish i no go: { $e }
 

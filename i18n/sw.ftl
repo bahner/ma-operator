@@ -265,7 +265,7 @@ yaml-not-mapping = YAML lazima iwe mapping (jozi la ufunguo: thamani); maandishi
 dagcbor-encode-error = Kosa la kusimba DAG-CBOR: { $e }
 cbor-decode-error = Kosa la kusimbua CBOR: { $e }
 cbor-json-error = Kosa la CBOR hadi JSON: { $e }
-yaml-serialize-error = Kosa la kusindika YAML: { $e }
+yaml-serialise-error = Kosa la kusindika YAML: { $e }
 edit-reply-invalid = Jibu la uhariri lisilofaa
 doc-publish-ipld-error = Kuchapisha IPLD kulishindwa: { $e }
 

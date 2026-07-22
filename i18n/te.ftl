@@ -272,7 +272,7 @@ yaml-not-mapping = YAML తప్పనిసరిగా mapping (కీ: వ�
 dagcbor-encode-error = DAG-CBOR ఎన్‌కోడ్ లోపం: { $e }
 cbor-decode-error = CBOR డీకోడ్ లోపం: { $e }
 cbor-json-error = CBOR నుండి JSON లోపం: { $e }
-yaml-serialize-error = YAML సీరియలైజేషన్ లోపం: { $e }
+yaml-serialise-error = YAML సీరియలైజేషన్ లోపం: { $e }
 edit-reply-invalid = చెల్లని సవరణ జవాబు
 doc-publish-ipld-error = IPLD ప్రచురణ విఫలమైంది: { $e }
 

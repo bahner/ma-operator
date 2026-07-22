@@ -272,7 +272,7 @@ yaml-not-mapping = YAML waawi jeyeede mapping (keɓi: maanotooɓe); maango fof w
 dagcbor-encode-error = Juulnde DAG-CBOR: { $e }
 cbor-decode-error = Juulnde CBOR: { $e }
 cbor-json-error = Juulnde CBOR→JSON: { $e }
-yaml-serialize-error = Juulnde YAML: { $e }
+yaml-serialise-error = Juulnde YAML: { $e }
 edit-reply-invalid = Jaabu winndi feewi
 doc-publish-ipld-error = Winndude IPLD ñaawonaaki: { $e }
 

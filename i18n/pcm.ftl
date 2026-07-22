@@ -258,7 +258,7 @@ yaml-not-mapping = YAML must be mapping (key: value pair); plain text and scalar
 dagcbor-encode-error = DAG-CBOR encode wahala: { $e }
 cbor-decode-error = CBOR decode wahala: { $e }
 cbor-json-error = CBOR go JSON wahala: { $e }
-yaml-serialize-error = YAML serialize wahala: { $e }
+yaml-serialise-error = YAML serialize wahala: { $e }
 edit-reply-invalid = invalid edit reply
 doc-publish-ipld-error = IPLD publish no work: { $e }
 

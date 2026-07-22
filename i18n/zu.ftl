@@ -272,7 +272,7 @@ yaml-not-mapping = I-YAML kufanele ibe yimapping (amajozi okhiye: inani); umbhal
 dagcbor-encode-error = Iphutha lokukhowuda i-DAG-CBOR: { $e }
 cbor-decode-error = Iphutha lokuvula i-CBOR: { $e }
 cbor-json-error = Iphutha lokuguqula i-CBOR ibe i-JSON: { $e }
-yaml-serialize-error = Iphutha lokusereyeliza i-YAML: { $e }
+yaml-serialise-error = Iphutha lokusereyeliza i-YAML: { $e }
 edit-reply-invalid = Impendulo yokuhlela engavumelekile
 doc-publish-ipld-error = Ukushicilela i-IPLD kuhlulekile: { $e }
 

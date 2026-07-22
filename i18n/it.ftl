@@ -265,7 +265,7 @@ yaml-not-mapping = YAML deve essere un mapping (coppie chiave: valore); testo se
 dagcbor-encode-error = Errore di codifica DAG-CBOR: { $e }
 cbor-decode-error = Errore di decodifica CBOR: { $e }
 cbor-json-error = Errore da CBOR a JSON: { $e }
-yaml-serialize-error = Errore di serializzazione YAML: { $e }
+yaml-serialise-error = Errore di serializzazione YAML: { $e }
 edit-reply-invalid = Risposta di modifica non valida
 doc-publish-ipld-error = Pubblicazione IPLD fallita: { $e }
 

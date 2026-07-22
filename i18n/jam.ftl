@@ -258,7 +258,7 @@ yaml-not-mapping = YAML mus bi a mapping (ki: value pair); plain text an scalar 
 dagcbor-encode-error = DAG-CBOR encode error: { $e }
 cbor-decode-error = CBOR decode error: { $e }
 cbor-json-error = CBOR to JSON error: { $e }
-yaml-serialize-error = YAML serialize error: { $e }
+yaml-serialise-error = YAML serialise error: { $e }
 edit-reply-invalid = repons modifye pa valab
 doc-publish-ipld-error = IPLD publish failed: { $e }
 

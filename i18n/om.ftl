@@ -272,7 +272,7 @@ yaml-not-mapping = YAML mapping (pair furtuun: gatii) ta'uu qaba; barreeffama du
 dagcbor-encode-error = Dogoggora DAG-CBOR: { $e }
 cbor-decode-error = Dogoggora CBOR: { $e }
 cbor-json-error = Dogoggora CBOR gara JSON: { $e }
-yaml-serialize-error = Dogoggora serialization YAML: { $e }
+yaml-serialise-error = Dogoggora serialisation YAML: { $e }
 edit-reply-invalid = Deebii gulaala dogoggoraa
 doc-publish-ipld-error = Maxxansuu IPLD kufe: { $e }
 

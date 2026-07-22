@@ -265,7 +265,7 @@ yaml-not-mapping = YAML:n täytyy olla mapping (avain: arvo -parit); pelkkää t
 dagcbor-encode-error = DAG-CBOR-koodausvirhe: { $e }
 cbor-decode-error = CBOR-dekoodausvirhe: { $e }
 cbor-json-error = CBOR JSON-muunnosvirhe: { $e }
-yaml-serialize-error = YAML-sarjallistamisvirhe: { $e }
+yaml-serialise-error = YAML-sarjallistamisvirhe: { $e }
 edit-reply-invalid = Virheellinen muokkausvastaus
 doc-publish-ipld-error = IPLD-julkaiseminen epäonnistui: { $e }
 

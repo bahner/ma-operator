@@ -272,7 +272,7 @@ yaml-not-mapping = YAML harus berupa mapping (pasangan kunci: nilai); teks biasa
 dagcbor-encode-error = Kesalahan enkode DAG-CBOR: { $e }
 cbor-decode-error = Kesalahan dekode CBOR: { $e }
 cbor-json-error = Kesalahan CBOR ke JSON: { $e }
-yaml-serialize-error = Kesalahan serialisasi YAML: { $e }
+yaml-serialise-error = Kesalahan serialisasi YAML: { $e }
 edit-reply-invalid = Balasan pengeditan tidak valid
 doc-publish-ipld-error = Penerbitan IPLD gagal: { $e }
 

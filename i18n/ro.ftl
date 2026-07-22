@@ -265,7 +265,7 @@ yaml-not-mapping = YAML trebuie să fie un mapping (perechi cheie: valoare); tex
 dagcbor-encode-error = Eroare de codificare DAG-CBOR: { $e }
 cbor-decode-error = Eroare de decodificare CBOR: { $e }
 cbor-json-error = Eroare CBOR la JSON: { $e }
-yaml-serialize-error = Eroare de serializare YAML: { $e }
+yaml-serialise-error = Eroare de serializare YAML: { $e }
 edit-reply-invalid = Răspuns de editare invalid
 doc-publish-ipld-error = Publicarea IPLD a eșuat: { $e }
 

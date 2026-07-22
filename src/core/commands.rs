@@ -31,7 +31,7 @@ pub enum CommandStatus {
     Sent,
     /// Local command completed; nothing further expected. Shown dimmed.
     Done,
-    /// A reply arrived. The string is unused for rendering (color change only).
+    /// A reply arrived. The string is unused for rendering (colour change only).
     Replied(String),
     /// Publish is in flight (e.g. edit → IPFS store sent, waiting for CRUD SET confirm).
     Publishing,

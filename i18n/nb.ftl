@@ -289,7 +289,7 @@ yaml-not-mapping = YAML må være en mapping (nøkkel: verdi-par); ren tekst og 
 dagcbor-encode-error = DAG-CBOR-kodeingsfeil: { $e }
 cbor-decode-error = CBOR-avkodingsfeil: { $e }
 cbor-json-error = CBOR til JSON-feil: { $e }
-yaml-serialize-error = YAML-serialiseringsfeil: { $e }
+yaml-serialise-error = YAML-serialiseringsfeil: { $e }
 edit-reply-invalid = ugyldig redigeringssvar
 doc-publish-ipld-error = kan ikke publisere-ipld: { $e }
 

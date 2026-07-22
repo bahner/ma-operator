@@ -265,7 +265,7 @@ yaml-not-mapping = YAML turi būti mapping (raktas: reikšmių poros); paprastas
 dagcbor-encode-error = DAG-CBOR kodavimo klaida: { $e }
 cbor-decode-error = CBOR dekodavimo klaida: { $e }
 cbor-json-error = CBOR į JSON klaida: { $e }
-yaml-serialize-error = YAML serializavimo klaida: { $e }
+yaml-serialise-error = YAML serializavimo klaida: { $e }
 edit-reply-invalid = Netinkamas redagavimo atsakymas
 doc-publish-ipld-error = IPLD paskelbimas nepavyko: { $e }
 
