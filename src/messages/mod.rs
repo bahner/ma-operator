@@ -4,6 +4,7 @@
 
 use crate::i18n::{t, tf};
 use ciborium::Value as CborValue;
+use ma_core::{CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON, CODEC_RAW};
 
 /// Convert a YAML string into a DAG-CBOR byte vector.
 ///
@@ -64,6 +65,33 @@ pub fn cbor_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
         .map_err(|e| tf("cbor-decode-error", &[("e", &e.to_string())]))?;
     let json_val: serde_json::Value = serde_json::to_value(&cbor_val)
         .map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
+    serde_yaml::to_string(&json_val)
+        .map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
+}
+
+/// Decode bytes fetched for a root CID into editor text using the CID's codec.
+///
+/// Public gateways should be treated as byte transport. The CID tells zion how
+/// to interpret those bytes: DAG-CBOR/CBOR become YAML, JSON codecs become YAML,
+/// and raw blocks are displayed as UTF-8 text.
+pub fn cid_bytes_to_editor_text(cid: &str, bytes: &[u8]) -> Result<String, String> {
+    let cid = cid::Cid::try_from(cid).map_err(|e| format!("invalid CID {cid}: {e}"))?;
+    match cid.codec() {
+        CODEC_DAG_CBOR | CODEC_CBOR => cbor_bytes_to_yaml(bytes),
+        CODEC_DAG_JSON | CODEC_JSON => json_bytes_to_yaml(bytes),
+        CODEC_RAW => String::from_utf8(bytes.to_vec())
+            .map_err(|e| format!("raw block is not UTF-8 text: {e}")),
+        other => cbor_bytes_to_yaml(bytes).or_else(|_| {
+            String::from_utf8(bytes.to_vec()).map_err(|e| {
+                format!("unsupported CID codec 0x{other:x}; raw bytes are not UTF-8: {e}")
+            })
+        }),
+    }
+}
+
+fn json_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
+    let json_val: serde_json::Value = serde_json::from_slice(bytes)
+        .map_err(|e| tf("json-parse-error", &[("e", &e.to_string())]))?;
     serde_yaml::to_string(&json_val)
         .map_err(|e| tf("yaml-serialize-error", &[("e", &e.to_string())]))
 }
@@ -234,6 +262,59 @@ mod tests {
         let (display, is_error) = format_rpc_reply(&body);
         assert!(!is_error);
         assert_eq!(display, "owners");
+    }
+
+    fn test_cid(codec: u64) -> String {
+        cid::Cid::new_v1(
+            codec,
+            cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
+        )
+        .to_string()
+    }
+
+    #[test]
+    fn cid_bytes_to_editor_text_decodes_dag_cbor_as_yaml() {
+        let mut bytes = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Map(vec![
+                (
+                    CborValue::Text("name".to_string()),
+                    CborValue::Text("scheduler".to_string()),
+                ),
+                (
+                    CborValue::Text("enabled".to_string()),
+                    CborValue::Bool(true),
+                ),
+            ]),
+            &mut bytes,
+        )
+        .expect("encode cbor");
+
+        let text =
+            cid_bytes_to_editor_text(&test_cid(CODEC_DAG_CBOR), &bytes).expect("decode dag-cbor");
+
+        assert!(text.contains("name: scheduler"));
+        assert!(text.contains("enabled: true"));
+    }
+
+    #[test]
+    fn cid_bytes_to_editor_text_decodes_json_as_yaml() {
+        let text = cid_bytes_to_editor_text(
+            &test_cid(CODEC_JSON),
+            br#"{"name":"scheduler","enabled":true}"#,
+        )
+        .expect("decode json");
+
+        assert!(text.contains("name: scheduler"));
+        assert!(text.contains("enabled: true"));
+    }
+
+    #[test]
+    fn cid_bytes_to_editor_text_decodes_raw_as_utf8() {
+        let text =
+            cid_bytes_to_editor_text(&test_cid(CODEC_RAW), b"plain behaviour").expect("decode raw");
+
+        assert_eq!(text, "plain behaviour");
     }
 }
 

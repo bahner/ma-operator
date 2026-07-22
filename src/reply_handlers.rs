@@ -15,7 +15,7 @@ use crate::{
     eval::is_remote_fetch_root,
     http::fetch_path_bytes,
     i18n::tf,
-    messages::IncomingMessage,
+    messages::{cid_bytes_to_editor_text, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
 };
@@ -444,13 +444,27 @@ fn open_editor_via_path(
 ) {
     spawn_local(async move {
         match fetch_path_bytes(&path).await {
-            Ok(bytes) => match crate::messages::cbor_bytes_to_yaml(&bytes) {
+            Ok(bytes) => match fetched_path_bytes_to_editor_text(&path, &bytes) {
                 Ok(yaml) => open_editor(show_editor, doc_path, save_to, yaml, "yaml", mode, cmd_id),
                 Err(e) => edit_error(&state, cmd_id, "err-edit-decode-failed", &e),
             },
             Err(e) => edit_error(&state, cmd_id, "err-edit-fetch-failed", &e),
         }
     });
+}
+
+fn fetched_path_bytes_to_editor_text(path: &str, bytes: &[u8]) -> Result<String, String> {
+    root_cid_from_fetch_path(path).map_or_else(
+        || crate::messages::cbor_bytes_to_yaml(bytes),
+        |cid| cid_bytes_to_editor_text(cid, bytes),
+    )
+}
+
+fn root_cid_from_fetch_path(path: &str) -> Option<&str> {
+    let rest = path
+        .strip_prefix("/ipfs/")
+        .or_else(|| path.strip_prefix("/ipld/"))?;
+    (!rest.is_empty() && !rest.contains('/')).then_some(rest)
 }
 
 /// For `application/vnd.ma.term+yaml`: unwrap the CBOR text wrapper, or fall
@@ -703,6 +717,14 @@ mod tests {
             ipfs_ref_from_store_reply("/ipfs/bafyreipath\n"),
             "/ipfs/bafyreipath"
         );
+    }
+
+    #[test]
+    fn root_cid_from_fetch_path_only_accepts_root_ipfs_or_ipld_paths() {
+        assert_eq!(root_cid_from_fetch_path("/ipfs/bafyroot"), Some("bafyroot"));
+        assert_eq!(root_cid_from_fetch_path("/ipld/bafyroot"), Some("bafyroot"));
+        assert_eq!(root_cid_from_fetch_path("/ipfs/bafyroot/child"), None);
+        assert_eq!(root_cid_from_fetch_path("/ipns/k51name"), None);
     }
 
     #[test]

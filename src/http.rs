@@ -6,7 +6,6 @@
 use crate::transport::connection::gateway_base_url;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
-use ma_core::{CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON};
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
 
@@ -120,12 +119,19 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
-/// (user-facing path syntax). CIDv1 links with IPLD codecs are fetched via
-/// the runtime's explicit `/ipld/` helper so DAG-CBOR nodes are read as raw
-/// blocks instead of UnixFS file content.
+/// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
+/// blocks so zion, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let arg = fetch_path_bytes_arg(path);
-    fetch_url_bytes(&format!("{}{arg}", gateway_base_url())).await
+    let base = gateway_base_url();
+    let mut errors = Vec::new();
+    for arg in fetch_path_bytes_args(path) {
+        let url = format!("{base}{arg}");
+        match fetch_url_bytes(&url).await {
+            Ok(bytes) => return Ok(bytes),
+            Err(e) => errors.push(format!("{url}: {e}")),
+        }
+    }
+    Err(errors.join("; "))
 }
 
 /// Fetch text for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
@@ -135,13 +141,14 @@ pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     fetch_url_text(&format!("{}{arg}", gateway_base_url())).await
 }
 
-fn fetch_path_bytes_arg(path: &str) -> String {
+fn fetch_path_bytes_args(path: &str) -> Vec<String> {
+    let trimmed = path.trim_start_matches('/');
     if let Some(root_cid) = root_cid_from_ipfs_path(path) {
-        if cid_has_ipld_codec(root_cid) {
-            return format!("ipld/{}", path.trim_start_matches("/ipfs/"));
+        if ipfs_path_has_no_subpath(path) {
+            return vec![format!("ipfs/{root_cid}?format=raw"), trimmed.to_string()];
         }
     }
-    path.trim_start_matches('/').to_string()
+    vec![trimmed.to_string()]
 }
 
 fn root_cid_from_ipfs_path(path: &str) -> Option<&str> {
@@ -151,13 +158,9 @@ fn root_cid_from_ipfs_path(path: &str) -> Option<&str> {
         .filter(|cid| !cid.is_empty())
 }
 
-fn cid_has_ipld_codec(cid: &str) -> bool {
-    cid::Cid::try_from(cid).is_ok_and(|cid| {
-        matches!(
-            cid.codec(),
-            CODEC_CBOR | CODEC_DAG_CBOR | CODEC_DAG_JSON | CODEC_JSON
-        )
-    })
+fn ipfs_path_has_no_subpath(path: &str) -> bool {
+    path.strip_prefix("/ipfs/")
+        .is_some_and(|rest| !rest.contains('/'))
 }
 
 #[cfg(test)]
@@ -165,8 +168,8 @@ mod tests {
     use super::*;
 
     #[test]
-    fn fetch_path_bytes_uses_ipld_for_ipld_cids() {
-        let ipld_cid = cid::Cid::new_v1(
+    fn fetch_path_bytes_uses_raw_gateway_format_for_root_cids() {
+        let cbor_cid = cid::Cid::new_v1(
             ma_core::CODEC_DAG_CBOR,
             cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
         )
@@ -178,12 +181,32 @@ mod tests {
         .to_string();
 
         assert_eq!(
-            fetch_path_bytes_arg(&format!("/ipfs/{ipld_cid}")),
-            format!("ipld/{ipld_cid}")
+            fetch_path_bytes_args(&format!("/ipfs/{cbor_cid}")),
+            vec![
+                format!("ipfs/{cbor_cid}?format=raw"),
+                format!("ipfs/{cbor_cid}"),
+            ]
         );
         assert_eq!(
-            fetch_path_bytes_arg(&format!("/ipfs/{raw_cid}")),
-            format!("ipfs/{raw_cid}")
+            fetch_path_bytes_args(&format!("/ipfs/{raw_cid}")),
+            vec![
+                format!("ipfs/{raw_cid}?format=raw"),
+                format!("ipfs/{raw_cid}")
+            ]
+        );
+    }
+
+    #[test]
+    fn fetch_path_bytes_keeps_subpaths_on_normal_gateway_path() {
+        let ipld_cid = cid::Cid::new_v1(
+            ma_core::CODEC_DAG_CBOR,
+            cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
+        )
+        .to_string();
+
+        assert_eq!(
+            fetch_path_bytes_args(&format!("/ipfs/{ipld_cid}/child")),
+            vec![format!("ipfs/{ipld_cid}/child")]
         );
     }
 }
