@@ -1,6 +1,5 @@
 //! Session startup helpers: config loading, history, iroh connect, DID sync.
 
-use gloo_timers::future::TimeoutFuture;
 use leptos::prelude::*;
 use ma_core::DidDocumentResolver;
 
@@ -10,7 +9,7 @@ use crate::{
     i18n::{t, tf},
     identity::storage::load_history,
     parser::verbs::ma::ConnectMaOutcome,
-    state::{AppState, PendingKind, SessionState},
+    state::{AppState, SessionState},
     transport,
 };
 
@@ -232,14 +231,6 @@ fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
     })
 }
 
-fn startup_ctx_avatar(cfg: &EgoConfig) -> Option<String> {
-    if cfg.get(".my.ctx.use") != Some("true") {
-        return None;
-    }
-    let avatar = cfg.get(".my.ctx.avatar")?.trim();
-    (avatar.starts_with("did:ma:") && avatar.contains('#')).then(|| avatar.to_string())
-}
-
 fn startup_enter_publish_did(
     config: RwSignal<EgoConfig>,
     startup_enter: Option<&str>,
@@ -268,7 +259,11 @@ fn startup_enter_publish_did(
     did.starts_with("did:ma:").then(|| did.to_string())
 }
 
-fn queue_startup_context(state: &AppState, config: RwSignal<EgoConfig>) {
+fn queue_startup_context(
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    discovered_runtime_did: Option<&str>,
+) {
     let explicit = state
         .startup_enter
         .update_untracked(|v| v.take())
@@ -280,42 +275,9 @@ fn queue_startup_context(state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     }
     let cfg = config.get_untracked();
-    if let Some(avatar) = startup_ctx_avatar(&cfg) {
-        let state2 = state.clone();
-        let fallback_enter = startup_ctx_enter(&cfg);
-        leptos::task::spawn_local(async move {
-            match transport::send_rpc_with_msg_id(&avatar, "ctx?", &[], |msg_id| {
-                if let Some(fallback_enter) = fallback_enter.clone() {
-                    let timer_state = state2.clone();
-                    let timer_msg_id = msg_id.clone();
-                    state2.register_pending(
-                        msg_id,
-                        PendingKind::StartupAvatarCtx { fallback_enter },
-                        None,
-                    );
-                    leptos::task::spawn_local(async move {
-                        TimeoutFuture::new(3_000).await;
-                        if let Some(PendingKind::StartupAvatarCtx { fallback_enter }) =
-                            timer_state.take_pending(&timer_msg_id)
-                        {
-                            timer_state
-                                .input_queue
-                                .update(|q| q.push_back(format!(".enter {fallback_enter}")));
-                        }
-                    });
-                } else {
-                    let _ = msg_id;
-                }
-            })
-            .await
-            {
-                Ok(_) => {}
-                Err(e) => {
-                    state2.push_error(tf("msg-send-failed", &[("e", &e)]));
-                }
-            }
-        });
-    } else if let Some(runtime) = startup_ctx_enter(&cfg) {
+    let fallback_enter = startup_ctx_enter(&cfg)
+        .or_else(|| discovered_runtime_did.map(|did| normalize_startup_enter(did.to_string())));
+    if let Some(runtime) = fallback_enter {
         state
             .input_queue
             .update(|q| q.push_back(format!(".enter {runtime}")));
@@ -332,9 +294,7 @@ fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        normalize_startup_enter, should_queue_startup_enter, startup_ctx_avatar, startup_ctx_enter,
-    };
+    use super::{normalize_startup_enter, should_queue_startup_enter, startup_ctx_enter};
     use crate::config::EgoConfig;
     use crate::parser::verbs::ma::ConnectMaOutcome;
 
@@ -362,17 +322,6 @@ mod tests {
         assert_eq!(
             startup_ctx_enter(&cfg),
             Some("klaim@did:ma:k51runtime#construct".to_string())
-        );
-    }
-
-    #[test]
-    fn startup_ctx_avatar_restores_active_avatar_contact() {
-        let mut cfg = EgoConfig::new();
-        cfg.set(".my.ctx.use", "true");
-        cfg.set(".my.ctx.avatar", "did:ma:k51runtime#avatar");
-        assert_eq!(
-            startup_ctx_avatar(&cfg),
-            Some("did:ma:k51runtime#avatar".to_string())
         );
     }
 
@@ -457,7 +406,11 @@ pub(crate) async fn startup_connect(
             )
             .await;
             if should_queue_startup_enter(&ma_outcome) {
-                queue_startup_context(&state, config);
+                let discovered_runtime_did = match &ma_outcome {
+                    ConnectMaOutcome::Ready { did } => Some(did.as_str()),
+                    _ => None,
+                };
+                queue_startup_context(&state, config, discovered_runtime_did);
             } else {
                 state.startup_enter.update_untracked(|v| {
                     let _ = v.take();

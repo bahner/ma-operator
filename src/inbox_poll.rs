@@ -21,6 +21,8 @@ use crate::{
     views::editor::EditorContext,
 };
 
+const LAMBDA_CTX_PROTOCOL: &str = "/ma/lambda/ctx/0.0.1";
+
 // ── Public entry point ─────────────────────────────────────────────────────
 
 pub async fn run_inbox_poll(
@@ -93,15 +95,11 @@ fn dispatch_reply(
         if let Some(payload) = ctx_payload {
             let kind = state.take_pending(msg_id);
             handle_ctx_receipt(Some(payload), &incoming, state, config);
-            match kind {
-                Some(PendingKind::Simple { cmd_id }) => {
-                    state.resolve_command_by_id(
-                        cmd_id,
-                        crate::core::CommandStatus::Replied(String::new()),
-                    );
-                }
-                Some(PendingKind::StartupAvatarCtx { .. }) => {}
-                _ => {}
+            if let Some(PendingKind::Simple { cmd_id }) = kind {
+                state.resolve_command_by_id(
+                    cmd_id,
+                    crate::core::CommandStatus::Replied(String::new()),
+                );
             }
             return;
         }
@@ -172,17 +170,15 @@ fn dispatch_reply(
         }
         PendingKind::Simple { cmd_id } => {
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
+            if incoming.is_error {
+                if let Some(reason) = text_opt.as_deref() {
+                    maybe_queue_ctx_recovery(reason, state, config);
+                }
+            }
             state.resolve_command_by_id(cmd_id, status);
             if let Some(text) = text_opt {
                 let text = config.get_untracked().substitute_display_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
-            }
-        }
-        PendingKind::StartupAvatarCtx { fallback_enter } => {
-            if incoming.is_error {
-                state
-                    .input_queue
-                    .update(|q| q.push_back(format!(".enter {fallback_enter}")));
             }
         }
     }
@@ -281,11 +277,29 @@ fn handle_ctx_receipt(
     let Some(ciborium::Value::Array(pairs)) = payload else {
         return;
     };
+    let pending_enter = state.pending_enter.get_untracked();
+    let pending_room = pending_enter
+        .as_ref()
+        .map(|pending| pending.desired_room.as_str());
     let root = ctx_value(pairs, ":root").map(str::to_string);
     let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
+    let room = ctx_value(pairs, ":room").map(str::to_string);
+    let protocol = ctx_value(pairs, ":protocol").map(str::to_string);
+    let kind = ctx_value(pairs, ":kind").map(str::to_string);
+    if protocol.as_deref() != Some(LAMBDA_CTX_PROTOCOL) {
+        warn_ctx(&format!(
+            "[ctx] dropping unsupported context protocol from={} protocol={protocol:?}",
+            incoming.from
+        ));
+        return;
+    }
     let expected_root = cfg.get(".my.ctx.root").map(str::to_string);
     let expected_avatar = cfg.get(".my.ctx.avatar").map(str::to_string);
-    let trusted = expected_root
+    // Trust established directly from this message's own identity fields,
+    // independent of any leftover `pending_enter` from an earlier/unrelated
+    // `.enter` attempt. This is the strong signal: an avatar or root actor
+    // reporting on itself.
+    let trusted_by_identity = expected_root
         .as_deref()
         .is_some_and(|expected| incoming.from == expected)
         || root.as_deref().is_some_and(|root| incoming.from == root)
@@ -295,13 +309,47 @@ fn handle_ctx_receipt(
         || avatar
             .as_deref()
             .is_some_and(|avatar| incoming.from == avatar);
-    if !trusted {
+    let trusted_by_pending =
+        pending_room.is_some_and(|expected_room| incoming.from == expected_room);
+    if !trusted_by_identity && !trusted_by_pending {
+        warn_ctx(&format!(
+            "[ctx] dropping untrusted :ctx from={} expected_root={expected_root:?} \
+             expected_avatar={expected_avatar:?} payload_root={root:?} payload_avatar={avatar:?}",
+            incoming.from
+        ));
         return;
     }
+
+    if let Some(pending) = pending_enter {
+        let room_matches = room
+            .as_deref()
+            .is_some_and(|room| room == pending.desired_room);
+        if room_matches {
+            state.clear_pending_enter();
+        } else if trusted_by_identity {
+            // This ctx push is legitimately about the sender's own state (an
+            // avatar/root reporting on itself) even though it doesn't match
+            // a stale pending enter left over from an earlier attempt. Don't
+            // let that stale pending block it forever; drop the stale
+            // pending instead so future ctx pushes aren't blocked too.
+            warn_ctx(&format!(
+                "[ctx] room mismatch against stale pending_enter (desired={}, got={:?}); \
+                 clearing stale pending and applying ctx anyway",
+                pending.desired_room, room
+            ));
+            state.clear_pending_enter();
+        } else {
+            warn_ctx(&format!(
+                "[ctx] dropping :ctx: room mismatch and only trusted via pending_enter \
+                 (desired={}, got={:?})",
+                pending.desired_room, room
+            ));
+            return;
+        }
+    }
+
     let nick = ctx_value(pairs, ":nick").map(str::to_string);
-    let room = ctx_value(pairs, ":room").map(str::to_string);
     let text = ctx_value(pairs, ":text").map(str::to_string);
-    let confirmed_avatar = avatar.as_deref().is_some_and(|avatar| !avatar.is_empty());
     let runtime = root
         .as_deref()
         .or(Some(incoming.from.as_str()))
@@ -319,6 +367,14 @@ fn handle_ctx_receipt(
         if let Some(root) = &root {
             c.set(".my.ctx.root", root);
         }
+        c.set(".my.ctx.protocol", LAMBDA_CTX_PROTOCOL);
+        if let Some(kind) = &kind {
+            if kind.is_empty() {
+                c.delete(".my.ctx.kind");
+            } else {
+                c.set(".my.ctx.kind", kind);
+            }
+        }
         if let Some(avatar) = &avatar {
             if avatar.is_empty() {
                 c.delete(".my.ctx.avatar");
@@ -335,7 +391,7 @@ fn handle_ctx_receipt(
                 c.delete(".my.ctx.alias");
             }
         }
-        if let Some(room) = &room.filter(|_| confirmed_avatar) {
+        if let Some(room) = &room {
             if room.is_empty() {
                 c.delete(".my.ctx.room");
             } else {
@@ -360,6 +416,16 @@ fn handle_ctx_receipt(
     }
 }
 
+#[cfg(target_arch = "wasm32")]
+fn warn_ctx(message: &str) {
+    web_sys::console::warn_1(&message.into());
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn warn_ctx(message: &str) {
+    eprintln!("{message}");
+}
+
 fn ctx_value<'a>(pairs: &'a [ciborium::Value], key: &str) -> Option<&'a str> {
     pairs.iter().find_map(|pair| match pair {
         ciborium::Value::Array(items) if items.len() == 2 => match (&items[0], &items[1]) {
@@ -374,6 +440,83 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
     match value {
         ciborium::Value::Text(text) => Some(text),
         _ => None,
+    }
+}
+
+fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<EgoConfig>) {
+    let lower = reason.to_ascii_lowercase();
+    if !lower.contains("unknown entity fragment") {
+        return;
+    }
+
+    let cfg = config.get_untracked();
+    if cfg.get(".my.ctx.use") != Some("true") {
+        return;
+    }
+
+    let Some(runtime) = cfg
+        .get(".my.ctx.runtime")
+        .map(str::trim)
+        .filter(|runtime| !runtime.is_empty())
+        .map(str::to_string)
+    else {
+        return;
+    };
+
+    // Only recover automatically when there is an active avatar context.
+    // Without an avatar (direct agent mode), just suggest the start room.
+    if cfg
+        .get(".my.ctx.avatar")
+        .map(str::trim)
+        .filter(|avatar| avatar.starts_with("did:ma:") && avatar.contains('#'))
+        .is_none()
+    {
+        state.push_error(format!(
+            "unknown entity fragment — use .enter @{runtime} to enter the default start room"
+        ));
+        return;
+    }
+
+    // Avoid enqueue storms while a recovery enter is already pending/queued.
+    if state.pending_enter.get_untracked().is_some() {
+        return;
+    }
+    if state
+        .input_queue
+        .with_untracked(|q| q.iter().any(|line| line.starts_with(".enter ")))
+    {
+        return;
+    }
+
+    // On unknown fragment, don't retry a possibly stale room target.
+    // Re-enter via runtime and let runtime/root select a valid placement.
+    let target = runtime.clone();
+    let nick = cfg.get(".my.ctx.nick").map(str::trim).filter(|nick| {
+        !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
+    });
+
+    let enter = match nick {
+        Some(nick) => format!("{nick}@{target}"),
+        None => normalize_enter_target(&target),
+    };
+    #[cfg(target_arch = "wasm32")]
+    web_sys::console::warn_1(
+        &format!("[ctx-recovery] stale avatar/fragment detected; queuing auto-enter: {enter}")
+            .into(),
+    );
+    state.push_system(format!(
+        "auto-recovery: stale avatar detected, re-entering with .enter {enter}"
+    ));
+    state
+        .input_queue
+        .update(|q| q.push_back(format!(".enter {enter}")));
+}
+
+fn normalize_enter_target(target: &str) -> String {
+    if target.starts_with('@') || target.contains('@') {
+        target.to_string()
+    } else {
+        format!("@{target}")
     }
 }
 
@@ -505,6 +648,7 @@ fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> St
 mod tests {
     use super::*;
     use crate::messages::IncomingMessage;
+    use std::collections::VecDeque;
 
     fn incoming(from: &str, display: &str) -> IncomingMessage {
         IncomingMessage {
@@ -588,5 +732,95 @@ mod tests {
                 .and_then(ctx_payload_from_reply_items),
             Some(ciborium::Value::Array(_))
         ));
+    }
+
+    #[test]
+    fn ctx_receipt_applies_supported_lambda_protocol_and_kind() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let payload = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":protocol".to_string()),
+                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("agent".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":root".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":room".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#room".to_string()),
+            ]),
+        ]);
+        let incoming = incoming("did:ma:k51runtime#root", "");
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(".my.ctx.protocol"), Some(LAMBDA_CTX_PROTOCOL));
+        assert_eq!(cfg.get(".my.ctx.kind"), Some("agent"));
+        assert_eq!(cfg.get(".my.ctx.room"), Some("did:ma:k51runtime#room"));
+    }
+
+    #[test]
+    fn ctx_receipt_rejects_unknown_protocol() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| cfg.set(".my.ctx.kind", "avatar"));
+        let payload = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":protocol".to_string()),
+                ciborium::Value::Text("/ma/lambda/ctx/9.9.9".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("agent".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":root".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+            ]),
+        ]);
+        let incoming = incoming("did:ma:k51runtime#root", "");
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(".my.ctx.kind"), Some("avatar"));
+        assert_eq!(cfg.get(".my.ctx.protocol"), None);
+    }
+
+    #[test]
+    fn recovery_reenters_with_unqualified_runtime_on_unknown_fragment() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let missing_room = "NONEXISTENT_FRAGMENT_SENTINEL";
+        config.update(|cfg| {
+            cfg.set(".my.ctx.use", "true");
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.room", &format!("did:ma:k51runtime#{missing_room}"));
+            cfg.set(".my.ctx.avatar", "did:ma:k51runtime#avatar123");
+            cfg.set(".my.ctx.nick", "foo");
+        });
+        state.input_queue.set(VecDeque::new());
+
+        maybe_queue_ctx_recovery(
+            &format!("unknown entity fragment: {missing_room}"),
+            &state,
+            config,
+        );
+
+        let queued: Vec<String> = state.input_queue.get_untracked().into_iter().collect();
+        assert!(queued
+            .iter()
+            .any(|line| line == ".enter foo@did:ma:k51runtime"));
+        assert!(!queued.iter().any(|line| line.contains(missing_room)));
     }
 }

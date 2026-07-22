@@ -7,8 +7,10 @@ pub(crate) mod actor_send {
 }
 
 use leptos::prelude::*;
+use std::collections::BTreeMap;
 
 use ma_core::DidDocumentResolver;
+use ma_zscheme::SchemeVal;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
@@ -296,7 +298,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     };
     let cfg = config.get_untracked();
-    let (requested_nick, actor_input) = match parse_enter_target(raw) {
+    let (requested_nick, actor_input, requested_kind) = match parse_enter_target(raw) {
         Ok(parsed) => parsed,
         Err(e) => {
             state.push_error(e);
@@ -327,15 +329,46 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
 
     let state2 = state.clone();
     let entered = raw.clone();
+    let enter_kind = match enter_ctx_kind(requested_kind.as_deref()) {
+        Ok(kind) => kind.map(str::to_string),
+        Err(e) => {
+            state.push_error(e);
+            return;
+        }
+    };
     spawn_local(async move {
         let cmd_id = state2.push_command(format!(".enter {entered}"));
-        let (entry_runtime, room_actor) = target_actor
+        let (entry_runtime, requested_room) = target_actor
             .split_once('#')
             .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
             .unwrap_or_else(|| (target_actor.clone(), None));
+
+        if let Some(room_actor) = requested_room.as_ref() {
+            let enter_args = build_enter_ctx(
+                &state2,
+                effective_nick.as_deref(),
+                enter_kind.as_deref(),
+                &cfg,
+            );
+            state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
+            match transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await {
+                Ok(msg_id) => {
+                    if room_enter_expects_direct_reply(enter_kind.as_deref()) {
+                        state2.bind_message_id(cmd_id, msg_id);
+                    }
+                }
+                Err(e) => {
+                    state2.clear_pending_enter();
+                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+                    state2.push_error(tf("msg-send-failed", &[("e", &e)]));
+                }
+            }
+            return;
+        }
+
         let entry_runtime = entry_runtime.to_string();
         let root = format!("{entry_runtime}#root");
-        let enter_args = enter_args(room_actor.as_deref(), effective_nick.as_deref());
+        let enter_args = enter_args_root(requested_room.as_deref(), effective_nick.as_deref());
         config.update(|c| {
             c.set(".my.ctx.use", "true");
             c.set(".my.ctx.runtime", &entry_runtime);
@@ -384,7 +417,12 @@ fn toggle_existing_ctx(state: &AppState, config: RwSignal<EgoConfig>) {
     apply_ctx_focus(&cfg, state);
 }
 
+#[cfg(test)]
 fn enter_args<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a str> {
+    enter_args_root(room_actor, nick)
+}
+
+fn enter_args_root<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a str> {
     match (room_actor, nick) {
         (Some(room), Some(nick)) => vec![room, nick],
         (Some(room), None) => vec![room],
@@ -393,40 +431,107 @@ fn enter_args<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a
     }
 }
 
-fn parse_enter_target(raw: &str) -> Result<(Option<String>, String), String> {
-    if let Some(stripped) = raw.strip_prefix('@') {
-        if raw.len() == 1 {
-            return Err("usage: .enter [nick]@runtime[#room]".to_string());
+fn build_enter_ctx(
+    state: &AppState,
+    requested_nick: Option<&str>,
+    kind: Option<&str>,
+    cfg: &EgoConfig,
+) -> SchemeVal {
+    let username = state
+        .session
+        .get_untracked()
+        .map(|s| s.username)
+        .unwrap_or_else(|| "traveler".to_string());
+    let name = trim_or_fallback(
+        cfg.get(".my.profile.name")
+            .map(str::to_string)
+            .or_else(|| cfg.get(".my.profile.username").map(str::to_string)),
+        &username,
+    );
+    let nick = trim_or_fallback(
+        requested_nick
+            .map(str::to_string)
+            .or_else(|| cfg.get(".my.ctx.nick").map(str::to_string)),
+        &name,
+    );
+    let description = trim_or_fallback(
+        cfg.get(".my.profile.description").map(str::to_string),
+        "A ruggedly handsome gentleman",
+    );
+
+    let mut ctx = BTreeMap::new();
+    if let Some(kind) = kind {
+        ctx.insert("kind".to_string(), SchemeVal::Str(kind.to_string()));
+    }
+    ctx.insert("name".to_string(), SchemeVal::Str(name));
+    ctx.insert("nick".to_string(), SchemeVal::Str(nick));
+    ctx.insert("description".to_string(), SchemeVal::Str(description));
+    SchemeVal::Map(ctx)
+}
+
+fn enter_ctx_kind(kind: Option<&str>) -> Result<Option<&str>, String> {
+    match kind.map(str::trim).filter(|kind| !kind.is_empty()) {
+        None | Some("avatar") => Ok(None),
+        Some("agent") => Ok(Some("agent")),
+        Some("thing") => Ok(Some("thing")),
+        Some(other) => Err(format!(
+            "unsupported enter kind: {other}; use kind=agent or kind=thing, or omit kind for session entry"
+        )),
+    }
+}
+
+fn room_enter_expects_direct_reply(kind: Option<&str>) -> bool {
+    kind.is_some()
+}
+
+fn trim_or_fallback(value: Option<String>, fallback: &str) -> String {
+    value
+        .map(|v| v.trim().to_string())
+        .filter(|v| !v.is_empty())
+        .unwrap_or_else(|| fallback.to_string())
+}
+
+fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<String>), String> {
+    const USAGE: &str = "usage: .enter [nick]@runtime[#room][?kind=agent]";
+    // Strip optional ?key=value query params; extract `kind` if present.
+    let (url_part, query_part) = raw.split_once('?').unwrap_or((raw, ""));
+    let kind = query_part
+        .split('&')
+        .filter_map(|kv| kv.split_once('='))
+        .find(|(k, _)| *k == "kind")
+        .map(|(_, v)| v.trim().to_string())
+        .filter(|v| !v.is_empty());
+
+    if let Some(stripped) = url_part.strip_prefix('@') {
+        if url_part.len() == 1 {
+            return Err(USAGE.to_string());
         }
         if stripped.contains('@') {
-            return Err("usage: .enter [nick]@runtime[#room]".to_string());
+            return Err(USAGE.to_string());
         }
-        return Ok((None, raw.to_string()));
+        return Ok((None, url_part.to_string(), kind));
     }
-    let Some((nick, runtime)) = raw.split_once('@') else {
-        return Err("usage: .enter [nick]@runtime[#room]".to_string());
+    let Some((nick, runtime)) = url_part.split_once('@') else {
+        return Err(USAGE.to_string());
     };
     let nick = nick.trim();
     let runtime = runtime.trim();
     if nick.is_empty() || runtime.is_empty() {
-        return Err("usage: .enter [nick]@runtime[#room]".to_string());
+        return Err(USAGE.to_string());
     }
-    let actor_input = format!("@{runtime}");
-    if nick.is_empty() {
-        Ok((None, actor_input))
-    } else {
-        Ok((Some(nick.to_string()), actor_input))
-    }
+    Ok((Some(nick.to_string()), format!("@{runtime}"), kind))
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_ctx_focus, enter_args, focus_target_for_room, parse_enter_target,
-        toggle_existing_ctx, validate_alias_set,
+        apply_ctx_focus, build_enter_ctx, enter_args, enter_ctx_kind, focus_target_for_room,
+        parse_enter_target, room_enter_expects_direct_reply, toggle_existing_ctx,
+        validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
+    use ma_zscheme::value::SchemeVal;
 
     #[test]
     fn validate_alias_set_accepts_did_url() {
@@ -446,20 +551,23 @@ mod tests {
     fn parse_enter_target_accepts_nick_at_alias() {
         assert_eq!(
             parse_enter_target("Armageddon@sky"),
-            Ok((Some("Armageddon".to_string()), "@sky".to_string()))
+            Ok((Some("Armageddon".to_string()), "@sky".to_string(), None))
         );
     }
 
     #[test]
     fn parse_enter_target_accepts_explicit_at_alias_and_did_forms() {
-        assert_eq!(parse_enter_target("@sky"), Ok((None, "@sky".to_string())));
+        assert_eq!(
+            parse_enter_target("@sky"),
+            Ok((None, "@sky".to_string(), None))
+        );
         assert_eq!(
             parse_enter_target("@sky#room"),
-            Ok((None, "@sky#room".to_string()))
+            Ok((None, "@sky#room".to_string(), None))
         );
         assert_eq!(
             parse_enter_target("@did:ma:k51example"),
-            Ok((None, "@did:ma:k51example".to_string()))
+            Ok((None, "@did:ma:k51example".to_string(), None))
         );
     }
 
@@ -480,16 +588,81 @@ mod tests {
             parse_enter_target("Armageddon@did:ma:k51example"),
             Ok((
                 Some("Armageddon".to_string()),
-                "@did:ma:k51example".to_string()
+                "@did:ma:k51example".to_string(),
+                None
             ))
         );
         assert_eq!(
             parse_enter_target("Armageddon@did:ma:k51example#room"),
             Ok((
                 Some("Armageddon".to_string()),
-                "@did:ma:k51example#room".to_string()
+                "@did:ma:k51example#room".to_string(),
+                None
             ))
         );
+    }
+
+    #[test]
+    fn parse_enter_target_extracts_kind_query_param() {
+        assert_eq!(
+            parse_enter_target("@sky#room?kind=avatar"),
+            Ok((None, "@sky#room".to_string(), Some("avatar".to_string())))
+        );
+        assert_eq!(
+            parse_enter_target("Nick@sky#room?kind=agent"),
+            Ok((
+                Some("Nick".to_string()),
+                "@sky#room".to_string(),
+                Some("agent".to_string())
+            ))
+        );
+        assert_eq!(
+            parse_enter_target("@sky?kind=wizard"),
+            Ok((None, "@sky".to_string(), Some("wizard".to_string())))
+        );
+        // No kind param → None
+        assert_eq!(
+            parse_enter_target("@sky#room"),
+            Ok((None, "@sky#room".to_string(), None))
+        );
+    }
+
+    #[test]
+    fn enter_ctx_kind_reifies_session_vs_direct_entry() {
+        assert_eq!(enter_ctx_kind(None), Ok(None));
+        assert_eq!(enter_ctx_kind(Some("avatar")), Ok(None));
+        assert_eq!(enter_ctx_kind(Some("agent")), Ok(Some("agent")));
+        assert_eq!(enter_ctx_kind(Some("thing")), Ok(Some("thing")));
+        assert!(enter_ctx_kind(Some("wizard")).is_err());
+    }
+
+    #[test]
+    fn room_session_enter_completes_by_ctx_not_direct_reply() {
+        assert!(!room_enter_expects_direct_reply(None));
+        assert!(room_enter_expects_direct_reply(Some("agent")));
+        assert!(room_enter_expects_direct_reply(Some("thing")));
+    }
+
+    #[test]
+    fn build_enter_ctx_omits_kind_for_session_entry() {
+        let state = AppState::new();
+        let cfg = EgoConfig::default();
+        let SchemeVal::Map(session_ctx) = build_enter_ctx(&state, Some("klaim"), None, &cfg) else {
+            panic!("expected ctx map");
+        };
+        assert!(!session_ctx.contains_key("kind"));
+        assert!(session_ctx.contains_key("name"));
+        assert!(session_ctx.contains_key("nick"));
+        assert!(session_ctx.contains_key("description"));
+
+        let SchemeVal::Map(thing_ctx) = build_enter_ctx(&state, Some("stone"), Some("thing"), &cfg)
+        else {
+            panic!("expected ctx map");
+        };
+        assert!(matches!(
+            thing_ctx.get("kind"),
+            Some(SchemeVal::Str(kind)) if kind == "thing"
+        ));
     }
 
     #[test]

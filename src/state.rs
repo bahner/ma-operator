@@ -67,6 +67,14 @@ pub struct FocusMode {
     pub prompt: String,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub struct PendingEnter {
+    pub cmd_id: u64,
+    pub desired_runtime: String,
+    pub desired_room: String,
+    pub issued_at_ms: f64,
+}
+
 // ── Pending request kinds ─────────────────────────────────────────────────
 
 /// Unified tag for every in-flight outgoing message.  Keyed by
@@ -75,8 +83,6 @@ pub struct FocusMode {
 pub enum PendingKind {
     /// One-shot send: just resolve the command status when the reply arrives.
     Simple { cmd_id: u64 },
-    /// Startup active-avatar ctx refresh. If the avatar is stale, fall back to root enter.
-    StartupAvatarCtx { fallback_enter: String },
     /// IPFS-store reply should trigger a CRUD SET (returned CID becomes the value).
     IpfsCrud {
         target_did: String,
@@ -113,7 +119,6 @@ impl PendingKind {
     pub fn cmd_id(&self) -> Option<u64> {
         match self {
             PendingKind::Simple { cmd_id } => Some(*cmd_id),
-            PendingKind::StartupAvatarCtx { .. } => None,
             PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
@@ -227,6 +232,7 @@ pub struct AppState {
     pub entries: RwSignal<Vec<Entry>>,
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
+    pub pending_enter: RwSignal<Option<PendingEnter>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
     /// Each entry describes what to do when the reply arrives.
@@ -264,6 +270,7 @@ impl AppState {
             entries: RwSignal::new(Vec::new()),
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
+            pending_enter: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
@@ -421,6 +428,13 @@ impl AppState {
                 });
             }
         }
+        if matches!(status, CommandStatus::Error(_)) {
+            self.pending_enter.update(|pending| {
+                if pending.as_ref().is_some_and(|p| p.cmd_id == cmd_id) {
+                    *pending = None;
+                }
+            });
+        }
         // Update batch state on terminal statuses (Done / Replied / Error).
         if matches!(
             status,
@@ -472,6 +486,19 @@ impl AppState {
                 },
             );
         });
+    }
+
+    pub fn set_pending_enter(&self, cmd_id: u64, desired_runtime: String, desired_room: String) {
+        self.pending_enter.set(Some(PendingEnter {
+            cmd_id,
+            desired_runtime,
+            desired_room,
+            issued_at_ms: js_sys::Date::now(),
+        }));
+    }
+
+    pub fn clear_pending_enter(&self) {
+        self.pending_enter.set(None);
     }
 
     /// Remove and return the pending kind for the given message id, if any.
