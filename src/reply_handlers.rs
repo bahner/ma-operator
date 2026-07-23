@@ -154,6 +154,7 @@ fn ipfs_ref_from_store_reply(reply: &str) -> String {
 pub(crate) fn handle_profile_publish_reply(
     publisher_did: String,
     cmd_id: Option<u64>,
+    reenter_saved_ctx: bool,
     incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
@@ -198,6 +199,9 @@ pub(crate) fn handle_profile_publish_reply(
                             state2.bind_message_id(id, did_msg_id);
                         } else {
                             state2.push_output("間");
+                        }
+                        if reenter_saved_ctx {
+                            crate::startup::queue_saved_context_reentry(&state2, config);
                         }
                     }
                     Err(e) => {

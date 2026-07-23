@@ -107,6 +107,7 @@ pub(crate) async fn startup_local_ma(
         crate::parser::verbs::ma::ConnectMaOptions {
             publish: false,
             full_profile_publish: false,
+            reenter_saved_ctx: false,
         },
     )
     .await
@@ -282,6 +283,17 @@ fn queue_startup_context(
             .input_queue
             .update(|q| q.push_back(format!(".enter {runtime}")));
     }
+}
+
+pub(crate) fn queue_saved_context_reentry(state: &AppState, config: RwSignal<EgoConfig>) -> bool {
+    let cfg = config.get_untracked();
+    let Some(runtime) = startup_ctx_enter(&cfg) else {
+        return false;
+    };
+    state
+        .input_queue
+        .update(|q| q.push_back(format!(".enter {runtime}")));
+    true
 }
 
 fn should_queue_startup_enter(outcome: &ConnectMaOutcome) -> bool {

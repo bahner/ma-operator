@@ -57,7 +57,8 @@ pub(super) fn handle_identity(
         let cmd_id = state.push_command(format!(".my.identity!publish {publisher_disp}"));
         let state2 = state.clone();
         leptos::task::spawn_local(async move {
-            crate::parser::verbs::ma::do_publish(publisher, config, &state2, Some(cmd_id)).await;
+            crate::parser::verbs::ma::do_publish(publisher, config, &state2, Some(cmd_id), false)
+                .await;
         });
         return Ok(());
     }

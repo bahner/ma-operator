@@ -110,6 +110,7 @@ pub enum PendingKind {
     ProfilePublish {
         publisher_did: String,
         cmd_id: Option<u64>,
+        reenter_saved_ctx: bool,
     },
 }
 

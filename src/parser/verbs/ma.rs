@@ -55,6 +55,7 @@ pub(super) fn handle_ma(
             ConnectMaOptions {
                 publish: true,
                 full_profile_publish: true,
+                reenter_saved_ctx: true,
             },
         )
         .await;
@@ -150,6 +151,7 @@ fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
 pub(crate) struct ConnectMaOptions {
     pub publish: bool,
     pub full_profile_publish: bool,
+    pub reenter_saved_ctx: bool,
 }
 
 pub(crate) async fn connect_ma_runtime(
@@ -210,7 +212,14 @@ pub(crate) async fn connect_ma_runtime(
         return ConnectMaOutcome::Ready { did };
     }
 
-    let published = do_publish(did.clone(), config, &state, None).await;
+    let published = do_publish(
+        did.clone(),
+        config,
+        &state,
+        None,
+        options.reenter_saved_ctx,
+    )
+    .await;
     if !published {
         return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
     }
@@ -272,7 +281,7 @@ async fn ping_and_publish_fallback(
         return ConnectMaOutcome::Ready { did };
     }
     let published = if options.full_profile_publish {
-        do_publish(did.clone(), config, state, None).await
+        do_publish(did.clone(), config, state, None, options.reenter_saved_ctx).await
     } else {
         send_identity_publish_and_wait(&did).await.is_ok()
     };
@@ -342,6 +351,7 @@ pub(crate) async fn do_publish(
     config: RwSignal<EgoConfig>,
     state: &AppState,
     cmd_id: Option<u64>,
+    reenter_saved_ctx: bool,
 ) -> bool {
     let username = match state.session.get_untracked().map(|s| s.username.clone()) {
         Some(u) => u,
@@ -420,6 +430,7 @@ pub(crate) async fn do_publish(
                 PendingKind::ProfilePublish {
                     publisher_did: publisher,
                     cmd_id,
+                    reenter_saved_ctx,
                 },
                 None,
             );

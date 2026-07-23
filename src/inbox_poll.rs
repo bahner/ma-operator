@@ -149,8 +149,16 @@ fn dispatch_reply(
         PendingKind::ProfilePublish {
             publisher_did,
             cmd_id,
+            reenter_saved_ctx,
         } => {
-            handle_profile_publish_reply(publisher_did, cmd_id, &incoming, state, config);
+            handle_profile_publish_reply(
+                publisher_did,
+                cmd_id,
+                reenter_saved_ctx,
+                &incoming,
+                state,
+                config,
+            );
         }
         PendingKind::EditOpen {
             target,
