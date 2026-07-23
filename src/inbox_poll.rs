@@ -768,6 +768,56 @@ mod tests {
     }
 
     #[test]
+    fn ctx_receipt_accepts_new_cross_runtime_avatar_identity() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| {
+            cfg.set(".my.ctx.use", "true");
+            cfg.set(".my.ctx.runtime", "did:ma:k51source");
+            cfg.set(".my.ctx.root", "did:ma:k51source#root");
+            cfg.set(".my.ctx.avatar", "did:ma:k51source#alice");
+            cfg.set(".my.ctx.room", "did:ma:k51source#room");
+        });
+        let payload = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":protocol".to_string()),
+                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("avatar".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":root".to_string()),
+                ciborium::Value::Text("did:ma:k51target#root".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":avatar".to_string()),
+                ciborium::Value::Text("did:ma:k51target#alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":nick".to_string()),
+                ciborium::Value::Text("Alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":room".to_string()),
+                ciborium::Value::Text("did:ma:k51target#construct".to_string()),
+            ]),
+        ]);
+        let incoming = incoming("did:ma:k51target#alice", "");
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(".my.ctx.runtime"), Some("did:ma:k51target"));
+        assert_eq!(cfg.get(".my.ctx.root"), Some("did:ma:k51target#root"));
+        assert_eq!(cfg.get(".my.ctx.avatar"), Some("did:ma:k51target#alice"));
+        assert_eq!(cfg.get(".my.ctx.nick"), Some("Alice"));
+        assert_eq!(cfg.get(".my.ctx.room"), Some("did:ma:k51target#construct"));
+    }
+
+    #[test]
     fn ctx_receipt_rejects_unknown_protocol() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
