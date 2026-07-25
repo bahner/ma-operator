@@ -1,5 +1,9 @@
 # zion — Nynorsk
 lang-name = Nynorsk
+label-nick = kallenamn
+new-identity-nick-help = Vel eit kallenamn for ma-space. Det er berre eit kallenamn, og du kan endre det når som helst.
+error-nick-required = kallenamn er påkravd
+error-nick-invalid = kallenamnet kan ikkje innehalde mellomrom eller @
 
 # ── Innloggingsside ───────────────────────────────────────────────────────
 tab-login = logg inn
@@ -44,6 +48,8 @@ msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publisert via lokal ma ({ $url })
+msg-identity-publication-propagating = Identitetspubliseringa forplantar seg framleis; entry er utsett: { $e }
+msg-identity-first-publish = Publiserer identitet for fyrste gong. Dette kan ta opptil { $seconds } sekund.
 msg-ma-connecting-matrix = prøver å kopla deg til 間trix
 msg-ma-checking-url = sjekkar lokal ma på { $url }
 msg-local-ma-unreachable = lokal ma svarar ikkje på { $url } etter { $seconds }s; start ma eller endra .ma.ctx.url

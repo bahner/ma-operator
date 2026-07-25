@@ -1,5 +1,9 @@
 # zion — Naijá
 lang-name = Naijá
+label-nick = niknem
+new-identity-nick-help = Chuz niknem for ma-space. Na only niknem, and yu fit change am any time.
+error-nick-required = niknem dey required
+error-nick-invalid = niknem no fit get space or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = login fɔ login
@@ -44,6 +48,8 @@ msg-connecting = e dey connect to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don publish through local ma ({ $url })
+msg-identity-publication-propagating = Di identity publish still dey spread; entry delay: { $e }
+msg-identity-first-publish = Dey publish identity for di first time. Dis fit take up to { $seconds } seconds.
 msg-ma-connecting-matrix = e dey try connect you to di 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -1,5 +1,9 @@
 # zion — Íslenska
 lang-name = Íslenska
+label-nick = gælunafn
+new-identity-nick-help = Veldu gælunafn fyrir ma-space. Það er bara gælunafn og þú getur breytt því hvenær sem er.
+error-nick-required = gælunafn er nauðsynlegt
+error-nick-invalid = gælunafnið má ekki innihalda bil eða @
 
 # ── Innskráningarsíða ─────────────────────────────────────────────────────
 tab-login = skrá inn
@@ -44,6 +48,8 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt í gegnum staðbundið ma ({ $url })
+msg-identity-publication-propagating = Útgáfa auðkennisins er enn að breiðast út; entry seinkar: { $e }
+msg-identity-first-publish = Birti auðkenni í fyrsta sinn. Þetta getur tekið allt að { $seconds } sekúndur.
 msg-ma-connecting-matrix = reyni að tengja þig við 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

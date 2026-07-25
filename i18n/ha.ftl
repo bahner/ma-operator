@@ -1,5 +1,9 @@
 # zion — Hausa
 lang-name = Hausa
+label-nick = lakabi
+new-identity-nick-help = Zaɓi lakabi don ma-space. Lakabi ne kawai, kuma za ka iya canza shi a kowane lokaci.
+error-nick-required = ana buƙatar lakabi
+error-nick-invalid = lakabi kada ya ƙunshi sarari ko @
 
 # ── Shafin shiga ──────────────────────────────────────────────────────────
 tab-login = shiga
@@ -44,6 +48,8 @@ msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = An buga DID ta hanyar ma na gida ({ $url })
+msg-identity-publication-propagating = Buga shaidar kai har yanzu yana yaduwa; entry ta jinkirta: { $e }
+msg-identity-first-publish = Ana buga shaidar kai a karon farko. Wannan na iya ɗaukar har zuwa daƙiƙa { $seconds }.
 msg-ma-connecting-matrix = ana ƙoƙarin haɗa ka da 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

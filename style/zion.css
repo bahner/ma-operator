@@ -251,6 +251,13 @@ html, body {
     padding: 0.4rem 0.6rem;
 }
 
+.landing-help {
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    margin: 0 0 1rem;
+}
+
 .landing-status {
     color: var(--colour-dimmed);
     font-size: 0.85rem;

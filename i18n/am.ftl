@@ -1,5 +1,9 @@
 # zion — አማርኛ
 lang-name = አማርኛ
+label-nick = ቅጽል ስም
+new-identity-nick-help = ለma-space ቅጽል ስም ይምረጡ። ቅጽል ስም ብቻ ነው፣ በማንኛውም ጊዜ መቀየር ይችላሉ።
+error-nick-required = ቅጽል ስም ያስፈልጋል
+error-nick-invalid = ቅጽል ስሙ ባዶ ቦታ ወይም @ መያዝ የለበትም
 
 # ── የመግቢያ ገጽ ─────────────────────────────────────────────────────────────
 tab-login = ግባ
@@ -44,6 +48,8 @@ msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID በአካባቢ ma ({ $url }) አማካኝነት ታትሟል
+msg-identity-publication-propagating = የመታወቂያ ህትመት አሁንም እየተሰራጨ ነው; entry ተዘግዷል: { $e }
+msg-identity-first-publish = መታወቂያን ለመጀመሪያ ጊዜ እያተምን ነው። ይህ እስከ { $seconds } ሰከንዶች ሊወስድ ይችላል።
 msg-ma-connecting-matrix = ወደ 間trix ልናገናኝዎ እየሞከርን ነው
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

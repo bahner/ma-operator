@@ -97,6 +97,11 @@ pub(crate) async fn startup_local_ma(
         .map(ToString::to_string);
     let fallback_did =
         fallback_did.or_else(|| startup_enter_publish_did(config, startup_enter.as_deref()));
+    let quiet_local_probe = fallback_did.is_some();
+    let publish_identity_before_ping = fallback_did.is_some();
+    let prefer_fallback_did = startup_ma
+        .as_deref()
+        .is_some_and(|value| value.starts_with("did:ma:"));
     crate::parser::verbs::ma::connect_ma_runtime(
         state,
         config,
@@ -108,6 +113,9 @@ pub(crate) async fn startup_local_ma(
             publish: false,
             full_profile_publish: false,
             reenter_saved_ctx: false,
+            quiet_local_probe,
+            publish_identity_before_ping,
+            prefer_fallback_did,
         },
     )
     .await
@@ -226,10 +234,53 @@ fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
     let nick = cfg.get(".my.ctx.nick").map(str::trim).filter(|nick| {
         !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
     });
+    let target = cfg
+        .split_alias(room)
+        .map(|(alias, frag)| match frag {
+            Some(frag) => format!("{alias}#{frag}"),
+            None => alias,
+        })
+        .unwrap_or_else(|| normalize_startup_enter(room.to_string()));
     Some(match nick {
-        Some(nick) => format!("{nick}@{room}"),
-        None => normalize_startup_enter(room.to_string()),
+        Some(nick) => format!("{nick}@{target}"),
+        None => target,
     })
+}
+
+fn valid_enter_nick(nick: &str) -> bool {
+    !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
+}
+
+fn standard_runtime_enter(cfg: &EgoConfig) -> Option<String> {
+    let nick = cfg.get(".my.ctx.nick")?.trim();
+    if !valid_enter_nick(nick) || cfg.resolve_alias("ma").is_none() {
+        return None;
+    }
+    Some(format!("{nick}@ma"))
+}
+
+fn apply_standard_runtime_alias(cfg: &mut EgoConfig, runtime_did: &str) -> bool {
+    if cfg.get(".my.aliases.ma") != Some(runtime_did) {
+        cfg.set(".my.aliases.ma", runtime_did);
+        return true;
+    }
+    false
+}
+
+async fn ensure_standard_runtime_alias(
+    username: &str,
+    config: RwSignal<EgoConfig>,
+    runtime_did: &str,
+) {
+    let changed = config
+        .try_update(|cfg| apply_standard_runtime_alias(cfg, runtime_did))
+        .unwrap_or(false);
+    if changed {
+        let cfg = config.get_untracked();
+        if let Err(e) = persist_config(username, &cfg).await {
+            log::warn!("[startup] failed to persist standard runtime alias: {e}");
+        }
+    }
 }
 
 fn startup_enter_publish_did(
@@ -277,6 +328,7 @@ fn queue_startup_context(
     }
     let cfg = config.get_untracked();
     let fallback_enter = startup_ctx_enter(&cfg)
+        .or_else(|| discovered_runtime_did.and_then(|_| standard_runtime_enter(&cfg)))
         .or_else(|| discovered_runtime_did.map(|did| normalize_startup_enter(did.to_string())));
     if let Some(runtime) = fallback_enter {
         state
@@ -306,7 +358,10 @@ fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{normalize_startup_enter, should_queue_startup_enter, startup_ctx_enter};
+    use super::{
+        apply_standard_runtime_alias, normalize_startup_enter, should_queue_startup_enter,
+        standard_runtime_enter, startup_ctx_enter,
+    };
     use crate::config::EgoConfig;
     use crate::parser::verbs::ma::ConnectMaOutcome;
 
@@ -331,9 +386,10 @@ mod tests {
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
         cfg.set(".my.ctx.nick", "klaim");
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
         assert_eq!(
             startup_ctx_enter(&cfg),
-            Some("klaim@did:ma:k51runtime#construct".to_string())
+            Some("klaim@ma#construct".to_string())
         );
     }
 
@@ -348,6 +404,29 @@ mod tests {
             startup_ctx_enter(&cfg),
             Some("@did:ma:k51runtime".to_string())
         );
+    }
+
+    #[test]
+    fn standard_runtime_alias_sets_ma_alias_only() {
+        let mut cfg = EgoConfig::new();
+
+        assert!(apply_standard_runtime_alias(&mut cfg, "did:ma:k51runtime"));
+
+        assert_eq!(cfg.get(".my.aliases.ma"), Some("did:ma:k51runtime"));
+        assert_eq!(cfg.get(".my.ctx.nick"), None);
+        assert_eq!(standard_runtime_enter(&cfg), None);
+    }
+
+    #[test]
+    fn standard_runtime_alias_preserves_existing_nick() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.ctx.nick", "klaim");
+
+        assert!(apply_standard_runtime_alias(&mut cfg, "did:ma:k51runtime"));
+
+        assert_eq!(cfg.get(".my.aliases.ma"), Some("did:ma:k51runtime"));
+        assert_eq!(cfg.get(".my.ctx.nick"), Some("klaim"));
+        assert_eq!(standard_runtime_enter(&cfg), Some("klaim@ma".to_string()));
     }
 
     #[test]
@@ -411,7 +490,7 @@ pub(crate) async fn startup_connect(
             let ma_outcome = startup_local_ma(
                 state.clone(),
                 config,
-                username,
+                username.clone(),
                 sender_did,
                 startup_ma,
                 startup_enter,
@@ -422,6 +501,9 @@ pub(crate) async fn startup_connect(
                     ConnectMaOutcome::Ready { did } => Some(did.as_str()),
                     _ => None,
                 };
+                if let Some(did) = discovered_runtime_did {
+                    ensure_standard_runtime_alias(&username, config, did).await;
+                }
                 queue_startup_context(&state, config, discovered_runtime_did);
             } else {
                 state.startup_enter.update_untracked(|v| {

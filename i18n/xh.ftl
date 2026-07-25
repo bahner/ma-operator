@@ -1,5 +1,9 @@
 # zion — isiXhosa
 lang-name = isiXhosa
+label-nick = isiteketiso
+new-identity-nick-help = Khetha isiteketiso se-ma-space. Sisiteketiso nje, kwaye ungasitshintsha nanini na.
+error-nick-required = isiteketiso siyafuneka
+error-nick-invalid = isiteketiso masingabi nezithuba okanye @
 
 # ── Iphepha lokungena ─────────────────────────────────────────────────────
 tab-login = ngena
@@ -44,6 +48,8 @@ msg-connecting = iyaxhuma ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungele
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ipapashiwe nge-ma yendawo ({ $url })
+msg-identity-publication-propagating = Upapasho lwesazisi lusasasazeka; entry ilibazisekile: { $e }
+msg-identity-first-publish = Kupapashwa isazisi okokuqala. Oku kungathatha ukuya kuthi ga kwimizuzwana eyi-{ $seconds }.
 msg-ma-connecting-matrix = sizama ukukudibanisa ne-間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

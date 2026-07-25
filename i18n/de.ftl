@@ -1,5 +1,9 @@
 # zion — Deutsch
 lang-name = Deutsch
+label-nick = Spitzname
+new-identity-nick-help = Wähle einen Spitznamen für ma-space. Es ist nur ein Spitzname und kann jederzeit geändert werden.
+error-nick-required = Spitzname erforderlich
+error-nick-invalid = Der Spitzname darf keine Leerzeichen oder @ enthalten
 
 # ── Anmeldeseite ──────────────────────────────────────────────────────────
 tab-login = anmelden
@@ -44,6 +48,8 @@ msg-connecting = Verbindung zu iroh wird hergestellt...
 msg-iroh-ready = iroh-Endpunkt bereit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID über lokales ma veröffentlicht ({ $url })
+msg-identity-publication-propagating = Die Identitätsveröffentlichung wird noch verbreitet; entry ist verzögert: { $e }
+msg-identity-first-publish = Identität wird zum ersten Mal veröffentlicht. Das kann bis zu { $seconds } Sekunden dauern.
 msg-ma-connecting-matrix = versuche, dich mit der 間trix zu verbinden
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

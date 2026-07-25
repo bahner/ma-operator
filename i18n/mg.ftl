@@ -1,5 +1,9 @@
 # zion — Malagasy
 lang-name = Malagasy
+label-nick = anaram-bositra
+new-identity-nick-help = Misafidiana anaram-bositra ho an'ny ma-space. Anaram-bositra fotsiny io ary azo ovaina na oviana na oviana.
+error-nick-required = ilaina ny anaram-bositra
+error-nick-invalid = tsy mahazo misy elanelana na @ ny anaram-bositra
 
 # ── Pejy fidirana ─────────────────────────────────────────────────────────
 tab-login = miditra
@@ -44,6 +48,8 @@ msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Navoaka ny DID amin'alalan'ny ma eo an-toerana ({ $url })
+msg-identity-publication-propagating = Mbola miparitaka ny famoahana ny identity; nahemotra ny entry: { $e }
+msg-identity-first-publish = Mamoaka identity voalohany. Mety haharitra hatramin'ny { $seconds } segondra izany.
 msg-ma-connecting-matrix = manandrana mampifandray anao amin'ny 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

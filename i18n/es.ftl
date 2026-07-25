@@ -1,5 +1,9 @@
 # zion — Español
 lang-name = Español
+label-nick = apodo
+new-identity-nick-help = Elige un apodo para ma-space. Es solo un apodo y puedes cambiarlo cuando quieras.
+error-nick-required = se requiere apodo
+error-nick-invalid = el apodo no debe contener espacios ni @
 
 # ── Página de inicio de sesión ────────────────────────────────────────────
 tab-login = iniciar sesión
@@ -44,6 +48,8 @@ msg-connecting = conectando a iroh...
 msg-iroh-ready = punto final de iroh listo
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicado a través de ma local ({ $url })
+msg-identity-publication-propagating = La publicación de la identidad aún se está propagando; entrada retrasada: { $e }
+msg-identity-first-publish = Publicando la identidad por primera vez. Esto puede tardar hasta { $seconds } segundos.
 msg-ma-connecting-matrix = intentando conectarte a la 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -1,5 +1,9 @@
 # zion — বাংলা
 lang-name = বাংলা
+label-nick = ডাকনাম
+new-identity-nick-help = ma-space-এর জন্য একটি ডাকনাম বেছে নিন। এটি শুধু একটি ডাকনাম, যেকোনো সময় বদলানো যায়।
+error-nick-required = ডাকনাম প্রয়োজন
+error-nick-invalid = ডাকনামে ফাঁকা স্থান বা @ থাকতে পারবে না
 
 # ── লগইন পাতা ─────────────────────────────────────────────────────────────
 tab-login = লগ ইন
@@ -44,6 +48,8 @@ msg-connecting = iroh-এ সংযুক্ত হচ্ছে...
 msg-iroh-ready = iroh এন্ডপয়েন্ট প্রস্তুত
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID স্থানীয় ma ({ $url }) এর মাধ্যমে প্রকাশিত হয়েছে
+msg-identity-publication-propagating = পরিচয় প্রকাশনা এখনও ছড়াচ্ছে; entry বিলম্বিত: { $e }
+msg-identity-first-publish = প্রথমবারের মতো পরিচয় প্রকাশ করা হচ্ছে। এতে সর্বোচ্চ { $seconds } সেকেন্ড লাগতে পারে।
 msg-ma-connecting-matrix = আপনাকে 間trix-এ যুক্ত করার চেষ্টা চলছে
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

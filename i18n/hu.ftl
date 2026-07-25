@@ -1,5 +1,9 @@
 # zion — Magyar
 lang-name = Magyar
+label-nick = becenév
+new-identity-nick-help = Válassz becenevet a ma-space-hez. Ez csak egy becenév, és bármikor megváltoztathatod.
+error-nick-required = becenév szükséges
+error-nick-invalid = a becenév nem tartalmazhat szóközt vagy @ jelet
 
 # ── Bejelentkezési oldal ──────────────────────────────────────────────────
 tab-login = bejelentkezés
@@ -44,6 +48,8 @@ msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID közzétéve helyi ma-n keresztül ({ $url })
+msg-identity-publication-propagating = Az identitás közzététele még terjed; az entry késik: { $e }
+msg-identity-first-publish = Az identitás első közzététele folyamatban. Ez akár { $seconds } másodpercig is eltarthat.
 msg-ma-connecting-matrix = megpróbálunk csatlakoztatni a 間trixhoz
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

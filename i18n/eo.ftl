@@ -1,5 +1,9 @@
 # zion — Esperanto
 lang-name = Esperanto
+label-nick = kaŝnomo
+new-identity-nick-help = Elektu kaŝnomon por ma-space. Ĝi estas nur kaŝnomo kaj vi povas ŝanĝi ĝin iam ajn.
+error-nick-required = kaŝnomo necesas
+error-nick-invalid = kaŝnomo ne rajtas enhavi spacetojn aŭ @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = ensaluti
@@ -44,6 +48,8 @@ msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publikigita per loka ma ({ $url })
+msg-identity-publication-propagating = Identeca publikigo ankoraŭ disvastiĝas; eniro prokrastiĝis: { $e }
+msg-identity-first-publish = Publikigas identecon unuafoje. Tio povas daŭri ĝis { $seconds } sekundojn.
 msg-ma-connecting-matrix = provas konekti vin al la 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

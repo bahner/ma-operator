@@ -1,5 +1,9 @@
 # zion — मराठी
 lang-name = मराठी
+label-nick = टोपणनाव
+new-identity-nick-help = ma-space साठी टोपणनाव निवडा. ते फक्त टोपणनाव आहे आणि तुम्ही ते कधीही बदलू शकता.
+error-nick-required = टोपणनाव आवश्यक आहे
+error-nick-invalid = टोपणनावात मोकळी जागा किंवा @ नसावे
 
 # ── लॉगिन पृष्ठ ───────────────────────────────────────────────────────────
 tab-login = लॉगिन
@@ -44,6 +48,8 @@ msg-connecting = iroh ला जोडले जात आहे...
 msg-iroh-ready = iroh एंडपॉइंट तयार
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID स्थानिक ma ({ $url }) द्वारे प्रकाशित झाला
+msg-identity-publication-propagating = ओळख प्रकाशन अजूनही पसरत आहे; entry उशिरा आहे: { $e }
+msg-identity-first-publish = ओळख प्रथमच प्रकाशित केली जात आहे. याला { $seconds } सेकंदांपर्यंत वेळ लागू शकतो.
 msg-ma-connecting-matrix = तुम्हाला 間trix शी जोडण्याचा प्रयत्न होत आहे
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

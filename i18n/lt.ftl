@@ -1,5 +1,9 @@
 # zion — Lietuvių
 lang-name = Lietuvių
+label-nick = slapyvardis
+new-identity-nick-help = Pasirinkite slapyvardį ma-space. Tai tik slapyvardis, jį galėsite bet kada pakeisti.
+error-nick-required = slapyvardis privalomas
+error-nick-invalid = slapyvardyje negali būti tarpų ar @
 
 # ── Prisijungimo puslapis ─────────────────────────────────────────────────
 tab-login = prisijungti
@@ -44,6 +48,8 @@ msg-connecting = jungiamasi prie iroh...
 msg-iroh-ready = iroh galinys paruoštas
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID paskelbtas per vietinį ma ({ $url })
+msg-identity-publication-propagating = Tapatybės publikavimas dar sklinda; entry atidėtas: { $e }
+msg-identity-first-publish = Tapatybė publikuojama pirmą kartą. Tai gali užtrukti iki { $seconds } sekundžių.
 msg-ma-connecting-matrix = bandoma prijungti jus prie 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

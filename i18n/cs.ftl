@@ -1,5 +1,9 @@
 # zion — Čeština
 lang-name = Čeština
+label-nick = přezdívka
+new-identity-nick-help = Vyberte si přezdívku pro ma-space. Je to jen přezdívka a můžete ji kdykoli změnit.
+error-nick-required = přezdívka je povinná
+error-nick-invalid = přezdívka nesmí obsahovat mezery ani @
 
 # ── Přihlašovací stránka ──────────────────────────────────────────────────
 tab-login = přihlásit
@@ -44,6 +48,8 @@ msg-connecting = připojování k iroh...
 msg-iroh-ready = iroh endpoint připraven
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID zveřejněno přes lokální ma ({ $url })
+msg-identity-publication-propagating = Publikování identity se stále šíří; vstup je odložen: { $e }
+msg-identity-first-publish = Poprvé publikujeme identitu. Může to trvat až { $seconds } sekund.
 msg-ma-connecting-matrix = pokouším se tě připojit k 間trixu
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

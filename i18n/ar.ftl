@@ -1,5 +1,9 @@
 # zion — العربية
 lang-name = العربية
+label-nick = الكنية
+new-identity-nick-help = اختر كنية لمساحة ma. إنها مجرد كنية ويمكن تغييرها في أي وقت.
+error-nick-required = الكنية مطلوبة
+error-nick-invalid = يجب ألا تحتوي الكنية على مسافات أو @
 
 # ── صفحة تسجيل الدخول ────────────────────────────────────────────────────
 tab-login = دخول
@@ -44,6 +48,8 @@ msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = تم نشر DID عبر ma المحلي ({ $url })
+msg-identity-publication-propagating = نشر الهوية لا يزال قيد الانتشار؛ تم تأجيل الدخول: { $e }
+msg-identity-first-publish = يجري نشر الهوية لأول مرة. قد يستغرق هذا ما يصل إلى { $seconds } ثانية.
 msg-ma-connecting-matrix = نحاول توصيلك إلى 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

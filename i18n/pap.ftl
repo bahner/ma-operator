@@ -1,5 +1,9 @@
 # zion — Papiamentu
 lang-name = Papiamentu
+label-nick = sobrenòmber
+new-identity-nick-help = Skohe un sobrenòmber pa ma-space. Ta solamente un sobrenòmber, i bo por kambi'é ki ora ku bo ke.
+error-nick-required = sobrenòmber ta obligatorio
+error-nick-invalid = sobrenòmber no por tin spasio òf @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = login
@@ -44,6 +48,8 @@ msg-connecting = konektando na iroh...
 msg-iroh-ready = punto iroh ta listu
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publiká via ma lokal ({ $url })
+msg-identity-publication-propagating = Publikashon di identidat ta propaga ainda; entry ta retrasá: { $e }
+msg-identity-first-publish = Ta publiká identidat pa promé biaha. Esaki por tuma te { $seconds } sekònde.
 msg-ma-connecting-matrix = ta purba konektábo ku e 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

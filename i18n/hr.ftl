@@ -1,5 +1,9 @@
 # zion — Hrvatski
 lang-name = Hrvatski
+label-nick = nadimak
+new-identity-nick-help = Odaberite nadimak za ma-space. To je samo nadimak i možete ga promijeniti bilo kada.
+error-nick-required = nadimak je obavezan
+error-nick-invalid = nadimak ne smije sadržavati razmake ni @
 
 # ── Stranica za prijavu ───────────────────────────────────────────────────
 tab-login = prijava
@@ -44,6 +48,8 @@ msg-connecting = spajanje na iroh...
 msg-iroh-ready = iroh krajnja točka spremna
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID objavljen putem lokalnog ma ({ $url })
+msg-identity-publication-propagating = Objava identiteta još se širi; entry je odgođen: { $e }
+msg-identity-first-publish = Objavljuje se identitet prvi put. To može potrajati do { $seconds } sekundi.
 msg-ma-connecting-matrix = pokušavam te spojiti na 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

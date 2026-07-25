@@ -26,19 +26,36 @@ const SEND_TIMEOUT_MS: u32 = 10_000;
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
+pub const PUBLIC_GATEWAY_URL: &str = "https://dweb.link/";
+
+fn is_local_web_origin(origin: &str) -> bool {
+    origin.starts_with("http://localhost:")
+        || origin.starts_with("http://127.0.0.1:")
+        || origin.starts_with("http://[::1]:")
+}
+
+fn should_use_public_gateway() -> bool {
+    let Some(window) = web_sys::window() else {
+        return false;
+    };
+    let origin = window.location().origin().unwrap_or_default();
+    !origin.is_empty() && origin.starts_with("https://") && !is_local_web_origin(&origin)
+}
 
 pub fn gateway_base_url() -> String {
-    let Some(window) = web_sys::window() else {
-        return LOCAL_GATEWAY_URL.to_string();
-    };
-    let location = window.location();
-    let pathname = location.pathname().unwrap_or_default();
-    if pathname == "/zion" || pathname.starts_with("/zion/") {
-        if let Ok(origin) = location.origin() {
-            return format!("{}/", origin.trim_end_matches('/'));
-        }
+    if should_use_public_gateway() {
+        PUBLIC_GATEWAY_URL.to_string()
+    } else {
+        LOCAL_GATEWAY_URL.to_string()
     }
-    LOCAL_GATEWAY_URL.to_string()
+}
+
+fn session_resolver() -> IpfsGatewayResolver {
+    if should_use_public_gateway() {
+        IpfsGatewayResolver::public_default()
+    } else {
+        IpfsGatewayResolver::default()
+    }
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
@@ -78,7 +95,7 @@ pub async fn connect(
     // Keep one resolver for configuration, but do not positive-cache DID docs:
     // remote runtimes may restart with a new iroh endpoint after OOM/redeploy.
     let resolver = Rc::new(
-        IpfsGatewayResolver::new(gateway_base_url())
+        session_resolver()
             .with_localhost_cooldown(Duration::ZERO)
             .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
     );
@@ -323,17 +340,6 @@ mod tests {
                 && matches!(value, V::Integer(value) if i128::from(*value) == 7)
         }));
     }
-}
-
-/// Send our own signed DID document to a publisher's `/ma/ipfs/0.0.1` endpoint.
-///
-/// Uses `SecretBundle::generate_identity()` (via `ma_core`) to rebuild the
-/// deterministic signed `Document` from the session keys, then packages it
-/// with `generate_identity_publish_request()` into an
-/// `application/vnd.ma.identity.publish.request` CBOR envelope addressed to
-/// `publisher_did`.
-pub async fn send_identity_publish(publisher_did: &str) -> Result<String, String> {
-    send_identity_publish_with_msg_id(publisher_did, |_| {}).await
 }
 
 /// Send an identity-publish request and expose its `Message.id` before dispatch.

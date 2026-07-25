@@ -1,5 +1,9 @@
 # zion — Български
 lang-name = Български
+label-nick = прякор
+new-identity-nick-help = Изберете прякор за ma-space. Това е само прякор и може да се промени по всяко време.
+error-nick-required = необходим е прякор
+error-nick-invalid = прякорът не трябва да съдържа интервали или @
 
 # ── Страница за вход ──────────────────────────────────────────────────────
 tab-login = вход
@@ -44,6 +48,8 @@ msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID публикуван чрез локален ma ({ $url })
+msg-identity-publication-propagating = Публикуването на идентичността все още се разпространява; влизането е отложено: { $e }
+msg-identity-first-publish = Публикуваме идентичността за първи път. Това може да отнеме до { $seconds } секунди.
 msg-ma-connecting-matrix = опитваме се да те свържем с 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

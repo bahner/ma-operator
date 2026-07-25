@@ -1,5 +1,9 @@
 # zion — Dansk
 lang-name = Dansk
+label-nick = kaldenavn
+new-identity-nick-help = Vælg et kaldenavn til ma-space. Det er kun et kaldenavn og kan ændres når som helst.
+error-nick-required = kaldenavn kræves
+error-nick-invalid = kaldenavnet må ikke indeholde mellemrum eller @
 
 # ── Loginside ─────────────────────────────────────────────────────────────
 tab-login = log ind
@@ -44,6 +48,8 @@ msg-connecting = opretter forbindelse til iroh...
 msg-iroh-ready = iroh-slutpunkt klar
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID offentliggjort via lokal ma ({ $url })
+msg-identity-publication-propagating = Identitetspubliceringen udbredes stadig; entry er udsat: { $e }
+msg-identity-first-publish = Publicerer identiteten for første gang. Dette kan tage op til { $seconds } sekunder.
 msg-ma-connecting-matrix = forsøger at forbinde dig til 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

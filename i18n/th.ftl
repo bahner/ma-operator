@@ -1,5 +1,9 @@
 # zion — ภาษาไทย
 lang-name = ภาษาไทย
+label-nick = ชื่อเล่น
+new-identity-nick-help = เลือกชื่อเล่นสำหรับ ma-space เป็นเพียงชื่อเล่นและเปลี่ยนได้ทุกเมื่อ
+error-nick-required = ต้องระบุชื่อเล่น
+error-nick-invalid = ชื่อเล่นต้องไม่มีช่องว่างหรือ @
 
 # ── หน้าเข้าสู่ระบบ ───────────────────────────────────────────────────────
 tab-login = เข้าสู่ระบบ
@@ -44,6 +48,8 @@ msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ถูกเผยแพร่ผ่าน ma ในเครื่อง ({ $url })
+msg-identity-publication-propagating = การเผยแพร่ตัวตนยังอยู่ระหว่างกระจาย; entry ถูกเลื่อนออกไป: { $e }
+msg-identity-first-publish = กำลังเผยแพร่ตัวตนเป็นครั้งแรก อาจใช้เวลาสูงสุด { $seconds } วินาที
 msg-ma-connecting-matrix = กำลังพยายามเชื่อมต่อคุณกับ 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -1,5 +1,9 @@
 # zion — Føroyskt
 lang-name = Føroyskt
+label-nick = kelinavn
+new-identity-nick-help = Vel eitt kelinavn til ma-space. Tað er bara eitt kelinavn og kann broytast nær sum helst.
+error-nick-required = kelinavn krevst
+error-nick-invalid = kelinavnið má ikki innihalda millumrúm ella @
 
 # ── Innrásarsíða ──────────────────────────────────────────────────────────
 tab-login = rita inn
@@ -44,6 +48,8 @@ msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt við staðbundið ma ({ $url })
+msg-identity-publication-propagating = Samleikapubliseringin breiðir seg enn; entry er seinkað: { $e }
+msg-identity-first-publish = Publiserar samleikan fyrstu ferð. Hetta kann taka upp til { $seconds } sekund.
 msg-ma-connecting-matrix = royni at binda teg til 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

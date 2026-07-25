@@ -1,5 +1,9 @@
 # zion — தமிழ்
 lang-name = தமிழ்
+label-nick = செல்லப்பெயர்
+new-identity-nick-help = ma-space க்கான செல்லப்பெயரைத் தேர்வுசெய்க. அது ஒரு செல்லப்பெயர் மட்டுமே; எப்போது வேண்டுமானாலும் மாற்றலாம்.
+error-nick-required = செல்லப்பெயர் தேவை
+error-nick-invalid = செல்லப்பெயரில் இடைவெளி அல்லது @ இருக்கக் கூடாது
 
 # ── உள்நுழைவு பக்கம் ─────────────────────────────────────────────────────
 tab-login = உள்நுழைவு
@@ -44,6 +48,8 @@ msg-connecting = iroh உடன் இணைக்கப்படுகிறத
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID உள்ளூர் ma ({ $url }) வழியாக வெளியிடப்பட்டது
+msg-identity-publication-propagating = அடையாள வெளியீடு இன்னும் பரவி வருகிறது; entry தாமதமாகிறது: { $e }
+msg-identity-first-publish = அடையாளம் முதல் முறையாக வெளியிடப்படுகிறது. இது அதிகபட்சம் { $seconds } விநாடிகள் ஆகலாம்.
 msg-ma-connecting-matrix = உங்களை 間trix உடன் இணைக்க முயல்கிறது
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

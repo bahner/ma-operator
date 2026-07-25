@@ -1,5 +1,9 @@
 # zion — Polski
 lang-name = Polski
+label-nick = pseudonim
+new-identity-nick-help = Wybierz pseudonim dla ma-space. To tylko pseudonim i możesz go zmienić w dowolnym momencie.
+error-nick-required = pseudonim jest wymagany
+error-nick-invalid = pseudonim nie może zawierać spacji ani @
 
 # ── Strona logowania ──────────────────────────────────────────────────────
 tab-login = zaloguj
@@ -44,6 +48,8 @@ msg-connecting = łączenie z iroh...
 msg-iroh-ready = punkt końcowy iroh gotowy
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID opublikowane przez lokalne ma ({ $url })
+msg-identity-publication-propagating = Publikacja tożsamości nadal się propaguje; wejście opóźnione: { $e }
+msg-identity-first-publish = Publikowanie tożsamości po raz pierwszy. Może to potrwać do { $seconds } sekund.
 msg-ma-connecting-matrix = próbuję połączyć cię z 間trixem
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

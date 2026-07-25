@@ -72,6 +72,7 @@ pub fn Landing() -> impl IntoView {
 
     let mode = RwSignal::new(Mode::Login);
     let did_input = RwSignal::new(load_last_did().unwrap_or_default());
+    let nick = RwSignal::new(String::new());
     let password = RwSignal::new(String::new());
     let confirm_password = RwSignal::new(String::new());
     let status = RwSignal::new(String::new());
@@ -138,6 +139,7 @@ pub fn Landing() -> impl IntoView {
             m
         };
         mode.set(next);
+        nick.set(String::new());
         password.set(String::new());
         confirm_password.set(String::new());
         error.set(String::new());
@@ -180,12 +182,21 @@ pub fn Landing() -> impl IntoView {
             }
             let current_mode = mode.get_untracked();
             let did = did_input.get_untracked().trim().to_string();
+            let chosen_nick = nick.get_untracked().trim().to_string();
             let pass = password.get_untracked();
             let confirm = confirm_password.get_untracked();
             error.set(String::new());
 
             // ── Ny ────────────────────────────────────────────────────────
             if current_mode == Mode::New {
+                if chosen_nick.is_empty() {
+                    error.set(t("error-nick-required"));
+                    return;
+                }
+                if chosen_nick.contains('@') || chosen_nick.chars().any(char::is_whitespace) {
+                    error.set(t("error-nick-invalid"));
+                    return;
+                }
                 if pass.is_empty() {
                     error.set(t("error-passphrase-required"));
                     return;
@@ -202,9 +213,27 @@ pub fn Landing() -> impl IntoView {
                             let uname = username_from_did(&new_did);
                             match save_identity(&uname, &export_json).await {
                                 Ok(()) => {
-                                    status.set(String::new());
-                                    did_input.set(new_did);
-                                    finish_login(id, uname, pass, state2);
+                                    let mut cfg = EgoConfig::new();
+                                    cfg.set(".my.ctx.nick", &chosen_nick);
+                                    match cfg.to_json() {
+                                        Ok(cfg_json) => {
+                                            match save_config(&uname, &cfg_json).await {
+                                                Ok(()) => {
+                                                    status.set(String::new());
+                                                    did_input.set(new_did);
+                                                    finish_login(id, uname, pass, state2);
+                                                }
+                                                Err(e) => {
+                                                    status.set(String::new());
+                                                    error.set(e);
+                                                }
+                                            }
+                                        }
+                                        Err(e) => {
+                                            status.set(String::new());
+                                            error.set(e.to_string());
+                                        }
+                                    }
                                 }
                                 Err(e) => {
                                     status.set(String::new());
@@ -557,6 +586,25 @@ pub fn Landing() -> impl IntoView {
                                     .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
                                 {
                                     did_input.set(input.value());
+                                }
+                            }
+                        />
+                    </div>
+                </Show>
+
+                // ── Nick: New mode only ──────────────────────────────────
+                <Show when=move || mode.get() == Mode::New>
+                    <p class="landing-help">{move || { let _ = lang.get(); t("new-identity-nick-help") }}</p>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-nick") }}</label>
+                        <input
+                            type="text"
+                            prop:value=move || nick.get()
+                            on:input=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    nick.set(input.value());
                                 }
                             }
                         />

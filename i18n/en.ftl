@@ -1,5 +1,9 @@
 # zion — English
 lang-name = English
+label-nick = nick
+new-identity-nick-help = Choose a nick for ma-space. It is only a nickname, and you can change it whenever you want.
+error-nick-required = nick required
+error-nick-invalid = nick must not contain spaces or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = login
@@ -47,6 +51,8 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published via local ma ({ $url })
+msg-identity-publication-propagating = Identity publication is still propagating; entry delayed: { $e }
+msg-identity-first-publish = Publishing identity for the first time. This can take up to { $seconds } seconds.
 msg-ma-connecting-matrix = trying to connect you to the 間trix
 msg-ma-checking-url = checking local ma at { $url }
 msg-local-ma-unreachable = local ma not reachable at { $url } after { $seconds }s; start ma or change .ma.ctx.url

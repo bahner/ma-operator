@@ -1,5 +1,9 @@
 # zion — 日本語
 lang-name = 日本語
+label-nick = ニックネーム
+new-identity-nick-help = ma-space で使うニックネームを選んでください。これはただのニックネームで、いつでも変更できます。
+error-nick-required = ニックネームが必要です
+error-nick-invalid = ニックネームには空白や @ を含められません
 
 # ── ログインページ ────────────────────────────────────────────────────────
 tab-login = ログイン
@@ -44,6 +48,8 @@ msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
+msg-identity-publication-propagating = identity の公開はまだ伝播中です。entry は遅延しています: { $e }
+msg-identity-first-publish = identity を初めて公開しています。最大 { $seconds } 秒かかる場合があります。
 msg-ma-connecting-matrix = 間trix へ接続しようとしています
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

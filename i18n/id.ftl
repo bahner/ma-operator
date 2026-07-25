@@ -1,5 +1,9 @@
 # zion — Bahasa Indonesia
 lang-name = Bahasa Indonesia
+label-nick = nama panggilan
+new-identity-nick-help = Pilih nama panggilan untuk ma-space. Ini hanya nama panggilan dan bisa diubah kapan saja.
+error-nick-required = nama panggilan wajib diisi
+error-nick-invalid = nama panggilan tidak boleh berisi spasi atau @
 
 # ── Halaman masuk ─────────────────────────────────────────────────────────
 tab-login = masuk
@@ -44,6 +48,8 @@ msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID diterbitkan melalui ma lokal ({ $url })
+msg-identity-publication-propagating = Publikasi identitas masih menyebar; entry ditunda: { $e }
+msg-identity-first-publish = Menerbitkan identitas untuk pertama kali. Ini dapat memakan waktu hingga { $seconds } detik.
 msg-ma-connecting-matrix = mencoba menghubungkanmu ke 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

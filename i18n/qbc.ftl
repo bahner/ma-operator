@@ -1,5 +1,9 @@
 # zion — lang belta (Belter Creole)
 lang-name = Lang Belta
+label-nick = name
+new-identity-nick-help = Chosem xitim name fo ma-space. Im only name, im can change any time.
+error-nick-required = name im required
+error-nick-invalid = name no can have space or @
 # From The Expanse, constructed by linguist Nick Farmer.
 # ISO 639-3: qbc (local/private use code)
 
@@ -46,6 +50,8 @@ msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID push out, local ma ({ $url })
+msg-identity-publication-propagating = Identity publish im still gonya out; entry im ta nating gut yet: { $e }
+msg-identity-first-publish = Publishing identity first time. This im can take til { $seconds } seconds.
 msg-ma-connecting-matrix = du ta xitim fo konek to da 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

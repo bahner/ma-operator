@@ -1,5 +1,9 @@
 # zion — Tok Pisin
 lang-name = Tok Pisin
+label-nick = kolnem
+new-identity-nick-help = Makim wanpela kolnem bilong ma-space. Em kolnem tasol, na yu ken senisim long wanem taim yu laik.
+error-nick-required = kolnem i mas i stap
+error-nick-invalid = kolnem i no ken gat spes o @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = lagin
@@ -44,6 +48,8 @@ msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID i bin publishim long local ma ({ $url })
+msg-identity-publication-propagating = Identity publish i wok long go yet; entry i wet yet: { $e }
+msg-identity-first-publish = Wok long publishim identity namba wan taim. Dispela inap kisim inap { $seconds } seken.
 msg-ma-connecting-matrix = traim long konektim yu long 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

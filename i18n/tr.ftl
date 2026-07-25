@@ -1,5 +1,9 @@
 # zion — Türkçe
 lang-name = Türkçe
+label-nick = takma ad
+new-identity-nick-help = ma-space için bir takma ad seçin. Bu sadece bir takma addır ve istediğiniz zaman değiştirebilirsiniz.
+error-nick-required = takma ad gerekli
+error-nick-invalid = takma ad boşluk veya @ içermemelidir
 
 # ── Giriş sayfası ─────────────────────────────────────────────────────────
 tab-login = giriş
@@ -44,6 +48,8 @@ msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID yerel ma ({ $url }) aracılığıyla yayımlandı
+msg-identity-publication-propagating = Kimlik yayını hâlâ yayılıyor; entry gecikti: { $e }
+msg-identity-first-publish = Kimlik ilk kez yayımlanıyor. Bu { $seconds } saniyeye kadar sürebilir.
 msg-ma-connecting-matrix = seni 間trix'e bağlamaya çalışıyor
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

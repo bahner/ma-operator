@@ -1,5 +1,9 @@
 # zion — हिन्दी
 lang-name = हिन्दी
+label-nick = उपनाम
+new-identity-nick-help = ma-space के लिए एक उपनाम चुनें। यह सिर्फ़ उपनाम है और आप इसे कभी भी बदल सकते हैं।
+error-nick-required = उपनाम आवश्यक है
+error-nick-invalid = उपनाम में खाली जगह या @ नहीं होना चाहिए
 
 # ── लॉगिन पृष्ठ ───────────────────────────────────────────────────────────
 tab-login = लॉगिन
@@ -44,6 +48,8 @@ msg-connecting = iroh से कनेक्ट हो रहा है...
 msg-iroh-ready = iroh एंडपॉइंट तैयार
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID स्थानीय ma ({ $url }) के माध्यम से प्रकाशित
+msg-identity-publication-propagating = पहचान प्रकाशन अभी भी फैल रहा है; entry विलंबित है: { $e }
+msg-identity-first-publish = पहली बार पहचान प्रकाशित की जा रही है। इसमें { $seconds } सेकंड तक लग सकते हैं।
 msg-ma-connecting-matrix = आपको 間trix से जोड़ने की कोशिश हो रही है
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -1,5 +1,9 @@
 # zion — Patwa
 lang-name = Patwa
+label-nick = nickname
+new-identity-nick-help = Pick a nickname fi ma-space. A jus nickname, an yu can change it anytime.
+error-nick-required = nickname needed
+error-nick-invalid = nickname cyaan have space or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = konekte
@@ -44,6 +48,8 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh pwen final pare
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publish tru local ma ({ $url })
+msg-identity-publication-propagating = Di identity publish stil a spread; entry delay: { $e }
+msg-identity-first-publish = A publish identity fi di first time. Dis can tek up to { $seconds } seconds.
 msg-ma-connecting-matrix = a try connect yu to di 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

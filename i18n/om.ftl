@@ -1,5 +1,9 @@
 # zion — Afaan Oromoo
 lang-name = Afaan Oromoo
+label-nick = maqaa masoo
+new-identity-nick-help = ma-space'f maqaa masoo filadhu. Maqaa masoo qofa, yeroo barbaadde jijjiiruu dandeessa.
+error-nick-required = maqaan masoo barbaachisa
+error-nick-invalid = maqaan masoo iddoo duwwaa ykn @ qabaachuu hin qabu
 
 # ── Fuula seensaa ─────────────────────────────────────────────────────────
 tab-login = seeni
@@ -44,6 +48,8 @@ msg-connecting = iroh walitti hidhamaa...
 msg-iroh-ready = xumura iroh qophaa'eera
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ma naannoo ({ $url }) tiin maxxanfame
+msg-identity-publication-propagating = Maxxansi eenyummaa ammallee babal’achaa jira; entry harkifateera: { $e }
+msg-identity-first-publish = Eenyummaa yeroo jalqabaatiif maxxansaa jira. Kun hanga sekondii { $seconds } fudhachuu danda'a.
 msg-ma-connecting-matrix = gara 間trix si hidhuu yaalama
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

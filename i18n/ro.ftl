@@ -1,5 +1,9 @@
 # zion — Română
 lang-name = Română
+label-nick = poreclă
+new-identity-nick-help = Alegeți o poreclă pentru ma-space. Este doar o poreclă și o puteți schimba oricând.
+error-nick-required = porecla este obligatorie
+error-nick-invalid = porecla nu trebuie să conțină spații sau @
 
 # ── Pagina de autentificare ───────────────────────────────────────────────
 tab-login = autentificare
@@ -44,6 +48,8 @@ msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicat prin ma local ({ $url })
+msg-identity-publication-propagating = Publicarea identității încă se propagă; intrarea este întârziată: { $e }
+msg-identity-first-publish = Se publică identitatea pentru prima dată. Acest lucru poate dura până la { $seconds } secunde.
 msg-ma-connecting-matrix = încercăm să te conectăm la 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

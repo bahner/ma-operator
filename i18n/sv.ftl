@@ -1,5 +1,9 @@
 # zion — Svenska
 lang-name = Svenska
+label-nick = smeknamn
+new-identity-nick-help = Välj ett smeknamn för ma-space. Det är bara ett smeknamn och du kan ändra det när du vill.
+error-nick-required = smeknamn krävs
+error-nick-invalid = smeknamnet får inte innehålla mellanslag eller @
 
 # ── Inloggningssida ───────────────────────────────────────────────────────
 tab-login = logga in
@@ -44,6 +48,8 @@ msg-connecting = ansluter till iroh...
 msg-iroh-ready = iroh-slutpunkt redo
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicerat via lokalt ma ({ $url })
+msg-identity-publication-propagating = Identitetspubliceringen sprids fortfarande; entry är fördröjd: { $e }
+msg-identity-first-publish = Publicerar identiteten för första gången. Det kan ta upp till { $seconds } sekunder.
 msg-ma-connecting-matrix = försöker ansluta dig till 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

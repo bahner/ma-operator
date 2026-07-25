@@ -1,5 +1,9 @@
 # zion — Slovenčina
 lang-name = Slovenčina
+label-nick = prezývka
+new-identity-nick-help = Vyberte si prezývku pre ma-space. Je to len prezývka a môžete ju kedykoľvek zmeniť.
+error-nick-required = prezývka je povinná
+error-nick-invalid = prezývka nesmie obsahovať medzery ani @
 
 # ── Prihlasovacia stránka ─────────────────────────────────────────────────
 tab-login = prihlásiť
@@ -44,6 +48,8 @@ msg-connecting = pripájanie k iroh...
 msg-iroh-ready = iroh endpoint pripravený
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID zverejnené cez lokálne ma ({ $url })
+msg-identity-publication-propagating = Publikovanie identity sa stále šíri; vstup je odložený: { $e }
+msg-identity-first-publish = Identita sa publikuje prvýkrát. Môže to trvať až { $seconds } sekúnd.
 msg-ma-connecting-matrix = pokúšam sa ťa pripojiť k 間trixu
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

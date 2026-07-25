@@ -1,5 +1,9 @@
 # zion — Soomaaliga
 lang-name = Soomaali
+label-nick = naanays
+new-identity-nick-help = Dooro naanays loogu talagalay ma-space. Waa naanays keliya, waadna beddeli kartaa goor kasta.
+error-nick-required = naanays ayaa loo baahan yahay
+error-nick-invalid = naanaysku ma lahaan karo meel bannaan ama @
 
 # ── Bogga gelitaanka ──────────────────────────────────────────────────────
 tab-login = gal
@@ -44,6 +48,8 @@ msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID lagu daabacay ma maxalliga ({ $url })
+msg-identity-publication-propagating = Daabacaadda aqoonsigu wali way faafaysaa; entry waa dib u dhacay: { $e }
+msg-identity-first-publish = Aqoonsiga ayaa markii ugu horreysay la daabacayaa. Tani waxay qaadan kartaa ilaa { $seconds } ilbiriqsi.
 msg-ma-connecting-matrix = waxaan isku dayeynaa inaan kugu xirno 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

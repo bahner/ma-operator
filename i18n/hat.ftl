@@ -1,5 +1,9 @@
 # zion — Kreyòl ayisyen
 lang-name = Kreyòl ayisyen
+label-nick = tinon
+new-identity-nick-help = Chwazi yon tinon pou ma-space. Se sèlman yon tinon, epi ou ka chanje li nenpòt lè.
+error-nick-required = tinon obligatwa
+error-nick-invalid = tinon an pa dwe gen espas oswa @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = konekte
@@ -44,6 +48,8 @@ msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pibliye via ma lokal ({ $url })
+msg-identity-publication-propagating = Piblikasyon idantite a toujou ap pwopaje; entry an reta: { $e }
+msg-identity-first-publish = Ap pibliye idantite a pou premye fwa. Sa ka pran jiska { $seconds } segonn.
 msg-ma-connecting-matrix = ap eseye konekte ou ak 間trix la
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

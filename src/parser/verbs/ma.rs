@@ -8,9 +8,12 @@ use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
+use ma_core::DidDocumentResolver;
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
+pub(crate) const IDENTITY_PUBLISH_TIMEOUT_MS: u32 = 60_000;
+const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000, 8_000];
 
 pub(super) fn handle_ma(
     path: &str,
@@ -56,6 +59,9 @@ pub(super) fn handle_ma(
                 publish: true,
                 full_profile_publish: true,
                 reenter_saved_ctx: true,
+                quiet_local_probe: false,
+                publish_identity_before_ping: false,
+                prefer_fallback_did: false,
             },
         )
         .await;
@@ -152,6 +158,9 @@ pub(crate) struct ConnectMaOptions {
     pub publish: bool,
     pub full_profile_publish: bool,
     pub reenter_saved_ctx: bool,
+    pub quiet_local_probe: bool,
+    pub publish_identity_before_ping: bool,
+    pub prefer_fallback_did: bool,
 }
 
 pub(crate) async fn connect_ma_runtime(
@@ -163,35 +172,71 @@ pub(crate) async fn connect_ma_runtime(
     fallback_did: Option<String>,
     options: ConnectMaOptions,
 ) -> ConnectMaOutcome {
-    let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
-    state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
-    let claim_result = claim_ma(&ma_base, &our_did).await;
-    match &claim_result {
-        ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
-        ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
-        ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
-            state.push_system(t("msg-local-ma-claim-failed"));
+    if options.prefer_fallback_did {
+        let outcome = ping_and_publish_fallback(
+            &state,
+            config,
+            fallback_did.clone(),
+            &ma_base,
+            &our_did,
+            options,
+        )
+        .await;
+        if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+            return outcome;
         }
-        ClaimResult::Unavailable => {
-            state.push_system(t("msg-local-ma-claim-failed"));
+    }
+
+    let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
+    if !options.quiet_local_probe {
+        state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
+    }
+    let claim_result = claim_ma(&ma_base, &our_did).await;
+    if !options.quiet_local_probe {
+        match &claim_result {
+            ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
+            ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
+            ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
+                state.push_system(t("msg-local-ma-claim-failed"));
+            }
+            ClaimResult::Unavailable => {
+                state.push_system(t("msg-local-ma-claim-failed"));
+            }
         }
     }
     if !should_continue_after_claim(&claim_result) {
-        return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
+        return ping_and_publish_fallback(
+            &state,
+            config,
+            fallback_did,
+            &ma_base,
+            &our_did,
+            options,
+        )
+        .await;
     }
 
     let did = match rediscover_ma(&ma_base, config).await {
         Ok(did) => did,
         Err(_) => {
-            state.push_error(tf(
-                "msg-local-ma-unreachable",
-                &[
-                    ("url", &ma_base),
-                    ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
-                ],
-            ));
-            return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options)
-                .await;
+            if !options.quiet_local_probe {
+                state.push_error(tf(
+                    "msg-local-ma-unreachable",
+                    &[
+                        ("url", &ma_base),
+                        ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
+                    ],
+                ));
+            }
+            return ping_and_publish_fallback(
+                &state,
+                config,
+                fallback_did,
+                &ma_base,
+                &our_did,
+                options,
+            )
+            .await;
         }
     };
     state.push_system(tf("discover-success", &[("url", &ma_base)]));
@@ -212,16 +257,17 @@ pub(crate) async fn connect_ma_runtime(
         return ConnectMaOutcome::Ready { did };
     }
 
-    let published = do_publish(
-        did.clone(),
-        config,
-        &state,
-        None,
-        options.reenter_saved_ctx,
-    )
-    .await;
+    let published = do_publish(did.clone(), config, &state, None, options.reenter_saved_ctx).await;
     if !published {
-        return ping_and_publish_fallback(&state, config, fallback_did, &ma_base, options).await;
+        return ping_and_publish_fallback(
+            &state,
+            config,
+            fallback_did,
+            &ma_base,
+            &our_did,
+            options,
+        )
+        .await;
     }
     ConnectMaOutcome::Ready { did }
 }
@@ -257,6 +303,7 @@ async fn ping_and_publish_fallback(
     config: RwSignal<EgoConfig>,
     fallback_did: Option<String>,
     unavailable_target: &str,
+    own_did: &str,
     options: ConnectMaOptions,
 ) -> ConnectMaOutcome {
     let Some(did) = fallback_did_candidate(config, fallback_did) else {
@@ -264,6 +311,20 @@ async fn ping_and_publish_fallback(
             target: unavailable_target.to_string(),
         };
     };
+    if options.publish_identity_before_ping {
+        if verify_self_publication(own_did, None).await.is_err() {
+            state.push_system(tf(
+                "msg-identity-first-publish",
+                &[(
+                    "seconds",
+                    &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
+                )],
+            ));
+            if let Err(e) = send_identity_publish_and_wait(&did).await {
+                log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
+            }
+        }
+    }
     match ping_runtime(state, &did).await {
         Ok(()) => {}
         Err(_) => {
@@ -322,7 +383,7 @@ async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
     }
 }
 
-async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
+pub(crate) async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
     let mut rx = None;
     let mut registered_msg_id = None;
     let send_result = crate::transport::send_identity_publish_with_msg_id(publisher, |msg_id| {
@@ -339,8 +400,57 @@ async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
     let rx = rx.ok_or_else(|| "identity publish reply was not registered".to_string())?;
     futures::select! {
         reply = rx.fuse() => reply.map(|_| ()).map_err(|_| "identity publish reply was cancelled".to_string()),
-        _ = gloo_timers::future::TimeoutFuture::new(60_000).fuse() => Err("identity publish timed out".to_string()),
+        _ = gloo_timers::future::TimeoutFuture::new(IDENTITY_PUBLISH_TIMEOUT_MS).fuse() => Err("identity publish timed out".to_string()),
     }
+}
+
+pub(crate) fn published_self_matches(
+    doc: &ma_core::Document,
+    own_did: &str,
+    expected_profile_cid: Option<&str>,
+) -> Result<(), String> {
+    if doc.id != own_did {
+        return Err(format!(
+            "resolved DID document id {} does not match {}",
+            doc.id, own_did
+        ));
+    }
+    if let Some(expected) = expected_profile_cid {
+        match super::doc_profile_cid(doc) {
+            Some(actual) if actual == expected => {}
+            Some(actual) => {
+                return Err(format!(
+                    "resolved profile CID {} does not match {}",
+                    actual, expected
+                ));
+            }
+            None => return Err("resolved DID document has no profile link".to_string()),
+        }
+    }
+    Ok(())
+}
+
+pub(crate) async fn verify_self_publication(
+    own_did: &str,
+    expected_profile_cid: Option<&str>,
+) -> Result<(), String> {
+    let resolver = crate::state::SESSION_RESOLVER
+        .with(|r| r.borrow().clone())
+        .ok_or_else(|| "DID resolver is not available".to_string())?;
+    let mut last_error = "DID document was not resolved".to_string();
+    for (attempt, delay_ms) in SELF_PUBLISH_VERIFY_DELAYS_MS.iter().enumerate() {
+        match resolver.resolve(own_did).await {
+            Ok(doc) => match published_self_matches(&doc, own_did, expected_profile_cid) {
+                Ok(()) => return Ok(()),
+                Err(e) => last_error = e,
+            },
+            Err(e) => last_error = e.to_string(),
+        }
+        if attempt + 1 < SELF_PUBLISH_VERIFY_DELAYS_MS.len() {
+            gloo_timers::future::TimeoutFuture::new(*delay_ms).await;
+        }
+    }
+    Err(last_error)
 }
 
 /// Build and upload the profile blob to IPFS, then queue the DID republish.
@@ -532,6 +642,23 @@ pub(crate) async fn rediscover_ma(
 #[cfg(test)]
 mod tests {
     use super::*;
+    use ma_core::{Ipld, MaExtension, SecretBundle};
+    use std::collections::BTreeMap;
+
+    fn document_with_profile(profile_cid: Option<&str>) -> ma_core::Document {
+        let bundle = SecretBundle::generate();
+        let ma = match profile_cid {
+            Some(cid) => MaExtension::new().kind("agent").extra(
+                "profile",
+                Ipld::Map(BTreeMap::from([(
+                    "/".to_string(),
+                    Ipld::String(cid.to_string()),
+                )])),
+            ),
+            None => MaExtension::new().kind("agent"),
+        };
+        bundle.build_document(ma).expect("document")
+    }
 
     #[test]
     fn conflict_contains_owner_matches_existing_owner() {
@@ -583,5 +710,33 @@ mod tests {
             fallback_did_candidate(config, Some("did:ma:explicit".to_string())),
             Some("did:ma:explicit".to_string())
         );
+    }
+
+    #[test]
+    fn published_self_matches_expected_profile() {
+        let doc = document_with_profile(Some("bafyprofile"));
+
+        assert!(published_self_matches(&doc, &doc.id, Some("bafyprofile")).is_ok());
+    }
+
+    #[test]
+    fn published_self_rejects_stale_profile() {
+        let doc = document_with_profile(Some("bafyold"));
+
+        assert!(published_self_matches(&doc, &doc.id, Some("bafynew")).is_err());
+    }
+
+    #[test]
+    fn published_self_requires_profile_for_profile_publish() {
+        let doc = document_with_profile(None);
+
+        assert!(published_self_matches(&doc, &doc.id, Some("bafyprofile")).is_err());
+    }
+
+    #[test]
+    fn published_self_rejects_wrong_did() {
+        let doc = document_with_profile(Some("bafyprofile"));
+
+        assert!(published_self_matches(&doc, "did:ma:other", Some("bafyprofile")).is_err());
     }
 }

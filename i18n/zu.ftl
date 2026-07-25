@@ -1,5 +1,9 @@
 # zion — isiZulu
 lang-name = isiZulu
+label-nick = isiteketiso
+new-identity-nick-help = Khetha isiteketiso se-ma-space. Siyisiteketiso nje, futhi ungasishintsha noma nini.
+error-nick-required = isiteketiso siyadingeka
+error-nick-invalid = isiteketiso asingabi nezikhala noma @
 
 # ── Ikhasi lokungena ──────────────────────────────────────────────────────
 tab-login = ngena
@@ -44,6 +48,8 @@ msg-connecting = ixhunywa ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungile
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ishicilelwe nge-ma yendawo ({ $url })
+msg-identity-publication-propagating = Ukushicilelwa kobunikazi kusasabalala; entry ibambezelekile: { $e }
+msg-identity-first-publish = Kushicilelwa ubunikazi okokuqala. Lokhu kungathatha kufike kumasekhondi angu-{ $seconds }.
 msg-ma-connecting-matrix = sizama ukukuxhuma ku-間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

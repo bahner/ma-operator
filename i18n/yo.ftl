@@ -1,5 +1,9 @@
 # zion — Yorùbá
 lang-name = Yorùbá
+label-nick = orúkọ ìnagijẹ
+new-identity-nick-help = Yan orúkọ ìnagijẹ fún ma-space. Orúkọ ìnagijẹ lasan ni, o sì lè yí i padà nígbàkigbà.
+error-nick-required = orúkọ ìnagijẹ jẹ dandan
+error-nick-invalid = orúkọ ìnagijẹ kò gbọ́dọ̀ ní ààyè tàbí @
 
 # ── Ojú-ewé wọlé ─────────────────────────────────────────────────────────
 tab-login = wọlé
@@ -44,6 +48,8 @@ msg-connecting = ìsopọ̀ mọ́ iroh...
 msg-iroh-ready = ìpádédé iroh ti ṣetán
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ti jẹ atejade nipasẹ ma agbegbe ({ $url })
+msg-identity-publication-propagating = Ìtẹ̀jáde ìdánimọ̀ ṣì ń tàn ká; entry ti pẹ́: { $e }
+msg-identity-first-publish = A ń tẹ ìdánimọ̀ jáde fún ìgbà àkọ́kọ́. Èyí lè gba tó { $seconds } ìṣẹ́jú-aaya.
 msg-ma-connecting-matrix = a ń gbìyànjú láti so ọ mọ́ 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

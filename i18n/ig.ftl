@@ -1,5 +1,9 @@
 # zion — Igbo
 lang-name = Igbo
+label-nick = aha otutu
+new-identity-nick-help = Họrọ aha otutu maka ma-space. Ọ bụ naanị aha otutu, ị nwere ike ịgbanwe ya mgbe ọ bụla.
+error-nick-required = achọrọ aha otutu
+error-nick-invalid = aha otutu agaghị enwe oghere ma ọ bụ @
 
 # ── Ibe ịbanye ────────────────────────────────────────────────────────────
 tab-login = banye
@@ -44,6 +48,8 @@ msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = Ebipụtara DID site na ma mpaghara ({ $url })
+msg-identity-publication-propagating = Mbipụta njirimara ka na-agbasa; entry egbuola oge: { $e }
+msg-identity-first-publish = A na-ebipụta njirimara nke mbụ. Nke a nwere ike iwe ruo sekọnd { $seconds }.
 msg-ma-connecting-matrix = na-agbalị ijikọ gị na 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

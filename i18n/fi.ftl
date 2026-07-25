@@ -1,5 +1,9 @@
 # zion — Suomi
 lang-name = Suomi
+label-nick = kutsumanimi
+new-identity-nick-help = Valitse kutsumanimi ma-spaceen. Se on vain kutsumanimi, ja voit muuttaa sen milloin tahansa.
+error-nick-required = kutsumanimi vaaditaan
+error-nick-invalid = kutsumanimessä ei saa olla välilyöntejä tai @-merkkiä
 
 # ── Kirjautumissivu ───────────────────────────────────────────────────────
 tab-login = kirjaudu sisään
@@ -44,6 +48,8 @@ msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID julkaistu paikallisen ma:n kautta ({ $url })
+msg-identity-publication-propagating = Identiteetin julkaisu leviää vielä; entry viivästyy: { $e }
+msg-identity-first-publish = Julkaistaan identiteettiä ensimmäistä kertaa. Tämä voi kestää enintään { $seconds } sekuntia.
 msg-ma-connecting-matrix = yritetään yhdistää sinut 間trixiin
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

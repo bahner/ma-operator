@@ -1,5 +1,9 @@
 # zion — Ελληνικά
 lang-name = Ελληνικά
+label-nick = ψευδώνυμο
+new-identity-nick-help = Διαλέξτε ένα ψευδώνυμο για το ma-space. Είναι μόνο ψευδώνυμο και μπορεί να αλλάξει οποτεδήποτε.
+error-nick-required = απαιτείται ψευδώνυμο
+error-nick-invalid = το ψευδώνυμο δεν πρέπει να περιέχει κενά ή @
 
 # ── Σελίδα σύνδεσης ───────────────────────────────────────────────────────
 tab-login = σύνδεση
@@ -44,6 +48,8 @@ msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID δημοσιεύτηκε μέσω τοπικού ma ({ $url })
+msg-identity-publication-propagating = Η δημοσίευση της ταυτότητας διαδίδεται ακόμη· η είσοδος καθυστερεί: { $e }
+msg-identity-first-publish = Δημοσιεύεται η ταυτότητα για πρώτη φορά. Αυτό μπορεί να διαρκέσει έως { $seconds } δευτερόλεπτα.
 msg-ma-connecting-matrix = προσπαθούμε να σε συνδέσουμε στο 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

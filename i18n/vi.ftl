@@ -1,5 +1,9 @@
 # zion — Tiếng Việt
 lang-name = Tiếng Việt
+label-nick = biệt danh
+new-identity-nick-help = Chọn một biệt danh cho ma-space. Đây chỉ là biệt danh và bạn có thể đổi bất cứ lúc nào.
+error-nick-required = cần biệt danh
+error-nick-invalid = biệt danh không được chứa khoảng trắng hoặc @
 
 # ── Trang đăng nhập ───────────────────────────────────────────────────────
 tab-login = đăng nhập
@@ -44,6 +48,8 @@ msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID được xuất bản qua ma cục bộ ({ $url })
+msg-identity-publication-propagating = Việc công bố danh tính vẫn đang lan truyền; entry bị trì hoãn: { $e }
+msg-identity-first-publish = Đang công bố danh tính lần đầu tiên. Việc này có thể mất tới { $seconds } giây.
 msg-ma-connecting-matrix = đang cố kết nối bạn vào 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

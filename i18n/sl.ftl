@@ -1,5 +1,9 @@
 # zion — Slovenščina
 lang-name = Slovenščina
+label-nick = vzdevek
+new-identity-nick-help = Izberite vzdevek za ma-space. To je samo vzdevek in ga lahko kadar koli spremenite.
+error-nick-required = vzdevek je obvezen
+error-nick-invalid = vzdevek ne sme vsebovati presledkov ali @
 
 # ── Stran za prijavo ──────────────────────────────────────────────────────
 tab-login = prijava
@@ -44,6 +48,8 @@ msg-connecting = vzpostavljanje povezave z iroh...
 msg-iroh-ready = iroh končna točka je pripravljena
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID objavljeno prek lokalnega ma ({ $url })
+msg-identity-publication-propagating = Objava identitete se še širi; entry je zamaknjen: { $e }
+msg-identity-first-publish = Identiteta se objavlja prvič. To lahko traja do { $seconds } sekund.
 msg-ma-connecting-matrix = poskušam te povezati z 間trixom
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -1,5 +1,9 @@
 # zion — Pulaar / Fulfulde
 lang-name = Fulfulde
+label-nick = innde jamiroore
+new-identity-nick-help = Suɓo innde jamiroore ngam ma-space. Ko innde jamiroore tan, aɗa waawi waylude nde kala.
+error-nick-required = innde jamiroore ena waɗɗii
+error-nick-invalid = innde jamiroore hoto waɗu boowal walla @
 
 # ── Hello ngenndan ────────────────────────────────────────────────────────
 tab-login = naatna
@@ -44,6 +48,8 @@ msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID hollitaama e nder ma ({ $url })
+msg-identity-publication-propagating = Jaɓɓingol innde ngol ena woni e saraade tawo; naatgol leeltinaama: { $e }
+msg-identity-first-publish = Ena jaɓɓina innde ndee laawol aranol. Ɗum waawi ɓamde haa sekund { $seconds }.
 msg-ma-connecting-matrix = amin etagol maa e 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

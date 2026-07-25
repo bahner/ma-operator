@@ -1,5 +1,9 @@
 # zion — తెలుగు
 lang-name = తెలుగు
+label-nick = ముద్దుపేరు
+new-identity-nick-help = ma-space కోసం ఒక ముద్దుపేరు ఎంచుకోండి. ఇది కేవలం ముద్దుపేరు మాత్రమే; ఎప్పుడైనా మార్చుకోవచ్చు.
+error-nick-required = ముద్దుపేరు అవసరం
+error-nick-invalid = ముద్దుపేరులో ఖాళీలు లేదా @ ఉండకూడదు
 
 # ── లాగిన్ పేజీ ───────────────────────────────────────────────────────────
 tab-login = లాగిన్
@@ -44,6 +48,8 @@ msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID స్థానిక ma ({ $url }) ద్వారా ప్రచురించబడింది
+msg-identity-publication-propagating = గుర్తింపు ప్రచురణ ఇంకా వ్యాపిస్తోంది; entry ఆలస్యమైంది: { $e }
+msg-identity-first-publish = గుర్తింపును మొదటిసారిగా ప్రచురిస్తోంది. ఇది గరిష్ఠంగా { $seconds } సెకన్లు పట్టవచ్చు.
 msg-ma-connecting-matrix = మిమ్మల్ని 間trix కి కనెక్ట్ చేయడానికి ప్రయత్నిస్తోంది
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

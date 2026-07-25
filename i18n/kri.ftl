@@ -1,5 +1,9 @@
 # zion — Krio
 lang-name = Krio
+label-nick = niknem
+new-identity-nick-help = Pik wan niknem for ma-space. Na jos niknem, yu kin chenj am eni taim.
+error-nick-required = niknem nid
+error-nick-invalid = niknem nor fo get spes or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = login fɔ login
@@ -44,6 +48,8 @@ msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don pablish tru local ma ({ $url })
+msg-identity-publication-propagating = Di identity publish stil de spread; entry don delay: { $e }
+msg-identity-first-publish = De publish identity for di first time. Dis fit tek up to { $seconds } sekond.
 msg-ma-connecting-matrix = de tray fo konekt yu go di 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

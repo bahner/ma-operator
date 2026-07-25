@@ -1,5 +1,9 @@
 # zion — Українська
 lang-name = Українська
+label-nick = нік
+new-identity-nick-help = Виберіть нік для ma-space. Це лише нік, і його можна змінити будь-коли.
+error-nick-required = потрібен нік
+error-nick-invalid = нік не повинен містити пробіли або @
 
 # ── Сторінка входу ────────────────────────────────────────────────────────
 tab-login = увійти
@@ -47,6 +51,8 @@ msg-connecting = підключення до iroh...
 msg-iroh-ready = iroh endpoint готовий
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубліковано через локальний ma ({ $url })
+msg-identity-publication-propagating = Публікація ідентичності ще поширюється; вхід відкладено: { $e }
+msg-identity-first-publish = Ідентичність публікується вперше. Це може тривати до { $seconds } секунд.
 msg-ma-connecting-matrix = намагаємося підключити вас до 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

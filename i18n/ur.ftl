@@ -1,5 +1,9 @@
 # zion — اردو
 lang-name = اردو
+label-nick = عرفی نام
+new-identity-nick-help = ma-space کے لیے عرفی نام منتخب کریں۔ یہ صرف عرفی نام ہے اور آپ اسے کسی بھی وقت بدل سکتے ہیں۔
+error-nick-required = عرفی نام درکار ہے
+error-nick-invalid = عرفی نام میں خالی جگہ یا @ نہیں ہونا چاہیے
 
 # ── لاگ ان صفحہ ───────────────────────────────────────────────────────────
 tab-login = لاگ ان
@@ -44,6 +48,8 @@ msg-connecting = iroh سے منسلک ہو رہا ہے...
 msg-iroh-ready = iroh اینڈ پوائنٹ تیار ہے
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID مقامی ma ({ $url }) کے ذریعے شائع ہوا
+msg-identity-publication-propagating = شناخت کی اشاعت ابھی پھیل رہی ہے؛ entry مؤخر ہے: { $e }
+msg-identity-first-publish = شناخت پہلی بار شائع کی جا رہی ہے۔ اس میں { $seconds } سیکنڈ تک لگ سکتے ہیں۔
 msg-ma-connecting-matrix = آپ کو 間trix سے جوڑنے کی کوشش ہو رہی ہے
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

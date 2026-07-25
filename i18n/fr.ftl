@@ -1,5 +1,9 @@
 # zion — Français
 lang-name = Français
+label-nick = surnom
+new-identity-nick-help = Choisissez un surnom pour ma-space. Ce n'est qu'un surnom et vous pouvez le changer à tout moment.
+error-nick-required = surnom requis
+error-nick-invalid = le surnom ne doit contenir ni espaces ni @
 
 # ── Page de connexion ─────────────────────────────────────────────────────
 tab-login = se connecter
@@ -44,6 +48,8 @@ msg-connecting = connexion à iroh...
 msg-iroh-ready = point de terminaison iroh prêt
 msg-iroh-failed = iroh : { $e }
 msg-auto-published = DID publié via ma local ({ $url })
+msg-identity-publication-propagating = La publication de l’identité se propage encore ; entrée retardée : { $e }
+msg-identity-first-publish = Publication de l’identité pour la première fois. Cela peut prendre jusqu’à { $seconds } secondes.
 msg-ma-connecting-matrix = tentative de connexion à la 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

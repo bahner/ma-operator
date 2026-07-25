@@ -1,5 +1,9 @@
 # zion — Latviešu
 lang-name = Latviešu
+label-nick = iesauka
+new-identity-nick-help = Izvēlieties iesauku ma-space. Tā ir tikai iesauka, un to var mainīt jebkurā laikā.
+error-nick-required = iesauka ir obligāta
+error-nick-invalid = iesaukā nedrīkst būt atstarpes vai @
 
 # ── Pieteikšanās lapa ─────────────────────────────────────────────────────
 tab-login = pierakstīties
@@ -44,6 +48,8 @@ msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicēts caur lokālo ma ({ $url })
+msg-identity-publication-propagating = Identitātes publicēšana vēl izplatās; entry ir aizkavēts: { $e }
+msg-identity-first-publish = Identitāte tiek publicēta pirmo reizi. Tas var aizņemt līdz { $seconds } sekundēm.
 msg-ma-connecting-matrix = mēģinām savienot tevi ar 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

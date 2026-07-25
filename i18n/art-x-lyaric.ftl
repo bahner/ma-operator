@@ -2,6 +2,10 @@
 # Rastafarian Lyaric dialect, also known as Dread Talk or Lyaric.
 # BCP-47 private-use tag: art-x-lyaric
 lang-name = Lyaric
+label-nick = call-name
+new-identity-nick-help = Choose a call-name fi ma-space. Is only a call-name, an can change any time.
+error-nick-required = call-name required
+error-nick-invalid = call-name cyan contain spaces or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = enter Zion
@@ -46,6 +50,8 @@ msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint irie
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published through I-an-I local ma ({ $url })
+msg-identity-publication-propagating = Di identity publish still a spread out; entry hold back: { $e }
+msg-identity-first-publish = A publish identity fi di first time. Dis can tek up to { $seconds } seconds.
 msg-ma-connecting-matrix = I-an-I a try connect yuh to di 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

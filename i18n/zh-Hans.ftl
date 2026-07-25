@@ -1,5 +1,9 @@
 # zion — 简体中文
 lang-name = 中文（简体）
+label-nick = 昵称
+new-identity-nick-help = 为 ma-space 选择一个昵称。它只是昵称，你可以随时更改。
+error-nick-required = 需要昵称
+error-nick-invalid = 昵称不能包含空格或 @
 
 # ── 登录页面 ──────────────────────────────────────────────────────────────
 tab-login = 登录
@@ -44,6 +48,8 @@ msg-connecting = 正在连接到 iroh...
 msg-iroh-ready = iroh 端点就绪
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 已通过本地 ma ({ $url }) 发布
+msg-identity-publication-propagating = 身份发布仍在传播；entry 已延迟：{ $e }
+msg-identity-first-publish = 正在首次发布身份。这最多可能需要 { $seconds } 秒。
 msg-ma-connecting-matrix = 正在尝试将你连接到 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

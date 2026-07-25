@@ -1,5 +1,9 @@
 # zion — 한국어
 lang-name = 한국어
+label-nick = 별명
+new-identity-nick-help = ma-space에서 사용할 별명을 고르세요. 그냥 별명이며 언제든 바꿀 수 있습니다.
+error-nick-required = 별명이 필요합니다
+error-nick-invalid = 별명에는 공백이나 @를 넣을 수 없습니다
 
 # ── 로그인 페이지 ──────────────────────────────────────────────────────────
 tab-login = 로그인
@@ -44,6 +48,8 @@ msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID가 로컬 ma ({ $url })를 통해 게시되었습니다
+msg-identity-publication-propagating = identity 공개가 아직 전파 중입니다. entry가 지연되었습니다: { $e }
+msg-identity-first-publish = identity를 처음 공개하는 중입니다. 최대 { $seconds }초가 걸릴 수 있습니다.
 msg-ma-connecting-matrix = 間trix에 연결하는 중입니다
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

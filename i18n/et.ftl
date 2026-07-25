@@ -1,5 +1,9 @@
 # zion — Eesti
 lang-name = Eesti
+label-nick = hüüdnimi
+new-identity-nick-help = Vali ma-space'i jaoks hüüdnimi. See on ainult hüüdnimi ja seda saab igal ajal muuta.
+error-nick-required = hüüdnimi on nõutav
+error-nick-invalid = hüüdnimi ei tohi sisaldada tühikuid ega @ märki
 
 # ── Sisselogimise leht ────────────────────────────────────────────────────
 tab-login = logi sisse
@@ -44,6 +48,8 @@ msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID avaldatud kohaliku ma kaudu ({ $url })
+msg-identity-publication-propagating = Identiteedi avaldamine alles levib; entry on edasi lükatud: { $e }
+msg-identity-first-publish = Avaldame identiteeti esimest korda. See võib võtta kuni { $seconds } sekundit.
 msg-ma-connecting-matrix = püüame sind ühendada 間trixiga
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

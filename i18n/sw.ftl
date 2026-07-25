@@ -1,5 +1,9 @@
 # zion — Kiswahili
 lang-name = Kiswahili
+label-nick = jina la utani
+new-identity-nick-help = Chagua jina la utani kwa ma-space. Ni jina la utani tu, na unaweza kulibadilisha wakati wowote.
+error-nick-required = jina la utani linahitajika
+error-nick-invalid = jina la utani halipaswi kuwa na nafasi au @
 
 # ── Ukurasa wa kuingia ────────────────────────────────────────────────────
 tab-login = ingia
@@ -44,6 +48,8 @@ msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID imechapishwa kupitia ma ya ndani ({ $url })
+msg-identity-publication-propagating = Uchapishaji wa utambulisho bado unasambaa; entry imechelewa: { $e }
+msg-identity-first-publish = Inachapisha utambulisho kwa mara ya kwanza. Hii inaweza kuchukua hadi sekunde { $seconds }.
 msg-ma-connecting-matrix = tunajaribu kukuunganisha na 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

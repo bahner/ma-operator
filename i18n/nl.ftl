@@ -1,5 +1,9 @@
 # zion — Nederlands
 lang-name = Nederlands
+label-nick = bijnaam
+new-identity-nick-help = Kies een bijnaam voor ma-space. Het is alleen een bijnaam en je kunt die op elk moment wijzigen.
+error-nick-required = bijnaam vereist
+error-nick-invalid = bijnaam mag geen spaties of @ bevatten
 
 # ── Aanmeldingspagina ─────────────────────────────────────────────────────
 tab-login = aanmelden
@@ -44,6 +48,8 @@ msg-connecting = verbinding maken met iroh...
 msg-iroh-ready = iroh-eindpunt gereed
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID gepubliceerd via lokale ma ({ $url })
+msg-identity-publication-propagating = De identiteitspublicatie wordt nog verspreid; entry is vertraagd: { $e }
+msg-identity-first-publish = Identiteit wordt voor het eerst gepubliceerd. Dit kan tot { $seconds } seconden duren.
 msg-ma-connecting-matrix = probeert je met de 間trix te verbinden
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

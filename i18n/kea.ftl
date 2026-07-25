@@ -1,5 +1,9 @@
 # zion — Kriolu
 lang-name = Kriolu
+label-nick = alcunha
+new-identity-nick-help = Skodji un alcunha pa ma-space. É só un alcunha y bu pode mudal kualker ora.
+error-nick-required = alcunha obrigatóriu
+error-nick-invalid = alcunha ka pode ten spasu ô @
 
 # ── Landing page ──────────────────────────────────────────────────────────
 tab-login = logar
@@ -44,6 +48,8 @@ msg-connecting = konektandu a iroh...
 msg-iroh-ready = pontu iroh prontu
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pablikadu via ma lokal ({ $url })
+msg-identity-publication-propagating = Publikason di identidad inda sta ta spadja; entry sta atrasadu: { $e }
+msg-identity-first-publish = Ta publika identidad pa primer bes. Es podi leba ti { $seconds } segundus.
 msg-ma-connecting-matrix = ta tenta konekta-bu a 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

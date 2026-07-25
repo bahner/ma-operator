@@ -1,5 +1,9 @@
 # zion — Português
 lang-name = Português
+label-nick = alcunha
+new-identity-nick-help = Escolha uma alcunha para ma-space. É apenas uma alcunha e pode alterá-la quando quiser.
+error-nick-required = alcunha obrigatória
+error-nick-invalid = a alcunha não pode conter espaços nem @
 
 # ── Página de login ───────────────────────────────────────────────────────
 tab-login = entrar
@@ -44,6 +48,8 @@ msg-connecting = a ligar ao iroh...
 msg-iroh-ready = ponto de extremidade iroh pronto
 msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicado via ma local ({ $url })
+msg-identity-publication-propagating = A publicação da identidade ainda está a propagar-se; entrada atrasada: { $e }
+msg-identity-first-publish = A publicar a identidade pela primeira vez. Isto pode demorar até { $seconds } segundos.
 msg-ma-connecting-matrix = a tentar ligá-lo à 間trix
 msg-ma-checking-url = ma: { $url }
 msg-local-ma-unreachable = ma: { $url } × { $seconds }s

@@ -14,7 +14,7 @@ use crate::{
     core::CommandStatus,
     eval::is_remote_fetch_root,
     http::fetch_path_bytes,
-    i18n::tf,
+    i18n::{t, tf},
     messages::{cid_bytes_to_editor_text, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
@@ -192,16 +192,38 @@ pub(crate) fn handle_profile_publish_reply(
             let cfg_snap = config.get_untracked();
             leptos::task::spawn_local(async move {
                 let _ = persist_config(&username, &cfg_snap).await;
-                match crate::transport::send_identity_publish(&publisher_did).await {
-                    Ok(did_msg_id) => {
+                match crate::parser::verbs::ma::send_identity_publish_and_wait(&publisher_did).await
+                {
+                    Ok(()) => {
                         if let Some(id) = cmd_id {
-                            // Bind the DID-doc reply to the original terminal command.
-                            state2.bind_message_id(id, did_msg_id);
-                        } else {
+                            state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
+                        } else if !reenter_saved_ctx {
                             state2.push_output("間");
                         }
                         if reenter_saved_ctx {
-                            crate::startup::queue_saved_context_reentry(&state2, config);
+                            let Some(own_did) =
+                                state2.session.get_untracked().map(|s| s.sender_did.clone())
+                            else {
+                                state2.push_error(t("msg-not-logged-in"));
+                                return;
+                            };
+                            match crate::parser::verbs::ma::verify_self_publication(
+                                &own_did,
+                                Some(&cid_str),
+                            )
+                            .await
+                            {
+                                Ok(()) => {
+                                    state2.push_output("間");
+                                    crate::startup::queue_saved_context_reentry(&state2, config);
+                                }
+                                Err(e) => {
+                                    state2.push_system(tf(
+                                        "msg-identity-publication-propagating",
+                                        &[("e", &e)],
+                                    ));
+                                }
+                            }
                         }
                     }
                     Err(e) => {
