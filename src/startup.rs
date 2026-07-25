@@ -8,7 +8,7 @@ use crate::{
     http::fetch_cid_bytes,
     i18n::{t, tf},
     identity::storage::load_history,
-    parser::verbs::ma::ConnectMaOutcome,
+    parser::verbs::ma::{stored_local_ma_url, stored_public_ma_did, ConnectMaOutcome},
     state::{AppState, SessionState},
     transport,
 };
@@ -70,16 +70,11 @@ pub(crate) async fn startup_profile_exists(
     let _ = persist_config(&username, &cfg).await;
 }
 
-fn startup_ma_url(config: RwSignal<EgoConfig>, startup_ma: Option<&str>) -> String {
+fn startup_ma_url(config: RwSignal<EgoConfig>, startup_ma: Option<&str>) -> Option<String> {
     if let Some(url) = startup_ma.filter(|v| v.starts_with("http")) {
-        return url.trim_end_matches('/').to_string();
+        return Some(url.trim_end_matches('/').to_string());
     }
-    config
-        .get_untracked()
-        .get(".ma.ctx.url")
-        .unwrap_or("http://localhost:5003")
-        .trim_end_matches('/')
-        .to_string()
+    stored_local_ma_url(&config.get_untracked())
 }
 
 pub(crate) async fn startup_local_ma(
@@ -97,11 +92,19 @@ pub(crate) async fn startup_local_ma(
         .map(ToString::to_string);
     let fallback_did =
         fallback_did.or_else(|| startup_enter_publish_did(config, startup_enter.as_deref()));
+    let fallback_did = fallback_did.or_else(|| stored_public_ma_did(&config.get_untracked()));
+    let local_probe = ma_url.is_some();
+    if !local_probe && fallback_did.is_none() {
+        return ConnectMaOutcome::Unavailable {
+            target: "ma".to_string(),
+        };
+    }
     let quiet_local_probe = fallback_did.is_some();
     let publish_identity_before_ping = fallback_did.is_some();
     let prefer_fallback_did = startup_ma
         .as_deref()
         .is_some_and(|value| value.starts_with("did:ma:"));
+    let ma_url = ma_url.unwrap_or_else(|| fallback_did.clone().unwrap_or_default());
     crate::parser::verbs::ma::connect_ma_runtime(
         state,
         config,
@@ -116,6 +119,7 @@ pub(crate) async fn startup_local_ma(
             quiet_local_probe,
             publish_identity_before_ping,
             prefer_fallback_did,
+            local_probe,
         },
     )
     .await
@@ -360,10 +364,11 @@ fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
 mod tests {
     use super::{
         apply_standard_runtime_alias, normalize_startup_enter, should_queue_startup_enter,
-        standard_runtime_enter, startup_ctx_enter,
+        standard_runtime_enter, startup_ctx_enter, startup_ma_url,
     };
     use crate::config::EgoConfig;
     use crate::parser::verbs::ma::ConnectMaOutcome;
+    use leptos::prelude::UpdateUntracked;
 
     #[test]
     fn normalize_startup_enter_accepts_url_did_and_alias_forms() {
@@ -427,6 +432,31 @@ mod tests {
         assert_eq!(cfg.get(".my.aliases.ma"), Some("did:ma:k51runtime"));
         assert_eq!(cfg.get(".my.ctx.nick"), Some("klaim"));
         assert_eq!(standard_runtime_enter(&cfg), Some("klaim@ma".to_string()));
+    }
+
+    #[test]
+    fn startup_ma_url_only_uses_stored_url_in_local_mode() {
+        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        config.update_untracked(|cfg| cfg.set(".ma.ctx.url", "http://localhost:5999"));
+        assert_eq!(startup_ma_url(config, None), None);
+
+        config.update_untracked(|cfg| cfg.set(".ma.ctx.mode", "public"));
+        assert_eq!(startup_ma_url(config, None), None);
+
+        config.update_untracked(|cfg| cfg.set(".ma.ctx.mode", "local"));
+        assert_eq!(
+            startup_ma_url(config, None),
+            Some("http://localhost:5999".to_string())
+        );
+    }
+
+    #[test]
+    fn startup_ma_url_accepts_explicit_url_without_stored_mode() {
+        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        assert_eq!(
+            startup_ma_url(config, Some("http://localhost:6000/")),
+            Some("http://localhost:6000".to_string())
+        );
     }
 
     #[test]

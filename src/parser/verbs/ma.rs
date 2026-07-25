@@ -14,6 +14,57 @@ pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
 pub(crate) const IDENTITY_PUBLISH_TIMEOUT_MS: u32 = 60_000;
 const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000, 8_000];
+const MA_CTX_DID: &str = ".ma.ctx.did";
+const MA_CTX_MODE: &str = ".ma.ctx.mode";
+const MA_CTX_URL: &str = ".ma.ctx.url";
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub(crate) enum MaRuntimeMode {
+    Local,
+    Public,
+}
+
+impl MaRuntimeMode {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::Local => "local",
+            Self::Public => "public",
+        }
+    }
+}
+
+pub(crate) fn ma_runtime_mode(cfg: &EgoConfig) -> Option<MaRuntimeMode> {
+    match cfg.get(MA_CTX_MODE) {
+        Some("local") => Some(MaRuntimeMode::Local),
+        Some("public") => Some(MaRuntimeMode::Public),
+        _ => None,
+    }
+}
+
+pub(crate) fn stored_ma_did(cfg: &EgoConfig) -> Option<String> {
+    cfg.get(MA_CTX_DID)
+        .filter(|did| did.starts_with("did:ma:"))
+        .map(ToString::to_string)
+}
+
+pub(crate) fn stored_public_ma_did(cfg: &EgoConfig) -> Option<String> {
+    matches!(ma_runtime_mode(cfg), Some(MaRuntimeMode::Public))
+        .then(|| stored_ma_did(cfg))
+        .flatten()
+}
+
+pub(crate) fn stored_local_ma_url(cfg: &EgoConfig) -> Option<String> {
+    matches!(ma_runtime_mode(cfg), Some(MaRuntimeMode::Local)).then(|| {
+        cfg.get(MA_CTX_URL)
+            .unwrap_or(MA_URL)
+            .trim_end_matches('/')
+            .to_string()
+    })
+}
+
+fn set_ma_runtime_mode(cfg: &mut EgoConfig, mode: MaRuntimeMode) {
+    cfg.set(MA_CTX_MODE, mode.as_str());
+}
 
 pub(super) fn handle_ma(
     path: &str,
@@ -39,6 +90,8 @@ pub(super) fn handle_ma(
     let cfg = config.get_untracked();
     let ma_base = ma_base_from_arg(raw, &cfg);
     let fallback_did = fallback_did_from_arg(raw, &cfg)?;
+    let local_probe = fallback_did.is_none();
+    let prefer_fallback_did = fallback_did.is_some();
     let session = state
         .session
         .get_untracked()
@@ -61,7 +114,8 @@ pub(super) fn handle_ma(
                 reenter_saved_ctx: true,
                 quiet_local_probe: false,
                 publish_identity_before_ping: false,
-                prefer_fallback_did: false,
+                prefer_fallback_did,
+                local_probe,
             },
         )
         .await;
@@ -76,7 +130,7 @@ fn ma_base_from_arg(raw: &str, cfg: &EgoConfig) -> String {
     if let Ok(p) = raw.parse::<u16>() {
         return format!("http://localhost:{p}");
     }
-    cfg.get(".ma.ctx.url")
+    cfg.get(MA_CTX_URL)
         .unwrap_or(MA_URL)
         .trim_end_matches('/')
         .to_string()
@@ -161,6 +215,7 @@ pub(crate) struct ConnectMaOptions {
     pub quiet_local_probe: bool,
     pub publish_identity_before_ping: bool,
     pub prefer_fallback_did: bool,
+    pub local_probe: bool,
 }
 
 pub(crate) async fn connect_ma_runtime(
@@ -183,52 +238,32 @@ pub(crate) async fn connect_ma_runtime(
         )
         .await;
         if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+            let cfg = config.get_untracked();
+            let _ = crate::config::persist_config(&username, &cfg).await;
             return outcome;
         }
     }
 
-    let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
-    if !options.quiet_local_probe {
-        state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
-    }
-    let claim_result = claim_ma(&ma_base, &our_did).await;
-    if !options.quiet_local_probe {
-        match &claim_result {
-            ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
-            ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
-            ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
-                state.push_system(t("msg-local-ma-claim-failed"));
-            }
-            ClaimResult::Unavailable => {
-                state.push_system(t("msg-local-ma-claim-failed"));
+    if options.local_probe {
+        let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
+        if !options.quiet_local_probe {
+            state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
+        }
+        let claim_result = claim_ma(&ma_base, &our_did).await;
+        if !options.quiet_local_probe {
+            match &claim_result {
+                ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
+                ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
+                ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
+                    state.push_system(t("msg-local-ma-claim-failed"));
+                }
+                ClaimResult::Unavailable => {
+                    state.push_system(t("msg-local-ma-claim-failed"));
+                }
             }
         }
-    }
-    if !should_continue_after_claim(&claim_result) {
-        return ping_and_publish_fallback(
-            &state,
-            config,
-            fallback_did,
-            &ma_base,
-            &our_did,
-            options,
-        )
-        .await;
-    }
-
-    let did = match rediscover_ma(&ma_base, config).await {
-        Ok(did) => did,
-        Err(_) => {
-            if !options.quiet_local_probe {
-                state.push_error(tf(
-                    "msg-local-ma-unreachable",
-                    &[
-                        ("url", &ma_base),
-                        ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
-                    ],
-                ));
-            }
-            return ping_and_publish_fallback(
+        if !should_continue_after_claim(&claim_result) {
+            let outcome = ping_and_publish_fallback(
                 &state,
                 config,
                 fallback_did,
@@ -237,39 +272,87 @@ pub(crate) async fn connect_ma_runtime(
                 options,
             )
             .await;
+            if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+                let cfg = config.get_untracked();
+                let _ = crate::config::persist_config(&username, &cfg).await;
+            }
+            return outcome;
         }
-    };
-    state.push_system(tf("discover-success", &[("url", &ma_base)]));
-    state.push_system(tf("discover-did-line", &[("did", &did)]));
-    if let Err(e) = transport::reconnect().await {
-        web_sys::console::warn_1(
-            &format!("[transport] reconnect after ma discovery failed: {e}").into(),
-        );
-    }
-    crate::views::landing::save_last_runtime(&ma_base);
-    let cfg = config.get_untracked();
-    let _ = crate::config::persist_config(&username, &cfg).await;
-    if !options.publish {
-        return ConnectMaOutcome::Ready { did };
-    }
-    if !options.full_profile_publish {
-        send_identity_publish_background(did.clone(), state.clone(), ma_base.clone());
+
+        let did = match rediscover_ma(&ma_base, config).await {
+            Ok(did) => did,
+            Err(_) => {
+                if !options.quiet_local_probe {
+                    state.push_error(tf(
+                        "msg-local-ma-unreachable",
+                        &[
+                            ("url", &ma_base),
+                            ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
+                        ],
+                    ));
+                }
+                let outcome = ping_and_publish_fallback(
+                    &state,
+                    config,
+                    fallback_did,
+                    &ma_base,
+                    &our_did,
+                    options,
+                )
+                .await;
+                if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+                    let cfg = config.get_untracked();
+                    let _ = crate::config::persist_config(&username, &cfg).await;
+                }
+                return outcome;
+            }
+        };
+        state.push_system(tf("discover-success", &[("url", &ma_base)]));
+        state.push_system(tf("discover-did-line", &[("did", &did)]));
+        if let Err(e) = transport::reconnect().await {
+            web_sys::console::warn_1(
+                &format!("[transport] reconnect after ma discovery failed: {e}").into(),
+            );
+        }
+        crate::views::landing::save_last_runtime(&ma_base);
+        let cfg = config.get_untracked();
+        let _ = crate::config::persist_config(&username, &cfg).await;
+        if !options.publish {
+            return ConnectMaOutcome::Ready { did };
+        }
+        if !options.full_profile_publish {
+            send_identity_publish_background(did.clone(), state.clone(), ma_base.clone());
+            return ConnectMaOutcome::Ready { did };
+        }
+
+        let published =
+            do_publish(did.clone(), config, &state, None, options.reenter_saved_ctx).await;
+        if !published {
+            let outcome = ping_and_publish_fallback(
+                &state,
+                config,
+                fallback_did,
+                &ma_base,
+                &our_did,
+                options,
+            )
+            .await;
+            if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+                let cfg = config.get_untracked();
+                let _ = crate::config::persist_config(&username, &cfg).await;
+            }
+            return outcome;
+        }
         return ConnectMaOutcome::Ready { did };
     }
 
-    let published = do_publish(did.clone(), config, &state, None, options.reenter_saved_ctx).await;
-    if !published {
-        return ping_and_publish_fallback(
-            &state,
-            config,
-            fallback_did,
-            &ma_base,
-            &our_did,
-            options,
-        )
-        .await;
+    let outcome =
+        ping_and_publish_fallback(&state, config, fallback_did, &ma_base, &our_did, options).await;
+    if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
+        let cfg = config.get_untracked();
+        let _ = crate::config::persist_config(&username, &cfg).await;
     }
-    ConnectMaOutcome::Ready { did }
+    outcome
 }
 
 fn send_identity_publish_background(publisher: String, state: AppState, label: String) {
@@ -289,13 +372,7 @@ fn fallback_did_candidate(
     config: RwSignal<EgoConfig>,
     fallback_did: Option<String>,
 ) -> Option<String> {
-    fallback_did.or_else(|| {
-        config
-            .get_untracked()
-            .get(".ma.ctx.did")
-            .filter(|did| did.starts_with("did:ma:"))
-            .map(|did| did.to_string())
-    })
+    fallback_did.or_else(|| stored_public_ma_did(&config.get_untracked()))
 }
 
 async fn ping_and_publish_fallback(
@@ -338,6 +415,12 @@ async fn ping_and_publish_fallback(
             return ConnectMaOutcome::PingTimedOut { did };
         }
     }
+    config.update(|cfg| {
+        cfg.set(MA_CTX_DID, &did);
+        set_ma_runtime_mode(cfg, MaRuntimeMode::Public);
+        cfg.set(".my.aliases.ma", &did);
+    });
+    crate::views::landing::save_last_runtime(&did);
     if !options.publish {
         return ConnectMaOutcome::Ready { did };
     }
@@ -347,7 +430,6 @@ async fn ping_and_publish_fallback(
         send_identity_publish_and_wait(&did).await.is_ok()
     };
     if published {
-        crate::views::landing::save_last_runtime(&did);
         state.push_system(tf("msg-auto-published", &[("url", &did)]));
     }
     ConnectMaOutcome::Ready { did }
@@ -615,8 +697,9 @@ pub(crate) async fn rediscover_ma(
         .unwrap_or_default();
 
     config.update(|cfg| {
-        cfg.set(".ma.ctx.url", ma_base.trim_end_matches('/'));
-        cfg.set(".ma.ctx.did", &did);
+        cfg.set(MA_CTX_URL, ma_base.trim_end_matches('/'));
+        cfg.set(MA_CTX_DID, &did);
+        set_ma_runtime_mode(cfg, MaRuntimeMode::Local);
         if !endpoint_id.is_empty() {
             cfg.set(".ma.ctx.endpoint_id", &endpoint_id);
         }
@@ -709,6 +792,38 @@ mod tests {
         assert_eq!(
             fallback_did_candidate(config, Some("did:ma:explicit".to_string())),
             Some("did:ma:explicit".to_string())
+        );
+    }
+
+    #[test]
+    fn stored_public_ma_did_requires_public_mode() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".ma.ctx.did", "did:ma:stored");
+        assert_eq!(stored_public_ma_did(&cfg), None);
+
+        cfg.set(".ma.ctx.mode", "local");
+        assert_eq!(stored_public_ma_did(&cfg), None);
+
+        cfg.set(".ma.ctx.mode", "public");
+        assert_eq!(
+            stored_public_ma_did(&cfg),
+            Some("did:ma:stored".to_string())
+        );
+    }
+
+    #[test]
+    fn stored_local_ma_url_requires_local_mode() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".ma.ctx.url", "http://localhost:5999");
+        assert_eq!(stored_local_ma_url(&cfg), None);
+
+        cfg.set(".ma.ctx.mode", "public");
+        assert_eq!(stored_local_ma_url(&cfg), None);
+
+        cfg.set(".ma.ctx.mode", "local");
+        assert_eq!(
+            stored_local_ma_url(&cfg),
+            Some("http://localhost:5999".to_string())
         );
     }
 
