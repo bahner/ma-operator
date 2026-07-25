@@ -292,15 +292,17 @@ from remote actor state (`/`).
 | Syntax | Meaning |
 |--------|----------|
 | `@alias/path` | GET — fetch and display value |
-| `@alias/path: value` | SET — write text or `/ipfs/<CIDv1>` / `/ipns/<key>` |
+| `@alias/path: value` | SET — write text or bare CIDv1 for structured values |
 | `@alias/path:` | DELETE — remove key/subtree |
 | `@alias/path!edit` | Edit — GET + open editor |
 
 Structured values (entity nodes, ACL maps, kind references) MUST be set with
-an explicit `/ipfs/<CIDv1>` or `/ipns/<key>` prefix. A bare CID with no
-prefix (angle-bracketed or otherwise) is treated as plain text, never
-auto-detected as a reference, and the runtime replies `[":error",
-"cidv1-required"]` if a structured field is set without the prefix. There is
+bare base32 CIDv1 only. Path or URI forms such as `/ipfs/<CIDv1>`,
+`ipfs://<CIDv1>`, `/ipns/<key>`, and `ipns://<key>` are not accepted for
+structured CRUD fields; IPNS is deliberately excluded so manifest links stay
+deterministic. Angle-bracketed CIDs are treated as plain text, and the runtime
+replies `[":error", "cidv1-required"]` if a structured field is set without a
+bare CIDv1. There is
 no angle-bracket (`<bafy…>`) CID convention on the wire — that syntax is
 reserved for the local Scheme evaluator's CID-as-callable literal (see
 "Scheme evaluator" above) and must never be sent as a CRUD value.

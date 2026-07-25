@@ -4,6 +4,7 @@
 //! is called from `inbox_poll::dispatch_reply` when a matching reply arrives.
 
 use ciborium::Value as CborValue;
+use cid::{Cid, Version};
 use leptos::prelude::*;
 use ma_core::{CONTENT_TYPE_TERM_CBOR, CONTENT_TYPE_TERM_YAML};
 use ma_zscheme::SchemeVal;
@@ -12,7 +13,6 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
-    eval::is_remote_fetch_root,
     http::fetch_path_bytes,
     i18n::{t, tf},
     messages::{cid_bytes_to_editor_text, IncomingMessage},
@@ -96,7 +96,7 @@ pub(crate) fn handle_ipfs_kind_reply(
     }
 }
 
-/// IPFS-store reply for an actor behaviour edit → call `:behaviour /ipfs/<cid>`.
+/// IPFS-store reply for an actor behaviour edit → call `:behaviour <cid>`.
 pub(crate) fn handle_ipfs_actor_behaviour_reply(
     target: String,
     cmd_id: Option<u64>,
@@ -140,11 +140,19 @@ pub(crate) fn handle_ipfs_actor_behaviour_reply(
 }
 
 fn ipfs_ref_from_store_reply(reply: &str) -> String {
-    let reply = reply.trim();
-    if is_remote_fetch_root(reply) {
-        reply.to_string()
+    reply.trim().to_string()
+}
+
+fn crud_link_fetch_path(value: &str) -> Option<String> {
+    let cid = value.trim();
+    if cid.starts_with('b')
+        && Cid::try_from(cid)
+            .map(|cid| cid.version() == Version::V1)
+            .unwrap_or(false)
+    {
+        Some(format!("/ipfs/{cid}"))
     } else {
-        format!("/ipfs/{reply}")
+        None
     }
 }
 
@@ -319,15 +327,15 @@ pub(crate) fn handle_edit_open_reply(
     let content_type = incoming.content_type.clone();
     let state2 = state.clone();
 
-    // Decode the value once so we can tell whether this GET reply is a link
-    // reference (`/ipfs/`, `/ipns/`, `/ipld/`-prefixed) that needs to be
-    // fetched and resolved, or inline data to be displayed as-is. This
-    // mirrors the SET-side convention (ma-crud-service-v1.md §3.3/§4) and
-    // replaces the old dedicated `+dag-cbor` content-type.
+    // Decode the value once so we can tell whether this GET reply is a bare
+    // CIDv1 link reference that needs to be fetched and resolved, or inline
+    // data to be displayed as-is. This mirrors the SET-side convention
+    // (ma-crud-service-v1.md §3.3/§4) and replaces the old dedicated
+    // `+dag-cbor` content-type.
     let link_path: Option<String> = match content_type.as_str() {
         t if t == "text/yaml" || t == CONTENT_TYPE_TERM_CBOR || t == CONTENT_TYPE_TERM_YAML => None,
         _ => match ciborium::de::from_reader::<ciborium::Value, _>(&mut &content_bytes[..]) {
-            Ok(ciborium::Value::Text(s)) if is_remote_fetch_root(&s) => Some(s),
+            Ok(ciborium::Value::Text(s)) => crud_link_fetch_path(&s),
             _ => None,
         },
     };
@@ -734,14 +742,22 @@ mod tests {
     }
 
     #[test]
-    fn ipfs_store_reply_normalizes_cid_and_path() {
+    fn ipfs_store_reply_keeps_bare_cid() {
         assert_eq!(
-            ipfs_ref_from_store_reply("bafyreibarecid"),
-            "/ipfs/bafyreibarecid"
+            ipfs_ref_from_store_reply("bafyreibarecid\n"),
+            "bafyreibarecid"
         );
+    }
+
+    #[test]
+    fn crud_link_fetch_path_accepts_bare_cidv1_only() {
+        let cid = "bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku";
+        assert_eq!(crud_link_fetch_path(cid), Some(format!("/ipfs/{cid}")));
+        assert_eq!(crud_link_fetch_path(&format!("/ipfs/{cid}")), None);
+        assert_eq!(crud_link_fetch_path("/ipns/k51qzi5uqu5dl"), None);
         assert_eq!(
-            ipfs_ref_from_store_reply("/ipfs/bafyreipath\n"),
-            "/ipfs/bafyreipath"
+            crud_link_fetch_path("QmYwAPJzv5CZsnAzt8auVTLBhdgcq7M4Z6b5q8v8z6C6xF"),
+            None
         );
     }
 

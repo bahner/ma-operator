@@ -81,9 +81,9 @@ pub enum EditorMode {
     },
     /// Edit an arbitrary CRUD path on a remote runtime: Publish + Cancel.
     /// Save behaviour is determined by `is_link`:
-    /// - `true` (the GET reply value was an `/ipfs/`- or `/ipns/`-prefixed
-    ///   link) → serialise to DAG-CBOR, upload to IPFS, register the CID
-    ///   (as an `/ipfs/<cid>` reference) via CRUD set at `crud_path`.
+    /// - `true` (the GET reply value was a bare CIDv1 link) → serialise to
+    ///   DAG-CBOR, upload to IPFS, register the CID
+    ///   (as a bare CIDv1 reference) via CRUD set at `crud_path`.
     /// - `false` → parse editor YAML, send inline via CRUD set at
     ///   `crud_path`.
     CrudEdit {
@@ -109,7 +109,7 @@ pub enum EditorMode {
         protocol_id: String,
     },
     /// Edit one actor's own behaviour by publishing text to IPFS and then
-    /// calling the actor's `:behaviour /ipfs/<cid>` method.
+    /// calling the actor's `:behaviour <cid>` method.
     ActorBehaviourEdit {
         /// DID-URL of the actor whose behaviour should be updated.
         target: String,
@@ -495,7 +495,7 @@ pub fn EditorModal(
     };
 
     // ActorBehaviourEdit — upload raw ma-scheme text to IPFS, then call
-    // `:behaviour /ipfs/<cid>` on the target actor when the store reply arrives.
+    // `:behaviour <cid>` on the target actor when the store reply arrives.
     let on_actor_behaviour_publish = {
         let state = state.clone();
         move |_| {
