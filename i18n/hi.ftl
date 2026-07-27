@@ -44,6 +44,7 @@ error-profile-no-identity = पहचान '{ $name }' नहीं मिल�
 # ── टर्मिनल सिस्टम संदेश ──────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } के रूप में लॉग इन
 msg-type-help = कमांड सूची के लिए .help टाइप करें।
+msg-getting-started = शुरू करने के लिए आज़माएँ: say Hello world, look, .help, या help।
 msg-connecting = iroh से कनेक्ट हो रहा है...
 msg-iroh-ready = iroh एंडपॉइंट तैयार
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = identeco '{ $name }' ne trovita — unue importu ide
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — ensalutita kiel { $username }
 msg-type-help = Tajpu .help por listo de komandoj.
+msg-getting-started = Provu: say Hello world, look, .help aŭ help.
 msg-connecting = konektante al iroh...
 msg-iroh-ready = iroh-finpunkto preta
 msg-iroh-failed = iroh: { $e }

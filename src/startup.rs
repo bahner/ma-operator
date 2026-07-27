@@ -212,6 +212,7 @@ pub(crate) async fn startup_load_config(
         ],
     ));
     state.push_system(t("msg-type-help"));
+    state.push_system(t("msg-getting-started"));
 }
 
 fn normalize_startup_enter(runtime: String) -> String {

@@ -44,6 +44,7 @@ error-profile-no-identity = அடையாளம் '{ $name }' கண்டு
 # ── முனையம் கணினி செய்திகள் ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } ஆக உள்நுழைந்தீர்கள்
 msg-type-help = கட்டளைகளின் பட்டியலுக்கு .help தட்டச்சு செய்யவும்.
+msg-getting-started = தொடங்க முயலுங்கள்: say Hello world, look, .help, அல்லது help.
 msg-connecting = iroh உடன் இணைக்கப்படுகிறது...
 msg-iroh-ready = iroh இறுதிப்புள்ளி தயார்
 msg-iroh-failed = iroh: { $e }

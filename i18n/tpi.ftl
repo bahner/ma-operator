@@ -44,6 +44,7 @@ error-profile-no-identity = identiti '{ $name }' i no stap — kisim identiti pa
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — lagin olsem { $username }
 msg-type-help = Raitim .help bilong lukim lis bilong komand.
+msg-getting-started = Traim: say Hello world, look, .help, o help.
 msg-connecting = i konek long iroh...
 msg-iroh-ready = iroh poin i redi
 msg-iroh-failed = iroh: { $e }

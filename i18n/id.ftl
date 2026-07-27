@@ -44,6 +44,7 @@ error-profile-no-identity = identitas '{ $name }' tidak ditemukan — impor iden
 # ── Pesan sistem terminal ─────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — masuk sebagai { $username }
 msg-type-help = Ketik .help untuk daftar perintah.
+msg-getting-started = Coba: say Hello world, look, .help, atau help.
 msg-connecting = menghubungkan ke iroh...
 msg-iroh-ready = endpoint iroh siap
 msg-iroh-failed = iroh: { $e }

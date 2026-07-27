@@ -44,6 +44,7 @@ error-profile-no-identity = auðkenni '{ $name }' fannst ekki — flytja inn au�
 # ── Kerfisskilaboð útstöðvar ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — innskráður sem { $username }
 msg-type-help = Sláðu inn .help til að sjá lista yfir skipanir.
+msg-getting-started = Prófaðu: say Hello world, look, .help eða help.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur tilbúinn
 msg-iroh-failed = iroh: { $e }

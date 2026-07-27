@@ -44,6 +44,7 @@ error-profile-no-identity = ny mombamomba '{ $name }' tsy hita — ampidira momb
 # ── Hafatry ny rafitra terminal ────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — niditra amin'ny { $username }
 msg-type-help = Soraty .help mba hahazo lisitry ny baiko.
+msg-getting-started = Andramo: say Hello world, look, .help, na help.
 msg-connecting = mampifandray amin'ny iroh...
 msg-iroh-ready = vonona ny endpoint iroh
 msg-iroh-failed = iroh: { $e }

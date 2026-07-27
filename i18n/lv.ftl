@@ -44,6 +44,7 @@ error-profile-no-identity = identitāte '{ $name }' nav atrasta — vispirms imp
 # ── Termināļa sistēmas ziņojumi ───────────────────────────────────────────
 msg-logged-in = zion v{ $version } — pierakstījies kā { $username }
 msg-type-help = Ierakstiet .help, lai iegūtu komandu sarakstu.
+msg-getting-started = Izmēģiniet: say Hello world, look, .help vai help.
 msg-connecting = savienojas ar iroh...
 msg-iroh-ready = iroh galapunkts gatavs
 msg-iroh-failed = iroh: { $e }

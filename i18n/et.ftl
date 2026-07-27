@@ -44,6 +44,7 @@ error-profile-no-identity = identiteet '{ $name }' ei leitud — importige esmal
 # ── Terminali süsteemiteated ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — sisse logitud kasutajana { $username }
 msg-type-help = Käskude loendi saamiseks kirjuta .help/
+msg-getting-started = Proovi: say Hello world, look, .help või help.
 msg-connecting = ühendatakse iroh-iga...
 msg-iroh-ready = iroh lõpp-punkt valmis
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = η ταυτότητα '{ $name }' δεν βρέθη�
 # ── Μηνύματα συστήματος τερματικού ───────────────────────────────────────
 msg-logged-in = zion v{ $version } — συνδεδεμένοι ως { $username }
 msg-type-help = Πληκτρολογήστε .help για λίστα εντολών.
+msg-getting-started = Δοκιμάστε: say Hello world, look, .help ή help.
 msg-connecting = σύνδεση στο iroh...
 msg-iroh-ready = τελικό σημείο iroh έτοιμο
 msg-iroh-failed = iroh: { $e }

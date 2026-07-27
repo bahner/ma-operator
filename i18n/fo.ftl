@@ -44,6 +44,7 @@ error-profile-no-identity = kennsla '{ $name }' ikki funnin — innfør kennsla 
 # ── Kervisboð frá terminali ───────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — ritaður inn sum { $username }
 msg-type-help = Skriva .help fyri lista av skipanum.
+msg-getting-started = Royn: say Hello world, look, .help ella help.
 msg-connecting = tengist iroh...
 msg-iroh-ready = iroh-endapunktur er klár
 msg-iroh-failed = iroh: { $e }

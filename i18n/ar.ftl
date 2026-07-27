@@ -44,6 +44,7 @@ error-profile-no-identity = الهوية '{ $name }' غير موجودة — ا�
 # ── رسائل نظام الطرفية ────────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — مسجَّل دخول بوصفك { $username }
 msg-type-help = اكتب .help للحصول على قائمة الأوامر.
+msg-getting-started = جرّب: say Hello world أو look أو .help أو help.
 msg-connecting = جارٍ الاتصال بـ iroh...
 msg-iroh-ready = نقطة نهاية iroh جاهزة
 msg-iroh-failed = iroh: { $e }

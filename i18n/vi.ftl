@@ -44,6 +44,7 @@ error-profile-no-identity = danh tính '{ $name }' không tìm thấy — nhập
 # ── Thông báo hệ thống terminal ───────────────────────────────────────────
 msg-logged-in = zion v{ $version } — đã đăng nhập với tư cách { $username }
 msg-type-help = Nhập .help để xem danh sách lệnh.
+msg-getting-started = Hãy thử: say Hello world, look, .help hoặc help.
 msg-connecting = đang kết nối tới iroh...
 msg-iroh-ready = điểm cuối iroh sẵn sàng
 msg-iroh-failed = iroh: { $e }

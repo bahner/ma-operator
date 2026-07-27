@@ -44,6 +44,7 @@ error-profile-no-identity = eenummaa '{ $name }' argame hin jiru — duraan eenu
 # ── Ergaalee sirna terminal ───────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — akka { $username }tti seenameera
 msg-type-help = Tarree ajajootaaf .help barreessi.
+msg-getting-started = Yaali: say Hello world, look, .help, yookaan help.
 msg-connecting = iroh walitti hidhamaa...
 msg-iroh-ready = xumura iroh qophaa'eera
 msg-iroh-failed = iroh: { $e }

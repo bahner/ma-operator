@@ -44,6 +44,7 @@ error-profile-no-identity = isazisi '{ $name }' asitholakananga — ngenisa isaz
 # ── Imiyalezo yesistimu ye-terminal ──────────────────────────────────────
 msg-logged-in = zion v{ $version } — ungene njengo { $username }
 msg-type-help = Thayipha .help ukuze uthole uhlu lwemiyalelo.
+msg-getting-started = Zama: say Hello world, look, .help, noma help.
 msg-connecting = ixhunywa ku-iroh...
 msg-iroh-ready = i-endpoint ye-iroh ilungile
 msg-iroh-failed = iroh: { $e }

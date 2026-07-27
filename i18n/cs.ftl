@@ -44,6 +44,7 @@ error-profile-no-identity = identita '{ $name }' nenalezena — nejprve importuj
 # ── Systémové zprávy terminálu ────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — přihlášen jako { $username }
 msg-type-help = Napište .help pro seznam příkazů.
+msg-getting-started = Zkuste: say Hello world, look, .help nebo help.
 msg-connecting = připojování k iroh...
 msg-iroh-ready = iroh endpoint připraven
 msg-iroh-failed = iroh: { $e }

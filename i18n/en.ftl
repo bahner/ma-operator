@@ -47,6 +47,7 @@ error-profile-no-identity = identity '{ $name }' not found — import identity f
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logged in as { $username }
 msg-type-help = Type .help for a list of commands.
+msg-getting-started = Try: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }

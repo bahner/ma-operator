@@ -44,6 +44,7 @@ error-profile-no-identity = aydɛntɪti '{ $name }' nɔ fɔnd — bring aydɛnt�
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — login as { $username }
 msg-type-help = Taip .help fi get list ɔf komand dem.
+msg-getting-started = Tray: say Hello world, look, .help, ɔ help.
 msg-connecting = de konect go iroh...
 msg-iroh-ready = iroh endpoint redi
 msg-iroh-failed = iroh: { $e }

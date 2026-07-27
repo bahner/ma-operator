@@ -44,6 +44,7 @@ error-profile-no-identity = identidádi '{ $name }' ka atxádu — importa ident
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logadu komo { $username }
 msg-type-help = Tipa .help pa lista di komandu.
+msg-getting-started = Tenta: say Hello world, look, .help, ô help.
 msg-connecting = konektandu a iroh...
 msg-iroh-ready = pontu iroh prontu
 msg-iroh-failed = iroh: { $e }

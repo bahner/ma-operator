@@ -44,6 +44,7 @@ error-profile-no-identity = utambulisho '{ $name }' haukupatikana — leta utamb
 # ── Ujumbe wa mfumo wa terminal ───────────────────────────────────────────
 msg-logged-in = zion v{ $version } — umeingia kama { $username }
 msg-type-help = Andika .help kupata orodha ya amri.
+msg-getting-started = Jaribu: say Hello world, look, .help, au help.
 msg-connecting = kuunganisha na iroh...
 msg-iroh-ready = mwisho wa iroh uko tayari
 msg-iroh-failed = iroh: { $e }

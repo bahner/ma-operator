@@ -44,6 +44,7 @@ error-profile-no-identity = identiteit '{ $name }' niet gevonden — importeer e
 # ── Terminaalsysteemberichten ─────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — aangemeld als { $username }
 msg-type-help = Typ .help voor een lijst met opdrachten.
+msg-getting-started = Probeer: say Hello world, look, .help of help.
 msg-connecting = verbinding maken met iroh...
 msg-iroh-ready = iroh-eindpunt gereed
 msg-iroh-failed = iroh: { $e }

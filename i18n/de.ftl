@@ -44,6 +44,7 @@ error-profile-no-identity = Identität '{ $name }' nicht gefunden — Identität
 # ── Terminalsystemmeldungen ───────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — angemeldet als { $username }
 msg-type-help = Geben Sie .help ein, um eine Liste der Befehle zu erhalten.
+msg-getting-started = Probieren Sie: say Hello world, look, .help oder help.
 msg-connecting = Verbindung zu iroh wird hergestellt...
 msg-iroh-ready = iroh-Endpunkt bereit
 msg-iroh-failed = iroh: { $e }

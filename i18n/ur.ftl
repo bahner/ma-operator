@@ -44,6 +44,7 @@ error-profile-no-identity = شناخت '{ $name }' نہیں ملی — پہلے 
 # ── ٹرمینل سسٹم پیغامات ──────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } کے طور پر لاگ ان
 msg-type-help = کمانڈ کی فہرست کے لیے .help ٹائپ کریں۔
+msg-getting-started = شروع کرنے کے لیے آزمائیں: say Hello world، look، .help، یا help۔
 msg-connecting = iroh سے منسلک ہو رہا ہے...
 msg-iroh-ready = iroh اینڈ پوائنٹ تیار ہے
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = самоличността '{ $name }' не е на�
 # ── Системни съобщения на терминала ──────────────────────────────────────
 msg-logged-in = zion v{ $version } — влязохте като { $username }
 msg-type-help = Въведете .help за списък с команди.
+msg-getting-started = Опитайте: say Hello world, look, .help или help.
 msg-connecting = свързване с iroh...
 msg-iroh-ready = iroh крайната точка е готова
 msg-iroh-failed = iroh: { $e }

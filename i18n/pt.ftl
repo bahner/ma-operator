@@ -44,6 +44,7 @@ error-profile-no-identity = identidade '{ $name }' não encontrada — importe a
 # ── Mensagens do sistema do terminal ─────────────────────────────────────
 msg-logged-in = zion v{ $version } — sessão iniciada como { $username }
 msg-type-help = Escreva .help para obter uma lista de comandos.
+msg-getting-started = Experimente: say Hello world, look, .help ou help.
 msg-connecting = a ligar ao iroh...
 msg-iroh-ready = ponto de extremidade iroh pronto
 msg-iroh-failed = iroh: { $e }

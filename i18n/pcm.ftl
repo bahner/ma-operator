@@ -44,6 +44,7 @@ error-profile-no-identity = identity '{ $name }' no dey — first bring identity
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logged in as { $username }
 msg-type-help = Type .help fi see list of commands.
+msg-getting-started = Try: say Hello world, look, .help, or help.
 msg-connecting = e dey connect to iroh...
 msg-iroh-ready = iroh endpoint ready
 msg-iroh-failed = iroh: { $e }

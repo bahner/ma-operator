@@ -44,6 +44,7 @@ error-profile-no-identity = idantite '{ $name }' pa jwenn — enpòte idantite a
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — konekte kòm { $username }
 msg-type-help = Tape .help pou yon lis kòmand.
+msg-getting-started = Eseye: say Hello world, look, .help, oswa help.
 msg-connecting = ap konekte nan iroh...
 msg-iroh-ready = pwen iroh pare
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = asali '{ $name }' ba a samu — fara shigo da asali
 # ── Saƙonnin tsarin terminal ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — an shiga a matsayin { $username }
 msg-type-help = Rubuta .help don jerin umarni.
+msg-getting-started = Gwada: say Hello world, look, .help, ko help.
 msg-connecting = ana haɗawa da iroh...
 msg-iroh-ready = ƙarshen iroh ya shirya
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = identiteta '{ $name }' ni bila najdena — najprej u
 # ── Sistemska sporočila terminala ─────────────────────────────────────────
 msg-logged-in = zion v{ $version } — prijavljeni kot { $username }
 msg-type-help = Vnesite .help za seznam ukazov.
+msg-getting-started = Poskusite: say Hello world, look, .help ali help.
 msg-connecting = vzpostavljanje povezave z iroh...
 msg-iroh-ready = iroh končna točka je pripravljena
 msg-iroh-failed = iroh: { $e }

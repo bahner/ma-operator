@@ -44,6 +44,7 @@ error-profile-no-identity = గుర్తింపు '{ $name }' కనుగ
 # ── టెర్మినల్ సిస్టమ్ సందేశాలు ─────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } గా లాగిన్ అయ్యారు
 msg-type-help = ఆదేశాల జాబితా కోసం .help అని టైప్ చేయండి.
+msg-getting-started = ప్రారంభించడానికి ప్రయత్నించండి: say Hello world, look, .help, లేదా help.
 msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
 msg-iroh-ready = iroh ఎండ్‌పాయింట్ సిద్ధంగా ఉంది
 msg-iroh-failed = iroh: { $e }

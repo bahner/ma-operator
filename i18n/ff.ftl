@@ -44,6 +44,7 @@ error-profile-no-identity = caaktoyɓe '{ $name }' alaa — naatni caaktoyɓe ad
 # ── Koɗe nii'am terminal ──────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — naatɗo ko { $username }
 msg-type-help = Winndita .help tawa hisɗaa dabaaji yimɓe.
+msg-getting-started = Eto: say Hello world, look, .help walla help.
 msg-connecting = wonde iroh...
 msg-iroh-ready = iroh endpoint hebii
 msg-iroh-failed = iroh: { $e }

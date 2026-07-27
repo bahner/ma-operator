@@ -47,6 +47,7 @@ error-profile-no-identity = особистість '{ $name }' не знайде
 # ── Системні повідомлення терміналу ──────────────────────────────────────
 msg-logged-in = zion v{ $version } — увійшли як { $username }
 msg-type-help = Введіть .help для списку команд.
+msg-getting-started = Спробуйте: say Hello world, look, .help або help.
 msg-connecting = підключення до iroh...
 msg-iroh-ready = iroh endpoint готовий
 msg-iroh-failed = iroh: { $e }

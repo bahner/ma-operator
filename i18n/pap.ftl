@@ -44,6 +44,7 @@ error-profile-no-identity = identidad '{ $name }' no hayá — importa identidad
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — login komo { $username }
 msg-type-help = Tiki .help pa un lista di komando.
+msg-getting-started = Purba: say Hello world, look, .help, òf help.
 msg-connecting = konektando na iroh...
 msg-iroh-ready = punto iroh ta listu
 msg-iroh-failed = iroh: { $e }

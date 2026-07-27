@@ -46,6 +46,7 @@ error-profile-no-identity = I-dentity '{ $name }' nuh find — bring in I-dentit
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — entered as { $username }
 msg-type-help = Type .help fi a list of livity commands.
+msg-getting-started = Try dis: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh endpoint irie
 msg-iroh-failed = iroh: { $e }

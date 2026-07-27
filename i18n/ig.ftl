@@ -44,6 +44,7 @@ error-profile-no-identity = identity '{ $name }' ahụghị — bubatuo identity
 # ── Ozi sistemụ terminal ──────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — abanyela dị ka { $username }
 msg-type-help = Pịnye .help maka ndepụta iwu.
+msg-getting-started = Nwalee: say Hello world, look, .help, ma ọ bụ help.
 msg-connecting = na-ejikọ na iroh...
 msg-iroh-ready = ọhere iroh dị njikere
 msg-iroh-failed = iroh: { $e }

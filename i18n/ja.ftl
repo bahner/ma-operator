@@ -44,6 +44,7 @@ error-profile-no-identity = アイデンティティ '{ $name }' が見つかり
 # ── ターミナルシステムメッセージ ──────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } としてログイン済み
 msg-type-help = .help と入力するとコマンド一覧が表示されます。
+msg-getting-started = まずは say Hello world、look、.help、help を試してください。
 msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = 身分 '{ $name }' 未找到 — 請先匯入身分
 # ── 終端機系統訊息 ────────────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — 已以 { $username } 身分登入
 msg-type-help = 輸入 .help 查看指令清單。
+msg-getting-started = 試試：say Hello world、look、.help 或 help。
 msg-connecting = 正在連線到 iroh...
 msg-iroh-ready = iroh 端點就緒
 msg-iroh-failed = iroh: { $e }

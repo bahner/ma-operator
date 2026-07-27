@@ -44,6 +44,7 @@ error-profile-no-identity = 신원 '{ $name }' 을 찾을 수 없습니다 — �
 # ── 터미널 시스템 메시지 ──────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username }(으)로 로그인됨
 msg-type-help = 명령어 목록을 보려면 .help를 입력하세요.
+msg-getting-started = 시작하려면 say Hello world, look, .help 또는 help를 입력해 보세요.
 msg-connecting = iroh에 연결 중...
 msg-iroh-ready = iroh 엔드포인트 준비됨
 msg-iroh-failed = iroh: { $e }

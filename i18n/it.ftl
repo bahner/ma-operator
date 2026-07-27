@@ -44,6 +44,7 @@ error-profile-no-identity = identità '{ $name }' non trovata — importare prim
 # ── Messaggi di sistema del terminale ────────────────────────────────────
 msg-logged-in = zion v{ $version } — connesso come { $username }
 msg-type-help = Digita .help per ottenere un elenco di comandi.
+msg-getting-started = Prova: say Hello world, look, .help oppure help.
 msg-connecting = connessione a iroh in corso...
 msg-iroh-ready = endpoint iroh pronto
 msg-iroh-failed = iroh: { $e }

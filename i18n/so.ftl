@@ -44,6 +44,7 @@ error-profile-no-identity = aqoonsiga '{ $name }' lama helin — marka hore keen
 # ── Fariimaha nidaamka terminal ───────────────────────────────────────────
 msg-logged-in = zion v{ $version } — waad galeen ahaan { $username }
 msg-type-help = Qor .help si aad u hesho liiska amarka.
+msg-getting-started = Isku day: say Hello world, look, .help, ama help.
 msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }

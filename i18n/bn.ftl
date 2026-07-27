@@ -44,6 +44,7 @@ error-profile-no-identity = পরিচয় '{ $name }' পাওয়া �
 # ── টার্মিনাল সিস্টেম বার্তা ─────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } হিসেবে লগ ইন করা হয়েছে
 msg-type-help = কমান্ড তালিকার জন্য .help টাইপ করুন।
+msg-getting-started = শুরু করতে চেষ্টা করুন: say Hello world, look, .help, অথবা help।
 msg-connecting = iroh-এ সংযুক্ত হচ্ছে...
 msg-iroh-ready = iroh এন্ডপয়েন্ট প্রস্তুত
 msg-iroh-failed = iroh: { $e }

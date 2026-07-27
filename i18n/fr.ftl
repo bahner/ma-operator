@@ -44,6 +44,7 @@ error-profile-no-identity = identité '{ $name }' introuvable — importez d'abo
 # ── Messages système du terminal ──────────────────────────────────────────
 msg-logged-in = zion v{ $version } — connecté en tant que { $username }
 msg-type-help = Tapez .help pour obtenir la liste des commandes.
+msg-getting-started = Essayez : say Hello world, look, .help ou help.
 msg-connecting = connexion à iroh...
 msg-iroh-ready = point de terminaison iroh prêt
 msg-iroh-failed = iroh : { $e }

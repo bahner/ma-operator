@@ -44,6 +44,7 @@ error-profile-no-identity = identiteetti '{ $name }' ei löytynyt — tuo identi
 # ── Terminaalijärjestelmäviestit ──────────────────────────────────────────
 msg-logged-in = zion v{ $version } — kirjautunut sisään nimellä { $username }
 msg-type-help = Kirjoita .help saadaksesi luettelon komennoista.
+msg-getting-started = Kokeile: say Hello world, look, .help tai help.
 msg-connecting = yhdistetään iroh:iin...
 msg-iroh-ready = iroh-päätepiste valmis
 msg-iroh-failed = iroh: { $e }

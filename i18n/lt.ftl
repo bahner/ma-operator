@@ -44,6 +44,7 @@ error-profile-no-identity = tapatybė '{ $name }' nerasta — pirmiausia importu
 # ── Terminalo sistemos pranešimai ─────────────────────────────────────────
 msg-logged-in = zion v{ $version } — prisijungta kaip { $username }
 msg-type-help = Įveskite .help, kad gautumėte komandų sąrašą.
+msg-getting-started = Pabandykite: say Hello world, look, .help arba help.
 msg-connecting = jungiamasi prie iroh...
 msg-iroh-ready = iroh galinys paruoštas
 msg-iroh-failed = iroh: { $e }

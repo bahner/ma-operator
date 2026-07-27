@@ -44,6 +44,7 @@ error-profile-no-identity = kimlik '{ $name }' bulunamadı — önce kimliği i�
 # ── Terminal sistem mesajları ─────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } olarak giriş yapıldı
 msg-type-help = Komut listesi için .help yazın.
+msg-getting-started = Deneyin: say Hello world, look, .help veya help.
 msg-connecting = iroh'a bağlanılıyor...
 msg-iroh-ready = iroh uç noktası hazır
 msg-iroh-failed = iroh: { $e }

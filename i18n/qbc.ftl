@@ -46,6 +46,7 @@ error-profile-no-identity = selfmang '{ $name }' na finyish wit — bringin self
 # ── Sistem koments terminal ────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — ingangé wit { $username }
 msg-type-help = Showxa .help fo kowl komands.
+msg-getting-started = Try wa: say Hello world, look, .help, or help.
 msg-connecting = konekting to iroh...
 msg-iroh-ready = iroh endpoint gútegow
 msg-iroh-failed = iroh: { $e }

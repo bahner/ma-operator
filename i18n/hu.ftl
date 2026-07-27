@@ -44,6 +44,7 @@ error-profile-no-identity = az identitás '{ $name }' nem található — előbb
 # ── Terminál rendszerüzenetek ─────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — bejelentkezve mint { $username }
 msg-type-help = Írja be a .help parancsot a parancsok listájához.
+msg-getting-started = Próbálja ki: say Hello world, look, .help vagy help.
 msg-connecting = csatlakozás az iroh-hoz...
 msg-iroh-ready = iroh végpont kész
 msg-iroh-failed = iroh: { $e }

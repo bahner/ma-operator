@@ -44,6 +44,7 @@ error-profile-no-identity = identiteten '{ $name }' ikkje funnen — importer id
 # ── Terminalsystemmeldingar ───────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logga inn som { $username }
 msg-type-help = Skriv .help for ei liste over kommandoar.
+msg-getting-started = Prøv: say Hello world, look, .help eller help.
 msg-connecting = koplar til iroh...
 msg-iroh-ready = iroh-endepunkt klart
 msg-iroh-failed = iroh: { $e }

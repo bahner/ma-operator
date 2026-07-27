@@ -44,6 +44,7 @@ error-profile-no-identity = identitatea '{ $name }' nu a fost găsită — impor
 # ── Mesaje de sistem ale terminalului ────────────────────────────────────
 msg-logged-in = zion v{ $version } — autentificat ca { $username }
 msg-type-help = Tastați .help pentru o listă de comenzi.
+msg-getting-started = Încercați: say Hello world, look, .help sau help.
 msg-connecting = conectare la iroh...
 msg-iroh-ready = punct final iroh pregătit
 msg-iroh-failed = iroh: { $e }

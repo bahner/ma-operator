@@ -44,6 +44,7 @@ error-profile-no-identity = identity '{ $name }' nuh find — bring een identity
 # ── Terminal system messages ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — logged in as { $username }
 msg-type-help = Type .help fi get a list of commands.
+msg-getting-started = Try dis: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
 msg-iroh-ready = iroh pwen final pare
 msg-iroh-failed = iroh: { $e }

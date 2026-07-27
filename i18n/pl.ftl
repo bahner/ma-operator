@@ -44,6 +44,7 @@ error-profile-no-identity = tożsamość '{ $name }' nie znaleziona — najpierw
 # ── Komunikaty systemowe terminala ────────────────────────────────────────
 msg-logged-in = zion v{ $version } — zalogowano jako { $username }
 msg-type-help = Wpisz .help, aby uzyskać listę poleceń.
+msg-getting-started = Spróbuj: say Hello world, look, .help albo help.
 msg-connecting = łączenie z iroh...
 msg-iroh-ready = punkt końcowy iroh gotowy
 msg-iroh-failed = iroh: { $e }

@@ -44,6 +44,7 @@ error-profile-no-identity = ማንነት '{ $name }' አልተገኘም — መ�
 # ── የ terminal ስርዓት መልዕክቶች ──────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — እንደ { $username } ገብተዋል
 msg-type-help = የትዕዛዞች ዝርዝር ለማየት .help ይተይቡ።
+msg-getting-started = ለመጀመር ይሞክሩ፦ say Hello world, look, .help, ወይም help።
 msg-connecting = ወደ iroh እየተገናኘ...
 msg-iroh-ready = iroh ማጠናቀቂያ ዝግጁ ነው
 msg-iroh-failed = iroh: { $e }

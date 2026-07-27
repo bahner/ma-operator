@@ -44,6 +44,7 @@ error-profile-no-identity = ไม่พบตัวตน '{ $name }' — น�
 # ── ข้อความระบบ terminal ─────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — เข้าสู่ระบบในนาม { $username }
 msg-type-help = พิมพ์ .help เพื่อดูรายการคำสั่ง
+msg-getting-started = ลองพิมพ์: say Hello world, look, .help หรือ help
 msg-connecting = กำลังเชื่อมต่อ iroh...
 msg-iroh-ready = endpoint iroh พร้อมใช้งาน
 msg-iroh-failed = iroh: { $e }

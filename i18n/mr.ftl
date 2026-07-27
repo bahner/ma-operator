@@ -44,6 +44,7 @@ error-profile-no-identity = ओळख '{ $name }' आढळली नाही �
 # ── टर्मिनल प्रणाली संदेश ────────────────────────────────────────────────
 msg-logged-in = zion v{ $version } — { $username } म्हणून लॉग इन केले
 msg-type-help = आदेश सूचीसाठी .help टाइप करा.
+msg-getting-started = सुरू करण्यासाठी वापरून पाहा: say Hello world, look, .help किंवा help.
 msg-connecting = iroh ला जोडले जात आहे...
 msg-iroh-ready = iroh एंडपॉइंट तयार
 msg-iroh-failed = iroh: { $e }

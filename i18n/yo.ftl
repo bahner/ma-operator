@@ -44,6 +44,7 @@ error-profile-no-identity = ẹrí-iní '{ $name }' ko ri — ko ẹrí-iní w�
 # ── Àwọn ìfiranṣẹ́ ètò terminal ──────────────────────────────────────────
 msg-logged-in = zion v{ $version } — a wọlé gẹ́gẹ́ bí { $username }
 msg-type-help = Tẹ .help fún àtòjọ àwọn àṣẹ.
+msg-getting-started = Gbìyànjú: say Hello world, look, .help, tàbí help.
 msg-connecting = ìsopọ̀ mọ́ iroh...
 msg-iroh-ready = ìpádédé iroh ti ṣetán
 msg-iroh-failed = iroh: { $e }
