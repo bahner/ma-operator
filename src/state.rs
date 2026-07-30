@@ -205,7 +205,7 @@ pub enum OutboxTask {
         args: Vec<String>,
         cmd_id: u64,
     },
-    /// A local zion command aimed at an actor, e.g. `@actor!say text`.
+    /// A local zion command aimed at an actor, e.g. `@actor!msg text`.
     ActorLocal {
         target: String,
         command: String,

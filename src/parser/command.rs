@@ -14,7 +14,8 @@
 ///   @alias/path: value   → RemoteCrud::Set(value)
 ///   @alias/path:         → RemoteCrud::Delete
 ///   @alias/path!edit     → RemoteCrud::Edit
-///   @alias!cmd [body]    → ActorLocalCommand (local zion command: msg/say/emote)
+///   @alias!msg [body]    → ActorLocalCommand (local zion text message command)
+///   @alias#entity!edit   → ActorMessage `:behaviour!edit` meta workflow
 ///   @alias[:verb] [body] → ActorMessage  (remote method / RPC)
 ///   @did:ma:<id>[:verb]  → ActorMessage
 ///   did:ma:<id>[:verb]   → ActorMessage  (bare DID from expansion)
@@ -178,8 +179,19 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         }
     }
 
-    // Local actor command: `@actor!say text` chooses a zion-side workflow or
-    // message type. It is not a remote method call; `:` remains remote RPC.
+    if let Some(raw_target) = actor_fragment_edit_target(head_stripped) {
+        let target = resolve_target(raw_target, cfg)?;
+        let body = resolve_targets(&body_raw, cfg)?;
+        return Ok(Command::ActorMessage {
+            target,
+            verb: Some("behaviour".to_string()),
+            meta: Some("edit".to_string()),
+            body,
+        });
+    }
+
+    // Local actor command: `@actor!msg text` chooses a zion-side workflow.
+    // It is not a remote method call; `:` remains remote RPC.
     if let Some((raw_target, command)) = split_local_actor_command(head_stripped) {
         if raw_target.is_empty() || command.is_empty() {
             return Err(format!("invalid actor command: @{head_stripped}"));
@@ -191,6 +203,12 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
             command: command.to_string(),
             body,
         });
+    }
+
+    if let Some(bang) = head_stripped.find('!') {
+        if !has_actor_rpc_delimiter_before_bang(head_stripped, bang) {
+            return Err(format!("unknown actor command: !{}", &head_stripped[bang + 1..]));
+        }
     }
 
     let (raw_target, verb) = split_actor_head(head_stripped);
@@ -205,12 +223,26 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     })
 }
 
+fn actor_fragment_edit_target(head: &str) -> Option<&str> {
+    let raw_target = head.strip_suffix("!edit")?;
+    let bang = raw_target.len();
+    if raw_target.contains('#')
+        && !raw_target.ends_with('#')
+        && !has_actor_rpc_delimiter_before_bang(head, bang)
+    {
+        Some(raw_target)
+    } else {
+        None
+    }
+}
+
 fn split_local_actor_command(head: &str) -> Option<(&str, &str)> {
     let bang = head.find('!')?;
     if has_actor_rpc_delimiter_before_bang(head, bang) {
         return None;
     }
-    Some((&head[..bang], &head[bang + 1..]))
+    let command = &head[bang + 1..];
+    matches!(command, "msg" | "message" | "text").then_some((&head[..bang], command))
 }
 
 fn has_actor_rpc_delimiter_before_bang(head: &str, bang: usize) -> bool {
@@ -610,46 +642,35 @@ mod tests {
     }
 
     #[test]
-    fn parses_alias_target_with_local_actor_command() {
+    fn parses_alias_target_with_text_actor_command() {
         let mut cfg = EgoConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
-        let cmd = parse("@sky!say hello there", &cfg).expect("command should parse");
+        let cmd = parse("@sky!msg hello there", &cfg).expect("command should parse");
 
         assert_eq!(
             cmd,
             Command::ActorLocalCommand {
                 target: "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3"
                     .to_string(),
-                command: "say".to_string(),
+                command: "msg".to_string(),
                 body: "hello there".to_string(),
             }
         );
     }
 
     #[test]
-    fn parses_fragment_target_with_local_actor_command() {
+    fn rejects_fragment_target_emote_bang_command() {
         let mut cfg = EgoConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
-        let cmd = parse("@sky#room!emote danser", &cfg).expect("command should parse");
-
-        assert_eq!(
-            cmd,
-            Command::ActorLocalCommand {
-                target:
-                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
-                        .to_string(),
-                command: "emote".to_string(),
-                body: "danser".to_string(),
-            }
-        );
+        assert!(parse("@sky#room!emote danser", &cfg).is_err());
     }
 
     #[test]
@@ -690,6 +711,29 @@ mod tests {
             Command::ActorMessage {
                 target:
                     "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#room"
+                        .to_string(),
+                verb: Some("behaviour".to_string()),
+                meta: Some("edit".to_string()),
+                body: String::new(),
+            }
+        );
+    }
+
+    #[test]
+    fn parses_fragment_target_edit_as_behaviour_meta() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(
+            ".my.aliases.sky",
+            "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
+        );
+
+        let cmd = parse("@sky#construct!edit", &cfg).expect("command should parse");
+
+        assert_eq!(
+            cmd,
+            Command::ActorMessage {
+                target:
+                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#construct"
                         .to_string(),
                 verb: Some("behaviour".to_string()),
                 meta: Some("edit".to_string()),

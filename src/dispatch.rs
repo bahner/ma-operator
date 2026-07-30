@@ -555,7 +555,7 @@ fn dispatch_eval_line(
             let target = focus_command_target(f, line);
             if parsed.meta.as_deref() == Some("edit") && parsed.verb == "behaviour" {
                 if !target.contains('#') {
-                    state.push_error("behaviour editor requires a focused room actor".to_string());
+                    state.push_error("behaviour editor requires a focused actor".to_string());
                     return None;
                 }
                 let cmd_id = open_actor_behaviour_editor(target, line, state, show_editor);
@@ -697,7 +697,7 @@ fn actor_rpc_meta_action(cmd: &Command) -> Option<ActorRpcMetaAction<'_>> {
         }
         if !target.contains('#') {
             return Some(ActorRpcMetaAction::Rejected {
-                reason: "behaviour editor requires a focused room actor",
+                reason: "behaviour editor requires an actor target",
             });
         }
         return Some(ActorRpcMetaAction::BehaviourEdit { target });

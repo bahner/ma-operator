@@ -166,42 +166,6 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
     Ok(msg_id)
 }
 
-/// Send an ephemeral chat message (`application/vnd.ma.chat`).
-/// Returns the dispatched `Message.id` on success.
-pub async fn send_chat(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info()?;
-    let msg = Message::new(
-        &sender_did,
-        target_did,
-        MESSAGE_TYPE_CHAT,
-        CONTENT_TYPE_TEXT,
-        text.as_bytes(),
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let msg_id = msg.id.clone();
-    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
-    Ok(msg_id)
-}
-
-/// Send an emote (`application/vnd.ma.emote`).
-/// Returns the dispatched `Message.id` on success.
-pub async fn send_emote(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info()?;
-    let msg = Message::new(
-        &sender_did,
-        target_did,
-        MESSAGE_TYPE_EMOTE,
-        CONTENT_TYPE_TEXT,
-        text.as_bytes(),
-        &signing_key,
-    )
-    .map_err(|e| e.to_string())?;
-    let msg_id = msg.id.clone();
-    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
-    Ok(msg_id)
-}
-
 /// Send an RPC message. Returns the dispatched `Message.id` on success.
 pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<String, String> {
     send_rpc_with_msg_id(target_did, verb, args, |_| {}).await

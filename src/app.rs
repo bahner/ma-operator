@@ -24,8 +24,8 @@ fn url_ma() -> Option<String> {
 /// pre-filled terminal input string, or `None` if absent.
 ///
 /// - `?msg=<did>`   → `@<did>!msg `    (plain text message command)
-/// - `?say=<did>`   → `@<did>!say `    (local chat message command)
-/// - `?emote=<did>` → `@<did>!emote `  (local emote message command)
+/// - `?say=<did>`   → `@<did>:say `    (actor RPC method)
+/// - `?emote=<did>` → `@<did>:emote `  (actor RPC method)
 fn url_prefill() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;
@@ -39,13 +39,13 @@ fn url_prefill() -> Option<String> {
     if let Some(target) = params.get("say") {
         let target = target.trim().to_string();
         if !target.is_empty() {
-            return Some(format!("@{target}!say "));
+            return Some(format!("@{target}:say "));
         }
     }
     if let Some(target) = params.get("emote") {
         let target = target.trim().to_string();
         if !target.is_empty() {
-            return Some(format!("@{target}!emote "));
+            return Some(format!("@{target}:emote "));
         }
     }
     None
