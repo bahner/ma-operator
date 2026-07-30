@@ -12,9 +12,9 @@ use crate::{
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
-        cbor_reply_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
-        handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
-        handle_profile_publish_reply, ReplyContext,
+        cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm,
+        handle_edit_open_reply, handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply,
+        handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -282,6 +282,9 @@ fn handle_ctx_receipt(
     config: RwSignal<EgoConfig>,
 ) {
     let cfg = config.get_untracked();
+    if handle_movement_ctx(payload, incoming, state, &cfg) {
+        return;
+    }
     let Some(ciborium::Value::Array(pairs)) = payload else {
         return;
     };
@@ -333,6 +336,10 @@ fn handle_ctx_receipt(
             .as_deref()
             .is_some_and(|room| room == pending.desired_room);
         if room_matches {
+            state.resolve_command_by_id(
+                pending.cmd_id,
+                crate::core::CommandStatus::Replied(String::new()),
+            );
             state.clear_pending_enter();
         } else if trusted_by_identity {
             // This ctx push is legitimately about the sender's own state (an
@@ -421,6 +428,105 @@ fn handle_ctx_receipt(
     }
     if let Some(text) = text {
         state.push_incoming(cfg.substitute_display_dids(&text), None, false);
+    }
+}
+
+fn handle_movement_ctx(
+    payload: Option<&ciborium::Value>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    cfg: &EgoConfig,
+) -> bool {
+    let Some(payload) = payload else {
+        return false;
+    };
+    if ctx_field(payload, "protocol").is_some() {
+        return false;
+    }
+    let Some(actor) = ctx_field(payload, "actor") else {
+        return false;
+    };
+    let Some(room) = ctx_field(payload, "room") else {
+        return false;
+    };
+    let kind = ctx_field(payload, "kind");
+    if !matches!(kind, Some("avatar" | "user")) {
+        return false;
+    }
+    let Some(session_did) = transport::get_sender_did() else {
+        return true;
+    };
+    if actor != session_did {
+        warn_ctx(&format!(
+            "[ctx] dropping movement ctx for different actor from={} actor={actor}",
+            incoming.from
+        ));
+        return true;
+    }
+    if !room.starts_with("did:ma:") {
+        warn_ctx(&format!(
+            "[ctx] dropping movement ctx with invalid target room from={} room={room}",
+            incoming.from
+        ));
+        return true;
+    }
+
+    let avatar = ctx_field(payload, "avatar");
+    let expected_avatar = cfg.get(".my.ctx.avatar");
+    let trusted_avatar = avatar.is_some_and(|avatar| incoming.from == avatar)
+        || expected_avatar.is_some_and(|avatar| incoming.from == avatar)
+        || incoming.from == session_did;
+    if !trusted_avatar {
+        warn_ctx(&format!(
+            "[ctx] dropping untrusted movement ctx from={} actor={actor} avatar={avatar:?}",
+            incoming.from
+        ));
+        return true;
+    }
+
+    let room = room.to_string();
+    let runtime = room
+        .split_once('#')
+        .map(|(runtime, _)| runtime.to_string())
+        .unwrap_or_else(|| room.clone());
+    let ctx_arg = cbor_to_scheme_val(payload);
+    let state2 = state.clone();
+    spawn_local(async move {
+        let cmd_id = state2.push_command(format!(".enter {room}"));
+        state2.set_pending_enter(cmd_id, runtime, room.clone());
+        match transport::send_rpc_vals(&room, "enter", &[ctx_arg]).await {
+            Ok(_) => {}
+            Err(e) => {
+                state2.clear_pending_enter();
+                state2.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Error(e.clone()));
+                state2.push_error(tf("msg-send-failed", &[("e", &e)]));
+            }
+        }
+    });
+    true
+}
+
+fn ctx_field<'a>(payload: &'a ciborium::Value, key: &str) -> Option<&'a str> {
+    let colon_key = format!(":{key}");
+    match payload {
+        ciborium::Value::Map(pairs) => pairs.iter().find_map(|(k, v)| match (k, v) {
+            (ciborium::Value::Text(k), ciborium::Value::Text(v)) if k == key || k == &colon_key => {
+                Some(v.as_str())
+            }
+            _ => None,
+        }),
+        ciborium::Value::Array(pairs) => pairs.iter().find_map(|pair| match pair {
+            ciborium::Value::Array(items) if items.len() == 2 => match (&items[0], &items[1]) {
+                (ciborium::Value::Text(k), ciborium::Value::Text(v))
+                    if k == key || k == &colon_key =>
+                {
+                    Some(v.as_str())
+                }
+                _ => None,
+            },
+            _ => None,
+        }),
+        _ => None,
     }
 }
 
@@ -823,6 +929,60 @@ mod tests {
         assert_eq!(cfg.get(".my.ctx.avatar"), Some("did:ma:k51target#alice"));
         assert_eq!(cfg.get(".my.ctx.nick"), Some("Alice"));
         assert_eq!(cfg.get(".my.ctx.room"), Some("did:ma:k51target#construct"));
+    }
+
+    #[test]
+    fn ctx_receipt_resolves_matching_pending_enter_command() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let room = "did:ma:k51target#construct";
+        let cmd_id = state.push_command(format!(".enter {room}"));
+        state.pending_enter.set(Some(crate::state::PendingEnter {
+            cmd_id,
+            desired_runtime: "did:ma:k51target".to_string(),
+            desired_room: room.to_string(),
+            issued_at_ms: 0.0,
+        }));
+        let payload = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":protocol".to_string()),
+                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("avatar".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":root".to_string()),
+                ciborium::Value::Text("did:ma:k51target#root".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":avatar".to_string()),
+                ciborium::Value::Text("did:ma:k51target#alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":room".to_string()),
+                ciborium::Value::Text(room.to_string()),
+            ]),
+        ]);
+        let incoming = incoming("did:ma:k51target#alice", "");
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        assert!(state.pending_enter.get_untracked().is_none());
+        let status = state.entries.with_untracked(|entries| {
+            entries.iter().find_map(|entry| match entry {
+                crate::core::Entry::Command(command) if command.id == cmd_id => {
+                    Some(command.status.get_untracked())
+                }
+                _ => None,
+            })
+        });
+        assert_eq!(
+            status,
+            Some(crate::core::CommandStatus::Replied(String::new()))
+        );
     }
 
     #[test]

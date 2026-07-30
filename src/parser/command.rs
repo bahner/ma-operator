@@ -207,7 +207,10 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
 
     if let Some(bang) = head_stripped.find('!') {
         if !has_actor_rpc_delimiter_before_bang(head_stripped, bang) {
-            return Err(format!("unknown actor command: !{}", &head_stripped[bang + 1..]));
+            return Err(format!(
+                "unknown actor command: !{}",
+                &head_stripped[bang + 1..]
+            ));
         }
     }
 

@@ -611,7 +611,7 @@ pub(crate) fn classify_reply(
 
 // ── CBOR → SchemeVal conversion ───────────────────────────────────────
 
-fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
+pub(crate) fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
     use ciborium::Value as V;
     match v {
         V::Text(s) => SchemeVal::Str(s.clone()),

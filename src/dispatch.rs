@@ -552,7 +552,10 @@ fn dispatch_eval_line(
                     return None;
                 }
             };
-            let target = focus_command_target(f, line);
+            let Some(target) = focus_command_target(f, line) else {
+                warn_focus("[focus] dropping plain shorthand command without avatar context");
+                return None;
+            };
             if parsed.meta.as_deref() == Some("edit") && parsed.verb == "behaviour" {
                 if !target.contains('#') {
                     state.push_error("behaviour editor requires a focused actor".to_string());
@@ -722,12 +725,22 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.trim().is_empty()
 }
 
-fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, line: &str) -> &'a str {
+fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, line: &str) -> Option<&'a str> {
     if line.trim_start().starts_with(':') {
-        &focus.target
+        Some(&focus.target)
     } else {
-        focus.avatar_actor.as_deref().unwrap_or(&focus.target)
+        focus.avatar_actor.as_deref()
     }
+}
+
+#[cfg(target_arch = "wasm32")]
+fn warn_focus(message: &str) {
+    web_sys::console::warn_1(&message.into());
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn warn_focus(message: &str) {
+    eprintln!("{message}");
 }
 
 fn enqueue_focus_command(
@@ -933,19 +946,37 @@ mod tests {
 
         assert_eq!(
             focus_command_target(&focus, "look"),
-            "did:ma:runtime#avatar"
+            Some("did:ma:runtime#avatar")
         );
         assert_eq!(
             focus_command_target(&focus, ":prop name Garden"),
-            "did:ma:runtime#room"
+            Some("did:ma:runtime#room")
         );
         assert_eq!(
             focus_command_target(&focus, "prop name Garden"),
-            "did:ma:runtime#avatar"
+            Some("did:ma:runtime#avatar")
         );
         assert_eq!(
             focus_command_target(&focus, "  :prop description"),
-            "did:ma:runtime#room"
+            Some("did:ma:runtime#room")
+        );
+    }
+
+    #[test]
+    fn focus_plain_shorthand_requires_avatar_context() {
+        let focus = FocusMode {
+            runtime: "did:ma:runtime".to_string(),
+            room: Some("did:ma:runtime#room".to_string()),
+            target: "did:ma:runtime#room".to_string(),
+            root_actor: Some("did:ma:runtime#root".to_string()),
+            avatar_actor: None,
+            prompt: "@ma".to_string(),
+        };
+
+        assert_eq!(focus_command_target(&focus, "go cloud"), None);
+        assert_eq!(
+            focus_command_target(&focus, ":look"),
+            Some("did:ma:runtime#room")
         );
     }
 }
