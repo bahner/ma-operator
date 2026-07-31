@@ -974,6 +974,17 @@ mod tests {
     }
 
     #[test]
+    fn focus_shorthand_expands_alias_arguments() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.aliases.ma", "did:ma:runtime");
+
+        let parsed = parse_focus_shorthand_command("drop @ma#duckie", &cfg).unwrap();
+
+        assert_eq!(parsed.verb, "drop");
+        assert_eq!(parsed.args, vec!["did:ma:runtime#duckie"]);
+    }
+
+    #[test]
     fn behaviour_reference_is_extracted_from_plain_or_decorated_reply() {
         let cid = "bafkreihdwdcefgh4dqkjv67uzcmw7ojee6xedzdetojuzjevtenxquvyku";
         let expected = format!("/ipfs/{cid}");

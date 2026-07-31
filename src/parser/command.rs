@@ -392,6 +392,14 @@ fn push_shell_word(
         }
         return Err(format!("no value at {path}"));
     }
+    if !is_literal && word.contains('@') {
+        if let Some(cfg) = cfg {
+            words.push(resolve_targets(&word, cfg)?);
+        } else {
+            words.push(word);
+        }
+        return Ok(());
+    }
     words.push(word);
     Ok(())
 }
@@ -533,6 +541,36 @@ mod tests {
         assert_eq!(
             shell_split_with_config("make thing <.my.things.lamp", &cfg).unwrap(),
             vec!["make", "thing", init]
+        );
+    }
+
+    #[test]
+    fn shell_split_expands_unquoted_alias_arguments() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.aliases.ma", "did:ma:runtime");
+
+        assert_eq!(
+            shell_split_with_config("drop @ma#duckie", &cfg).unwrap(),
+            vec!["drop", "did:ma:runtime#duckie"]
+        );
+    }
+
+    #[test]
+    fn shell_split_keeps_escaped_alias_arguments_literal() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.aliases.ma", "did:ma:runtime");
+
+        assert_eq!(
+            shell_split_with_config(r"drop \@ma#duckie", &cfg).unwrap(),
+            vec!["drop", "@ma#duckie"]
+        );
+    }
+
+    #[test]
+    fn shell_split_without_config_leaves_at_words_alone() {
+        assert_eq!(
+            shell_split("say @ma#duckie").unwrap(),
+            vec!["say", "@ma#duckie"]
         );
     }
 
