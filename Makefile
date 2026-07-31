@@ -1,5 +1,6 @@
 WASM		= target/wasm32-unknown-unknown/release/zion.wasm
 TRUNK_OPTS	= --release
+DIST_INDEX	= dist/index.html
 
 # All Rust source files and assets that should trigger a rebuild.
 SRC		= $(shell find src -name '*.rs') \
@@ -9,9 +10,11 @@ SRC		= $(shell find src -name '*.rs') \
 		  $(shell find style -name '*.css' 2>/dev/null) \
 		  $(shell find www -type f 2>/dev/null)
 
-.PHONY: serve dev clean publish check dist twiggy twiggy-dom test js-bundle
+.PHONY: serve dev clean publish dist check twiggy twiggy-dom test js-bundle
 
-dist:
+dist: $(DIST_INDEX)
+
+$(DIST_INDEX): $(SRC)
 	trunk build $(TRUNK_OPTS)
 
 #serve: TRUNK_OPTS=
