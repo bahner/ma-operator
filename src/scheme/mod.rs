@@ -110,22 +110,25 @@ fn expr_to_src(expr: &parser::SchemeExpr) -> String {
 // ── Command-line expansion ─────────────────────────────────────────────────
 
 pub fn needs_expansion(line: &str) -> bool {
-    let mut in_string = false;
+    let mut quote: Option<char> = None;
     let mut escaped = false;
     for ch in line.chars() {
         if escaped {
             escaped = false;
             continue;
         }
-        if ch == '\\' && in_string {
+        if ch == '\\' && quote.is_some() {
             escaped = true;
             continue;
         }
-        if ch == '"' {
-            in_string = !in_string;
+        if let Some(q) = quote {
+            if ch == q {
+                quote = None;
+            }
             continue;
         }
-        if in_string {
+        if ch == '"' || ch == '\'' {
+            quote = Some(ch);
             continue;
         }
         if ch == '(' {
@@ -148,15 +151,44 @@ pub async fn expand(
     let chars: Vec<char> = line.chars().collect();
     let mut result = String::new();
     let mut pos = 0;
+    let mut quote: Option<char> = None;
+    let mut escaped = false;
     while pos < chars.len() {
-        if chars[pos] == '(' {
+        let ch = chars[pos];
+        if escaped {
+            result.push(ch);
+            escaped = false;
+            pos += 1;
+            continue;
+        }
+        if ch == '\\' && quote.is_some() {
+            result.push(ch);
+            escaped = true;
+            pos += 1;
+            continue;
+        }
+        if let Some(q) = quote {
+            result.push(ch);
+            if ch == q {
+                quote = None;
+            }
+            pos += 1;
+            continue;
+        }
+        if ch == '"' || ch == '\'' {
+            quote = Some(ch);
+            result.push(ch);
+            pos += 1;
+            continue;
+        }
+        if ch == '(' {
             let (end, span) = find_balanced_paren(&chars, pos)
                 .ok_or_else(|| format!("unmatched '(' at column {}", pos + 1))?;
             let val = eval_span(&span, env.clone(), ctx.clone()).await?;
             result.push_str(&val.to_splice()?);
             pos = end + 1;
         } else {
-            result.push(chars[pos]);
+            result.push(ch);
             pos += 1;
         }
     }
@@ -199,22 +231,25 @@ fn build_call_str(verb: &str, args: &[String]) -> String {
 fn find_balanced_paren(chars: &[char], start: usize) -> Option<(usize, String)> {
     debug_assert_eq!(chars[start], '(');
     let mut depth: usize = 0;
-    let mut in_string = false;
+    let mut quote: Option<char> = None;
     let mut escaped = false;
     for (i, &ch) in chars.iter().enumerate().skip(start) {
         if escaped {
             escaped = false;
             continue;
         }
-        if ch == '\\' && in_string {
+        if ch == '\\' && quote.is_some() {
             escaped = true;
             continue;
         }
-        if ch == '"' {
-            in_string = !in_string;
+        if let Some(q) = quote {
+            if ch == q {
+                quote = None;
+            }
             continue;
         }
-        if in_string {
+        if ch == '"' || ch == '\'' {
+            quote = Some(ch);
             continue;
         }
         if ch == '(' {
@@ -235,4 +270,36 @@ async fn eval_span(span: &str, env: Env, ctx: Ctx) -> Result<SchemeVal, String> 
     ma_zscheme::eval::eval(expr, env, ctx)
         .await
         .map_err(|e| e.to_string())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn needs_expansion_ignores_single_quoted_parentheses() {
+        assert!(!needs_expansion(
+            "make thing '(begin (set-prop! \"name\" \"Lamp\"))'"
+        ));
+    }
+
+    #[test]
+    fn needs_expansion_ignores_double_quoted_parentheses() {
+        assert!(!needs_expansion("say \"not (scheme)\""));
+    }
+
+    #[test]
+    fn needs_expansion_detects_unquoted_parentheses() {
+        assert!(needs_expansion(
+            "make thing (shell-quote (.my.things.lamp))"
+        ));
+    }
+
+    #[test]
+    fn find_balanced_paren_ignores_quoted_parentheses() {
+        let chars: Vec<char> = "(shell-quote \"(not the end)\") tail".chars().collect();
+        let (end, span) = find_balanced_paren(&chars, 0).expect("balanced expression");
+        assert_eq!(span, "(shell-quote \"(not the end)\")");
+        assert_eq!(end, span.len() - 1);
+    }
 }

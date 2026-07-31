@@ -472,6 +472,14 @@ mod tests {
     }
 
     #[test]
+    fn shell_split_accepts_posix_single_quote_escape() {
+        assert_eq!(
+            shell_split(r#"make thing 'Lars'\'' lamp'"#).unwrap(),
+            vec!["make", "thing", "Lars' lamp"]
+        );
+    }
+
+    #[test]
     fn shell_split_rejects_unclosed_quote() {
         assert!(shell_split(r#"dig north "the garden"#).is_err());
     }
