@@ -246,10 +246,10 @@ fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
             Some(frag) => format!("{alias}#{frag}"),
             None => alias,
         })
-        .unwrap_or_else(|| normalize_startup_enter(room.to_string()));
+        .unwrap_or_else(|| room.to_string());
     Some(match nick {
         Some(nick) => format!("{nick}@{target}"),
-        None => target,
+        None => normalize_startup_enter(target),
     })
 }
 
@@ -397,6 +397,19 @@ mod tests {
         assert_eq!(
             startup_ctx_enter(&cfg),
             Some("klaim@ma#construct".to_string())
+        );
+    }
+
+    #[test]
+    fn startup_ctx_enter_reestablishes_unaliased_room_without_double_at() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.ctx.use", "true");
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+        cfg.set(".my.ctx.nick", "klaim");
+        assert_eq!(
+            startup_ctx_enter(&cfg),
+            Some("klaim@did:ma:k51runtime#construct".to_string())
         );
     }
 
