@@ -123,6 +123,7 @@ fn parse_path_op(input: &str, cfg: &EgoConfig) -> Result<(String, DotOp, Vec<Str
     let (path, op) = dot_path_and_op(&head, &rest)?;
     let args = match &op {
         DotOp::Set(_) => vec![],
+        DotOp::Get if path == ".enter" => shell_split(&rest)?,
         _ => shell_split_with_config(&rest, cfg)?,
     };
     Ok((path, op, args))
@@ -552,6 +553,20 @@ mod tests {
         assert_eq!(
             shell_split_with_config("drop @ma#duckie", &cfg).unwrap(),
             vec!["drop", "did:ma:runtime#duckie"]
+        );
+    }
+
+    #[test]
+    fn enter_command_preserves_nick_at_target_syntax() {
+        let cfg = EgoConfig::new();
+
+        assert_eq!(
+            parse(".enter Pondus@did:ma:runtime#construct", &cfg),
+            Ok(Command::DotCommand {
+                path: ".enter".to_string(),
+                op: DotOp::Get,
+                args: vec!["Pondus@did:ma:runtime#construct".to_string()],
+            })
         );
     }
 

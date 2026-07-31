@@ -301,7 +301,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let (requested_nick, actor_input, requested_kind) = match parse_enter_target(raw) {
         Ok(parsed) => parsed,
         Err(e) => {
-            state.push_error(e);
+            state.push_error(format!("{e}: {raw}"));
             return;
         }
     };

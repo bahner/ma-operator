@@ -240,13 +240,7 @@ fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
     let nick = cfg.get(".my.ctx.nick").map(str::trim).filter(|nick| {
         !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
     });
-    let target = cfg
-        .split_alias(room)
-        .map(|(alias, frag)| match frag {
-            Some(frag) => format!("{alias}#{frag}"),
-            None => alias,
-        })
-        .unwrap_or_else(|| room.to_string());
+    let target = room.to_string();
     Some(match nick {
         Some(nick) => format!("{nick}@{target}"),
         None => normalize_startup_enter(target),
@@ -396,7 +390,7 @@ mod tests {
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
         assert_eq!(
             startup_ctx_enter(&cfg),
-            Some("klaim@ma#construct".to_string())
+            Some("klaim@did:ma:k51runtime#construct".to_string())
         );
     }
 
