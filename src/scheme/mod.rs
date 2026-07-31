@@ -231,25 +231,25 @@ fn build_call_str(verb: &str, args: &[String]) -> String {
 fn find_balanced_paren(chars: &[char], start: usize) -> Option<(usize, String)> {
     debug_assert_eq!(chars[start], '(');
     let mut depth: usize = 0;
-    let mut quote: Option<char> = None;
+    let mut in_string = false;
     let mut escaped = false;
     for (i, &ch) in chars.iter().enumerate().skip(start) {
         if escaped {
             escaped = false;
             continue;
         }
-        if ch == '\\' && quote.is_some() {
+        if ch == '\\' && in_string {
             escaped = true;
             continue;
         }
-        if let Some(q) = quote {
-            if ch == q {
-                quote = None;
+        if in_string {
+            if ch == '"' {
+                in_string = false;
             }
             continue;
         }
-        if ch == '"' || ch == '\'' {
-            quote = Some(ch);
+        if ch == '"' {
+            in_string = true;
             continue;
         }
         if ch == '(' {
@@ -291,15 +291,31 @@ mod tests {
     #[test]
     fn needs_expansion_detects_unquoted_parentheses() {
         assert!(needs_expansion(
-            "make thing (shell-quote (.my.things.lamp))"
+            "make thing (string-append (.my.things.lamp))"
         ));
     }
 
     #[test]
     fn find_balanced_paren_ignores_quoted_parentheses() {
-        let chars: Vec<char> = "(shell-quote \"(not the end)\") tail".chars().collect();
+        let chars: Vec<char> = "(display \"(not the end)\") tail".chars().collect();
         let (end, span) = find_balanced_paren(&chars, 0).expect("balanced expression");
-        assert_eq!(span, "(shell-quote \"(not the end)\")");
+        assert_eq!(span, "(display \"(not the end)\")");
+        assert_eq!(end, span.len() - 1);
+    }
+
+    #[test]
+    fn find_balanced_paren_treats_apostrophe_as_scheme_quote_prefix() {
+        let chars: Vec<char> = "(begin '(define foo \"bar\")) tail".chars().collect();
+        let (end, span) = find_balanced_paren(&chars, 0).expect("balanced expression");
+        assert_eq!(span, "(begin '(define foo \"bar\"))");
+        assert_eq!(end, span.len() - 1);
+    }
+
+    #[test]
+    fn find_balanced_paren_does_not_require_closing_apostrophe() {
+        let chars: Vec<char> = "(foo' shdkjhj) tail".chars().collect();
+        let (end, span) = find_balanced_paren(&chars, 0).expect("balanced expression");
+        assert_eq!(span, "(foo' shdkjhj)");
         assert_eq!(end, span.len() - 1);
     }
 }

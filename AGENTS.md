@@ -264,6 +264,25 @@ do not block the batch step counter.  They re-queue the expanded line into
 
 ---
 
+## Zion argument insertion
+
+`<.path` is zion command syntax, not Scheme syntax. It is recognised only as an
+unquoted argument token in command parsing, reads the exact local `EgoConfig`
+leaf at `.path`, and inserts that value as one argv argument. The inserted text
+is not Scheme-evaluated and is not split on whitespace; newlines are preserved.
+
+Example:
+
+```text
+make /ma/thing/0.0.1 <.my.things.lamp
+```
+
+This sends the value of `.my.things.lamp` as the actor creation init string.
+Quoted forms such as `'<.my.things.lamp'` are literal text and must not expand.
+Missing paths and subtree paths are errors.
+
+---
+
 ## Dot-command grammar
 
 | Syntax | Meaning |

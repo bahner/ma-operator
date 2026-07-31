@@ -94,9 +94,9 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         "" => Ok(Command::PlainText(String::new())),
         s if s.starts_with("\\@") => Ok(Command::PlainText(s[1..].to_string())),
         s if s.starts_with("\\.") => Ok(Command::PlainText(s[1..].to_string())),
-        s if is_local_dot_root(s) => parse_local(s),
-        s if s.starts_with('.') => parse_dot(s),
-        s if s.starts_with('/') => parse_local(s),
+        s if is_local_dot_root(s) => parse_local(s, cfg),
+        s if s.starts_with('.') => parse_dot(s, cfg),
+        s if s.starts_with('/') => parse_local(s, cfg),
         s if s.starts_with('@') || s.starts_with("did:") => parse_actor(s, cfg),
         s => Ok(Command::PlainText(resolve_targets(s, cfg)?)),
     }
@@ -108,26 +108,30 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
 /// `(path, DotOp, args)`. Shared between the `.` control-command grammar and
 /// the `/` local-path grammar — the two differ only in which prefix
 /// character dispatches here and in what the resulting `path` means.
-fn parse_path_op(input: &str) -> Result<(String, DotOp, Vec<String>), String> {
+fn parse_path_op(input: &str, cfg: &EgoConfig) -> Result<(String, DotOp, Vec<String>), String> {
     let (head, rest) = split_head_rest(input);
     // `!verb` — meta/side-effect operation; check before `:` split.
     if let Some(bang) = head.find('!') {
         let path = head[..bang].to_string();
         let meta_verb = head[bang + 1..].to_string();
-        return Ok((path, DotOp::Meta(meta_verb), shell_split(&rest)?));
+        return Ok((
+            path,
+            DotOp::Meta(meta_verb),
+            shell_split_with_config(&rest, cfg)?,
+        ));
     }
     let (path, op) = dot_path_and_op(&head, &rest)?;
     let args = match &op {
         DotOp::Set(_) => vec![],
-        _ => shell_split(&rest)?,
+        _ => shell_split_with_config(&rest, cfg)?,
     };
     Ok((path, op, args))
 }
 
 // ── Dot control-command ─────────────────────────────────────────────────────
 
-fn parse_dot(input: &str) -> Result<Command, String> {
-    let (path, op, args) = parse_path_op(input)?;
+fn parse_dot(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+    let (path, op, args) = parse_path_op(input, cfg)?;
     Ok(Command::DotCommand { path, op, args })
 }
 
@@ -140,8 +144,8 @@ fn is_local_dot_root(input: &str) -> bool {
         || input.starts_with(".ma.ctx.")
 }
 
-fn parse_local(input: &str) -> Result<Command, String> {
-    let (path, op, args) = parse_path_op(input)?;
+fn parse_local(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+    let (path, op, args) = parse_path_op(input, cfg)?;
     Ok(Command::LocalCrud { path, op, args })
 }
 
@@ -305,13 +309,23 @@ fn split_head_rest(input: &str) -> (String, String) {
 }
 
 pub(crate) fn shell_split(s: &str) -> Result<Vec<String>, String> {
+    shell_split_inner(s, None)
+}
+
+pub(crate) fn shell_split_with_config(s: &str, cfg: &EgoConfig) -> Result<Vec<String>, String> {
+    shell_split_inner(s, Some(cfg))
+}
+
+fn shell_split_inner(s: &str, cfg: Option<&EgoConfig>) -> Result<Vec<String>, String> {
     let mut words = Vec::new();
     let mut current = String::new();
+    let mut current_is_literal = false;
     let mut quote: Option<char> = None;
     let mut escaped = false;
     for ch in s.chars() {
         if escaped {
             current.push(ch);
+            current_is_literal = true;
             escaped = false;
             continue;
         }
@@ -324,16 +338,24 @@ pub(crate) fn shell_split(s: &str) -> Result<Vec<String>, String> {
                 quote = None;
             } else {
                 current.push(ch);
+                current_is_literal = true;
             }
             continue;
         }
         if ch == '"' || ch == '\'' {
             quote = Some(ch);
+            current_is_literal = true;
             continue;
         }
         if ch.is_whitespace() {
             if !current.is_empty() {
-                words.push(std::mem::take(&mut current));
+                push_shell_word(
+                    &mut words,
+                    std::mem::take(&mut current),
+                    current_is_literal,
+                    cfg,
+                )?;
+                current_is_literal = false;
             }
             continue;
         }
@@ -344,11 +366,34 @@ pub(crate) fn shell_split(s: &str) -> Result<Vec<String>, String> {
     }
     if escaped {
         current.push('\\');
+        current_is_literal = true;
     }
     if !current.is_empty() {
-        words.push(current);
+        push_shell_word(&mut words, current, current_is_literal, cfg)?;
     }
     Ok(words)
+}
+
+fn push_shell_word(
+    words: &mut Vec<String>,
+    word: String,
+    is_literal: bool,
+    cfg: Option<&EgoConfig>,
+) -> Result<(), String> {
+    if !is_literal && word.starts_with("<.") {
+        let path = &word[1..];
+        let cfg = cfg.ok_or_else(|| format!("cannot resolve {word} in this context"))?;
+        if let Some(value) = cfg.get(path) {
+            words.push(value.to_string());
+            return Ok(());
+        }
+        if cfg.has_children(path) {
+            return Err(format!("{path} is a subtree, not a leaf"));
+        }
+        return Err(format!("no value at {path}"));
+    }
+    words.push(word);
+    Ok(())
 }
 
 pub fn resolve_target(raw: &str, cfg: &EgoConfig) -> Result<String, String> {
@@ -476,6 +521,44 @@ mod tests {
         assert_eq!(
             shell_split(r#"make thing 'Lars'\'' lamp'"#).unwrap(),
             vec!["make", "thing", "Lars' lamp"]
+        );
+    }
+
+    #[test]
+    fn shell_split_inserts_local_leaf_as_one_argument() {
+        let mut cfg = EgoConfig::new();
+        let init = "(begin\n  (set-prop! \"name\" \"Lamp\")\n  (ma-save-state!))";
+        cfg.set(".my.things.lamp", init);
+
+        assert_eq!(
+            shell_split_with_config("make thing <.my.things.lamp", &cfg).unwrap(),
+            vec!["make", "thing", init]
+        );
+    }
+
+    #[test]
+    fn shell_split_does_not_insert_quoted_local_leaf_token() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.things.lamp", "lamp init");
+
+        assert_eq!(
+            shell_split_with_config("say '<.my.things.lamp'", &cfg).unwrap(),
+            vec!["say", "<.my.things.lamp"]
+        );
+    }
+
+    #[test]
+    fn shell_split_rejects_missing_or_subtree_insert() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.things.lamp.name", "Lamp");
+
+        assert!(shell_split_with_config("make thing <.my.things.lamp", &cfg)
+            .unwrap_err()
+            .contains("subtree"));
+        assert!(
+            shell_split_with_config("make thing <.my.things.missing", &cfg)
+                .unwrap_err()
+                .contains("no value")
         );
     }
 

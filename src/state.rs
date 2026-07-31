@@ -1010,10 +1010,19 @@ mod tests {
             &mut cfg,
         );
 
-        assert_eq!(cfg.get(".my.ctx.tail.entries.0.room"), Some("did:ma:runtime#tower"));
-        assert_eq!(cfg.get(".my.ctx.tail.entries.1.room"), Some("did:ma:runtime#kitchen"));
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.0.room"),
+            Some("did:ma:runtime#tower")
+        );
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.1.room"),
+            Some("did:ma:runtime#kitchen")
+        );
         assert_eq!(cfg.get(".my.ctx.tail.entries.1.nick"), Some("Fjodor"));
-        assert_eq!(cfg.get(".my.ctx.tail.entries.2.room"), Some("did:ma:runtime#hall"));
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.2.room"),
+            Some("did:ma:runtime#hall")
+        );
         assert_eq!(cfg.get(".my.ctx.tail.entries.3.room"), None);
         assert_eq!(cfg.get(".my.ctx.tail.entries.7.room"), None);
     }
@@ -1035,7 +1044,10 @@ mod tests {
             &mut cfg,
         );
 
-        assert_eq!(cfg.get(".my.ctx.tail.entries.0.room"), Some("did:ma:runtime#room"));
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.0.room"),
+            Some("did:ma:runtime#room")
+        );
         assert_eq!(cfg.get(".my.ctx.tail.entries.0.nick"), Some("New"));
         assert_eq!(cfg.get(".my.ctx.tail.entries.1.room"), None);
     }

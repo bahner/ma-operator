@@ -360,9 +360,10 @@ async fn dispatch_verb_to_transport(
     body: &str,
     cmd_id: u64,
     state: &AppState,
-    _config: RwSignal<EgoConfig>,
+    config: RwSignal<EgoConfig>,
 ) -> Option<Result<String, String>> {
-    match crate::parser::command::shell_split(body) {
+    let cfg = config.get_untracked();
+    match crate::parser::command::shell_split_with_config(body, &cfg) {
         Ok(args) => {
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
             let bind_state = state.clone();

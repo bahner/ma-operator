@@ -602,7 +602,7 @@ fn dispatch_eval_line(
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
         if is_focus_shorthand_command(line) {
-            let parsed = match parse_focus_shorthand_command(line) {
+            let parsed = match parse_focus_shorthand_command(line, &cfg) {
                 Ok(parsed) => parsed,
                 Err(e) => {
                     state.push_error(format!("'{line}': {e}"));
@@ -826,8 +826,11 @@ struct ParsedFocusCommand {
     args: Vec<String>,
 }
 
-fn parse_focus_shorthand_command(line: &str) -> Result<ParsedFocusCommand, String> {
-    let tokens = crate::parser::command::shell_split(line)?;
+fn parse_focus_shorthand_command(
+    line: &str,
+    cfg: &crate::config::EgoConfig,
+) -> Result<ParsedFocusCommand, String> {
+    let tokens = crate::parser::command::shell_split_with_config(line, cfg)?;
     let Some((verb, args)) = tokens.split_first() else {
         return Err("empty command".to_string());
     };
@@ -930,29 +933,44 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
 #[cfg(test)]
 mod tests {
     use super::{focus_command_target, parse_focus_shorthand_command};
+    use crate::config::EgoConfig;
     use crate::state::FocusMode;
 
     #[test]
     fn focus_shorthand_normalizes_bare_and_colon_methods() {
-        let say = parse_focus_shorthand_command("say hello").unwrap();
+        let cfg = EgoConfig::new();
+        let say = parse_focus_shorthand_command("say hello", &cfg).unwrap();
         assert_eq!(say.verb, "say");
         assert_eq!(say.meta, None);
         assert_eq!(say.args, vec!["hello"]);
 
-        let look = parse_focus_shorthand_command(":look").unwrap();
+        let look = parse_focus_shorthand_command(":look", &cfg).unwrap();
         assert_eq!(look.verb, "look");
         assert_eq!(look.meta, None);
         assert!(look.args.is_empty());
 
-        let here = parse_focus_shorthand_command("here?").unwrap();
+        let here = parse_focus_shorthand_command("here?", &cfg).unwrap();
         assert_eq!(here.verb, "here?");
         assert_eq!(here.meta, None);
         assert!(here.args.is_empty());
 
-        let edit = parse_focus_shorthand_command(":behaviour!edit").unwrap();
+        let edit = parse_focus_shorthand_command(":behaviour!edit", &cfg).unwrap();
         assert_eq!(edit.verb, "behaviour");
         assert_eq!(edit.meta.as_deref(), Some("edit"));
         assert!(edit.args.is_empty());
+    }
+
+    #[test]
+    fn focus_shorthand_inserts_local_leaf_as_one_argument() {
+        let mut cfg = EgoConfig::new();
+        let init = "(begin\n  (set-prop! \"name\" \"Lamp\")\n  (ma-save-state!))";
+        cfg.set(".my.things.lamp", init);
+
+        let parsed =
+            parse_focus_shorthand_command("make /ma/thing/0.0.1 <.my.things.lamp", &cfg).unwrap();
+
+        assert_eq!(parsed.verb, "make");
+        assert_eq!(parsed.args, vec!["/ma/thing/0.0.1", init]);
     }
 
     #[test]
@@ -981,11 +999,12 @@ mod tests {
 
     #[test]
     fn focus_shorthand_keeps_tickets_out_of_zion() {
-        let go = parse_focus_shorthand_command("go north").unwrap();
+        let cfg = EgoConfig::new();
+        let go = parse_focus_shorthand_command("go north", &cfg).unwrap();
         assert_eq!(go.verb, "go");
         assert_eq!(go.args, vec!["north"]);
 
-        let dig = parse_focus_shorthand_command("dig north to garden").unwrap();
+        let dig = parse_focus_shorthand_command("dig north to garden", &cfg).unwrap();
         assert_eq!(dig.verb, "dig");
         assert_eq!(dig.args, vec!["north", "to", "garden"]);
     }
