@@ -321,14 +321,16 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         return;
     }
     let target_actor = resolved.clone();
+    let requested_nick_display = requested_nick.clone();
     let effective_nick = requested_nick.or_else(|| {
         cfg.get(".my.ctx.nick")
             .filter(|nick| !nick.is_empty())
             .map(str::to_string)
     });
 
+    let entered_display =
+        enter_target_display(&target_actor, requested_nick_display.as_deref(), &cfg);
     let state2 = state.clone();
-    let entered = raw.clone();
     let enter_kind = match enter_ctx_kind(requested_kind.as_deref()) {
         Ok(kind) => kind.map(str::to_string),
         Err(e) => {
@@ -337,7 +339,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
     };
     spawn_local(async move {
-        let cmd_id = state2.push_command(format!(".enter {entered}"));
+        let cmd_id = state2.push_command(format!(".enter {entered_display}"));
         let (entry_runtime, requested_room) = target_actor
             .split_once('#')
             .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
@@ -391,6 +393,20 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             }
         }
     });
+}
+
+fn enter_target_display(
+    target_actor: &str,
+    requested_nick: Option<&str>,
+    cfg: &EgoConfig,
+) -> String {
+    let actor = cfg
+        .alias_display(target_actor)
+        .unwrap_or_else(|| format!("@{target_actor}"));
+    match requested_nick {
+        Some(nick) => format!("{nick}@{}", actor.trim_start_matches('@')),
+        None => actor,
+    }
 }
 
 fn toggle_existing_ctx(state: &AppState, config: RwSignal<EgoConfig>) {
@@ -526,9 +542,9 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_ctx_focus, build_enter_ctx, enter_args, enter_ctx_kind, focus_target_for_room,
-        parse_enter_target, room_enter_expects_direct_reply, toggle_existing_ctx,
-        validate_alias_set,
+        apply_ctx_focus, build_enter_ctx, enter_args, enter_ctx_kind, enter_target_display,
+        focus_target_for_room, parse_enter_target, room_enter_expects_direct_reply,
+        toggle_existing_ctx, validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
@@ -664,6 +680,17 @@ mod tests {
             thing_ctx.get("kind"),
             Some(SchemeVal::Str(kind)) if kind == "thing"
         ));
+    }
+
+    #[test]
+    fn enter_target_display_uses_alias_without_changing_target() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
+
+        assert_eq!(
+            enter_target_display("did:ma:k51runtime#construct", Some("Pondus"), &cfg),
+            "Pondus@ma#construct"
+        );
     }
 
     #[test]
