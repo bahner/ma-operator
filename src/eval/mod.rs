@@ -344,6 +344,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             .unwrap_or_else(|| (target_actor.clone(), None));
 
         if let Some(room_actor) = requested_room.as_ref() {
+            config.update(|c| state2.remove_room_leave(room_actor, c));
             let enter_args = build_enter_ctx(
                 &state2,
                 effective_nick.as_deref(),
@@ -917,9 +918,15 @@ fn handle_dot_set(
     // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
     if path.starts_with(".my.ctx") {
         let cfg = config.get_untracked();
+        if path.starts_with(".my.ctx.leave_queue") {
+            state.load_room_leave_queue(&cfg);
+        }
         apply_ctx_focus(&cfg, state);
     }
     let cfg = config.get_untracked();
+    if path.starts_with(".my.ctx.leave_queue") {
+        state.load_room_leave_queue(&cfg);
+    }
     let uname = username.to_string();
     let state2 = state.clone();
     let path_owned = path.to_string();

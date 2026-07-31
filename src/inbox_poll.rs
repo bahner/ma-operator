@@ -16,7 +16,7 @@ use crate::{
         handle_edit_open_reply, handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply,
         handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
     },
-    state::{AppState, OutboxTask, PendingKind},
+    state::{AppState, CtxTailSnapshot, OutboxTask, PendingKind},
     transport,
     views::editor::EditorContext,
 };
@@ -175,6 +175,13 @@ fn dispatch_reply(
         }
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
+        }
+        PendingKind::RoomLeave { room } => {
+            if incoming.is_error {
+                config.update(|cfg| state.retry_room_leave(&room, cfg));
+            } else {
+                config.update(|cfg| state.complete_room_leave(&room, cfg));
+            }
         }
         PendingKind::Simple { cmd_id } => {
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
@@ -336,10 +343,12 @@ fn handle_ctx_receipt(
             .as_deref()
             .is_some_and(|room| room == pending.desired_room);
         if room_matches {
-            state.resolve_command_by_id(
-                pending.cmd_id,
-                crate::core::CommandStatus::Replied(String::new()),
-            );
+            if let Some(cmd_id) = pending.cmd_id {
+                state.resolve_command_by_id(
+                    cmd_id,
+                    crate::core::CommandStatus::Replied(String::new()),
+                );
+            }
             state.clear_pending_enter();
         } else if trusted_by_identity {
             // This ctx push is legitimately about the sender's own state (an
@@ -373,8 +382,32 @@ fn handle_ctx_receipt(
                 .split_once('#')
                 .map(|(runtime, _)| runtime.to_string())
         });
+    let old_room = cfg.get(".my.ctx.room").map(str::to_string);
+    let room_changed = matches!(
+        (old_room.as_deref(), room.as_deref()),
+        (Some(old_room), Some(new_room))
+            if !old_room.is_empty() && !new_room.is_empty() && old_room != new_room
+    );
 
     config.update(|c| {
+        if room_changed {
+            if let Some(old_room) = old_room.clone() {
+                state.enqueue_room_leave(old_room, c);
+            }
+        }
+        state.record_ctx_tail(
+            CtxTailSnapshot {
+                protocol: protocol.clone(),
+                runtime: runtime.clone(),
+                root: root.clone(),
+                avatar: avatar.clone(),
+                room: room.clone(),
+                nick: nick.clone(),
+                kind: kind.clone(),
+                text: text.clone(),
+            },
+            c,
+        );
         c.set(".my.ctx.use", "true");
         if let Some(runtime) = &runtime {
             c.set(".my.ctx.runtime", runtime);
@@ -492,13 +525,11 @@ fn handle_movement_ctx(
     let ctx_arg = cbor_to_scheme_val(payload);
     let state2 = state.clone();
     spawn_local(async move {
-        let cmd_id = state2.push_command(format!(".enter {room}"));
-        state2.set_pending_enter(cmd_id, runtime, room.clone());
+        state2.set_hidden_pending_enter(runtime, room.clone());
         match transport::send_rpc_vals(&room, "enter", &[ctx_arg]).await {
             Ok(_) => {}
             Err(e) => {
                 state2.clear_pending_enter();
-                state2.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Error(e.clone()));
                 state2.push_error(tf("msg-send-failed", &[("e", &e)]));
             }
         }
@@ -939,10 +970,11 @@ mod tests {
         let room = "did:ma:k51target#construct";
         let cmd_id = state.push_command(format!(".enter {room}"));
         state.pending_enter.set(Some(crate::state::PendingEnter {
-            cmd_id,
+            cmd_id: Some(cmd_id),
             desired_runtime: "did:ma:k51target".to_string(),
             desired_room: room.to_string(),
             issued_at_ms: 0.0,
+            visible: true,
         }));
         let payload = ciborium::Value::Array(vec![
             ciborium::Value::Array(vec![
@@ -983,6 +1015,21 @@ mod tests {
             status,
             Some(crate::core::CommandStatus::Replied(String::new()))
         );
+    }
+
+    #[test]
+    fn hidden_pending_enter_does_not_render_command_entry() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let room = "did:ma:k51target#garden";
+
+        state.set_hidden_pending_enter("did:ma:k51target".to_string(), room.to_string());
+
+        assert!(state.entries.get_untracked().is_empty());
+        let pending = state.pending_enter.get_untracked().unwrap();
+        assert_eq!(pending.cmd_id, None);
+        assert_eq!(pending.desired_room, room);
+        assert!(!pending.visible);
     }
 
     #[test]

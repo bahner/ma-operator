@@ -15,7 +15,10 @@ use crate::{
     i18n::{t, tf},
     identity::storage::save_history,
     parser::command::{parse, Command},
-    state::{ActiveBatch, AppState, AwaitingReply, BatchMode, OnError, DEFAULT_TIMEOUT_MS},
+    state::{
+        ActiveBatch, AppState, AwaitingReply, BatchMode, OnError, OutboxTask, PendingKind,
+        DEFAULT_TIMEOUT_MS,
+    },
     transport,
     views::editor::{EditorContext, EditorMode},
 };
@@ -34,7 +37,8 @@ pub async fn run_dispatch_loop(
         gloo_timers::future::TimeoutFuture::new(TICK_MS).await;
 
         // 1. TTL check: expire pending requests that have been waiting too long.
-        expire_pending_requests(&state);
+        expire_pending_requests(&state, config);
+        queue_due_room_leaves(&state, config);
 
         // 2. Advance ready sync batches (reply may have arrived during last tick).
         advance_sync_batches(&state, config, show_editor, on_eval);
@@ -61,7 +65,7 @@ pub async fn run_dispatch_loop(
                 Some(task) => {
                     let state2 = state.clone();
                     wasm_bindgen_futures::spawn_local(async move {
-                        execute_outbox_task(task, &state2).await;
+                        execute_outbox_task(task, &state2, config).await;
                     });
                 }
             }
@@ -75,12 +79,13 @@ pub async fn run_dispatch_loop(
 /// Uses the owning batch's `timeout_ms` when available; falls back to
 /// `DEFAULT_TIMEOUT_MS` for standalone (non-batch) requests.
 /// Called every tick from the dispatch loop — no JS callbacks involved.
-fn expire_pending_requests(state: &AppState) {
+fn expire_pending_requests(state: &AppState, config: RwSignal<EgoConfig>) {
     let now = js_sys::Date::now();
+    expire_pending_enter(state, now);
     let batch_timeouts: std::collections::HashMap<u64, u32> = state
         .batches
         .with_untracked(|b| b.iter().map(|(id, ab)| (*id, ab.timeout_ms)).collect());
-    let expired: Vec<(String, Option<u64>)> = state.pending_requests.with_untracked(|m| {
+    let expired: Vec<(String, PendingKind)> = state.pending_requests.with_untracked(|m| {
         m.iter()
             .filter_map(|(msg_id, tr)| {
                 let timeout_ms = tr
@@ -95,7 +100,7 @@ fn expire_pending_requests(state: &AppState) {
                         now - tr.sent_at_ms,
                         timeout_ms
                     );
-                    Some((msg_id.clone(), tr.kind.cmd_id()))
+                    Some((msg_id.clone(), tr.kind.clone()))
                 } else {
                     None
                 }
@@ -103,11 +108,15 @@ fn expire_pending_requests(state: &AppState) {
             .collect()
     });
     let should_reconnect = !expired.is_empty();
-    for (msg_id, cmd_id_opt) in expired {
+    for (msg_id, kind) in expired {
         // Remove first so inbox_poll can't also resolve it.
         state
             .pending_requests
             .update_untracked(|m| m.remove(&msg_id));
+        if let PendingKind::RoomLeave { room } = &kind {
+            config.update(|cfg| state.retry_room_leave(room, cfg));
+        }
+        let cmd_id_opt = kind.cmd_id();
         if let Some(cmd_id) = cmd_id_opt {
             log::debug!("[pending] failing cmd_id={} due to TTL expiry", cmd_id);
             state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("msg-timeout")));
@@ -129,6 +138,54 @@ fn expire_pending_requests(state: &AppState) {
     // Also expire stuck Scheme RPC senders so awaiting evaluator tasks can
     // return (:timeout) rather than blocking forever.
     state.expire_scheme_senders(DEFAULT_TIMEOUT_MS as f64);
+}
+
+fn queue_due_room_leaves(state: &AppState, config: RwSignal<EgoConfig>) {
+    let now = js_sys::Date::now();
+    let focus_room = state
+        .focus_actor
+        .with_untracked(|focus| focus.as_ref().and_then(|focus| focus.room.clone()));
+    let current_room = focus_room.or_else(|| {
+        config
+            .get_untracked()
+            .get(".my.ctx.room")
+            .filter(|room| !room.is_empty())
+            .map(str::to_string)
+    });
+    let due = state.due_room_leaves(current_room.as_deref(), now);
+    if due.is_empty() {
+        return;
+    }
+    state.outbox_queue.update(|queue| {
+        for room in due {
+            queue.push_back(OutboxTask::RoomLeave { room });
+        }
+    });
+}
+
+fn expire_pending_enter(state: &AppState, now: f64) {
+    let expired = state.pending_enter.with_untracked(|pending| {
+        pending
+            .as_ref()
+            .filter(|pending| now - pending.issued_at_ms > DEFAULT_TIMEOUT_MS as f64)
+            .cloned()
+    });
+    let Some(pending) = expired else {
+        return;
+    };
+
+    state.clear_pending_enter();
+    if pending.visible {
+        if let Some(cmd_id) = pending.cmd_id {
+            state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("msg-timeout")));
+            state.push_error(t("msg-timeout"));
+        }
+    }
+    leptos::task::spawn_local(async move {
+        if let Err(e) = transport::reconnect().await {
+            log::warn!("[transport] reconnect after pending enter timeout failed: {e}");
+        }
+    });
 }
 
 // ── Per-line handler ───────────────────────────────────────────────────────
