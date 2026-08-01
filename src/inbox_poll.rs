@@ -301,6 +301,7 @@ fn handle_ctx_receipt(
         .map(|pending| pending.desired_room.as_str());
     let root = ctx_value(pairs, ":root").map(str::to_string);
     let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
+    let inventory = ctx_value(pairs, ":inventory").map(str::to_string);
     let room = ctx_value(pairs, ":room").map(str::to_string);
     let protocol = ctx_value(pairs, ":protocol").map(str::to_string);
     let kind = ctx_value(pairs, ":kind").map(str::to_string);
@@ -428,6 +429,13 @@ fn handle_ctx_receipt(
                 c.delete(".my.ctx.avatar");
             } else {
                 c.set(".my.ctx.avatar", avatar);
+            }
+        }
+        if let Some(inventory) = &inventory {
+            if inventory.is_empty() {
+                c.delete(".my.ctx.inventory");
+            } else {
+                c.set(".my.ctx.inventory", inventory);
             }
         }
         if let Some(nick) = &nick {

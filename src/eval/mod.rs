@@ -480,6 +480,18 @@ fn build_enter_ctx(
     if let Some(kind) = kind {
         ctx.insert("kind".to_string(), SchemeVal::Str(kind.to_string()));
     }
+    if kind.is_none() {
+        if let Some(inventory) = cfg
+            .get(".my.ctx.inventory")
+            .map(str::trim)
+            .filter(|inventory| !inventory.is_empty())
+        {
+            ctx.insert(
+                "inventory".to_string(),
+                SchemeVal::Str(inventory.to_string()),
+            );
+        }
+    }
     ctx.insert("name".to_string(), SchemeVal::Str(name));
     ctx.insert("nick".to_string(), SchemeVal::Str(nick));
     ctx.insert("description".to_string(), SchemeVal::Str(description));
