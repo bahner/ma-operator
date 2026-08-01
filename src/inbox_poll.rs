@@ -21,7 +21,7 @@ use crate::{
     views::editor::EditorContext,
 };
 
-const LAMBDA_CTX_PROTOCOL: &str = "/ma/lambda/ctx/0.0.1";
+const AVATAR_CTX_PROTOCOL: &str = "/ma/ctx/avatar/0.0.1";
 
 // ── Public entry point ─────────────────────────────────────────────────────
 
@@ -291,13 +291,28 @@ fn handle_ctx_receipt(
         .map(|pending| pending.desired_room.as_str());
     let root = ctx_value(pairs, ":root").map(str::to_string);
     let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
-    let inventory = ctx_value(pairs, ":inventory").map(str::to_string);
+    let inv = ctx_value(pairs, ":inv").map(str::to_string);
     let room = ctx_value(pairs, ":room").map(str::to_string);
-    let protocol = ctx_value(pairs, ":protocol").map(str::to_string);
+    let explicit_shape = ctx_value(pairs, ":ctx")
+        .or_else(|| ctx_value(pairs, ":protocol"))
+        .map(str::to_string);
     let kind = ctx_value(pairs, ":kind").map(str::to_string);
-    if protocol.as_deref() != Some(LAMBDA_CTX_PROTOCOL) {
+    if explicit_shape
+        .as_deref()
+        .is_some_and(|shape| shape != AVATAR_CTX_PROTOCOL)
+    {
         warn_ctx(&format!(
-            "[ctx] dropping unsupported context protocol from={} protocol={protocol:?}",
+            "[ctx] dropping unsupported avatar ctx from={} ctx={explicit_shape:?}",
+            incoming.from
+        ));
+        return;
+    }
+    if kind.as_deref().is_none_or(str::is_empty)
+        || root.as_deref().is_none_or(str::is_empty)
+        || room.as_deref().is_none_or(str::is_empty)
+    {
+        warn_ctx(&format!(
+            "[ctx] dropping incomplete avatar ctx from={} kind={kind:?} root={root:?} room={room:?}",
             incoming.from
         ));
         return;
@@ -376,10 +391,10 @@ fn handle_ctx_receipt(
     config.update(|c| {
         state.record_ctx_tail(
             CtxTailSnapshot {
-                protocol: protocol.clone(),
                 runtime: runtime.clone(),
                 root: root.clone(),
                 avatar: avatar.clone(),
+                inv: inv.clone(),
                 room: room.clone(),
                 nick: nick.clone(),
                 kind: kind.clone(),
@@ -394,7 +409,8 @@ fn handle_ctx_receipt(
         if let Some(root) = &root {
             c.set(".my.ctx.root", root);
         }
-        c.set(".my.ctx.protocol", LAMBDA_CTX_PROTOCOL);
+        c.delete(".my.ctx.protocol");
+        c.delete(".my.ctx.ctx");
         if let Some(kind) = &kind {
             if kind.is_empty() {
                 c.delete(".my.ctx.kind");
@@ -409,11 +425,12 @@ fn handle_ctx_receipt(
                 c.set(".my.ctx.avatar", avatar);
             }
         }
-        if let Some(inventory) = &inventory {
-            if inventory.is_empty() {
-                c.delete(".my.ctx.inventory");
+        if let Some(inv) = &inv {
+            c.delete(".my.ctx.inventory");
+            if inv.is_empty() {
+                c.delete(".my.ctx.inv");
             } else {
-                c.set(".my.ctx.inventory", inventory);
+                c.set(".my.ctx.inv", inv);
             }
         }
         if let Some(nick) = &nick {
@@ -769,15 +786,11 @@ mod tests {
     }
 
     #[test]
-    fn ctx_receipt_applies_supported_lambda_protocol_and_kind() {
+    fn ctx_receipt_applies_flat_avatar_ctx_fields() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::default());
         let payload = ciborium::Value::Array(vec![
-            ciborium::Value::Array(vec![
-                ciborium::Value::Text(":protocol".to_string()),
-                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
-            ]),
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":kind".to_string()),
                 ciborium::Value::Text("agent".to_string()),
@@ -796,9 +809,16 @@ mod tests {
         handle_ctx_receipt(Some(&payload), &incoming, &state, config);
 
         let cfg = config.get_untracked();
-        assert_eq!(cfg.get(".my.ctx.protocol"), Some(LAMBDA_CTX_PROTOCOL));
+        assert_eq!(cfg.get(".my.ctx.ctx"), None);
+        assert_eq!(cfg.get(".my.ctx.protocol"), None);
         assert_eq!(cfg.get(".my.ctx.kind"), Some("agent"));
         assert_eq!(cfg.get(".my.ctx.room"), Some("did:ma:k51runtime#room"));
+        assert_eq!(cfg.get(".my.ctx.tail.entries.0.ctx"), None);
+        assert_eq!(cfg.get(".my.ctx.tail.entries.0.kind"), Some("agent"));
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.0.room"),
+            Some("did:ma:k51runtime#room")
+        );
     }
 
     #[test]
@@ -815,10 +835,6 @@ mod tests {
         });
         let payload = ciborium::Value::Array(vec![
             ciborium::Value::Array(vec![
-                ciborium::Value::Text(":protocol".to_string()),
-                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
-            ]),
-            ciborium::Value::Array(vec![
                 ciborium::Value::Text(":kind".to_string()),
                 ciborium::Value::Text("avatar".to_string()),
             ]),
@@ -829,6 +845,10 @@ mod tests {
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":avatar".to_string()),
                 ciborium::Value::Text("did:ma:k51target#alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":inv".to_string()),
+                ciborium::Value::Text("did:ma:k51source#alice-inventory".to_string()),
             ]),
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":nick".to_string()),
@@ -847,8 +867,17 @@ mod tests {
         assert_eq!(cfg.get(".my.ctx.runtime"), Some("did:ma:k51target"));
         assert_eq!(cfg.get(".my.ctx.root"), Some("did:ma:k51target#root"));
         assert_eq!(cfg.get(".my.ctx.avatar"), Some("did:ma:k51target#alice"));
+        assert_eq!(
+            cfg.get(".my.ctx.inv"),
+            Some("did:ma:k51source#alice-inventory")
+        );
         assert_eq!(cfg.get(".my.ctx.nick"), Some("Alice"));
         assert_eq!(cfg.get(".my.ctx.room"), Some("did:ma:k51target#construct"));
+        assert_eq!(cfg.get(".my.ctx.tail.entries.0.ctx"), None);
+        assert_eq!(
+            cfg.get(".my.ctx.tail.entries.0.inv"),
+            Some("did:ma:k51source#alice-inventory")
+        );
     }
 
     #[test]
@@ -866,10 +895,6 @@ mod tests {
             visible: true,
         }));
         let payload = ciborium::Value::Array(vec![
-            ciborium::Value::Array(vec![
-                ciborium::Value::Text(":protocol".to_string()),
-                ciborium::Value::Text(LAMBDA_CTX_PROTOCOL.to_string()),
-            ]),
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":kind".to_string()),
                 ciborium::Value::Text("avatar".to_string()),
@@ -907,14 +932,14 @@ mod tests {
     }
 
     #[test]
-    fn ctx_receipt_rejects_unknown_protocol() {
+    fn ctx_receipt_rejects_unknown_shape() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::default());
         config.update(|cfg| cfg.set(".my.ctx.kind", "avatar"));
         let payload = ciborium::Value::Array(vec![
             ciborium::Value::Array(vec![
-                ciborium::Value::Text(":protocol".to_string()),
+                ciborium::Value::Text(":ctx".to_string()),
                 ciborium::Value::Text("/ma/lambda/ctx/9.9.9".to_string()),
             ]),
             ciborium::Value::Array(vec![
@@ -936,7 +961,7 @@ mod tests {
     }
 
     #[test]
-    fn ctx_receipt_ignores_protocol_less_movement_ctx() {
+    fn ctx_receipt_ignores_shape_less_movement_ctx() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::default());

@@ -82,10 +82,10 @@ const CTX_TAIL_LENGTH_KEY: &str = ".my.ctx.tail.length";
 
 #[derive(Clone, Debug, Default, PartialEq)]
 pub struct CtxTailSnapshot {
-    pub protocol: Option<String>,
     pub runtime: Option<String>,
     pub root: Option<String>,
     pub avatar: Option<String>,
+    pub inv: Option<String>,
     pub room: Option<String>,
     pub nick: Option<String>,
     pub kind: Option<String>,
@@ -101,10 +101,10 @@ impl CtxTailSnapshot {
         let mut fields = HashMap::new();
         fields.insert("at_ms".to_string(), format!("{:.0}", now_ms()));
         for (key, value) in [
-            ("protocol", self.protocol.as_deref()),
             ("runtime", self.runtime.as_deref()),
             ("root", self.root.as_deref()),
             ("avatar", self.avatar.as_deref()),
+            ("inv", self.inv.as_deref()),
             ("room", self.room.as_deref()),
             ("nick", self.nick.as_deref()),
             ("kind", self.kind.as_deref()),
