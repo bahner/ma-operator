@@ -346,15 +346,22 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             .unwrap_or_else(|| (target_actor.clone(), None));
 
         if let Some(room_actor) = requested_room.as_ref() {
-            config.update(|c| state2.remove_room_leave(room_actor, c));
-            let enter_args = build_enter_ctx(
-                &state2,
-                effective_nick.as_deref(),
-                enter_kind.as_deref(),
-                &cfg,
-            );
             state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
-            match transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await {
+            let send_result = if enter_kind.is_none() {
+                let nick_args: Vec<&str> = effective_nick.as_deref().into_iter().collect();
+                transport::send_rpc(room_actor, "enter", &nick_args).await
+            } else {
+                let enter_args = build_enter_ctx(
+                    &state2,
+                    effective_nick.as_deref(),
+                    enter_kind
+                        .as_deref()
+                        .expect("direct enter kind is checked above"),
+                    &cfg,
+                );
+                transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await
+            };
+            match send_result {
                 Ok(msg_id) => {
                     if room_enter_expects_direct_reply(enter_kind.as_deref()) {
                         state2.bind_message_id(cmd_id, msg_id);
@@ -451,7 +458,7 @@ fn enter_args_root<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Ve
 fn build_enter_ctx(
     state: &AppState,
     requested_nick: Option<&str>,
-    kind: Option<&str>,
+    kind: &str,
     cfg: &EgoConfig,
 ) -> SchemeVal {
     let username = state
@@ -477,21 +484,7 @@ fn build_enter_ctx(
     );
 
     let mut ctx = BTreeMap::new();
-    if let Some(kind) = kind {
-        ctx.insert("kind".to_string(), SchemeVal::Str(kind.to_string()));
-    }
-    if kind.is_none() {
-        if let Some(inventory) = cfg
-            .get(".my.ctx.inventory")
-            .map(str::trim)
-            .filter(|inventory| !inventory.is_empty())
-        {
-            ctx.insert(
-                "inventory".to_string(),
-                SchemeVal::Str(inventory.to_string()),
-            );
-        }
-    }
+    ctx.insert("kind".to_string(), SchemeVal::Str(kind.to_string()));
     ctx.insert("name".to_string(), SchemeVal::Str(name));
     ctx.insert("nick".to_string(), SchemeVal::Str(nick));
     ctx.insert("description".to_string(), SchemeVal::Str(description));
@@ -673,18 +666,10 @@ mod tests {
     }
 
     #[test]
-    fn build_enter_ctx_omits_kind_for_session_entry() {
+    fn build_enter_ctx_requires_direct_entry_kind() {
         let state = AppState::new();
         let cfg = EgoConfig::default();
-        let SchemeVal::Map(session_ctx) = build_enter_ctx(&state, Some("klaim"), None, &cfg) else {
-            panic!("expected ctx map");
-        };
-        assert!(!session_ctx.contains_key("kind"));
-        assert!(session_ctx.contains_key("name"));
-        assert!(session_ctx.contains_key("nick"));
-        assert!(session_ctx.contains_key("description"));
-
-        let SchemeVal::Map(thing_ctx) = build_enter_ctx(&state, Some("stone"), Some("thing"), &cfg)
+        let SchemeVal::Map(thing_ctx) = build_enter_ctx(&state, Some("stone"), "thing", &cfg)
         else {
             panic!("expected ctx map");
         };
@@ -957,15 +942,9 @@ fn handle_dot_set(
     // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
     if path.starts_with(".my.ctx") {
         let cfg = config.get_untracked();
-        if path.starts_with(".my.ctx.leave_queue") {
-            state.load_room_leave_queue(&cfg);
-        }
         apply_ctx_focus(&cfg, state);
     }
     let cfg = config.get_untracked();
-    if path.starts_with(".my.ctx.leave_queue") {
-        state.load_room_leave_queue(&cfg);
-    }
     let uname = username.to_string();
     let state2 = state.clone();
     let path_owned = path.to_string();

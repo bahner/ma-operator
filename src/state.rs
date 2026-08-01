@@ -76,20 +76,6 @@ pub struct PendingEnter {
     pub visible: bool,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub struct RoomLeaveQueueEntry {
-    pub room: String,
-    pub attempts: u32,
-    pub added_at_ms: f64,
-    pub last_attempt_ms: f64,
-    pub next_attempt_ms: f64,
-    pub in_flight: bool,
-}
-
-const ROOM_LEAVE_QUEUE_DEFAULT_MAX: usize = 10;
-const ROOM_LEAVE_MAX_AGE_MS: f64 = 10.0 * 60.0 * 1000.0;
-const ROOM_LEAVE_QUEUE_ENTRIES_KEY: &str = ".my.ctx.leave_queue.entries";
-const ROOM_LEAVE_QUEUE_LENGTH_KEY: &str = ".my.ctx.leave_queue.length";
 const CTX_TAIL_DEFAULT_MAX: usize = 100;
 const CTX_TAIL_ENTRIES_KEY: &str = ".my.ctx.tail.entries";
 const CTX_TAIL_LENGTH_KEY: &str = ".my.ctx.tail.length";
@@ -132,26 +118,11 @@ impl CtxTailSnapshot {
     }
 }
 
-fn room_leave_queue_len(cfg: &crate::config::EgoConfig) -> usize {
-    cfg.get(ROOM_LEAVE_QUEUE_LENGTH_KEY)
-        .and_then(|value| value.parse().ok())
-        .filter(|len| *len > 0)
-        .unwrap_or(ROOM_LEAVE_QUEUE_DEFAULT_MAX)
-}
-
 fn ctx_tail_len(cfg: &crate::config::EgoConfig) -> usize {
     cfg.get(CTX_TAIL_LENGTH_KEY)
         .and_then(|value| value.parse().ok())
         .filter(|len| *len > 0)
         .unwrap_or(CTX_TAIL_DEFAULT_MAX)
-}
-
-fn room_leave_backoff_ms(attempts: u32) -> f64 {
-    match attempts {
-        0 => 5_000.0,
-        1 => 30_000.0,
-        _ => 120_000.0,
-    }
 }
 
 fn now_ms() -> f64 {
@@ -176,8 +147,6 @@ fn now_ms() -> f64 {
 pub enum PendingKind {
     /// One-shot send: just resolve the command status when the reply arrives.
     Simple { cmd_id: u64 },
-    /// Background room-presence cleanup. Replies update `room_leave_queue` only.
-    RoomLeave { room: String },
     /// IPFS-store reply should trigger a CRUD SET (returned CID becomes the value).
     IpfsCrud {
         target_did: String,
@@ -215,7 +184,6 @@ impl PendingKind {
     pub fn cmd_id(&self) -> Option<u64> {
         match self {
             PendingKind::Simple { cmd_id } => Some(*cmd_id),
-            PendingKind::RoomLeave { .. } => None,
             PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
@@ -318,8 +286,6 @@ pub enum OutboxTask {
     },
     /// Auto-pong reply to an incoming `:ping`.
     RpcPong { target: String, reply_to_id: String },
-    /// Background cleanup of stale room presence after moving away.
-    RoomLeave { room: String },
 }
 
 // ── App state (reactive) ───────────────────────────────────────────────────
@@ -360,8 +326,6 @@ pub struct AppState {
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
-    /// Recently-left rooms that still need idempotent `:leave` cleanup.
-    pub room_leave_queue: RwSignal<VecDeque<RoomLeaveQueueEntry>>,
 }
 
 impl AppState {
@@ -385,7 +349,6 @@ impl AppState {
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
             outbox_queue: RwSignal::new(VecDeque::new()),
-            room_leave_queue: RwSignal::new(VecDeque::new()),
         }
     }
 
@@ -600,61 +563,8 @@ impl AppState {
         }));
     }
 
-    pub fn set_hidden_pending_enter(&self, desired_runtime: String, desired_room: String) {
-        self.pending_enter.set(Some(PendingEnter {
-            cmd_id: None,
-            desired_runtime,
-            desired_room,
-            issued_at_ms: now_ms(),
-            visible: false,
-        }));
-    }
-
     pub fn clear_pending_enter(&self) {
         self.pending_enter.set(None);
-    }
-
-    pub fn load_room_leave_queue(&self, cfg: &crate::config::EgoConfig) {
-        let now = now_ms();
-        let mut entries = VecDeque::new();
-        for idx in 0..room_leave_queue_len(cfg) {
-            let room_key = format!("{ROOM_LEAVE_QUEUE_ENTRIES_KEY}.{idx}");
-            let Some(room) = cfg
-                .get(&room_key)
-                .filter(|room| !room.is_empty())
-                .map(str::to_string)
-            else {
-                continue;
-            };
-            entries.push_back(RoomLeaveQueueEntry {
-                room,
-                attempts: 0,
-                added_at_ms: now,
-                last_attempt_ms: 0.0,
-                next_attempt_ms: now,
-                in_flight: false,
-            });
-        }
-        self.room_leave_queue.set(entries);
-    }
-
-    pub fn persist_room_leave_queue(&self, cfg: &mut crate::config::EgoConfig) {
-        let numeric_queue_keys: Vec<String> = cfg
-            .tree
-            .keys()
-            .filter_map(|key| {
-                let suffix = key.strip_prefix(".my.ctx.leave_queue.entries.")?;
-                suffix.parse::<usize>().ok().map(|_| key.clone())
-            })
-            .collect();
-        for key in numeric_queue_keys {
-            cfg.delete(&key);
-        }
-        self.room_leave_queue.with_untracked(|queue| {
-            for (idx, entry) in queue.iter().take(room_leave_queue_len(cfg)).enumerate() {
-                cfg.set(format!("{ROOM_LEAVE_QUEUE_ENTRIES_KEY}.{idx}"), &entry.room);
-            }
-        });
     }
 
     fn persist_config_if_logged_in(&self, cfg: &crate::config::EgoConfig) {
@@ -665,82 +575,9 @@ impl AppState {
         let cfg = cfg.clone();
         leptos::task::spawn_local(async move {
             if let Err(e) = crate::config::persist_config(&username, &cfg).await {
-                log::warn!("[room-leave] persist tail failed: {e}");
+                log::warn!("[ctx-tail] persist failed: {e}");
             }
         });
-    }
-
-    pub fn enqueue_room_leave(&self, room: String, cfg: &mut crate::config::EgoConfig) {
-        if room.is_empty() {
-            return;
-        }
-        let now = now_ms();
-        let max_len = room_leave_queue_len(cfg);
-        self.room_leave_queue.update(|queue| {
-            if let Some(entry) = queue.iter_mut().find(|entry| entry.room == room) {
-                entry.next_attempt_ms = now;
-                entry.in_flight = false;
-                return;
-            }
-            while queue.len() >= max_len {
-                queue.pop_front();
-            }
-            queue.push_back(RoomLeaveQueueEntry {
-                room,
-                attempts: 0,
-                added_at_ms: now,
-                last_attempt_ms: 0.0,
-                next_attempt_ms: now,
-                in_flight: false,
-            });
-        });
-        self.persist_room_leave_queue(cfg);
-        self.persist_config_if_logged_in(cfg);
-    }
-
-    pub fn remove_room_leave(&self, room: &str, cfg: &mut crate::config::EgoConfig) {
-        self.room_leave_queue
-            .update(|queue| queue.retain(|entry| entry.room != room));
-        self.persist_room_leave_queue(cfg);
-        self.persist_config_if_logged_in(cfg);
-    }
-
-    pub fn due_room_leaves(&self, current_room: Option<&str>, now: f64) -> Vec<String> {
-        self.room_leave_queue.update_untracked(|queue| {
-            queue.retain(|entry| now - entry.added_at_ms <= ROOM_LEAVE_MAX_AGE_MS);
-            if let Some(current_room) = current_room {
-                queue.retain(|entry| entry.room != current_room);
-            }
-            let mut due = Vec::new();
-            for entry in queue.iter_mut() {
-                if !entry.in_flight && now >= entry.next_attempt_ms {
-                    entry.in_flight = true;
-                    entry.last_attempt_ms = now;
-                    due.push(entry.room.clone());
-                }
-            }
-            due
-        })
-    }
-
-    pub fn complete_room_leave(&self, room: &str, cfg: &mut crate::config::EgoConfig) {
-        self.room_leave_queue
-            .update(|queue| queue.retain(|entry| entry.room != room));
-        self.persist_room_leave_queue(cfg);
-        self.persist_config_if_logged_in(cfg);
-    }
-
-    pub fn retry_room_leave(&self, room: &str, cfg: &mut crate::config::EgoConfig) {
-        let now = now_ms();
-        self.room_leave_queue.update(|queue| {
-            if let Some(entry) = queue.iter_mut().find(|entry| entry.room == room) {
-                entry.in_flight = false;
-                entry.attempts = entry.attempts.saturating_add(1);
-                entry.next_attempt_ms = now + room_leave_backoff_ms(entry.attempts);
-            }
-        });
-        self.persist_room_leave_queue(cfg);
-        self.persist_config_if_logged_in(cfg);
     }
 
     pub fn record_ctx_tail(&self, snapshot: CtxTailSnapshot, cfg: &mut crate::config::EgoConfig) {
@@ -935,59 +772,6 @@ impl Default for AppState {
 mod tests {
     use super::*;
     use crate::config::EgoConfig;
-
-    #[test]
-    fn room_leave_queue_uses_plain_profile_entries_and_length() {
-        let _runtime = leptos::prelude::Owner::new();
-        let state = AppState::new();
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.leave_queue.length", "2");
-
-        state.enqueue_room_leave("did:ma:runtime#old-a".to_string(), &mut cfg);
-        state.enqueue_room_leave("did:ma:runtime#old-b".to_string(), &mut cfg);
-        state.enqueue_room_leave("did:ma:runtime#old-c".to_string(), &mut cfg);
-
-        assert_eq!(cfg.get(".my.ctx.leave_queue.length"), Some("2"));
-        assert_eq!(
-            cfg.get(".my.ctx.leave_queue.entries.0"),
-            Some("did:ma:runtime#old-b")
-        );
-        assert_eq!(
-            cfg.get(".my.ctx.leave_queue.entries.1"),
-            Some("did:ma:runtime#old-c")
-        );
-        assert_eq!(cfg.get(".my.ctx.leave_queue.entries.2"), None);
-    }
-
-    #[test]
-    fn room_leave_queue_can_restore_and_remove_entry() {
-        let _runtime = leptos::prelude::Owner::new();
-        let state = AppState::new();
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.leave_queue.entries.0", "did:ma:runtime#old");
-
-        state.load_room_leave_queue(&cfg);
-        assert_eq!(
-            state.due_room_leaves(None, now_ms()),
-            vec!["did:ma:runtime#old"]
-        );
-
-        state.remove_room_leave("did:ma:runtime#old", &mut cfg);
-        assert_eq!(cfg.get(".my.ctx.leave_queue.entries.0"), None);
-    }
-
-    #[test]
-    fn room_leave_queue_does_not_send_current_room() {
-        let _runtime = leptos::prelude::Owner::new();
-        let state = AppState::new();
-        let mut cfg = EgoConfig::default();
-        state.enqueue_room_leave("did:ma:runtime#room".to_string(), &mut cfg);
-
-        assert!(state
-            .due_room_leaves(Some("did:ma:runtime#room"), now_ms())
-            .is_empty());
-        assert!(state.room_leave_queue.with_untracked(VecDeque::is_empty));
-    }
 
     #[test]
     fn ctx_tail_prepends_newest_and_compacts_holes() {

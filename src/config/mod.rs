@@ -51,7 +51,6 @@ impl EgoConfig {
             (".my.config.screensaver.timeout", "300"),
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
-            (".my.ctx.leave_queue.length", "10"),
             (".my.ctx.tail.length", "100"),
         ];
         for (k, v) in &defaults {

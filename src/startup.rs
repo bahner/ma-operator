@@ -170,7 +170,6 @@ pub(crate) async fn startup_load_config(
                     state.push_error(tf("err-inbox-prune-persist", &[("e", &e)]));
                 }
             }
-            state.load_room_leave_queue(&cfg);
             config.set(cfg);
         }
         Err(e) => state.push_error(tf("err-config-load", &[("e", &e)])),

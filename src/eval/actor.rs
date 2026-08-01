@@ -64,7 +64,7 @@ pub(crate) fn eval_actor_local(
 pub(crate) async fn execute_outbox_task(
     task: OutboxTask,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    _config: RwSignal<EgoConfig>,
 ) {
     match task {
         OutboxTask::Actor {
@@ -191,26 +191,6 @@ pub(crate) async fn execute_outbox_task(
             reply_to_id,
         } => {
             let _ = transport::send_rpc_pong(&target, &reply_to_id).await;
-        }
-
-        OutboxTask::RoomLeave { room } => {
-            let bind_state = state.clone();
-            let pending_room = room.clone();
-            match transport::send_rpc_with_msg_id(&room, "leave", &[], move |msg_id| {
-                bind_state.register_pending(
-                    msg_id,
-                    PendingKind::RoomLeave { room: pending_room },
-                    None,
-                );
-            })
-            .await
-            {
-                Ok(_) => {}
-                Err(e) => {
-                    log::debug!("[room-leave] send failed room={room:?}: {e}");
-                    config.update(|cfg| state.retry_room_leave(&room, cfg));
-                }
-            }
         }
     }
 }
