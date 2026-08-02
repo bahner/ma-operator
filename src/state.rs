@@ -306,6 +306,7 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
+    last_accepted_ctx: RwSignal<Option<(String, String, CtxTailSnapshot)>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
     /// Each entry describes what to do when the reply arrives.
@@ -346,6 +347,7 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
+            last_accepted_ctx: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
@@ -620,17 +622,30 @@ impl AppState {
         self.pending_enter.set(None);
     }
 
-    fn persist_config_if_logged_in(&self, cfg: &crate::config::EgoConfig) {
-        let Some(sess) = self.session.get_untracked() else {
-            return;
-        };
-        let username = sess.username.clone();
-        let cfg = cfg.clone();
-        leptos::task::spawn_local(async move {
-            if let Err(e) = crate::config::persist_config(&username, &cfg).await {
-                log::warn!("[ctx-tail] persist failed: {e}");
-            }
-        });
+    pub fn ctx_was_accepted(
+        &self,
+        sender: &str,
+        recipient: &str,
+        snapshot: &CtxTailSnapshot,
+    ) -> bool {
+        self.last_accepted_ctx.with_untracked(|last| {
+            last.as_ref()
+                .is_some_and(|(last_sender, last_recipient, last_snapshot)| {
+                    last_sender == sender
+                        && last_recipient == recipient
+                        && last_snapshot == snapshot
+                })
+        })
+    }
+
+    pub fn remember_accepted_ctx(
+        &self,
+        sender: String,
+        recipient: String,
+        snapshot: CtxTailSnapshot,
+    ) {
+        self.last_accepted_ctx
+            .set(Some((sender, recipient, snapshot)));
     }
 
     pub fn record_ctx_tail(&self, snapshot: CtxTailSnapshot, cfg: &mut crate::config::EgoConfig) {
@@ -645,7 +660,6 @@ impl AppState {
         entries.insert(0, snapshot.to_fields());
         entries.truncate(max_len);
         write_ctx_tail_entries(cfg, &entries);
-        self.persist_config_if_logged_in(cfg);
     }
 
     /// Remove and return the pending kind for the given message id, if any.

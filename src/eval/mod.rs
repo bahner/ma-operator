@@ -349,10 +349,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
         let cmd_id = state2.push_command(format!(".enter {entered_display}"));
         if state2.was_cancelled_since(cancel_epoch) {
-            state2.resolve_command_by_id(
-                cmd_id,
-                CommandStatus::Error("cancelled".to_string()),
-            );
+            state2.resolve_command_by_id(cmd_id, CommandStatus::Error("cancelled".to_string()));
             return;
         }
         let (entry_runtime, requested_room) = target_actor
@@ -401,10 +398,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         let root = format!("{entry_runtime}#root");
         let enter_args = enter_args_root(requested_room.as_deref(), effective_nick.as_deref());
         if state2.was_cancelled_since(cancel_epoch) {
-            state2.resolve_command_by_id(
-                cmd_id,
-                CommandStatus::Error("cancelled".to_string()),
-            );
+            state2.resolve_command_by_id(cmd_id, CommandStatus::Error("cancelled".to_string()));
             return;
         }
         config.update(|c| {

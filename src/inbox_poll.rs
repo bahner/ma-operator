@@ -344,6 +344,7 @@ fn handle_ctx_receipt(
         return;
     }
 
+    let mut completed_pending_enter = false;
     if let Some(pending) = pending_enter {
         let room_matches = room
             .as_deref()
@@ -356,6 +357,7 @@ fn handle_ctx_receipt(
                 );
             }
             state.clear_pending_enter();
+            completed_pending_enter = true;
         } else if trusted_by_identity {
             // This ctx push is legitimately about the sender's own state (an
             // avatar/root reporting on itself) even though it doesn't match
@@ -388,20 +390,21 @@ fn handle_ctx_receipt(
                 .split_once('#')
                 .map(|(runtime, _)| runtime.to_string())
         });
+    let snapshot = CtxTailSnapshot {
+        runtime: runtime.clone(),
+        root: root.clone(),
+        avatar: avatar.clone(),
+        inv: inv.clone(),
+        room: room.clone(),
+        nick: nick.clone(),
+        kind: kind.clone(),
+        text: text.clone(),
+    };
+    if !completed_pending_enter && state.ctx_was_accepted(&incoming.from, &incoming.to, &snapshot) {
+        return;
+    }
     config.update(|c| {
-        state.record_ctx_tail(
-            CtxTailSnapshot {
-                runtime: runtime.clone(),
-                root: root.clone(),
-                avatar: avatar.clone(),
-                inv: inv.clone(),
-                room: room.clone(),
-                nick: nick.clone(),
-                kind: kind.clone(),
-                text: text.clone(),
-            },
-            c,
-        );
+        state.record_ctx_tail(snapshot.clone(), c);
         c.set(".my.ctx.use", "true");
         if let Some(runtime) = &runtime {
             c.set(".my.ctx.runtime", runtime);
@@ -450,6 +453,7 @@ fn handle_ctx_receipt(
             }
         }
     });
+    state.remember_accepted_ctx(incoming.from.clone(), incoming.to.clone(), snapshot);
 
     let cfg = config.get_untracked();
     crate::eval::apply_ctx_focus(&cfg, state);
@@ -822,6 +826,101 @@ mod tests {
     }
 
     #[test]
+    fn duplicate_ctx_receipt_skips_focus_tail_and_text_updates() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let payload = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("avatar".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":root".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":avatar".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":nick".to_string()),
+                ciborium::Value::Text("Alice".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":room".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#room".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":text".to_string()),
+                ciborium::Value::Text("You arrive.".to_string()),
+            ]),
+        ]);
+        let incoming = incoming("did:ma:k51runtime#alice", "");
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+        let first_entries = state.entries.with_untracked(Vec::len);
+        let first_tail = config
+            .get_untracked()
+            .get(".my.ctx.tail.entries.0.at_ms")
+            .map(str::to_string);
+        state.focus_actor.set(None);
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        assert!(state.focus_actor.get_untracked().is_none());
+        assert_eq!(state.entries.with_untracked(Vec::len), first_entries);
+        assert_eq!(
+            config
+                .get_untracked()
+                .get(".my.ctx.tail.entries.0.at_ms")
+                .map(str::to_string),
+            first_tail
+        );
+    }
+
+    #[test]
+    fn changed_ctx_receipt_updates_focus() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let payload = |nick: &str| {
+            ciborium::Value::Array(vec![
+                ciborium::Value::Array(vec![
+                    ciborium::Value::Text(":kind".to_string()),
+                    ciborium::Value::Text("avatar".to_string()),
+                ]),
+                ciborium::Value::Array(vec![
+                    ciborium::Value::Text(":root".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#root".to_string()),
+                ]),
+                ciborium::Value::Array(vec![
+                    ciborium::Value::Text(":avatar".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#alice".to_string()),
+                ]),
+                ciborium::Value::Array(vec![
+                    ciborium::Value::Text(":nick".to_string()),
+                    ciborium::Value::Text(nick.to_string()),
+                ]),
+                ciborium::Value::Array(vec![
+                    ciborium::Value::Text(":room".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#room".to_string()),
+                ]),
+            ])
+        };
+        let incoming = incoming("did:ma:k51runtime#alice", "");
+
+        handle_ctx_receipt(Some(&payload("Alice")), &incoming, &state, config);
+        handle_ctx_receipt(Some(&payload("Alicia")), &incoming, &state, config);
+
+        assert_eq!(config.get_untracked().get(".my.ctx.nick"), Some("Alicia"));
+        assert!(state
+            .focus_actor
+            .get_untracked()
+            .is_some_and(|focus| focus.prompt.starts_with("Alicia@")));
+    }
+
+    #[test]
     fn ctx_receipt_accepts_new_cross_runtime_avatar_identity() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
@@ -927,6 +1026,31 @@ mod tests {
         });
         assert_eq!(
             status,
+            Some(crate::core::CommandStatus::Replied(String::new()))
+        );
+
+        let second_cmd_id = state.push_command(format!(".enter {room}"));
+        state.pending_enter.set(Some(crate::state::PendingEnter {
+            cmd_id: Some(second_cmd_id),
+            desired_runtime: "did:ma:k51target".to_string(),
+            desired_room: room.to_string(),
+            issued_at_ms: 0.0,
+            visible: true,
+        }));
+
+        handle_ctx_receipt(Some(&payload), &incoming, &state, config);
+
+        assert!(state.pending_enter.get_untracked().is_none());
+        let second_status = state.entries.with_untracked(|entries| {
+            entries.iter().find_map(|entry| match entry {
+                crate::core::Entry::Command(command) if command.id == second_cmd_id => {
+                    Some(command.status.get_untracked())
+                }
+                _ => None,
+            })
+        });
+        assert_eq!(
+            second_status,
             Some(crate::core::CommandStatus::Replied(String::new()))
         );
     }
