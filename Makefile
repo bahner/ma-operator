@@ -35,6 +35,8 @@ publish: dist
 	@echo "CID: $$(cat .cid)"
 	@echo "Publishing Zion IPNS name..."
 	@ipfs name publish --key=zion "$$(cat .cid)"
+	@echo "Pinning Zion CID on Pinata..."
+	@ipfs pin remote add --service=pinata --name="zion-$$(date --iso-8601)" "$$(cat .cid)"
 	@echo "Open: ipfs://$$(cat .cid)"
 	@touch .publish.sh
 	@sh .publish.sh
