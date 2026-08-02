@@ -89,6 +89,7 @@ err-bare-did = tikėtasi gryno did:ma:<ipns> (be fragmento ar kelio), gauta { $d
 btn-save = Išsaugoti
 btn-eval = Vykdyti
 btn-cancel = Atšaukti
+msg-jobs-cancelled = darbai atšaukti
 btn-close = Uždaryti
 btn-reply = Atsakyti
 btn-publish = Publikuoti

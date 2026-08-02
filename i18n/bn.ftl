@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> (কোনো ফ্র্যাগমেন�
 btn-save = সংরক্ষণ
 btn-eval = চালান
 btn-cancel = বাতিল
+msg-jobs-cancelled = কাজগুলো বাতিল হয়েছে
 btn-close = বন্ধ করুন
 btn-reply = উত্তর দিন
 btn-publish = প্রকাশ করুন

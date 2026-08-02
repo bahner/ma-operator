@@ -89,6 +89,7 @@ err-bare-did = oczekiwano czystego did:ma:<ipns> (bez fragmentu lub ścieżki), 
 btn-save = Zapisz
 btn-eval = Uruchom
 btn-cancel = Anuluj
+msg-jobs-cancelled = zadania anulowane
 btn-close = Zamknij
 btn-reply = Odpowiedz
 btn-publish = Opublikuj

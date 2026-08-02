@@ -27,6 +27,10 @@ impl AwaitingReply {
     pub fn take(msg_id: &str) -> Option<ReplySender> {
         AWAITING_REPLIES.with(|m| m.borrow_mut().remove(msg_id))
     }
+
+    pub fn clear() {
+        AWAITING_REPLIES.with(|m| m.borrow_mut().clear());
+    }
 }
 
 /// (sender, sent_at_ms) for Scheme RPC reply channels.
@@ -260,6 +264,7 @@ pub enum OutboxTask {
         verb: Option<String>,
         body: String,
         cmd_id: u64,
+        cancel_epoch: u64,
         config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
     },
     /// A focus-mode world command already parsed into RPC method + arguments.
@@ -268,6 +273,7 @@ pub enum OutboxTask {
         verb: String,
         args: Vec<String>,
         cmd_id: u64,
+        cancel_epoch: u64,
     },
     /// A local zion command aimed at an actor, e.g. `@actor!msg text`.
     ActorLocal {
@@ -275,6 +281,7 @@ pub enum OutboxTask {
         command: String,
         body: String,
         cmd_id: u64,
+        cancel_epoch: u64,
     },
     /// CRUD SET triggered by an incoming IPFS-store reply.
     CrudSet {
@@ -283,6 +290,7 @@ pub enum OutboxTask {
         value: ciborium::Value,
         /// `cmd_id` of the originating command, registered as `CrudConfirm` on success.
         cmd_id: Option<u64>,
+        cancel_epoch: u64,
     },
     /// Auto-pong reply to an incoming `:ping`.
     RpcPong { target: String, reply_to_id: String },
@@ -326,6 +334,8 @@ pub struct AppState {
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
+    /// Monotonic cancellation generation for work already taken from queues.
+    pub cancel_epoch: RwSignal<u64>,
 }
 
 impl AppState {
@@ -349,7 +359,50 @@ impl AppState {
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
             outbox_queue: RwSignal::new(VecDeque::new()),
+            cancel_epoch: RwSignal::new(0),
         }
+    }
+
+    pub fn cancel_epoch(&self) -> u64 {
+        self.cancel_epoch.get_untracked()
+    }
+
+    pub fn was_cancelled_since(&self, epoch: u64) -> bool {
+        self.cancel_epoch.get_untracked() != epoch
+    }
+
+    pub fn cancel_jobs(&self) {
+        let next_epoch = self.cancel_epoch.get_untracked().saturating_add(1);
+        self.cancel_epoch.set(next_epoch);
+
+        let batch_headers: Vec<u64> = self
+            .batches
+            .with_untracked(|b| b.values().map(|batch| batch.header_cmd_id).collect());
+        self.input_queue.update(|q| q.clear());
+        self.outbox_queue.update(|q| q.clear());
+        self.pending_requests.update(|m| m.clear());
+        self.pending_enter.set(None);
+        self.batches.update(|b| b.clear());
+        self.cmd_to_batch.update(|m| m.clear());
+        AwaitingReply::clear();
+        SCHEME_SENDERS.with(|m| m.borrow_mut().clear());
+
+        self.entries.with_untracked(|v| {
+            for entry in v.iter() {
+                if let Entry::Command(command) = entry {
+                    let should_cancel = batch_headers.contains(&command.id)
+                        || matches!(
+                            command.status.get_untracked(),
+                            CommandStatus::Sent | CommandStatus::Publishing
+                        );
+                    if should_cancel {
+                        command
+                            .status
+                            .set(CommandStatus::Error("cancelled".to_string()));
+                    }
+                }
+            }
+        });
     }
 
     /// Allocate a fresh unique batch id.

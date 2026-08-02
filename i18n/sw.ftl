@@ -89,6 +89,7 @@ err-bare-did = imehitajika did:ma:<ipns> safi (bila kipande au njia), ilipokea {
 btn-save = Hifadhi
 btn-eval = Tekeleza
 btn-cancel = Ghairi
+msg-jobs-cancelled = kazi zimeghairiwa
 btn-close = Funga
 btn-reply = Jibu
 btn-publish = Chapisha

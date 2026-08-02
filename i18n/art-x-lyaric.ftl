@@ -91,6 +91,7 @@ err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
 btn-save = Keep
 btn-eval = Livity
 btn-cancel = Anile
+msg-jobs-cancelled = wuk anile
 btn-close = Fèmen
 btn-reply = Answer
 btn-publish = Manifest

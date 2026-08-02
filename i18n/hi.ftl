@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> (कोई फ़्रैगमेंट य�
 btn-save = सहेजें
 btn-eval = चलाएं
 btn-cancel = रद्द करें
+msg-jobs-cancelled = कार्य रद्द किए गए
 btn-close = बंद करें
 btn-reply = उत्तर दें
 btn-publish = प्रकाशित करें

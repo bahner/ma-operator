@@ -89,6 +89,7 @@ err-bare-did = αναμένεται καθαρό did:ma:<ipns> (χωρίς τμ�
 btn-save = Αποθήκευση
 btn-eval = Εκτέλεση
 btn-cancel = Ακύρωση
+msg-jobs-cancelled = οι εργασίες ακυρώθηκαν
 btn-close = Κλείσιμο
 btn-reply = Απάντηση
 btn-publish = Δημοσίευση

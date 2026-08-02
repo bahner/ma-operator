@@ -89,6 +89,7 @@ err-bare-did = salt did:ma:<ipns> (parça veya yol yok) beklendi, alındı: { $d
 btn-save = Kaydet
 btn-eval = Çalıştır
 btn-cancel = İptal
+msg-jobs-cancelled = işler iptal edildi
 btn-close = Kapat
 btn-reply = Yanıtla
 btn-publish = Yayımla

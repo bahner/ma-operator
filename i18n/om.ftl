@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> eegama ture (fragment ykn path hin qabu), { $d
 btn-save = olkaa'i
 btn-eval = raawwadhu
 btn-cancel = dhiisi
+msg-jobs-cancelled = hojiiwwan haqaman
 btn-close = cufii
 btn-reply = deebisi
 btn-publish = maxxansi

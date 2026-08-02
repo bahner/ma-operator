@@ -89,6 +89,7 @@ err-bare-did = kulindele bare did:ma:<ipns> (ngaphandle kwe-fragment okanye path
 btn-save = gcina
 btn-eval = yenza
 btn-cancel = rhoxisa
+msg-jobs-cancelled = imisebenzi irhoxisiwe
 btn-close = vala
 btn-reply = phendula
 btn-publish = shicilela

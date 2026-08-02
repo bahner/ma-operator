@@ -89,6 +89,7 @@ err-bare-did = te atann did:ma:<ipns> pou kò li (pa gen fragman ni chemen), jwe
 btn-save = Sove
 btn-eval = Evalye
 btn-cancel = Anile
+msg-jobs-cancelled = travay yo anile
 btn-close = Fèmen
 btn-reply = Repon
 btn-publish = Pibliye

@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> (프래그먼트나 경로 없음) 필요, 받
 btn-save = 저장
 btn-eval = 실행
 btn-cancel = 취소
+msg-jobs-cancelled = 작업이 취소됨
 btn-close = 닫기
 btn-reply = 답장
 btn-publish = 게시

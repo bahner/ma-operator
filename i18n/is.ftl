@@ -89,6 +89,7 @@ err-bare-did = bjóst við hreinu did:ma:<ipns> (ekkert brot eða slóð), fékk
 btn-save = Vista
 btn-eval = Keyra
 btn-cancel = Hætta við
+msg-jobs-cancelled = verk stöðvuð
 btn-close = Loka
 btn-reply = Svara
 btn-publish = Birta

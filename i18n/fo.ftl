@@ -89,6 +89,7 @@ err-bare-did = ventaði einans did:ma:<ipns> (einki brot ella slóð), fingu { $
 btn-save = Vista
 btn-eval = Keyra
 btn-cancel = Avlýs
+msg-jobs-cancelled = arbeiði avlýst
 btn-close = Lat aftur
 btn-reply = Svar
 btn-publish = Birta

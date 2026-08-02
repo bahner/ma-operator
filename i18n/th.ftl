@@ -89,6 +89,7 @@ err-bare-did = ต้องการ bare did:ma:<ipns> (ไม่มี fragmen
 btn-save = บันทึก
 btn-eval = รัน
 btn-cancel = ยกเลิก
+msg-jobs-cancelled = ยกเลิกงานแล้ว
 btn-close = ปิด
 btn-reply = ตอบกลับ
 btn-publish = เผยแพร่

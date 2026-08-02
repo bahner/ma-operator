@@ -95,6 +95,7 @@ err-lang-not-found = language not found: { $lang }
 btn-save = Save
 btn-eval = Eval
 btn-cancel = Cancel
+msg-jobs-cancelled = jobs cancelled
 btn-close = Close
 btn-reply = Reply
 btn-publish = Publish

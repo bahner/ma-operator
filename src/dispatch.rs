@@ -228,16 +228,19 @@ fn handle_input_line(
     if crate::scheme::needs_expansion(trimmed) {
         let state2 = state.clone();
         let line_owned = trimmed.to_string();
+        let cancel_epoch = state.cancel_epoch();
         wasm_bindgen_futures::spawn_local(async move {
             match crate::scheme::expand(&line_owned, &state2, config).await {
                 Ok(expanded) => {
                     let t = expanded.trim().to_string();
-                    if !t.is_empty() {
+                    if !t.is_empty() && !state2.was_cancelled_since(cancel_epoch) {
                         state2.input_queue.update(|q| q.push_back(t));
                     }
                 }
                 Err(e) => {
-                    state2.push_error(format!("scheme: {e}"));
+                    if !state2.was_cancelled_since(cancel_epoch) {
+                        state2.push_error(format!("scheme: {e}"));
+                    }
                 }
             }
         });
@@ -787,6 +790,7 @@ fn enqueue_focus_command(
             verb,
             args,
             cmd_id,
+            cancel_epoch: state.cancel_epoch(),
         });
     });
     Ok(cmd_id)

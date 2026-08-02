@@ -37,6 +37,7 @@ pub(crate) fn eval_actor(
             verb,
             body,
             cmd_id,
+            cancel_epoch: state.cancel_epoch(),
             config,
         })
     });
@@ -56,6 +57,7 @@ pub(crate) fn eval_actor_local(
             command,
             body,
             cmd_id,
+            cancel_epoch: state.cancel_epoch(),
         })
     });
 }
@@ -72,6 +74,7 @@ pub(crate) async fn execute_outbox_task(
             verb,
             body,
             cmd_id,
+            cancel_epoch,
             config,
         } => {
             log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
@@ -85,6 +88,9 @@ pub(crate) async fn execute_outbox_task(
                 "[outbox] Actor done cmd_id={cmd_id} result={:?}",
                 result.as_ref().map(|r| r.is_ok())
             );
+            if state.was_cancelled_since(cancel_epoch) {
+                return;
+            }
             if let Some(r) = result {
                 handle_send_result(r, verb.as_deref(), cmd_id, state);
             }
@@ -95,6 +101,7 @@ pub(crate) async fn execute_outbox_task(
             verb,
             args,
             cmd_id,
+            cancel_epoch,
         } => {
             log::debug!(
                 "[outbox] execute ActorArgs cmd_id={cmd_id} target={target:?} verb={verb:?} args={args:?}"
@@ -103,13 +110,18 @@ pub(crate) async fn execute_outbox_task(
             let bind_state = state.clone();
             let result =
                 transport::send_rpc_with_msg_id(&target, &verb, &arg_refs, move |msg_id| {
-                    bind_state.bind_message_id(cmd_id, msg_id);
+                    if !bind_state.was_cancelled_since(cancel_epoch) {
+                        bind_state.bind_message_id(cmd_id, msg_id);
+                    }
                 })
                 .await;
             log::debug!(
                 "[outbox] ActorArgs done cmd_id={cmd_id} result={:?}",
                 result.is_ok()
             );
+            if state.was_cancelled_since(cancel_epoch) {
+                return;
+            }
             if let Err(e) = result {
                 state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                 let display = e.replace("not logged in", &t("msg-not-logged-in"));
@@ -122,6 +134,7 @@ pub(crate) async fn execute_outbox_task(
             command,
             body,
             cmd_id,
+            cancel_epoch,
         } => {
             let result = match command.as_str() {
                 "msg" | "message" | "text" => Some(transport::send_text(&target, &body).await),
@@ -134,7 +147,9 @@ pub(crate) async fn execute_outbox_task(
                             other,
                             &arg_refs,
                             move |msg_id| {
-                                bind_state.bind_message_id(cmd_id, msg_id);
+                                if !bind_state.was_cancelled_since(cancel_epoch) {
+                                    bind_state.bind_message_id(cmd_id, msg_id);
+                                }
                             },
                         )
                         .await;
@@ -148,6 +163,9 @@ pub(crate) async fn execute_outbox_task(
                 },
             };
             if let Some(r) = result {
+                if state.was_cancelled_since(cancel_epoch) {
+                    return;
+                }
                 let reply_verb = match command.as_str() {
                     "msg" | "message" | "text" => None,
                     other => Some(other),
@@ -161,10 +179,14 @@ pub(crate) async fn execute_outbox_task(
             crud_path,
             value,
             cmd_id,
+            cancel_epoch,
         } => match transport::send_crud_set_with_msg_id(&target_did, &crud_path, value, {
             let bind_state = state.clone();
             move |set_msg_id| {
                 if let Some(original_cmd_id) = cmd_id {
+                    if bind_state.was_cancelled_since(cancel_epoch) {
+                        return;
+                    }
                     bind_state.register_pending(
                         set_msg_id,
                         PendingKind::CrudConfirm {
@@ -179,6 +201,9 @@ pub(crate) async fn execute_outbox_task(
         {
             Ok(_) => {}
             Err(e) => {
+                if state.was_cancelled_since(cancel_epoch) {
+                    return;
+                }
                 if let Some(cid) = cmd_id {
                     state.resolve_command_by_id(cid, crate::core::CommandStatus::Error(e.clone()));
                 }
@@ -216,16 +241,25 @@ pub(crate) fn eval_remote_crud(
 ) {
     let cmd_id = state.push_command(raw);
     let state2 = state.clone();
+    let cancel_epoch = state.cancel_epoch();
     leptos::task::spawn_local(async move {
         match op {
             RemoteCrudOp::Get => match transport::send_crud_get_with_msg_id(&target, &path, {
                 let bind_state = state2.clone();
-                move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+                move |msg_id| {
+                    if !bind_state.was_cancelled_since(cancel_epoch) {
+                        bind_state.bind_message_id(cmd_id, msg_id);
+                    }
+                }
             })
             .await
             {
                 Ok(_) => {}
-                Err(e) => fail_cmd(e, cmd_id, &state2),
+                Err(e) => {
+                    if !state2.was_cancelled_since(cancel_epoch) {
+                        fail_cmd(e, cmd_id, &state2);
+                    }
+                }
             },
             RemoteCrudOp::Edit => {
                 let editor_mode = editor_mode_for_path(&path, &target);
@@ -234,22 +268,28 @@ pub(crate) fn eval_remote_crud(
                     let target = target.clone();
                     let path = path.clone();
                     move |msg_id| {
-                        bind_state.register_pending(
-                            msg_id,
-                            PendingKind::EditOpen {
-                                target,
-                                crud_path: path,
-                                editor_mode,
-                                cmd_id,
-                            },
-                            None,
-                        );
+                        if !bind_state.was_cancelled_since(cancel_epoch) {
+                            bind_state.register_pending(
+                                msg_id,
+                                PendingKind::EditOpen {
+                                    target,
+                                    crud_path: path,
+                                    editor_mode,
+                                    cmd_id,
+                                },
+                                None,
+                            );
+                        }
                     }
                 })
                 .await
                 {
                     Ok(_) => {}
-                    Err(e) => fail_cmd(e, cmd_id, &state2),
+                    Err(e) => {
+                        if !state2.was_cancelled_since(cancel_epoch) {
+                            fail_cmd(e, cmd_id, &state2);
+                        }
+                    }
                 }
             }
             RemoteCrudOp::Set(value) => {
@@ -257,7 +297,9 @@ pub(crate) fn eval_remote_crud(
                     match normalize_remote_crud_set_value(&path, &value, &config.get_untracked()) {
                         Ok(value) => value,
                         Err(e) => {
-                            fail_cmd(e, cmd_id, &state2);
+                            if !state2.was_cancelled_since(cancel_epoch) {
+                                fail_cmd(e, cmd_id, &state2);
+                            }
                             return;
                         }
                     };
@@ -267,23 +309,39 @@ pub(crate) fn eval_remote_crud(
                     ciborium::Value::Text(value),
                     {
                         let bind_state = state2.clone();
-                        move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+                        move |msg_id| {
+                            if !bind_state.was_cancelled_since(cancel_epoch) {
+                                bind_state.bind_message_id(cmd_id, msg_id);
+                            }
+                        }
                     },
                 )
                 .await
                 {
                     Ok(_) => {}
-                    Err(e) => fail_cmd(e, cmd_id, &state2),
+                    Err(e) => {
+                        if !state2.was_cancelled_since(cancel_epoch) {
+                            fail_cmd(e, cmd_id, &state2);
+                        }
+                    }
                 }
             }
             RemoteCrudOp::Delete => match transport::send_crud_delete_with_msg_id(&target, &path, {
                 let bind_state = state2.clone();
-                move |msg_id| bind_state.bind_message_id(cmd_id, msg_id)
+                move |msg_id| {
+                    if !bind_state.was_cancelled_since(cancel_epoch) {
+                        bind_state.bind_message_id(cmd_id, msg_id);
+                    }
+                }
             })
             .await
             {
                 Ok(_) => {}
-                Err(e) => fail_cmd(e, cmd_id, &state2),
+                Err(e) => {
+                    if !state2.was_cancelled_since(cancel_epoch) {
+                        fail_cmd(e, cmd_id, &state2);
+                    }
+                }
             },
         }
     });

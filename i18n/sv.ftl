@@ -89,6 +89,7 @@ err-bare-did = förväntade bart did:ma:<ipns> (inget fragment eller sökväg), 
 btn-save = Spara
 btn-eval = Kör
 btn-cancel = Avbryt
+msg-jobs-cancelled = jobb avbrutna
 btn-close = Stäng
 btn-reply = Svara
 btn-publish = Publicera

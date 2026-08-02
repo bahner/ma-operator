@@ -89,6 +89,7 @@ err-bare-did = i ekspektim did:ma:<ipns> tasol (no gat fragmen o pat), painim { 
 btn-save = Seivim
 btn-eval = Evaluetim
 btn-cancel = Kanselim
+msg-jobs-cancelled = ol wok i kansel pinis
 btn-close = Klosim
 btn-reply = Bekim
 btn-publish = Publishim

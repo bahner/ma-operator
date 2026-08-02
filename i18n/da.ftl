@@ -89,6 +89,7 @@ err-bare-did = forventede bart did:ma:<ipns> (intet fragment eller sti), fik { $
 btn-save = Gem
 btn-eval = Kør
 btn-cancel = Annullér
+msg-jobs-cancelled = job annulleret
 btn-close = Luk
 btn-reply = Svar
 btn-publish = Publicér

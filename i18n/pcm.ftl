@@ -89,6 +89,7 @@ err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
 btn-save = Save
 btn-eval = Eval
 btn-cancel = Cancel
+msg-jobs-cancelled = job dem don cancel
 btn-close = Close
 btn-reply = Reply
 btn-publish = Publish

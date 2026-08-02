@@ -46,6 +46,7 @@ pub(crate) fn handle_ipfs_crud_reply(
                     crud_path,
                     value: ciborium::Value::Text(ipfs_ref),
                     cmd_id,
+                    cancel_epoch: state.cancel_epoch(),
                 });
             });
         }
@@ -84,6 +85,7 @@ pub(crate) fn handle_ipfs_kind_reply(
                     crud_path: path,
                     value: ciborium::Value::Text(ipfs_ref),
                     cmd_id,
+                    cancel_epoch: state.cancel_epoch(),
                 });
             });
         }

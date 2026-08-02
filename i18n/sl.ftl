@@ -89,6 +89,7 @@ err-bare-did = pričakovan čisti did:ma:<ipns> (brez fragmenta ali poti), preje
 btn-save = Shrani
 btn-eval = Zaženi
 btn-cancel = Prekliči
+msg-jobs-cancelled = opravila preklicana
 btn-close = Zapri
 btn-reply = Odgovori
 btn-publish = Objavi

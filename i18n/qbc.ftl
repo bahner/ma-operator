@@ -91,6 +91,7 @@ err-bare-did = bare did:ma:<ipns> kolowda (na wit fragment oyedeng path), towa {
 btn-save = hol
 btn-eval = du
 btn-cancel = na-du
+msg-jobs-cancelled = wowk na-du
 btn-close = tek-out
 btn-reply = bek-showxa
 btn-publish = sendowt

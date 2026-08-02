@@ -96,6 +96,10 @@ pub fn tf(key: &str, vars: &[(&str, &str)]) -> String {
     s
 }
 
+pub fn msg_jobs_cancelled() -> String {
+    t("msg-jobs-cancelled")
+}
+
 // ── Internal helpers ───────────────────────────────────────────────────────
 
 /// Try each candidate FTL file in order; fall back to English.

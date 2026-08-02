@@ -89,6 +89,7 @@ err-bare-did = nandry bare did:ma:<ipns> (tsy misy fragment na path), nahazo { $
 btn-save = tehirizo
 btn-eval = alao
 btn-cancel = foano
+msg-jobs-cancelled = nofoanana ny asa
 btn-close = akatony
 btn-reply = valiana
 btn-publish = havoaka

@@ -93,6 +93,7 @@ err-lang-not-found = мову не знайдено: { $lang }
 btn-save = Зберегти
 btn-eval = Виконати
 btn-cancel = Скасувати
+msg-jobs-cancelled = завдання скасовано
 btn-close = Закрити
 btn-reply = Відповісти
 btn-publish = Опублікувати

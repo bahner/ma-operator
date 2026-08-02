@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> laanaama (yimɓe fragment walla path), tawi { 
 btn-save = mooftu
 btn-eval = hoore
 btn-cancel = yooro
+msg-jobs-cancelled = golluuji mbaylaama
 btn-close = uddude
 btn-reply = jaabii
 btn-publish = yettin

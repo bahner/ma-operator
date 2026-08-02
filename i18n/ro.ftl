@@ -89,6 +89,7 @@ err-bare-did = așteptat did:ma:<ipns> pur (fără fragment sau cale), primit { 
 btn-save = Salvare
 btn-eval = Executare
 btn-cancel = Anulare
+msg-jobs-cancelled = sarcini anulate
 btn-close = Închidere
 btn-reply = Răspuns
 btn-publish = Publicare

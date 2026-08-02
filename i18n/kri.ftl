@@ -89,6 +89,7 @@ err-bare-did = ekspekt bɛ did:ma:<ipns> (nor get fragment ɔ path), get { $did 
 btn-save = Sev
 btn-eval = Eval
 btn-cancel = Kansel
+msg-jobs-cancelled = wok dɛn kansel
 btn-close = Kloz
 btn-reply = Rɛpli
 btn-publish = Pɔblish

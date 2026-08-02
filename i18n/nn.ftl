@@ -89,6 +89,7 @@ err-bare-did = forventa bart did:ma:<ipns> (inkje fragment eller sti), fekk { $d
 btn-save = Lagre
 btn-eval = Køyr
 btn-cancel = Avbryt
+msg-jobs-cancelled = jobbar avbrotne
 btn-close = Lukk
 btn-reply = Svar
 btn-publish = Publiser

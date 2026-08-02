@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> ayaa la filaayay (fragment ama path la'aan), {
 btn-save = keydi
 btn-eval = socodsii
 btn-cancel = jooji
+msg-jobs-cancelled = shaqooyinkii waa la joojiyey
 btn-close = xidh
 btn-reply = jawaab
 btn-publish = daabac

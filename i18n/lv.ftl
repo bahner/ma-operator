@@ -89,6 +89,7 @@ err-bare-did = gaidīja tīru did:ma:<ipns> (bez fragmenta vai ceļa), saņēma 
 btn-save = Saglabāt
 btn-eval = Izpildīt
 btn-cancel = Atcelt
+msg-jobs-cancelled = darbi atcelti
 btn-close = Aizvērt
 btn-reply = Atbildēt
 btn-publish = Publicēt

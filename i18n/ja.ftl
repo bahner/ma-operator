@@ -89,6 +89,7 @@ err-bare-did = フラグメントもパスもない純粋な did:ma:<ipns> が�
 btn-save = 保存
 btn-eval = 実行
 btn-cancel = キャンセル
+msg-jobs-cancelled = ジョブをキャンセルしました
 btn-close = 閉じる
 btn-reply = 返信
 btn-publish = 公開

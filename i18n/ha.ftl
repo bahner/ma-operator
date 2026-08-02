@@ -89,6 +89,7 @@ err-bare-did = ana tsammanin bare did:ma:<ipns> (babu fragment ko path), an samu
 btn-save = ajiye
 btn-eval = gudanar
 btn-cancel = soke
+msg-jobs-cancelled = an soke ayyuka
 btn-close = rufe
 btn-reply = amsa
 btn-publish = wallafa

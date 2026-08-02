@@ -89,6 +89,7 @@ err-bare-did = a ní láti rí bare did:ma:<ipns> (kò sí fragment tàbí path)
 btn-save = pamọ́
 btn-eval = ṣe
 btn-cancel = fagilé
+msg-jobs-cancelled = àwọn iṣẹ́ ti fagilé
 btn-close = pa
 btn-reply = dáhùn
 btn-publish = tẹ jáde

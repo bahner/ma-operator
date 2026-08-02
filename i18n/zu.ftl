@@ -89,6 +89,7 @@ err-bare-did = kulindelwe bare did:ma:<ipns> (akuna fragment noma path), kutholw
 btn-save = gcina
 btn-eval = qalisa
 btn-cancel = khansela
+msg-jobs-cancelled = imisebenzi ikhanseliwe
 btn-close = vala
 btn-reply = phendula
 btn-publish = shicilela

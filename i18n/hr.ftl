@@ -89,6 +89,7 @@ err-bare-did = očekivano čisto did:ma:<ipns> (bez fragmenta ili putanje), prim
 btn-save = Spremi
 btn-eval = Pokreni
 btn-cancel = Odustani
+msg-jobs-cancelled = poslovi otkazani
 btn-close = Zatvori
 btn-reply = Odgovori
 btn-publish = Objavi

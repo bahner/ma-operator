@@ -89,6 +89,7 @@ err-bare-did = speráva did:ma:<ipns> só (sen fragmentu o kaminhu), atxadu { $d
 btn-save = Gravá
 btn-eval = Evaluá
 btn-cancel = Kansela
+msg-jobs-cancelled = trabadjus kanseladu
 btn-close = Fexá
 btn-reply = Respondê
 btn-publish = Publiká

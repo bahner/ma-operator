@@ -89,6 +89,7 @@ err-bare-did = atendis nudan did:ma:<ipns> (sen fragmento aŭ vojo), ricevis { $
 btn-save = Konservi
 btn-eval = Taksi
 btn-cancel = Nuligi
+msg-jobs-cancelled = taskoj nuligitaj
 btn-close = Fermi
 btn-reply = Respondi
 btn-publish = Publikigi

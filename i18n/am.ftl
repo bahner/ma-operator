@@ -89,6 +89,7 @@ err-bare-did = bare did:ma:<ipns> ይጠበቅ ነበር (fragment ወይም pat
 btn-save = አስቀምጥ
 btn-eval = አሂድ
 btn-cancel = ሰርዝ
+msg-jobs-cancelled = ስራዎች ተሰርዘዋል
 btn-close = ዝጋ
 btn-reply = ምላሽ ስጥ
 btn-publish = አሳትም

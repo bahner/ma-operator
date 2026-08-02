@@ -89,6 +89,7 @@ err-bare-did = ожидался bare did:ma:<ipns> (без фрагмента и
 btn-save = Сохранить
 btn-eval = Выполнить
 btn-cancel = Отмена
+msg-jobs-cancelled = задания отменены
 btn-close = Закрыть
 btn-reply = Ответить
 btn-publish = Опубликовать

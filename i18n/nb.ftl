@@ -90,6 +90,7 @@ err-lang-not-found = språk ikke funnet: { $lang }
 btn-save = Lagre
 btn-eval = Kjør
 btn-cancel = Avbryt
+msg-jobs-cancelled = jobber avbrutt
 btn-close = Lukk
 btn-reply = Svar
 btn-publish = Publiser

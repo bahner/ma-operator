@@ -89,6 +89,7 @@ err-bare-did = 期望純 did:ma:<ipns>（無片段或路徑），得到 { $did }
 btn-save = 儲存
 btn-eval = 執行
 btn-cancel = 取消
+msg-jobs-cancelled = 工作已取消
 btn-close = 關閉
 btn-reply = 回覆
 btn-publish = 發佈

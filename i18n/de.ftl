@@ -89,6 +89,7 @@ err-bare-did = Reines did:ma:<ipns> erwartet (kein Fragment oder Pfad), erhalten
 btn-save = Speichern
 btn-eval = Ausführen
 btn-cancel = Abbrechen
+msg-jobs-cancelled = Aufträge abgebrochen
 btn-close = Schließen
 btn-reply = Antworten
 btn-publish = Veröffentlichen

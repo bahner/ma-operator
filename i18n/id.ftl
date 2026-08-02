@@ -89,6 +89,7 @@ err-bare-did = diharapkan did:ma:<ipns> tanpa fragmen atau jalur, mendapat { $di
 btn-save = Simpan
 btn-eval = Jalankan
 btn-cancel = Batal
+msg-jobs-cancelled = pekerjaan dibatalkan
 btn-close = Tutup
 btn-reply = Balas
 btn-publish = Terbitkan

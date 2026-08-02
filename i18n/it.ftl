@@ -89,6 +89,7 @@ err-bare-did = atteso did:ma:<ipns> puro (senza frammento o percorso), ricevuto 
 btn-save = Salva
 btn-eval = Esegui
 btn-cancel = Annulla
+msg-jobs-cancelled = attività annullate
 btn-close = Chiudi
 btn-reply = Rispondi
 btn-publish = Pubblica

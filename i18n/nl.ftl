@@ -89,6 +89,7 @@ err-bare-did = zuivere did:ma:<ipns> verwacht (zonder fragment of pad), ontvange
 btn-save = Opslaan
 btn-eval = Uitvoeren
 btn-cancel = Annuleren
+msg-jobs-cancelled = taken geannuleerd
 btn-close = Sluiten
 btn-reply = Beantwoorden
 btn-publish = Publiceren

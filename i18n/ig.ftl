@@ -89,6 +89,7 @@ err-bare-did = a tọọ bare did:ma:<ipns> (enweghị fragment ma ọ bụ path
 btn-save = chekwaa
 btn-eval = rụọ ọrụ
 btn-cancel = kagbuo
+msg-jobs-cancelled = akagburu ọrụ ndị a
 btn-close = mechie
 btn-reply = zaghachi
 btn-publish = bipụta

@@ -89,6 +89,7 @@ err-bare-did = odotettiin pelkkää did:ma:<ipns>:ää (ei fragmenttia tai polku
 btn-save = Tallenna
 btn-eval = Suorita
 btn-cancel = Peruuta
+msg-jobs-cancelled = työt peruttu
 btn-close = Sulje
 btn-reply = Vastaa
 btn-publish = Julkaise

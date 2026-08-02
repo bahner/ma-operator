@@ -89,6 +89,7 @@ err-bare-did = expected bare did:ma:<ipns> (no fragment or path), got { $did }
 btn-save = Sove
 btn-eval = Eval
 btn-cancel = Anile
+msg-jobs-cancelled = jab dem anile
 btn-close = Fèmen
 btn-reply = Repons
 btn-publish = Pablish

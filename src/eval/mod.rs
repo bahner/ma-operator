@@ -16,7 +16,7 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
-    i18n::{t, tf},
+    i18n::{msg_jobs_cancelled, t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
     state::{AppState, FocusMode},
@@ -235,6 +235,10 @@ fn eval_control(
         ".clear" => {
             state.entries.set(vec![]);
         }
+        ".cancel" => {
+            state.cancel_jobs();
+            state.push_system(msg_jobs_cancelled());
+        }
         ".panic" => {
             state.screensaver.set(true);
         }
@@ -331,6 +335,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let entered_display =
         enter_target_display(&target_actor, requested_nick_display.as_deref(), &cfg);
     let state2 = state.clone();
+    let cancel_epoch = state.cancel_epoch();
     let enter_kind = match enter_ctx_kind(requested_kind.as_deref()) {
         Ok(kind) => kind.map(str::to_string),
         Err(e) => {
@@ -339,13 +344,26 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
     };
     spawn_local(async move {
+        if state2.was_cancelled_since(cancel_epoch) {
+            return;
+        }
         let cmd_id = state2.push_command(format!(".enter {entered_display}"));
+        if state2.was_cancelled_since(cancel_epoch) {
+            state2.resolve_command_by_id(
+                cmd_id,
+                CommandStatus::Error("cancelled".to_string()),
+            );
+            return;
+        }
         let (entry_runtime, requested_room) = target_actor
             .split_once('#')
             .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
             .unwrap_or_else(|| (target_actor.clone(), None));
 
         if let Some(room_actor) = requested_room.as_ref() {
+            if state2.was_cancelled_since(cancel_epoch) {
+                return;
+            }
             state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
             let send_result = if enter_kind.is_none() {
                 let nick_args: Vec<&str> = effective_nick.as_deref().into_iter().collect();
@@ -361,6 +379,9 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
                 );
                 transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await
             };
+            if state2.was_cancelled_since(cancel_epoch) {
+                return;
+            }
             match send_result {
                 Ok(msg_id) => {
                     if room_enter_expects_direct_reply(enter_kind.as_deref()) {
@@ -379,6 +400,13 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         let entry_runtime = entry_runtime.to_string();
         let root = format!("{entry_runtime}#root");
         let enter_args = enter_args_root(requested_room.as_deref(), effective_nick.as_deref());
+        if state2.was_cancelled_since(cancel_epoch) {
+            state2.resolve_command_by_id(
+                cmd_id,
+                CommandStatus::Error("cancelled".to_string()),
+            );
+            return;
+        }
         config.update(|c| {
             c.set(".my.ctx.use", "true");
             c.set(".my.ctx.runtime", &entry_runtime);
@@ -389,12 +417,17 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         state2.focus_actor.set(None);
         let bind_state = state2.clone();
         match transport::send_rpc_with_msg_id(&root, "enter", &enter_args, move |msg_id| {
-            bind_state.bind_message_id(cmd_id, msg_id);
+            if !bind_state.was_cancelled_since(cancel_epoch) {
+                bind_state.bind_message_id(cmd_id, msg_id);
+            }
         })
         .await
         {
             Ok(_) => {}
             Err(e) => {
+                if state2.was_cancelled_since(cancel_epoch) {
+                    return;
+                }
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
                 state2.push_error(tf("msg-send-failed", &[("e", &e)]));
             }

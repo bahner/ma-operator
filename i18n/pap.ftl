@@ -89,6 +89,7 @@ err-bare-did = tabata spera did:ma:<ipns> so (sin fragmènt of pado), risibí { 
 btn-save = Wardá
 btn-eval = Evaluá
 btn-cancel = Kanselá
+msg-jobs-cancelled = trabounan kanselá
 btn-close = Serrá
 btn-reply = Respondé
 btn-publish = Publiká

@@ -89,6 +89,7 @@ err-bare-did = yêu cầu bare did:ma:<ipns> (không có phân mảnh hoặc đ�
 btn-save = Lưu
 btn-eval = Chạy
 btn-cancel = Hủy
+msg-jobs-cancelled = tác vụ đã hủy
 btn-close = Đóng
 btn-reply = Trả lời
 btn-publish = Xuất bản

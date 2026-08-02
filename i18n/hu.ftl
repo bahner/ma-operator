@@ -89,6 +89,7 @@ err-bare-did = tiszta did:ma:<ipns> várt (töredék vagy útvonal nélkül), ka
 btn-save = Mentés
 btn-eval = Futtatás
 btn-cancel = Mégse
+msg-jobs-cancelled = feladatok megszakítva
 btn-close = Bezárás
 btn-reply = Válasz
 btn-publish = Közzététel

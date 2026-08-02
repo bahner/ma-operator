@@ -89,6 +89,7 @@ err-bare-did = očakávané čisté did:ma:<ipns> (bez fragmentu alebo cesty), p
 btn-save = Uložiť
 btn-eval = Spustiť
 btn-cancel = Zrušiť
+msg-jobs-cancelled = úlohy zrušené
 btn-close = Zatvoriť
 btn-reply = Odpovedať
 btn-publish = Publikovať

@@ -89,6 +89,7 @@ err-bare-did = did:ma:<ipns> pur attendu (sans fragment ni chemin), reçu { $did
 btn-save = Enregistrer
 btn-eval = Exécuter
 btn-cancel = Annuler
+msg-jobs-cancelled = tâches annulées
 btn-close = Fermer
 btn-reply = Répondre
 btn-publish = Publier

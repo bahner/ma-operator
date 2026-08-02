@@ -89,6 +89,7 @@ err-bare-did = متوقع did:ma:<ipns> خالصاً (بلا مقطع أو مس�
 btn-save = حفظ
 btn-eval = تشغيل
 btn-cancel = إلغاء
+msg-jobs-cancelled = أُلغيت المهام
 btn-close = إغلاق
 btn-reply = رد
 btn-publish = نشر
