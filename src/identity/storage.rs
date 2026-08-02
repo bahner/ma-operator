@@ -1,3 +1,8 @@
+use futures::{
+    future::{select, Either},
+    pin_mut,
+};
+use gloo_timers::future::TimeoutFuture;
 /// IndexedDB storage for ego identities — implemented directly with web-sys.
 ///
 /// Schema: db="ego" version=2  (keep name "ego" for backward compat with stored bundles)
@@ -5,6 +10,7 @@
 ///   store "configs":    out-of-line key (username string) -> JSON string
 ///   store "histories":  out-of-line key (username string) -> JSON string
 use js_sys::Promise;
+use std::ops::Deref;
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
@@ -17,8 +23,25 @@ const DB_VERSION: u32 = 2;
 const STORE_IDENTITIES: &str = "identities";
 const STORE_CONFIGS: &str = "configs";
 const STORE_HISTORIES: &str = "histories";
+const REQUEST_TIMEOUT_MS: u32 = 5_000;
 
-async fn open_db() -> Result<IdbDatabase, String> {
+struct Database(IdbDatabase);
+
+impl Deref for Database {
+    type Target = IdbDatabase;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl Drop for Database {
+    fn drop(&mut self) {
+        self.0.close();
+    }
+}
+
+async fn open_db() -> Result<Database, String> {
     let window = web_sys::window().ok_or_else(|| "no window".to_string())?;
     let factory = window
         .indexed_db()
@@ -57,7 +80,7 @@ async fn open_db() -> Result<IdbDatabase, String> {
     on_upgrade.forget();
 
     let db: IdbDatabase = req_to_future(open_req.as_ref()).await?.unchecked_into();
-    Ok(db)
+    Ok(Database(db))
 }
 
 async fn req_to_future(req_target: &web_sys::EventTarget) -> Result<JsValue, String> {
@@ -83,7 +106,13 @@ async fn req_to_future(req_target: &web_sys::EventTarget) -> Result<JsValue, Str
         onerror.forget();
     });
 
-    JsFuture::from(promise).await.map_err(|e| format!("{e:?}"))
+    let request = JsFuture::from(promise);
+    let timeout = TimeoutFuture::new(REQUEST_TIMEOUT_MS);
+    pin_mut!(request, timeout);
+    match select(request, timeout).await {
+        Either::Left((result, _)) => result.map_err(|e| format!("{e:?}")),
+        Either::Right(((), _)) => Err("IndexedDB request timed out".to_string()),
+    }
 }
 
 fn req_result(req: &IdbRequest) -> JsValue {

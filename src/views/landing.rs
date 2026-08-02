@@ -306,9 +306,12 @@ pub fn Landing() -> impl IntoView {
                             error.set(tf("error-wrong-passphrase", &[("e", &e)]));
                         }
                     },
-                    Ok(None) => {
-                        // Not in IndexedDB — resolve DID document via
-                        // IpfsGatewayResolver (has built-in gateway fallbacks).
+                    local_result => {
+                        if let Err(e) = local_result {
+                            log::warn!("[login] local identity cache unavailable: {e}");
+                        }
+                        // Not available from IndexedDB — resolve the published
+                        // profile and repopulate the local cache.
                         status.set(t("status-fetching-profile"));
                         use ma_core::DidDocumentResolver;
                         let resolver = ma_core::IpfsGatewayResolver::default();
@@ -404,10 +407,6 @@ pub fn Landing() -> impl IntoView {
                                 error.set(tf("error-profile-fetch", &[("e", &e.to_string())]));
                             }
                         }
-                    }
-                    Err(e) => {
-                        status.set(String::new());
-                        error.set(e);
                     }
                 }
             });
