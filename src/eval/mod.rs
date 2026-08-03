@@ -331,6 +331,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             .filter(|nick| !nick.is_empty())
             .map(str::to_string)
     });
+    let inventory = configured_inventory(&cfg).map(str::to_string);
 
     let entered_display =
         enter_target_display(&target_actor, requested_nick_display.as_deref(), &cfg);
@@ -363,8 +364,8 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             }
             state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
             let send_result = if enter_kind.is_none() {
-                let nick_args: Vec<&str> = effective_nick.as_deref().into_iter().collect();
-                transport::send_rpc(room_actor, "enter", &nick_args).await
+                let enter_args = avatar_enter_args(effective_nick.as_deref(), inventory.as_deref());
+                transport::send_rpc(room_actor, "enter", &enter_args).await
             } else {
                 let enter_args = build_enter_ctx(
                     &state2,
@@ -396,7 +397,11 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
 
         let entry_runtime = entry_runtime.to_string();
         let root = format!("{entry_runtime}#root");
-        let enter_args = enter_args_root(requested_room.as_deref(), effective_nick.as_deref());
+        let enter_args = enter_args_root(
+            requested_room.as_deref(),
+            effective_nick.as_deref(),
+            inventory.as_deref(),
+        );
         if state2.was_cancelled_since(cancel_epoch) {
             state2.resolve_command_by_id(cmd_id, CommandStatus::Error("cancelled".to_string()));
             return;
@@ -469,17 +474,49 @@ fn toggle_existing_ctx(state: &AppState, config: RwSignal<EgoConfig>) {
 }
 
 #[cfg(test)]
-fn enter_args<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a str> {
-    enter_args_root(room_actor, nick)
+fn enter_args<'a>(
+    room_actor: Option<&'a str>,
+    nick: Option<&'a str>,
+    inventory: Option<&'a str>,
+) -> Vec<&'a str> {
+    enter_args_root(room_actor, nick, inventory)
 }
 
-fn enter_args_root<'a>(room_actor: Option<&'a str>, nick: Option<&'a str>) -> Vec<&'a str> {
-    match (room_actor, nick) {
-        (Some(room), Some(nick)) => vec![room, nick],
-        (Some(room), None) => vec![room],
-        (None, Some(nick)) => vec!["", nick],
+fn enter_args_root<'a>(
+    room_actor: Option<&'a str>,
+    nick: Option<&'a str>,
+    inventory: Option<&'a str>,
+) -> Vec<&'a str> {
+    match (room_actor, nick, inventory) {
+        (Some(room), Some(nick), Some(inventory)) => vec![room, nick, inventory],
+        (Some(room), None, Some(inventory)) => vec![room, "", inventory],
+        (None, Some(nick), Some(inventory)) => vec!["", nick, inventory],
+        (None, None, Some(inventory)) => vec!["", "", inventory],
+        (Some(room), Some(nick), None) => vec![room, nick],
+        (Some(room), None, None) => vec![room],
+        (None, Some(nick), None) => vec!["", nick],
+        (None, None, None) => Vec::new(),
+    }
+}
+
+fn avatar_enter_args<'a>(nick: Option<&'a str>, inventory: Option<&'a str>) -> Vec<&'a str> {
+    match (nick, inventory) {
+        (Some(nick), Some(inventory)) => vec![nick, inventory],
+        (None, Some(inventory)) => vec!["", inventory],
+        (Some(nick), None) => vec![nick],
         (None, None) => Vec::new(),
     }
+}
+
+fn configured_inventory(cfg: &EgoConfig) -> Option<&str> {
+    cfg.get(".my.ctx.inv").filter(|inventory| {
+        inventory.split_once('#').is_some_and(|(did, fragment)| {
+            did.starts_with("did:ma:")
+                && !fragment.is_empty()
+                && !fragment.contains('#')
+                && !inventory.chars().any(char::is_whitespace)
+        })
+    })
 }
 
 fn build_enter_ctx(
@@ -574,9 +611,9 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_ctx_focus, build_enter_ctx, enter_args, enter_ctx_kind, enter_target_display,
-        focus_target_for_room, parse_enter_target, room_enter_expects_direct_reply,
-        toggle_existing_ctx, validate_alias_set,
+        apply_ctx_focus, avatar_enter_args, build_enter_ctx, configured_inventory, enter_args,
+        enter_ctx_kind, enter_target_display, focus_target_for_room, parse_enter_target,
+        room_enter_expects_direct_reply, toggle_existing_ctx, validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
@@ -720,19 +757,46 @@ mod tests {
     #[test]
     fn enter_args_include_nick_when_available() {
         assert_eq!(
-            enter_args(Some("did:ma:k51runtime#room"), Some("klaim")),
+            enter_args(Some("did:ma:k51runtime#room"), Some("klaim"), None),
             vec!["did:ma:k51runtime#room", "klaim"]
         );
-        assert_eq!(enter_args(None, Some("klaim")), vec!["", "klaim"]);
+        assert_eq!(enter_args(None, Some("klaim"), None), vec!["", "klaim"]);
     }
 
     #[test]
     fn enter_args_allow_room_without_nick() {
         assert_eq!(
-            enter_args(Some("did:ma:k51runtime#room"), None),
+            enter_args(Some("did:ma:k51runtime#room"), None, None),
             vec!["did:ma:k51runtime#room"]
         );
-        assert!(enter_args(None, None).is_empty());
+        assert!(enter_args(None, None, None).is_empty());
+    }
+
+    #[test]
+    fn avatar_enter_args_carry_inventory_without_requiring_nick() {
+        let inventory = "did:ma:k51source#inventory";
+
+        assert_eq!(
+            enter_args(None, None, Some(inventory)),
+            vec!["", "", inventory]
+        );
+        assert_eq!(
+            avatar_enter_args(None, Some(inventory)),
+            vec!["", inventory]
+        );
+    }
+
+    #[test]
+    fn configured_inventory_requires_full_did_url() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.ctx.inv", "did:ma:k51source#inventory");
+        assert_eq!(
+            configured_inventory(&cfg),
+            Some("did:ma:k51source#inventory")
+        );
+
+        cfg.set(".my.ctx.inv", "#inventory");
+        assert_eq!(configured_inventory(&cfg), None);
     }
 
     #[test]
