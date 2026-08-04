@@ -30,8 +30,15 @@ import {
     drawSelection,
 } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
+import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { markdownLanguage } from "@codemirror/lang-markdown";
-import { StreamLanguage, LanguageSupport, HighlightStyle, syntaxHighlighting } from "@codemirror/language";
+import {
+    StreamLanguage,
+    LanguageSupport,
+    HighlightStyle,
+    bracketMatching,
+    syntaxHighlighting,
+} from "@codemirror/language";
 import { tags as t } from "@lezer/highlight";
 import { yaml } from "@codemirror/legacy-modes/mode/yaml";
 import { zscheme } from "./zscheme-mode.js";
@@ -78,7 +85,9 @@ function _languageExtension(lang) {
 function _baseExtensions(lang) {
     return [
         history(),
-        keymap.of([...defaultKeymap, ...historyKeymap]),
+        keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
+        closeBrackets(),
+        bracketMatching(),
         lineNumbers(),
         highlightActiveLine(),
         drawSelection(),

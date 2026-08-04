@@ -6,6 +6,39 @@ use web_sys::HtmlInputElement;
 
 use crate::state::FocusMode;
 
+fn utf16_offset_to_byte_index(text: &str, offset: usize) -> usize {
+    let mut utf16_offset = 0;
+    for (byte_index, character) in text.char_indices() {
+        if utf16_offset >= offset {
+            return byte_index;
+        }
+        utf16_offset += character.len_utf16();
+    }
+    text.len()
+}
+
+fn insert_parentheses(text: &str, selection_start: usize, selection_end: usize) -> (String, usize) {
+    let start = utf16_offset_to_byte_index(text, selection_start);
+    let end = utf16_offset_to_byte_index(text, selection_end);
+    let mut updated = String::with_capacity(text.len() + 2);
+    updated.push_str(&text[..start]);
+    updated.push('(');
+    updated.push_str(&text[start..end]);
+    updated.push(')');
+    updated.push_str(&text[end..]);
+    (updated, selection_start + 1)
+}
+
+fn skip_closing_parenthesis(text: &str, selection_start: usize, selection_end: usize) -> Option<usize> {
+    if selection_start != selection_end {
+        return None;
+    }
+    let start = utf16_offset_to_byte_index(text, selection_start);
+    text[start..]
+        .starts_with(')')
+        .then_some(selection_start + 1)
+}
+
 #[component]
 pub fn InputBar(
     on_submit: impl Fn(String) + 'static,
@@ -58,6 +91,82 @@ pub fn InputBar(
                 .and_then(|v| v.as_string())
                 .unwrap_or_default();
             match key.as_str() {
+                "(" => {
+                    let Some(input) = ev
+                        .target()
+                        .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                    else {
+                        return;
+                    };
+                    ev.prevent_default();
+                    let text = input.value();
+                    let start = js_sys::Reflect::get(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionStart"),
+                    )
+                    .ok()
+                    .and_then(|value| value.as_f64())
+                    .unwrap_or_default() as usize;
+                    let end = js_sys::Reflect::get(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionEnd"),
+                    )
+                    .ok()
+                    .and_then(|value| value.as_f64())
+                    .unwrap_or(start as f64) as usize;
+                    let (updated, cursor) = insert_parentheses(&text, start, end);
+                    input.set_value(&updated);
+                    let cursor = wasm_bindgen::JsValue::from_f64(cursor as f64);
+                    let _ = js_sys::Reflect::set(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionStart"),
+                        &cursor,
+                    );
+                    let _ = js_sys::Reflect::set(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionEnd"),
+                        &cursor,
+                    );
+                    hist_idx.set(None);
+                    value.set(updated);
+                }
+                ")" => {
+                    let Some(input) = ev
+                        .target()
+                        .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                    else {
+                        return;
+                    };
+                    let text = input.value();
+                    let start = js_sys::Reflect::get(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionStart"),
+                    )
+                    .ok()
+                    .and_then(|value| value.as_f64())
+                    .unwrap_or_default() as usize;
+                    let end = js_sys::Reflect::get(
+                        input.as_ref(),
+                        &wasm_bindgen::JsValue::from_str("selectionEnd"),
+                    )
+                    .ok()
+                    .and_then(|value| value.as_f64())
+                    .unwrap_or(start as f64) as usize;
+                    if let Some(cursor) = skip_closing_parenthesis(&text, start, end) {
+                        ev.prevent_default();
+                        let cursor = wasm_bindgen::JsValue::from_f64(cursor as f64);
+                        let _ = js_sys::Reflect::set(
+                            input.as_ref(),
+                            &wasm_bindgen::JsValue::from_str("selectionStart"),
+                            &cursor,
+                        );
+                        let _ = js_sys::Reflect::set(
+                            input.as_ref(),
+                            &wasm_bindgen::JsValue::from_str("selectionEnd"),
+                            &cursor,
+                        );
+                    }
+                }
                 "Enter" => {
                     let line = value.get_untracked();
                     hist_idx.set(None);
@@ -171,5 +280,32 @@ pub fn InputBar(
                 on:paste=on_paste
             />
         </div>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn inserts_parentheses_around_selection() {
+        assert_eq!(
+            insert_parentheses("say hello", 4, 9),
+            ("say (hello)".to_string(), 5)
+        );
+    }
+
+    #[test]
+    fn inserts_parentheses_at_utf16_cursor_offset() {
+        assert_eq!(
+            insert_parentheses("say 😀cafe", 6, 6),
+            ("say 😀()cafe".to_string(), 7)
+        );
+    }
+
+    #[test]
+    fn skips_an_existing_closing_parenthesis() {
+        assert_eq!(skip_closing_parenthesis("(look)", 5, 5), Some(6));
+        assert_eq!(skip_closing_parenthesis("(look)", 1, 5), None);
     }
 }
