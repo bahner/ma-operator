@@ -6,7 +6,6 @@
     "build:editor": "bun build js-src/editor-entry.js --outfile=www/editor.js --minify --format=esm"
   },
   "devDependencies": {
-    "@codemirror/autocomplete": "^6.18.6",
     "@codemirror/commands": "^6.7.0",
     "@codemirror/lang-markdown": "^6.3.0",
     "@codemirror/language": "^6.10.0",

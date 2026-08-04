@@ -30,7 +30,6 @@ import {
     drawSelection,
 } from "@codemirror/view";
 import { defaultKeymap, history, historyKeymap } from "@codemirror/commands";
-import { closeBrackets, closeBracketsKeymap } from "@codemirror/autocomplete";
 import { markdownLanguage } from "@codemirror/lang-markdown";
 import {
     StreamLanguage,
@@ -85,8 +84,7 @@ function _languageExtension(lang) {
 function _baseExtensions(lang) {
     return [
         history(),
-        keymap.of([...closeBracketsKeymap, ...defaultKeymap, ...historyKeymap]),
-        closeBrackets(),
+        keymap.of([...defaultKeymap, ...historyKeymap]),
         bracketMatching(),
         lineNumbers(),
         highlightActiveLine(),
