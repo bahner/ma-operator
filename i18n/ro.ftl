@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme evaluează expresiile Scheme incluse în comenzile 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemplu inline; trimite "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definițiile persistă în sesiunea curentă de autentificare
 help-zscheme-doc = Documentație: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS local (necesită excepție de browser)

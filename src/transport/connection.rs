@@ -13,8 +13,8 @@ use crate::i18n::tf;
 use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
-    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_RESOLVER,
-    SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LOCAL_IPFS,
+    SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -34,7 +34,7 @@ fn is_local_web_origin(origin: &str) -> bool {
         || origin.starts_with("http://[::1]:")
 }
 
-fn should_use_public_gateway() -> bool {
+pub(crate) fn should_use_public_gateway() -> bool {
     let Some(window) = web_sys::window() else {
         return false;
     };
@@ -42,21 +42,15 @@ fn should_use_public_gateway() -> bool {
     !origin.is_empty() && origin.starts_with("https://") && !is_local_web_origin(&origin)
 }
 
-pub fn gateway_base_url() -> String {
-    if should_use_public_gateway() {
-        PUBLIC_GATEWAY_URL.to_string()
-    } else {
-        LOCAL_GATEWAY_URL.to_string()
-    }
-}
-
 /// Returns IPFS gateways to try in priority order.
-/// Local gateway is always first; on HTTPS pages a public fallback is appended.
+/// On HTTPS pages local gateway is included only when the user has opted in.
 pub fn ipfs_gateway_list() -> Vec<&'static str> {
-    if should_use_public_gateway() {
+    let use_local = !should_use_public_gateway()
+        || SESSION_LOCAL_IPFS.with(|f| *f.borrow());
+    if use_local {
         vec![LOCAL_GATEWAY_URL, PUBLIC_GATEWAY_URL]
     } else {
-        vec![LOCAL_GATEWAY_URL]
+        vec![PUBLIC_GATEWAY_URL]
     }
 }
 

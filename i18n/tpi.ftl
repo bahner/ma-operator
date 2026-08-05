@@ -412,3 +412,5 @@ help-zscheme-intro = zscheme i skelim Scheme tok i stap insait long zion koman, 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    eksampel insait long lain; salim "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ol definition i stap yet long dispela login session
 help-zscheme-doc = Dokumen: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokal IPFS geitwei (browser nidim eksepsion)

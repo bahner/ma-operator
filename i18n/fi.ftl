@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme arvioi zion-komentoihin upotetut Scheme-lausekkeet 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    rivinsisäinen esimerkki; lähettää "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             määrittelyt säilyvät nykyisen kirjautumisistunnon ajan
 help-zscheme-doc = Dokumentaatio: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Paikallinen IPFS-yhdyskäytävä (vaatii selainpoikkeuksen)

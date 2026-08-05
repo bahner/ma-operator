@@ -425,3 +425,5 @@ help-zscheme-intro = zscheme вычисляет выражения Scheme, вс�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    встроенный пример; отправляет "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             определения сохраняются в текущем сеансе входа
 help-zscheme-doc = Документация: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Локальный шлюз IPFS (требуется исключение в браузере)

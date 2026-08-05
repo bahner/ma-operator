@@ -425,3 +425,5 @@ help-zscheme-intro = zscheme 会求值嵌入在 zion 命令中的 Scheme 表达�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    内联示例；发送 "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             定义会在当前登录会话中保留
 help-zscheme-doc = 文档: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = 本地 IPFS 网关（需要浏览器例外）

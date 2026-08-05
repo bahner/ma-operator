@@ -11,11 +11,33 @@ use crate::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
         save_config, save_identity, storage::load_config, unlock_identity,
     },
-    state::{AppState, SessionState},
+    state::{AppState, SessionState, SESSION_LOCAL_IPFS},
+    transport::connection::should_use_public_gateway,
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
 const LAST_RUNTIME_KEY: &str = "zion_last_runtime";
+const LOCAL_IPFS_PREF_KEY: &str = "zion_local_ipfs";
+
+fn load_local_ipfs_pref() -> bool {
+    web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .and_then(|s| s.get_item(LOCAL_IPFS_PREF_KEY).ok().flatten())
+        .map(|v| v == "true")
+        .unwrap_or(false)
+}
+
+fn save_local_ipfs_pref(enabled: bool) {
+    let _ = web_sys::window()
+        .and_then(|w| w.local_storage().ok().flatten())
+        .map(|s| {
+            if enabled {
+                s.set_item(LOCAL_IPFS_PREF_KEY, "true")
+            } else {
+                s.remove_item(LOCAL_IPFS_PREF_KEY).map(|_| ())
+            }
+        });
+}
 
 /// Persist the last successfully connected runtime (DID or URL) to localStorage.
 /// Called by `src/parser/verbs/ma.rs` after a successful `.ma!connect`.
@@ -77,6 +99,9 @@ pub fn Landing() -> impl IntoView {
     let confirm_password = RwSignal::new(String::new());
     let status = RwSignal::new(String::new());
     let error = RwSignal::new(String::new());
+    let initial_local_ipfs = load_local_ipfs_pref();
+    let use_local_ipfs = RwSignal::new(initial_local_ipfs);
+    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = initial_local_ipfs);
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
 
@@ -553,6 +578,26 @@ pub fn Landing() -> impl IntoView {
                             }
                         }
                     </div>
+                    <Show when=move || should_use_public_gateway()>
+                        <div class="form-row form-row-check">
+                            <label class="landing-check-label">
+                                <input
+                                    type="checkbox"
+                                    prop:checked=move || use_local_ipfs.get()
+                                    on:change=move |ev| {
+                                        let checked = ev.target()
+                                            .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                                            .map(|i| i.checked())
+                                            .unwrap_or(false);
+                                        use_local_ipfs.set(checked);
+                                        SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = checked);
+                                        save_local_ipfs_pref(checked);
+                                    }
+                                />
+                                {move || { let _ = lang.get(); t("label-local-ipfs") }}
+                            </label>
+                        </div>
+                    </Show>
                 </Show>
 
                 // ── Mode selector (tabs) ──────────────────────────────────

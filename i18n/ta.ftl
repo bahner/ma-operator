@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme zion கட்டளைகளில் உள்ள
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    வரிக்குள் எடுத்துக்காட்டு; "say 7 + 5 = 12" அனுப்பும்
 help-zscheme-define =   (define x 12)             வரையறைகள் தற்போதைய உள்நுழைவு அமர்வில் தொடரும்
 help-zscheme-doc = ஆவணங்கள்: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = உள்ளூர் IPFS நுழைவாயில் (உலாவி விதிவிலக்கு தேவை)

@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme zion کمانڈز میں شامل Scheme اظہار
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    اِن لائن مثال؛ "say 7 + 5 = 12" بھیجتا ہے
 help-zscheme-define =   (define x 12)             تعریفیں موجودہ لاگ اِن سیشن میں برقرار رہتی ہیں
 help-zscheme-doc = دستاویزات: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = مقامی IPFS گیٹ وے (براؤزر استثنا ضروری ہے)

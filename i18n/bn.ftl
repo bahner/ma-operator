@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme zion কমান্ডের ভিতরে থ�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ইনলাইন উদাহরণ; "say 7 + 5 = 12" পাঠায়
 help-zscheme-define =   (define x 12)             বর্তমান লগইন সেশনে সংজ্ঞাগুলি থাকে
 help-zscheme-doc = নথি: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = স্থানীয় IPFS গেটওয়ে (ব্রাউজার ব্যতিক্রম প্রয়োজন)

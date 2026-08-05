@@ -729,4 +729,7 @@ thread_local! {
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_identity_publish` to embed `ma.agent` in the DID document.
     pub static SESSION_AGENT_CID: RefCell<Option<String>> = const { RefCell::new(None) };
+    /// User has opted in to the local IPFS gateway on an HTTPS page.
+    /// Persisted in localStorage; not cleared on disconnect.
+    pub static SESSION_LOCAL_IPFS: RefCell<bool> = const { RefCell::new(false) };
 }

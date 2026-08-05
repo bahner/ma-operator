@@ -152,9 +152,6 @@ colon is stripped only from the verb sent on the wire; it still controls
 routing. Keep `dispatch::focus_command_target` and its tests in sync with this
 rule.
 
-This boundary matters because avatar actors are command proxies, while
-colon-prefixed methods are metadata/control methods for the addressed actor.
-
 Zion is a client, not part of any runtime. Runtime-local short forms such as
 `#construct` or bare entity fragments must never be stored in zion context,
 accepted as focus targets, or sent on the wire. They are valid only inside one

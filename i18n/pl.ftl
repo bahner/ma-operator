@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme oblicza wyrażenia Scheme osadzone w poleceniach zi
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    przykład w wierszu; wysyła "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definicje pozostają w bieżącej sesji logowania
 help-zscheme-doc = Dokumentacja: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokalna brama IPFS (wymaga wyjątku przeglądarki)

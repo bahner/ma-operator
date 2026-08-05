@@ -425,3 +425,5 @@ help-zscheme-intro = zscheme evaluerer Scheme-udtryk indlejret i zion-kommandoer
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    indlejret eksempel; sender "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitioner bevares i den aktuelle login-session
 help-zscheme-doc = Dokumentation: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokal IPFS-gateway (kræver browserundtagelse)

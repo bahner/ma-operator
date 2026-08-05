@@ -412,3 +412,5 @@ help-zscheme-intro = zscheme evalye ekspresyon Scheme ki antre nan kòmand zion 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    egzanp anliy; li voye "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definisyon yo rete pou sesyon koneksyon aktyèl la
 help-zscheme-doc = Dokiman: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Pasaj IPFS lokal (mande eksepsyon browser)

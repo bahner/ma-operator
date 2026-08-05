@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme đánh giá các biểu thức Scheme được nhú
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ví dụ nội tuyến; gửi "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             các định nghĩa tồn tại trong phiên đăng nhập hiện tại
 help-zscheme-doc = Tài liệu: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Cổng IPFS cục bộ (cần ngoại lệ trình duyệt)

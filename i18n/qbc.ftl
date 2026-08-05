@@ -428,3 +428,5 @@ help-zscheme-intro = zscheme du Scheme komang wey im insid zion komang, den spli
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insid-line example; sendowt "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             define dem stay fo dis ingang session
 help-zscheme-doc = Doku: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokal IPFS gateway (browser-go need eksepshen, sa)

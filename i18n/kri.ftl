@@ -412,3 +412,5 @@ help-zscheme-intro = zscheme de evalyut Scheme ɛkspreshɔn we de insay zion kɔ
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insay-layn ɛgzampul; i sɛn "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             difinishɔn dem de stay fɔ dis login sɛshɔn
 help-zscheme-doc = Dɔkyumɛnt: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokal IPFS getwe (browser eksepshen dey need)

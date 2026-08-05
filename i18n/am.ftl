@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme በzion ትእዛዞች ውስጥ የተካተቱ �
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    የመስመር ውስጥ ምሳሌ፤ "say 7 + 5 = 12" ይልካል
 help-zscheme-define =   (define x 12)             መግለጫዎች ለአሁኑ የመግቢያ ክፍለ ጊዜ ይቆያሉ
 help-zscheme-doc = ሰነድ: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = ቦታዊ IPFS gateway (የሳፕሩ ፈቃድ ያስፈልጋል)

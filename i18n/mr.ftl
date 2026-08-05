@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme zion आदेशांमध्ये अंतर
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    इनलाइन उदाहरण; "say 7 + 5 = 12" पाठवते
 help-zscheme-define =   (define x 12)             व्याख्या सध्याच्या लॉगिन सत्रात टिकून राहतात
 help-zscheme-doc = दस्तऐवज: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = स्थानिक IPFS गेटवे (ब्राउझर अपवाद आवश्यक)

@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme ivavanya iintetho ze-Scheme ezifakwe kwimiyalelo ye
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    umzekelo osemgceni; ithumela "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             iinkcazelo zihlala kwiseshoni yokungena yangoku
 help-zscheme-doc = Amaxwebhu: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = I-gateway ye-IPFS yasekhaya (idinga ukuphuma kwe-browser)

@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme ibsa Scheme ajajoota zion keessatti galfaman ni mad
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    fakkeenya sarara keessaa; "say 7 + 5 = 12" erga
 help-zscheme-define =   (define x 12)             hiikawwan yeroo seensa ammaa keessa ni turu
 help-zscheme-doc = Galmee: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS naannoo (hayyama browser barbaada)

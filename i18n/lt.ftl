@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme įvertina į zion komandas įterptas Scheme išrai�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    įterptas pavyzdys; siunčia "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             apibrėžimai išlieka dabartinės prisijungimo sesijos metu
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Vietinis IPFS šliuzas (reikalinga naršyklės išimtis)

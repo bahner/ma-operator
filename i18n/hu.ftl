@@ -419,3 +419,5 @@ help-zscheme-intro = A zscheme kiértékeli a zion parancsokba ágyazott Scheme-
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    soron belüli példa; ezt küldi: "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             a definíciók megmaradnak az aktuális bejelentkezési munkamenetben
 help-zscheme-doc = Dokumentáció: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Helyi IPFS-átjáró (böngészőkivétel szükséges)

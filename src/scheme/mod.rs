@@ -19,39 +19,8 @@ pub(crate) fn get_env() -> Env {
     ma_zscheme::get_env()
 }
 
-pub(crate) fn has_command(name: &str) -> bool {
-    matches!(
-        get_env().get(name),
-        Some(SchemeVal::Lambda { .. } | SchemeVal::Builtin(_))
-    )
-}
-
 pub(crate) fn has_event_handler() -> bool {
-    has_command("on-event")
-}
-
-/// Invoke a preloaded local Scheme function from terminal command tokens.
-///
-/// The expression is constructed as an AST, so command arguments are always
-/// text values and are never parsed as Scheme source.
-pub async fn call_command(
-    name: &str,
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) -> Result<SchemeVal, String> {
-    let expr = parser::SchemeExpr::List(
-        std::iter::once(parser::SchemeExpr::Atom(name.to_string()))
-            .chain(args.iter().cloned().map(parser::SchemeExpr::Str))
-            .collect(),
-    );
-    let ctx: Ctx = Rc::new(EvalCtx {
-        state: state.clone(),
-        config,
-    });
-    ma_zscheme::eval::eval(expr, get_env(), ctx)
-        .await
-        .map_err(|error| error.to_string())
+    matches!(get_env().get("on-event"), Some(SchemeVal::Lambda { .. }))
 }
 
 /// Invoke the local event entry point with decoded, typed event data.
@@ -474,47 +443,6 @@ mod tests {
     }
 
     #[test]
-    fn call_command_passes_arguments_as_text_values() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-
-        block_on(load_content(
-            "(define (echo value) value)",
-            &state,
-            config,
-        ))
-        .expect("local source loads");
-
-        let args = vec!["(error \"must not run\")".to_string()];
-        let value = block_on(call_command("echo", &args, &state, config))
-            .expect("local function is callable");
-        assert!(matches!(value, SchemeVal::Str(ref text) if text == "(error \"must not run\")"));
-    }
-
-    #[test]
-    fn call_command_supports_variadic_apply_wrappers() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-
-        block_on(load_content(
-            "(define (collect . values) values)\n(define (forward . values) (apply collect values))",
-            &state,
-            config,
-        ))
-        .expect("local source loads");
-
-        let args = vec!["dig".to_string(), "east".to_string(), "to".to_string(), "Garden".to_string()];
-        let value = block_on(call_command("forward", &args, &state, config))
-            .expect("variadic local function is callable");
-        assert!(matches!(value, SchemeVal::List(values)
-            if values.iter().map(SchemeVal::display).collect::<Vec<_>>() == args));
-    }
-
-    #[test]
     fn call_event_passes_network_text_as_a_typed_value() {
         let _owner = Owner::new();
         let state = AppState::new();
@@ -610,7 +538,7 @@ mod tests {
     }
 
     #[test]
-    fn default_avatar_loads_room_command_vocabulary() {
+    fn default_avatar_exposes_only_the_event_handler() {
         let _owner = Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::new());
@@ -623,12 +551,8 @@ mod tests {
         ))
         .expect("default avatar source loads");
 
-        for command in [
-            "dig", "fill", "go", "leave", "take", "drop", "put", "say", "emote", "recycle",
-            "make", "conjure", "remove",
-        ] {
-            assert!(has_command(command), "{command} is a local command");
-        }
         assert!(has_event_handler());
+        assert!(get_env().get("look").is_none());
+        assert!(get_env().get("go").is_none());
     }
 }

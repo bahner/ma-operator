@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme metir Scheme-úttrykk, sum eru feld inn í zion-bo�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    innfelt dømi; sendir "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             allýsingar verða verandi í núverandi innritaðu setu
 help-zscheme-doc = Skjalfesting: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Staðbundin IPFS-gátt (krevst browsarútnamd)

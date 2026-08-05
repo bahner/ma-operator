@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme na-enyocha okwu Scheme etinyere n’iwu zion ma tin
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    atụ n’ime ahịrị; na-eziga "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             nkọwa na-adịgide n’oge nnọkọ nbanye ugbu a
 help-zscheme-doc = Akwụkwọ: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Ọnụ ụzọ IPFS mpaghara (chọrọ ikewa browser)

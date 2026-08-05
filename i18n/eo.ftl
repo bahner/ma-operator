@@ -411,3 +411,5 @@ help-zscheme-intro = zscheme taksas Scheme-esprimojn enkorpigitajn en zion-koman
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    enlinia ekzemplo; sendas "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             difinoj restas dum la nuna ensaluta seanco
 help-zscheme-doc = Dokumentaro: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Loka IPFS-pordego (postulas retumilan escepton)

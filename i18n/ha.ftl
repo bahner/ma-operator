@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme yana kimanta maganganun Scheme da aka saka cikin um
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    misalin cikin layi; yana aika "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ma’anoni suna ci gaba a zaman shiga na yanzu
 help-zscheme-doc = Takardu: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS na gida (yana buƙatar izni na browser)

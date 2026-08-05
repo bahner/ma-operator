@@ -419,3 +419,5 @@ help-zscheme-intro = Το zscheme αξιολογεί εκφράσεις Scheme �
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ενσωματωμένο παράδειγμα· στέλνει "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             οι ορισμοί παραμένουν για την τρέχουσα συνεδρία σύνδεσης
 help-zscheme-doc = Τεκμηρίωση: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Τοπική πύλη IPFS (απαιτεί εξαίρεση στον περιηγητή)

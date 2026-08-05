@@ -418,3 +418,5 @@ help-zscheme-intro = zscheme evalueert Scheme-expressies die in zion-opdrachten 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline voorbeeld; verzendt "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definities blijven bewaard voor de huidige inlogsessie
 help-zscheme-doc = Documentatie: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokale IPFS-gateway (vereist browseruitzondering)

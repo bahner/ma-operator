@@ -428,3 +428,5 @@ help-cmd-batch-async =   .batch:async / .batch        اجرای فرمان‌ه
 scheme-cid-fetch-error = واکشی CID { $cid } ناموفق بود: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID معتبر نیست: { $value }
+
+label-local-ipfs = دروازه IPFS محلی (نیازمند استثنا در مرورگر)

@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme vyhodnocuje výrazy Scheme vložené do príkazov z
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vložený príklad; odošle "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definície pretrvávajú počas aktuálnej prihlasovacej relácie
 help-zscheme-doc = Dokumentácia: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Miestna brána IPFS (vyžaduje výnimku v prehliadači)

@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme metur Scheme-segðir sem eru felldar inn í zion-sk
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    innfellt dæmi; sendir "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             skilgreiningar haldast í núverandi innskráningarlotu
 help-zscheme-doc = Skjölun: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Staðbundinn IPFS-gátt (krefst undantekningar í vafra)

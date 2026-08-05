@@ -425,3 +425,5 @@ help-zscheme-intro = zscheme, zion komutlarına gömülü Scheme ifadelerini de�
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    satır içi örnek; "say 7 + 5 = 12" gönderir
 help-zscheme-define =   (define x 12)             tanımlar mevcut oturum açma süresince kalır
 help-zscheme-doc = Belgeler: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Yerel IPFS ağ geçidi (tarayıcı istisnası gerektirir)

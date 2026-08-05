@@ -412,3 +412,5 @@ help-zscheme-intro = zscheme dey run Scheme expression we dey inside zion comman
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    example inside line; e send "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitions go stay for dis login session
 help-zscheme-doc = Dokument: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Local IPFS gateway (browser exception dey needed)

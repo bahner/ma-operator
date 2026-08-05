@@ -425,3 +425,5 @@ help-zscheme-intro = zscheme utvärderar Scheme-uttryck som är inbäddade i zio
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inbäddat exempel; skickar "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitioner finns kvar under den aktuella inloggningssessionen
 help-zscheme-doc = Dokumentation: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokal IPFS-gateway (kräver webbläsarundantag)

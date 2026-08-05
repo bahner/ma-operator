@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme ovrednoti izraze Scheme, vstavljene v ukaze zion, i
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vstavljeni primer; pošlje "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definicije ostanejo v trenutni prijavni seji
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokalno prehodno mesto IPFS (zahteva izjemo v brskalniku)

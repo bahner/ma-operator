@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme hindab zioni käskudesse põimitud Scheme-avaldisi 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    reasisesene näide; saadab "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitsioonid püsivad praeguse sisselogimisseansi ajal
 help-zscheme-doc = Dokumentatsioon: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Kohalik IPFS-lüüs (vajab brauseri erandit)

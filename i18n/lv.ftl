@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme izvērtē zion komandās iekļautas Scheme izteiksm
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    iekļauts piemērs; nosūta "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definīcijas saglabājas pašreizējā pieteikšanās sesijā
 help-zscheme-doc = Dokumentācija: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lokālais IPFS vārtejas (nepieciešams pārlūka izņēmums)

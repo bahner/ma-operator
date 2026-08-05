@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme ń ṣe ìṣirò àwọn ìfihàn Scheme tí a fi 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    àpẹẹrẹ inú ila; ó rán "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             àwọn ìtumọ̀ máa ń dúró fún ìgbà ìwọlé lọwọlọwọ
 help-zscheme-doc = Ìwé ìtọ́nisọ́nà: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Ẹnu-ọna IPFS ti ibilẹ (nilo iyatọ aṣàgbékalẹ̀)

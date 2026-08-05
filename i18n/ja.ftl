@@ -418,3 +418,5 @@ help-zscheme-intro = zscheme は zion コマンドに埋め込まれた Scheme �
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    インライン例。"say 7 + 5 = 12" を送信します
 help-zscheme-define =   (define x 12)             定義は現在のログインセッション中保持されます
 help-zscheme-doc = ドキュメント: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = ローカル IPFS ゲートウェイ（ブラウザの例外が必要）

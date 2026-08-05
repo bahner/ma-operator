@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme wuxuu qiimeeyaa weedhaha Scheme ee ku dhex jira ama
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    tusaale safka ku jira; wuxuu diraa "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             qeexitaannadu way sii jiraan inta lagu jiro fadhiga gelitaanka hadda
 help-zscheme-doc = Dukumenti: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS maxalliga ah (u baahan oggolaanshaha browser)

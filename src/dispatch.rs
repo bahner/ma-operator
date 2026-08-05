@@ -610,27 +610,6 @@ fn dispatch_eval_line(
     let focus = state.focus_actor.get_untracked();
     let cfg = config.get_untracked();
 
-    if is_local_scheme_command(line) {
-        let parsed = match parse_focus_shorthand_command(line, &cfg) {
-            Ok(parsed) => parsed,
-            Err(error) => {
-                state.push_error(format!("'{line}': {error}"));
-                return None;
-            }
-        };
-        if parsed.meta.is_none() && crate::scheme::has_command(&parsed.verb) {
-            let state = state.clone();
-            wasm_bindgen_futures::spawn_local(async move {
-                if let Err(error) =
-                    crate::scheme::call_command(&parsed.verb, &parsed.args, &state, config).await
-                {
-                    state.push_error(format!("scheme: {error}"));
-                }
-            });
-            return None;
-        }
-    }
-
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
         if is_focus_shorthand_command(line) {
@@ -809,10 +788,6 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.starts_with('/')
         && !line.starts_with('(')
         && !line.trim().is_empty()
-}
-
-fn is_local_scheme_command(line: &str) -> bool {
-    is_focus_shorthand_command(line) && !line.trim_start().starts_with(':')
 }
 
 fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, _line: &str) -> &'a str {
@@ -1012,13 +987,6 @@ mod tests {
         assert_eq!(edit.verb, "behaviour");
         assert_eq!(edit.meta.as_deref(), Some("edit"));
         assert!(edit.args.is_empty());
-    }
-
-    #[test]
-    fn local_scheme_commands_exclude_colon_methods() {
-        assert!(super::is_local_scheme_command("look duck"));
-        assert!(!super::is_local_scheme_command(":look"));
-        assert!(!super::is_local_scheme_command("@ma#room:look"));
     }
 
     #[test]

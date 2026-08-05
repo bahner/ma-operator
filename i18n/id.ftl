@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme mengevaluasi ekspresi Scheme yang disisipkan dalam 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    contoh sebaris; mengirim "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definisi tetap ada selama sesi login saat ini
 help-zscheme-doc = Dokumentasi: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS lokal (perlu pengecualian browser)

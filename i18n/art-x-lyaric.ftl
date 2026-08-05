@@ -414,3 +414,5 @@ help-zscheme-intro = zscheme sight up Scheme speech inside zion command, an sew 
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inna-line example; send "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definition dem stay fo dis login sitting
 help-zscheme-doc = Writings: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Local IPFS gateway (need browser livity)

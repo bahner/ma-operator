@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme zion ఆదేశాల్లో చొప్పి
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ఇన్‌లైన్ ఉదాహరణ; "say 7 + 5 = 12" పంపుతుంది
 help-zscheme-define =   (define x 12)             నిర్వచనలు ప్రస్తుత లాగిన్ సెషన్‌లో కొనసాగుతాయి
 help-zscheme-doc = పత్రాలు: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = స్థానిక IPFS గేట్‌వే (బ్రౌజర్ మినహాయింపు అవసరం)

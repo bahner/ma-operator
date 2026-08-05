@@ -419,3 +419,5 @@ help-zscheme-intro = zscheme hutathmini semi za Scheme zilizowekwa ndani ya amri
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    mfano ndani ya mstari; hutuma "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ufafanuzi hubaki kwa kipindi cha sasa cha kuingia
 help-zscheme-doc = Nyaraka: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Lango la IPFS la ndani (linahitaji ruhusa ya kivinjari)

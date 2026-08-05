@@ -426,3 +426,5 @@ help-zscheme-intro = zscheme manombana fanehoana Scheme tafiditra ao amin’ny b
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ohatra anaty andalana; mandefa "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             mitoetra mandritra ny fidirana ankehitriny ny famaritana
 help-zscheme-doc = Tahiry: https://github.com/bahner/rust-ma-zscheme
+
+label-local-ipfs = Gateway IPFS eo an-toerana (mila fanamelohana browser)
