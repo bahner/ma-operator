@@ -25,7 +25,7 @@ const KEYWORDS = new Set([
 const ATOMS = new Set(["#t", "#f", "#true", "#false", "nil"]);
 
 function isDelim(ch) {
-    return ch === undefined || /[\s()";'`,]/.test(ch);
+    return ch === undefined || /[\s()"'`,]/.test(ch);
 }
 
 export const zscheme = {
@@ -50,12 +50,6 @@ export const zscheme = {
         if (stream.eatSpace()) return null;
 
         const ch = stream.peek();
-
-        // Comments — ; to end of line.
-        if (ch === ";") {
-            stream.skipToEnd();
-            return "comment";
-        }
 
         // Brackets.
         if (ch === "(" || ch === ")") {
@@ -140,7 +134,5 @@ export const zscheme = {
         return null;
     },
 
-    languageData: {
-        commentTokens: { line: ";" },
-    },
+    languageData: {},
 };

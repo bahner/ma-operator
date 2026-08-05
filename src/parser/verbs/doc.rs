@@ -35,6 +35,15 @@ pub(super) fn handle_doc(
     }
 }
 
+fn eval_lines(content: &str) -> Vec<String> {
+    content
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with('#'))
+        .map(str::to_string)
+        .collect()
+}
+
 // ── Verb handlers ─────────────────────────────────────────────────────────
 
 /// `:edit` — open with stored content, or fetch a CID for review (never exec).
@@ -91,11 +100,7 @@ fn doc_eval(
     state.push_command_done(format!("{path}!eval"));
     let state2 = state.clone();
     leptos::task::spawn_local(async move {
-        let lines: Vec<String> = content
-            .lines()
-            .map(|l| l.trim().to_string())
-            .filter(|l| !l.is_empty() && !l.starts_with('#'))
-            .collect();
+        let lines = eval_lines(&content);
         for line in lines {
             let to_dispatch = if crate::scheme::needs_expansion(&line) {
                 match crate::scheme::expand(&line, &state2, config).await {
@@ -294,6 +299,22 @@ pub(super) fn classify_publish_error(err: &str) -> (&'static str, &'static str) 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn eval_lines_keeps_semicolon_led_lines() {
+        assert_eq!(
+            eval_lines("; not a comment\n(define duckie \"quack\")"),
+            vec!["; not a comment", "(define duckie \"quack\")"]
+        );
+    }
+
+    #[test]
+    fn eval_lines_ignores_hash_led_notes_before_expansion() {
+        assert_eq!(
+            eval_lines("# note (.my.ctx.room)\n(define duckie \"quack\")"),
+            vec!["(define duckie \"quack\")"]
+        );
+    }
 
     #[test]
     fn classify_publish_error_identifies_session_errors() {

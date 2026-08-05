@@ -175,13 +175,13 @@ fn handle_input_line(
             .find_map(|(id, ab)| if ab.collecting { Some(*id) } else { None })
     });
 
-    // Update history for non-comment, non-batch-delimiter lines.
-    // A comment is '# text' (hash + space) — bare '#foo' is a topic command.
-    let is_comment = line.trim_start().starts_with("# ") || line.trim() == "#";
+    // Hash-led lines are local notes: retain them in history, but never
+    // evaluate or dispatch them.
+    let is_note = is_note_line(&line);
     let is_batch_delimiter = line.trim() == ".batch"
         || line.trim().starts_with(".batch:sync")
         || line.trim().starts_with(".batch:async");
-    if !is_comment && !is_batch_delimiter {
+    if !is_batch_delimiter {
         state.history.update(|h| {
             if h.last().map(|s| s.as_str()) != Some(line.as_str()) {
                 h.push(line.clone());
@@ -201,13 +201,14 @@ fn handle_input_line(
         }
     }
 
+    if is_note {
+        return;
+    }
+
     if let Some(batch_id) = collecting_id {
         if line.trim() == ".batch" {
             close_batch(batch_id, state, config, show_editor, on_eval);
-        } else if !line.trim_start().starts_with("# ")
-            && line.trim() != "#"
-            && !line.trim().is_empty()
-        {
+        } else if !line.trim().is_empty() {
             state.batches.update(|b| {
                 if let Some(ab) = b.get_mut(&batch_id) {
                     ab.lines.push_back(line);
@@ -249,6 +250,10 @@ fn handle_input_line(
 
     // Regular (non-batch) dispatch.
     dispatch_eval_line(trimmed, state, config, show_editor, on_eval, None);
+}
+
+fn is_note_line(line: &str) -> bool {
+    line.trim_start().starts_with('#')
 }
 
 // ── Batch open / close ────────────────────────────────────────────────────
@@ -908,9 +913,16 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{focus_command_target, parse_focus_shorthand_command};
+    use super::{focus_command_target, is_note_line, parse_focus_shorthand_command};
     use crate::config::EgoConfig;
     use crate::state::FocusMode;
+
+    #[test]
+    fn hash_led_lines_are_terminal_notes() {
+        assert!(is_note_line("# This is a (.my.ctx.room) note"));
+        assert!(is_note_line("  #also-a-note"));
+        assert!(!is_note_line("say #not-a-note"));
+    }
 
     #[test]
     fn focus_shorthand_normalizes_bare_and_colon_methods() {
