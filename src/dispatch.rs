@@ -227,9 +227,10 @@ fn handle_input_line(
         return;
     }
 
-    let Some(input) = state.multiline_input.update_untracked(|pending| {
-        complete_scheme_input(pending, &line)
-    }) else {
+    let Some(input) = state
+        .multiline_input
+        .update_untracked(|pending| complete_scheme_input(pending, &line))
+    else {
         return;
     };
     let trimmed = input.trim();
@@ -243,6 +244,21 @@ fn handle_input_line(
         let line_owned = trimmed.to_string();
         let cancel_epoch = state.cancel_epoch();
         wasm_bindgen_futures::spawn_local(async move {
+            match crate::scheme::eval_standalone(&line_owned, &state2, config).await {
+                Ok(Some(value)) => {
+                    if !state2.was_cancelled_since(cancel_epoch) {
+                        state2.push_output(value.display());
+                    }
+                    return;
+                }
+                Ok(None) => {}
+                Err(error) => {
+                    if !state2.was_cancelled_since(cancel_epoch) {
+                        state2.push_error(format!("scheme: {error}"));
+                    }
+                    return;
+                }
+            }
             match crate::scheme::expand(&line_owned, &state2, config).await {
                 Ok(expanded) => {
                     let t = expanded.trim().to_string();
@@ -284,7 +300,7 @@ fn complete_scheme_input(pending: &mut String, line: &str) -> Option<String> {
 }
 
 fn is_note_line(line: &str) -> bool {
-    line.trim_start().starts_with('#')
+    line.trim_start().starts_with(';')
 }
 
 // ── Batch open / close ────────────────────────────────────────────────────
@@ -927,25 +943,24 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{complete_scheme_input, focus_command_target, is_note_line, parse_focus_shorthand_command};
+    use super::{
+        complete_scheme_input, focus_command_target, is_note_line, parse_focus_shorthand_command,
+    };
     use crate::config::EgoConfig;
     use crate::state::FocusMode;
 
     #[test]
-    fn hash_led_lines_are_terminal_notes() {
-        assert!(is_note_line("# This is a (.my.ctx.room) note"));
-        assert!(is_note_line("  #also-a-note"));
-        assert!(!is_note_line("say #not-a-note"));
+    fn semicolon_led_lines_are_terminal_notes() {
+        assert!(is_note_line("; This is a (.my.ctx.room) note"));
+        assert!(is_note_line("  ;;also-a-note"));
+        assert!(!is_note_line("say ;not-a-note"));
     }
 
     #[test]
     fn multiline_scheme_input_waits_for_a_balanced_form() {
         let mut pending = String::new();
 
-        assert_eq!(
-            complete_scheme_input(&mut pending, "(define (look)"),
-            None
-        );
+        assert_eq!(complete_scheme_input(&mut pending, "(define (look)"), None);
         assert_eq!(pending, "(define (look)");
         assert_eq!(
             complete_scheme_input(&mut pending, "  (@(avatar):look))"),
@@ -1059,10 +1074,7 @@ mod tests {
             prompt: "me@ma".to_string(),
         };
 
-        assert_eq!(
-            focus_command_target(&focus, "look"),
-            "did:ma:runtime#room"
-        );
+        assert_eq!(focus_command_target(&focus, "look"), "did:ma:runtime#room");
         assert_eq!(
             focus_command_target(&focus, ":prop name Garden"),
             "did:ma:runtime#room"
@@ -1087,7 +1099,10 @@ mod tests {
             prompt: "@ma".to_string(),
         };
 
-        assert_eq!(focus_command_target(&focus, "go cloud"), "did:ma:runtime#room");
+        assert_eq!(
+            focus_command_target(&focus, "go cloud"),
+            "did:ma:runtime#room"
+        );
         assert_eq!(focus_command_target(&focus, ":look"), "did:ma:runtime#room");
     }
 }

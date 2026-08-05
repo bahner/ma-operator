@@ -569,7 +569,9 @@ impl AppState {
         if let Some(ref kind) = result {
             log::debug!("[pending] matched reply msg_id={msg_id} kind={kind:?}");
         } else {
-            log::debug!("[pending] no match for reply msg_id={msg_id} (already expired or unknown)");
+            log::debug!(
+                "[pending] no match for reply msg_id={msg_id} (already expired or unknown)"
+            );
         }
         result
     }

@@ -204,13 +204,21 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
+    let scheme_source = config
+        .get_untracked()
+        .get(".my.scheme")
+        .unwrap_or_default()
+        .to_string();
     let avatar_source = config
         .get_untracked()
         .get(".my.avatar")
         .unwrap_or_default()
         .to_string();
-    if let Err(error) = crate::scheme::load_content(&avatar_source, &state, config).await {
-        state.push_error(format!(".my.avatar: {error}"));
+    if let Err(error) =
+        crate::scheme::bootstrap_session(&scheme_source, &avatar_source, &state, config).await
+    {
+        crate::scheme::reset_session_env();
+        state.push_error(format!("Scheme bootstrap stopped: {error}"));
     }
     state.push_system(tf(
         "msg-logged-in",
@@ -381,8 +389,8 @@ mod tests {
         apply_standard_runtime_alias, normalize_startup_enter, queue_startup_context,
         should_queue_startup_enter, standard_runtime_enter, startup_ctx_enter, startup_ma_url,
     };
-    use crate::{config::EgoConfig, state::AppState};
     use crate::parser::verbs::ma::ConnectMaOutcome;
+    use crate::{config::EgoConfig, state::AppState};
     use leptos::prelude::{GetUntracked, UpdateUntracked};
 
     #[test]

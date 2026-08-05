@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             መግለጫዎች ለአሁ�
 help-zscheme-doc = ሰነድ: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = ቦታዊ IPFS gateway (የሳፕሩ ፈቃድ ያስፈልጋል)
+
+tab-config = ቅንብሮች
+label-gateway = gateway

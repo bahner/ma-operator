@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             வரையறைகள் �
 help-zscheme-doc = ஆவணங்கள்: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = உள்ளூர் IPFS நுழைவாயில் (உலாவி விதிவிலக்கு தேவை)
+
+tab-config = அமைப்புகள்
+label-gateway = gateway

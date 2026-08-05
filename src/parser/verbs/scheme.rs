@@ -1,4 +1,4 @@
-/// Handler for `.my.scheme!verb` — session Scheme environment operations.
+/// Handler for the persistent Scheme bootstrap sources.
 use crate::config::{persist_config, EgoConfig};
 use crate::i18n::tf;
 use crate::state::AppState;
@@ -15,8 +15,28 @@ pub(super) fn handle_scheme(
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     match verb {
+        // Rebuild the sole active session from the stable Scheme layer and
+        // the avatar layer. This removes bindings deleted from either source.
+        "eval" => {
+            let display = format!("{path}!eval");
+            state.push_command_done(display);
+            let state = state.clone();
+            leptos::task::spawn_local(async move {
+                let cfg = config.get_untracked();
+                let scheme_source = cfg.get(".my.scheme").unwrap_or_default().to_string();
+                let avatar_source = cfg.get(".my.avatar").unwrap_or_default().to_string();
+                if let Err(error) =
+                    crate::scheme::bootstrap_session(&scheme_source, &avatar_source, &state, config)
+                        .await
+                {
+                    crate::scheme::reset_session_env();
+                    state.push_error(format!("Scheme bootstrap stopped: {error}"));
+                }
+            });
+            Ok(())
+        }
         // !save — serialise the current session env and persist.
-        "save" => {
+        "save" if path == ".my.scheme" || path.starts_with(".my.scheme.") => {
             let source = crate::scheme::dump_env();
             let count = source.lines().filter(|l| l.starts_with("(define")).count();
             config.update(|c| c.set(path, source.clone()));
@@ -36,8 +56,8 @@ pub(super) fn handle_scheme(
             });
             Ok(())
         }
-        // !edit, !eval, !publish, !cid, !fetch — delegate to doc handler.
-        "edit" | "eval" | "publish" | "publish-ipld" | "cid" | "fetch" => {
+        // !edit, !publish, !cid, !fetch — delegate to doc handler.
+        "edit" | "publish" | "publish-ipld" | "cid" | "fetch" => {
             super::doc::handle_doc(path, verb, args, state, config, show_editor, on_eval)
         }
         other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),

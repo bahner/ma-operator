@@ -12,9 +12,9 @@ use crate::{
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
-        cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
-        handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
-        handle_profile_publish_reply, ReplyContext,
+        cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm,
+        handle_edit_open_reply, handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply,
+        handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -256,14 +256,17 @@ fn did_entry_reply(content: &[u8]) -> Option<DidEntryReply> {
     map_text(entries, "name")?;
     map_text(entries, "description")?;
     entries.iter().find_map(|(key, value)| {
-        (cbor_text(key) == Some("rev") && matches!(value, ciborium::Value::Integer(_))).then_some(())
+        (cbor_text(key) == Some("rev") && matches!(value, ciborium::Value::Integer(_)))
+            .then_some(())
     })?;
     Some(DidEntryReply { parent, nick })
 }
 
 fn map_text<'a>(entries: &'a [(ciborium::Value, ciborium::Value)], key: &str) -> Option<&'a str> {
     entries.iter().find_map(|(entry_key, value)| {
-        (cbor_text(entry_key) == Some(key)).then(|| cbor_text(value)).flatten()
+        (cbor_text(entry_key) == Some(key))
+            .then(|| cbor_text(value))
+            .flatten()
     })
 }
 
@@ -314,20 +317,25 @@ fn handle_client_term_array(
     true
 }
 
-fn decode_client_event(items: &[ciborium::Value]) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
+fn decode_client_event(
+    items: &[ciborium::Value],
+) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
     let head = term_head(items)?;
     let args = &items[1..];
     let valid = match head {
         ":print" => args.len() == 1 && cbor_text(&args[0]).is_some(),
-        ":arrive" | ":leave" | ":take" | ":drop" => {
-            args.len() == 1 && event_ctx(&args[0])
-        }
+        ":arrive" | ":leave" | ":take" | ":drop" => args.len() == 1 && event_ctx(&args[0]),
         ":say" | ":emote" | ":dig" | ":fill" => {
             args.len() == 2 && event_ctx(&args[0]) && cbor_text(&args[1]).is_some()
         }
         _ => false,
     };
-    valid.then(|| (head.to_string(), args.iter().map(cbor_to_scheme_val).collect()))
+    valid.then(|| {
+        (
+            head.to_string(),
+            args.iter().map(cbor_to_scheme_val).collect(),
+        )
+    })
 }
 
 fn event_ctx(value: &ciborium::Value) -> bool {
@@ -335,8 +343,7 @@ fn event_ctx(value: &ciborium::Value) -> bool {
         return false;
     };
     ["did", "actor"].into_iter().any(|identity| {
-        map_text(entries, identity)
-            .is_some_and(|value| value.starts_with("did:ma:"))
+        map_text(entries, identity).is_some_and(|value| value.starts_with("did:ma:"))
     })
 }
 
@@ -391,8 +398,7 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
     };
     #[cfg(target_arch = "wasm32")]
     web_sys::console::warn_1(
-        &format!("[ctx-recovery] stale room/fragment detected; queuing auto-enter: {enter}")
-            .into(),
+        &format!("[ctx-recovery] stale room/fragment detected; queuing auto-enter: {enter}").into(),
     );
     state.push_system(format!(
         "auto-recovery: stale room detected, re-entering with .enter {enter}"
@@ -578,10 +584,22 @@ mod tests {
             (":leave", vec![ctx.clone()]),
             (":take", vec![ctx.clone()]),
             (":drop", vec![ctx.clone()]),
-            (":say", vec![ctx.clone(), ciborium::Value::Text("quack".to_string())]),
-            (":emote", vec![ctx.clone(), ciborium::Value::Text("waddles".to_string())]),
-            (":dig", vec![ctx.clone(), ciborium::Value::Text("north".to_string())]),
-            (":fill", vec![ctx, ciborium::Value::Text("north".to_string())]),
+            (
+                ":say",
+                vec![ctx.clone(), ciborium::Value::Text("quack".to_string())],
+            ),
+            (
+                ":emote",
+                vec![ctx.clone(), ciborium::Value::Text("waddles".to_string())],
+            ),
+            (
+                ":dig",
+                vec![ctx.clone(), ciborium::Value::Text("north".to_string())],
+            ),
+            (
+                ":fill",
+                vec![ctx, ciborium::Value::Text("north".to_string())],
+            ),
         ];
 
         for (event, args) in cases {

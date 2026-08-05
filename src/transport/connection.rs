@@ -45,8 +45,7 @@ pub(crate) fn should_use_public_gateway() -> bool {
 /// Returns IPFS gateways to try in priority order.
 /// On HTTPS pages local gateway is included only when the user has opted in.
 pub fn ipfs_gateway_list() -> Vec<&'static str> {
-    let use_local = !should_use_public_gateway()
-        || SESSION_LOCAL_IPFS.with(|f| *f.borrow());
+    let use_local = !should_use_public_gateway() || SESSION_LOCAL_IPFS.with(|f| *f.borrow());
     if use_local {
         vec![LOCAL_GATEWAY_URL, PUBLIC_GATEWAY_URL]
     } else {
@@ -223,6 +222,17 @@ pub async fn send_rpc_vals(
     verb: &str,
     args: &[SchemeVal],
 ) -> Result<String, String> {
+    send_rpc_vals_with_msg_id(target_did, verb, args, |_| {}).await
+}
+
+/// Send an RPC message with `SchemeVal` arguments and expose its `Message.id`
+/// before network dispatch.
+pub async fn send_rpc_vals_with_msg_id(
+    target_did: &str,
+    verb: &str,
+    args: &[SchemeVal],
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
@@ -255,6 +265,7 @@ pub async fn send_rpc_vals(
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }

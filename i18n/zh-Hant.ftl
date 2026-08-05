@@ -427,3 +427,6 @@ help-zscheme-define =   (define x 12)             定義會在目前登入工作
 help-zscheme-doc = 文件: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = 本地 IPFS 閘道（需要瀏覽器例外）
+
+tab-config = 設定
+label-gateway = gateway

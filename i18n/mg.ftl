@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             mitoetra mandritra ny fidirana
 help-zscheme-doc = Tahiry: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS eo an-toerana (mila fanamelohana browser)
+
+tab-config = Filaminana
+label-gateway = gateway

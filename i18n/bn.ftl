@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             বর্তমান লগ�
 help-zscheme-doc = নথি: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = স্থানীয় IPFS গেটওয়ে (ব্রাউজার ব্যতিক্রম প্রয়োজন)
+
+tab-config = সেটিংস
+label-gateway = gateway

@@ -230,6 +230,7 @@ fn eval_control(
     match path {
         ".logout" => {
             transport::disconnect();
+            crate::scheme::reset_session_env();
             state.session.set(None);
         }
         ".clear" => {
@@ -766,10 +767,7 @@ mod tests {
             enter_args(None, None, Some(inventory)),
             vec!["", "", inventory]
         );
-        assert_eq!(
-            did_enter_args(None, Some(inventory)),
-            vec!["", inventory]
-        );
+        assert_eq!(did_enter_args(None, Some(inventory)), vec!["", inventory]);
     }
 
     #[test]

@@ -413,3 +413,6 @@ help-zscheme-define =   (define x 12)             difinoj restas dum la nuna ens
 help-zscheme-doc = Dokumentaro: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Loka IPFS-pordego (postulas retumilan escepton)
+
+tab-config = Agordoj
+label-gateway = gateway

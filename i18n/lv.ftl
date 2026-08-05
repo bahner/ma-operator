@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             definīcijas saglabājas pašr
 help-zscheme-doc = Dokumentācija: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Lokālais IPFS vārtejas (nepieciešams pārlūka izņēmums)
+
+tab-config = Iestatījumi
+label-gateway = gateway

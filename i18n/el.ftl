@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             οι ορισμοί παραμ
 help-zscheme-doc = Τεκμηρίωση: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Τοπική πύλη IPFS (απαιτεί εξαίρεση στον περιηγητή)
+
+tab-config = Ρυθμίσεις
+label-gateway = gateway

@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             ma’anoni suna ci gaba a zama
 help-zscheme-doc = Takardu: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS na gida (yana buƙatar izni na browser)
+
+tab-config = Saitin
+label-gateway = gateway

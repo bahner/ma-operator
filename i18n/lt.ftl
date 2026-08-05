@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             apibrėžimai išlieka dabarti
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Vietinis IPFS šliuzas (reikalinga naršyklės išimtis)
+
+tab-config = Nustatymai
+label-gateway = gateway

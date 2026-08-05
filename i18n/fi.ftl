@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             määrittelyt säilyvät nykyi
 help-zscheme-doc = Dokumentaatio: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Paikallinen IPFS-yhdyskäytävä (vaatii selainpoikkeuksen)
+
+tab-config = Asetukset
+label-gateway = gateway

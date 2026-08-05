@@ -12,31 +12,28 @@ use crate::{
         save_config, save_identity, storage::load_config, unlock_identity,
     },
     state::{AppState, SessionState, SESSION_LOCAL_IPFS},
-    transport::connection::should_use_public_gateway,
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
 const LAST_RUNTIME_KEY: &str = "zion_last_runtime";
-const LOCAL_IPFS_PREF_KEY: &str = "zion_local_ipfs";
+const IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
 
-fn load_local_ipfs_pref() -> bool {
+fn load_ipfs_gateway_pref() -> String {
     web_sys::window()
         .and_then(|w| w.local_storage().ok().flatten())
-        .and_then(|s| s.get_item(LOCAL_IPFS_PREF_KEY).ok().flatten())
-        .map(|v| v == "true")
-        .unwrap_or(false)
+        .and_then(|s| s.get_item(IPFS_GATEWAY_PREF_KEY).ok().flatten())
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| crate::transport::connection::LOCAL_GATEWAY_URL.to_string())
 }
 
-fn save_local_ipfs_pref(enabled: bool) {
+fn save_ipfs_gateway_pref(url: &str) {
     let _ = web_sys::window()
         .and_then(|w| w.local_storage().ok().flatten())
-        .map(|s| {
-            if enabled {
-                s.set_item(LOCAL_IPFS_PREF_KEY, "true")
-            } else {
-                s.remove_item(LOCAL_IPFS_PREF_KEY).map(|_| ())
-            }
-        });
+        .map(|s| s.set_item(IPFS_GATEWAY_PREF_KEY, url));
+}
+
+fn is_local_gateway(url: &str) -> bool {
+    url.contains("localhost") || url.contains("127.0.0.1")
 }
 
 /// Persist the last successfully connected runtime (DID or URL) to localStorage.
@@ -85,6 +82,7 @@ enum Mode {
     New,
     Import,
     Export,
+    Config,
 }
 
 #[component]
@@ -99,17 +97,33 @@ pub fn Landing() -> impl IntoView {
     let confirm_password = RwSignal::new(String::new());
     let status = RwSignal::new(String::new());
     let error = RwSignal::new(String::new());
-    let initial_local_ipfs = load_local_ipfs_pref();
-    let use_local_ipfs = RwSignal::new(initial_local_ipfs);
-    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = initial_local_ipfs);
+    let initial_gateway = load_ipfs_gateway_pref();
+    let gateway_input = RwSignal::new(initial_gateway.clone());
+    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = is_local_gateway(&initial_gateway));
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
 
     // Runtime field: DID or HTTP URL to connect to after login.
     // Seeded from `?ma=` URL param (already in state.startup_ma) or localStorage.
     let startup_ma = state.startup_ma.get_untracked();
-    let url_ma_did: Option<String> = startup_ma.clone().filter(|v| v.starts_with("did:ma:"));
     let prev_runtime = load_last_runtime();
+
+    // Suggestions: URL param, prev saved, default — deduplicated, max 3.
+    let ma_options: Vec<String> = {
+        let mut seen = std::collections::HashSet::new();
+        let mut opts = Vec::new();
+        for val in [
+            startup_ma.as_deref().unwrap_or(""),
+            prev_runtime.as_str(),
+            "http://localhost:5003",
+        ] {
+            if !val.is_empty() && seen.insert(val.to_string()) {
+                opts.push(val.to_string());
+            }
+        }
+        opts
+    };
+
     let ma_input = RwSignal::new(
         startup_ma
             .filter(|v| v.starts_with("did:ma:") || v.starts_with("http"))
@@ -504,6 +518,7 @@ pub fn Landing() -> impl IntoView {
     let on_keydown = move |ev: KeyboardEvent| {
         if keyboard_event_key(&ev).as_deref() == Some("Enter")
             && mode.get_untracked() != Mode::Export
+            && mode.get_untracked() != Mode::Config
         {
             do_login_key();
         }
@@ -531,75 +546,6 @@ pub fn Landing() -> impl IntoView {
             on:keydown=on_keydown
         >
             <div class="landing-box">
-                // ── ma field + warning: above tabs, hidden in Export mode ──
-                <Show when=move || mode.get() != Mode::Export>
-                    // Privacy warning at very top when a remote DID is selected.
-                    <Show when=move || ma_input.get().starts_with("did:ma:")>
-                        <p class="landing-warning">{move || { let _ = lang.get(); t("warning-remote-runtime") }}</p>
-                    </Show>
-                    <div class="form-row">
-                        <label>{move || { let _ = lang.get(); t("label-runtime") }}</label>
-                        {
-                            let has_url_did = url_ma_did.is_some();
-                            if has_url_did {
-                                let url_did = url_ma_did.clone().unwrap_or_default();
-                                let prev = prev_runtime.clone();
-                                view! {
-                                    <select
-                                        class="runtime-select"
-                                        prop:value=move || ma_input.get()
-                                        on:change=move |ev| {
-                                            if let Some(sel) = ev.target()
-                                                .and_then(|target| target.dyn_into::<web_sys::HtmlSelectElement>().ok())
-                                            {
-                                                ma_input.set(sel.value());
-                                            }
-                                        }
-                                    >
-                                        <option value={prev.clone()}>{prev.clone()}</option>
-                                        <option value={url_did.clone()}>{url_did.clone()}</option>
-                                    </select>
-                                }.into_any()
-                            } else {
-                                view! {
-                                    <input
-                                        type="text"
-                                        prop:value=move || ma_input.get()
-                                        placeholder=move || { let _ = lang.get(); t("label-runtime-placeholder") }
-                                        on:input=move |ev| {
-                                            if let Some(input) = ev.target()
-                                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                            {
-                                                ma_input.set(input.value());
-                                            }
-                                        }
-                                    />
-                                }.into_any()
-                            }
-                        }
-                    </div>
-                    <Show when=move || should_use_public_gateway()>
-                        <div class="form-row form-row-check">
-                            <label class="landing-check-label">
-                                <input
-                                    type="checkbox"
-                                    prop:checked=move || use_local_ipfs.get()
-                                    on:change=move |ev| {
-                                        let checked = ev.target()
-                                            .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
-                                            .map(|i| i.checked())
-                                            .unwrap_or(false);
-                                        use_local_ipfs.set(checked);
-                                        SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = checked);
-                                        save_local_ipfs_pref(checked);
-                                    }
-                                />
-                                {move || { let _ = lang.get(); t("label-local-ipfs") }}
-                            </label>
-                        </div>
-                    </Show>
-                </Show>
-
                 // ── Mode selector (tabs) ──────────────────────────────────
                 <div class="landing-tabs">
                     <button
@@ -614,10 +560,102 @@ pub fn Landing() -> impl IntoView {
                         class=move || if mode.get() == Mode::Import { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| set_mode(Mode::Import)
                     >{move || { let _ = lang.get(); t("tab-import-profile") }}</button>
+                    <button
+                        class=move || if mode.get() == Mode::Config { "landing-tab active" } else { "landing-tab" }
+                        on:click=move |_| set_mode(Mode::Config)
+                    >{move || { let _ = lang.get(); t("tab-config") }}</button>
                 </div>
 
+                // ── Settings / Config mode ────────────────────────────────
+                <Show when=move || mode.get() == Mode::Config>
+                    <Show when=move || ma_input.get().starts_with("did:ma:")>
+                        <p class="landing-warning">{move || { let _ = lang.get(); t("warning-remote-runtime") }}</p>
+                    </Show>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-runtime") }}</label>
+                        <input
+                            type="text"
+                            list="ma-opts"
+                            prop:value=move || ma_input.get()
+                            placeholder=move || { let _ = lang.get(); t("label-runtime-placeholder") }
+                            on:focus=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                                { input.set_value(""); }
+                            }
+                            on:blur=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    if input.value().is_empty() {
+                                        input.set_value(&ma_input.get_untracked());
+                                    }
+                                }
+                            }
+                            on:input=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    let v = input.value();
+                                    save_last_runtime(&v);
+                                    ma_input.set(v.clone());
+                                    // Probe immediately so the browser shows mixed-content exception dialog.
+                                    if v.starts_with("http://") {
+                                        let url = format!("{}/status.json", v.trim_end_matches('/'));
+                                        spawn_local(async move {
+                                            let _ = crate::http::fetch_url_text(&url).await;
+                                        });
+                                    }
+                                }
+                            }
+                        />
+                    </div>
+                    <div class="form-row">
+                        <label>{move || { let _ = lang.get(); t("label-gateway") }}</label>
+                        <input
+                            type="text"
+                            list="gw-opts"
+                            prop:value=move || gateway_input.get()
+                            on:focus=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                                { input.set_value(""); }
+                            }
+                            on:blur=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    if input.value().is_empty() {
+                                        input.set_value(&gateway_input.get_untracked());
+                                    }
+                                }
+                            }
+                            on:input=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    let v = input.value();
+                                    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = is_local_gateway(&v));
+                                    save_ipfs_gateway_pref(&v);
+                                    gateway_input.set(v);
+                                }
+                            }
+                        />
+                    </div>
+                </Show>
+
+                // ── Always-present datalists (must be in DOM for list= attr) ──
+                <datalist id="ma-opts">
+                    {ma_options.into_iter().map(|v| view! { <option value=v /> }).collect::<Vec<_>>()}
+                </datalist>
+                <datalist id="gw-opts">
+                    <option value="http://127.0.0.1:8080/" />
+                    <option value="https://dweb.link/" />
+                    <option value="https://ipfs.io/" />
+                </datalist>
+
                 // ── DID field ─────────────────────────────────────────────
-                <Show when=move || mode.get() != Mode::New || !did_input.get().trim().is_empty()>
+                <Show when=move || mode.get() != Mode::Config && (mode.get() != Mode::New || !did_input.get().trim().is_empty())>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-did") }}</label>
                         <input
@@ -671,7 +709,7 @@ pub fn Landing() -> impl IntoView {
                 // ── Password field: all modes except Export, and not Import-before-file
                 <Show when=move || {
                     let m = mode.get();
-                    m != Mode::Export && !(m == Mode::Import && parsed.get().is_none())
+                    m != Mode::Export && m != Mode::Config && !(m == Mode::Import && parsed.get().is_none())
                 }>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
@@ -708,7 +746,10 @@ pub fn Landing() -> impl IntoView {
                 </Show>
 
                 // ── Action button ─────────────────────────────────────────
-                <div class="btn-row">
+                <div
+                    class="btn-row"
+                    style=move || if mode.get() == Mode::Config { "display:none" } else { "" }
+                >
                     <button class="btn" on:click=do_action>
                         {move || {
                             let _ = lang.get();

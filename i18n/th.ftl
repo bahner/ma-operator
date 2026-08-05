@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             คำนิยามจะค
 help-zscheme-doc = เอกสาร: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = IPFS gateway ในเครื่อง (ต้องมีข้อยกเว้น browser)
+
+tab-config = การตั้งค่า
+label-gateway = gateway

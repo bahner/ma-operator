@@ -15,6 +15,9 @@ use std::rc::Rc;
 pub fn init_session_env() {
     ma_zscheme::init_session_env();
 }
+pub fn reset_session_env() {
+    ma_zscheme::reset_session_env();
+}
 pub(crate) fn get_env() -> Env {
     ma_zscheme::get_env()
 }
@@ -140,6 +143,7 @@ fn expr_to_src(expr: &parser::SchemeExpr) -> String {
 // ── Command-line expansion ─────────────────────────────────────────────────
 
 pub fn needs_expansion(line: &str) -> bool {
+    let line = parser::strip_comments(line);
     let mut quote: Option<char> = None;
     let mut escaped = false;
     for ch in line.chars() {
@@ -169,6 +173,7 @@ pub fn needs_expansion(line: &str) -> bool {
 }
 
 pub(crate) fn has_incomplete_expression(line: &str) -> bool {
+    let line = parser::strip_comments(line);
     let chars: Vec<char> = line.chars().collect();
     let mut pos = 0;
     let mut quote: Option<char> = None;
@@ -219,6 +224,7 @@ pub async fn expand(
         config,
     });
     let env = get_env();
+    let line = parser::strip_comments(line);
     let chars: Vec<char> = line.chars().collect();
     let mut result = String::new();
     let mut pos = 0;
@@ -266,6 +272,30 @@ pub async fn expand(
     Ok(result)
 }
 
+/// Evaluate one complete Scheme expression entered as a terminal line.
+///
+/// Returns `Ok(None)` when the line contains text beyond the expression, so
+/// callers can use normal command-line expansion instead.
+pub async fn eval_standalone(
+    line: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<Option<SchemeVal>, String> {
+    let tokens = parser::tokenize(line).map_err(|error| error.to_string())?;
+    let (expr, next) = parser::parse_expr(&tokens, 0).map_err(|error| error.to_string())?;
+    if next != tokens.len() {
+        return Ok(None);
+    }
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    ma_zscheme::eval::eval(expr, get_env(), ctx)
+        .await
+        .map(Some)
+        .map_err(|error| error.to_string())
+}
+
 pub async fn call_content(
     content: &str,
     verb: &str,
@@ -286,6 +316,7 @@ pub async fn call_content(
 ///
 /// Callers supply only trusted local profile content. This function never
 /// resolves a DID, CID, or other remote source on its own.
+#[cfg(test)]
 pub async fn load_content(
     content: &str,
     state: &AppState,
@@ -297,6 +328,25 @@ pub async fn load_content(
         config,
     });
     load_content_into_env(content, env, ctx).await
+}
+
+/// Build a fresh session from the stable Scheme layer and then the avatar.
+/// The candidate is installed only after both layers evaluate successfully.
+pub async fn bootstrap_session(
+    scheme_source: &str,
+    avatar_source: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let env = Env::new_root();
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    load_content_into_env(scheme_source, env.clone(), ctx.clone()).await?;
+    load_content_into_env(avatar_source, env.clone(), ctx).await?;
+    ma_zscheme::install_session_env(env);
+    Ok(())
 }
 
 async fn load_content_into_env(content: &str, env: Env, ctx: Ctx) -> Result<(), String> {
@@ -443,14 +493,82 @@ mod tests {
     }
 
     #[test]
+    fn bootstrap_loads_scheme_before_avatar() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(bootstrap_session(
+            "(define dialect-value 40)",
+            "(define avatar-value (+ dialect-value 2))",
+            &state,
+            config,
+        ))
+        .expect("bootstrap succeeds");
+
+        assert!(matches!(
+            get_env().get("avatar-value"),
+            Some(SchemeVal::Int(42))
+        ));
+    }
+
+    #[test]
+    fn failed_bootstrap_does_not_install_partial_candidate() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+        block_on(load_content("(define existing-value 1)", &state, config))
+            .expect("existing session loads");
+
+        let error = block_on(bootstrap_session(
+            "(define partial-value 2) (error \"broken dialect\")",
+            "(define avatar-value 3)",
+            &state,
+            config,
+        ))
+        .expect_err("bootstrap fails");
+
+        assert!(error.contains("broken dialect"));
+        assert!(matches!(
+            get_env().get("existing-value"),
+            Some(SchemeVal::Int(1))
+        ));
+        assert!(get_env().get("partial-value").is_none());
+        assert!(get_env().get("avatar-value").is_none());
+    }
+
+    #[test]
+    fn standalone_expression_returns_its_value() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        let value = block_on(eval_standalone("(+ 20 22)", &state, config))
+            .expect("expression evaluates")
+            .expect("line is a standalone expression");
+        assert!(matches!(value, SchemeVal::Int(42)));
+
+        assert!(block_on(eval_standalone("say (+ 20 22)", &state, config))
+            .expect("non-standalone input parses")
+            .is_none());
+    }
+
+    #[test]
     fn call_event_passes_network_text_as_a_typed_value() {
         let _owner = Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::new());
         init_session_env();
 
-        block_on(load_content("(define (on-event event args) (car args))", &state, config))
-            .expect("local source loads");
+        block_on(load_content(
+            "(define (on-event event args) (car args))",
+            &state,
+            config,
+        ))
+        .expect("local source loads");
 
         let value = block_on(call_event(
             ":print",
@@ -515,17 +633,25 @@ mod tests {
             (":print", vec![SchemeVal::Str("Kvakk!".to_string())]),
             (":arrive", vec![subject.clone()]),
             (":leave", vec![subject.clone()]),
-            (":say", vec![subject.clone(), SchemeVal::Str("Kvakk!".to_string())]),
-            (":emote", vec![subject.clone(), SchemeVal::Str("waddles".to_string())]),
+            (
+                ":say",
+                vec![subject.clone(), SchemeVal::Str("Kvakk!".to_string())],
+            ),
+            (
+                ":emote",
+                vec![subject.clone(), SchemeVal::Str("waddles".to_string())],
+            ),
             (":take", vec![subject.clone()]),
             (":drop", vec![subject.clone()]),
-            (":dig", vec![subject.clone(), SchemeVal::Str("north".to_string())]),
+            (
+                ":dig",
+                vec![subject.clone(), SchemeVal::Str("north".to_string())],
+            ),
             (":fill", vec![subject, SchemeVal::Str("north".to_string())]),
         ];
 
         for (event, args) in events {
-            block_on(call_event(event, args, &state, config))
-                .expect("standard event is handled");
+            block_on(call_event(event, args, &state, config)).expect("standard event is handled");
         }
 
         let displays = state.entries.with_untracked(|entries| {

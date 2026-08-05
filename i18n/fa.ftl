@@ -430,3 +430,6 @@ scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID معتبر نیست: { $value }
 
 label-local-ipfs = دروازه IPFS محلی (نیازمند استثنا در مرورگر)
+
+tab-config = تنظیمات
+label-gateway = gateway

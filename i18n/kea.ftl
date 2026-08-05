@@ -414,3 +414,6 @@ help-zscheme-define =   (define x 12)             definison ta fika na seson atu
 help-zscheme-doc = Dokumentason: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS lokal (prexisa eksepsión di browser)
+
+tab-config = Definisaun
+label-gateway = gateway

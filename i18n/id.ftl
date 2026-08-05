@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             definisi tetap ada selama sesi
 help-zscheme-doc = Dokumentasi: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS lokal (perlu pengecualian browser)
+
+tab-config = Pengaturan
+label-gateway = gateway

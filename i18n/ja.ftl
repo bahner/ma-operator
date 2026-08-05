@@ -420,3 +420,6 @@ help-zscheme-define =   (define x 12)             定義は現在のログイン
 help-zscheme-doc = ドキュメント: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = ローカル IPFS ゲートウェイ（ブラウザの例外が必要）
+
+tab-config = 設定
+label-gateway = gateway

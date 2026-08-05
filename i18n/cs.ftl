@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             definice zůstávají pro aktu
 help-zscheme-doc = Dokumentace: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Místní IPFS brána (vyžaduje výjimku v prohlížeči)
+
+tab-config = Nastavení
+label-gateway = gateway

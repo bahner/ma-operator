@@ -430,3 +430,6 @@ scheme-include-error = include: { $reason }
 scheme-not-a-cid = Not a valid CID: { $value }
 
 label-local-ipfs = Local IPFS gateway (requires browser exception)
+
+tab-config = settings
+label-gateway = gateway

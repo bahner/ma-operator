@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             definitsioonid püsivad praegu
 help-zscheme-doc = Dokumentatsioon: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Kohalik IPFS-lüüs (vajab brauseri erandit)
+
+tab-config = Seaded
+label-gateway = gateway

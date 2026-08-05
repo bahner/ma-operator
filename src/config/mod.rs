@@ -54,6 +54,7 @@ impl EgoConfig {
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
             (".my.ctx.tail.length", "100"),
+            (".my.scheme", ""),
             (".my.avatar", DEFAULT_AVATAR_SOURCE),
         ];
         for (k, v) in &defaults {
@@ -569,6 +570,7 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
+        assert_eq!(cfg.get(".my.scheme"), Some(""));
         assert_eq!(cfg.get(".my.avatar"), Some(DEFAULT_AVATAR_SOURCE));
     }
 

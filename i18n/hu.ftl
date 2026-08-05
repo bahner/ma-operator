@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             a definíciók megmaradnak az 
 help-zscheme-doc = Dokumentáció: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Helyi IPFS-átjáró (böngészőkivétel szükséges)
+
+tab-config = Beállítások
+label-gateway = gateway

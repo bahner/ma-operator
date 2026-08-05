@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             các định nghĩa tồn tạ
 help-zscheme-doc = Tài liệu: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Cổng IPFS cục bộ (cần ngoại lệ trình duyệt)
+
+tab-config = Cài đặt
+label-gateway = gateway

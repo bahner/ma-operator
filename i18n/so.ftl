@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             qeexitaannadu way sii jiraan i
 help-zscheme-doc = Dukumenti: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS maxalliga ah (u baahan oggolaanshaha browser)
+
+tab-config = Xaaladaha
+label-gateway = gateway

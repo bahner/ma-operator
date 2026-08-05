@@ -388,18 +388,18 @@ async fn ping_and_publish_fallback(
             target: unavailable_target.to_string(),
         };
     };
-    if options.publish_identity_before_ping {
-        if verify_self_publication(own_did, None).await.is_err() {
-            state.push_system(tf(
-                "msg-identity-first-publish",
-                &[(
-                    "seconds",
-                    &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
-                )],
-            ));
-            if let Err(e) = send_identity_publish_and_wait(&did).await {
-                log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
-            }
+    if options.publish_identity_before_ping
+        && verify_self_publication(own_did, None).await.is_err()
+    {
+        state.push_system(tf(
+            "msg-identity-first-publish",
+            &[(
+                "seconds",
+                &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
+            )],
+        ));
+        if let Err(e) = send_identity_publish_and_wait(&did).await {
+            log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
     match ping_runtime(state, &did).await {

@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             iinkcazelo zihlala kwiseshoni 
 help-zscheme-doc = Amaxwebhu: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = I-gateway ye-IPFS yasekhaya (idinga ukuphuma kwe-browser)
+
+tab-config = Iinqalelo
+label-gateway = gateway

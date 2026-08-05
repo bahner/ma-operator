@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             hiikawwan yeroo seensa ammaa k
 help-zscheme-doc = Galmee: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Gateway IPFS naannoo (hayyama browser barbaada)
+
+tab-config = Qindaa'ina
+label-gateway = gateway

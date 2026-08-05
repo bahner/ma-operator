@@ -414,3 +414,6 @@ help-zscheme-define =   (define x 12)             ol definition i stap yet long 
 help-zscheme-doc = Dokumen: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Lokal IPFS geitwei (browser nidim eksepsion)
+
+tab-config = Setin
+label-gateway = gateway

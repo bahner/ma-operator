@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             definicije ostanejo v trenutni
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Lokalno prehodno mesto IPFS (zahteva izjemo v brskalniku)
+
+tab-config = Nastavitve
+label-gateway = gateway

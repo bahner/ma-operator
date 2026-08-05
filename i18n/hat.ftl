@@ -414,3 +414,6 @@ help-zscheme-define =   (define x 12)             definisyon yo rete pou sesyon 
 help-zscheme-doc = Dokiman: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Pasaj IPFS lokal (mande eksepsyon browser)
+
+tab-config = Paramèt
+label-gateway = gateway

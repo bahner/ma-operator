@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             skilgreiningar haldast í núv
 help-zscheme-doc = Skjölun: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Staðbundinn IPFS-gátt (krefst undantekningar í vafra)
+
+tab-config = Stillingar
+label-gateway = gateway

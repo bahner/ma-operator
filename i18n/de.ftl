@@ -420,3 +420,6 @@ help-zscheme-define =   (define x 12)             Definitionen bleiben für die 
 help-zscheme-doc = Dokumentation: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Lokales IPFS-Gateway (Browser-Ausnahme erforderlich)
+
+tab-config = Einstellungen
+label-gateway = gateway

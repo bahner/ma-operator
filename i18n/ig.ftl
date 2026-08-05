@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             nkọwa na-adịgide n’oge n
 help-zscheme-doc = Akwụkwọ: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Ọnụ ụzọ IPFS mpaghara (chọrọ ikewa browser)
+
+tab-config = Ntọala
+label-gateway = gateway

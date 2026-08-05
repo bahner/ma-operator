@@ -416,3 +416,6 @@ help-zscheme-define =   (define x 12)             definition dem stay fo dis log
 help-zscheme-doc = Writings: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Local IPFS gateway (need browser livity)
+
+tab-config = settings
+label-gateway = gateway

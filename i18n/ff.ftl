@@ -428,3 +428,6 @@ help-zscheme-define =   (define x 12)             cifagol ina heddii e oo naatgo
 help-zscheme-doc = Ɗereeji: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = IPFS-gateway lokkal (ina haajde tinnde browser)
+
+tab-config = Teppol
+label-gateway = gateway

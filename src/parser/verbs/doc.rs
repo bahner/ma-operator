@@ -41,7 +41,7 @@ fn eval_lines(content: &str) -> Vec<String> {
 
     for line in content.lines() {
         let trimmed = line.trim();
-        if buffer.is_empty() && (trimmed.is_empty() || trimmed.starts_with('#')) {
+        if buffer.is_empty() && (trimmed.is_empty() || trimmed.starts_with(';')) {
             continue;
         }
 
@@ -319,17 +319,9 @@ mod tests {
     use super::*;
 
     #[test]
-    fn eval_lines_keeps_semicolon_led_lines() {
+    fn eval_lines_skips_semicolon_led_comments() {
         assert_eq!(
-            eval_lines("; not a comment\n(define duckie \"quack\")"),
-            vec!["; not a comment", "(define duckie \"quack\")"]
-        );
-    }
-
-    #[test]
-    fn eval_lines_ignores_hash_led_notes_before_expansion() {
-        assert_eq!(
-            eval_lines("# note (.my.ctx.room)\n(define duckie \"quack\")"),
+            eval_lines(";; note (.my.ctx.room)\n(define duckie \"quack\")"),
             vec!["(define duckie \"quack\")"]
         );
     }
@@ -343,9 +335,9 @@ mod tests {
     }
 
     #[test]
-    fn eval_lines_ignores_notes_between_multiline_forms() {
+    fn eval_lines_ignores_semicolon_led_notes_between_forms() {
         assert_eq!(
-            eval_lines("# avatar commands\n(define (go direction)\n  (@(avatar):go direction))\n# invoke it\n(go \"north\")"),
+            eval_lines(";; avatar commands\n(define (go direction)\n  (@(avatar):go direction))\n;; invoke it\n(go \"north\")"),
             vec![
                 "(define (go direction)\n  (@(avatar):go direction))",
                 "(go \"north\")",

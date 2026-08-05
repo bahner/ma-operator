@@ -427,3 +427,6 @@ help-zscheme-define =   (define x 12)             تبقى التعريفات خ
 help-zscheme-doc = الوثائق: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = بوابة IPFS المحلية (تتطلب استثناءً في المتصفح)
+
+tab-config = الإعدادات
+label-gateway = gateway

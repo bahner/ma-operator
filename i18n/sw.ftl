@@ -421,3 +421,6 @@ help-zscheme-define =   (define x 12)             ufafanuzi hubaki kwa kipindi c
 help-zscheme-doc = Nyaraka: https://github.com/bahner/rust-ma-zscheme
 
 label-local-ipfs = Lango la IPFS la ndani (linahitaji ruhusa ya kivinjari)
+
+tab-config = Mipangilio
+label-gateway = gateway

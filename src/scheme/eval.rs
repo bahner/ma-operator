@@ -9,6 +9,7 @@
 use futures::{channel::oneshot, future::LocalBoxFuture};
 use leptos::prelude::{GetUntracked, RwSignal, Update};
 use ma_zscheme::{SchemeCtx, SchemeErr, SchemeVal};
+use std::{cell::RefCell, rc::Rc};
 
 use crate::{config::EgoConfig, parser::command, state::AppState};
 
@@ -136,12 +137,27 @@ impl SchemeCtx for EvalCtx {
                 .split_whitespace()
                 .map(|s| SchemeVal::Str(s.to_string()))
                 .collect();
-            let msg_id = crate::transport::send_rpc_vals(&target, &verb_str, &scheme_args)
-                .await
-                .map_err(SchemeErr::MaError)?;
             let (sender, receiver) =
                 futures::channel::oneshot::channel::<Result<SchemeVal, String>>();
-            self.state.register_scheme_sender(msg_id, sender);
+            let state = self.state.clone();
+            let registered_id = Rc::new(RefCell::new(None));
+            let registered_id_for_send = registered_id.clone();
+            if let Err(error) = crate::transport::send_rpc_vals_with_msg_id(
+                &target,
+                &verb_str,
+                &scheme_args,
+                move |msg_id| {
+                    *registered_id_for_send.borrow_mut() = Some(msg_id.clone());
+                    state.register_scheme_sender(msg_id, sender);
+                },
+            )
+            .await
+            {
+                if let Some(msg_id) = registered_id.borrow_mut().take() {
+                    self.state.take_scheme_sender(&msg_id);
+                }
+                return Err(SchemeErr::MaError(error));
+            }
             match receiver.await {
                 Ok(Ok(val)) => Ok(val),
                 Ok(Err(e)) => Err(SchemeErr::MaError(e)),
@@ -171,12 +187,27 @@ impl SchemeCtx for EvalCtx {
                 _ => return Err(SchemeErr::MaError(format!("expected actor: {effective}"))),
             };
             let verb_str = verb.unwrap_or_default();
-            let msg_id = crate::transport::send_rpc_vals(&target, &verb_str, args)
-                .await
-                .map_err(SchemeErr::MaError)?;
             let (sender, receiver) =
                 futures::channel::oneshot::channel::<Result<SchemeVal, String>>();
-            self.state.register_scheme_sender(msg_id, sender);
+            let state = self.state.clone();
+            let registered_id = Rc::new(RefCell::new(None));
+            let registered_id_for_send = registered_id.clone();
+            if let Err(error) = crate::transport::send_rpc_vals_with_msg_id(
+                &target,
+                &verb_str,
+                args,
+                move |msg_id| {
+                    *registered_id_for_send.borrow_mut() = Some(msg_id.clone());
+                    state.register_scheme_sender(msg_id, sender);
+                },
+            )
+            .await
+            {
+                if let Some(msg_id) = registered_id.borrow_mut().take() {
+                    self.state.take_scheme_sender(&msg_id);
+                }
+                return Err(SchemeErr::MaError(error));
+            }
             match receiver.await {
                 Ok(Ok(val)) => Ok(val),
                 Ok(Err(e)) => Err(SchemeErr::MaError(e)),
