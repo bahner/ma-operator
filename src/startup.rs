@@ -204,6 +204,14 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
+    let avatar_source = config
+        .get_untracked()
+        .get(".my.avatar")
+        .unwrap_or_default()
+        .to_string();
+    if let Err(error) = crate::scheme::load_content(&avatar_source, &state, config).await {
+        state.push_error(format!(".my.avatar: {error}"));
+    }
     state.push_system(tf(
         "msg-logged-in",
         &[

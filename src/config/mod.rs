@@ -19,6 +19,115 @@ use ma_zscheme::DotRegistry;
 
 use crate::identity::storage::{load_config, save_config};
 
+pub const DEFAULT_AVATAR_SOURCE: &str = include_str!("../../examples/zscheme/avatar.zsm");
+
+const PREVIOUS_DEFAULT_AVATAR_SOURCE: &str = r#"; English lambda-ma room commands for zion.
+; This is local zscheme code. It never sends commands to an avatar actor.
+
+(define (room)
+    (.my.ctx.room))
+
+(define (look)
+    (@(room):look))
+
+(define (exits)
+    (@(room):exits?))
+
+(define (who)
+    (@(room):who?))
+
+(define (occupants)
+    (@(room):occupants?))
+
+(define (contents)
+    (@(room):things?))
+
+(define (help)
+    (@(room):help))
+
+(define (say text)
+    (@(room):say text))
+
+(define (emote text)
+    (@(room):emote text))
+
+(define (claim)
+    (@(room):claim))
+
+(define (owner)
+    (@(room):owner))
+
+(define (leave)
+    (@(room):leave))
+"#;
+
+const PRE_EVENT_DEFAULT_AVATAR_SOURCE: &str = r#"(define (room)
+    (.my.ctx.room))
+
+(define (look)
+    (@(room):look))
+
+(define (exits)
+    (@(room):exits?))
+
+(define (who)
+    (@(room):who?))
+
+(define (occupants)
+    (@(room):occupants?))
+
+(define (contents)
+    (@(room):things?))
+
+(define (help)
+    (@(room):help))
+
+(define (say . words)
+    (apply (@(room):say) words))
+
+(define (emote . words)
+    (apply (@(room):emote) words))
+
+(define (claim)
+    (@(room):claim))
+
+(define (owner)
+    (@(room):owner))
+
+(define (leave)
+    (@(room):leave))
+
+(define (dig . args)
+    (apply (@(room):dig) args))
+
+(define (fill . args)
+    (apply (@(room):fill) args))
+
+(define (go . args)
+    (apply (@(room):go) args))
+
+(define (take . args)
+    (apply (@(room):take) args))
+
+(define (drop . args)
+    (apply (@(room):drop) args))
+
+(define (put . args)
+    (apply (@(room):put) args))
+
+(define (recycle . args)
+    (apply (@(room):recycle) args))
+
+(define (make . args)
+    (apply (@(room):make) args))
+
+(define (conjure . args)
+    (apply (@(room):conjure) args))
+
+(define (remove . args)
+    (apply (@(room):remove) args))
+"#;
+
 // ── Types ──────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
@@ -52,11 +161,19 @@ impl EgoConfig {
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
             (".my.ctx.tail.length", "100"),
+            (".my.avatar", DEFAULT_AVATAR_SOURCE),
         ];
         for (k, v) in &defaults {
             self.tree
                 .entry(k.to_string())
                 .or_insert_with(|| v.to_string());
+        }
+        let avatar = self.tree.get(".my.avatar").map(String::as_str);
+        if avatar == Some(PREVIOUS_DEFAULT_AVATAR_SOURCE)
+            || avatar == Some(PRE_EVENT_DEFAULT_AVATAR_SOURCE)
+        {
+            self.tree
+                .insert(".my.avatar".to_string(), DEFAULT_AVATAR_SOURCE.to_string());
         }
     }
 
@@ -566,14 +683,37 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
+        assert_eq!(cfg.get(".my.avatar"), Some(DEFAULT_AVATAR_SOURCE));
     }
 
     #[test]
     fn new_does_not_overwrite_existing() {
         let mut cfg = bare();
         cfg.set(".my.config.colour.text", "#ffffff");
+        cfg.set(".my.avatar", "(define (custom-avatar) :ok)");
         cfg.set_defaults();
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#ffffff"));
+        assert_eq!(cfg.get(".my.avatar"), Some("(define (custom-avatar) :ok)"));
+    }
+
+    #[test]
+    fn set_defaults_migrates_only_the_previous_avatar_template() {
+        let mut cfg = bare();
+        cfg.set(".my.avatar", PREVIOUS_DEFAULT_AVATAR_SOURCE);
+
+        cfg.set_defaults();
+
+        assert_eq!(cfg.get(".my.avatar"), Some(DEFAULT_AVATAR_SOURCE));
+    }
+
+    #[test]
+    fn set_defaults_migrates_the_pre_event_avatar_template() {
+        let mut cfg = bare();
+        cfg.set(".my.avatar", PRE_EVENT_DEFAULT_AVATAR_SOURCE);
+
+        cfg.set_defaults();
+
+        assert_eq!(cfg.get(".my.avatar"), Some(DEFAULT_AVATAR_SOURCE));
     }
 
     // ── is_read_only ──────────────────────────────────────────────────────

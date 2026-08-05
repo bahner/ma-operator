@@ -19,6 +19,67 @@ pub(crate) fn get_env() -> Env {
     ma_zscheme::get_env()
 }
 
+pub(crate) fn has_command(name: &str) -> bool {
+    matches!(
+        get_env().get(name),
+        Some(SchemeVal::Lambda { .. } | SchemeVal::Builtin(_))
+    )
+}
+
+pub(crate) fn has_event_handler() -> bool {
+    has_command("on-event")
+}
+
+/// Invoke a preloaded local Scheme function from terminal command tokens.
+///
+/// The expression is constructed as an AST, so command arguments are always
+/// text values and are never parsed as Scheme source.
+pub async fn call_command(
+    name: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<SchemeVal, String> {
+    let expr = parser::SchemeExpr::List(
+        std::iter::once(parser::SchemeExpr::Atom(name.to_string()))
+            .chain(args.iter().cloned().map(parser::SchemeExpr::Str))
+            .collect(),
+    );
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    ma_zscheme::eval::eval(expr, get_env(), ctx)
+        .await
+        .map_err(|error| error.to_string())
+}
+
+/// Invoke the local event entry point with decoded, typed event data.
+///
+/// Event values are placed in a child environment and referenced by a fixed
+/// AST. They are never serialised into or parsed from Scheme source.
+pub async fn call_event(
+    event: &str,
+    args: Vec<SchemeVal>,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<SchemeVal, String> {
+    let env = Env::extend(&get_env());
+    env.define("__ma_event_args", SchemeVal::List(args));
+    let expr = parser::SchemeExpr::List(vec![
+        parser::SchemeExpr::Atom("on-event".to_string()),
+        parser::SchemeExpr::Str(event.to_string()),
+        parser::SchemeExpr::Atom("__ma_event_args".to_string()),
+    ]);
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    ma_zscheme::eval::eval(expr, env, ctx)
+        .await
+        .map_err(|error| error.to_string())
+}
+
 // ── Session-env serialisation ──────────────────────────────────────────────
 
 pub fn dump_env() -> String {
@@ -138,6 +199,47 @@ pub fn needs_expansion(line: &str) -> bool {
     false
 }
 
+pub(crate) fn has_incomplete_expression(line: &str) -> bool {
+    let chars: Vec<char> = line.chars().collect();
+    let mut pos = 0;
+    let mut quote: Option<char> = None;
+    let mut escaped = false;
+    while pos < chars.len() {
+        let ch = chars[pos];
+        if escaped {
+            escaped = false;
+            pos += 1;
+            continue;
+        }
+        if ch == '\\' && quote.is_some() {
+            escaped = true;
+            pos += 1;
+            continue;
+        }
+        if let Some(q) = quote {
+            if ch == q {
+                quote = None;
+            }
+            pos += 1;
+            continue;
+        }
+        if ch == '"' || ch == '\'' {
+            quote = Some(ch);
+            pos += 1;
+            continue;
+        }
+        if ch == '(' {
+            let Some((end, _)) = find_balanced_paren(&chars, pos) else {
+                return true;
+            };
+            pos = end + 1;
+            continue;
+        }
+        pos += 1;
+    }
+    false
+}
+
 pub async fn expand(
     line: &str,
     state: &AppState,
@@ -207,6 +309,28 @@ pub async fn call_content(
         state: state.clone(),
         config,
     });
+    load_content_into_env(content, env.clone(), ctx.clone()).await?;
+    eval_span(&build_call_str(verb, args), env, ctx).await
+}
+
+/// Evaluate local Scheme source into the current session environment.
+///
+/// Callers supply only trusted local profile content. This function never
+/// resolves a DID, CID, or other remote source on its own.
+pub async fn load_content(
+    content: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let env = get_env();
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    load_content_into_env(content, env, ctx).await
+}
+
+async fn load_content_into_env(content: &str, env: Env, ctx: Ctx) -> Result<(), String> {
     let tokens = parser::tokenize(content).map_err(|e| e.to_string())?;
     let mut pos = 0;
     while pos < tokens.len() {
@@ -216,7 +340,7 @@ pub async fn call_content(
             .map_err(|e| e.to_string())?;
         pos = next;
     }
-    eval_span(&build_call_str(verb, args), env, ctx).await
+    Ok(())
 }
 
 fn build_call_str(verb: &str, args: &[String]) -> String {
@@ -275,6 +399,9 @@ async fn eval_span(span: &str, env: Env, ctx: Ctx) -> Result<SchemeVal, String> 
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::{config::EgoConfig, core::Entry, state::AppState};
+    use futures::executor::block_on;
+    use leptos::prelude::{Owner, RwSignal, WithUntracked};
 
     #[test]
     fn needs_expansion_ignores_single_quoted_parentheses() {
@@ -317,5 +444,191 @@ mod tests {
         let (end, span) = find_balanced_paren(&chars, 0).expect("balanced expression");
         assert_eq!(span, "(foo' shdkjhj)");
         assert_eq!(end, span.len() - 1);
+    }
+
+    #[test]
+    fn incomplete_expression_ignores_quoted_parentheses() {
+        assert!(!has_incomplete_expression(
+            "say \"an (unclosed parenthesis\""
+        ));
+        assert!(has_incomplete_expression("say (string-append \"open\""));
+    }
+
+    #[test]
+    fn load_content_defines_local_session_functions() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(load_content(
+            "(define (avatar-bootstrap) \"ready\")",
+            &state,
+            config,
+        ))
+        .expect("local source loads");
+
+        let value = block_on(call_content("", "avatar-bootstrap", &[], &state, config))
+            .expect("loaded local function is callable");
+        assert!(matches!(value, SchemeVal::Str(ref text) if text == "ready"));
+    }
+
+    #[test]
+    fn call_command_passes_arguments_as_text_values() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(load_content(
+            "(define (echo value) value)",
+            &state,
+            config,
+        ))
+        .expect("local source loads");
+
+        let args = vec!["(error \"must not run\")".to_string()];
+        let value = block_on(call_command("echo", &args, &state, config))
+            .expect("local function is callable");
+        assert!(matches!(value, SchemeVal::Str(ref text) if text == "(error \"must not run\")"));
+    }
+
+    #[test]
+    fn call_command_supports_variadic_apply_wrappers() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(load_content(
+            "(define (collect . values) values)\n(define (forward . values) (apply collect values))",
+            &state,
+            config,
+        ))
+        .expect("local source loads");
+
+        let args = vec!["dig".to_string(), "east".to_string(), "to".to_string(), "Garden".to_string()];
+        let value = block_on(call_command("forward", &args, &state, config))
+            .expect("variadic local function is callable");
+        assert!(matches!(value, SchemeVal::List(values)
+            if values.iter().map(SchemeVal::display).collect::<Vec<_>>() == args));
+    }
+
+    #[test]
+    fn call_event_passes_network_text_as_a_typed_value() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(load_content("(define (on-event event args) (car args))", &state, config))
+            .expect("local source loads");
+
+        let value = block_on(call_event(
+            ":print",
+            vec![SchemeVal::Str("(error \"must not run\")".to_string())],
+            &state,
+            config,
+        ))
+        .expect("event handler is callable");
+        assert!(matches!(value, SchemeVal::Str(ref text) if text == "(error \"must not run\")"));
+    }
+
+    #[test]
+    fn default_avatar_displays_typed_speech_events() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+        block_on(load_content(
+            crate::config::DEFAULT_AVATAR_SOURCE,
+            &state,
+            config,
+        ))
+        .expect("default avatar source loads");
+        let mut ctx = std::collections::BTreeMap::new();
+        ctx.insert("did".to_string(), SchemeVal::Str("did:ma:duck".to_string()));
+        ctx.insert("nick".to_string(), SchemeVal::Str("Duckie".to_string()));
+
+        block_on(call_event(
+            ":say",
+            vec![SchemeVal::Map(ctx), SchemeVal::Str("Kvakk!".to_string())],
+            &state,
+            config,
+        ))
+        .expect("speech event is handled");
+
+        let text = state.entries.with_untracked(|entries| {
+            entries.iter().find_map(|entry| match entry {
+                Entry::System(record) => Some(record.text.clone()),
+                _ => None,
+            })
+        });
+        assert_eq!(text.as_deref(), Some("Duckie: Kvakk!"));
+    }
+
+    #[test]
+    fn default_avatar_handles_every_standard_event() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+        block_on(load_content(
+            crate::config::DEFAULT_AVATAR_SOURCE,
+            &state,
+            config,
+        ))
+        .expect("default avatar source loads");
+        let mut ctx = std::collections::BTreeMap::new();
+        ctx.insert("did".to_string(), SchemeVal::Str("did:ma:duck".to_string()));
+        ctx.insert("nick".to_string(), SchemeVal::Str("Duckie".to_string()));
+        let subject = SchemeVal::Map(ctx);
+        let events = vec![
+            (":print", vec![SchemeVal::Str("Kvakk!".to_string())]),
+            (":arrive", vec![subject.clone()]),
+            (":leave", vec![subject.clone()]),
+            (":say", vec![subject.clone(), SchemeVal::Str("Kvakk!".to_string())]),
+            (":emote", vec![subject.clone(), SchemeVal::Str("waddles".to_string())]),
+            (":take", vec![subject.clone()]),
+            (":drop", vec![subject.clone()]),
+            (":dig", vec![subject.clone(), SchemeVal::Str("north".to_string())]),
+            (":fill", vec![subject, SchemeVal::Str("north".to_string())]),
+        ];
+
+        for (event, args) in events {
+            block_on(call_event(event, args, &state, config))
+                .expect("standard event is handled");
+        }
+
+        let displays = state.entries.with_untracked(|entries| {
+            entries
+                .iter()
+                .filter(|entry| matches!(entry, Entry::System(_)))
+                .count()
+        });
+        assert_eq!(displays, 9);
+    }
+
+    #[test]
+    fn default_avatar_loads_room_command_vocabulary() {
+        let _owner = Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::new());
+        init_session_env();
+
+        block_on(load_content(
+            crate::config::DEFAULT_AVATAR_SOURCE,
+            &state,
+            config,
+        ))
+        .expect("default avatar source loads");
+
+        for command in [
+            "dig", "fill", "go", "leave", "take", "drop", "put", "say", "emote", "recycle",
+            "make", "conjure", "remove",
+        ] {
+            assert!(has_command(command), "{command} is a local command");
+        }
+        assert!(has_event_handler());
     }
 }

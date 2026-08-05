@@ -175,9 +175,11 @@ fn handle_input_line(
             .find_map(|(id, ab)| if ab.collecting { Some(*id) } else { None })
     });
 
+    let continues_scheme = !state.multiline_input.get_untracked().is_empty();
+
     // Hash-led lines are local notes: retain them in history, but never
     // evaluate or dispatch them.
-    let is_note = is_note_line(&line);
+    let is_note = !continues_scheme && is_note_line(&line);
     let is_batch_delimiter = line.trim() == ".batch"
         || line.trim().starts_with(".batch:sync")
         || line.trim().starts_with(".batch:async");
@@ -225,6 +227,16 @@ fn handle_input_line(
         return;
     }
 
+    let Some(input) = state.multiline_input.update_untracked(|pending| {
+        complete_scheme_input(pending, &line)
+    }) else {
+        return;
+    };
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return;
+    }
+
     // Scheme expansion: pre-process `(…)` spans before normal dispatch.
     if crate::scheme::needs_expansion(trimmed) {
         let state2 = state.clone();
@@ -250,6 +262,25 @@ fn handle_input_line(
 
     // Regular (non-batch) dispatch.
     dispatch_eval_line(trimmed, state, config, show_editor, on_eval, None);
+}
+
+fn complete_scheme_input(pending: &mut String, line: &str) -> Option<String> {
+    if pending.is_empty() {
+        if crate::scheme::has_incomplete_expression(line) {
+            pending.push_str(line);
+            None
+        } else {
+            Some(line.to_string())
+        }
+    } else {
+        pending.push('\n');
+        pending.push_str(line);
+        if crate::scheme::has_incomplete_expression(pending) {
+            None
+        } else {
+            Some(std::mem::take(pending))
+        }
+    }
 }
 
 fn is_note_line(line: &str) -> bool {
@@ -579,6 +610,27 @@ fn dispatch_eval_line(
     let focus = state.focus_actor.get_untracked();
     let cfg = config.get_untracked();
 
+    if is_local_scheme_command(line) {
+        let parsed = match parse_focus_shorthand_command(line, &cfg) {
+            Ok(parsed) => parsed,
+            Err(error) => {
+                state.push_error(format!("'{line}': {error}"));
+                return None;
+            }
+        };
+        if parsed.meta.is_none() && crate::scheme::has_command(&parsed.verb) {
+            let state = state.clone();
+            wasm_bindgen_futures::spawn_local(async move {
+                if let Err(error) =
+                    crate::scheme::call_command(&parsed.verb, &parsed.args, &state, config).await
+                {
+                    state.push_error(format!("scheme: {error}"));
+                }
+            });
+            return None;
+        }
+    }
+
     // Expand focus prefix before parsing so parse() needs no special-casing.
     let expanded = if let Some(ref f) = focus {
         if is_focus_shorthand_command(line) {
@@ -589,10 +641,7 @@ fn dispatch_eval_line(
                     return None;
                 }
             };
-            let Some(target) = focus_command_target(f, line) else {
-                warn_focus("[focus] dropping plain shorthand command without avatar context");
-                return None;
-            };
+            let target = focus_command_target(f, line);
             if parsed.meta.as_deref() == Some("edit") && parsed.verb == "behaviour" {
                 if !target.contains('#') {
                     state.push_error("behaviour editor requires a focused actor".to_string());
@@ -762,22 +811,12 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.trim().is_empty()
 }
 
-fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, line: &str) -> Option<&'a str> {
-    if line.trim_start().starts_with(':') {
-        Some(&focus.target)
-    } else {
-        focus.avatar_actor.as_deref()
-    }
+fn is_local_scheme_command(line: &str) -> bool {
+    is_focus_shorthand_command(line) && !line.trim_start().starts_with(':')
 }
 
-#[cfg(target_arch = "wasm32")]
-fn warn_focus(message: &str) {
-    web_sys::console::warn_1(&message.into());
-}
-
-#[cfg(not(target_arch = "wasm32"))]
-fn warn_focus(message: &str) {
-    eprintln!("{message}");
+fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, _line: &str) -> &'a str {
+    &focus.target
 }
 
 fn enqueue_focus_command(
@@ -913,7 +952,7 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
 
 #[cfg(test)]
 mod tests {
-    use super::{focus_command_target, is_note_line, parse_focus_shorthand_command};
+    use super::{complete_scheme_input, focus_command_target, is_note_line, parse_focus_shorthand_command};
     use crate::config::EgoConfig;
     use crate::state::FocusMode;
 
@@ -922,6 +961,33 @@ mod tests {
         assert!(is_note_line("# This is a (.my.ctx.room) note"));
         assert!(is_note_line("  #also-a-note"));
         assert!(!is_note_line("say #not-a-note"));
+    }
+
+    #[test]
+    fn multiline_scheme_input_waits_for_a_balanced_form() {
+        let mut pending = String::new();
+
+        assert_eq!(
+            complete_scheme_input(&mut pending, "(define (look)"),
+            None
+        );
+        assert_eq!(pending, "(define (look)");
+        assert_eq!(
+            complete_scheme_input(&mut pending, "  (@(avatar):look))"),
+            Some("(define (look)\n  (@(avatar):look))".to_string())
+        );
+        assert!(pending.is_empty());
+    }
+
+    #[test]
+    fn multiline_scheme_input_ignores_parentheses_in_strings() {
+        let mut pending = String::new();
+
+        assert_eq!(
+            complete_scheme_input(&mut pending, "say \"an (unclosed parenthesis\""),
+            Some("say \"an (unclosed parenthesis\"".to_string())
+        );
+        assert!(pending.is_empty());
     }
 
     #[test]
@@ -946,6 +1012,13 @@ mod tests {
         assert_eq!(edit.verb, "behaviour");
         assert_eq!(edit.meta.as_deref(), Some("edit"));
         assert!(edit.args.is_empty());
+    }
+
+    #[test]
+    fn local_scheme_commands_exclude_colon_methods() {
+        assert!(super::is_local_scheme_command("look duck"));
+        assert!(!super::is_local_scheme_command(":look"));
+        assert!(!super::is_local_scheme_command("@ma#room:look"));
     }
 
     #[test]
@@ -1009,49 +1082,44 @@ mod tests {
     }
 
     #[test]
-    fn focus_colon_methods_target_room_not_avatar() {
+    fn focus_commands_target_room_directly() {
         let focus = FocusMode {
             runtime: "did:ma:runtime".to_string(),
             room: Some("#room".to_string()),
             target: "did:ma:runtime#room".to_string(),
             root_actor: Some("did:ma:runtime#root".to_string()),
-            avatar_actor: Some("did:ma:runtime#avatar".to_string()),
             prompt: "me@ma".to_string(),
         };
 
         assert_eq!(
             focus_command_target(&focus, "look"),
-            Some("did:ma:runtime#avatar")
+            "did:ma:runtime#room"
         );
         assert_eq!(
             focus_command_target(&focus, ":prop name Garden"),
-            Some("did:ma:runtime#room")
+            "did:ma:runtime#room"
         );
         assert_eq!(
             focus_command_target(&focus, "prop name Garden"),
-            Some("did:ma:runtime#avatar")
+            "did:ma:runtime#room"
         );
         assert_eq!(
             focus_command_target(&focus, "  :prop description"),
-            Some("did:ma:runtime#room")
+            "did:ma:runtime#room"
         );
     }
 
     #[test]
-    fn focus_plain_shorthand_requires_avatar_context() {
+    fn focus_plain_shorthand_needs_no_avatar_context() {
         let focus = FocusMode {
             runtime: "did:ma:runtime".to_string(),
             room: Some("did:ma:runtime#room".to_string()),
             target: "did:ma:runtime#room".to_string(),
             root_actor: Some("did:ma:runtime#root".to_string()),
-            avatar_actor: None,
             prompt: "@ma".to_string(),
         };
 
-        assert_eq!(focus_command_target(&focus, "go cloud"), None);
-        assert_eq!(
-            focus_command_target(&focus, ":look"),
-            Some("did:ma:runtime#room")
-        );
+        assert_eq!(focus_command_target(&focus, "go cloud"), "did:ma:runtime#room");
+        assert_eq!(focus_command_target(&focus, ":look"), "did:ma:runtime#room");
     }
 }

@@ -12,16 +12,14 @@ use crate::{
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
-        cbor_reply_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
+        cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm, handle_edit_open_reply,
         handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
         handle_profile_publish_reply, ReplyContext,
     },
-    state::{AppState, CtxTailSnapshot, OutboxTask, PendingKind},
+    state::{AppState, OutboxTask, PendingKind},
     transport,
     views::editor::EditorContext,
 };
-
-const AVATAR_CTX_PROTOCOL: &str = "/ma/ctx/avatar/0.0.1";
 
 // ── Public entry point ─────────────────────────────────────────────────────
 
@@ -90,19 +88,8 @@ fn dispatch_reply(
         return;
     }
 
-    if let Some(items) = client_term_array(&incoming) {
-        let ctx_payload = ctx_payload_from_reply_items(&items);
-        if let Some(payload) = ctx_payload {
-            let kind = state.take_pending(msg_id);
-            handle_ctx_receipt(Some(payload), &incoming, state, config);
-            if let Some(PendingKind::Simple { cmd_id }) = kind {
-                state.resolve_command_by_id(
-                    cmd_id,
-                    crate::core::CommandStatus::Replied(String::new()),
-                );
-            }
-            return;
-        }
+    if handle_did_entry_reply(msg_id, &incoming, state, config) {
+        return;
     }
 
     // One-shot RPC from `send_rpc_and_wait`: route reply to the oneshot channel.
@@ -192,6 +179,95 @@ fn dispatch_reply(
     }
 }
 
+struct DidEntryReply {
+    parent: String,
+    nick: String,
+}
+
+fn handle_did_entry_reply(
+    msg_id: &str,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> bool {
+    let Some(entry) = did_entry_reply(&incoming.content) else {
+        return false;
+    };
+    let Some(pending) = state.pending_enter.get_untracked() else {
+        return false;
+    };
+    if incoming.from != pending.desired_room || entry.parent != pending.desired_room {
+        return false;
+    }
+    let Some((runtime, _)) = entry.parent.split_once('#') else {
+        return false;
+    };
+    if !runtime.starts_with("did:ma:") {
+        return false;
+    }
+    let Some(PendingKind::Simple { cmd_id }) = state.take_pending(msg_id) else {
+        return false;
+    };
+
+    config.update(|cfg| {
+        cfg.set(".my.ctx.use", "true");
+        cfg.set(".my.ctx.runtime", runtime);
+        cfg.set(".my.ctx.room", &entry.parent);
+        cfg.delete(".my.ctx.avatar");
+        cfg.delete(".my.ctx.kind");
+        if entry.nick.is_empty() {
+            cfg.delete(".my.ctx.nick");
+            cfg.delete(".my.ctx.alias");
+        } else {
+            cfg.set(".my.ctx.nick", &entry.nick);
+            cfg.delete(".my.ctx.alias");
+        }
+    });
+    state.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Replied(String::new()));
+    state.clear_pending_enter();
+
+    let cfg = config.get_untracked();
+    crate::eval::apply_ctx_focus(&cfg, state);
+    if let Some(session) = state.session.get_untracked() {
+        let username = session.username.clone();
+        let config_to_persist = cfg.clone();
+        spawn_local(async move {
+            if let Err(error) = persist_config(&username, &config_to_persist).await {
+                web_sys::console::error_1(&format!("entry context persist: {error}").into());
+            }
+        });
+    }
+    true
+}
+
+fn did_entry_reply(content: &[u8]) -> Option<DidEntryReply> {
+    let ciborium::Value::Array(items) =
+        ciborium::de::from_reader::<ciborium::Value, _>(&mut &content[..]).ok()?
+    else {
+        return None;
+    };
+    if term_head(&items) != Some(":ok") {
+        return None;
+    }
+    let ciborium::Value::Map(entries) = items.get(1)? else {
+        return None;
+    };
+    let parent = map_text(entries, "parent")?.to_string();
+    let nick = map_text(entries, "nick")?.to_string();
+    map_text(entries, "name")?;
+    map_text(entries, "description")?;
+    entries.iter().find_map(|(key, value)| {
+        (cbor_text(key) == Some("rev") && matches!(value, ciborium::Value::Integer(_))).then_some(())
+    })?;
+    Some(DidEntryReply { parent, nick })
+}
+
+fn map_text<'a>(entries: &'a [(ciborium::Value, ciborium::Value)], key: &str) -> Option<&'a str> {
+    entries.iter().find_map(|(entry_key, value)| {
+        (cbor_text(entry_key) == Some(key)).then(|| cbor_text(value)).flatten()
+    })
+}
+
 /// Handle unsolicited actor-authored client terms. Returns true when handled.
 fn handle_client_term(
     incoming: &IncomingMessage,
@@ -214,280 +290,54 @@ fn handle_client_term(
     }
 }
 
-fn client_term_array(incoming: &IncomingMessage) -> Option<Vec<ciborium::Value>> {
-    if !matches!(
-        incoming.message_type.as_str(),
-        ma_core::MESSAGE_TYPE_RPC | ma_core::MESSAGE_TYPE_RPC_REPLY
-    ) || incoming.content_type != ma_core::CONTENT_TYPE_TERM
-    {
-        return None;
-    }
-    match ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..]).ok()? {
-        ciborium::Value::Array(items) => Some(items),
-        _ => None,
-    }
-}
-
 fn term_head(items: &[ciborium::Value]) -> Option<&str> {
     items.first().and_then(cbor_text)
 }
 
-fn ctx_payload_from_items(items: &[ciborium::Value]) -> Option<&ciborium::Value> {
-    if term_head(items) == Some(":ctx") {
-        return items.get(1);
-    }
-    None
-}
-
-fn ctx_payload_from_reply_items(items: &[ciborium::Value]) -> Option<&ciborium::Value> {
-    let Some(ciborium::Value::Array(payload)) = items.get(1) else {
-        return None;
-    };
-    if term_head(items) == Some(":ok") && term_head(payload) == Some(":ctx") {
-        payload.get(1)
-    } else {
-        None
-    }
-}
-
 fn handle_client_term_array(
     items: Vec<ciborium::Value>,
-    incoming: &IncomingMessage,
+    _incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    let Some(ciborium::Value::Text(head)) = items.first() else {
+    let Some((event, args)) = decode_client_event(&items) else {
         return false;
     };
-    match head.as_str() {
-        ":print" => {
-            if let Some(text) = items.get(1).and_then(cbor_text) {
-                let text = config.get_untracked().substitute_display_dids(text);
-                state.push_incoming(text, None, false);
-            }
-            true
-        }
-        ":ctx" => {
-            handle_ctx_receipt(ctx_payload_from_items(&items), incoming, state, config);
-            true
-        }
-        _ => false,
+    if !crate::scheme::has_event_handler() {
+        return true;
     }
-}
-
-fn handle_ctx_receipt(
-    payload: Option<&ciborium::Value>,
-    incoming: &IncomingMessage,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) {
-    let cfg = config.get_untracked();
-    let Some(ciborium::Value::Array(pairs)) = payload else {
-        return;
-    };
-    let pending_enter = state.pending_enter.get_untracked();
-    let pending_room = pending_enter
-        .as_ref()
-        .map(|pending| pending.desired_room.as_str());
-    let root = ctx_value(pairs, ":root").map(str::to_string);
-    let avatar = ctx_value(pairs, ":avatar").map(str::to_string);
-    let inv = ctx_value(pairs, ":inv").map(str::to_string);
-    let room = ctx_value(pairs, ":room").map(str::to_string);
-    let explicit_shape = ctx_value(pairs, ":ctx")
-        .or_else(|| ctx_value(pairs, ":protocol"))
-        .map(str::to_string);
-    let kind = ctx_value(pairs, ":kind").map(str::to_string);
-    if explicit_shape
-        .as_deref()
-        .is_some_and(|shape| shape != AVATAR_CTX_PROTOCOL)
-    {
-        warn_ctx(&format!(
-            "[ctx] dropping unsupported avatar ctx from={} ctx={explicit_shape:?}",
-            incoming.from
-        ));
-        return;
-    }
-    if kind.as_deref().is_none_or(str::is_empty)
-        || root.as_deref().is_none_or(str::is_empty)
-        || room.as_deref().is_none_or(str::is_empty)
-    {
-        warn_ctx(&format!(
-            "[ctx] dropping incomplete avatar ctx from={} kind={kind:?} root={root:?} room={room:?}",
-            incoming.from
-        ));
-        return;
-    }
-    let expected_root = cfg.get(".my.ctx.root").map(str::to_string);
-    let expected_avatar = cfg.get(".my.ctx.avatar").map(str::to_string);
-    // Trust established directly from this message's own identity fields,
-    // independent of any leftover `pending_enter` from an earlier/unrelated
-    // `.enter` attempt. This is the strong signal: an avatar or root actor
-    // reporting on itself.
-    let trusted_by_identity = expected_root
-        .as_deref()
-        .is_some_and(|expected| incoming.from == expected)
-        || root.as_deref().is_some_and(|root| incoming.from == root)
-        || expected_avatar
-            .as_deref()
-            .is_some_and(|expected| incoming.from == expected)
-        || avatar
-            .as_deref()
-            .is_some_and(|avatar| incoming.from == avatar);
-    let trusted_by_pending =
-        pending_room.is_some_and(|expected_room| incoming.from == expected_room);
-    if !trusted_by_identity && !trusted_by_pending {
-        warn_ctx(&format!(
-            "[ctx] dropping untrusted :ctx from={} expected_root={expected_root:?} \
-             expected_avatar={expected_avatar:?} payload_root={root:?} payload_avatar={avatar:?}",
-            incoming.from
-        ));
-        return;
-    }
-
-    let mut completed_pending_enter = false;
-    if let Some(pending) = pending_enter {
-        let room_matches = room
-            .as_deref()
-            .is_some_and(|room| room == pending.desired_room);
-        if room_matches {
-            if let Some(cmd_id) = pending.cmd_id {
-                state.resolve_command_by_id(
-                    cmd_id,
-                    crate::core::CommandStatus::Replied(String::new()),
-                );
-            }
-            state.clear_pending_enter();
-            completed_pending_enter = true;
-        } else if trusted_by_identity {
-            // This ctx push is legitimately about the sender's own state (an
-            // avatar/root reporting on itself) even though it doesn't match
-            // a stale pending enter left over from an earlier attempt. Don't
-            // let that stale pending block it forever; drop the stale
-            // pending instead so future ctx pushes aren't blocked too.
-            warn_ctx(&format!(
-                "[ctx] room mismatch against stale pending_enter (desired={}, got={:?}); \
-                 clearing stale pending and applying ctx anyway",
-                pending.desired_room, room
-            ));
-            state.clear_pending_enter();
-        } else {
-            warn_ctx(&format!(
-                "[ctx] dropping :ctx: room mismatch and only trusted via pending_enter \
-                 (desired={}, got={:?})",
-                pending.desired_room, room
-            ));
-            return;
-        }
-    }
-
-    let nick = ctx_value(pairs, ":nick").map(str::to_string);
-    let text = ctx_value(pairs, ":text").map(str::to_string);
-    let runtime = root
-        .as_deref()
-        .or(Some(incoming.from.as_str()))
-        .and_then(|actor| {
-            actor
-                .split_once('#')
-                .map(|(runtime, _)| runtime.to_string())
-        });
-    let snapshot = CtxTailSnapshot {
-        runtime: runtime.clone(),
-        root: root.clone(),
-        avatar: avatar.clone(),
-        inv: inv.clone(),
-        room: room.clone(),
-        nick: nick.clone(),
-        kind: kind.clone(),
-        text: text.clone(),
-    };
-    if !completed_pending_enter && state.ctx_was_accepted(&incoming.from, &incoming.to, &snapshot) {
-        return;
-    }
-    config.update(|c| {
-        state.record_ctx_tail(snapshot.clone(), c);
-        c.set(".my.ctx.use", "true");
-        if let Some(runtime) = &runtime {
-            c.set(".my.ctx.runtime", runtime);
-        }
-        if let Some(root) = &root {
-            c.set(".my.ctx.root", root);
-        }
-        c.delete(".my.ctx.protocol");
-        c.delete(".my.ctx.ctx");
-        if let Some(kind) = &kind {
-            if kind.is_empty() {
-                c.delete(".my.ctx.kind");
-            } else {
-                c.set(".my.ctx.kind", kind);
-            }
-        }
-        if let Some(avatar) = &avatar {
-            if avatar.is_empty() {
-                c.delete(".my.ctx.avatar");
-            } else {
-                c.set(".my.ctx.avatar", avatar);
-            }
-        }
-        if let Some(inv) = &inv {
-            c.delete(".my.ctx.inventory");
-            if inv.is_empty() {
-                c.delete(".my.ctx.inv");
-            } else {
-                c.set(".my.ctx.inv", inv);
-            }
-        }
-        if let Some(nick) = &nick {
-            if nick.is_empty() {
-                c.delete(".my.ctx.nick");
-                c.delete(".my.ctx.alias");
-            } else {
-                c.set(".my.ctx.nick", nick);
-                c.delete(".my.ctx.alias");
-            }
-        }
-        if let Some(room) = &room {
-            if room.is_empty() {
-                c.delete(".my.ctx.room");
-            } else {
-                c.set(".my.ctx.room", room);
-            }
+    let state = state.clone();
+    spawn_local(async move {
+        if let Err(error) = crate::scheme::call_event(&event, args, &state, config).await {
+            state.push_error(format!("event {event}: {error}"));
         }
     });
-    state.remember_accepted_ctx(incoming.from.clone(), incoming.to.clone(), snapshot);
-
-    let cfg = config.get_untracked();
-    crate::eval::apply_ctx_focus(&cfg, state);
-    if let Some(sess) = state.session.get_untracked() {
-        let uname = sess.username.clone();
-        let cfg_persist = cfg.clone();
-        spawn_local(async move {
-            if let Err(e) = persist_config(&uname, &cfg_persist).await {
-                web_sys::console::error_1(&format!("ctx persist: {e}").into());
-            }
-        });
-    }
-    if let Some(text) = text {
-        state.push_incoming(cfg.substitute_display_dids(&text), None, false);
-    }
+    true
 }
 
-#[cfg(target_arch = "wasm32")]
-fn warn_ctx(message: &str) {
-    web_sys::console::warn_1(&message.into());
+fn decode_client_event(items: &[ciborium::Value]) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
+    let head = term_head(items)?;
+    let args = &items[1..];
+    let valid = match head {
+        ":print" => args.len() == 1 && cbor_text(&args[0]).is_some(),
+        ":arrive" | ":leave" | ":take" | ":drop" => {
+            args.len() == 1 && event_ctx(&args[0])
+        }
+        ":say" | ":emote" | ":dig" | ":fill" => {
+            args.len() == 2 && event_ctx(&args[0]) && cbor_text(&args[1]).is_some()
+        }
+        _ => false,
+    };
+    valid.then(|| (head.to_string(), args.iter().map(cbor_to_scheme_val).collect()))
 }
 
-#[cfg(not(target_arch = "wasm32"))]
-fn warn_ctx(message: &str) {
-    eprintln!("{message}");
-}
-
-fn ctx_value<'a>(pairs: &'a [ciborium::Value], key: &str) -> Option<&'a str> {
-    pairs.iter().find_map(|pair| match pair {
-        ciborium::Value::Array(items) if items.len() == 2 => match (&items[0], &items[1]) {
-            (ciborium::Value::Text(k), ciborium::Value::Text(v)) if k == key => Some(v.as_str()),
-            _ => None,
-        },
-        _ => None,
+fn event_ctx(value: &ciborium::Value) -> bool {
+    let ciborium::Value::Map(entries) = value else {
+        return false;
+    };
+    ["did", "actor"].into_iter().any(|identity| {
+        map_text(entries, identity)
+            .is_some_and(|value| value.starts_with("did:ma:"))
     })
 }
 
@@ -518,20 +368,6 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
         return;
     };
 
-    // Only recover automatically when there is an active avatar context.
-    // Without an avatar (direct agent mode), just suggest the start room.
-    if cfg
-        .get(".my.ctx.avatar")
-        .map(str::trim)
-        .filter(|avatar| avatar.starts_with("did:ma:") && avatar.contains('#'))
-        .is_none()
-    {
-        state.push_error(format!(
-            "unknown entity fragment — use .enter @{runtime} to enter the default start room"
-        ));
-        return;
-    }
-
     // Avoid enqueue storms while a recovery enter is already pending/queued.
     if state.pending_enter.get_untracked().is_some() {
         return;
@@ -556,11 +392,11 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
     };
     #[cfg(target_arch = "wasm32")]
     web_sys::console::warn_1(
-        &format!("[ctx-recovery] stale avatar/fragment detected; queuing auto-enter: {enter}")
+        &format!("[ctx-recovery] stale room/fragment detected; queuing auto-enter: {enter}")
             .into(),
     );
     state.push_system(format!(
-        "auto-recovery: stale avatar detected, re-entering with .enter {enter}"
+        "auto-recovery: stale room detected, re-entering with .enter {enter}"
     ));
     state
         .input_queue
@@ -721,6 +557,62 @@ mod tests {
         }
     }
 
+    fn event_ctx_value() -> ciborium::Value {
+        ciborium::Value::Map(vec![
+            (
+                ciborium::Value::Text("did".to_string()),
+                ciborium::Value::Text("did:ma:alice".to_string()),
+            ),
+            (
+                ciborium::Value::Text("nick".to_string()),
+                ciborium::Value::Text("Alice".to_string()),
+            ),
+        ])
+    }
+
+    #[test]
+    fn standard_client_events_decode_to_typed_arguments() {
+        let ctx = event_ctx_value();
+        let cases = [
+            (":print", vec![ciborium::Value::Text("quack".to_string())]),
+            (":arrive", vec![ctx.clone()]),
+            (":leave", vec![ctx.clone()]),
+            (":take", vec![ctx.clone()]),
+            (":drop", vec![ctx.clone()]),
+            (":say", vec![ctx.clone(), ciborium::Value::Text("quack".to_string())]),
+            (":emote", vec![ctx.clone(), ciborium::Value::Text("waddles".to_string())]),
+            (":dig", vec![ctx.clone(), ciborium::Value::Text("north".to_string())]),
+            (":fill", vec![ctx, ciborium::Value::Text("north".to_string())]),
+        ];
+
+        for (event, args) in cases {
+            let mut term = vec![ciborium::Value::Text(event.to_string())];
+            term.extend(args);
+            let (decoded_event, decoded_args) = decode_client_event(&term).expect("valid event");
+            assert_eq!(decoded_event, event);
+            assert!(!decoded_args.is_empty());
+        }
+    }
+
+    #[test]
+    fn malformed_client_events_are_rejected() {
+        assert!(decode_client_event(&[
+            ciborium::Value::Text(":say".to_string()),
+            event_ctx_value(),
+        ])
+        .is_none());
+        assert!(decode_client_event(&[
+            ciborium::Value::Text(":arrive".to_string()),
+            ciborium::Value::Text("did:ma:alice".to_string()),
+        ])
+        .is_none());
+        assert!(decode_client_event(&[
+            ciborium::Value::Text(":unknown".to_string()),
+            ciborium::Value::Text("anything".to_string()),
+        ])
+        .is_none());
+    }
+
     #[test]
     fn format_display_shortens_did_url_in_text() {
         let _runtime = leptos::prelude::Owner::new();
@@ -752,6 +644,7 @@ mod tests {
         );
     }
 
+    #[cfg(any())]
     #[test]
     fn ctx_payload_is_extracted_from_direct_ctx_term() {
         let payload = ciborium::Value::Array(vec![ciborium::Value::Array(vec![
@@ -766,6 +659,7 @@ mod tests {
         ));
     }
 
+    #[cfg(any())]
     #[test]
     fn avatar_ctx_is_extracted_from_ok_reply_payload() {
         let payload = ciborium::Value::Array(vec![ciborium::Value::Array(vec![
@@ -789,6 +683,53 @@ mod tests {
         ));
     }
 
+    #[test]
+    fn did_entry_reply_requires_complete_presence_ctx() {
+        let complete = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":ok".to_string()),
+            ciborium::Value::Map(vec![
+                (
+                    ciborium::Value::Text("parent".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#room".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("name".to_string()),
+                    ciborium::Value::Text("Alice".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("nick".to_string()),
+                    ciborium::Value::Text("Alice".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("description".to_string()),
+                    ciborium::Value::Text("A visitor.".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("rev".to_string()),
+                    ciborium::Value::Integer(1.into()),
+                ),
+            ]),
+        ]);
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(&complete, &mut content).unwrap();
+
+        let entry = did_entry_reply(&content).expect("complete DID ctx is accepted");
+        assert_eq!(entry.parent, "did:ma:k51runtime#room");
+        assert_eq!(entry.nick, "Alice");
+
+        let incomplete = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":ok".to_string()),
+            ciborium::Value::Map(vec![(
+                ciborium::Value::Text("parent".to_string()),
+                ciborium::Value::Text("did:ma:k51runtime#room".to_string()),
+            )]),
+        ]);
+        let mut incomplete_content = Vec::new();
+        ciborium::ser::into_writer(&incomplete, &mut incomplete_content).unwrap();
+        assert!(did_entry_reply(&incomplete_content).is_none());
+    }
+
+    #[cfg(any())]
     #[test]
     fn ctx_receipt_applies_flat_avatar_ctx_fields() {
         let _runtime = leptos::prelude::Owner::new();
@@ -825,6 +766,7 @@ mod tests {
         );
     }
 
+    #[cfg(any())]
     #[test]
     fn duplicate_ctx_receipt_skips_focus_tail_and_text_updates() {
         let _runtime = leptos::prelude::Owner::new();
@@ -879,6 +821,7 @@ mod tests {
         );
     }
 
+    #[cfg(any())]
     #[test]
     fn changed_ctx_receipt_updates_focus() {
         let _runtime = leptos::prelude::Owner::new();
@@ -920,6 +863,7 @@ mod tests {
             .is_some_and(|focus| focus.prompt.starts_with("Alicia@")));
     }
 
+    #[cfg(any())]
     #[test]
     fn ctx_receipt_accepts_new_cross_runtime_avatar_identity() {
         let _runtime = leptos::prelude::Owner::new();
@@ -979,6 +923,7 @@ mod tests {
         );
     }
 
+    #[cfg(any())]
     #[test]
     fn ctx_receipt_resolves_matching_pending_enter_command() {
         let _runtime = leptos::prelude::Owner::new();
@@ -1055,6 +1000,7 @@ mod tests {
         );
     }
 
+    #[cfg(any())]
     #[test]
     fn ctx_receipt_rejects_unknown_shape() {
         let _runtime = leptos::prelude::Owner::new();
@@ -1084,6 +1030,7 @@ mod tests {
         assert_eq!(cfg.get(".my.ctx.protocol"), None);
     }
 
+    #[cfg(any())]
     #[test]
     fn ctx_receipt_ignores_shape_less_movement_ctx() {
         let _runtime = leptos::prelude::Owner::new();
@@ -1133,7 +1080,6 @@ mod tests {
             cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
             cfg.set(".my.ctx.room", &format!("did:ma:k51runtime#{missing_room}"));
-            cfg.set(".my.ctx.avatar", "did:ma:k51runtime#avatar123");
             cfg.set(".my.ctx.nick", "foo");
         });
         state.input_queue.set(VecDeque::new());

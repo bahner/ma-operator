@@ -36,12 +36,30 @@ pub(super) fn handle_doc(
 }
 
 fn eval_lines(content: &str) -> Vec<String> {
-    content
-        .lines()
-        .map(str::trim)
-        .filter(|line| !line.is_empty() && !line.starts_with('#'))
-        .map(str::to_string)
-        .collect()
+    let mut inputs = Vec::new();
+    let mut buffer = String::new();
+
+    for line in content.lines() {
+        let trimmed = line.trim();
+        if buffer.is_empty() && (trimmed.is_empty() || trimmed.starts_with('#')) {
+            continue;
+        }
+
+        if !buffer.is_empty() {
+            buffer.push('\n');
+        }
+        buffer.push_str(line);
+
+        if !crate::scheme::has_incomplete_expression(&buffer) {
+            inputs.push(std::mem::take(&mut buffer));
+        }
+    }
+
+    if !buffer.is_empty() {
+        inputs.push(buffer);
+    }
+
+    inputs
 }
 
 // ── Verb handlers ─────────────────────────────────────────────────────────
@@ -313,6 +331,33 @@ mod tests {
         assert_eq!(
             eval_lines("# note (.my.ctx.room)\n(define duckie \"quack\")"),
             vec!["(define duckie \"quack\")"]
+        );
+    }
+
+    #[test]
+    fn eval_lines_combines_multiline_scheme_forms() {
+        assert_eq!(
+            eval_lines("(define (look)\n  (@(avatar):look))"),
+            vec!["(define (look)\n  (@(avatar):look))"]
+        );
+    }
+
+    #[test]
+    fn eval_lines_ignores_notes_between_multiline_forms() {
+        assert_eq!(
+            eval_lines("# avatar commands\n(define (go direction)\n  (@(avatar):go direction))\n# invoke it\n(go \"north\")"),
+            vec![
+                "(define (go direction)\n  (@(avatar):go direction))",
+                "(go \"north\")",
+            ]
+        );
+    }
+
+    #[test]
+    fn eval_lines_does_not_buffer_parentheses_in_quoted_text() {
+        assert_eq!(
+            eval_lines("say \"an (unclosed parenthesis\"\nlook"),
+            vec!["say \"an (unclosed parenthesis\"", "look"]
         );
     }
 

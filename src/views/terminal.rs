@@ -87,10 +87,6 @@ pub fn Terminal() -> impl IntoView {
     let handle_input_fn: std::sync::Arc<dyn Fn(String) + Send + Sync> = {
         let state = state.clone();
         std::sync::Arc::new(move |line: String| {
-            let line = line.trim().to_string();
-            if line.is_empty() {
-                return;
-            }
             state.input_queue.update(|q| q.push_back(line));
         })
     };

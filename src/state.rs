@@ -4,7 +4,7 @@ use ma_core::{Inbox, IpfsGatewayResolver, Message};
 use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashMap, VecDeque};
+use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 
 /// Oneshot sender for a plain-text reply.
@@ -67,7 +67,6 @@ pub struct FocusMode {
     pub room: Option<String>,
     pub target: String,
     pub root_actor: Option<String>,
-    pub avatar_actor: Option<String>,
     pub prompt: String,
 }
 
@@ -78,69 +77,6 @@ pub struct PendingEnter {
     pub desired_room: String,
     pub issued_at_ms: f64,
     pub visible: bool,
-}
-
-const CTX_TAIL_DEFAULT_MAX: usize = 100;
-const CTX_TAIL_ENTRIES_KEY: &str = ".my.ctx.tail.entries";
-const CTX_TAIL_LENGTH_KEY: &str = ".my.ctx.tail.length";
-
-#[derive(Clone, Debug, Default, PartialEq)]
-pub struct CtxTailSnapshot {
-    pub runtime: Option<String>,
-    pub root: Option<String>,
-    pub avatar: Option<String>,
-    pub inv: Option<String>,
-    pub room: Option<String>,
-    pub nick: Option<String>,
-    pub kind: Option<String>,
-    pub text: Option<String>,
-}
-
-impl CtxTailSnapshot {
-    fn room(&self) -> Option<&str> {
-        self.room.as_deref().filter(|room| !room.is_empty())
-    }
-
-    fn to_fields(&self) -> HashMap<String, String> {
-        let mut fields = HashMap::new();
-        fields.insert("at_ms".to_string(), format!("{:.0}", now_ms()));
-        for (key, value) in [
-            ("runtime", self.runtime.as_deref()),
-            ("root", self.root.as_deref()),
-            ("avatar", self.avatar.as_deref()),
-            ("inv", self.inv.as_deref()),
-            ("room", self.room.as_deref()),
-            ("nick", self.nick.as_deref()),
-            ("kind", self.kind.as_deref()),
-            ("text", self.text.as_deref()),
-        ] {
-            if let Some(value) = value.filter(|value| !value.is_empty()) {
-                fields.insert(key.to_string(), value.to_string());
-            }
-        }
-        fields
-    }
-}
-
-fn ctx_tail_len(cfg: &crate::config::EgoConfig) -> usize {
-    cfg.get(CTX_TAIL_LENGTH_KEY)
-        .and_then(|value| value.parse().ok())
-        .filter(|len| *len > 0)
-        .unwrap_or(CTX_TAIL_DEFAULT_MAX)
-}
-
-fn now_ms() -> f64 {
-    #[cfg(target_arch = "wasm32")]
-    {
-        js_sys::Date::now()
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        std::time::SystemTime::now()
-            .duration_since(std::time::UNIX_EPOCH)
-            .map(|duration| duration.as_millis() as f64)
-            .unwrap_or_default()
-    }
 }
 
 // ── Pending request kinds ─────────────────────────────────────────────────
@@ -306,7 +242,6 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
-    last_accepted_ctx: RwSignal<Option<(String, String, CtxTailSnapshot)>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
     /// Each entry describes what to do when the reply arrives.
@@ -327,6 +262,8 @@ pub struct AppState {
     pub startup_ma: RwSignal<Option<String>>,
     /// FIFO queue of raw input lines waiting to be dispatched.
     pub input_queue: RwSignal<VecDeque<String>>,
+    /// Incomplete Scheme input retained until all opened parentheses close.
+    pub multiline_input: RwSignal<String>,
     /// All active batches, keyed by batch id.
     pub batches: RwSignal<HashMap<u64, ActiveBatch>>,
     /// Counter for generating unique batch ids.
@@ -347,7 +284,6 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
-            last_accepted_ctx: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
@@ -357,6 +293,7 @@ impl AppState {
             startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
             input_queue: RwSignal::new(VecDeque::new()),
+            multiline_input: RwSignal::new(String::new()),
             batches: RwSignal::new(HashMap::new()),
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
@@ -381,6 +318,7 @@ impl AppState {
             .batches
             .with_untracked(|b| b.values().map(|batch| batch.header_cmd_id).collect());
         self.input_queue.update(|q| q.clear());
+        self.multiline_input.set(String::new());
         self.outbox_queue.update(|q| q.clear());
         self.pending_requests.update(|m| m.clear());
         self.pending_enter.set(None);
@@ -622,59 +560,16 @@ impl AppState {
         self.pending_enter.set(None);
     }
 
-    pub fn ctx_was_accepted(
-        &self,
-        sender: &str,
-        recipient: &str,
-        snapshot: &CtxTailSnapshot,
-    ) -> bool {
-        self.last_accepted_ctx.with_untracked(|last| {
-            last.as_ref()
-                .is_some_and(|(last_sender, last_recipient, last_snapshot)| {
-                    last_sender == sender
-                        && last_recipient == recipient
-                        && last_snapshot == snapshot
-                })
-        })
-    }
-
-    pub fn remember_accepted_ctx(
-        &self,
-        sender: String,
-        recipient: String,
-        snapshot: CtxTailSnapshot,
-    ) {
-        self.last_accepted_ctx
-            .set(Some((sender, recipient, snapshot)));
-    }
-
-    pub fn record_ctx_tail(&self, snapshot: CtxTailSnapshot, cfg: &mut crate::config::EgoConfig) {
-        let Some(room) = snapshot.room() else {
-            return;
-        };
-        let max_len = ctx_tail_len(cfg);
-        let mut entries = compact_ctx_tail_entries(cfg);
-        if entries.first().and_then(|entry| entry.get("room")) == Some(&room.to_string()) {
-            entries.remove(0);
-        }
-        entries.insert(0, snapshot.to_fields());
-        entries.truncate(max_len);
-        write_ctx_tail_entries(cfg, &entries);
-    }
-
     /// Remove and return the pending kind for the given message id, if any.
     pub fn take_pending(&self, msg_id: &str) -> Option<PendingKind> {
         let result = self
             .pending_requests
-            .update_untracked(|m| m.remove(msg_id))
-            .map(|tr| tr.kind);
+            .update_untracked(|requests| requests.remove(msg_id))
+            .map(|request| request.kind);
         if let Some(ref kind) = result {
-            log::debug!("[pending] matched reply msg_id={} kind={:?}", msg_id, kind);
+            log::debug!("[pending] matched reply msg_id={msg_id} kind={kind:?}");
         } else {
-            log::debug!(
-                "[pending] no match for reply msg_id={} (already expired or unknown)",
-                msg_id
-            );
+            log::debug!("[pending] no match for reply msg_id={msg_id} (already expired or unknown)");
         }
         result
     }
@@ -781,126 +676,23 @@ impl AppState {
     }
 }
 
-fn compact_ctx_tail_entries(cfg: &crate::config::EgoConfig) -> Vec<HashMap<String, String>> {
-    let mut grouped: BTreeMap<usize, HashMap<String, String>> = BTreeMap::new();
-    for (key, value) in &cfg.tree {
-        let Some(rest) = key.strip_prefix(".my.ctx.tail.entries.") else {
-            continue;
-        };
-        let Some((idx, field)) = rest.split_once('.') else {
-            continue;
-        };
-        let Ok(idx) = idx.parse::<usize>() else {
-            continue;
-        };
-        if field.is_empty() {
-            continue;
-        }
-        grouped
-            .entry(idx)
-            .or_default()
-            .insert(field.to_string(), value.clone());
+fn now_ms() -> f64 {
+    #[cfg(target_arch = "wasm32")]
+    {
+        js_sys::Date::now()
     }
-    grouped
-        .into_values()
-        .filter(|entry| entry.get("room").is_some_and(|room| !room.is_empty()))
-        .collect()
-}
-
-fn write_ctx_tail_entries(cfg: &mut crate::config::EgoConfig, entries: &[HashMap<String, String>]) {
-    let numeric_tail_keys: Vec<String> = cfg
-        .tree
-        .keys()
-        .filter_map(|key| {
-            let suffix = key.strip_prefix(".my.ctx.tail.entries.")?;
-            let (idx, _) = suffix.split_once('.')?;
-            idx.parse::<usize>().ok().map(|_| key.clone())
-        })
-        .collect();
-    for key in numeric_tail_keys {
-        cfg.delete(&key);
-    }
-    for (idx, entry) in entries.iter().enumerate() {
-        let mut fields: Vec<_> = entry.iter().collect();
-        fields.sort_by_key(|(key, _)| key.as_str());
-        for (field, value) in fields {
-            cfg.set(format!("{CTX_TAIL_ENTRIES_KEY}.{idx}.{field}"), value);
-        }
+    #[cfg(not(target_arch = "wasm32"))]
+    {
+        std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|duration| duration.as_millis() as f64)
+            .unwrap_or_default()
     }
 }
 
 impl Default for AppState {
     fn default() -> Self {
         Self::new()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::config::EgoConfig;
-
-    #[test]
-    fn ctx_tail_prepends_newest_and_compacts_holes() {
-        let _runtime = leptos::prelude::Owner::new();
-        let state = AppState::new();
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.tail.length", "3");
-        cfg.set(".my.ctx.tail.entries.0.room", "did:ma:runtime#kitchen");
-        cfg.set(".my.ctx.tail.entries.0.nick", "Fjodor");
-        cfg.set(".my.ctx.tail.entries.2.room", "did:ma:runtime#hall");
-        cfg.set(".my.ctx.tail.entries.7.room", "did:ma:runtime#garden");
-
-        state.record_ctx_tail(
-            CtxTailSnapshot {
-                runtime: Some("did:ma:runtime".to_string()),
-                room: Some("did:ma:runtime#tower".to_string()),
-                nick: Some("Fjodor".to_string()),
-                ..CtxTailSnapshot::default()
-            },
-            &mut cfg,
-        );
-
-        assert_eq!(
-            cfg.get(".my.ctx.tail.entries.0.room"),
-            Some("did:ma:runtime#tower")
-        );
-        assert_eq!(
-            cfg.get(".my.ctx.tail.entries.1.room"),
-            Some("did:ma:runtime#kitchen")
-        );
-        assert_eq!(cfg.get(".my.ctx.tail.entries.1.nick"), Some("Fjodor"));
-        assert_eq!(
-            cfg.get(".my.ctx.tail.entries.2.room"),
-            Some("did:ma:runtime#hall")
-        );
-        assert_eq!(cfg.get(".my.ctx.tail.entries.3.room"), None);
-        assert_eq!(cfg.get(".my.ctx.tail.entries.7.room"), None);
-    }
-
-    #[test]
-    fn ctx_tail_replaces_current_newest_room() {
-        let _runtime = leptos::prelude::Owner::new();
-        let state = AppState::new();
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.tail.entries.0.room", "did:ma:runtime#room");
-        cfg.set(".my.ctx.tail.entries.0.nick", "Old");
-
-        state.record_ctx_tail(
-            CtxTailSnapshot {
-                room: Some("did:ma:runtime#room".to_string()),
-                nick: Some("New".to_string()),
-                ..CtxTailSnapshot::default()
-            },
-            &mut cfg,
-        );
-
-        assert_eq!(
-            cfg.get(".my.ctx.tail.entries.0.room"),
-            Some("did:ma:runtime#room")
-        );
-        assert_eq!(cfg.get(".my.ctx.tail.entries.0.nick"), Some("New"));
-        assert_eq!(cfg.get(".my.ctx.tail.entries.1.room"), None);
     }
 }
 

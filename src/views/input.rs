@@ -76,13 +76,8 @@ pub fn InputBar(
         Effect::new(move |_| {
             if let Some(text) = eval_input.get() {
                 eval_input.update_untracked(|v| *v = None);
-                let lines: Vec<String> = text
-                    .lines()
-                    .map(|l| l.trim().to_string())
-                    .filter(|l| !l.is_empty() && !l.starts_with('#'))
-                    .collect();
-                for line in lines {
-                    on_submit(line);
+                for line in text.split('\n') {
+                    on_submit(line.to_string());
                 }
             }
         });
@@ -164,14 +159,10 @@ pub fn InputBar(
             let mut lines = text.split('\n');
             if let Some(first) = lines.next() {
                 let combined = format!("{existing}{first}");
-                if !combined.trim().is_empty() {
-                    on_submit(combined);
-                }
+                on_submit(combined);
             }
             for line in lines {
-                if !line.trim().is_empty() {
-                    on_submit(line.to_string());
-                }
+                on_submit(line.to_string());
             }
         }
     };

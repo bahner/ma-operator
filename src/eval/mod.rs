@@ -364,7 +364,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             }
             state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
             let send_result = if enter_kind.is_none() {
-                let enter_args = avatar_enter_args(effective_nick.as_deref(), inventory.as_deref());
+                let enter_args = did_enter_args(effective_nick.as_deref(), inventory.as_deref());
                 transport::send_rpc(room_actor, "enter", &enter_args).await
             } else {
                 let enter_args = build_enter_ctx(
@@ -382,9 +382,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             }
             match send_result {
                 Ok(msg_id) => {
-                    if room_enter_expects_direct_reply(enter_kind.as_deref()) {
-                        state2.bind_message_id(cmd_id, msg_id);
-                    }
+                    state2.bind_message_id(cmd_id, msg_id);
                 }
                 Err(e) => {
                     state2.clear_pending_enter();
@@ -499,7 +497,7 @@ fn enter_args_root<'a>(
     }
 }
 
-fn avatar_enter_args<'a>(nick: Option<&'a str>, inventory: Option<&'a str>) -> Vec<&'a str> {
+fn did_enter_args<'a>(nick: Option<&'a str>, inventory: Option<&'a str>) -> Vec<&'a str> {
     match (nick, inventory) {
         (Some(nick), Some(inventory)) => vec![nick, inventory],
         (None, Some(inventory)) => vec!["", inventory],
@@ -566,10 +564,6 @@ fn enter_ctx_kind(kind: Option<&str>) -> Result<Option<&str>, String> {
     }
 }
 
-fn room_enter_expects_direct_reply(kind: Option<&str>) -> bool {
-    kind.is_some()
-}
-
 fn trim_or_fallback(value: Option<String>, fallback: &str) -> String {
     value
         .map(|v| v.trim().to_string())
@@ -611,9 +605,9 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_ctx_focus, avatar_enter_args, build_enter_ctx, configured_inventory, enter_args,
+        apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_args,
         enter_ctx_kind, enter_target_display, focus_target_for_room, parse_enter_target,
-        room_enter_expects_direct_reply, toggle_existing_ctx, validate_alias_set,
+        toggle_existing_ctx, validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
@@ -723,13 +717,6 @@ mod tests {
     }
 
     #[test]
-    fn room_session_enter_completes_by_ctx_not_direct_reply() {
-        assert!(!room_enter_expects_direct_reply(None));
-        assert!(room_enter_expects_direct_reply(Some("agent")));
-        assert!(room_enter_expects_direct_reply(Some("thing")));
-    }
-
-    #[test]
     fn build_enter_ctx_requires_direct_entry_kind() {
         let state = AppState::new();
         let cfg = EgoConfig::default();
@@ -773,7 +760,7 @@ mod tests {
     }
 
     #[test]
-    fn avatar_enter_args_carry_inventory_without_requiring_nick() {
+    fn did_enter_args_carry_inventory_without_requiring_nick() {
         let inventory = "did:ma:k51source#inventory";
 
         assert_eq!(
@@ -781,7 +768,7 @@ mod tests {
             vec!["", "", inventory]
         );
         assert_eq!(
-            avatar_enter_args(None, Some(inventory)),
+            did_enter_args(None, Some(inventory)),
             vec!["", inventory]
         );
     }
@@ -1200,7 +1187,7 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
         return;
     };
     let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
-    let avatar = cfg
+    let nick = cfg
         .get(".my.ctx.nick")
         .or_else(|| cfg.get(".my.ctx.alias"))
         .unwrap_or("")
@@ -1214,22 +1201,20 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
     } else {
         format!("@{runtime}")
     };
-    let prompt = if avatar.is_empty() {
+    let prompt = if nick.is_empty() {
         base_prompt
     } else {
-        format!("{avatar}{base_prompt}")
+        format!("{nick}{base_prompt}")
     };
     log::debug!(
-        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} avatar={:?} prompt={prompt:?}",
-        cfg.get(".my.ctx.root"),
-        cfg.get(".my.ctx.avatar")
+        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} prompt={prompt:?}",
+        cfg.get(".my.ctx.root")
     );
     state.focus_actor.set(Some(FocusMode {
         runtime,
         room: if room.is_empty() { None } else { Some(room) },
         target,
         root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
-        avatar_actor: cfg.get(".my.ctx.avatar").map(|s| s.to_string()),
         prompt,
     }));
 }
