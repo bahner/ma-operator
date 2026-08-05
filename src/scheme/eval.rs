@@ -71,7 +71,7 @@ impl SchemeCtx for EvalCtx {
                 }
             },
             Ok(_) => Err(SchemeErr::MaError(format!(
-                "expected a local .my or .ma.ctx path, got: {cmd}"
+                "expected a local #.my or #.ctx path, got: {cmd}"
             ))),
         }
     }

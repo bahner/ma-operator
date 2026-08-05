@@ -173,25 +173,25 @@ then dispatched through the normal parser.
 
 | Form | What it does |
 |---|---|
-| `(.my.aliases.sky)` | dot-path get — returns the config value |
-| `(.my.config.k: "v")` | dot-path set — writes config, returns nil |
-| `(.my.path!verb …)` | side-effect verb — queued to input_queue, returns nil |
+| `(#.my.aliases.sky)` | dot-path get — returns the config value |
+| `(#.my.config.k: "v")` | dot-path set — writes config, returns nil |
+| `(#.my.path!verb …)` | side-effect verb — queued to input_queue, returns nil |
 | `(@ma#room:look)` | actor RPC — sends, awaits reply string |
 | `(did:ma:abc#room:enter ticket)` | same, DID directly in function position |
 
 The head character determines dispatch:
-- starts with `.` → ma dot-command (synchronous)
+- starts with `#.` → ma dot-command (synchronous)
 - starts with `@` or evaluates to a `did:` string → ma actor message (async RPC)
 - anything else → standard Scheme form or lambda call
 
 ### Example
 
 ```
-@(.my.aliases.sky)#room:look ((string-append "north" " gate"))
+@(#.my.aliases.sky)#room:look ((string-append "north" " gate"))
 ```
 
 Evaluation:
-1. `(.my.aliases.sky)` → `did:ma:def` (sync config lookup)
+1. `(#.my.aliases.sky)` → `did:ma:def` (sync config lookup)
 2. `(string-append "north" " gate")` → `"north gate"`
 3. Expanded line: `@did:ma:def#room:look north gate`
 5. Dispatched as a normal actor message

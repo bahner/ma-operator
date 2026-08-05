@@ -99,8 +99,8 @@ fn doc_edit(
 ///
 /// Lines are processed one at a time.  Scheme expressions are fully
 /// expanded (including any CID fetches) before the next line is started.
-/// This guarantees that `(include #/ipfs/bafy…)` defines are available to
-/// subsequent lines in the same document.
+/// This guarantees that `(include #/ipfs/bafy…)` and `(include #.my.doc.x)`
+/// defines are available to subsequent lines in the same document.
 fn doc_eval(
     path: &str,
     state: &AppState,
