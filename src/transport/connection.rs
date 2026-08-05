@@ -50,12 +50,19 @@ pub fn gateway_base_url() -> String {
     }
 }
 
-fn session_resolver() -> IpfsGatewayResolver {
+/// Returns IPFS gateways to try in priority order.
+/// Local gateway is always first; on HTTPS pages a public fallback is appended.
+pub fn ipfs_gateway_list() -> Vec<&'static str> {
     if should_use_public_gateway() {
-        IpfsGatewayResolver::public_default()
+        vec![LOCAL_GATEWAY_URL, PUBLIC_GATEWAY_URL]
     } else {
-        IpfsGatewayResolver::default()
+        vec![LOCAL_GATEWAY_URL]
     }
+}
+
+fn session_resolver() -> IpfsGatewayResolver {
+    // Always try local gateway first (browsers allow localhost from HTTPS pages).
+    IpfsGatewayResolver::default()
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────

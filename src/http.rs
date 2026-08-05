@@ -3,7 +3,7 @@
 //! These are the only HTTP primitives in the codebase. All other modules
 //! import from here rather than rolling their own fetch.
 
-use crate::transport::connection::gateway_base_url;
+use crate::transport::connection::ipfs_gateway_list;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
 use wasm_bindgen::JsCast;
@@ -110,25 +110,40 @@ pub async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
 
 /// Fetch raw bytes for a bare CID from the active IPFS gateway.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    fetch_url_bytes(&format!("{}ipfs/{cid}", gateway_base_url())).await
+    let mut errors = Vec::new();
+    for gateway in ipfs_gateway_list() {
+        match fetch_url_bytes(&format!("{gateway}ipfs/{cid}")).await {
+            Ok(bytes) => return Ok(bytes),
+            Err(e) => errors.push(format!("{gateway}: {e}")),
+        }
+    }
+    Err(errors.join("; "))
 }
 
 /// Fetch text for a bare CID from the active IPFS gateway.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    fetch_url_text(&format!("{}ipfs/{cid}", gateway_base_url())).await
+    let mut errors = Vec::new();
+    for gateway in ipfs_gateway_list() {
+        match fetch_url_text(&format!("{gateway}ipfs/{cid}")).await {
+            Ok(text) => return Ok(text),
+            Err(e) => errors.push(format!("{gateway}: {e}")),
+        }
+    }
+    Err(errors.join("; "))
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
 /// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
 /// blocks so zion, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let base = gateway_base_url();
     let mut errors = Vec::new();
-    for arg in fetch_path_bytes_args(path) {
-        let url = format!("{base}{arg}");
-        match fetch_url_bytes(&url).await {
-            Ok(bytes) => return Ok(bytes),
-            Err(e) => errors.push(format!("{url}: {e}")),
+    for gateway in ipfs_gateway_list() {
+        for arg in fetch_path_bytes_args(path) {
+            let url = format!("{gateway}{arg}");
+            match fetch_url_bytes(&url).await {
+                Ok(bytes) => return Ok(bytes),
+                Err(e) => errors.push(format!("{url}: {e}")),
+            }
         }
     }
     Err(errors.join("; "))
@@ -138,7 +153,14 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    fetch_url_text(&format!("{}{arg}", gateway_base_url())).await
+    let mut errors = Vec::new();
+    for gateway in ipfs_gateway_list() {
+        match fetch_url_text(&format!("{gateway}{arg}")).await {
+            Ok(text) => return Ok(text),
+            Err(e) => errors.push(format!("{gateway}: {e}")),
+        }
+    }
+    Err(errors.join("; "))
 }
 
 fn fetch_path_bytes_args(path: &str) -> Vec<String> {

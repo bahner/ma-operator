@@ -236,14 +236,18 @@ fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
         return None;
     }
     let runtime = cfg.get(".my.ctx.runtime")?.trim();
-    if runtime.is_empty() {
+    if !runtime.starts_with("did:ma:") {
         return None;
     }
-    let room = cfg
-        .get(".my.ctx.room")
-        .map(str::trim)
-        .filter(|room| room.starts_with(&format!("{runtime}#")))
-        .unwrap_or(runtime);
+    let room = cfg.get(".my.ctx.room")?.trim();
+    let (room_runtime, fragment) = room.split_once('#')?;
+    if room_runtime != runtime
+        || fragment.is_empty()
+        || fragment.contains('#')
+        || room.chars().any(char::is_whitespace)
+    {
+        return None;
+    }
     let nick = cfg.get(".my.ctx.nick").map(str::trim).filter(|nick| {
         !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
     });
@@ -334,8 +338,16 @@ fn queue_startup_context(
         return;
     }
     let cfg = config.get_untracked();
-    let fallback_enter = startup_ctx_enter(&cfg)
-        .or_else(|| discovered_runtime_did.and_then(|_| standard_runtime_enter(&cfg)))
+    if cfg.get(".my.ctx.use") == Some("true") {
+        if let Some(room) = startup_ctx_enter(&cfg) {
+            state
+                .input_queue
+                .update(|q| q.push_back(format!(".enter {room}")));
+        }
+        return;
+    }
+    let fallback_enter = discovered_runtime_did
+        .and_then(|_| standard_runtime_enter(&cfg))
         .or_else(|| discovered_runtime_did.map(|did| normalize_startup_enter(did.to_string())));
     if let Some(runtime) = fallback_enter {
         state
@@ -366,12 +378,12 @@ fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_standard_runtime_alias, normalize_startup_enter, should_queue_startup_enter,
-        standard_runtime_enter, startup_ctx_enter, startup_ma_url,
+        apply_standard_runtime_alias, normalize_startup_enter, queue_startup_context,
+        should_queue_startup_enter, standard_runtime_enter, startup_ctx_enter, startup_ma_url,
     };
-    use crate::config::EgoConfig;
+    use crate::{config::EgoConfig, state::AppState};
     use crate::parser::verbs::ma::ConnectMaOutcome;
-    use leptos::prelude::UpdateUntracked;
+    use leptos::prelude::{GetUntracked, UpdateUntracked};
 
     #[test]
     fn normalize_startup_enter_accepts_url_did_and_alias_forms() {
@@ -415,16 +427,29 @@ mod tests {
     }
 
     #[test]
-    fn startup_ctx_enter_falls_back_to_runtime_without_safe_nick_or_room() {
+    fn startup_ctx_enter_requires_a_room_in_the_saved_runtime() {
         let mut cfg = EgoConfig::new();
         cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51other#construct");
         cfg.set(".my.ctx.nick", "bad nick");
-        assert_eq!(
-            startup_ctx_enter(&cfg),
-            Some("@did:ma:k51runtime".to_string())
-        );
+        assert_eq!(startup_ctx_enter(&cfg), None);
+    }
+
+    #[test]
+    fn active_invalid_saved_context_does_not_queue_runtime_entry() {
+        let _owner = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        config.update_untracked(|cfg| {
+            cfg.set(".my.ctx.use", "true");
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.room", "did:ma:k51other#construct");
+        });
+
+        queue_startup_context(&state, config, Some("did:ma:k51runtime"));
+
+        assert!(state.input_queue.get_untracked().is_empty());
     }
 
     #[test]

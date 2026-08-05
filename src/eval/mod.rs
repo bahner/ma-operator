@@ -408,7 +408,6 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             c.set(".my.ctx.use", "true");
             c.set(".my.ctx.runtime", &entry_runtime);
             c.set(".my.ctx.root", &root);
-            c.delete(".my.ctx.avatar");
             c.delete(".my.ctx.room");
         });
         state2.focus_actor.set(None);
