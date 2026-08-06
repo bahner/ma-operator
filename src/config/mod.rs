@@ -279,14 +279,14 @@ impl EgoConfig {
             let token_len = Self::did_token_len(&rest[pos + 1..]);
             let did_url = &rest[pos + 1..pos + 1 + token_len];
             out.push('@');
-            match self.split_alias(&did_url) {
+            match self.split_alias(did_url) {
                 Some((alias, Some(f))) => {
                     out.push_str(&alias);
                     out.push('#');
                     out.push_str(&f);
                 }
                 Some((alias, None)) => out.push_str(&alias),
-                None => out.push_str(&did_url),
+                None => out.push_str(did_url),
             }
             rest = &rest[pos + 1 + token_len..];
         }

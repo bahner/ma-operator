@@ -14,7 +14,7 @@ use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
     http::fetch_path_bytes,
-    i18n::{t, tf},
+    i18n::tf,
     messages::{cid_bytes_to_editor_text, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
@@ -211,29 +211,8 @@ pub(crate) fn handle_profile_publish_reply(
                             state2.push_output("間");
                         }
                         if reenter_saved_ctx {
-                            let Some(own_did) =
-                                state2.session.get_untracked().map(|s| s.sender_did.clone())
-                            else {
-                                state2.push_error(t("msg-not-logged-in"));
-                                return;
-                            };
-                            match crate::parser::verbs::ma::verify_self_publication(
-                                &own_did,
-                                Some(&cid_str),
-                            )
-                            .await
-                            {
-                                Ok(()) => {
-                                    state2.push_output("間");
-                                    crate::startup::queue_saved_context_reentry(&state2, config);
-                                }
-                                Err(e) => {
-                                    state2.push_system(tf(
-                                        "msg-identity-publication-propagating",
-                                        &[("e", &e)],
-                                    ));
-                                }
-                            }
+                            state2.push_output("[3b");
+                            crate::startup::queue_saved_context_reentry(&state2, config);
                         }
                     }
                     Err(e) => {

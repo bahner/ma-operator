@@ -26,7 +26,6 @@ const SEND_TIMEOUT_MS: u32 = 10_000;
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
-pub const PUBLIC_GATEWAY_URL: &str = "https://dweb.link/";
 
 fn is_local_web_origin(origin: &str) -> bool {
     origin.starts_with("http://localhost:")
@@ -42,14 +41,14 @@ pub(crate) fn should_use_public_gateway() -> bool {
     !origin.is_empty() && origin.starts_with("https://") && !is_local_web_origin(&origin)
 }
 
-/// Returns IPFS gateways to try in priority order.
-/// On HTTPS pages local gateway is included only when the user has opted in.
-pub fn ipfs_gateway_list() -> Vec<&'static str> {
+/// Returns the IPFS gateway pool honouring zion's gateway policy.
+/// On HTTPS pages the local gateway is included only when the user has opted in.
+pub fn session_gateway_pool() -> ma_core::GatewayPool {
     let use_local = !should_use_public_gateway() || SESSION_LOCAL_IPFS.with(|f| *f.borrow());
     if use_local {
-        vec![LOCAL_GATEWAY_URL, PUBLIC_GATEWAY_URL]
+        ma_core::GatewayPool::default()
     } else {
-        vec![PUBLIC_GATEWAY_URL]
+        ma_core::GatewayPool::public_default()
     }
 }
 
@@ -96,7 +95,7 @@ pub async fn connect(
     // remote runtimes may restart with a new iroh endpoint after OOM/redeploy.
     let resolver = Rc::new(
         session_resolver()
-            .with_localhost_cooldown(Duration::ZERO)
+            .with_base_cooldown(Duration::ZERO)
             .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
     );
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
@@ -286,44 +285,6 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
                 .collect(),
         ),
         other => V::Text(other.display()),
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use ciborium::Value as V;
-
-    #[test]
-    fn scheme_map_encodes_as_cbor_map() {
-        let mut map = std::collections::BTreeMap::new();
-        map.insert(
-            "north".to_string(),
-            SchemeVal::Str("did:ma:test#north".to_string()),
-        );
-        map.insert("score".to_string(), SchemeVal::Int(7));
-
-        let V::Map(pairs) = scheme_val_to_cbor(&SchemeVal::Map(map)) else {
-            panic!("expected CBOR map");
-        };
-
-        assert_eq!(pairs.len(), 2);
-        assert!(pairs.iter().any(|(key, value)| {
-            matches!(key, V::Text(key) if key == "north")
-                && matches!(value, V::Text(value) if value == "did:ma:test#north")
-        }));
-        assert!(pairs.iter().any(|(key, value)| {
-            matches!(key, V::Text(key) if key == "score")
-                && matches!(value, V::Integer(value) if i128::from(*value) == 7)
-        }));
-    }
-
-    #[test]
-    fn scheme_bytes_encode_as_cbor_bytes() {
-        assert_eq!(
-            scheme_val_to_cbor(&SchemeVal::Bytes(vec![0x89, b'P', b'N', b'G'])),
-            V::Bytes(vec![0x89, b'P', b'N', b'G'])
-        );
     }
 }
 
@@ -871,5 +832,43 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
         exp: msg.exp,
         display,
         is_error,
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ciborium::Value as V;
+
+    #[test]
+    fn scheme_map_encodes_as_cbor_map() {
+        let mut map = std::collections::BTreeMap::new();
+        map.insert(
+            "north".to_string(),
+            SchemeVal::Str("did:ma:test#north".to_string()),
+        );
+        map.insert("score".to_string(), SchemeVal::Int(7));
+
+        let V::Map(pairs) = scheme_val_to_cbor(&SchemeVal::Map(map)) else {
+            panic!("expected CBOR map");
+        };
+
+        assert_eq!(pairs.len(), 2);
+        assert!(pairs.iter().any(|(key, value)| {
+            matches!(key, V::Text(key) if key == "north")
+                && matches!(value, V::Text(value) if value == "did:ma:test#north")
+        }));
+        assert!(pairs.iter().any(|(key, value)| {
+            matches!(key, V::Text(key) if key == "score")
+                && matches!(value, V::Integer(value) if i128::from(*value) == 7)
+        }));
+    }
+
+    #[test]
+    fn scheme_bytes_encode_as_cbor_bytes() {
+        assert_eq!(
+            scheme_val_to_cbor(&SchemeVal::Bytes(vec![0x89, b'P', b'N', b'G'])),
+            V::Bytes(vec![0x89, b'P', b'N', b'G'])
+        );
     }
 }

@@ -1036,7 +1036,7 @@ mod tests {
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-            cfg.set(".my.ctx.room", &format!("did:ma:k51runtime#{missing_room}"));
+            cfg.set(".my.ctx.room", format!("did:ma:k51runtime#{missing_room}"));
             cfg.set(".my.ctx.nick", "foo");
         });
         state.input_queue.set(VecDeque::new());

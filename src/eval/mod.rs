@@ -602,6 +602,248 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
     Ok((Some(nick.to_string()), format!("@{runtime}"), kind))
 }
 
+fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {
+    let room = room.trim();
+    if room.is_empty() {
+        Some(runtime.to_string())
+    } else if room.starts_with("did:ma:") {
+        Some(room.to_string())
+    } else {
+        None
+    }
+}
+
+fn eval_local(
+    path: &str,
+    op: DotOp,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
+) {
+    let username = state
+        .session
+        .get_untracked()
+        .map(|s| s.username)
+        .unwrap_or_default();
+
+    // ── Verb dispatch ─────────────────────────────────────────────────────
+    if let DotOp::Meta(verb) = &op {
+        if let Err(e) = dispatch_meta(path, verb, args, state, config, show_editor, on_eval) {
+            state.push_error(e);
+        }
+        return;
+    }
+
+    // ── Generic CRUD ───────────────────────────────────────────────────
+    match op {
+        DotOp::Set(value) => handle_dot_set(path, value, &username, state, config),
+        DotOp::Delete => handle_dot_delete(path, &username, state, config),
+        DotOp::Get => handle_dot_get(path, args, state, config),
+        DotOp::Meta(_) => unreachable!("handled above"),
+    }
+}
+
+fn handle_dot_set(
+    path: &str,
+    value: String,
+    username: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    if EgoConfig::is_read_only(path) {
+        state.push_error(tf("msg-read-only", &[("path", path)]));
+        return;
+    }
+    if let Err(e) = validate_alias_set(path, &value) {
+        state.push_error(e);
+        return;
+    }
+    let (has_children, has_ancestor) = {
+        let cfg = config.get_untracked();
+        (cfg.has_children(path), cfg.has_leaf_ancestor(path))
+    };
+    if has_children {
+        state.push_error(tf("msg-subtree-set", &[("path", path)]));
+        return;
+    }
+    if has_ancestor {
+        state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
+        return;
+    }
+    config.update(|c| c.set(path, &value));
+    // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
+    if path.starts_with(".my.ctx") {
+        let cfg = config.get_untracked();
+        apply_ctx_focus(&cfg, state);
+    }
+    let cfg = config.get_untracked();
+    let uname = username.to_string();
+    let state2 = state.clone();
+    let path_owned = path.to_string();
+    spawn_local(async move {
+        if let Err(e) = persist_config(&uname, &cfg).await {
+            state2.push_error(e);
+            return;
+        }
+        apply_config_to_dom(&cfg);
+        if path_owned == ".my.config.log.level" {
+            crate::apply_log_level(&value);
+        }
+        if path_owned == ".my.i18n" {
+            let first = value.split(':').next().unwrap_or(&value).to_string();
+            if !crate::i18n::init(&first).await {
+                state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
+            }
+            state2.lang.set(crate::i18n::lang());
+            crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
+        }
+        state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
+    });
+}
+
+fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSignal<EgoConfig>) {
+    if EgoConfig::is_read_only(path) {
+        state.push_error(tf("msg-read-only", &[("path", path)]));
+        return;
+    }
+    let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
+    if removed == 0 {
+        state.push_error(tf("msg-key-not-found", &[("path", path)]));
+        return;
+    }
+    let cfg = config.get_untracked();
+    let uname = username.to_string();
+    let state2 = state.clone();
+    let path_owned = path.to_string();
+    spawn_local(async move {
+        if let Err(e) = persist_config(&uname, &cfg).await {
+            state2.push_error(e);
+        } else {
+            state2.push_system(tf(
+                "msg-deleted",
+                &[("path", &path_owned), ("count", &removed.to_string())],
+            ));
+        }
+    });
+}
+
+fn handle_dot_get(path: &str, _args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+    let cfg = config.get_untracked();
+    if cfg.is_leaf(path) {
+        let value = cfg.get(path).unwrap_or("");
+        state.push_output(format!("{path}: {value}"));
+    } else if cfg.has_children(path) {
+        show_children(path, &cfg, state);
+    } else {
+        lazy_link_traverse(path, &cfg, state, config);
+    }
+}
+
+fn show_children(path: &str, cfg: &crate::config::EgoConfig, state: &AppState) {
+    let prefix = format!("{path}.");
+    let prefix_len = prefix.len();
+    let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
+    for (k, _) in cfg.list(&prefix) {
+        let tail = &k[prefix_len..];
+        let immediate = tail.split('.').next().unwrap_or(tail);
+        children.insert(immediate.to_string());
+    }
+    state.push_output(format!("{path}:"));
+    for child in &children {
+        let child_path = format!("{path}.{child}");
+        if let Some(v) = cfg.get(&child_path) {
+            state.push_output(format!("  {child}: {v}"));
+        } else {
+            state.push_output(format!("  {child}"));
+        }
+    }
+}
+
+/// Walk ancestor paths looking for a DID/CID link value; resolve and traverse
+/// the remaining sub-path if found.
+fn lazy_link_traverse(
+    path: &str,
+    cfg: &crate::config::EgoConfig,
+    state: &AppState,
+    _config: RwSignal<EgoConfig>,
+) {
+    let path_owned = path.to_string();
+    let mut split_pos = path_owned.len();
+    while let Some(dot) = path_owned[..split_pos].rfind('.') {
+        split_pos = dot;
+        let ancestor = &path_owned[..split_pos];
+        if ancestor.is_empty() {
+            break;
+        }
+        if let Some(link_val) = cfg.get(ancestor) {
+            if crate::mailbox::is_link_value(link_val) {
+                let link = link_val.to_string();
+                let subpath = path_owned[split_pos + 1..].to_string();
+                let state2 = state.clone();
+                let cache = state.doc_cache;
+                spawn_local(async move {
+                    resolve_and_traverse(&link, &subpath, &state2, cache).await;
+                });
+                return;
+            }
+        }
+        if split_pos == 0 {
+            break;
+        }
+    }
+    state.push_error(tf("msg-key-not-found", &[("path", path)]));
+}
+
+/// Build and apply a `FocusMode` from the current `.my.ctx.*` config values.
+///
+/// Called after any write to `.my.ctx.*` and at login to restore focus.
+/// If `.my.ctx.use` is not `"true"` or `.my.ctx.runtime` is absent,
+/// `focus_actor` is cleared.
+pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
+    let enabled = cfg.get(".my.ctx.use").map(|s| s == "true").unwrap_or(false);
+    if !enabled {
+        state.focus_actor.set(None);
+        return;
+    }
+    let Some(runtime) = cfg.get(".my.ctx.runtime").map(|s| s.to_string()) else {
+        state.focus_actor.set(None);
+        return;
+    };
+    let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
+    let nick = cfg
+        .get(".my.ctx.nick")
+        .or_else(|| cfg.get(".my.ctx.alias"))
+        .unwrap_or("")
+        .to_string();
+    let Some(target) = focus_target_for_room(&runtime, &room) else {
+        state.focus_actor.set(None);
+        return;
+    };
+    let base_prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
+        format!("@{alias}")
+    } else {
+        format!("@{runtime}")
+    };
+    let prompt = if nick.is_empty() {
+        base_prompt
+    } else {
+        format!("{nick}{base_prompt}")
+    };
+    log::debug!(
+        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} prompt={prompt:?}",
+        cfg.get(".my.ctx.root")
+    );
+    state.focus_actor.set(Some(FocusMode {
+        runtime,
+        room: if room.is_empty() { None } else { Some(room) },
+        target,
+        root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
+        prompt,
+    }));
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
@@ -880,246 +1122,4 @@ mod tests {
             .contains("use .enter [nick]@runtime[#room] first"));
         assert!(state.focus_actor.get_untracked().is_none());
     }
-}
-
-fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {
-    let room = room.trim();
-    if room.is_empty() {
-        Some(runtime.to_string())
-    } else if room.starts_with("did:ma:") {
-        Some(room.to_string())
-    } else {
-        None
-    }
-}
-
-fn eval_local(
-    path: &str,
-    op: DotOp,
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-    show_editor: RwSignal<Option<EditorContext>>,
-    on_eval: Callback<String>,
-) {
-    let username = state
-        .session
-        .get_untracked()
-        .map(|s| s.username)
-        .unwrap_or_default();
-
-    // ── Verb dispatch ─────────────────────────────────────────────────────
-    if let DotOp::Meta(verb) = &op {
-        if let Err(e) = dispatch_meta(path, verb, args, state, config, show_editor, on_eval) {
-            state.push_error(e);
-        }
-        return;
-    }
-
-    // ── Generic CRUD ───────────────────────────────────────────────────
-    match op {
-        DotOp::Set(value) => handle_dot_set(path, value, &username, state, config),
-        DotOp::Delete => handle_dot_delete(path, &username, state, config),
-        DotOp::Get => handle_dot_get(path, args, state, config),
-        DotOp::Meta(_) => unreachable!("handled above"),
-    }
-}
-
-fn handle_dot_set(
-    path: &str,
-    value: String,
-    username: &str,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) {
-    if EgoConfig::is_read_only(path) {
-        state.push_error(tf("msg-read-only", &[("path", path)]));
-        return;
-    }
-    if let Err(e) = validate_alias_set(path, &value) {
-        state.push_error(e);
-        return;
-    }
-    let (has_children, has_ancestor) = {
-        let cfg = config.get_untracked();
-        (cfg.has_children(path), cfg.has_leaf_ancestor(path))
-    };
-    if has_children {
-        state.push_error(tf("msg-subtree-set", &[("path", path)]));
-        return;
-    }
-    if has_ancestor {
-        state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
-        return;
-    }
-    config.update(|c| c.set(path, &value));
-    // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
-    if path.starts_with(".my.ctx") {
-        let cfg = config.get_untracked();
-        apply_ctx_focus(&cfg, state);
-    }
-    let cfg = config.get_untracked();
-    let uname = username.to_string();
-    let state2 = state.clone();
-    let path_owned = path.to_string();
-    spawn_local(async move {
-        if let Err(e) = persist_config(&uname, &cfg).await {
-            state2.push_error(e);
-            return;
-        }
-        apply_config_to_dom(&cfg);
-        if path_owned == ".my.config.log.level" {
-            crate::apply_log_level(&value);
-        }
-        if path_owned == ".my.i18n" {
-            let first = value.split(':').next().unwrap_or(&value).to_string();
-            if !crate::i18n::init(&first).await {
-                state2.push_error(tf("err-lang-not-found", &[("lang", &first)]));
-            }
-            state2.lang.set(crate::i18n::lang());
-            crate::state::SESSION_LANG.with(|l| *l.borrow_mut() = Some(value.clone()));
-        }
-        state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
-    });
-}
-
-fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSignal<EgoConfig>) {
-    if EgoConfig::is_read_only(path) {
-        state.push_error(tf("msg-read-only", &[("path", path)]));
-        return;
-    }
-    let removed = config.try_update(|c| c.delete_subtree(path)).unwrap_or(0);
-    if removed == 0 {
-        state.push_error(tf("msg-key-not-found", &[("path", path)]));
-        return;
-    }
-    let cfg = config.get_untracked();
-    let uname = username.to_string();
-    let state2 = state.clone();
-    let path_owned = path.to_string();
-    spawn_local(async move {
-        if let Err(e) = persist_config(&uname, &cfg).await {
-            state2.push_error(e);
-        } else {
-            state2.push_system(tf(
-                "msg-deleted",
-                &[("path", &path_owned), ("count", &removed.to_string())],
-            ));
-        }
-    });
-}
-
-fn handle_dot_get(path: &str, _args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
-    let cfg = config.get_untracked();
-    if cfg.is_leaf(path) {
-        let value = cfg.get(path).unwrap_or("");
-        state.push_output(format!("{path}: {value}"));
-    } else if cfg.has_children(path) {
-        show_children(path, &cfg, state);
-    } else {
-        lazy_link_traverse(path, &cfg, state, config);
-    }
-}
-
-fn show_children(path: &str, cfg: &crate::config::EgoConfig, state: &AppState) {
-    let prefix = format!("{path}.");
-    let prefix_len = prefix.len();
-    let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
-    for (k, _) in cfg.list(&prefix) {
-        let tail = &k[prefix_len..];
-        let immediate = tail.split('.').next().unwrap_or(tail);
-        children.insert(immediate.to_string());
-    }
-    state.push_output(format!("{path}:"));
-    for child in &children {
-        let child_path = format!("{path}.{child}");
-        if let Some(v) = cfg.get(&child_path) {
-            state.push_output(format!("  {child}: {v}"));
-        } else {
-            state.push_output(format!("  {child}"));
-        }
-    }
-}
-
-/// Walk ancestor paths looking for a DID/CID link value; resolve and traverse
-/// the remaining sub-path if found.
-fn lazy_link_traverse(
-    path: &str,
-    cfg: &crate::config::EgoConfig,
-    state: &AppState,
-    _config: RwSignal<EgoConfig>,
-) {
-    let path_owned = path.to_string();
-    let mut split_pos = path_owned.len();
-    while let Some(dot) = path_owned[..split_pos].rfind('.') {
-        split_pos = dot;
-        let ancestor = &path_owned[..split_pos];
-        if ancestor.is_empty() {
-            break;
-        }
-        if let Some(link_val) = cfg.get(ancestor) {
-            if crate::mailbox::is_link_value(link_val) {
-                let link = link_val.to_string();
-                let subpath = path_owned[split_pos + 1..].to_string();
-                let state2 = state.clone();
-                let cache = state.doc_cache;
-                spawn_local(async move {
-                    resolve_and_traverse(&link, &subpath, &state2, cache).await;
-                });
-                return;
-            }
-        }
-        if split_pos == 0 {
-            break;
-        }
-    }
-    state.push_error(tf("msg-key-not-found", &[("path", path)]));
-}
-
-/// Build and apply a `FocusMode` from the current `.my.ctx.*` config values.
-///
-/// Called after any write to `.my.ctx.*` and at login to restore focus.
-/// If `.my.ctx.use` is not `"true"` or `.my.ctx.runtime` is absent,
-/// `focus_actor` is cleared.
-pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
-    let enabled = cfg.get(".my.ctx.use").map(|s| s == "true").unwrap_or(false);
-    if !enabled {
-        state.focus_actor.set(None);
-        return;
-    }
-    let Some(runtime) = cfg.get(".my.ctx.runtime").map(|s| s.to_string()) else {
-        state.focus_actor.set(None);
-        return;
-    };
-    let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
-    let nick = cfg
-        .get(".my.ctx.nick")
-        .or_else(|| cfg.get(".my.ctx.alias"))
-        .unwrap_or("")
-        .to_string();
-    let Some(target) = focus_target_for_room(&runtime, &room) else {
-        state.focus_actor.set(None);
-        return;
-    };
-    let base_prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
-        format!("@{alias}")
-    } else {
-        format!("@{runtime}")
-    };
-    let prompt = if nick.is_empty() {
-        base_prompt
-    } else {
-        format!("{nick}{base_prompt}")
-    };
-    log::debug!(
-        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} prompt={prompt:?}",
-        cfg.get(".my.ctx.root")
-    );
-    state.focus_actor.set(Some(FocusMode {
-        runtime,
-        room: if room.is_empty() { None } else { Some(room) },
-        target,
-        root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
-        prompt,
-    }));
 }

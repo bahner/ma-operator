@@ -1,5 +1,6 @@
 /// Handler for the persistent Scheme bootstrap sources.
 use crate::config::{persist_config, EgoConfig};
+use crate::core::CommandStatus;
 use crate::i18n::tf;
 use crate::state::AppState;
 use crate::views::editor::EditorContext;
@@ -19,18 +20,26 @@ pub(super) fn handle_scheme(
         // the avatar layer. This removes bindings deleted from either source.
         "eval" => {
             let display = format!("{path}!eval");
-            state.push_command_done(display);
-            let state = state.clone();
+            let command_id = state.push_command(display);
+            let state2 = state.clone();
             leptos::task::spawn_local(async move {
                 let cfg = config.get_untracked();
                 let scheme_source = cfg.get(".my.scheme").unwrap_or_default().to_string();
                 let avatar_source = cfg.get(".my.avatar").unwrap_or_default().to_string();
-                if let Err(error) =
-                    crate::scheme::bootstrap_session(&scheme_source, &avatar_source, &state, config)
-                        .await
+                if let Err(error) = crate::scheme::bootstrap_session(
+                    &scheme_source,
+                    &avatar_source,
+                    &state2,
+                    config,
+                )
+                .await
                 {
                     crate::scheme::reset_session_env();
-                    state.push_error(format!("Scheme bootstrap stopped: {error}"));
+                    let message = format!("Scheme bootstrap stopped: {error}");
+                    state2.resolve_command_by_id(command_id, CommandStatus::Error(message.clone()));
+                    state2.push_error(message);
+                } else {
+                    state2.resolve_command_by_id(command_id, CommandStatus::Done);
                 }
             });
             Ok(())

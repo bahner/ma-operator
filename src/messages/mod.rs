@@ -213,6 +213,22 @@ pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
     }
 }
 
+fn format_cbor_value_short(v: &CborValue) -> String {
+    match v {
+        CborValue::Text(s) => s.clone(),
+        CborValue::Bool(b) => b.to_string(),
+        CborValue::Integer(i) => format!("{i:?}"),
+        CborValue::Bytes(b) => format!("<{} bytes>", b.len()),
+        CborValue::Null => "null".to_string(),
+        CborValue::Array(items) => items
+            .iter()
+            .map(format_cbor_value_short)
+            .collect::<Vec<_>>()
+            .join(" "),
+        other => format!("{other:?}"),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -315,21 +331,5 @@ mod tests {
             cid_bytes_to_editor_text(&test_cid(CODEC_RAW), b"plain behaviour").expect("decode raw");
 
         assert_eq!(text, "plain behaviour");
-    }
-}
-
-fn format_cbor_value_short(v: &CborValue) -> String {
-    match v {
-        CborValue::Text(s) => s.clone(),
-        CborValue::Bool(b) => b.to_string(),
-        CborValue::Integer(i) => format!("{i:?}"),
-        CborValue::Bytes(b) => format!("<{} bytes>", b.len()),
-        CborValue::Null => "null".to_string(),
-        CborValue::Array(items) => items
-            .iter()
-            .map(format_cbor_value_short)
-            .collect::<Vec<_>>()
-            .join(" "),
-        other => format!("{other:?}"),
     }
 }

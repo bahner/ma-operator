@@ -9,6 +9,9 @@
   `colour`, and `licence`. Keep externally mandated API names unchanged, such
   as Rust/serde `Serialize`/`Deserialize`, CSS `color`, canvas `center`, web
   APIs, crate names, and third-party protocol terms.
+- **Never add special-case expansion, storage, or dispatch behaviour for
+  `.my.avatar`, `.my.zscheme`, or `.my.scheme`.** They use the same Scheme
+  expansion and CRUD semantics as every other local configuration path.
 
 ---
 

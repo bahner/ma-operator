@@ -243,10 +243,14 @@ fn handle_input_line(
         let state2 = state.clone();
         let line_owned = trimmed.to_string();
         let cancel_epoch = state.cancel_epoch();
+        let show_editor2 = show_editor;
+        let on_eval2 = on_eval;
         wasm_bindgen_futures::spawn_local(async move {
             match crate::scheme::eval_standalone(&line_owned, &state2, config).await {
                 Ok(Some(value)) => {
-                    if !state2.was_cancelled_since(cancel_epoch) {
+                    if should_display_scheme_value(&value)
+                        && !state2.was_cancelled_since(cancel_epoch)
+                    {
                         state2.push_output(value.display());
                     }
                     return;
@@ -263,7 +267,7 @@ fn handle_input_line(
                 Ok(expanded) => {
                     let t = expanded.trim().to_string();
                     if !t.is_empty() && !state2.was_cancelled_since(cancel_epoch) {
-                        state2.input_queue.update(|q| q.push_back(t));
+                        dispatch_eval_line(&t, &state2, config, show_editor2, on_eval2, None);
                     }
                 }
                 Err(e) => {
@@ -303,18 +307,20 @@ fn is_note_line(line: &str) -> bool {
     line.trim_start().starts_with(';')
 }
 
-// ── Batch open / close ────────────────────────────────────────────────────
+fn should_display_scheme_value(value: &crate::scheme::SchemeVal) -> bool {
+    !matches!(value, crate::scheme::SchemeVal::Nil)
+}
 
 fn parse_timeout(line: &str, default_ms: u32) -> u32 {
     line.split_whitespace()
-        .find_map(|tok| {
-            let v = tok.strip_prefix("timeout=")?;
-            if let Some(s) = v.strip_suffix("ms") {
-                s.parse::<u32>().ok()
-            } else if let Some(s) = v.strip_suffix('s') {
-                s.parse::<u32>().ok().map(|n| n * 1000)
+        .find_map(|token| {
+            let value = token.strip_prefix("timeout=")?;
+            if let Some(milliseconds) = value.strip_suffix("ms") {
+                milliseconds.parse::<u32>().ok()
+            } else if let Some(seconds) = value.strip_suffix('s') {
+                seconds.parse::<u32>().ok().map(|seconds| seconds * 1_000)
             } else {
-                v.parse::<u32>().ok()
+                value.parse::<u32>().ok()
             }
         })
         .unwrap_or(default_ms)
@@ -945,8 +951,10 @@ fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
 mod tests {
     use super::{
         complete_scheme_input, focus_command_target, is_note_line, parse_focus_shorthand_command,
+        should_display_scheme_value,
     };
     use crate::config::EgoConfig;
+    use crate::scheme::SchemeVal;
     use crate::state::FocusMode;
 
     #[test]
@@ -954,6 +962,12 @@ mod tests {
         assert!(is_note_line("; This is a (.my.ctx.room) note"));
         assert!(is_note_line("  ;;also-a-note"));
         assert!(!is_note_line("say ;not-a-note"));
+    }
+
+    #[test]
+    fn standalone_scheme_nil_is_not_displayed() {
+        assert!(!should_display_scheme_value(&SchemeVal::Nil));
+        assert!(should_display_scheme_value(&SchemeVal::Int(3)));
     }
 
     #[test]

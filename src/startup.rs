@@ -383,6 +383,75 @@ fn skip_startup_enter_message(outcome: &ConnectMaOutcome) -> String {
     tf("msg-startup-enter-skipped", &[("target", outcome.target())])
 }
 
+pub(crate) async fn startup_load_history(state: AppState, username: String) {
+    match load_history(&username).await {
+        Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
+            Ok(hist) => state.history.set(hist),
+            Err(e) => state.push_error(tf("err-history-parse", &[("e", &e.to_string())])),
+        },
+        Ok(None) => {}
+        Err(e) => state.push_error(tf("err-history-load", &[("e", &e)])),
+    }
+}
+
+pub(crate) async fn startup_connect(
+    state: AppState,
+    config: RwSignal<EgoConfig>,
+    sess: SessionState,
+    startup_ma: Option<String>,
+) {
+    let iroh_key = sess.iroh_key;
+    let ipns_secret_key = sess.ipns_secret_key;
+    let did_signing_key = sess.did_signing_key;
+    let did_encryption_key = sess.did_encryption_key;
+    let sender_did = sess.sender_did.clone();
+    let created_at = sess.created_at.clone();
+    let username = sess.username.clone();
+    state.push_system(t("msg-connecting"));
+    match transport::connect(
+        iroh_key,
+        ipns_secret_key,
+        did_signing_key,
+        did_encryption_key,
+        sender_did.clone(),
+        created_at,
+    )
+    .await
+    {
+        Ok(()) => {
+            let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
+            state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
+            startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
+            let startup_enter = state.startup_enter.get_untracked();
+            let ma_outcome = startup_local_ma(
+                state.clone(),
+                config,
+                username.clone(),
+                sender_did,
+                startup_ma,
+                startup_enter,
+            )
+            .await;
+            if should_queue_startup_enter(&ma_outcome) {
+                let discovered_runtime_did = match &ma_outcome {
+                    ConnectMaOutcome::Ready { did } => Some(did.as_str()),
+                    _ => None,
+                };
+                if let Some(did) = discovered_runtime_did {
+                    ensure_standard_runtime_alias(&username, config, did).await;
+                }
+                queue_startup_context(&state, config, discovered_runtime_did);
+            } else {
+                state.startup_enter.update_untracked(|v| {
+                    let _ = v.take();
+                });
+                state.push_system(skip_startup_enter_message(&ma_outcome));
+            }
+        }
+        Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::{
@@ -523,74 +592,5 @@ mod tests {
                 target: "http://localhost:5003".to_string(),
             }
         ));
-    }
-}
-
-pub(crate) async fn startup_load_history(state: AppState, username: String) {
-    match load_history(&username).await {
-        Ok(Some(json)) => match serde_json::from_str::<Vec<String>>(&json) {
-            Ok(hist) => state.history.set(hist),
-            Err(e) => state.push_error(tf("err-history-parse", &[("e", &e.to_string())])),
-        },
-        Ok(None) => {}
-        Err(e) => state.push_error(tf("err-history-load", &[("e", &e)])),
-    }
-}
-
-pub(crate) async fn startup_connect(
-    state: AppState,
-    config: RwSignal<EgoConfig>,
-    sess: SessionState,
-    startup_ma: Option<String>,
-) {
-    let iroh_key = sess.iroh_key;
-    let ipns_secret_key = sess.ipns_secret_key;
-    let did_signing_key = sess.did_signing_key;
-    let did_encryption_key = sess.did_encryption_key;
-    let sender_did = sess.sender_did.clone();
-    let created_at = sess.created_at.clone();
-    let username = sess.username.clone();
-    state.push_system(t("msg-connecting"));
-    match transport::connect(
-        iroh_key,
-        ipns_secret_key,
-        did_signing_key,
-        did_encryption_key,
-        sender_did.clone(),
-        created_at,
-    )
-    .await
-    {
-        Ok(()) => {
-            let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
-            state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
-            startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
-            let startup_enter = state.startup_enter.get_untracked();
-            let ma_outcome = startup_local_ma(
-                state.clone(),
-                config,
-                username.clone(),
-                sender_did,
-                startup_ma,
-                startup_enter,
-            )
-            .await;
-            if should_queue_startup_enter(&ma_outcome) {
-                let discovered_runtime_did = match &ma_outcome {
-                    ConnectMaOutcome::Ready { did } => Some(did.as_str()),
-                    _ => None,
-                };
-                if let Some(did) = discovered_runtime_did {
-                    ensure_standard_runtime_alias(&username, config, did).await;
-                }
-                queue_startup_context(&state, config, discovered_runtime_did);
-            } else {
-                state.startup_enter.update_untracked(|v| {
-                    let _ = v.take();
-                });
-                state.push_system(skip_startup_enter_message(&ma_outcome));
-            }
-        }
-        Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }
 }

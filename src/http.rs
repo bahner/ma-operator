@@ -3,7 +3,7 @@
 //! These are the only HTTP primitives in the codebase. All other modules
 //! import from here rather than rolling their own fetch.
 
-use crate::transport::connection::ipfs_gateway_list;
+use crate::transport::connection::session_gateway_pool;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
 use wasm_bindgen::JsCast;
@@ -92,58 +92,34 @@ async fn response_text(resp: web_sys::Response) -> Result<String, String> {
         .ok_or_else(|| "response is not a string".to_string())
 }
 
-/// GET a URL and return the response body as raw bytes.
-pub async fn fetch_url_bytes(url: &str) -> Result<Vec<u8>, String> {
-    let window = web_sys::window().ok_or("no window")?;
-    let resp_val = JsFuture::from(window.fetch_with_str(url))
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    if !resp.ok() {
-        return Err(format!("HTTP {}", resp.status()));
-    }
-    let buf_val = JsFuture::from(resp.array_buffer().map_err(|e| format!("{e:?}"))?)
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    Ok(js_sys::Uint8Array::new(&buf_val).to_vec())
+fn utf8_body(body: &[u8]) -> Result<String, String> {
+    String::from_utf8(body.to_vec()).map_err(|e| e.to_string())
 }
 
-/// Fetch raw bytes for a bare CID from the active IPFS gateway.
+/// Fetch raw bytes for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    let mut errors = Vec::new();
-    for gateway in ipfs_gateway_list() {
-        match fetch_url_bytes(&format!("{gateway}ipfs/{cid}")).await {
-            Ok(bytes) => return Ok(bytes),
-            Err(e) => errors.push(format!("{gateway}: {e}")),
-        }
-    }
-    Err(errors.join("; "))
+    session_gateway_pool()
+        .fetch_bytes(&format!("/ipfs/{cid}"), None)
+        .await
 }
 
-/// Fetch text for a bare CID from the active IPFS gateway.
+/// Fetch text for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    let mut errors = Vec::new();
-    for gateway in ipfs_gateway_list() {
-        match fetch_url_text(&format!("{gateway}ipfs/{cid}")).await {
-            Ok(text) => return Ok(text),
-            Err(e) => errors.push(format!("{gateway}: {e}")),
-        }
-    }
-    Err(errors.join("; "))
+    session_gateway_pool()
+        .fetch(&format!("/ipfs/{cid}"), None, utf8_body)
+        .await
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
 /// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
 /// blocks so zion, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
+    let pool = session_gateway_pool();
     let mut errors = Vec::new();
-    for gateway in ipfs_gateway_list() {
-        for arg in fetch_path_bytes_args(path) {
-            let url = format!("{gateway}{arg}");
-            match fetch_url_bytes(&url).await {
-                Ok(bytes) => return Ok(bytes),
-                Err(e) => errors.push(format!("{url}: {e}")),
-            }
+    for arg in fetch_path_bytes_args(path) {
+        match pool.fetch_bytes(&arg, None).await {
+            Ok(bytes) => return Ok(bytes),
+            Err(e) => errors.push(format!("{arg}: {e}")),
         }
     }
     Err(errors.join("; "))
@@ -153,14 +129,7 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    let mut errors = Vec::new();
-    for gateway in ipfs_gateway_list() {
-        match fetch_url_text(&format!("{gateway}{arg}")).await {
-            Ok(text) => return Ok(text),
-            Err(e) => errors.push(format!("{gateway}: {e}")),
-        }
-    }
-    Err(errors.join("; "))
+    session_gateway_pool().fetch(&arg, None, utf8_body).await
 }
 
 fn fetch_path_bytes_args(path: &str) -> Vec<String> {

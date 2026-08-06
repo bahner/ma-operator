@@ -388,8 +388,7 @@ async fn ping_and_publish_fallback(
             target: unavailable_target.to_string(),
         };
     };
-    if options.publish_identity_before_ping && verify_self_publication(own_did, None).await.is_err()
-    {
+    if options.publish_identity_before_ping && verify_self_publication(own_did).await.is_err() {
         state.push_system(tf(
             "msg-identity-first-publish",
             &[(
@@ -485,43 +484,24 @@ pub(crate) async fn send_identity_publish_and_wait(publisher: &str) -> Result<()
     }
 }
 
-pub(crate) fn published_self_matches(
-    doc: &ma_core::Document,
-    own_did: &str,
-    expected_profile_cid: Option<&str>,
-) -> Result<(), String> {
+pub(crate) fn published_self_matches(doc: &ma_core::Document, own_did: &str) -> Result<(), String> {
     if doc.id != own_did {
         return Err(format!(
             "resolved DID document id {} does not match {}",
             doc.id, own_did
         ));
     }
-    if let Some(expected) = expected_profile_cid {
-        match super::doc_profile_cid(doc) {
-            Some(actual) if actual == expected => {}
-            Some(actual) => {
-                return Err(format!(
-                    "resolved profile CID {} does not match {}",
-                    actual, expected
-                ));
-            }
-            None => return Err("resolved DID document has no profile link".to_string()),
-        }
-    }
     Ok(())
 }
 
-pub(crate) async fn verify_self_publication(
-    own_did: &str,
-    expected_profile_cid: Option<&str>,
-) -> Result<(), String> {
+pub(crate) async fn verify_self_publication(own_did: &str) -> Result<(), String> {
     let resolver = crate::state::SESSION_RESOLVER
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "DID resolver is not available".to_string())?;
     let mut last_error = "DID document was not resolved".to_string();
     for (attempt, delay_ms) in SELF_PUBLISH_VERIFY_DELAYS_MS.iter().enumerate() {
         match resolver.resolve(own_did).await {
-            Ok(doc) => match published_self_matches(&doc, own_did, expected_profile_cid) {
+            Ok(doc) => match published_self_matches(&doc, own_did) {
                 Ok(()) => return Ok(()),
                 Err(e) => last_error = e,
             },
@@ -827,30 +807,16 @@ mod tests {
     }
 
     #[test]
-    fn published_self_matches_expected_profile() {
+    fn published_self_matches_own_did() {
         let doc = document_with_profile(Some("bafyprofile"));
 
-        assert!(published_self_matches(&doc, &doc.id, Some("bafyprofile")).is_ok());
-    }
-
-    #[test]
-    fn published_self_rejects_stale_profile() {
-        let doc = document_with_profile(Some("bafyold"));
-
-        assert!(published_self_matches(&doc, &doc.id, Some("bafynew")).is_err());
-    }
-
-    #[test]
-    fn published_self_requires_profile_for_profile_publish() {
-        let doc = document_with_profile(None);
-
-        assert!(published_self_matches(&doc, &doc.id, Some("bafyprofile")).is_err());
+        assert!(published_self_matches(&doc, &doc.id).is_ok());
     }
 
     #[test]
     fn published_self_rejects_wrong_did() {
         let doc = document_with_profile(Some("bafyprofile"));
 
-        assert!(published_self_matches(&doc, "did:ma:other", Some("bafyprofile")).is_err());
+        assert!(published_self_matches(&doc, "did:ma:other").is_err());
     }
 }
