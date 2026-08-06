@@ -617,6 +617,7 @@ pub(crate) fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
     use ciborium::Value as V;
     match v {
         V::Text(s) => SchemeVal::Str(s.clone()),
+        V::Bytes(bytes) => SchemeVal::Bytes(bytes.clone()),
         V::Integer(n) => SchemeVal::Int(i128::from(*n) as i64),
         V::Float(f) => SchemeVal::Float(*f),
         V::Bool(b) => SchemeVal::Bool(*b),
@@ -793,5 +794,16 @@ mod tests {
             Some(SchemeVal::Str(value)) if value == "did:ma:test#north"
         ));
         assert!(matches!(map.get("score"), Some(SchemeVal::Int(7))));
+    }
+
+    #[test]
+    fn cbor_bytes_decode_to_scheme_bytes() {
+        let SchemeVal::Bytes(bytes) =
+            cbor_to_scheme_val(&CborValue::Bytes(vec![0x89, b'P', b'N', b'G']))
+        else {
+            panic!("expected SchemeVal::Bytes");
+        };
+
+        assert_eq!(bytes, vec![0x89, b'P', b'N', b'G']);
     }
 }

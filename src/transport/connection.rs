@@ -274,6 +274,7 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
     use ciborium::Value as V;
     match v {
         SchemeVal::Str(s) => V::Text(s.clone()),
+        SchemeVal::Bytes(bytes) => V::Bytes(bytes.clone()),
         SchemeVal::Int(n) => V::Integer(ciborium::value::Integer::from(*n)),
         SchemeVal::Float(f) => V::Float(*f),
         SchemeVal::Bool(b) => V::Bool(*b),
@@ -315,6 +316,14 @@ mod tests {
             matches!(key, V::Text(key) if key == "score")
                 && matches!(value, V::Integer(value) if i128::from(*value) == 7)
         }));
+    }
+
+    #[test]
+    fn scheme_bytes_encode_as_cbor_bytes() {
+        assert_eq!(
+            scheme_val_to_cbor(&SchemeVal::Bytes(vec![0x89, b'P', b'N', b'G'])),
+            V::Bytes(vec![0x89, b'P', b'N', b'G'])
+        );
     }
 }
 

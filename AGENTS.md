@@ -169,7 +169,7 @@ Each top-level `(…)` span is evaluated as a Scheme expression and the result
 is spliced back into the line as a plain string.  The final expanded line is
 then dispatched through the normal parser.
 
-### ma primitives (no new function names)
+### ma primitives
 
 | Form | What it does |
 |---|---|
@@ -183,6 +183,11 @@ The head character determines dispatch:
 - starts with `#.` → ma dot-command (synchronous)
 - starts with `@` or evaluates to a `did:` string → ma actor message (async RPC)
 - anything else → standard Scheme form or lambda call
+
+Local paths in Scheme source use `#.my.path` syntax. Zion's terminal dot
+grammar remains unchanged: users type `.my.path` normally outside Scheme
+parentheses. Bare dot paths are rejected only as Scheme list heads. The
+evaluator strips `#` at the internal `SchemeCtx::eval_dot` boundary.
 
 ### Example
 
@@ -205,6 +210,28 @@ Builtins: arithmetic (`+` `-` `*` `/` `mod`), comparison (`=` `<` `>` …),
 list ops (`cons` `car` `cdr` `map` `filter` `fold` `append` `reverse` …),
 string ops (`string-append` `substring` `string-contains` …), predicates,
 `display` (writes to terminal), `error`, `assert`.
+
+#### Explicit content access
+
+Content references remain literal data unless an explicit Scheme primitive
+consumes them:
+
+| Form | Result |
+| --- | --- |
+| `(ipfs-get #/ipfs/<cid>)` | opaque `SchemeVal::Bytes` |
+| `(ipfs-cat #/ipfs/<cid>)` | UTF-8 text |
+| `(ipfs-name-resolve #/ipns/<name>)` | current `/ipfs/<cid>` path without fetching content |
+| `(include #/ipfs/<cid>)` | fetch and evaluate Scheme source |
+
+Never make a bare path, parenthesised path, local setter, or command splice
+fetch content implicitly. Bytes must not be stringified or spliced. Preserve
+bytes as CBOR byte strings in actor traffic. Implement host I/O through
+`SchemeCtx`; IPNS resolution must call the shared
+`ma_core::IpfsGatewayResolver`, not duplicate gateway logic in Zion.
+
+Consumers keep published semver dependencies. During unreleased multi-repo
+development, validate with temporary Cargo `--config patch.crates-io...`
+overrides; do not commit path dependencies or path-sourced lock entries.
 
 #### `(<bafy…>)` — CID as callable
 

@@ -99,6 +99,23 @@ impl SchemeCtx for EvalCtx {
         Box::pin(async move { crate::http::fetch_path_text(&path).await })
     }
 
+    fn fetch_bytes<'a>(&'a self, path: &'a str) -> LocalBoxFuture<'a, Result<Vec<u8>, String>> {
+        let path = path.to_string();
+        Box::pin(async move { crate::http::fetch_path_bytes(&path).await })
+    }
+
+    fn resolve_ipns<'a>(&'a self, path: &'a str) -> LocalBoxFuture<'a, Result<String, String>> {
+        let resolver = crate::state::SESSION_RESOLVER.with(|slot| slot.borrow().clone());
+        let path = path.to_string();
+        Box::pin(async move {
+            let resolver = resolver.ok_or_else(|| "IPFS resolver is not connected".to_string())?;
+            resolver
+                .resolve_ipns_path(&path)
+                .await
+                .map_err(|error| error.to_string())
+        })
+    }
+
     fn eval_actor<'a>(
         &'a self,
         command: &'a str,

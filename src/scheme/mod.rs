@@ -437,7 +437,7 @@ mod tests {
     #[test]
     fn needs_expansion_detects_unquoted_parentheses() {
         assert!(needs_expansion(
-            "make thing (string-append (.my.things.lamp))"
+            "make thing (string-append (#.my.things.lamp))"
         ));
     }
 
