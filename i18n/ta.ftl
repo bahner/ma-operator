@@ -70,7 +70,6 @@ msg-read-only = { $path } படிக்க மட்டுமே
 msg-subtree-set = { $path } ஒரு துணைமரம்; அமைக்க மறுக்கப்பட்டது
 msg-ancestor-leaf = { $path } இன் ஒரு மூதாதையர் இலை; நிழலிட மறுக்கப்பட்டது
 msg-key-not-found = திறவுச்சொல் கிடைக்கவில்லை: { $path }
-msg-no-match = பொருத்தம் இல்லை
 msg-link-not-connected = இணைப்பு பெறுவதில் பிழை: இணைக்கப்படவில்லை
 msg-link-fetch-error = இணைப்பு பெறுவதில் பிழை: { $e }
 msg-link-key-not-found = இணைக்கப்பட்ட ஆவணத்தில் திறவுச்சொல் `{ $key }` கிடைக்கவில்லை
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       நேரடி @name (பு�
 
 # ── உதவி — அமைவு இலக்கணம் ────────────────────────────────────────────────
 help-config-get =   .path                        இலை மதிப்பு பெறவும் அல்லது துணைமரம் பட்டியலிடவும்
-help-config-filter =   .path value                  மதிப்பால் வடிகட்டவும்
 help-config-set =   .path: value                 இலை அமைக்கவும்
 help-config-delete =   .path:                       இலை அல்லது துணைமரம் நீக்கவும்
 help-config-verb =   .path!verb [args]            உள்ளூர் வினைச்சொல் அழைக்கவும்

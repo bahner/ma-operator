@@ -70,7 +70,6 @@ msg-read-only = { $path } dia famakiana ihany
 msg-subtree-set = { $path } dia hazo kely; nandà ny hametraka
 msg-ancestor-leaf = razamben'ny { $path } dia ravin-kazo; nandà ny hanapoka
 msg-key-not-found = tsy hita ny fanalahidy: { $path }
-msg-no-match = tsy misy mitovy
 msg-link-not-connected = hadisoana fetching rohy: tsy mifandray
 msg-link-fetch-error = hadisoana fetching rohy: { $e }
 msg-link-key-not-found = tsy hita ny fanalahidy `{ $key }` ao amin'ny antontan-taratasy mifandray
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name ara-bakiteny (tsy mikarok
 
 # ── Fanampiana — fitsipi-teny fikajiana ───────────────────────────────────
 help-config-get =   .path                        alao ny sanda ravin-kazo na lisitry ny hazo kely
-help-config-filter =   .path value                  efaso fanontaniana (sisivo amin'ny sanda)
 help-config-set =   .path: value                 apetraho ny ravin-kazo
 help-config-delete =   .path:                       fafao ny ravin-kazo na hazo kely
 help-config-verb =   .path!verb [args]            antsoy ny fiasa toerana

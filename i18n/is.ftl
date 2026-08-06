@@ -70,7 +70,6 @@ msg-read-only = { $path } er læst fyrir skrift
 msg-subtree-set = { $path } er undirtré; neitar að stilla
 msg-ancestor-leaf = forfaðir { $path } er lauf; neitar að skyggja
 msg-key-not-found = lykill finnst ekki: { $path }
-msg-no-match = engin samsvörun
 msg-link-not-connected = hlekkur sóttist ekki: ekki tengt
 msg-link-fetch-error = hlekkur sóttist ekki: { $e }
 msg-link-key-not-found = lykillinn `{ $key }` finnst ekki í tengdu skjali
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       bókstaflegur @name (engin samn
 
 
 help-config-get =   .path                        sækja laufsgildi eða lista undirtré
-help-config-filter =   .path value                  leitarsía (sía eftir gildi)
 help-config-set =   .path: value                 stilla lauf
 help-config-delete =   .path:                       eyða laufi eða undirtré
 help-config-verb =   .path!verb [args]            keyra staðbundna sögn

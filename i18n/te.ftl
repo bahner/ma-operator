@@ -70,7 +70,6 @@ msg-read-only = { $path } చదవడానికి మాత్రమే
 msg-subtree-set = { $path } సబ్‌ట్రీ; సెట్ చేయడానికి నిరాకరించింది
 msg-ancestor-leaf = { $path } యొక్క పూర్వీకుడు లీఫ్; నీడ చేయడానికి నిరాకరించింది
 msg-key-not-found = కీ కనుగొనబడలేదు: { $path }
-msg-no-match = సరిపోలిక లేదు
 msg-link-not-connected = లింక్ పొందడంలో లోపం: కనెక్ట్ కాలేదు
 msg-link-fetch-error = లింక్ పొందడంలో లోపం: { $e }
 msg-link-key-not-found = లింక్ చేసిన డాక్యుమెంట్‌లో కీ `{ $key }` కనుగొనబడలేదు
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       అక్షరార్థ @na
 
 # ── సహాయం — కాన్ఫిగ్ వ్యాకరణం ────────────────────────────────────────────
 help-config-get =   .path                        లీఫ్ విలువ పొందండి లేదా సబ్‌ట్రీ జాబితా చేయండి
-help-config-filter =   .path value                  విలువతో ఫిల్టర్ చేయండి
 help-config-set =   .path: value                 లీఫ్ సెట్ చేయండి
 help-config-delete =   .path:                       లీఫ్ లేదా సబ్‌ట్రీ తొలగించండి
 help-config-verb =   .path!verb [args]            స్థానిక క్రియ కాల్ చేయండి

@@ -70,7 +70,6 @@ msg-read-only = { $path } on kirjoitussuojattu
 msg-subtree-set = { $path } on alipuu; asettaminen hylätty
 msg-ancestor-leaf = { $path }:n esi-isä on lehti; varjostaminen hylätty
 msg-key-not-found = avainta ei löydy: { $path }
-msg-no-match = ei osumia
 msg-link-not-connected = linkin noutamisvirhe: ei yhteyttä
 msg-link-fetch-error = linkin noutamisvirhe: { $e }
 msg-link-key-not-found = avainta `{ $key }` ei löydy linkitetystä asiakirjasta
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       kirjaimellinen @name (ei aliash
 
 
 help-config-get =   .path                        hae lehden arvo tai listaa alipuu
-help-config-filter =   .path value                  hakusuodatin (suodata arvon mukaan)
 help-config-set =   .path: value                 aseta lehti
 help-config-delete =   .path:                       poista lehti tai alipuu
 help-config-verb =   .path!verb [args]            suorita paikallinen verbi

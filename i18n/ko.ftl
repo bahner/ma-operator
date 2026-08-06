@@ -70,7 +70,6 @@ msg-read-only = { $path }은(는) 읽기 전용입니다
 msg-subtree-set = { $path }은(는) 서브트리입니다; 설정 거부됨
 msg-ancestor-leaf = { $path }의 한 조상이 리프입니다; 덮어쓰기 거부됨
 msg-key-not-found = 키를 찾을 수 없음: { $path }
-msg-no-match = 일치하는 항목 없음
 msg-link-not-connected = 링크 가져오기 오류: 연결되지 않음
 msg-link-fetch-error = 링크 가져오기 오류: { $e }
 msg-link-key-not-found = 연결된 문서에서 키 `{ $key }`를 찾을 수 없음
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       리터럴 @name (별칭 조회 
 
 # ── 도움말 — 설정 문법 ────────────────────────────────────────────────────
 help-config-get =   .path                        리프 값 가져오기 또는 서브트리 나열
-help-config-filter =   .path value                  값으로 필터링
 help-config-set =   .path: value                 리프 설정
 help-config-delete =   .path:                       리프 또는 서브트리 삭제
 help-config-verb =   .path!verb [args]            로컬 동사 호출

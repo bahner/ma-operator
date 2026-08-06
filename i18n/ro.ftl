@@ -70,7 +70,6 @@ msg-read-only = { $path } este doar citire
 msg-subtree-set = { $path } este un subarbore; setare refuzată
 msg-ancestor-leaf = un strămoș al lui { $path } este o frunză; umbrire refuzată
 msg-key-not-found = cheie negăsită: { $path }
-msg-no-match = nicio potrivire
 msg-link-not-connected = eroare la obținerea legăturii: neconectat
 msg-link-fetch-error = eroare la obținerea legăturii: { $e }
 msg-link-key-not-found = cheia `{ $key }` nu a fost găsită în documentul legat
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       @name literal (fără căutare 
 
 
 help-config-get =   .path                        obține valoarea frunzei sau listează subarborele
-help-config-filter =   .path value                  filtru de căutare (filtrare după valoare)
 help-config-set =   .path: value                 setează frunza
 help-config-delete =   .path:                       șterge frunza sau subarborele
 help-config-verb =   .path!verb [args]            execută verb local

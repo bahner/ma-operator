@@ -70,7 +70,6 @@ msg-read-only = { $path } fún kíkà nìkan
 msg-subtree-set = { $path } jẹ́ igi-abẹ; kọ̀ láti fi iye
 msg-ancestor-leaf = bàbá àjíji { $path } jẹ́ ewé; kọ̀ láti bòo
 msg-key-not-found = kò rí bọ́tìnnì: { $path }
-msg-no-match = kò sí ìbáradì
 msg-link-not-connected = àṣìṣe gbígba ọ̀nà asopọ̀: a kò sopọ̀
 msg-link-fetch-error = àṣìṣe gbígba ọ̀nà asopọ̀: { $e }
 msg-link-key-not-found = a kò rí bọ́tìnnì `{ $key }` nínú ìwé tí a so pọ̀
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name gangan (kò sí ìwádì�
 
 # ── Ìrànlọ́wọ́ — gírámà ìtúpalẹ̀ ─────────────────────────────────────────
 help-config-get =   .path                        gba iye ewé tàbí ṣàkójọ igi-abẹ
-help-config-filter =   .path value                  báramu ìbéèrè (àlẹ̀mọ̀ nípa iye)
 help-config-set =   .path: value                 fi iye sí ewé
 help-config-delete =   .path:                       pa ewé tàbí igi-abẹ rẹ̀
 help-config-verb =   .path!verb [args]            pè ìgbésẹ̀ ẹbí

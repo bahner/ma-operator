@@ -70,7 +70,6 @@ msg-read-only = { $path } är skrivskyddad
 msg-subtree-set = { $path } är ett underträd; vägrar ange
 msg-ancestor-leaf = ett förfäder till { $path } är ett löv; vägrar skugga
 msg-key-not-found = nyckel hittades inte: { $path }
-msg-no-match = ingen träff
 msg-link-not-connected = länkhämtningsfel: ej ansluten
 msg-link-fetch-error = länkhämtningsfel: { $e }
 msg-link-key-not-found = nyckeln `{ $key }` hittades inte i länkat dokument
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       bokstavlig @name (ingen alias-s
 
 # ── Hjälptext — konfigurationsgrammatik ──────────────────────────────────
 help-config-get =   .path                        hämta löv-värde eller lista underträd
-help-config-filter =   .path value                  sökfilter (filtrera efter värde)
 help-config-set =   .path: value                 ange löv
 help-config-delete =   .path:                       radera löv eller underträd
 help-config-verb =   .path!verb [args]            kör lokalt verb

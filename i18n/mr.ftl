@@ -70,7 +70,6 @@ msg-read-only = { $path } फक्त वाचनीय आहे
 msg-subtree-set = { $path } उपवृक्ष आहे; सेट करण्यास नकार
 msg-ancestor-leaf = { $path } चा एक पूर्वज पान आहे; छाया करण्यास नकार
 msg-key-not-found = की सापडली नाही: { $path }
-msg-no-match = कोणतेही जुळणे नाही
 msg-link-not-connected = दुवा आणण्यात त्रुटी: जोडलेले नाही
 msg-link-fetch-error = दुवा आणण्यात त्रुटी: { $e }
 msg-link-key-not-found = जोडलेल्या दस्तऐवजात की `{ $key }` सापडली नाही
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       शब्दशः @name (क�
 
 # ── मदत — कॉन्फिग व्याकरण ────────────────────────────────────────────────
 help-config-get =   .path                        पानाचे मूल्य मिळवा किंवा उपवृक्ष सूची
-help-config-filter =   .path value                  मूल्याने फिल्टर करा
 help-config-set =   .path: value                 पान सेट करा
 help-config-delete =   .path:                       पान किंवा उपवृक्ष हटवा
 help-config-verb =   .path!verb [args]            स्थानिक क्रिया कॉल करा

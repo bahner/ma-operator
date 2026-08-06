@@ -70,7 +70,6 @@ msg-read-only = { $path } er skriveverna
 msg-subtree-set = { $path } er eit undertre; nektar å angi
 msg-ancestor-leaf = ein forfar til { $path } er eit lauv; nektar å skugge
 msg-key-not-found = nøkkel ikkje funnen: { $path }
-msg-no-match = ingen treff
 msg-link-not-connected = lenke-hentingsfeil: ikkje kopla
 msg-link-fetch-error = lenke-hentingsfeil: { $e }
 msg-link-key-not-found = nøkkelen `{ $key }` ikkje funnen i kopla dokument
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       bokstaveleg @name (ingen alias-
 
 # ── Hjelptekst — konfigurasjonsgrammatikk ────────────────────────────────
 help-config-get =   .path                        hent lauv-verdi eller list undertre
-help-config-filter =   .path value                  søkefilter (filtrer etter verdi)
 help-config-set =   .path: value                 set lauv
 help-config-delete =   .path:                       slett lauv eller undertre
 help-config-verb =   .path!verb [args]            køyr lokalt verb

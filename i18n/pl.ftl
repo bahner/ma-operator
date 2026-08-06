@@ -70,7 +70,6 @@ msg-read-only = { $path } jest tylko do odczytu
 msg-subtree-set = { $path } jest poddrzewem; ustawienie odrzucone
 msg-ancestor-leaf = przodek { $path } jest liściem; przesłanianie odrzucone
 msg-key-not-found = klucz nie znaleziony: { $path }
-msg-no-match = brak dopasowania
 msg-link-not-connected = błąd pobierania łącza: brak połączenia
 msg-link-fetch-error = błąd pobierania łącza: { $e }
 msg-link-key-not-found = klucz `{ $key }` nie znaleziony w połączonym dokumencie
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       literalne @name (bez wyszukiwan
 
 
 help-config-get =   .path                        pobierz wartość liścia lub wylistuj poddrzewo
-help-config-filter =   .path value                  filtr wyszukiwania (filtruj według wartości)
 help-config-set =   .path: value                 ustaw liść
 help-config-delete =   .path:                       usuń liść lub poddrzewo
 help-config-verb =   .path!verb [args]            wykonaj lokalny czasownik

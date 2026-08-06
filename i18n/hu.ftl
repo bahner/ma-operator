@@ -70,7 +70,6 @@ msg-read-only = { $path } csak olvasható
 msg-subtree-set = { $path } részfa; a beállítás elutasítva
 msg-ancestor-leaf = { $path } egyik őse levél; az árnyékolás elutasítva
 msg-key-not-found = kulcs nem található: { $path }
-msg-no-match = nincs találat
 msg-link-not-connected = hivatkozás lekérési hiba: nincs kapcsolat
 msg-link-fetch-error = hivatkozás lekérési hiba: { $e }
 msg-link-key-not-found = `{ $key }` kulcs nem található a hivatkozott dokumentumban
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       szó szerinti @name (alias kere
 
 
 help-config-get =   .path                        levél értékének lekérése vagy részfa listázása
-help-config-filter =   .path value                  keresési szűrő (szűrés érték szerint)
 help-config-set =   .path: value                 levél beállítása
 help-config-delete =   .path:                       levél vagy részfa törlése
 help-config-verb =   .path!verb [args]            helyi ige futtatása

@@ -70,7 +70,6 @@ msg-read-only = { $path } は読み取り専用です
 msg-subtree-set = { $path } はサブツリーです。設定を拒否しました
 msg-ancestor-leaf = { $path } の祖先がリーフです。シャドウイングを拒否しました
 msg-key-not-found = キーが見つかりません: { $path }
-msg-no-match = 一致なし
 msg-link-not-connected = リンク取得エラー: 接続されていません
 msg-link-fetch-error = リンク取得エラー: { $e }
 msg-link-key-not-found = リンクされたドキュメントにキー `{ $key }` が見つかりません
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       リテラル @name (エイリ�
 
 
 help-config-get =   .path                        リーフの値を取得またはサブツリーを一覧表示
-help-config-filter =   .path value                  検索フィルター (値でフィルタリング)
 help-config-set =   .path: value                 リーフを設定
 help-config-delete =   .path:                       リーフまたはサブツリーを削除
 help-config-verb =   .path!verb [args]            ローカル動詞を実行

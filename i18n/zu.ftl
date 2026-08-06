@@ -70,7 +70,6 @@ msg-read-only = u{ $path } ungafundwa kuphela
 msg-subtree-set = u{ $path } iyisihlahla esincane; wenqabile ukusetha
 msg-ancestor-leaf = okhokho baku-{ $path } yikhasi; wenqabile ukusithela
 msg-key-not-found = ukhiye akutholakalanga: { $path }
-msg-no-match = akukho okufanayo
 msg-link-not-connected = iphutha lokulanda ixhumanisi: akuxhunyiwe
 msg-link-fetch-error = iphutha lokulanda ixhumanisi: { $e }
 msg-link-key-not-found = ukhiye `{ $key }` akutholakalanga kumstandi oxhunyiwe
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name ngqo (akukho ukusesha isi
 
 # ── Usizo — uhlelo lwezintela ─────────────────────────────────────────────
 help-config-get =   .path                        thola inani lekhasi noma ubala isihlahla esincane
-help-config-filter =   .path value                  lungisa umbuzo (hlunga ngenanani)
 help-config-set =   .path: value                 setha ikhasi
 help-config-delete =   .path:                       susa ikhasi noma isihlahla esincane
 help-config-verb =   .path!verb [args]            biza isenzo sendawo

@@ -70,7 +70,6 @@ msg-read-only = { $path } صرف پڑھنے کے قابل ہے
 msg-subtree-set = { $path } ایک ذیلی درخت ہے؛ ترتیب سے انکار
 msg-ancestor-leaf = { $path } کا ایک آبا و اجداد پتہ ہے؛ سایہ سے انکار
 msg-key-not-found = کلید نہیں ملی: { $path }
-msg-no-match = کوئی میل نہیں
 msg-link-not-connected = لنک حاصل کرنے میں خرابی: منسلک نہیں
 msg-link-fetch-error = لنک حاصل کرنے میں خرابی: { $e }
 msg-link-key-not-found = منسلک دستاویز میں کلید `{ $key }` نہیں ملی
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       لفظی @name (عرفی نام
 
 # ── مدد — ترتیب کا قواعد ──────────────────────────────────────────────────
 help-config-get =   .path                        پتی کی قدر حاصل کریں یا ذیلی درخت کی فہرست
-help-config-filter =   .path value                  قدر سے فلٹر کریں
 help-config-set =   .path: value                 پتی ترتیب دیں
 help-config-delete =   .path:                       پتی یا ذیلی درخت حذف کریں
 help-config-verb =   .path!verb [args]            مقامی فعل کال کریں

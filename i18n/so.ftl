@@ -70,7 +70,6 @@ msg-read-only = { $path } waxaa loo akhrin karaa oo keliya
 msg-subtree-set = { $path } geed yar ah; diiday in la dhigo
 msg-ancestor-leaf = awoowayaasha { $path } caleenta ah; diiday in la dabooло
 msg-key-not-found = furaha lama helin: { $path }
-msg-no-match = wax la mid ah ma jiro
 msg-link-not-connected = khaladka qaadashada xidhmada: lama xidhin
 msg-link-fetch-error = khaladka qaadashada xidhmada: { $e }
 msg-link-key-not-found = furaha `{ $key }` dokumantigii la xidhay lama helin
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name dhab ah (raadinta magaca 
 
 # ── Gargaarku — naxwaha dejinta ───────────────────────────────────────────
 help-config-get =   .path                        hel qiimaha caleenta ama liiska geedka yar
-help-config-filter =   .path value                  weydiimaha la xidhiidhiya (u habeynta qiimaha)
 help-config-set =   .path: value                 dejiso caleenta
 help-config-delete =   .path:                       tirtir caleenta ama geedka yar
 help-config-verb =   .path!verb [args]            wac ficilka deegaanka

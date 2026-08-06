@@ -72,7 +72,6 @@ msg-read-only = { $path } lit-seng oyedeng
 msg-subtree-set = { $path } im gova-kopeng; na du seting
 msg-ancestor-leaf = { $path } gova im lef; na du dabali
 msg-key-not-found = ki na finyish wit: { $path }
-msg-no-match = nating kopeng
 msg-link-not-connected = hámfalla du fech link: na konekt
 msg-link-fetch-error = hámfalla du fech link: { $e }
 msg-link-key-not-found = ki `{ $key }` na finyish wit im link-dok
@@ -209,7 +208,6 @@ help-msg-escape =   \@name                       @name leshi (na du alias)
 
 # ── Halp — konfig naxwe ───────────────────────────────────────────────────
 help-config-get =   .path                        sasa lef sanda oyedeng lit gova-kopeng
-help-config-filter =   .path value                  kolowda (hamma wit sanda)
 help-config-set =   .path: value                 set lef
 help-config-delete =   .path:                       na-du lef oyedeng gova-kopeng
 help-config-verb =   .path!verb [args]            kol lokal verb

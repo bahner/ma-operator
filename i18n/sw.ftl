@@ -70,7 +70,6 @@ msg-read-only = { $path } ni ya kusoma tu
 msg-subtree-set = { $path } ni mti mdogo; mipangilio imekataliwa
 msg-ancestor-leaf = babu wa { $path } ni jani; ufunikaji umekataliwa
 msg-key-not-found = ufunguo haupatikani: { $path }
-msg-no-match = hakuna mechi
 msg-link-not-connected = hitilafu ya kupata kiungo: haijaunganishwa
 msg-link-fetch-error = hitilafu ya kupata kiungo: { $e }
 msg-link-key-not-found = ufunguo `{ $key }` haupatikani katika hati iliyounganishwa
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       @name halisi (bila utafutaji wa
 
 
 help-config-get =   .path                        pata thamani ya jani au orodhesha mti mdogo
-help-config-filter =   .path value                  kichujio cha utafutaji (chuja kwa thamani)
 help-config-set =   .path: value                 weka jani
 help-config-delete =   .path:                       futa jani au mti mdogo
 help-config-verb =   .path!verb [args]            tekeleza kitenzi cha ndani

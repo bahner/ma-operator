@@ -70,7 +70,6 @@ msg-read-only = { $path } 為唯讀
 msg-subtree-set = { $path } 是子樹；拒絕設定
 msg-ancestor-leaf = { $path } 的某個祖先是葉節點；拒絕遮蔽
 msg-key-not-found = 找不到鍵: { $path }
-msg-no-match = 無相符項目
 msg-link-not-connected = 連結擷取錯誤：未連線
 msg-link-fetch-error = 連結擷取錯誤: { $e }
 msg-link-key-not-found = 在連結文件中找不到鍵 `{ $key }`
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       字面 @name（不查找別名�
 
 # ── 說明文字 — 設定語法 ───────────────────────────────────────────────────
 help-config-get =   .path                        取得葉值或列出子樹
-help-config-filter =   .path value                  按值過濾子樹
 help-config-set =   .path: value                 設定葉值
 help-config-delete =   .path:                       刪除葉或子樹
 help-config-verb =   .path!verb [args]            呼叫本地動詞

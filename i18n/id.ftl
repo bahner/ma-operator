@@ -70,7 +70,6 @@ msg-read-only = { $path } hanya baca
 msg-subtree-set = { $path } adalah subpohon; menolak pengaturan
 msg-ancestor-leaf = leluhur { $path } adalah daun; menolak bayangan
 msg-key-not-found = kunci tidak ditemukan: { $path }
-msg-no-match = tidak ada kecocokan
 msg-link-not-connected = kesalahan pengambilan tautan: tidak terhubung
 msg-link-fetch-error = kesalahan pengambilan tautan: { $e }
 msg-link-key-not-found = kunci `{ $key }` tidak ditemukan dalam dokumen tertaut
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       literal @name (tidak ada pencar
 
 # ── Bantuan — sintaks konfigurasi ─────────────────────────────────────────
 help-config-get =   .path                        ambil nilai daun atau daftar subpohon
-help-config-filter =   .path value                  filter berdasarkan nilai
 help-config-set =   .path: value                 atur nilai daun
 help-config-delete =   .path:                       hapus daun atau subpohon
 help-config-verb =   .path!verb [args]            panggil kata kerja lokal

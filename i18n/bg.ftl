@@ -70,7 +70,6 @@ msg-read-only = { $path } е само за четене
 msg-subtree-set = { $path } е поддърво; задаването е отказано
 msg-ancestor-leaf = предшественик на { $path } е лист; засенчването е отказано
 msg-key-not-found = ключът не е намерен: { $path }
-msg-no-match = няма съвпадение
 msg-link-not-connected = грешка при извличане на връзка: не е свързано
 msg-link-fetch-error = грешка при извличане на връзка: { $e }
 msg-link-key-not-found = ключът `{ $key }` не е намерен в свързания документ
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       буквален @name (без 
 
 
 help-config-get =   .path                        получава стойността на лист или изброява поддърво
-help-config-filter =   .path value                  филтър за търсене (филтриране по стойност)
 help-config-set =   .path: value                 задава лист
 help-config-delete =   .path:                       изтрива лист или поддърво
 help-config-verb =   .path!verb [args]            изпълнява локален глагол

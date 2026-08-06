@@ -70,7 +70,6 @@ msg-read-only = { $path } ለማንበብ ብቻ ነው
 msg-subtree-set = { $path } ንዑስ ዛፍ ነው; ማዘጋጀትን ተቃወመ
 msg-ancestor-leaf = የ{ $path } ቅድመ አያት ቅጠል ነው; መሸፈንን ተቃወመ
 msg-key-not-found = ቁልፍ አልተገኘም: { $path }
-msg-no-match = ምንም ተዛምዶ የለም
 msg-link-not-connected = የአገናኝ ማምጣት ስህተት: አልተገናኘም
 msg-link-fetch-error = የአገናኝ ማምጣት ስህተት: { $e }
 msg-link-key-not-found = ቁልፍ `{ $key }` በተያያዘው ሰነድ ውስጥ አልተገኘም
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም 
 
 # ── እርዳታ — ቅርጸት ሰዋስው ──────────────────────────────────────────────────
 help-config-get =   .path                        የቅጠሉን ዋጋ ያግኙ ወይም ንዑስ ዛፍ ዘርዝሩ
-help-config-filter =   .path value                  ጥያቄ ያዛምዱ (በዋጋ ያጣሩ)
 help-config-set =   .path: value                 ቅጠሉን ያዘጋጁ
 help-config-delete =   .path:                       ቅጠሉን ወይም ንዑስ ዛፍ ይሰርዙ
 help-config-verb =   .path!verb [args]            ሁናቴ ተግባር ይጥሩ

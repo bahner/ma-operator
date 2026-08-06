@@ -70,7 +70,6 @@ msg-read-only = { $path } শুধুমাত্র পঠনযোগ্য
 msg-subtree-set = { $path } একটি সাবট্রি; সেট করতে অস্বীকার করা হয়েছে
 msg-ancestor-leaf = { $path }-এর একটি পূর্বপুরুষ লিফ; ছায়া দিতে অস্বীকার করা হয়েছে
 msg-key-not-found = কী পাওয়া যায়নি: { $path }
-msg-no-match = কোনো মিল নেই
 msg-link-not-connected = লিঙ্ক ফেচ ত্রুটি: সংযুক্ত নেই
 msg-link-fetch-error = লিঙ্ক ফেচ ত্রুটি: { $e }
 msg-link-key-not-found = লিঙ্ক করা ডকুমেন্টে `{ $key }` কী পাওয়া যায়নি
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       আক্ষরিক @name (�
 
 # ── সহায়তা — কনফিগ ব্যাকরণ ──────────────────────────────────────────────
 help-config-get =   .path                        লিফ মান পান বা সাবট্রি তালিকা করুন
-help-config-filter =   .path value                  মান দিয়ে ফিল্টার করুন
 help-config-set =   .path: value                 লিফ সেট করুন
 help-config-delete =   .path:                       লিফ বা সাবট্রি মুছুন
 help-config-verb =   .path!verb [args]            স্থানীয় ক্রিয়া কল করুন

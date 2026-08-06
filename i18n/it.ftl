@@ -70,7 +70,6 @@ msg-read-only = { $path } è di sola lettura
 msg-subtree-set = { $path } è un sottoalbero; impostazione rifiutata
 msg-ancestor-leaf = un antenato di { $path } è una foglia; ombreggiatura rifiutata
 msg-key-not-found = chiave non trovata: { $path }
-msg-no-match = nessuna corrispondenza
 msg-link-not-connected = errore nel recupero del collegamento: non connesso
 msg-link-fetch-error = errore nel recupero del collegamento: { $e }
 msg-link-key-not-found = chiave `{ $key }` non trovata nel documento collegato
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       @name letterale (nessuna ricerc
 
 
 help-config-get =   .path                        ottieni valore foglia o elenca sottoalbero
-help-config-filter =   .path value                  filtro di ricerca (filtra per valore)
 help-config-set =   .path: value                 imposta foglia
 help-config-delete =   .path:                       elimina foglia o sottoalbero
 help-config-verb =   .path!verb [args]            esegui verbo locale

@@ -70,7 +70,6 @@ msg-read-only = { $path } للقراءة فقط
 msg-subtree-set = { $path } شجرة فرعية؛ رُفض التعيين
 msg-ancestor-leaf = أحد أسلاف { $path } ورقة؛ رُفض التظليل
 msg-key-not-found = المفتاح غير موجود: { $path }
-msg-no-match = لا يوجد تطابق
 msg-link-not-connected = خطأ في جلب الرابط: غير متصل
 msg-link-fetch-error = خطأ في جلب الرابط: { $e }
 msg-link-key-not-found = المفتاح `{ $key }` غير موجود في المستند المرتبط
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name حرفياً (بلا بح
 
 # ── المساعدة — قواعد الضبط ────────────────────────────────────────────────
 help-config-get =   .path                        الحصول على قيمة ورقة أو سرد الشجرة الفرعية
-help-config-filter =   .path value                  تصفية بالقيمة
 help-config-set =   .path: value                 تعيين قيمة ورقة
 help-config-delete =   .path:                       حذف ورقة أو شجرة فرعية
 help-config-verb =   .path!verb [args]            استدعاء فعل محلي

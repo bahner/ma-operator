@@ -70,7 +70,6 @@ msg-read-only = { $path } chỉ đọc
 msg-subtree-set = { $path } là cây con; từ chối đặt
 msg-ancestor-leaf = một tổ tiên của { $path } là lá; từ chối che khuất
 msg-key-not-found = không tìm thấy khóa: { $path }
-msg-no-match = không có kết quả phù hợp
 msg-link-not-connected = lỗi tải liên kết: chưa kết nối
 msg-link-fetch-error = lỗi tải liên kết: { $e }
 msg-link-key-not-found = không tìm thấy khóa `{ $key }` trong tài liệu được liên kết
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name theo nghĩa đen (không 
 
 # ── Trợ giúp — cú pháp cấu hình ─────────────────────────────────────────
 help-config-get =   .path                        lấy giá trị lá hoặc liệt kê cây con
-help-config-filter =   .path value                  lọc theo giá trị
 help-config-set =   .path: value                 đặt lá
 help-config-delete =   .path:                       xóa lá hoặc cây con
 help-config-verb =   .path!verb [args]            gọi động từ cục bộ

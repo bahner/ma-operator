@@ -70,7 +70,6 @@ msg-read-only = { $path } je len na čítanie
 msg-subtree-set = { $path } je podstrom; nastavenie odmietnuté
 msg-ancestor-leaf = predok { $path } je list; tieňovanie odmietnuté
 msg-key-not-found = kľúč nenájdený: { $path }
-msg-no-match = žiadna zhoda
 msg-link-not-connected = chyba načítania odkazu: nepripojené
 msg-link-fetch-error = chyba načítania odkazu: { $e }
 msg-link-key-not-found = kľúč `{ $key }` nenájdený v prepojenom dokumente
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       doslovné @name (bez vyhľadáv
 
 
 help-config-get =   .path                        získať hodnotu listu alebo vypísať podstrom
-help-config-filter =   .path value                  vyhľadávací filter (filtrovať podľa hodnoty)
 help-config-set =   .path: value                 nastaviť list
 help-config-delete =   .path:                       vymazať list alebo podstrom
 help-config-verb =   .path!verb [args]            spustiť lokálne sloveso

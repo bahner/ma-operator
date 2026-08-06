@@ -70,7 +70,6 @@ msg-read-only = { $path } bụ maka ịgụ naanị
 msg-subtree-set = { $path } bụ alaka; ọ jụrụ ịtọ
 msg-ancestor-leaf = nna nna { $path } bụ ọhụrụ; ọ jụrụ ikpuchi
 msg-key-not-found = achịghị igodo: { $path }
-msg-no-match = enweghị ihe dabara
 msg-link-not-connected = njehie ịnweta njikọ: ejikọghị
 msg-link-fetch-error = njehie ịnweta njikọ: { $e }
 msg-link-key-not-found = achịghị igodo `{ $key }` n'akwụkwọ ejikọrọ
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name n'okwu n'okwu (ọ chọg
 
 # ── Enyemaka — nhazi grammar ──────────────────────────────────────────────
 help-config-get =   .path                        nweta uru ọhụrụ ma ọ bụ depụta alaka
-help-config-filter =   .path value                  dakọta arịrịọ (isi n'uru)
 help-config-set =   .path: value                 tọ ọhụrụ
 help-config-delete =   .path:                       hichapụ ọhụrụ ma ọ bụ alaka
 help-config-verb =   .path!verb [args]            kpọọ ọrụ obibi

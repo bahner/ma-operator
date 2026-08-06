@@ -70,7 +70,6 @@ msg-read-only = { $path } อ่านได้อย่างเดียว
 msg-subtree-set = { $path } เป็น subtree; ปฏิเสธการตั้งค่า
 msg-ancestor-leaf = บรรพบุรุษของ { $path } เป็น leaf; ปฏิเสธการซ่อน
 msg-key-not-found = ไม่พบคีย์: { $path }
-msg-no-match = ไม่พบผลลัพธ์ที่ตรงกัน
 msg-link-not-connected = ข้อผิดพลาดการดึงลิงก์: ยังไม่ได้เชื่อมต่อ
 msg-link-fetch-error = ข้อผิดพลาดการดึงลิงก์: { $e }
 msg-link-key-not-found = ไม่พบคีย์ `{ $key }` ในเอกสารที่ลิงก์
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name ตามตัวอั�
 
 # ── ช่วยเหลือ — ไวยากรณ์การกำหนดค่า ──────────────────────────────────────
 help-config-get =   .path                        ดึงค่า leaf หรือแสดงรายการ subtree
-help-config-filter =   .path value                  กรองตามค่า
 help-config-set =   .path: value                 ตั้งค่า leaf
 help-config-delete =   .path:                       ลบ leaf หรือ subtree
 help-config-verb =   .path!verb [args]            เรียกใช้กริยาท้องถิ่น

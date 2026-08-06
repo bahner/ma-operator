@@ -70,7 +70,6 @@ msg-read-only = { $path } dubbisuu qofa
 msg-subtree-set = { $path } imitee dha; kaa'uu diduu
 msg-ancestor-leaf = abbaa haadha { $path } dahoo dha; haguuguu diduu
 msg-key-not-found = furtuun hin argamne: { $path }
-msg-no-match = walfakkaataan hin jiru
 msg-link-not-connected = dogoggora harkifannaa liinkii: walitti hin hidhamne
 msg-link-fetch-error = dogoggora harkifannaa liinkii: { $e }
 msg-link-key-not-found = furtuun `{ $key }` galmee walitti hidhametti hin argamne
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name dhugaa (moggaasni hin bar
 
 # ── Gargaarsa — giiraama qindaa'inaa ─────────────────────────────────────
 help-config-get =   .path                        gatii dahoo argadhu ykn imitee tarreessi
-help-config-filter =   .path value                  gaaffii deebisi (gatiidhaan shaakali)
 help-config-set =   .path: value                 dahoo qindi'i
 help-config-delete =   .path:                       dahoo ykn imitee haaqama
 help-config-verb =   .path!verb [args]            gochaa naannoo waami

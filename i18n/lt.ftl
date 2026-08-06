@@ -70,7 +70,6 @@ msg-read-only = { $path } yra tik skaitomas
 msg-subtree-set = { $path } yra pomedis; nustatymas atsisakytas
 msg-ancestor-leaf = { $path } protėvis yra lapas; šešėliavimas atsisakytas
 msg-key-not-found = raktas nerastas: { $path }
-msg-no-match = atitikmenų nerasta
 msg-link-not-connected = nuorodos gavimo klaida: neprisijungta
 msg-link-fetch-error = nuorodos gavimo klaida: { $e }
 msg-link-key-not-found = raktas `{ $key }` nerastas susietame dokumente
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       pažodinis @name (be pseudonimo
 
 
 help-config-get =   .path                        gauti lapo reikšmę arba išvardyti pomedį
-help-config-filter =   .path value                  paieškos filtras (filtruoti pagal reikšmę)
 help-config-set =   .path: value                 nustatyti lapą
 help-config-delete =   .path:                       ištrinti lapą arba pomedį
 help-config-verb =   .path!verb [args]            vykdyti vietinį veiksmažodį

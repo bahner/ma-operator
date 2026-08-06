@@ -75,7 +75,6 @@ msg-ancestor-leaf = یکی از نیاکان { $path } برگ است؛ از سا
 err-unknown-command = فرمان ناشناخته: { $path }
 err-read-only-path = { $path } فقط خواندنی است
 msg-key-not-found = کلید پیدا نشد: { $path }
-msg-no-match = موردی پیدا نشد
 msg-link-not-connected = خطای واکشی پیوند: وصل نیست
 msg-link-fetch-error = خطای واکشی پیوند: { $e }
 msg-link-key-not-found = کلید `{ $key }` در سند پیوندشده پیدا نشد
@@ -245,7 +244,6 @@ help-ma-entry-url =   ?enter=<runtime>             پس از ورود از URL �
 
 # ── متن راهنما — دستور زبان پیکربندی ────────────────────────────────────
 help-config-get =   .path                        گرفتن مقدار برگ یا فهرست زیردرخت
-help-config-filter =   .path value                  تطبیق پرس‌وجو (فیلتر بر پایه مقدار)
 help-config-set =   .path: value                 تنظیم برگ
 help-config-delete =   .path:                       حذف برگ یا زیردرخت
 help-config-verb =   .path!verb [args]            فراخوانی فعل محلی

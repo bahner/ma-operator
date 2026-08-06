@@ -70,7 +70,6 @@ msg-read-only = { $path } e jannde tan
 msg-subtree-set = { $path } aawre; haɗaa mbelaade
 msg-ancestor-leaf = woɗɓe { $path } ko leehol; haɗaa naatde dow
 msg-key-not-found = keblal tawaaka: { $path }
-msg-no-match = huunde eɓitaaki
 msg-link-not-connected = juumre downloading ɗannol: wondaaka
 msg-link-fetch-error = juumre downloading ɗannol: { $e }
 msg-link-key-not-found = keblal `{ $key }` tawaaka e takka ɗannol
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name haqiiqaajo (yiytude hesbu
 
 # ── Ballal — naawre-daande ────────────────────────────────────────────────
 help-config-get =   .path                        heɓ njamu leehol walla listal aawre
-help-config-filter =   .path value                  gollal muɓɓinɗe (yiytude e njamu)
 help-config-set =   .path: value                 weel leehol
 help-config-delete =   .path:                       yaltina leehol walla aawre
 help-config-verb =   .path!verb [args]            noddu baɗe tiiɗnde

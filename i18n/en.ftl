@@ -75,7 +75,6 @@ msg-ancestor-leaf = an ancestor of { $path } is a leaf; refusing to shadow
 err-unknown-command = unknown command: { $path }
 err-read-only-path = { $path } is read-only
 msg-key-not-found = key not found: { $path }
-msg-no-match = no match
 msg-link-not-connected = link fetch error: not connected
 msg-link-fetch-error = link fetch error: { $e }
 msg-link-key-not-found = key `{ $key }` not found in linked document
@@ -245,7 +244,6 @@ help-ma-entry-url =   ?enter=<runtime>             enter after login from a shar
 
 # ── Help text — config grammar ────────────────────────────────────────────
 help-config-get =   .path                        get leaf value or list subtree
-help-config-filter =   .path value                  match query (filter by value)
 help-config-set =   .path: value                 set leaf
 help-config-delete =   .path:                       delete leaf or subtree
 help-config-verb =   .path!verb [args]            invoke local verb

@@ -73,7 +73,6 @@ msg-read-only = { $path } лише для читання
 msg-subtree-set = { $path } — піддерево; встановлення заборонено
 msg-ancestor-leaf = предок шляху { $path } є листком; затінення заборонено
 msg-key-not-found = ключ не знайдено: { $path }
-msg-no-match = немає збігів
 msg-link-not-connected = помилка завантаження посилання: немає підключення
 msg-link-fetch-error = помилка завантаження посилання: { $e }
 msg-link-key-not-found = ключ `{ $key }` не знайдено у пов'язаному документі
@@ -228,7 +227,6 @@ help-msg-escape =   \@name                       буквальний @name (б�
 
 # ── Довідка — синтаксис конфігурації ─────────────────────────────────────
 help-config-get =   .path                        отримати значення або список піддерева
-help-config-filter =   .path value                  збіг запиту (фільтр за значенням)
 help-config-set =   .path: value                 встановити лист
 help-config-delete =   .path:                       видалити лист або піддерево
 help-config-verb =   .path!verb [args]            викликати локальне дієслово

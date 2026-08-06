@@ -70,7 +70,6 @@ msg-read-only = { $path } is alleen-lezen
 msg-subtree-set = { $path } is een deelboom; instellen geweigerd
 msg-ancestor-leaf = een voorouder van { $path } is een blad; overschaduwen geweigerd
 msg-key-not-found = sleutel niet gevonden: { $path }
-msg-no-match = geen overeenkomst
 msg-link-not-connected = fout bij ophalen koppeling: niet verbonden
 msg-link-fetch-error = fout bij ophalen koppeling: { $e }
 msg-link-key-not-found = sleutel `{ $key }` niet gevonden in gekoppeld document
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       letterlijke @name (geen aliaszo
 
 
 help-config-get =   .path                        bladwaarde ophalen of deelboom weergeven
-help-config-filter =   .path value                  zoekfilter (filteren op waarde)
 help-config-set =   .path: value                 blad instellen
 help-config-delete =   .path:                       blad of deelboom verwijderen
 help-config-verb =   .path!verb [args]            lokaal werkwoord uitvoeren

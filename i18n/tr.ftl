@@ -70,7 +70,6 @@ msg-read-only = { $path } salt okunur
 msg-subtree-set = { $path } bir alt ağaçtır; ayar reddedildi
 msg-ancestor-leaf = { $path } yolunun bir atası yapraktır; gölgeleme reddedildi
 msg-key-not-found = anahtar bulunamadı: { $path }
-msg-no-match = eşleşme yok
 msg-link-not-connected = bağlantı getirme hatası: bağlı değil
 msg-link-fetch-error = bağlantı getirme hatası: { $e }
 msg-link-key-not-found = bağlantılı belgede `{ $key }` anahtarı bulunamadı
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       değişmez @name (takma ad aram
 
 # ── Yardım — yapılandırma sözdizimi ──────────────────────────────────────
 help-config-get =   .path                        yaprak değer al veya alt ağacı listele
-help-config-filter =   .path value                  değere göre filtrele
 help-config-set =   .path: value                 yaprak değer ayarla
 help-config-delete =   .path:                       yaprak veya alt ağacı sil
 help-config-verb =   .path!verb [args]            yerel fiil çağır

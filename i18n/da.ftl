@@ -70,7 +70,6 @@ msg-read-only = { $path } er skrivebeskyttet
 msg-subtree-set = { $path } er et undertræ; nægter at angive
 msg-ancestor-leaf = et forfader til { $path } er et blad; nægter at skygge
 msg-key-not-found = nøgle ikke fundet: { $path }
-msg-no-match = ingen match
 msg-link-not-connected = linkhentningsfejl: ikke forbundet
 msg-link-fetch-error = linkhentningsfejl: { $e }
 msg-link-key-not-found = nøglen `{ $key }` ikke fundet i linket dokument
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       bogstavelig @name (ingen alias-
 
 # ── Hjælpetekst — konfigurationsgrammatik ────────────────────────────────
 help-config-get =   .path                        hent bladværdi eller list undertræ
-help-config-filter =   .path value                  søgefilter (filtrer efter værdi)
 help-config-set =   .path: value                 angiv blad
 help-config-delete =   .path:                       slet blad eller undertræ
 help-config-verb =   .path!verb [args]            kør lokalt verb

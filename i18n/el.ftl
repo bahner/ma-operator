@@ -70,7 +70,6 @@ msg-read-only = { $path } είναι μόνο για ανάγνωση
 msg-subtree-set = { $path } είναι υποδέντρο· η ρύθμιση απορρίφθηκε
 msg-ancestor-leaf = ένας πρόγονος του { $path } είναι φύλλο· η σκίαση απορρίφθηκε
 msg-key-not-found = το κλειδί δεν βρέθηκε: { $path }
-msg-no-match = δεν βρέθηκε αποτέλεσμα
 msg-link-not-connected = σφάλμα ανάκτησης συνδέσμου: δεν υπάρχει σύνδεση
 msg-link-fetch-error = σφάλμα ανάκτησης συνδέσμου: { $e }
 msg-link-key-not-found = το κλειδί `{ $key }` δεν βρέθηκε στο συνδεδεμένο έγγραφο
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       κυριολεκτικό @name 
 
 
 help-config-get =   .path                        λήψη τιμής φύλλου ή καταγραφή υποδέντρου
-help-config-filter =   .path value                  φίλτρο αναζήτησης (φιλτράρισμα κατά τιμή)
 help-config-set =   .path: value                 ρύθμιση φύλλου
 help-config-delete =   .path:                       διαγραφή φύλλου ή υποδέντρου
 help-config-verb =   .path!verb [args]            εκτέλεση τοπικού ρήματος

@@ -70,7 +70,6 @@ msg-read-only = { $path } don karatu kawai
 msg-subtree-set = { $path } reshe ne; ƙin saita
 msg-ancestor-leaf = kakannin { $path } ganye ne; ƙin rufe
 msg-key-not-found = ba a samu maɓalli ba: { $path }
-msg-no-match = babu daidaituwa
 msg-link-not-connected = kuskuren ɗaukar hanyar haɗin: ba a haɗa ba
 msg-link-fetch-error = kuskuren ɗaukar hanyar haɗin: { $e }
 msg-link-key-not-found = ba a samu maɓalli `{ $key }` a cikin takarda da aka haɗa ba
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       @name na zahiri (babu binciken 
 
 # ── Rubutun taimako — nahawun saitunan ───────────────────────────────────
 help-config-get =   .path                        sami ƙimar ganye ko jera ƙananan reshe
-help-config-filter =   .path value                  daidaitar bincike (tace da ƙima)
 help-config-set =   .path: value                 saita ganye
 help-config-delete =   .path:                       goge ganye ko ƙananan reshe
 help-config-verb =   .path!verb [args]            kira aikatau gida

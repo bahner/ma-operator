@@ -70,7 +70,6 @@ msg-read-only = { $path } केवल पढ़ने योग्य है
 msg-subtree-set = { $path } एक सबट्री है; सेट करने से मना किया
 msg-ancestor-leaf = { $path } का एक पूर्वज लीफ़ है; छाया करने से मना किया
 msg-key-not-found = कुंजी नहीं मिली: { $path }
-msg-no-match = कोई मिलान नहीं
 msg-link-not-connected = लिंक फ़ेच त्रुटि: कनेक्ट नहीं है
 msg-link-fetch-error = लिंक फ़ेच त्रुटि: { $e }
 msg-link-key-not-found = लिंक किए गए दस्तावेज़ में कुंजी `{ $key }` नहीं मिली
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       शाब्दिक @name (�
 
 # ── सहायता — कॉन्फ़िग व्याकरण ─────────────────────────────────────────────
 help-config-get =   .path                        लीफ़ मान प्राप्त करें या सबट्री सूची
-help-config-filter =   .path value                  मान से फ़िल्टर करें
 help-config-set =   .path: value                 लीफ़ सेट करें
 help-config-delete =   .path:                       लीफ़ या सबट्री हटाएं
 help-config-verb =   .path!verb [args]            स्थानीय क्रिया बुलाएं

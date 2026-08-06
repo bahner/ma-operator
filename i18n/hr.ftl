@@ -70,7 +70,6 @@ msg-read-only = { $path } je samo za čitanje
 msg-subtree-set = { $path } je podstablo; postavljanje odbijeno
 msg-ancestor-leaf = predak od { $path } je list; zasjenjivanje odbijeno
 msg-key-not-found = ključ nije pronađen: { $path }
-msg-no-match = nema podudaranja
 msg-link-not-connected = greška pri dohvaćanju veze: nije spojeno
 msg-link-fetch-error = greška pri dohvaćanju veze: { $e }
 msg-link-key-not-found = ključ `{ $key }` nije pronađen u povezanom dokumentu
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       doslovni @name (bez pretraživa
 
 
 help-config-get =   .path                        dohvati vrijednost lista ili izlistaj podstablo
-help-config-filter =   .path value                  filter pretraživanja (filtriranje po vrijednosti)
 help-config-set =   .path: value                 postavi list
 help-config-delete =   .path:                       obriši list ili podstablo
 help-config-verb =   .path!verb [args]            pokreni lokalni glagol

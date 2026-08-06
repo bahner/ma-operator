@@ -70,7 +70,6 @@ msg-read-only = { $path } ist schreibgeschützt
 msg-subtree-set = { $path } ist ein Teilbaum; Setzen verweigert
 msg-ancestor-leaf = Ein Vorfahre von { $path } ist ein Blatt; Überschatten verweigert
 msg-key-not-found = Schlüssel nicht gefunden: { $path }
-msg-no-match = keine Übereinstimmung
 msg-link-not-connected = Link-Abruffehler: nicht verbunden
 msg-link-fetch-error = Link-Abruffehler: { $e }
 msg-link-key-not-found = Schlüssel `{ $key }` nicht im verknüpften Dokument gefunden
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       wörtliches @name (keine Alias-
 
 
 help-config-get =   .path                        Blattwert abrufen oder Teilbaum auflisten
-help-config-filter =   .path value                  Suchfilter (nach Wert filtern)
 help-config-set =   .path: value                 Blatt setzen
 help-config-delete =   .path:                       Blatt oder Teilbaum löschen
 help-config-verb =   .path!verb [args]            lokales Verb ausführen

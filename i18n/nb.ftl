@@ -70,7 +70,6 @@ msg-read-only = { $path } er skrivebeskyttet
 msg-subtree-set = { $path } er et undertre; nekter å sette
 msg-ancestor-leaf = en forfader til { $path } er en bladnode; nekter å skyggelegge
 msg-key-not-found = nøkkel ikke funnet: { $path }
-msg-no-match = ingen treff
 msg-link-not-connected = lenke-hentingsfeil: ikke tilkoblet
 msg-link-fetch-error = lenke-hentingsfeil: { $e }
 msg-link-key-not-found = nøkkel `{ $key }` ikke funnet i lenket dokument
@@ -222,7 +221,6 @@ help-ma-entry-url =   ?enter=<runtime>             tre inn etter innlogging fra 
 
 # ── Hjelpetekst — konfigurasjonsgrammatikk ───────────────────────────────
 help-config-get =   .path                        hent bladverdi eller list undertre
-help-config-filter =   .path value                  søkfilter (filtrer etter verdi)
 help-config-set =   .path: value                 sett blad
 help-config-delete =   .path:                       slett blad eller undertre
 help-config-verb =   .path!verb [args]             kjør lokalt verb

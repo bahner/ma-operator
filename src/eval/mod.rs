@@ -1009,36 +1009,19 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
     });
 }
 
-fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
-    // ── Config tree read ──────────────────────────────────────────────────
+fn handle_dot_get(path: &str, _args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let cfg = config.get_untracked();
-    let query = if args.is_empty() {
-        None
-    } else {
-        Some(args.join(" "))
-    };
-
     if cfg.is_leaf(path) {
         let value = cfg.get(path).unwrap_or("");
-        match &query {
-            None => state.push_output(format!("{path}: {value}")),
-            Some(q) if value == q.as_str() => state.push_output(format!("{path}: {value}")),
-            Some(_) => state.push_error(t("msg-no-match")),
-        }
+        state.push_output(format!("{path}: {value}"));
     } else if cfg.has_children(path) {
-        show_children(path, &query, &cfg, state);
+        show_children(path, &cfg, state);
     } else {
         lazy_link_traverse(path, &cfg, state, config);
     }
 }
 
-/// List immediate children of `path`, optionally filtered by `query`.
-fn show_children(
-    path: &str,
-    query: &Option<String>,
-    cfg: &crate::config::EgoConfig,
-    state: &AppState,
-) {
+fn show_children(path: &str, cfg: &crate::config::EgoConfig, state: &AppState) {
     let prefix = format!("{path}.");
     let prefix_len = prefix.len();
     let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
@@ -1048,27 +1031,13 @@ fn show_children(
         children.insert(immediate.to_string());
     }
     state.push_output(format!("{path}:"));
-    let mut shown = 0usize;
     for child in &children {
         let child_path = format!("{path}.{child}");
         if let Some(v) = cfg.get(&child_path) {
-            if let Some(q) = query {
-                if v != q.as_str() {
-                    continue;
-                }
-            }
             state.push_output(format!("  {child}: {v}"));
-            shown += 1;
         } else {
-            if query.is_some() {
-                continue;
-            }
             state.push_output(format!("  {child}"));
-            shown += 1;
         }
-    }
-    if shown == 0 && query.is_some() {
-        state.push_error(t("msg-no-match"));
     }
 }
 

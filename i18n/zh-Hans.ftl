@@ -70,7 +70,6 @@ msg-read-only = { $path } 为只读
 msg-subtree-set = { $path } 是子树；拒绝设置
 msg-ancestor-leaf = { $path } 的某个祖先是叶节点；拒绝遮蔽
 msg-key-not-found = 找不到键: { $path }
-msg-no-match = 无匹配
 msg-link-not-connected = 链接获取错误：未连接
 msg-link-fetch-error = 链接获取错误: { $e }
 msg-link-key-not-found = 在链接文档中找不到键 `{ $key }`
@@ -207,7 +206,6 @@ help-msg-escape =   \@name                       字面 @name（不查找别名�
 
 # ── 帮助文本 — 配置语法 ───────────────────────────────────────────────────
 help-config-get =   .path                        获取叶值或列出子树
-help-config-filter =   .path value                  按值过滤子树
 help-config-set =   .path: value                 设置叶值
 help-config-delete =   .path:                       删除叶或子树
 help-config-verb =   .path!verb [args]            调用本地动词

@@ -70,7 +70,6 @@ msg-read-only = { $path } ir tikai lasāms
 msg-subtree-set = { $path } ir apakškoks; iestatīšana atteikta
 msg-ancestor-leaf = { $path } priekštecis ir lapa; pārklāšana atteikta
 msg-key-not-found = atslēga nav atrasta: { $path }
-msg-no-match = nav sakritību
 msg-link-not-connected = saites ielādes kļūda: nav savienojuma
 msg-link-fetch-error = saites ielādes kļūda: { $e }
 msg-link-key-not-found = atslēga `{ $key }` nav atrasta saistītajā dokumentā
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       burtiski @name (nav aizstājvā
 
 
 help-config-get =   .path                        iegūt lapas vērtību vai uzskaitīt apakškoku
-help-config-filter =   .path value                  meklēšanas filtrs (filtrēt pēc vērtības)
 help-config-set =   .path: value                 iestatīt lapu
 help-config-delete =   .path:                       dzēst lapu vai apakškoku
 help-config-verb =   .path!verb [args]            izpildīt lokālo darbības vārdu

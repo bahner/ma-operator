@@ -70,7 +70,6 @@ msg-read-only = { $path } est en lecture seule
 msg-subtree-set = { $path } est un sous-arbre ; définition refusée
 msg-ancestor-leaf = un ancêtre de { $path } est une feuille ; ombre refusée
 msg-key-not-found = clé introuvable : { $path }
-msg-no-match = aucune correspondance
 msg-link-not-connected = erreur de récupération du lien : non connecté
 msg-link-fetch-error = erreur de récupération du lien : { $e }
 msg-link-key-not-found = clé `{ $key }` introuvable dans le document lié
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       @name littéral (pas de recherc
 
 
 help-config-get =   .path                        obtenir la valeur de la feuille ou lister le sous-arbre
-help-config-filter =   .path value                  filtre de recherche (filtrer par valeur)
 help-config-set =   .path: value                 définir la feuille
 help-config-delete =   .path:                       supprimer la feuille ou le sous-arbre
 help-config-verb =   .path!verb [args]            exécuter un verbe local

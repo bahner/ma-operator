@@ -70,7 +70,6 @@ msg-read-only = { $path } on kirjutuskaitstud
 msg-subtree-set = { $path } on alampuu; seadmine keelatud
 msg-ancestor-leaf = { $path } eellane on leht; varjutamine keelatud
 msg-key-not-found = võtit ei leitud: { $path }
-msg-no-match = vastet ei leitud
 msg-link-not-connected = lingi toomise viga: pole ühendust
 msg-link-fetch-error = lingi toomise viga: { $e }
 msg-link-key-not-found = võtit `{ $key }` ei leitud lingitud dokumendist
@@ -203,7 +202,6 @@ help-msg-escape =   \@name                       sõnasõnaline @name (aliast ei
 
 
 help-config-get =   .path                        too lehe väärtus või loetle alampuu
-help-config-filter =   .path value                  otsingufiltri (filtreeri väärtuse järgi)
 help-config-set =   .path: value                 sea leht
 help-config-delete =   .path:                       kustuta leht või alampuu
 help-config-verb =   .path!verb [args]            käivita kohalik verb
