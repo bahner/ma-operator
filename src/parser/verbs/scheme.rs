@@ -39,7 +39,7 @@ pub(super) fn handle_scheme(
                     state2.resolve_command_by_id(command_id, CommandStatus::Error(message.clone()));
                     state2.push_error(message);
                 } else {
-                    state2.resolve_command_by_id(command_id, CommandStatus::Done);
+                    state2.resolve_command_by_id(command_id, CommandStatus::Replied(String::new()));
                 }
             });
             Ok(())
