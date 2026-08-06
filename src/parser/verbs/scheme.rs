@@ -18,16 +18,13 @@ pub(super) fn handle_scheme(
         // Rebuild the sole active session from the stable Scheme layer and
         // the avatar layer. This removes bindings deleted from either source.
         "eval" => {
-            let cfg = config.get_untracked();
-            if cfg.get(path).is_none() {
-                return Err(tf("msg-key-not-found", &[("path", path)]));
-            }
-            let scheme_source = cfg.get(".my.scheme").unwrap_or_default().to_string();
-            let avatar_source = cfg.get(".my.avatar").unwrap_or_default().to_string();
             let display = format!("{path}!eval");
             state.push_command_done(display);
             let state = state.clone();
             leptos::task::spawn_local(async move {
+                let cfg = config.get_untracked();
+                let scheme_source = cfg.get(".my.scheme").unwrap_or_default().to_string();
+                let avatar_source = cfg.get(".my.avatar").unwrap_or_default().to_string();
                 if let Err(error) =
                     crate::scheme::bootstrap_session(&scheme_source, &avatar_source, &state, config)
                         .await

@@ -893,11 +893,6 @@ fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {
     }
 }
 
-/// Roots that are read-only remote fetches rather than local config.
-pub(crate) fn is_remote_fetch_root(path: &str) -> bool {
-    path.starts_with("/ipfs/") || path.starts_with("/ipns/") || path.starts_with("/ipld/")
-}
-
 fn eval_local(
     path: &str,
     op: DotOp,
@@ -912,35 +907,6 @@ fn eval_local(
         .get_untracked()
         .map(|s| s.username)
         .unwrap_or_default();
-
-    // ── /ipfs, /ipns, /ipld — read-only remote fetch ───────────────────────
-    if is_remote_fetch_root(path) {
-        match op {
-            DotOp::Get => {
-                let path_owned = path.to_string();
-                // Push a pending Command entry (Sent) so `dispatch_eval_line`
-                // sees a new entry and treats this as pending — this is what
-                // lets a `.batch:sync` step wait for the fetch to finish
-                // instead of advancing before it resolves.
-                let cmd_id = state.push_command(path_owned.clone());
-                let state2 = state.clone();
-                spawn_local(async move {
-                    match crate::http::fetch_path_text(&path_owned).await {
-                        Ok(content) => {
-                            state2.push_output(format!("{path_owned}: {content}"));
-                            state2.resolve_command_by_id(cmd_id, CommandStatus::Done);
-                        }
-                        Err(e) => {
-                            state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                            state2.push_error(e);
-                        }
-                    }
-                });
-            }
-            _ => state.push_error(tf("err-read-only-path", &[("path", path)])),
-        }
-        return;
-    }
 
     // ── Verb dispatch ─────────────────────────────────────────────────────
     if let DotOp::Meta(verb) = &op {
@@ -984,31 +950,6 @@ fn handle_dot_set(
     }
     if has_ancestor {
         state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
-        return;
-    }
-    // ── #/ipfs, #/ipns, #/ipld — fetch and store ──────────────────────────
-    // `.my.path: #/ipfs/bafy…` — strip `#` sigil, fetch content, store it.
-    if let Some(fetch_path) = value.strip_prefix('#').filter(|v| is_remote_fetch_root(v)) {
-        let fetch_path = fetch_path.to_string();
-        let path_owned = path.to_string();
-        let uname = username.to_string();
-        let state2 = state.clone();
-        spawn_local(async move {
-            match crate::http::fetch_path_text(&fetch_path).await {
-                Ok(content) => {
-                    config.update(|c| c.set(&path_owned, &content));
-                    let cfg = config.get_untracked();
-                    if let Err(e) = persist_config(&uname, &cfg).await {
-                        state2.push_error(e);
-                        return;
-                    }
-                    apply_config_to_dom(&cfg);
-                    state2
-                        .push_system(tf("msg-set", &[("path", &path_owned), ("value", &content)]));
-                }
-                Err(e) => state2.push_error(e),
-            }
-        });
         return;
     }
     config.update(|c| c.set(path, &value));

@@ -8,9 +8,6 @@
 ///   .my.path: value      → LocalCrud::Set
 ///   .my.path:            → LocalCrud::Delete
 ///   .my.path!verb [args] → LocalCrud::Meta
-///   #/ipfs/<cid>         → LocalCrud::Get  (remote fetch, read-only)
-///   #/ipns/<key>         → LocalCrud::Get  (remote fetch, read-only)
-///   #/ipld/<path>        → LocalCrud::Get  (remote fetch, read-only)
 ///   @alias/path          → RemoteCrud::Get
 ///   @alias/path: value   → RemoteCrud::Set(value)
 ///   @alias/path:         → RemoteCrud::Delete
@@ -59,9 +56,7 @@ pub enum Command {
         op: DotOp,
         args: Vec<String>,
     },
-    /// Local CRUD on a `.my`, `.ma.ctx` config path, or a read-only remote
-    /// fetch on `/ipfs`, `/ipns`, `/ipld`. Mirrors the remote `@alias/path`
-    /// grammar.
+    /// Local CRUD on a `.my` or `.ma.ctx` config path.
     LocalCrud {
         path: String,
         op: DotOp,
@@ -97,7 +92,6 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         s if s.starts_with("\\.") => Ok(Command::PlainText(s[1..].to_string())),
         s if is_local_dot_root(s) => parse_local(s, cfg),
         s if s.starts_with('.') => parse_dot(s, cfg),
-        s if is_hash_ipfs_ref(s) => parse_local(&s[1..], cfg),
         s if s.starts_with('@') || s.starts_with("did:") => parse_actor(s, cfg),
         s => Ok(Command::PlainText(resolve_targets(s, cfg)?)),
     }
@@ -137,17 +131,13 @@ fn parse_dot(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     Ok(Command::DotCommand { path, op, args })
 }
 
-// ── Local path CRUD (`.my`, `.ma.ctx`, `/ipfs`, `/ipns`, `/ipld`) ────────────
+// ── Local path CRUD (`.my`, `.ma.ctx`) ────────────────────────────────────────
 
 fn is_local_dot_root(input: &str) -> bool {
     input == ".my"
         || input.starts_with(".my.")
         || input == ".ma.ctx"
         || input.starts_with(".ma.ctx.")
-}
-
-fn is_hash_ipfs_ref(s: &str) -> bool {
-    s.starts_with("#/ipfs/") || s.starts_with("#/ipns/") || s.starts_with("#/ipld/")
 }
 
 fn parse_local(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
@@ -520,6 +510,42 @@ mod tests {
         let cmd = parse(".ctx.ma.url: http://localhost:5003", &cfg).expect("command should parse");
 
         assert!(matches!(cmd, Command::DotCommand { .. }));
+    }
+
+    #[test]
+    fn bare_ipfs_path_is_plain_text() {
+        let cfg = EgoConfig::new();
+        let input = "/ipfs/bafybeigdyrzt";
+
+        assert_eq!(
+            parse(input, &cfg),
+            Ok(Command::PlainText(input.to_string()))
+        );
+    }
+
+    #[test]
+    fn local_crud_set_keeps_bare_ipfs_path_literal() {
+        let cfg = EgoConfig::new();
+
+        assert_eq!(
+            parse(".my.notes: /ipfs/bafybeigdyrzt", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".my.notes".to_string(),
+                op: DotOp::Set("/ipfs/bafybeigdyrzt".to_string()),
+                args: vec![],
+            })
+        );
+    }
+
+    #[test]
+    fn hash_ipfs_path_is_plain_text_outside_scheme() {
+        let cfg = EgoConfig::new();
+        let input = "#/ipfs/bafybeigdyrzt";
+
+        assert_eq!(
+            parse(input, &cfg),
+            Ok(Command::PlainText(input.to_string()))
+        );
     }
 
     #[test]
