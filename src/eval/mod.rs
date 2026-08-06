@@ -986,17 +986,15 @@ fn handle_dot_set(
         state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
         return;
     }
-    // ── /ipfs, /ipns explicit fetch ─────────────────────────────────────────
-    // `.my.path: /ipfs/bafy…` — fetch the content and store it as the value.
-    // Plain text values (including bare `did:ma:…` aliases) are stored
-    // literally; only an explicit `/ipfs`, `/ipns`, `/ipld` prefix triggers
-    // a fetch.
-    if is_remote_fetch_root(&value) {
+    // ── #/ipfs, #/ipns, #/ipld — fetch and store ──────────────────────────
+    // `.my.path: #/ipfs/bafy…` — strip `#` sigil, fetch content, store it.
+    if let Some(fetch_path) = value.strip_prefix('#').filter(|v| is_remote_fetch_root(v)) {
+        let fetch_path = fetch_path.to_string();
         let path_owned = path.to_string();
         let uname = username.to_string();
         let state2 = state.clone();
         spawn_local(async move {
-            match crate::http::fetch_path_text(&value).await {
+            match crate::http::fetch_path_text(&fetch_path).await {
                 Ok(content) => {
                     config.update(|c| c.set(&path_owned, &content));
                     let cfg = config.get_untracked();

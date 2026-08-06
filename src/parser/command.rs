@@ -8,8 +8,9 @@
 ///   .my.path: value      → LocalCrud::Set
 ///   .my.path:            → LocalCrud::Delete
 ///   .my.path!verb [args] → LocalCrud::Meta
-///   /ipfs/<cid>          → LocalCrud::Get  (remote fetch, read-only)
-///   /ipns/<key>          → LocalCrud::Get  (remote fetch, read-only)
+///   #/ipfs/<cid>         → LocalCrud::Get  (remote fetch, read-only)
+///   #/ipns/<key>         → LocalCrud::Get  (remote fetch, read-only)
+///   #/ipld/<path>        → LocalCrud::Get  (remote fetch, read-only)
 ///   @alias/path          → RemoteCrud::Get
 ///   @alias/path: value   → RemoteCrud::Set(value)
 ///   @alias/path:         → RemoteCrud::Delete
@@ -96,7 +97,7 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         s if s.starts_with("\\.") => Ok(Command::PlainText(s[1..].to_string())),
         s if is_local_dot_root(s) => parse_local(s, cfg),
         s if s.starts_with('.') => parse_dot(s, cfg),
-        s if s.starts_with('/') => parse_local(s, cfg),
+        s if is_hash_ipfs_ref(s) => parse_local(&s[1..], cfg),
         s if s.starts_with('@') || s.starts_with("did:") => parse_actor(s, cfg),
         s => Ok(Command::PlainText(resolve_targets(s, cfg)?)),
     }
@@ -143,6 +144,10 @@ fn is_local_dot_root(input: &str) -> bool {
         || input.starts_with(".my.")
         || input == ".ma.ctx"
         || input.starts_with(".ma.ctx.")
+}
+
+fn is_hash_ipfs_ref(s: &str) -> bool {
+    s.starts_with("#/ipfs/") || s.starts_with("#/ipns/") || s.starts_with("#/ipld/")
 }
 
 fn parse_local(input: &str, cfg: &EgoConfig) -> Result<Command, String> {

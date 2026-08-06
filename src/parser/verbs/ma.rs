@@ -388,8 +388,7 @@ async fn ping_and_publish_fallback(
             target: unavailable_target.to_string(),
         };
     };
-    if options.publish_identity_before_ping
-        && verify_self_publication(own_did, None).await.is_err()
+    if options.publish_identity_before_ping && verify_self_publication(own_did, None).await.is_err()
     {
         state.push_system(tf(
             "msg-identity-first-publish",
