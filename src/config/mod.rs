@@ -19,7 +19,7 @@ use ma_zscheme::DotRegistry;
 
 use crate::identity::storage::{load_config, save_config};
 
-pub const DEFAULT_AVATAR_SOURCE: &str = include_str!("../../examples/zscheme/avatar.zsm");
+pub const DEFAULT_AVATAR_SOURCE: &str = include_str!("../../examples/zscheme/avatar.zscheme");
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
@@ -54,8 +54,8 @@ impl EgoConfig {
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
             (".my.ctx.tail.length", "100"),
-            (".my.scheme", ""),
-            (".my.avatar", DEFAULT_AVATAR_SOURCE),
+            (".my.z.scheme", ""),
+            (".my.z.avatar", DEFAULT_AVATAR_SOURCE),
         ];
         for (k, v) in &defaults {
             self.tree
@@ -570,18 +570,23 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
-        assert_eq!(cfg.get(".my.scheme"), Some(""));
-        assert_eq!(cfg.get(".my.avatar"), Some(DEFAULT_AVATAR_SOURCE));
+        assert_eq!(cfg.get(".my.z.scheme"), Some(""));
+        assert_eq!(cfg.get(".my.z.avatar"), Some(DEFAULT_AVATAR_SOURCE));
+        assert_eq!(cfg.get(".my.scheme"), None);
+        assert_eq!(cfg.get(".my.avatar"), None);
     }
 
     #[test]
     fn new_does_not_overwrite_existing() {
         let mut cfg = bare();
         cfg.set(".my.config.colour.text", "#ffffff");
-        cfg.set(".my.avatar", "(define (custom-avatar) :ok)");
+        cfg.set(".my.z.avatar", "(define (custom-avatar) :ok)");
         cfg.set_defaults();
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#ffffff"));
-        assert_eq!(cfg.get(".my.avatar"), Some("(define (custom-avatar) :ok)"));
+        assert_eq!(
+            cfg.get(".my.z.avatar"),
+            Some("(define (custom-avatar) :ok)")
+        );
     }
 
     // ── is_read_only ──────────────────────────────────────────────────────

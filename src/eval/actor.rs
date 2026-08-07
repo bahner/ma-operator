@@ -96,39 +96,6 @@ pub(crate) async fn execute_outbox_task(
             }
         }
 
-        OutboxTask::ActorArgs {
-            target,
-            verb,
-            args,
-            cmd_id,
-            cancel_epoch,
-        } => {
-            log::debug!(
-                "[outbox] execute ActorArgs cmd_id={cmd_id} target={target:?} verb={verb:?} args={args:?}"
-            );
-            let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
-            let bind_state = state.clone();
-            let result =
-                transport::send_rpc_with_msg_id(&target, &verb, &arg_refs, move |msg_id| {
-                    if !bind_state.was_cancelled_since(cancel_epoch) {
-                        bind_state.bind_message_id(cmd_id, msg_id);
-                    }
-                })
-                .await;
-            log::debug!(
-                "[outbox] ActorArgs done cmd_id={cmd_id} result={:?}",
-                result.is_ok()
-            );
-            if state.was_cancelled_since(cancel_epoch) {
-                return;
-            }
-            if let Err(e) = result {
-                state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                let display = e.replace("not logged in", &t("msg-not-logged-in"));
-                state.push_error(tf("msg-send-failed", &[("e", &display)]));
-            }
-        }
-
         OutboxTask::ActorLocal {
             target,
             command,
@@ -148,7 +115,11 @@ pub(crate) async fn execute_outbox_task(
                             &arg_refs,
                             move |msg_id| {
                                 if !bind_state.was_cancelled_since(cancel_epoch) {
-                                    bind_state.bind_message_id(cmd_id, msg_id);
+                                    bind_state.bind_rpc_message_id(
+                                        cmd_id,
+                                        msg_id,
+                                        other.to_string(),
+                                    );
                                 }
                             },
                         )
@@ -405,8 +376,9 @@ async fn dispatch_verb_to_transport(
         Ok(args) => {
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
             let bind_state = state.clone();
+            let reply_verb = v.to_string();
             let result = transport::send_rpc_with_msg_id(target, v, &arg_refs, move |msg_id| {
-                bind_state.bind_message_id(cmd_id, msg_id);
+                bind_state.bind_rpc_message_id(cmd_id, msg_id, reply_verb.clone());
             })
             .await;
             if result.is_ok() {

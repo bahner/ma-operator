@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  behålla 5-svar i sessionsmiljön
-help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
 help-url-msg =   ?msg=<did>                   fyller i: @<did>!msg (textmeddelande)

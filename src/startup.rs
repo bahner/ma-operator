@@ -206,12 +206,12 @@ pub(crate) async fn startup_load_config(
     }
     let scheme_source = config
         .get_untracked()
-        .get(".my.scheme")
+        .get(".my.z.scheme")
         .unwrap_or_default()
         .to_string();
     let avatar_source = config
         .get_untracked()
-        .get(".my.avatar")
+        .get(".my.z.avatar")
         .unwrap_or_default()
         .to_string();
     if let Err(error) =

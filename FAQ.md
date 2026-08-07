@@ -24,23 +24,23 @@ The first position in a parenthesised form is a procedure position. If `foo`
 is bound to `bar`, then `(foo)` tries to call `bar`. To read the value, use
 `(begin foo)` instead.
 
-## How do I save Scheme source in `.my.scheme` from the prompt?
+## How do I save Scheme source in `.my.z.scheme` from the prompt?
 
 A plain setter stores its text literally, including quotation marks. Use a
 Scheme expression that returns the source text:
 
 ```scheme
-.my.scheme: (quote "(define foo 'bar)")
-.my.scheme!eval
+.my.z.scheme: (quote "(define foo 'bar)")
+.my.z.scheme!eval
 (begin foo)
 ```
 
 The first line stores `(define foo 'bar)` without the surrounding quotation
-marks. The second line rebuilds the current Scheme session from `.my.scheme`
-and `.my.avatar`.
+marks. The second line rebuilds the current Scheme session from `.my.z.scheme`
+and `.my.z.avatar`.
 
 The same expansion and CRUD rules apply to every local configuration path;
-`.my.scheme` and `.my.avatar` have no special storage behaviour.
+`.my.z.scheme` and `.my.z.avatar` have no special storage behaviour.
 
 ## Why did `(display "some text")` delete my key?
 
@@ -64,7 +64,7 @@ computed value, the expression itself must return a string:
 storing fetched source in a local key:
 
 ```scheme
-.my.scheme: (ipfs-cat #/ipfs/<cid>)
+.my.z.scheme: (ipfs-cat #/ipfs/<cid>)
 ```
 
 `include` fetches and evaluates Scheme source immediately. It normally returns
@@ -89,10 +89,10 @@ There must be a space between the primitive name and its argument:
 Zion deliberately suppresses successful `nil` output, so the terminal does not
 fill with `()` lines. Errors still appear in red.
 
-## What does `.my.scheme!eval` do, and why can it take a moment?
+## What does `.my.z.scheme!eval` do, and why can it take a moment?
 
-`.my.scheme!eval` builds a fresh Scheme session by evaluating the saved
-`.my.scheme` source followed by `.my.avatar`. It stays dark green while remote
+`.my.z.scheme!eval` builds a fresh Scheme session by evaluating the saved
+`.my.z.scheme` source followed by `.my.z.avatar`. It stays dark green while remote
 content is loading, turns bright green on success, and turns red with the
 bootstrap error on failure.
 

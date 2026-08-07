@@ -163,7 +163,7 @@ fn dispatch_reply(
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
-        PendingKind::Simple { cmd_id } => {
+        PendingKind::Simple { cmd_id, reply_verb } => {
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             if incoming.is_error {
                 if let Some(reason) = text_opt.as_deref() {
@@ -171,6 +171,31 @@ fn dispatch_reply(
                 }
             }
             state.resolve_command_by_id(cmd_id, status);
+            if let Some(verb) = reply_verb {
+                if !incoming.is_error && crate::scheme::has_reply_handler() {
+                    match cbor_reply_to_scheme_val(&incoming.content, false, &display) {
+                        Ok(value)
+                            if matches!(value, crate::scheme::SchemeVal::Map(_) | crate::scheme::SchemeVal::List(_)) =>
+                        {
+                            let state = state.clone();
+                            spawn_local(async move {
+                                if let Err(error) = crate::scheme::call_reply(
+                                    &verb,
+                                    value,
+                                    &state,
+                                    config,
+                                )
+                                .await
+                                {
+                                    state.push_error(format!("reply {verb}: {error}"));
+                                }
+                            });
+                            return;
+                        }
+                        Ok(_) | Err(_) => {}
+                    }
+                }
+            }
             if let Some(text) = text_opt {
                 let text = config.get_untracked().substitute_display_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
@@ -205,7 +230,7 @@ fn handle_did_entry_reply(
     if !runtime.starts_with("did:ma:") {
         return false;
     }
-    let Some(PendingKind::Simple { cmd_id }) = state.take_pending(msg_id) else {
+    let Some(PendingKind::Simple { cmd_id, .. }) = state.take_pending(msg_id) else {
         return false;
     };
 

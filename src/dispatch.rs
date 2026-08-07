@@ -238,10 +238,15 @@ fn handle_input_line(
         return;
     }
 
+    // Focus contributes only terminal shorthand: unqualified words are one
+    // global Scheme call, never a separate actor-routing mode.
+    let focus_scheme = focus_scheme_form(trimmed, state.focus_actor.get_untracked().is_some())
+        .unwrap_or_else(|| trimmed.to_string());
+
     // Scheme expansion: pre-process `(…)` spans before normal dispatch.
-    if crate::scheme::needs_expansion(trimmed) {
+    if crate::scheme::needs_expansion(&focus_scheme) {
         let state2 = state.clone();
-        let line_owned = trimmed.to_string();
+        let line_owned = focus_scheme;
         let cancel_epoch = state.cancel_epoch();
         let show_editor2 = show_editor;
         let on_eval2 = on_eval;
@@ -281,7 +286,7 @@ fn handle_input_line(
     }
 
     // Regular (non-batch) dispatch.
-    dispatch_eval_line(trimmed, state, config, show_editor, on_eval, None);
+    dispatch_eval_line(&focus_scheme, state, config, show_editor, on_eval, None);
 }
 
 fn complete_scheme_input(pending: &mut String, line: &str) -> Option<String> {
@@ -629,74 +634,9 @@ fn dispatch_eval_line(
     on_eval: Callback<String>,
     batch_id: Option<u64>,
 ) -> Option<u64> {
-    let focus = state.focus_actor.get_untracked();
     let cfg = config.get_untracked();
 
-    // Expand focus prefix before parsing so parse() needs no special-casing.
-    let expanded = if let Some(ref f) = focus {
-        if is_focus_shorthand_command(line) {
-            let parsed = match parse_focus_shorthand_command(line, &cfg) {
-                Ok(parsed) => parsed,
-                Err(e) => {
-                    state.push_error(format!("'{line}': {e}"));
-                    return None;
-                }
-            };
-            let target = focus_command_target(f, line);
-            if parsed.meta.as_deref() == Some("edit") && parsed.verb == "behaviour" {
-                if !target.contains('#') {
-                    state.push_error("behaviour editor requires a focused actor".to_string());
-                    return None;
-                }
-                let cmd_id = open_actor_behaviour_editor(target, line, state, show_editor);
-                if let Some(bid) = batch_id {
-                    state.cmd_to_batch.update(|m| {
-                        m.insert(cmd_id, bid);
-                    });
-                }
-                return Some(cmd_id);
-            }
-            if target.contains('#') {
-                match enqueue_focus_command(target, line, parsed.verb, parsed.args, state) {
-                    Ok(cmd_id) => {
-                        if let Some(bid) = batch_id {
-                            state.cmd_to_batch.update(|m| {
-                                m.insert(cmd_id, bid);
-                            });
-                        }
-                        return Some(cmd_id);
-                    }
-                    Err(e) => {
-                        state.push_error(format!("'{line}': {e}"));
-                        return None;
-                    }
-                }
-            } else {
-                let runtime = f.runtime.clone();
-                let actor = focus_fallback_target(&runtime, state);
-                match enqueue_focus_command(&actor, line, parsed.verb, parsed.args, state) {
-                    Ok(cmd_id) => {
-                        if let Some(bid) = batch_id {
-                            state.cmd_to_batch.update(|m| {
-                                m.insert(cmd_id, bid);
-                            });
-                        }
-                        return Some(cmd_id);
-                    }
-                    Err(e) => {
-                        state.push_error(format!("'{line}': {e}"));
-                        return None;
-                    }
-                }
-            }
-        } else {
-            line.to_string()
-        }
-    } else {
-        line.to_string()
-    };
-
-    match parse(&expanded, &cfg) {
+    match parse(line, &cfg) {
         Ok(cmd) => {
             if let ActorRpcMetaDispatch::Handled(result) =
                 dispatch_actor_rpc_meta(&cmd, line, state, show_editor, batch_id)
@@ -812,59 +752,14 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.trim().is_empty()
 }
 
-fn focus_command_target<'a>(focus: &'a crate::state::FocusMode, _line: &str) -> &'a str {
-    &focus.target
-}
-
-fn enqueue_focus_command(
-    actor: &str,
+fn focus_scheme_form(
     line: &str,
-    verb: String,
-    args: Vec<String>,
-    state: &AppState,
-) -> Result<u64, String> {
-    log::debug!("[focus] enqueue line={line:?} target={actor:?} verb={verb:?} args={args:?}");
-    let cmd_id = state.push_command(line);
-    state.outbox_queue.update(|q| {
-        q.push_back(crate::state::OutboxTask::ActorArgs {
-            target: actor.to_string(),
-            verb,
-            args,
-            cmd_id,
-            cancel_epoch: state.cancel_epoch(),
-        });
-    });
-    Ok(cmd_id)
-}
-
-struct ParsedFocusCommand {
-    verb: String,
-    meta: Option<String>,
-    args: Vec<String>,
-}
-
-fn parse_focus_shorthand_command(
-    line: &str,
-    cfg: &crate::config::EgoConfig,
-) -> Result<ParsedFocusCommand, String> {
-    let tokens = crate::parser::command::shell_split_with_config(line, cfg)?;
-    let Some((verb, args)) = tokens.split_first() else {
-        return Err("empty command".to_string());
-    };
-    let verb = verb.trim_start_matches(':');
-    let (verb, meta) = if let Some((verb, meta)) = verb.split_once('!') {
-        (verb.to_string(), Some(meta.to_string()))
-    } else {
-        (verb.to_string(), None)
-    };
-    if verb.is_empty() {
-        return Err("empty command".to_string());
+    focused: bool,
+) -> Option<String> {
+    if !focused || !is_focus_shorthand_command(line) {
+        return None;
     }
-    Ok(ParsedFocusCommand {
-        verb,
-        meta,
-        args: args.to_vec(),
-    })
+    Some(format!("({line})"))
 }
 
 fn open_actor_behaviour_editor(
@@ -939,23 +834,12 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
         .then(|| format!("/ipfs/{value}"))
 }
 
-fn focus_fallback_target(runtime: &str, state: &AppState) -> String {
-    state
-        .focus_actor
-        .get_untracked()
-        .and_then(|f| f.root_actor.or(Some(f.target)))
-        .unwrap_or_else(|| runtime.to_string())
-}
-
 #[cfg(test)]
 mod tests {
     use super::{
-        complete_scheme_input, focus_command_target, is_note_line, parse_focus_shorthand_command,
-        should_display_scheme_value,
+        complete_scheme_input, focus_scheme_form, is_note_line, should_display_scheme_value,
     };
-    use crate::config::EgoConfig;
     use crate::scheme::SchemeVal;
-    use crate::state::FocusMode;
 
     #[test]
     fn semicolon_led_lines_are_terminal_notes() {
@@ -995,51 +879,12 @@ mod tests {
     }
 
     #[test]
-    fn focus_shorthand_normalizes_bare_and_colon_methods() {
-        let cfg = EgoConfig::new();
-        let say = parse_focus_shorthand_command("say hello", &cfg).unwrap();
-        assert_eq!(say.verb, "say");
-        assert_eq!(say.meta, None);
-        assert_eq!(say.args, vec!["hello"]);
-
-        let look = parse_focus_shorthand_command(":look", &cfg).unwrap();
-        assert_eq!(look.verb, "look");
-        assert_eq!(look.meta, None);
-        assert!(look.args.is_empty());
-
-        let here = parse_focus_shorthand_command("here?", &cfg).unwrap();
-        assert_eq!(here.verb, "here?");
-        assert_eq!(here.meta, None);
-        assert!(here.args.is_empty());
-
-        let edit = parse_focus_shorthand_command(":behaviour!edit", &cfg).unwrap();
-        assert_eq!(edit.verb, "behaviour");
-        assert_eq!(edit.meta.as_deref(), Some("edit"));
-        assert!(edit.args.is_empty());
-    }
-
-    #[test]
-    fn focus_shorthand_inserts_local_leaf_as_one_argument() {
-        let mut cfg = EgoConfig::new();
-        let init = "(begin\n  (set-prop! \"name\" \"Lamp\")\n  (ma-save-state!))";
-        cfg.set(".my.things.lamp", init);
-
-        let parsed =
-            parse_focus_shorthand_command("make /ma/thing/0.0.1 <.my.things.lamp", &cfg).unwrap();
-
-        assert_eq!(parsed.verb, "make");
-        assert_eq!(parsed.args, vec!["/ma/thing/0.0.1", init]);
-    }
-
-    #[test]
-    fn focus_shorthand_expands_alias_arguments() {
-        let mut cfg = EgoConfig::new();
-        cfg.set(".my.aliases.ma", "did:ma:runtime");
-
-        let parsed = parse_focus_shorthand_command("drop @ma#duckie", &cfg).unwrap();
-
-        assert_eq!(parsed.verb, "drop");
-        assert_eq!(parsed.args, vec!["did:ma:runtime#duckie"]);
+    fn focus_shorthand_builds_a_global_scheme_call() {
+        assert_eq!(focus_scheme_form("look", true), Some("(look)".to_string()));
+        assert_eq!(
+            focus_scheme_form("look north", true),
+            Some("(look north)".to_string())
+        );
     }
 
     #[test]
@@ -1067,56 +912,10 @@ mod tests {
     }
 
     #[test]
-    fn focus_shorthand_keeps_tickets_out_of_zion() {
-        let cfg = EgoConfig::new();
-        let go = parse_focus_shorthand_command("go north", &cfg).unwrap();
-        assert_eq!(go.verb, "go");
-        assert_eq!(go.args, vec!["north"]);
-
-        let dig = parse_focus_shorthand_command("dig north to garden", &cfg).unwrap();
-        assert_eq!(dig.verb, "dig");
-        assert_eq!(dig.args, vec!["north", "to", "garden"]);
-    }
-
-    #[test]
-    fn focus_commands_target_room_directly() {
-        let focus = FocusMode {
-            runtime: "did:ma:runtime".to_string(),
-            room: Some("#room".to_string()),
-            target: "did:ma:runtime#room".to_string(),
-            root_actor: Some("did:ma:runtime#root".to_string()),
-            prompt: "me@ma".to_string(),
-        };
-
-        assert_eq!(focus_command_target(&focus, "look"), "did:ma:runtime#room");
-        assert_eq!(
-            focus_command_target(&focus, ":prop name Garden"),
-            "did:ma:runtime#room"
-        );
-        assert_eq!(
-            focus_command_target(&focus, "prop name Garden"),
-            "did:ma:runtime#room"
-        );
-        assert_eq!(
-            focus_command_target(&focus, "  :prop description"),
-            "did:ma:runtime#room"
-        );
-    }
-
-    #[test]
-    fn focus_plain_shorthand_needs_no_avatar_context() {
-        let focus = FocusMode {
-            runtime: "did:ma:runtime".to_string(),
-            room: Some("did:ma:runtime#room".to_string()),
-            target: "did:ma:runtime#room".to_string(),
-            root_actor: Some("did:ma:runtime#root".to_string()),
-            prompt: "@ma".to_string(),
-        };
-
-        assert_eq!(
-            focus_command_target(&focus, "go cloud"),
-            "did:ma:runtime#room"
-        );
-        assert_eq!(focus_command_target(&focus, ":look"), "did:ma:runtime#room");
+    fn focus_shorthand_leaves_qualified_input_unchanged() {
+        assert_eq!(focus_scheme_form("@ma#room:look", true), None);
+        assert_eq!(focus_scheme_form(".my.z.avatar", true), None);
+        assert_eq!(focus_scheme_form("(look)", true), None);
+        assert_eq!(focus_scheme_form("look north", false), None);
     }
 }

@@ -24,8 +24,8 @@ pub(super) fn handle_scheme(
             let state2 = state.clone();
             leptos::task::spawn_local(async move {
                 let cfg = config.get_untracked();
-                let scheme_source = cfg.get(".my.scheme").unwrap_or_default().to_string();
-                let avatar_source = cfg.get(".my.avatar").unwrap_or_default().to_string();
+                let scheme_source = cfg.get(".my.z.scheme").unwrap_or_default().to_string();
+                let avatar_source = cfg.get(".my.z.avatar").unwrap_or_default().to_string();
                 if let Err(error) = crate::scheme::bootstrap_session(
                     &scheme_source,
                     &avatar_source,
@@ -45,7 +45,7 @@ pub(super) fn handle_scheme(
             Ok(())
         }
         // !save — serialise the current session env and persist.
-        "save" if path == ".my.scheme" || path.starts_with(".my.scheme.") => {
+        "save" if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") => {
             let source = crate::scheme::dump_env();
             let count = source.lines().filter(|l| l.starts_with("(define")).count();
             config.update(|c| c.set(path, source.clone()));

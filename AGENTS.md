@@ -10,7 +10,7 @@
   as Rust/serde `Serialize`/`Deserialize`, CSS `color`, canvas `center`, web
   APIs, crate names, and third-party protocol terms.
 - **Never add special-case expansion, storage, or dispatch behaviour for
-  `.my.avatar`, `.my.zscheme`, or `.my.scheme`.** They use the same Scheme
+  `.my.z.avatar`, `.my.zscheme`, or `.my.z.scheme`.** They use the same Scheme
   expansion and CRUD semantics as every other local configuration path.
 
 ---
@@ -146,7 +146,7 @@ Makefile
 
 In focus mode, zion expands terminal shorthand before parsing and queues an
 `ActorArgs` RPC directly to the focused room/target. The local zscheme avatar
-stored at `.my.avatar` formats received room events; it is not a remote command
+stored at `.my.z.avatar` formats received room events; it is not a remote command
 proxy. Examples: `look`, `say hello`, `go north`, `dig east`.
 
 Commands with a leading colon are direct methods on the focused room/target,

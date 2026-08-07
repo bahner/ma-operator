@@ -364,7 +364,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  mantenha as respostas 5 no ambiente da sessão
-help-actor-wc-l = .my.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── parâmetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Partilha um link que abre zion com o destinatário pré-preenchido:
 help-url-msg =   ?msg=<did>                   pré-preenche: @<did>!msg (mensagem de texto)

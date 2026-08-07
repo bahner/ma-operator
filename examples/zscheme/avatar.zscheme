@@ -1,0 +1,174 @@
+(define (event-name ctx)
+  (map-ref ctx "nick"
+    (map-ref ctx "name"
+      (map-ref ctx "did"
+        (map-ref ctx "actor" "(unknown)")))))
+
+(define (actor-call actor method . args)
+  (apply (string-append actor ":" method) args))
+
+(define (room) (#.my.ctx.room))
+
+(define (room-call method . args)
+  (apply actor-call (room) method args))
+
+(define last-room #f)
+
+(define (remember-room! snapshot)
+  (when (map? snapshot)
+    (set! last-room snapshot))
+  snapshot)
+
+(define (go direction)
+  (room-call "move" direction))
+
+(define (dig direction)
+  (room-call "dig" direction))
+
+(define (fill direction)
+  (room-call "fill" direction))
+
+(define (leave)
+  (room-call "leave"))
+
+(define (enter target nick)
+  (actor-call target "enter" nick))
+
+(define (take name)
+  (room-call "take" name))
+
+(define (drop name)
+  (room-call "drop" name))
+
+(define (put name container)
+  (room-call "put" name "in" container))
+
+(define (take-from container name)
+  (actor-call container "take-from" name))
+
+(define (event-print text)
+  (display text))
+
+(define (event-list-values values)
+  (cond ((map? values) (map-values values))
+        ((list? values) values)
+        (else ())))
+
+(define (event-list-lines title values render)
+  (let ((entries (event-list-values values)))
+    (if (null? entries)
+      ""
+      (fold (lambda (value text)
+              (string-append text "\n" (render value)))
+            title
+            entries))))
+
+(define (event-exit-name exit)
+  (if (map? exit)
+    (map-ref exit "direction" (event-name exit))
+    exit))
+
+(define (event-who-name entry)
+  (if (pair? entry)
+    (event-name (cadr entry))
+    (event-name entry)))
+
+(define (event-exit-lines title exits)
+  (let ((entries (cond ((map? exits) (map-keys exits))
+                       ((list? exits) exits)
+                       (else ()))))
+    (if (null? entries)
+      ""
+      (fold (lambda (exit text)
+              (string-append text "\n" (event-exit-name exit)))
+            title
+            entries))))
+
+(define (event-look room)
+  (let ((name (event-name room))
+        (description (map-ref room "description" ""))
+        (who (map-ref room "who" ()))
+        (occupants (map-ref room "agents" ()))
+        (things (map-ref room "things" ()))
+        (exits (map-ref room "exits" ())))
+    (display
+      (string-append
+        name
+        (if (string? description) (string-append "\n" description) "")
+        (event-list-lines "\nHere:" who event-name)
+        (event-list-lines "\nOccupants:" occupants event-name)
+        (event-list-lines "\nThings:" things event-name)
+        (event-exit-lines "\nExits:" exits)))))
+
+(define (look)
+  (let ((snapshot (remember-room! (room-call "look"))))
+    (if (map? snapshot)
+      (event-look snapshot)
+      (display snapshot))
+    nil))
+
+(define (event-exits exits)
+  (display (string-append "Exits:" (event-exit-lines "" exits))))
+
+(define (event-who occupants)
+  (display (string-append "Here:" (event-list-lines "" occupants event-who-name))))
+
+(define (event-occupants occupants)
+  (display (string-append "Occupants:" (event-list-lines "" occupants event-name))))
+
+(define (event-things things)
+  (display (string-append "Things:" (event-list-lines "" things event-name))))
+
+(define (event-arrive ctx)
+  (display (string-append (event-name ctx) " arrives.")))
+
+(define (event-leave ctx)
+  (display (string-append (event-name ctx) " leaves.")))
+
+(define (event-say ctx text)
+  (display (string-append (event-name ctx) ": " text)))
+
+(define (event-emote ctx text)
+  (display (string-append (event-name ctx) " " text)))
+
+(define (event-take ctx)
+  (display (string-append (event-name ctx) " takes something.")))
+
+(define (event-drop ctx)
+  (display (string-append (event-name ctx) " drops something.")))
+
+(define (event-dig ctx direction)
+  (display (string-append (event-name ctx) " digs " direction ".")))
+
+(define (event-fill ctx direction)
+  (display (string-append (event-name ctx) " fills " direction ".")))
+
+(define event-handlers
+  (make-map ":print" event-print
+            ":arrive" event-arrive
+            ":leave" event-leave
+            ":say" event-say
+            ":emote" event-emote
+            ":take" event-take
+            ":drop" event-drop
+            ":dig" event-dig
+            ":fill" event-fill))
+
+(define reply-handlers
+  (make-map "look" event-look
+            "exits?" event-exits
+            "who?" event-who
+            "occupants?" event-occupants
+            "things?" event-things))
+
+(define (on-event event args)
+  (let ((handler (map-ref event-handlers event #f)))
+    (if handler (apply handler args) ())))
+
+(define (on-reply verb value)
+  (let ((handler (map-ref reply-handlers verb #f)))
+    (if handler
+      (begin
+        (if (equal? verb "look") (remember-room! value) ())
+        (handler value))
+      ())))
