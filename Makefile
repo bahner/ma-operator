@@ -36,7 +36,20 @@ publish: dist
 	@echo "Publishing Zion IPNS name..."
 	@ipfs name publish --key=zion "$$(cat .cid)"
 	@echo "Pinning Zion CID on Pinata..."
-	@ipfs pin remote add --background --service=pinata --name="zion-$$(date --iso-8601)" "$$(cat .cid)"
+	@pinata_log=$$(mktemp); \
+	if ipfs pin remote add --background --service=pinata --name="zion-$$(date --iso-8601)" "$$(cat .cid)" >"$$pinata_log" 2>&1; then \
+		cat "$$pinata_log"; \
+	else \
+		cat "$$pinata_log"; \
+		if grep -Eq 'DUPLICATE_OBJECT|already pinned to pinata' "$$pinata_log"; then \
+			echo "Pinata already has this CID; continuing."; \
+			true; \
+		else \
+			rm -f "$$pinata_log"; \
+			exit 1; \
+		fi; \
+	fi; \
+	rm -f "$$pinata_log"
 	@echo "Open: ipfs://$$(cat .cid)"
 	@touch .publish.sh
 	@sh .publish.sh
