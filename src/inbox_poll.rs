@@ -172,7 +172,7 @@ fn dispatch_reply(
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             if incoming.is_error {
                 if let Some(reason) = text_opt.as_deref() {
-                    maybe_queue_ctx_recovery(reason, state, config);
+                    maybe_queue_ctx_recovery(reason, cmd_id, state, config);
                 }
             }
             state.resolve_command_by_id(cmd_id, status);
@@ -228,6 +228,7 @@ fn handle_did_entry_reply(
     });
     state.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Replied(String::new()));
     state.clear_pending_enter();
+    state.ctx_recovery_runtime.set(None);
 
     let cfg = config.get_untracked();
     crate::eval::apply_ctx_focus(&cfg, state);
@@ -358,9 +359,22 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
     }
 }
 
-fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<EgoConfig>) {
+fn maybe_queue_ctx_recovery(
+    reason: &str,
+    cmd_id: u64,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
     let lower = reason.to_ascii_lowercase();
     if !lower.contains("unknown entity fragment") {
+        return;
+    }
+    if state.entries.with_untracked(|entries| {
+        entries.iter().any(|entry| {
+            matches!(entry, crate::core::Entry::Command(command)
+                if command.id == cmd_id && command.raw.trim_start().starts_with(".enter "))
+        })
+    }) {
         return;
     }
 
@@ -380,6 +394,10 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
     else {
         return;
     };
+
+    if state.ctx_recovery_runtime.get_untracked().as_deref() == Some(runtime.as_str()) {
+        return;
+    }
 
     // Avoid enqueue storms while a recovery enter is already pending/queued.
     if state.pending_enter.get_untracked().is_some() {
@@ -403,6 +421,7 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
         Some(nick) => format!("{nick}@{target}"),
         None => normalize_enter_target(&target),
     };
+    state.ctx_recovery_runtime.set(Some(runtime));
     #[cfg(target_arch = "wasm32")]
     web_sys::console::warn_1(
         &format!("[ctx-recovery] stale room/fragment detected; queuing auto-enter: {enter}").into(),
@@ -1157,9 +1176,11 @@ mod tests {
             cfg.set(".my.ctx.nick", "foo");
         });
         state.input_queue.set(VecDeque::new());
+        let cmd_id = state.push_command("look");
 
         maybe_queue_ctx_recovery(
             &format!("unknown entity fragment: {missing_room}"),
+            cmd_id,
             &state,
             config,
         );
@@ -1169,5 +1190,31 @@ mod tests {
             .iter()
             .any(|line| line == ".enter foo@did:ma:k51runtime"));
         assert!(!queued.iter().any(|line| line.contains(missing_room)));
+
+        state.input_queue.update(|queue| queue.clear());
+        maybe_queue_ctx_recovery(
+            &format!("unknown entity fragment: {missing_room}"),
+            cmd_id,
+            &state,
+            config,
+        );
+        assert!(state.input_queue.get_untracked().is_empty());
+    }
+
+    #[test]
+    fn recovery_does_not_retry_a_failed_enter() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| {
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.nick", "foo");
+        });
+        let cmd_id = state.push_command(".enter foo@did:ma:k51runtime");
+
+        maybe_queue_ctx_recovery("unknown entity fragment: root", cmd_id, &state, config);
+
+        assert!(state.input_queue.get_untracked().is_empty());
+        assert!(state.ctx_recovery_runtime.get_untracked().is_none());
     }
 }

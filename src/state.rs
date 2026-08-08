@@ -231,6 +231,7 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
+    pub ctx_recovery_runtime: RwSignal<Option<String>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
     /// Each entry describes what to do when the reply arrives.
@@ -273,6 +274,7 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
+            ctx_recovery_runtime: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),
             doc_cache: RwSignal::new(HashMap::new()),
@@ -311,6 +313,7 @@ impl AppState {
         self.outbox_queue.update(|q| q.clear());
         self.pending_requests.update(|m| m.clear());
         self.pending_enter.set(None);
+        self.ctx_recovery_runtime.set(None);
         self.batches.update(|b| b.clear());
         self.cmd_to_batch.update(|m| m.clear());
         AwaitingReply::clear();
