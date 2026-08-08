@@ -719,7 +719,11 @@ mod tests {
             SchemeVal::Str("did:ma:room#north".to_string()),
         );
         let mut room = std::collections::BTreeMap::new();
-        room.insert("name".to_string(), SchemeVal::Str("Construct".to_string()));
+        room.insert(
+            "name".to_string(),
+            SchemeVal::Str("Sky Construct".to_string()),
+        );
+        room.insert("nick".to_string(), SchemeVal::Str("Construct".to_string()));
         room.insert(
             "description".to_string(),
             SchemeVal::Str("A loading programme.".to_string()),
@@ -751,7 +755,7 @@ mod tests {
         });
         assert_eq!(
             text.as_deref(),
-            Some("Construct\nA loading programme.\nHere:\nlars\nOccupants:\nMorpheus\nThings:\nphone\nExits:\nnorth")
+            Some("Sky Construct\nA loading programme.\nHere:\nlars\nOccupants:\nMorpheus\nThings:\nphone\nExits:\nnorth")
         );
     }
 

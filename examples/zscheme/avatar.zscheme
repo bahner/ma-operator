@@ -85,7 +85,7 @@
             entries))))
 
 (define (event-look room)
-  (let ((name (event-name room))
+  (let ((name (map-ref room "name" (event-name room)))
         (description (map-ref room "description" ""))
         (who (map-ref room "who" ()))
         (occupants (map-ref room "agents" ()))
