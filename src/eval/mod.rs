@@ -324,10 +324,6 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         state.push_error("usage: .enter [nick]@runtime[#room]".to_string());
         return;
     }
-    if let Err(error) = validate_enter_actor_target(&resolved) {
-        state.push_error(error);
-        return;
-    }
     let target_actor = resolved.clone();
     let requested_nick_display = requested_nick.clone();
     let effective_nick = requested_nick.or_else(|| {
@@ -613,20 +609,6 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
     Ok((Some(nick.to_string()), format!("@{runtime}"), kind))
 }
 
-fn validate_enter_actor_target(target: &str) -> Result<(), String> {
-    if target
-        .split_once('#')
-        .is_some_and(|(_, fragment)| fragment == "construct")
-    {
-        Err(
-            "#construct is runtime-internal; enter a full room DID-URL published by runtime ctx"
-                .to_string(),
-        )
-    } else {
-        Ok(())
-    }
-}
-
 fn eval_local(
     path: &str,
     op: DotOp,
@@ -848,7 +830,7 @@ mod tests {
     use super::{
         apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_args,
         enter_ctx_kind, enter_no_args, enter_target_display, parse_enter_target,
-        validate_alias_set, validate_enter_actor_target,
+        validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
@@ -896,13 +878,6 @@ mod tests {
     fn parse_enter_target_rejects_unprefixed_runtime_forms() {
         assert!(parse_enter_target("sky").is_err());
         assert!(parse_enter_target("did:ma:k51example").is_err());
-    }
-
-    #[test]
-    fn enter_rejects_runtime_internal_construct_target() {
-        assert!(validate_enter_actor_target("did:ma:k51runtime#construct").is_err());
-        assert!(validate_enter_actor_target("did:ma:k51runtime#room").is_ok());
-        assert!(validate_enter_actor_target("did:ma:k51runtime").is_ok());
     }
 
     #[test]

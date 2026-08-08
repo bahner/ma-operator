@@ -91,17 +91,16 @@ Your data lives under `.my.*`:
 ## Sending a message
 
 You need someone to talk to. Give them your DID (`.my.identity.did`),
-get their inbox actor DID-URL, and save it as an alias:
+get theirs, and save it as an alias:
 
 ```
-.my.aliases.alice: did:ma:k51...#inbox
+.my.aliases.alice: did:ma:Qm...
 ```
 
-Actor messages require a DID-URL with a fragment. Aliases may still store a
-bare DID for commands that select a standard actor explicitly:
+Aliases may store either a DID or a DID-URL with a fragment:
 
 ```
-.my.aliases.runtime: did:ma:k51...
+.my.aliases.home: did:ma:Qm...#room
 ```
 
 Now sending is simple:
@@ -116,7 +115,7 @@ no email server, no platform.
 To send an RPC (a verb, not just text):
 
 ```
-@runtime#root:ping
+@alice:ping
 ```
 
 To target a specific entity fragment while still using an alias:
