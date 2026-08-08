@@ -9,7 +9,7 @@ use crate::{
     i18n::{t, tf},
     identity::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
-        save_config, save_identity, storage::load_config, unlock_identity,
+        save_config, save_identity, storage::load_config, unlock_identity_migrating,
     },
     state::{AppState, SessionState, SESSION_LOCAL_IPFS},
 };
@@ -314,16 +314,20 @@ pub fn Landing() -> impl IntoView {
                 let (uname, id_json, cfg_opt) = p;
                 let state2 = state.clone();
                 spawn_local(async move {
-                    match unlock_identity(&id_json, &pass) {
-                        Ok(id) => match save_identity(&uname, &id_json).await {
-                            Ok(()) => {
-                                if let Some(cfg_json) = cfg_opt {
-                                    let _ = save_config(&uname, &cfg_json).await;
+                    match unlock_identity_migrating(&id_json, &pass) {
+                        Ok((id, migrated)) => {
+                            match save_identity(&uname, migrated.as_deref().unwrap_or(&id_json))
+                                .await
+                            {
+                                Ok(()) => {
+                                    if let Some(cfg_json) = cfg_opt {
+                                        let _ = save_config(&uname, &cfg_json).await;
+                                    }
+                                    finish_login(id, uname, pass, state2);
                                 }
-                                finish_login(id, uname, pass, state2);
+                                Err(e) => error.set(e),
                             }
-                            Err(e) => error.set(e),
-                        },
+                        }
                         Err(e) => error.set(tf("error-wrong-passphrase", &[("e", &e)])),
                     }
                 });
@@ -344,16 +348,25 @@ pub fn Landing() -> impl IntoView {
             let state2 = state.clone();
             spawn_local(async move {
                 match load_identity(&uname).await {
-                    Ok(Some(stored)) => match unlock_identity(&stored.export_json, &pass) {
-                        Ok(id) => {
-                            status.set(String::new());
-                            finish_login(id, uname, pass, state2);
+                    Ok(Some(stored)) => {
+                        match unlock_identity_migrating(&stored.export_json, &pass) {
+                            Ok((id, migrated)) => {
+                                if let Some(migrated) = migrated {
+                                    if let Err(e) = save_identity(&uname, &migrated).await {
+                                        status.set(String::new());
+                                        error.set(e);
+                                        return;
+                                    }
+                                }
+                                status.set(String::new());
+                                finish_login(id, uname, pass, state2);
+                            }
+                            Err(e) => {
+                                status.set(String::new());
+                                error.set(tf("error-wrong-passphrase", &[("e", &e)]));
+                            }
                         }
-                        Err(e) => {
-                            status.set(String::new());
-                            error.set(tf("error-wrong-passphrase", &[("e", &e)]));
-                        }
-                    },
+                    }
                     local_result => {
                         if let Err(e) = local_result {
                             log::warn!("[login] local identity cache unavailable: {e}");
@@ -408,11 +421,22 @@ pub fn Landing() -> impl IntoView {
                                                 });
                                                 match parsed_opt {
                                                     Some((pname, id_json, cfg_opt)) => {
-                                                        match unlock_identity(&id_json, &pass) {
-                                                            Ok(id) => {
-                                                                let _ =
-                                                                    save_identity(&pname, &id_json)
-                                                                        .await;
+                                                        match unlock_identity_migrating(
+                                                            &id_json, &pass,
+                                                        ) {
+                                                            Ok((id, migrated)) => {
+                                                                if let Err(e) = save_identity(
+                                                                    &pname,
+                                                                    migrated
+                                                                        .as_deref()
+                                                                        .unwrap_or(&id_json),
+                                                                )
+                                                                .await
+                                                                {
+                                                                    status.set(String::new());
+                                                                    error.set(e);
+                                                                    return;
+                                                                }
                                                                 if let Some(cfg) = cfg_opt {
                                                                     let _ =
                                                                         save_config(&pname, &cfg)

@@ -1,6 +1,7 @@
 /// Helpers for creating and unlocking identities using ma-core types.
 use ma_core::{BrowserIdentityExport, Config, SecretBundle};
 use serde::{Deserialize, Serialize};
+use time::{format_description::well_known::Rfc3339, OffsetDateTime, UtcOffset};
 
 // ── ZionExport ─────────────────────────────────────────────────────────────
 
@@ -75,13 +76,45 @@ pub fn create_identity_did_named(
 }
 
 /// Unlock an existing identity: decrypt the bundle and return key material.
+#[cfg(test)]
 pub fn unlock_identity(export_json: &str, passphrase: &str) -> Result<UnlockedIdentity, String> {
+    unlock_identity_migrating(export_json, passphrase).map(|(identity, _)| identity)
+}
+
+/// Unlock an identity and rewrite legacy creation timestamps when necessary.
+///
+/// The optional JSON contains the same identity export re-encrypted with a
+/// canonical whole-second UTC timestamp and should replace the stored export.
+pub fn unlock_identity_migrating(
+    export_json: &str,
+    passphrase: &str,
+) -> Result<(UnlockedIdentity, Option<String>), String> {
     let export = BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
     let encrypted = export
         .encrypted_secret_bundle_bytes()
         .map_err(|e| e.to_string())?;
-    let bundle = SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
-    bundle_to_unlocked(&bundle)
+    let mut bundle = SecretBundle::decrypt(&encrypted, passphrase).map_err(|e| e.to_string())?;
+    let canonical_created_at = canonicalise_created_at(&bundle.created_at)?;
+    let migrated_export = if canonical_created_at == bundle.created_at {
+        None
+    } else {
+        bundle.created_at = canonical_created_at;
+        let encrypted = bundle.encrypt(passphrase).map_err(|e| e.to_string())?;
+        let migrated = BrowserIdentityExport::new(export.config_yaml.clone(), &encrypted);
+        Some(migrated.to_json_string().map_err(|e| e.to_string())?)
+    };
+    let identity = bundle_to_unlocked(&bundle)?;
+    Ok((identity, migrated_export))
+}
+
+fn canonicalise_created_at(value: &str) -> Result<String, String> {
+    OffsetDateTime::parse(value, &Rfc3339)
+        .map_err(|e| format!("invalid identity created_at: {e}"))?
+        .to_offset(UtcOffset::UTC)
+        .replace_nanosecond(0)
+        .map_err(|e| format!("invalid identity created_at: {e}"))?
+        .format(&Rfc3339)
+        .map_err(|e| format!("invalid identity created_at: {e}"))
 }
 
 /// Convert a decrypted bundle into the session key material.
@@ -304,6 +337,47 @@ mod tests {
         assert_eq!(original.did_encryption_key, unlocked.did_encryption_key);
         assert_eq!(original.sender_did, unlocked.sender_did);
         assert_eq!(original.created_at, unlocked.created_at);
+    }
+
+    #[test]
+    fn unlock_identity_migrates_fractional_created_at() {
+        let bundle = SecretBundle::generate();
+        let original_did = bundle_to_unlocked(&bundle)
+            .expect("original identity")
+            .sender_did;
+        let mut legacy = bundle.clone();
+        legacy.created_at = "2026-07-19T19:45:24.489Z".to_string();
+        let encrypted = legacy.encrypt(PASS).expect("encrypt legacy bundle");
+        let export = BrowserIdentityExport::new("slug: alice\n".to_string(), &encrypted)
+            .to_json_string()
+            .expect("legacy export");
+
+        let (unlocked, migrated) =
+            unlock_identity_migrating(&export, PASS).expect("migrate identity");
+
+        assert_eq!(unlocked.sender_did, original_did);
+        assert_eq!(unlocked.created_at, "2026-07-19T19:45:24Z");
+        let migrated = migrated.expect("rewritten export");
+        let (unlocked_again, second_migration) =
+            unlock_identity_migrating(&migrated, PASS).expect("unlock migrated identity");
+        assert_eq!(unlocked_again.created_at, "2026-07-19T19:45:24Z");
+        assert!(second_migration.is_none());
+    }
+
+    #[test]
+    fn unlock_identity_rejects_invalid_created_at() {
+        let mut bundle = SecretBundle::generate();
+        bundle.created_at = "not-a-timestamp".to_string();
+        let encrypted = bundle.encrypt(PASS).expect("encrypt bundle");
+        let export = BrowserIdentityExport::new("slug: alice\n".to_string(), &encrypted)
+            .to_json_string()
+            .expect("identity export");
+
+        let error = match unlock_identity_migrating(&export, PASS) {
+            Ok(_) => panic!("invalid timestamp was accepted"),
+            Err(error) => error,
+        };
+        assert!(error.contains("invalid identity created_at"));
     }
 
     // ── import_from_bytes ─────────────────────────────────────────────────

@@ -532,33 +532,14 @@ pub(crate) async fn do_publish(
             return false;
         }
     };
-    // Step 1: Publish DID document (without profile) so the runtime caches our
-    // current iroh endpoint.  Register a reply channel and wait for the ack
-    // before sending the store — this guarantees the runtime has our endpoint
-    // in doc_cache when the store reply needs to be delivered.
-    let mut did_pub_rx = None;
-    let mut did_pub_msg_id = None;
-    match crate::transport::send_identity_publish_with_msg_id(&publisher, |msg_id| {
-        did_pub_msg_id = Some(msg_id.clone());
-        did_pub_rx = Some(crate::state::AwaitingReply::register(msg_id));
-    })
-    .await
-    {
-        Ok(_) => {}
-        Err(_) => {
-            if let Some(msg_id) = did_pub_msg_id {
-                crate::state::AwaitingReply::take(&msg_id);
-            }
-            did_pub_rx = None;
+    // Step 1: Publish the DID document so the runtime can authenticate the
+    // profile-store request and route its reply to our current endpoint.
+    if let Err(error) = send_identity_publish_and_wait(&publisher).await {
+        if let Some(id) = cmd_id {
+            state.resolve_command_by_id(id, crate::core::CommandStatus::Error(error.clone()));
         }
-    };
-    if let Some(rx) = did_pub_rx {
-        // Wait up to 60 s for the DID publish ack — timeout is fine, the
-        // important thing is we don't race the store.
-        futures::select! {
-            _ = rx.fuse() => {},
-            _ = gloo_timers::future::TimeoutFuture::new(60_000).fuse() => {},
-        }
+        state.push_error(tf("profile-publish-failed", &[("e", &error)]));
+        return false;
     }
     let identity_json = match load_identity(&username).await {
         Ok(Some(s)) => s.export_json,
