@@ -20,6 +20,11 @@ btn-export = exportovat
 btn-generate = generovat
 btn-new-endpoint = nový koncový bod
 btn-import-profile = import profilu
+btn-show-qr = zobrazit QR
+btn-scan-qr = skenovat QR
+qr-scan-hint = Namiřte kameru na QR kód profilu zion.
+qr-error-camera = kamera není dostupná: { $e }
+qr-error-too-large = profil je pro QR kód příliš velký
 passphrase-warning = Ztracená přístupová fráze = ztracená identita. Obnova není možná.
 import-profile-help = Importujte profil pomocí CID nebo souboru. Potřebujete stejné heslo, které bylo použito při publikování.
 import-profile-detected-user = Profil patří: { $name }

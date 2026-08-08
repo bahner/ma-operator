@@ -20,6 +20,11 @@ btn-export = eksport
 btn-generate = jenaret
 btn-new-endpoint = nyu endpoint
 btn-import-profile = bring profayl kɔmɔt
+btn-show-qr = sho di QR
+btn-scan-qr = skan di QR
+qr-scan-hint = Point di kamera pan wan zion profayl QR kod.
+qr-error-camera = kamera nɔ de: { $e }
+qr-error-too-large = di profayl big pas wetin QR kod ebul kya
 passphrase-warning = Lus passfraze = lus identity. Nor get no wei fi get am bak.
 import-profile-help = Bring profayl kɔmɔt bay CID ɔ fayl. Yu nid di sem pasfrez we yu yuz wen yu pɔblish.
 import-profile-detected-user = Di profayl bɛlɔŋ tu: { $name }

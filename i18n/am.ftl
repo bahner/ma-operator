@@ -20,6 +20,11 @@ btn-export = አውጣ
 btn-generate = ፍጠር
 btn-new-endpoint = አዲስ ነጥብ
 btn-import-profile = ፕሮፋይል አስመጣ
+btn-show-qr = QR አሳይ
+btn-scan-qr = QR ቃኝ
+qr-scan-hint = ካሜራውን ወደ zion ፕሮፋይል QR ኮድ ያመልክቱ።
+qr-error-camera = ካሜራ አይገኝም: { $e }
+qr-error-too-large = ፕሮፋይሉ ለ QR ኮድ በጣም ትልቅ ነው
 passphrase-warning = ሚስጥራዊ ሐረጉን ማጣት = ማንነትን ማጣት። ምንም ማስታወሻ የለም።
 import-profile-help = ፕሮፋይልን በ CID ወይም ፋይል ያስመጡ። ሲያትሙ የተጠቀሙትን ተመሳሳይ ፓስፍሬዝ ያስፈልጋል።
 import-profile-detected-user = ፕሮፋይሉ የሚሆነው: { $name }

@@ -20,6 +20,11 @@ btn-export = flytja út
 btn-generate = búa til
 btn-new-endpoint = nýr endapunktur
 btn-import-profile = flytja inn prófíl
+btn-show-qr = sýna QR
+btn-scan-qr = skanna QR
+qr-scan-hint = Beindu myndavélinni að QR-kóða zion-prófíls.
+qr-error-camera = myndavél ekki tiltæk: { $e }
+qr-error-too-large = prófíllinn er of stór fyrir QR-kóða
 passphrase-warning = Gleymd lykilsetning = glatað auðkenni. Engin endurheimting er möguleg.
 import-profile-help = Flytja inn prófíl með CID eða skrá. Þú þarft sömu aðgangssetningu og notuð var við útgáfu.
 import-profile-detected-user = Prófíll tilheyrir: { $name }

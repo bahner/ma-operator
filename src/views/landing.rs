@@ -102,6 +102,13 @@ pub fn Landing() -> impl IntoView {
     SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = is_local_gateway(&initial_gateway));
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
+    // Export mode: rendered QR SVG of the encrypted profile.
+    let qr_svg: RwSignal<Option<String>> = RwSignal::new(None);
+    // Import mode: camera scan in progress.
+    let scanning = RwSignal::new(false);
+    let scan_feedback = RwSignal::new("searching");
+    let scan_frames = RwSignal::new(0_u32);
+    let video_ref = NodeRef::<leptos::html::Video>::new();
 
     // Runtime field: DID or HTTP URL to connect to after login.
     // Seeded from `?ma=` URL param (already in state.startup_ma) or localStorage.
@@ -184,6 +191,8 @@ pub fn Landing() -> impl IntoView {
         error.set(String::new());
         status.set(String::new());
         parsed.set(None);
+        qr_svg.set(None);
+        scanning.set(false);
         if next == Mode::New {
             did_input.set(String::new());
         }
@@ -513,6 +522,127 @@ pub fn Landing() -> impl IntoView {
         }
     };
 
+    // ── Export as QR: keys-only profile (no EgoConfig), same encryption ──
+    let do_show_qr = move |_: MouseEvent| {
+        let did = did_input.get_untracked().trim().to_string();
+        if did.is_empty() {
+            error.set(t("error-did-required"));
+            return;
+        }
+        let uname = username_from_did(&did);
+        spawn_local(async move {
+            match load_identity(&uname).await {
+                Ok(Some(_)) => match crate::views::qr::generate_qr_svg(&did) {
+                    Ok(svg) => {
+                        error.set(String::new());
+                        qr_svg.set(Some(svg));
+                    }
+                    Err(crate::views::qr::QrGenError::TooLarge) => {
+                        error.set(t("qr-error-too-large"));
+                    }
+                    Err(crate::views::qr::QrGenError::Encode(e)) => error.set(e),
+                },
+                Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
+                Err(e) => error.set(e),
+            }
+        });
+    };
+
+    // ── QR scan (Import mode) ─────────────────────────────────────────────
+    let start_scan = move |_: MouseEvent| {
+        if scanning.get_untracked() {
+            return;
+        }
+        scanning.set(true);
+        scan_feedback.set("searching");
+        scan_frames.set(0);
+        error.set(String::new());
+        spawn_local(async move {
+            // Wait for the <video> element to mount.
+            let video = loop {
+                if !scanning.try_get_untracked().unwrap_or(false) {
+                    return;
+                }
+                if let Some(v) = video_ref.get_untracked() {
+                    break v;
+                }
+                gloo_timers::future::TimeoutFuture::new(50).await;
+            };
+            let stream = match crate::views::qr::open_camera(&video).await {
+                Ok(s) => s,
+                Err(e) => {
+                    scanning.set(false);
+                    error.set(tf("qr-error-camera", &[("e", &e)]));
+                    return;
+                }
+            };
+            let mut native_detector = crate::views::qr::NativeQrDetector::new();
+            loop {
+                if !scanning.try_get_untracked().unwrap_or(false) {
+                    break;
+                }
+                let scan_result = if let Some(detector) = native_detector.as_ref() {
+                    match detector.decode(&video).await {
+                        Ok(result) => result,
+                        Err(_) => {
+                            native_detector = None;
+                            crate::views::qr::try_decode_frame(&video)
+                        }
+                    }
+                } else {
+                    crate::views::qr::try_decode_frame(&video)
+                };
+                match scan_result {
+                    crate::views::qr::QrScanResult::WaitingForVideo => {
+                        scan_feedback.set("waiting");
+                    }
+                    crate::views::qr::QrScanResult::CaptureError => {
+                        scan_feedback.set("capture-error");
+                    }
+                    crate::views::qr::QrScanResult::NoCode => {
+                        let frame = scan_frames.get_untracked().wrapping_add(1);
+                        scan_frames.set(frame);
+                        scan_feedback.set(if frame.is_multiple_of(2) {
+                            "searching phase-a"
+                        } else {
+                            "searching phase-b"
+                        });
+                    }
+                    crate::views::qr::QrScanResult::Unreadable => {
+                        scan_frames.update(|frame| *frame = frame.wrapping_add(1));
+                        scan_feedback.set("unreadable");
+                    }
+                    crate::views::qr::QrScanResult::Decoded(bytes) => {
+                        scan_frames.update(|frame| *frame = frame.wrapping_add(1));
+                        scan_feedback.set("decoded");
+                        if let Some(scanned_did) = crate::views::qr::did_payload(&bytes) {
+                            gloo_timers::future::TimeoutFuture::new(250).await;
+                            did_input.set(scanned_did);
+                            parsed.set(None);
+                            error.set(String::new());
+                            status.set(String::new());
+                            scanning.set(false);
+                            mode.set(Mode::Login);
+                            break;
+                        }
+                        if let Ok((uname, id_json, cfg_opt)) = import_from_bytes(&bytes) {
+                            gloo_timers::future::TimeoutFuture::new(250).await;
+                            did_input.set(format!("did:ma:{uname}"));
+                            parsed.set(Some((uname, id_json, cfg_opt)));
+                            error.set(String::new());
+                            scanning.set(false);
+                            break;
+                        }
+                        scan_feedback.set("unreadable");
+                    }
+                }
+                gloo_timers::future::TimeoutFuture::new(300).await;
+            }
+            crate::views::qr::close_camera(&stream);
+            video.set_src_object(None);
+        });
+    };
+
     // Enter key triggers the action.
     let do_login_key = do_login.clone();
     let on_keydown = move |ev: KeyboardEvent| {
@@ -703,8 +833,49 @@ pub fn Landing() -> impl IntoView {
                             style="color:var(--colour-text);font-family:var(--font-family)"
                             on:change=on_file_change
                         />
-                    </div>
-                </Show>
+                    </div>                    <Show when=move || !scanning.get()>
+                        <div class="btn-row">
+                            <button class="btn" on:click=start_scan>
+                                {move || { let _ = lang.get(); t("btn-scan-qr") }}
+                            </button>
+                        </div>
+                    </Show>
+                    <Show when=move || scanning.get()>
+                        <div class="qr-panel">
+                            <div class=move || format!("qr-video-frame {}", scan_feedback.get())>
+                                <video
+                                    node_ref=video_ref
+                                    class="qr-video"
+                                    autoplay=""
+                                    muted=""
+                                    playsinline=""
+                                ></video>
+                                <span class="qr-scan-marker" aria-hidden="true"></span>
+                            </div>
+                            <p class=move || format!("qr-scan-status {}", scan_feedback.get())>
+                                {move || {
+                                    let _ = lang.get();
+                                    match scan_feedback.get() {
+                                        "decoded" => t("status-importing-profile"),
+                                        _ => t("qr-scan-hint"),
+                                    }
+                                }}
+                                <span class="qr-scan-stats">
+                                    {move || format!(
+                                        "{}×{} · {}",
+                                        video_ref.get().map_or(0, |video| video.video_width()),
+                                        video_ref.get().map_or(0, |video| video.video_height()),
+                                        scan_frames.get(),
+                                    )}
+                                </span>
+                            </p>
+                            <div class="btn-row">
+                                <button class="btn" on:click=move |_| scanning.set(false)>
+                                    {move || { let _ = lang.get(); t("btn-cancel") }}
+                                </button>
+                            </div>
+                        </div>
+                    </Show>                </Show>
 
                 // ── Password field: all modes except Export, and not Import-before-file
                 <Show when=move || {
@@ -756,7 +927,27 @@ pub fn Landing() -> impl IntoView {
                             if mode.get() == Mode::Export { t("btn-export") } else { t("btn-login") }
                         }}
                     </button>
+                    <Show when=move || mode.get() == Mode::Export>
+                        <button class="btn" on:click=do_show_qr>
+                            {move || { let _ = lang.get(); t("btn-show-qr") }}
+                        </button>
+                    </Show>
                 </div>
+
+                // ── Export: QR display ─────────────────────────────────
+                <Show when=move || mode.get() == Mode::Export && qr_svg.get().is_some()>
+                    <div class="qr-export-overlay" role="dialog" aria-modal="true">
+                        <div class="qr-export-content">
+                            <div class="qr-code" inner_html=move || qr_svg.get().unwrap_or_default()></div>
+                            <p class="qr-export-did">{move || did_input.get()}</p>
+                            <div class="btn-row">
+                                <button class="btn" on:click=move |_| qr_svg.set(None)>
+                                    {move || { let _ = lang.get(); t("btn-close") }}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </Show>
 
                 // ── Status / Error ────────────────────────────────────────
                 <Show when=move || !error.get().is_empty()>

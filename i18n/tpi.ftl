@@ -20,6 +20,11 @@ btn-export = ekspotim
 btn-generate = mekim
 btn-new-endpoint = nupela hap
 btn-import-profile = kisim profail
+btn-show-qr = soim QR
+btn-scan-qr = skanim QR
+qr-scan-hint = Makim kamera long wanpela QR kod bilong profail zion.
+qr-error-camera = kamera i no stap: { $e }
+qr-error-too-large = profail i bikpela tumas long wanpela QR kod
 passphrase-warning = Lusim pasfreis = lusim identiti. I no gat wei bilong kisim bek.
 import-profile-help = Kisim profail long CID o fail. Yu nidim sem pasfreis we yu usim taim yu putim ausait.
 import-profile-detected-user = Profail i bilong: { $name }

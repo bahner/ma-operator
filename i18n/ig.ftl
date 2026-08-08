@@ -20,6 +20,11 @@ btn-export = pụta
 btn-generate = mepụta
 btn-new-endpoint = ọnụ ụzọ ọhụrụ
 btn-import-profile = bubatuo profaịl
+btn-show-qr = gosi QR
+btn-scan-qr = nyọchaa QR
+qr-scan-hint = Tụziri igwefoto na koodu QR profaịl zion.
+qr-error-camera = igwefoto adịghị: { $e }
+qr-error-too-large = profaịl buru ibu karịa maka koodu QR
 passphrase-warning = Ịhapụ okwu nzuzo = ịhapụ njirimara. Ọ dịghị iweghachi.
 import-profile-help = Bubatuo profaịl site na CID ma ọ bụ faịl. Ị chọrọ igodo ahụ ị jiri mgbe ị bipụtara.
 import-profile-detected-user = Profaịl bụ nke: { $name }

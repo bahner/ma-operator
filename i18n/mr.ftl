@@ -20,6 +20,11 @@ btn-export = निर्यात
 btn-generate = तयार करा
 btn-new-endpoint = नवीन एंडपॉइंट
 btn-import-profile = प्रोफाइल आयात करा
+btn-show-qr = QR दाखवा
+btn-scan-qr = QR स्कॅन करा
+qr-scan-hint = कॅमेरा zion प्रोफाइल QR कोडकडे रोखा.
+qr-error-camera = कॅमेरा उपलब्ध नाही: { $e }
+qr-error-too-large = QR कोडसाठी प्रोफाइल खूप मोठे आहे
 passphrase-warning = पासफ्रेज गेले = ओळख गेली. कोणतीही पुनर्प्राप्ती नाही.
 import-profile-help = CID किंवा फाइलद्वारे प्रोफाइल आयात करा. प्रकाशनाच्या वेळी वापरलेली तीच पासफ्रेझ आवश्यक आहे.
 import-profile-detected-user = प्रोफाइल संबंधित आहे: { $name }

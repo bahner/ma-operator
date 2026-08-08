@@ -712,7 +712,10 @@ mod tests {
         let mut thing = std::collections::BTreeMap::new();
         thing.insert("nick".to_string(), SchemeVal::Str("phone".to_string()));
         let mut exits = std::collections::BTreeMap::new();
-        exits.insert("north".to_string(), SchemeVal::Str("did:ma:room#north".to_string()));
+        exits.insert(
+            "north".to_string(),
+            SchemeVal::Str("did:ma:room#north".to_string()),
+        );
         let mut room = std::collections::BTreeMap::new();
         room.insert("name".to_string(), SchemeVal::Str("Construct".to_string()));
         room.insert(
@@ -720,14 +723,23 @@ mod tests {
             SchemeVal::Str("A loading programme.".to_string()),
         );
         room.insert("who".to_string(), SchemeVal::Map(occupants));
-        room.insert("agents".to_string(), SchemeVal::List(vec![SchemeVal::Map(agent)]));
-        room.insert("things".to_string(), SchemeVal::List(vec![SchemeVal::Map(thing)]));
+        room.insert(
+            "agents".to_string(),
+            SchemeVal::List(vec![SchemeVal::Map(agent)]),
+        );
+        room.insert(
+            "things".to_string(),
+            SchemeVal::List(vec![SchemeVal::Map(thing)]),
+        );
         room.insert("exits".to_string(), SchemeVal::Map(exits));
 
         block_on(call_reply("look", SchemeVal::Map(room), &state, config))
             .expect("look reply is handled");
 
-        assert!(matches!(get_env().get("last-room"), Some(SchemeVal::Map(_))));
+        assert!(matches!(
+            get_env().get("last-room"),
+            Some(SchemeVal::Map(_))
+        ));
 
         let text = state.entries.with_untracked(|entries| {
             entries.iter().find_map(|entry| match entry {
@@ -792,7 +804,10 @@ mod tests {
         for (event, values) in [
             ("exits?", SchemeVal::List(vec![SchemeVal::Map(north)])),
             ("who?", who),
-            ("occupants?", SchemeVal::List(vec![SchemeVal::Map(lars.clone())])),
+            (
+                "occupants?",
+                SchemeVal::List(vec![SchemeVal::Map(lars.clone())]),
+            ),
             ("things?", SchemeVal::List(vec![SchemeVal::Map(lars)])),
         ] {
             block_on(call_reply(event, values, &state, config))
@@ -808,7 +823,15 @@ mod tests {
                 })
                 .collect::<Vec<_>>()
         });
-        assert_eq!(texts, ["Exits:\nnorth", "Here:\nlars", "Occupants:\nlars", "Things:\nlars"]);
+        assert_eq!(
+            texts,
+            [
+                "Exits:\nnorth",
+                "Here:\nlars",
+                "Occupants:\nlars",
+                "Things:\nlars"
+            ]
+        );
     }
 
     #[test]
@@ -842,7 +865,10 @@ mod tests {
             "put",
             "take-from",
         ] {
-            assert!(matches!(get_env().get(command), Some(SchemeVal::Lambda { .. })));
+            assert!(matches!(
+                get_env().get(command),
+                Some(SchemeVal::Lambda { .. })
+            ));
         }
     }
 }

@@ -20,6 +20,11 @@ btn-export = eksportēt
 btn-generate = ģenerēt
 btn-new-endpoint = jauns galapunkts
 btn-import-profile = importēt profilu
+btn-show-qr = rādīt QR
+btn-scan-qr = skenēt QR
+qr-scan-hint = Pavērsiet kameru pret zion profila QR kodu.
+qr-error-camera = kamera nav pieejama: { $e }
+qr-error-too-large = profils ir pārāk liels QR kodam
 passphrase-warning = Zaudēta paroles frāze = zaudēta identitāte. Atjaunošana nav iespējama.
 import-profile-help = Importējiet profilu, izmantojot CID vai failu. Nepieciešama tā pati ieejas frāze, kas izmantota publicēšanas laikā.
 import-profile-detected-user = Profils pieder: { $name }

@@ -20,6 +20,11 @@ btn-export = ekspor
 btn-generate = buat
 btn-new-endpoint = titik akhir baru
 btn-import-profile = impor profil
+btn-show-qr = tampilkan QR
+btn-scan-qr = pindai QR
+qr-scan-hint = Arahkan kamera ke kode QR profil zion.
+qr-error-camera = kamera tidak tersedia: { $e }
+qr-error-too-large = profil terlalu besar untuk kode QR
 passphrase-warning = Frasa sandi hilang = identitas hilang. Tidak ada pemulihan.
 import-profile-help = Impor profil menggunakan CID atau file. Anda memerlukan frasa sandi yang sama yang digunakan saat menerbitkan.
 import-profile-detected-user = Profil milik: { $name }

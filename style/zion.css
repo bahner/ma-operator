@@ -264,6 +264,148 @@ html, body {
     margin-top: 0.5rem;
 }
 
+.qr-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.qr-export-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 2vmin;
+    background: rgba(0, 0, 0, 0.94);
+}
+
+.qr-export-content {
+    display: flex;
+    max-width: 96vw;
+    max-height: 96vh;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+}
+
+.qr-code svg {
+    width: min(78vmin, 900px);
+    height: min(78vmin, 900px);
+    display: block;
+}
+
+.qr-export-did {
+    max-width: 92vw;
+    margin: 0;
+    overflow-wrap: anywhere;
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.qr-video-frame {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    overflow: hidden;
+    border: 3px solid var(--colour-border);
+    background: #000;
+    transition: border-color 120ms ease, box-shadow 120ms ease;
+}
+
+.qr-video-frame.searching.phase-a {
+    border-color: #28b7cf;
+}
+
+.qr-video-frame.searching.phase-b {
+    border-color: #61d8e8;
+}
+
+.qr-video-frame.waiting {
+    border-color: var(--colour-border);
+}
+
+.qr-video-frame.capture-error {
+    border-color: var(--colour-error);
+    box-shadow: 0 0 0 3px rgba(255, 60, 60, 0.25);
+}
+
+.qr-video-frame.unreadable {
+    border-color: #ffaa00;
+    box-shadow: 0 0 0 3px rgba(255, 170, 0, 0.2);
+    animation: qr-focus-pulse 900ms ease-in-out infinite alternate;
+}
+
+.qr-video-frame.decoded {
+    border-color: #36d35f;
+    box-shadow: 0 0 0 3px rgba(54, 211, 95, 0.25);
+}
+
+.qr-video {
+    width: 100%;
+    display: block;
+}
+
+.qr-scan-marker {
+    position: absolute;
+    inset: 12%;
+    border: 1px solid rgba(255, 255, 255, 0.55);
+    pointer-events: none;
+}
+
+.qr-video-frame.searching .qr-scan-marker {
+    animation: qr-search 1.4s ease-in-out infinite alternate;
+}
+
+.qr-video-frame.unreadable .qr-scan-marker {
+    border-color: #ffaa00;
+}
+
+.qr-video-frame.decoded .qr-scan-marker {
+    border-color: #36d35f;
+}
+
+.qr-scan-status {
+    min-height: 1.4em;
+    margin: 0 0 1rem;
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    text-align: center;
+}
+
+.qr-scan-status.unreadable {
+    color: #ffaa00;
+}
+
+.qr-scan-status.decoded {
+    color: #36d35f;
+}
+
+.qr-scan-status.capture-error {
+    color: var(--colour-error);
+}
+
+.qr-scan-stats {
+    display: block;
+    margin-top: 0.25rem;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+}
+
+@keyframes qr-search {
+    from { inset: 12%; opacity: 0.5; }
+    to { inset: 8%; opacity: 1; }
+}
+
+@keyframes qr-focus-pulse {
+    from { box-shadow: 0 0 0 2px rgba(255, 170, 0, 0.15); }
+    to { box-shadow: 0 0 0 6px rgba(255, 170, 0, 0.35); }
+}
+
 @media (max-width: 30em) {
     .landing {
         --font-size: 16px;

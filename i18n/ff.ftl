@@ -20,6 +20,11 @@ btn-export = yaltina
 btn-generate = hobbaade
 btn-new-endpoint = tele yimre
 btn-import-profile = naatnirgol profil
+btn-show-qr = hollu QR
+btn-scan-qr = yiylo QR
+qr-scan-hint = Fewtin kameraa e QR koodol profil zion.
+qr-error-camera = kameraa alaa: { $e }
+qr-error-too-large = profil oo ɓurii mawnude wonande QR koodol
 passphrase-warning = Janfude daande sirlu = janfude ɗemngal. Taa ɗon rewaade.
 import-profile-help = Naatnirgol profil e CID walla fayle. Feewnitiiɗon parol waɗde ko nawnugol.
 import-profile-detected-user = Profil oo ko: { $name }

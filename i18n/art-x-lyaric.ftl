@@ -22,6 +22,11 @@ btn-export = carry out
 btn-generate = manifest
 btn-new-endpoint = new overstanding
 btn-import-profile = bring in I-profile
+btn-show-qr = show di QR
+btn-scan-qr = scan di QR
+qr-scan-hint = Point di camera pon a zion I-profile QR code.
+qr-error-camera = camera nah reach: { $e }
+qr-error-too-large = I-profile too big fi one QR code
 passphrase-warning = Lose pass phrase = lose identity. There is no recovery in Babylon.
 import-profile-help = Bring in I-profile by CID or file. Same pass phrase used when publishing needed, seen?
 import-profile-detected-user = I-profile belong to: { $name }

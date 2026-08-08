@@ -20,6 +20,11 @@ btn-export = gbámújade
 btn-generate = ṣẹ̀dá
 btn-new-endpoint = ipari titun
 btn-import-profile = ko ọfọọfọ wọle
+btn-show-qr = fi QR hàn
+btn-scan-qr = ṣàyẹ̀wò QR
+qr-scan-hint = Tọ́ka kámẹ́rà sí kóòdù QR prófáìlì zion kan.
+qr-error-camera = kámẹ́rà kò sí: { $e }
+qr-error-too-large = prófáìlì tóbi jù fún kóòdù QR kan
 passphrase-warning = Pàdánù ọ̀rọ̀ àṣírí = pàdánù ìdánimọ̀. Kò sí ìpadàbọ̀.
 import-profile-help = Ko ọfọọfọ wọle nipasẹ CID tabi faili. O nilo ọrọ aṣina kanna ti a lo nigbati o ń tẹ jade.
 import-profile-detected-user = Ọfọọfọ jẹ ti: { $name }

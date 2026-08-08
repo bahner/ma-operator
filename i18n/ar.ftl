@@ -20,6 +20,11 @@ btn-export = تصدير
 btn-generate = إنشاء
 btn-new-endpoint = نقطة وصول جديدة
 btn-import-profile = استيراد الملف الشخصي
+btn-show-qr = عرض رمز QR
+btn-scan-qr = مسح رمز QR
+qr-scan-hint = وجّه الكاميرا نحو رمز QR لملف zion الشخصي.
+qr-error-camera = الكاميرا غير متاحة: { $e }
+qr-error-too-large = الملف الشخصي أكبر من أن يُحوَّل إلى رمز QR
 passphrase-warning = فقدان عبارة المرور = فقدان الهوية. لا يوجد استرداد.
 import-profile-help = استورد ملف تعريف الشخصية عبر CID أو ملف. تحتاج إلى نفس عبارة المرور المستخدمة عند النشر.
 import-profile-detected-user = الملف الشخصي يخص: { $name }

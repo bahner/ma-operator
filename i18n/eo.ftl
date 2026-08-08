@@ -20,6 +20,11 @@ btn-export = elporti
 btn-generate = generi
 btn-new-endpoint = nova finpunkto
 btn-import-profile = importi profilon
+btn-show-qr = montri QR
+btn-scan-qr = skani QR
+qr-scan-hint = Direktu la kameraon al QR-kodo de zion-profilo.
+qr-error-camera = kamerao ne disponebla: { $e }
+qr-error-too-large = profilo tro granda por QR-kodo
 passphrase-warning = Perdita pasfrazo = perdita identeco. Ne ekzistas reakiro.
 import-profile-help = Importu profilon per CID aŭ dosiero. Vi bezonas la saman pasfrazon uzatan dum publikigo.
 import-profile-detected-user = Profilo apartenas al: { $name }

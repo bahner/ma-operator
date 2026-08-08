@@ -20,6 +20,11 @@ btn-export = flyt út
 btn-generate = skapa
 btn-new-endpoint = nýggjur endapunktur
 btn-import-profile = innfør profil
+btn-show-qr = vís QR
+btn-scan-qr = skanna QR
+qr-scan-hint = Vend myndatólinum móti eini zion-profil QR-kotu.
+qr-error-camera = myndatólið er ikki tøkt: { $e }
+qr-error-too-large = profilurin er ov stórur til eina QR-kotu
 passphrase-warning = Gloymt loyniorð = gloymur samleika. Onki endurheimtan er møgulig.
 import-profile-help = Innfør eitt profil við CID ella skjal. Tú hevur brúk fyri somu lykilsetning, ið varð brúkt við útgávuna.
 import-profile-detected-user = Profil tilhøyrir: { $name }

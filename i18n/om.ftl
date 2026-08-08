@@ -20,6 +20,11 @@ btn-export = baasi
 btn-generate = uumi
 btn-new-endpoint = dhibcaha haaraa
 btn-import-profile = profaayilii galchi
+btn-show-qr = QR agarsiisi
+btn-scan-qr = QR sakatta'i
+qr-scan-hint = Kaameraa gara koodii QR profaayilii zion qajeelchi.
+qr-error-camera = kaameraan hin argamne: { $e }
+qr-error-too-large = profaayiliin koodii QR tokkoof baay'ee guddaa dha
 passphrase-warning = Jecha icciitii dhabuu = eenyummaa dhabuu. Deebii hin jiru.
 import-profile-help = Profaayilii CID yookaan faayiliidhaan galchi. Paaswardii maxxansaaf fayyadamame waliigala barbaadama.
 import-profile-detected-user = Profaayiliin kan: { $name }

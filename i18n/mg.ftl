@@ -20,6 +20,11 @@ btn-export = mamoaka
 btn-generate = mamorona
 btn-new-endpoint = fanombohana vaovao
 btn-import-profile = ampidira profily
+btn-show-qr = asehoy ny QR
+btn-scan-qr = jereo ny QR
+qr-scan-hint = Atodiho amin'ny kaody QR profily zion ny fakan-tsary.
+qr-error-camera = tsy misy fakan-tsary: { $e }
+qr-error-too-large = lehibe loatra ho an'ny kaody QR ny profily
 passphrase-warning = Very ny teny miafina = very ny mombamomba. Tsy misy famerenana.
 import-profile-help = Ampidira profily amin'ny alalan'ny CID na rakitra. Ilainao ny teny miafina nanaovana ny fanontana.
 import-profile-detected-user = Ny profily an': { $name }

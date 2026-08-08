@@ -154,7 +154,7 @@ pub fn import_from_bytes(bytes: &[u8]) -> Result<(String, String, Option<String>
     }
 
     // Fallback: bare BrowserIdentityExport (old format).
-    // Note: slug is not stored in config YAML, so it defaults to "ma".
+    // Since ma-core 0.13.1 the config YAML carries the slug, so it is preserved.
     let export = BrowserIdentityExport::from_json_str(json).map_err(|e| e.to_string())?;
     let config = Config::from_yaml_str(&export.config_yaml).map_err(|e| e.to_string())?;
     Ok((config.slug.clone(), json.to_string(), None))
@@ -343,11 +343,11 @@ mod tests {
     #[test]
     fn import_from_bytes_old_format_still_works() {
         // A bare BrowserIdentityExport (no ZionExport wrapper) must still import cleanly.
-        // Note: slug is not stored in config YAML so username defaults to "ma".
+        // Since ma-core 0.13.1 the config YAML carries the slug, so the username survives.
         let (json, _) = create_identity("alice", PASS).expect("create failed");
         let (username, identity_json, ego_config) =
             import_from_bytes(json.as_bytes()).expect("import old format failed");
-        assert_eq!(username, "ma", "old format slug always defaults to 'ma'");
+        assert_eq!(username, "alice", "slug from config YAML is preserved");
         let _ = unlock_identity(&identity_json, PASS).expect("unlock failed");
         assert!(ego_config.is_none());
     }

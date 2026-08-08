@@ -175,17 +175,16 @@ fn dispatch_reply(
                 if !incoming.is_error && crate::scheme::has_reply_handler() {
                     match cbor_reply_to_scheme_val(&incoming.content, false, &display) {
                         Ok(value)
-                            if matches!(value, crate::scheme::SchemeVal::Map(_) | crate::scheme::SchemeVal::List(_)) =>
+                            if matches!(
+                                value,
+                                crate::scheme::SchemeVal::Map(_)
+                                    | crate::scheme::SchemeVal::List(_)
+                            ) =>
                         {
                             let state = state.clone();
                             spawn_local(async move {
-                                if let Err(error) = crate::scheme::call_reply(
-                                    &verb,
-                                    value,
-                                    &state,
-                                    config,
-                                )
-                                .await
+                                if let Err(error) =
+                                    crate::scheme::call_reply(&verb, value, &state, config).await
                                 {
                                     state.push_error(format!("reply {verb}: {error}"));
                                 }

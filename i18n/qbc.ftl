@@ -22,6 +22,11 @@ btn-export = tekout
 btn-generate = mek
 btn-new-endpoint = nyu boneway
 btn-import-profile = bringin profayel
+btn-show-qr = showim QR
+btn-scan-qr = skanim QR
+qr-scan-hint = Pointim da kamera na wan zion profayel QR kod, ke.
+qr-error-camera = kamera na gut: { $e }
+qr-error-too-large = da profayel im tumang big fo wan QR kod
 passphrase-warning = Losh sekrit-lang = losh selfmang. Na du finyish wit nating.
 import-profile-help = Bringin profayel wit CID o fayl. Im gonya sekrit-lang kopeng fo pablikesim.
 import-profile-detected-user = Profayel da fo: { $name }

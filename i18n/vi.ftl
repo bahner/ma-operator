@@ -20,6 +20,11 @@ btn-export = xuất
 btn-generate = tạo
 btn-new-endpoint = điểm cuối mới
 btn-import-profile = nhập hồ sơ
+btn-show-qr = hiển thị QR
+btn-scan-qr = quét QR
+qr-scan-hint = Hướng camera vào mã QR hồ sơ zion.
+qr-error-camera = không có camera: { $e }
+qr-error-too-large = hồ sơ quá lớn cho mã QR
 passphrase-warning = Mất cụm mật khẩu = mất danh tính. Không thể khôi phục.
 import-profile-help = Nhập hồ sơ qua CID hoặc tệp. Bạn cần cụm mật khẩu giống như đã dùng khi xuất bản.
 import-profile-detected-user = Hồ sơ thuộc về: { $name }

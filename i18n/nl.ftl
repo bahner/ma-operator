@@ -20,6 +20,11 @@ btn-export = exporteren
 btn-generate = genereren
 btn-new-endpoint = nieuw eindpunt
 btn-import-profile = profiel importeren
+btn-show-qr = QR tonen
+btn-scan-qr = QR scannen
+qr-scan-hint = Richt de camera op een QR-code van een zion-profiel.
+qr-error-camera = camera niet beschikbaar: { $e }
+qr-error-too-large = profiel te groot voor een QR-code
 passphrase-warning = Verloren wachtzin = verloren identiteit. Herstel is niet mogelijk.
 import-profile-help = Importeer een profiel via CID of bestand. U heeft dezelfde wachtzin nodig die bij het publiceren is gebruikt.
 import-profile-detected-user = Profiel is van: { $name }

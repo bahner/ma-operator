@@ -20,6 +20,11 @@ btn-export = hamisha
 btn-generate = tengeneza
 btn-new-endpoint = kituo kipya
 btn-import-profile = leta wasifu
+btn-show-qr = onyesha QR
+btn-scan-qr = skani QR
+qr-scan-hint = Elekeza kamera kwenye msimbo wa QR wa wasifu wa zion.
+qr-error-camera = kamera haipatikani: { $e }
+qr-error-too-large = wasifu ni mkubwa mno kwa msimbo wa QR
 passphrase-warning = Neno la siri lililopotea = utambulisho uliopotea. Hakuna urejeshaji unaowezekana.
 import-profile-help = Leta wasifu kwa kutumia CID au faili. Unahitaji neno kuu sawa lililotumika wakati wa kuchapisha.
 import-profile-detected-user = Wasifu ni wa: { $name }

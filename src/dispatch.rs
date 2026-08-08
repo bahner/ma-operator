@@ -752,10 +752,7 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.trim().is_empty()
 }
 
-fn focus_scheme_form(
-    line: &str,
-    focused: bool,
-) -> Option<String> {
+fn focus_scheme_form(line: &str, focused: bool) -> Option<String> {
     if !focused || !is_focus_shorthand_command(line) {
         return None;
     }

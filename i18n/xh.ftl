@@ -20,6 +20,11 @@ btn-export = khipha
 btn-generate = yila
 btn-new-endpoint = indawo entsha
 btn-import-profile = ngenisa iprofayili
+btn-show-qr = bonisa i-QR
+btn-scan-qr = skena i-QR
+qr-scan-hint = Jolisa ikhamera kwikhowudi ye-QR yeprofayili ye-zion.
+qr-error-camera = ikhamera ayifumaneki: { $e }
+qr-error-too-large = iprofayili inkulu kakhulu kwikhowudi ye-QR
 passphrase-warning = Ukulahlekelwa ligama elinzulazulu = ukulahlekelwa ubunjani. Akukho buyiselwa.
 import-profile-help = Ngenisa iprofayili nge-CID okanye ifayile. Ufuna igama elinye lokufikelela okusetyenziswe xa wawusasaza.
 import-profile-detected-user = Iprofayili yeyika: { $name }

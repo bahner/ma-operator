@@ -20,6 +20,11 @@ btn-export = eksportér
 btn-generate = generér
 btn-new-endpoint = nyt slutpunkt
 btn-import-profile = importer profil
+btn-show-qr = vis QR
+btn-scan-qr = skan QR
+qr-scan-hint = Ret kameraet mod en zion-profil-QR-kode.
+qr-error-camera = kamera utilgængeligt: { $e }
+qr-error-too-large = profilen er for stor til en QR-kode
 passphrase-warning = Mistet adgangssætning = mistet identitet. Der er ingen gendannelse.
 import-profile-help = Importer en profil via CID eller fil. Du skal bruge den samme adgangssætning, der blev brugt ved publicering.
 import-profile-detected-user = Profilen tilhører: { $name }

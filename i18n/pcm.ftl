@@ -20,6 +20,11 @@ btn-export = export
 btn-generate = generate
 btn-new-endpoint = new endpoint
 btn-import-profile = bring profil komot
+btn-show-qr = show di QR
+btn-scan-qr = skan di QR
+qr-scan-hint = Point di kamera to wan zion profil QR kod.
+qr-error-camera = kamera no dey: { $e }
+qr-error-too-large = di profil too big for QR kod
 passphrase-warning = Lose passphrase = lose identity. E no get recovery.
 import-profile-help = Bring profil komot by CID or file. Yu go need di same pasfrez wey yu yus wen yu publish.
 import-profile-detected-user = Di profil na for: { $name }

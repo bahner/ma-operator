@@ -20,6 +20,11 @@ btn-export = exportá
 btn-generate = generá
 btn-new-endpoint = nobo endpoint
 btn-import-profile = importa perfil
+btn-show-qr = mustra QR
+btn-scan-qr = skan QR
+qr-scan-hint = Pone e kamera riba un kódigo QR di perfil di zion.
+qr-error-camera = kamera no ta disponibel: { $e }
+qr-error-too-large = e perfil ta muchu grandi pa un kódigo QR
 passphrase-warning = Pèrdé pasfrasa = pèrdé identidad. No tin rekuperashon.
 import-profile-help = Importa un perfil via CID of fichá. Bo mester di e mesun pasfráze usa riba publikashon.
 import-profile-detected-user = Perfil ta di: { $name }

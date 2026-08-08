@@ -20,6 +20,11 @@ btn-export = ekspordi
 btn-generate = genereeri
 btn-new-endpoint = uus lõpp-punkt
 btn-import-profile = impordi profiil
+btn-show-qr = näita QR-i
+btn-scan-qr = skanni QR
+qr-scan-hint = Suuna kaamera zioni profiili QR-koodile.
+qr-error-camera = kaamera pole saadaval: { $e }
+qr-error-too-large = profiil on QR-koodi jaoks liiga suur
 passphrase-warning = Kaotatud paroolilause = kaotatud identiteet. Taastamine pole võimalik.
 import-profile-help = Importige profiil CID või faili kaudu. Vajate sama paroolfraasi, mida kasutati avaldamisel.
 import-profile-detected-user = Profiil kuulub: { $name }

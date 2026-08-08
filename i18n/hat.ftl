@@ -20,6 +20,11 @@ btn-export = ekspòte
 btn-generate = jenere
 btn-new-endpoint = nouvo koneksyon
 btn-import-profile = enpòte pwofil
+btn-show-qr = montre QR
+btn-scan-qr = eskane QR
+qr-scan-hint = Pwente kamera a sou yon kòd QR pwofil zion.
+qr-error-camera = kamera pa disponib: { $e }
+qr-error-too-large = pwofil la twò gwo pou yon kòd QR
 passphrase-warning = Pèdi mo sekrè = pèdi idantite. Pa gen rekiperasyon.
 import-profile-help = Enpòte yon pwofil pa CID oswa fichye. Ou bezwen menm fraz sekrè a ou te itilize lè ou te pibliye.
 import-profile-detected-user = Pwofil la pou: { $name }

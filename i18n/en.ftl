@@ -22,6 +22,11 @@ btn-export = export
 btn-generate = generate
 btn-new-endpoint = new endpoint
 btn-import-profile = import profile
+btn-show-qr = show QR
+btn-scan-qr = scan QR
+qr-scan-hint = Point the camera at a zion profile QR code.
+qr-error-camera = camera unavailable: { $e }
+qr-error-too-large = profile too large for a QR code
 passphrase-warning = Lost passphrase = lost identity. There is no recovery.
 warning-remote-runtime = Warning: Your IPNS private key will be sent to this runtime for identity publishing. Only use a runtime you fully trust.
 import-profile-help = Import a .zion.json profile by CID or file. No passphrase needed for a fresh import. Passphrase only required to overwrite an existing identity.

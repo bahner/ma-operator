@@ -20,6 +20,11 @@ btn-export = soo saar
 btn-generate = abuur
 btn-new-endpoint = xidid cusub
 btn-import-profile = keen xogta shakhsiga
+btn-show-qr = muuji QR
+btn-scan-qr = iskaan QR
+qr-scan-hint = Kamaradda ku toosi koodhka QR ee xogta shakhsiga zion.
+qr-error-camera = kamarad lama helayo: { $e }
+qr-error-too-large = xogta shakhsigu aad bay u weyn tahay koodhka QR
 passphrase-warning = Luminta ereyga sirta = luminta aqoonsigu. Soo noqosho ma jirto.
 import-profile-help = Keen xogta shakhsiga adiga CID ama fayl. Waxaad u baahan tahay isla erayga sirta ee la isticmaalay markii la daabacaayay.
 import-profile-detected-user = Xogta shakhsiga waa kan: { $name }

@@ -20,6 +20,11 @@ btn-export = ekspòtasyon
 btn-generate = jenere
 btn-new-endpoint = nyuu endpoint
 btn-import-profile = bring een profayl
+btn-show-qr = shou di QR
+btn-scan-qr = skyan di QR
+qr-scan-hint = Point di kyamra pan wan zion profayl QR kuod.
+qr-error-camera = kyamra no de: { $e }
+qr-error-too-large = di profayl tuu big fi wan QR kuod
 passphrase-warning = Lase passphrase = lase identity. Nuh have no recovery.
 import-profile-help = Bring een profayl by CID ar file. Yu need di same pasfrayz yu use wen yu piblish.
 import-profile-detected-user = Di profayl belong to: { $name }

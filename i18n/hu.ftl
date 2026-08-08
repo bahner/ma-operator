@@ -20,6 +20,11 @@ btn-export = exportálás
 btn-generate = generálás
 btn-new-endpoint = új végpont
 btn-import-profile = profil importálása
+btn-show-qr = QR megjelenítése
+btn-scan-qr = QR beolvasása
+qr-scan-hint = Irányítsa a kamerát egy zion profil QR-kódjára.
+qr-error-camera = a kamera nem elérhető: { $e }
+qr-error-too-large = a profil túl nagy egy QR-kódhoz
 passphrase-warning = Elveszett jelmondat = elveszett identitás. Helyreállítás nem lehetséges.
 import-profile-help = Importáljon egy profilt CID vagy fájl segítségével. Szükséges ugyanaz a jelszófrázis, amelyet a közzétételkor használt.
 import-profile-detected-user = A profil tulajdonosa: { $name }

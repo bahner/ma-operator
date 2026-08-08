@@ -20,6 +20,11 @@ btn-export = vie
 btn-generate = luo
 btn-new-endpoint = uusi päätepiste
 btn-import-profile = tuo profiili
+btn-show-qr = näytä QR
+btn-scan-qr = skannaa QR
+qr-scan-hint = Suuntaa kamera zion-profiilin QR-koodiin.
+qr-error-camera = kamera ei käytettävissä: { $e }
+qr-error-too-large = profiili on liian suuri QR-koodiin
 passphrase-warning = Kadotettu salasana = kadotettu identiteetti. Palautumista ei ole.
 import-profile-help = Tuo profiili CID:n tai tiedoston avulla. Tarvitset saman salasanalauseen, jota käytettiin julkaisemiseen.
 import-profile-detected-user = Profiili kuuluu: { $name }

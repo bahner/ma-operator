@@ -20,6 +20,11 @@ btn-export = khipha
 btn-generate = dala
 btn-new-endpoint = indawo entsha
 btn-import-profile = ngenisa iphrofayela
+btn-show-qr = bonisa i-QR
+btn-scan-qr = skena i-QR
+qr-scan-hint = Qondisa ikhamera kukhodi ye-QR yephrofayela ye-zion.
+qr-error-camera = ikhamera ayitholakali: { $e }
+qr-error-too-large = iphrofayela inkulu kakhulu kukhodi ye-QR
 passphrase-warning = Ukulahlekelwa igama elinzulazulu = ukulahlekelwa ubunikazi. Akukho okubuyiswayo.
 import-profile-help = Ngenisa iphrofayela nge-CID noma ifayela. Udinga igama elifanayo lamabhizinisi alisebenzisa ngesikhathi sokushicilela.
 import-profile-detected-user = Iphrofayela ingeyaka: { $name }

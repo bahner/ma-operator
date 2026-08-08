@@ -20,6 +20,11 @@ btn-export = fitar da
 btn-generate = samar
 btn-new-endpoint = sabon ƙarshe
 btn-import-profile = shigo da bayanan martaba
+btn-show-qr = nuna QR
+btn-scan-qr = duba QR
+qr-scan-hint = Nuna kyamara zuwa lambar QR ta bayanan martaba na zion.
+qr-error-camera = babu kyamara: { $e }
+qr-error-too-large = bayanan martaba sun yi girma da yawa ga lambar QR
 passphrase-warning = Rasa kalmar sirri = rasa asali. Babu dawo.
 import-profile-help = Shigo da martabar ta CID ko fayil. Kana bukata kalmar sirri ɗaya da aka yi amfani da ita yayin buga.
 import-profile-detected-user = Martabar ta: { $name }
