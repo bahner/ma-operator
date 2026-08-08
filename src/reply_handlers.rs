@@ -15,7 +15,7 @@ use crate::{
     core::CommandStatus,
     http::fetch_path_bytes,
     i18n::tf,
-    messages::{cid_bytes_to_editor_text, IncomingMessage},
+    messages::{cid_bytes_to_editor_text, decode_crud_content, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
 };
@@ -480,6 +480,37 @@ fn open_editor_from_yaml_cbor(
 
 // ── CRUD confirm ───────────────────────────────────────────────────────────
 
+/// Display a CRUD GET value. Data replies are raw CBOR or YAML rather than
+/// RPC `[:ok, value]` tuples, so they must not pass through the RPC classifier.
+pub(crate) fn handle_crud_get_reply(
+    cmd_id: u64,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    display: &str,
+    config: RwSignal<EgoConfig>,
+) {
+    if incoming.is_error {
+        let (status, text) = classify_reply(&incoming.content, true, display);
+        state.resolve_command_by_id(cmd_id, status);
+        if let Some(text) = text {
+            state.push_incoming(text, Some(cmd_id), true);
+        }
+        return;
+    }
+
+    let text = decode_crud_content(&incoming.content_type, &incoming.content);
+    match text {
+        Ok(text) => {
+            state.resolve_command_by_id(cmd_id, CommandStatus::Replied(String::new()));
+            let text = config
+                .get_untracked()
+                .substitute_display_dids(text.trim_end());
+            state.push_incoming(text, Some(cmd_id), false);
+        }
+        Err(error) => fail_cmd_decode(state, Some(cmd_id), &error),
+    }
+}
+
 /// CRUD SET confirmation (end of the IPFS-store → CRUD-SET publish flow).
 pub(crate) fn handle_crud_confirm(
     cmd_id: u64,
@@ -669,6 +700,7 @@ mod tests {
         .expect("encode test CBOR");
 
         IncomingMessage {
+            service: ma_core::RPC_PROTOCOL_ID.to_string(),
             message_id: "reply-1".to_string(),
             message_type: "application/vnd.ma.rpc.reply".to_string(),
             from: "did:ma:test-runtime".to_string(),
@@ -715,6 +747,26 @@ mod tests {
             crud_link_fetch_path("QmYwAPJzv5CZsnAzt8auVTLBhdgcq7M4Z6b5q8v8z6C6xF"),
             None
         );
+    }
+
+    #[test]
+    fn crud_get_decodes_raw_cbor_list_for_display() {
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Array(vec![
+                CborValue::Text("duckie".to_string()),
+                CborValue::Text("house".to_string()),
+            ]),
+            &mut content,
+        )
+        .expect("encode test CBOR");
+
+        let display = decode_crud_content(CONTENT_TYPE_TERM_CBOR, &content)
+            .expect("decode CRUD list");
+
+        assert!(display.contains("duckie"));
+        assert!(display.contains("house"));
+        assert!(!display.contains("<?>"));
     }
 
     #[test]

@@ -4,7 +4,10 @@
 
 use crate::i18n::{t, tf};
 use ciborium::Value as CborValue;
-use ma_core::{CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON, CODEC_RAW};
+use ma_core::{
+    CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON, CODEC_RAW,
+    CONTENT_TYPE_TERM_YAML,
+};
 
 /// Convert a YAML string into a DAG-CBOR byte vector.
 ///
@@ -67,6 +70,27 @@ pub fn cbor_bytes_to_yaml(bytes: &[u8]) -> Result<String, String> {
         .map_err(|e| tf("cbor-json-error", &[("e", &e.to_string())]))?;
     serde_yaml::to_string(&json_val)
         .map_err(|e| tf("yaml-serialise-error", &[("e", &e.to_string())]))
+}
+
+/// Decode a successful CRUD data reply according to its declared content type.
+pub fn decode_crud_content(content_type: &str, bytes: &[u8]) -> Result<String, String> {
+    if content_type == CONTENT_TYPE_TERM_YAML {
+        String::from_utf8(bytes.to_vec()).map_err(|e| e.to_string())
+    } else {
+        cbor_bytes_to_yaml(bytes)
+    }
+}
+
+/// Format a message received on the CRUD service.
+pub fn format_crud_reply(content_type: &str, body: &[u8]) -> (String, bool) {
+    let (error_display, is_error) = format_rpc_reply(body);
+    if is_error {
+        return (error_display, true);
+    }
+    match decode_crud_content(content_type, body) {
+        Ok(text) => (text.trim_end().to_string(), false),
+        Err(_) => (error_display, false),
+    }
 }
 
 /// Decode bytes fetched for a root CID into editor text using the CID's codec.
@@ -133,6 +157,8 @@ pub fn format_incoming(sender: &str, content_type: &str, body: &str) -> String {
 /// Decoded incoming message returned by the transport layer.
 #[derive(Clone, Debug, PartialEq)]
 pub struct IncomingMessage {
+    /// Protocol service on which the message arrived.
+    pub service: String,
     /// `Message.id` of the incoming message.
     pub message_id: String,
     /// `Message.type` of the incoming message.
@@ -278,6 +304,26 @@ mod tests {
         let (display, is_error) = format_rpc_reply(&body);
         assert!(!is_error);
         assert_eq!(display, "owners");
+    }
+
+    #[test]
+    fn formats_raw_crud_list_without_rpc_head() {
+        let mut body = Vec::new();
+        ciborium::ser::into_writer(
+            &CborValue::Array(vec![
+                CborValue::Text("duckie".to_string()),
+                CborValue::Text("house".to_string()),
+            ]),
+            &mut body,
+        )
+        .expect("encode cbor");
+
+        let (display, is_error) = format_crud_reply(ma_core::CONTENT_TYPE_TERM_CBOR, &body);
+
+        assert!(!is_error);
+        assert!(display.contains("duckie"));
+        assert!(display.contains("house"));
+        assert!(!display.contains("<?>"));
     }
 
     fn test_cid(codec: u64) -> String {

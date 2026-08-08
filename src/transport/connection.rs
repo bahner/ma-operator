@@ -3,14 +3,14 @@ use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
     resolve_endpoint_for_protocol, Did, DidDocumentResolver, EncryptionKey, IpfsGatewayResolver,
     Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID,
-    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY,
-    MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
-    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
+    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
+    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
 
 use crate::i18n::tf;
-use crate::messages::{format_incoming, format_rpc_reply, IncomingMessage};
+use crate::messages::{format_crud_reply, format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
     SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LOCAL_IPFS,
@@ -481,7 +481,7 @@ pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
                             msg.from,
                             msg.message_type
                         );
-                        decode_incoming(msg)
+                        decode_incoming(msg, RPC_PROTOCOL_ID)
                     })
                     .collect()
             })
@@ -507,7 +507,7 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
                             msg.from,
                             msg.message_type
                         );
-                        decode_incoming(msg)
+                        decode_incoming(msg, CRUD_PROTOCOL_ID)
                     })
                     .collect()
             })
@@ -764,7 +764,13 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
     SESSION_INBOX.with(|i| {
         i.borrow_mut()
             .as_mut()
-            .map(|inbox| inbox.drain(now).into_iter().map(decode_incoming).collect())
+            .map(|inbox| {
+                inbox
+                    .drain(now)
+                    .into_iter()
+                    .map(|msg| decode_incoming(msg, INBOX_PROTOCOL_ID))
+                    .collect()
+            })
             .unwrap_or_default()
     })
 }
@@ -813,45 +819,50 @@ fn decode_room_event(payload: Vec<u8>) -> String {
     }
 }
 
-fn decode_incoming(msg: Message) -> IncomingMessage {
-    use ma_core::MESSAGE_TYPE_CRUD;
-    let (display, is_error) = match msg.message_type.as_str() {
-        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY
-            if msg.content_type == "application/vnd.ma.room.event" =>
-        {
-            (decode_room_event(msg.payload()), false)
-        }
-        MESSAGE_TYPE_RPC_REPLY | MESSAGE_TYPE_RPC | MESSAGE_TYPE_CRUD | MESSAGE_TYPE_CRUD_REPLY => {
-            let (term, err) = format_rpc_reply(&msg.payload());
-            (format!("\u{2190} {} {}", msg.from, term), err)
-        }
-        MESSAGE_TYPE_CHAT => {
-            let bytes = msg.payload();
-            let body = String::from_utf8_lossy(&bytes);
-            (
-                tf("msg-chat", &[("sender", &msg.from), ("body", &body)]),
-                false,
-            )
-        }
-        MESSAGE_TYPE_EMOTE => {
-            let bytes = msg.payload();
-            let body = String::from_utf8_lossy(&bytes);
-            (format!("* {} {}", msg.from, body), false)
-        }
-        _ => {
-            let bytes = msg.payload();
-            (
-                format_incoming(
-                    &msg.from,
-                    &msg.content_type,
-                    &String::from_utf8_lossy(&bytes),
-                ),
-                false,
-            )
+fn decode_incoming(msg: Message, service: &str) -> IncomingMessage {
+    let (display, is_error) = if msg.content_type == "application/vnd.ma.room.event" {
+        (decode_room_event(msg.payload()), false)
+    } else {
+        match service {
+            RPC_PROTOCOL_ID => {
+                let (term, err) = format_rpc_reply(&msg.payload());
+                (format!("\u{2190} {} {}", msg.from, term), err)
+            }
+            CRUD_PROTOCOL_ID => {
+                let (term, err) = format_crud_reply(&msg.content_type, &msg.payload());
+                (format!("\u{2190} {} {}", msg.from, term), err)
+            }
+            _ => match msg.message_type.as_str() {
+                MESSAGE_TYPE_CHAT => {
+                    let bytes = msg.payload();
+                    let body = String::from_utf8_lossy(&bytes);
+                    (
+                        tf("msg-chat", &[("sender", &msg.from), ("body", &body)]),
+                        false,
+                    )
+                }
+                MESSAGE_TYPE_EMOTE => {
+                    let bytes = msg.payload();
+                    let body = String::from_utf8_lossy(&bytes);
+                    (format!("* {} {}", msg.from, body), false)
+                }
+                _ => {
+                    let bytes = msg.payload();
+                    (
+                        format_incoming(
+                            &msg.from,
+                            &msg.content_type,
+                            &String::from_utf8_lossy(&bytes),
+                        ),
+                        false,
+                    )
+                }
+            },
         }
     };
     let payload = msg.payload();
     IncomingMessage {
+        service: service.to_string(),
         message_id: msg.id,
         message_type: msg.message_type,
         from: msg.from,

@@ -5,6 +5,7 @@
 //! Reply handlers for pending requests live in `reply_handlers`.
 
 use leptos::prelude::*;
+use ma_core::CRUD_PROTOCOL_ID;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
@@ -13,8 +14,8 @@ use crate::{
     messages::IncomingMessage,
     reply_handlers::{
         cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm,
-        handle_edit_open_reply, handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply,
-        handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
+        handle_crud_get_reply, handle_edit_open_reply, handle_ipfs_actor_behaviour_reply,
+        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -164,6 +165,10 @@ fn dispatch_reply(
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
         PendingKind::Simple { cmd_id } => {
+            if incoming.service == CRUD_PROTOCOL_ID {
+                handle_crud_get_reply(cmd_id, &incoming, state, &display, config);
+                return;
+            }
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             if incoming.is_error {
                 if let Some(reason) = text_opt.as_deref() {
@@ -552,6 +557,7 @@ mod tests {
 
     fn incoming(from: &str, display: &str) -> IncomingMessage {
         IncomingMessage {
+            service: ma_core::RPC_PROTOCOL_ID.to_string(),
             message_id: "msg".to_string(),
             message_type: ma_core::MESSAGE_TYPE_RPC.to_string(),
             from: from.to_string(),
@@ -720,6 +726,56 @@ mod tests {
             .with_untracked(|entries| entries.iter().any(|entry| {
                 matches!(entry, Entry::Incoming(record) if record.display == "RAW STRUCTURED REPLY")
             })));
+    }
+
+    #[test]
+    fn crud_service_selects_structured_reply_decoding() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let show_editor = RwSignal::new(None);
+        let cmd_id = state.push_command("@ma/entities");
+        state.pending_requests.update(|requests| {
+            requests.insert(
+                "request-1".to_string(),
+                crate::state::TrackedRequest {
+                    kind: PendingKind::Simple { cmd_id },
+                    batch_id: None,
+                    sent_at_ms: 0.0,
+                },
+            );
+        });
+
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(
+            &ciborium::Value::Array(vec![
+                ciborium::Value::Text("duckie".to_string()),
+                ciborium::Value::Text("house".to_string()),
+            ]),
+            &mut content,
+        )
+        .unwrap();
+        let mut reply = incoming("did:ma:runtime#root", "WRONG RPC DISPLAY");
+        reply.service = CRUD_PROTOCOL_ID.to_string();
+        reply.reply_to = Some("request-1".to_string());
+        reply.content_type = ma_core::CONTENT_TYPE_TERM_CBOR.to_string();
+        reply.content = content;
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            "WRONG RPC DISPLAY".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        assert!(state.entries.with_untracked(|entries| entries.iter().any(|entry| {
+            matches!(entry, Entry::Incoming(record)
+                if record.display.contains("duckie")
+                    && record.display.contains("house")
+                    && !record.display.contains("WRONG RPC DISPLAY"))
+        })));
     }
 
     #[cfg(any())]
