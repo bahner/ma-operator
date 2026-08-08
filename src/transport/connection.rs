@@ -349,15 +349,15 @@ pub async fn send_identity_publish_with_msg_id(
         Some(lang) if !lang.is_empty() => ma_ext.extra("lang", Ipld::String(lang)),
         _ => ma_ext,
     };
-    // Inject profile CID as a DAG-JSON link ({"/": "bafy..."}) so dag-get
-    // traversal works. serde_json serialises Ipld::Link as raw bytes, so we
-    // use Ipld::Map with the DAG-JSON link convention instead.
+    // Inject profile CID as a canonical IPLD link when the value is a valid
+    // CID; otherwise keep the raw string to preserve backwards compatibility
+    // with any previously stored non-CID values.
     let ma_ext = match SESSION_AGENT_CID.with(|c| c.borrow().clone()) {
         Some(cid) if !cid.is_empty() => {
-            let link = Ipld::Map(std::collections::BTreeMap::from([(
-                "/".to_string(),
-                Ipld::String(cid),
-            )]));
+            let link = match cid::Cid::try_from(cid.as_str()) {
+                Ok(parsed) => Ipld::Link(parsed),
+                Err(_) => Ipld::String(cid),
+            };
             ma_ext.extra("profile", link)
         }
         _ => ma_ext,

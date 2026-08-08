@@ -706,18 +706,16 @@ pub(crate) async fn rediscover_ma(
 mod tests {
     use super::*;
     use ma_core::{Ipld, MaExtension, SecretBundle};
-    use std::collections::BTreeMap;
 
     fn document_with_profile(profile_cid: Option<&str>) -> ma_core::Document {
         let bundle = SecretBundle::generate();
         let ma = match profile_cid {
-            Some(cid) => MaExtension::new().kind("agent").extra(
-                "profile",
-                Ipld::Map(BTreeMap::from([(
-                    "/".to_string(),
-                    Ipld::String(cid.to_string()),
-                )])),
-            ),
+            Some(cid) => {
+                let profile = cid::Cid::try_from(cid)
+                    .map(Ipld::Link)
+                    .unwrap_or_else(|_| Ipld::String(cid.to_string()));
+                MaExtension::new().kind("agent").extra("profile", profile)
+            }
             None => MaExtension::new().kind("agent"),
         };
         bundle.build_document(ma).expect("document")
