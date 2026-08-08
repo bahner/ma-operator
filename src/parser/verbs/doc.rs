@@ -68,17 +68,14 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute the saved content line-by-line, sequentially.
+/// `:eval` — execute saved content as an ordinary Zion script.
 ///
-/// Lines are processed one at a time.  Scheme expressions are fully
-/// expanded (including any CID fetches) before the next line is started.
-/// This guarantees that `(include #/ipfs/bafy…)` and `(include #.my.doc.x)`
-/// defines are available to subsequent lines in the same document.
+/// The editor callback submits it through the same path as a multi-line paste.
 fn doc_eval(
     path: &str,
     state: &AppState,
     config: RwSignal<EgoConfig>,
-    _on_eval: Callback<String>,
+    on_eval: Callback<String>,
 ) -> Result<(), String> {
     let content = config
         .get_untracked()
@@ -89,16 +86,7 @@ fn doc_eval(
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
     state.push_command_done(format!("{path}!eval"));
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        for line in content.lines() {
-            let trimmed = line.trim();
-            if trimmed.is_empty() || trimmed.starts_with(';') {
-                continue;
-            }
-            state2.input_queue.update(|q| q.push_back(line.to_string()));
-        }
-    });
+    on_eval.run(content);
     Ok(())
 }
 
@@ -279,41 +267,6 @@ pub(super) fn classify_publish_error(err: &str) -> (&'static str, &'static str) 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn eval_lines_skips_semicolon_led_comments() {
-        assert_eq!(
-            eval_lines(";; note (.my.ctx.room)\n(define duckie \"quack\")"),
-            vec!["(define duckie \"quack\")"]
-        );
-    }
-
-    #[test]
-    fn eval_lines_combines_multiline_scheme_forms() {
-        assert_eq!(
-            eval_lines("(define (look)\n  (@(avatar):look))"),
-            vec!["(define (look)\n  (@(avatar):look))"]
-        );
-    }
-
-    #[test]
-    fn eval_lines_ignores_semicolon_led_notes_between_forms() {
-        assert_eq!(
-            eval_lines(";; avatar commands\n(define (go direction)\n  (@(avatar):go direction))\n;; invoke it\n(go \"north\")"),
-            vec![
-                "(define (go direction)\n  (@(avatar):go direction))",
-                "(go \"north\")",
-            ]
-        );
-    }
-
-    #[test]
-    fn eval_lines_does_not_buffer_parentheses_in_quoted_text() {
-        assert_eq!(
-            eval_lines("say \"an (unclosed parenthesis\"\nlook"),
-            vec!["say \"an (unclosed parenthesis\"", "look"]
-        );
-    }
 
     #[test]
     fn classify_publish_error_identifies_session_errors() {

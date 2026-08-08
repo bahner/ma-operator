@@ -761,8 +761,8 @@ mod tests {
         )
         .expect("encode test CBOR");
 
-        let display = decode_crud_content(CONTENT_TYPE_TERM_CBOR, &content)
-            .expect("decode CRUD list");
+        let display =
+            decode_crud_content(CONTENT_TYPE_TERM_CBOR, &content).expect("decode CRUD list");
 
         assert!(display.contains("duckie"));
         assert!(display.contains("house"));

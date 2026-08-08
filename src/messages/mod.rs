@@ -5,8 +5,7 @@
 use crate::i18n::{t, tf};
 use ciborium::Value as CborValue;
 use ma_core::{
-    CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON, CODEC_RAW,
-    CONTENT_TYPE_TERM_YAML,
+    CODEC_CBOR, CODEC_DAG_CBOR, CODEC_DAG_JSON, CODEC_JSON, CODEC_RAW, CONTENT_TYPE_TERM_YAML,
 };
 
 /// Convert a YAML string into a DAG-CBOR byte vector.

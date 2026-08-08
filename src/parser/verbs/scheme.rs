@@ -16,9 +16,7 @@ pub(super) fn handle_scheme(
 ) -> Result<(), String> {
     match verb {
         // Evaluate as a normal Zion script.
-        "eval" => {
-            super::doc::handle_doc(path, verb, args, state, config, show_editor, on_eval)
-        }
+        "eval" => super::doc::handle_doc(path, verb, args, state, config, show_editor, on_eval),
         // !save — serialise the current session env and persist.
         "save" if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") => {
             let source = crate::scheme::dump_env();

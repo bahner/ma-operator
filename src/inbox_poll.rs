@@ -789,12 +789,14 @@ mod tests {
             show_editor,
         );
 
-        assert!(state.entries.with_untracked(|entries| entries.iter().any(|entry| {
-            matches!(entry, Entry::Incoming(record)
+        assert!(state
+            .entries
+            .with_untracked(|entries| entries.iter().any(|entry| {
+                matches!(entry, Entry::Incoming(record)
                 if record.display.contains("duckie")
                     && record.display.contains("house")
                     && !record.display.contains("WRONG RPC DISPLAY"))
-        })));
+            })));
     }
 
     #[cfg(any())]
