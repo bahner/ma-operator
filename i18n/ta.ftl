@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = உள்ளூர் 間 கோர முடிய�
 msg-identity-not-published = அடையாளம் இணையத்தில் காணப்படவில்லை — ma உள்நாட்டில் நிறுவப்பட்டிருந்தால், '.ma [port]' பின்னர் '.my.identity!publish @ma' இயக்கவும். விவரங்களுக்கு '.help/publish' தட்டச்சு செய்யவும்.
 msg-blocked = ⊗ தடுக்கப்பட்டது [{ $cap }]: { $from }
 msg-focus-cleared = கவனம் அழிக்கப்பட்டது
+msg-left = left
 msg-focusing = { $did } ஐ { $prompt } ஆக கவனம் செலுத்துகிறது
 msg-set = { $path }: { $value }
 msg-deleted = { $path } நீக்கப்பட்டது ({ $count } உள்ளீடுகள்)

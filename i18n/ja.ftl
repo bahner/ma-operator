@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = ローカル 間 の要求に失敗しました
 msg-identity-not-published = オンラインで身元が見つかりません — maがローカルにインストールされている場合、'.ma [port]'を実行してから'.my.identity!publish @ma'を実行してください。詳細は'.help/publish'と入力してください。
 msg-blocked = ⊗ ブロック済み [{ $cap }]: { $from }
 msg-focus-cleared = フォーカスをクリアしました
+msg-left = left
 msg-focusing = { $did } を { $prompt } としてフォーカス中
 msg-set = { $path }: { $value }
 msg-deleted = { $path } を削除しました ({ $count } 件)

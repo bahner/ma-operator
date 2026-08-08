@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = ka konsigi reklama 間 lokal
 msg-identity-not-published = Idantidadi ka acha na intanet — si bu ten ma instaladu lokal, kori '.ma [port]' dipus '.my.identity!publish @ma'. Skriva '.help/publish' pa ditailyu.
 msg-blocked = ⊗ blokadu [{ $cap }]: { $from }
 msg-focus-cleared = foku limpadu
+msg-left = left
 msg-focusing = foku { $did } komo { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = eliminadu { $path } ({ $count } entráda)

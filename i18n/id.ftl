@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = gagal mengklaim 間 lokal
 msg-identity-not-published = Identitas tidak ditemukan secara online — jika ma terpasang secara lokal, jalankan '.ma [port]' lalu '.my.identity!publish @ma'. Ketik '.help/publish' untuk detail.
 msg-blocked = ⊗ diblokir [{ $cap }]: { $from }
 msg-focus-cleared = fokus dibersihkan
+msg-left = left
 msg-focusing = memfokuskan { $did } sebagai { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = menghapus { $path } ({ $count } entri)

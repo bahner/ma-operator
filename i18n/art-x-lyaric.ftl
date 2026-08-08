@@ -70,6 +70,7 @@ msg-local-ma-claim-failed = local 間 claim fall down
 msg-identity-not-published = Ites not inna di web — if ma install inna di machine, run '.ma [port]' den '.my.identity!publish @ma'. Write '.help/publish' fi di details.
 msg-blocked = ⊗ blocked by Zion [{ $cap }]: { $from }
 msg-focus-cleared = konsantre klè
+msg-left = left
 msg-focusing = focusing { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = removed { $path } ({ $count } entries)

@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nepavyko pareikšti vietinio 間
 msg-identity-not-published = Tapatybė nerasta internete — jei ma įdiegtas vietoje, paleisk '.ma [port]' ir tada '.my.identity!publish @ma'. Parašyk '.help/publish' dėl detalių.
 msg-blocked = ⊗ užblokuota [{ $cap }]: { $from }
 msg-focus-cleared = fokusas išvalytas
+msg-left = left
 msg-focusing = fokusuojama { $did } kaip { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = ištrinta { $path } ({ $count } įrašai)

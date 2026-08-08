@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = స్థానిక 間 క్లెయిమ్ �
 msg-identity-not-published = గుర్తింపు ఆన్‌లైన్‌లో కనుగొనబడలేదు — ma స్థానికంగా ఇన్‌స్టాల్ అయి ఉంటే, '.ma [port]' అప్పుడు '.my.identity!publish @ma' అమలు చేయండి. వివరాల కోసం '.help/publish' టైప్ చేయండి.
 msg-blocked = ⊗ నిరోధించబడింది [{ $cap }]: { $from }
 msg-focus-cleared = ఫోకస్ తొలగించబడింది
+msg-left = left
 msg-focusing = { $did } ని { $prompt } గా ఫోకస్ చేస్తోంది
 msg-set = { $path }: { $value }
 msg-deleted = { $path } తొలగించబడింది ({ $count } నమోదులు)

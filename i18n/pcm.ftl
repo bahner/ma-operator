@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = e no fit claim local 間
 msg-identity-not-published = Identity no dey online — if ma don install for your side, run '.ma [port]' den '.my.identity!publish @ma'. Type '.help/publish' for details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = focus cleared
+msg-left = left
 msg-focusing = focusing { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = deleted { $path } ({ $count } entries)

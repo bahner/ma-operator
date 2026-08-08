@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kon lokale 間 niet claimen
 msg-identity-not-published = Identiteit niet online gevonden — als je ma lokaal geïnstalleerd hebt, voer '.ma [port]' uit en dan '.my.identity!publish @ma'. Typ '.help/publish' voor details.
 msg-blocked = ⊗ geblokkeerd [{ $cap }]: { $from }
 msg-focus-cleared = focus gewist
+msg-left = left
 msg-focusing = focussen op { $did } als { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = { $path } verwijderd ({ $count } items)

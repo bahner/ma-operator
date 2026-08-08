@@ -64,10 +64,6 @@ pub struct SessionState {
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct FocusMode {
-    pub runtime: String,
-    pub room: Option<String>,
-    pub target: String,
-    pub root_actor: Option<String>,
     pub prompt: String,
 }
 

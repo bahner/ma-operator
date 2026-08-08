@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kundi ikki gera krav á lokalt 間
 msg-identity-not-published = Samleiki finnst ikki í netinum — um ma er installerað lokalt, køyr '.ma [port]' og síðan '.my.identity!publish @ma'. Skriva '.help/publish' fyri detaljar.
 msg-blocked = ⊗ stovnað [{ $cap }]: { $from }
 msg-focus-cleared = fókus av
+msg-left = left
 msg-focusing = fókuserar { $did } sum { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = strikti { $path } ({ $count } færslur)

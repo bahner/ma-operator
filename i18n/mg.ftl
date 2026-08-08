@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = tsy nahomby ny fakana ny 間 eo an-toerana
 msg-identity-not-published = Tsy hita ny mombamomba amin'ny internet — raha efa napetraka ny ma eo an-toerana, ampiasao '.ma [port]' ary '.my.identity!publish @ma'. Soraty '.help/publish' ho an'ny antsipiriany.
 msg-blocked = ⊗ voasakana [{ $cap }]: { $from }
 msg-focus-cleared = voafafa ny sain-toerana
+msg-left = left
 msg-focusing = manamarika { $did } ho { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = voafafa { $path } ({ $count } fidirana)

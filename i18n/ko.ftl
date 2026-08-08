@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = 로컬 間 청구 실패
 msg-identity-not-published = 온라인에서 신원을 찾을 수 없음 — ma가 로컬에 설치되어 있다면, '.ma [port]' 후 '.my.identity!publish @ma'를 실행하세요. 자세한 내용은 '.help/publish'를 입력하세요.
 msg-blocked = ⊗ 차단됨 [{ $cap }]: { $from }
 msg-focus-cleared = 포커스가 해제됨
+msg-left = left
 msg-focusing = { $did }을(를) { $prompt }(으)로 포커스 중
 msg-set = { $path }: { $value }
 msg-deleted = { $path } 삭제됨 ({ $count }개 항목)

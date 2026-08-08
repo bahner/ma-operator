@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = فشلت المطالبة بـ 間 المحلي
 msg-identity-not-published = لم يُعثر على الهوية عبر الإنترنت — إن كان ma مثبتاً محلياً، شغّل '.ma [port]' ثم '.my.identity!publish @ma'. اكتب '.help/publish' للتفاصيل.
 msg-blocked = ⊗ محجوب [{ $cap }]: { $from }
 msg-focus-cleared = تم مسح التركيز
+msg-left = left
 msg-focusing = تركيز { $did } بوصفه { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = تم حذف { $path } ({ $count } إدخالات)

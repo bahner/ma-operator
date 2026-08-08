@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = no por a reklamá 間 lokal
 msg-identity-not-published = Identidad no a haña na internet — si ma ta instalá lokalmente, drenta '.ma [port]' i despues '.my.identity!publish @ma'. Tik '.help/publish' pa detaljenan.
 msg-blocked = ⊗ blokea [{ $cap }]: { $from }
 msg-focus-cleared = foko limpiá
+msg-left = left
 msg-focusing = foko { $did } komo { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = bora { $path } ({ $count } entrada)

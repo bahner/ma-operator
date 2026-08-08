@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kwehlulekile ukucela i-間 yendawo
 msg-identity-not-published = Ubunikazi abufunyanwanga ku-inthanethi — uma u-ma ufakiwe endaweni, qhuba '.ma [port]' bese '.my.identity!publish @ma'. Bhala '.help/publish' ngemininingwane.
 msg-blocked = ⊗ kuvinjwe [{ $cap }]: { $from }
 msg-focus-cleared = ukugxila kudulwe
+msg-left = left
 msg-focusing = ukugxila ku-{ $did } njengo { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = u{ $path } ususwe ({ $count } izingeniso)

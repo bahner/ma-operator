@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = akwụtaghị 間 mpaghara
 msg-identity-not-published = Atụfuọla njirimara n'ịntanetị — ọ bụrụ na ma edepụtara n'ebe obibi, bido '.ma [port]' wee mee '.my.identity!publish @ma'. Dee '.help/publish' maka nkọwa.
 msg-blocked = ⊗ ewepụtara [{ $cap }]: { $from }
 msg-focus-cleared = ewepụtara ntụleanya
+msg-left = left
 msg-focusing = na-etinye uche na { $did } dị ka { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = ehichapụrụ { $path } ({ $count } ndepụta)

@@ -70,6 +70,7 @@ msg-local-ma-claim-failed = local 間 klaim na go
 msg-identity-not-published = Inyalowda pashang nowit kewe na la tube — si ma besh da gut, run '.ma [port]' den '.my.identity!publish @ma'. Slip '.help/publish' fo detay.
 msg-blocked = ⊗ hamma [{ $cap }]: { $from }
 msg-focus-cleared = fokus na du
+msg-left = left
 msg-focusing = fokus { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = { $path } na du ({ $count } tenye)

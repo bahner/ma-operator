@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = pa t kapab reklame 間 lokal
 msg-identity-not-published = Idantite pa jwenn sou entènèt — si ou gen ma ki instalé lokalman, kouri '.ma [port]' epi '.my.identity!publish @ma'. Tape '.help/publish' pou detay.
 msg-blocked = ⊗ bloke [{ $cap }]: { $from }
 msg-focus-cleared = fòkis efase
+msg-left = left
 msg-focusing = fòkis { $did } kòm { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = efase { $path } ({ $count } antre)

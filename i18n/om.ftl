@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = 間 naannoo fudhachuun hin milkoofne
 msg-identity-not-published = Eenyummaan interneetii irraa hin argamne — yoo ma naannoo irratti fe'ame, '.ma [port]' itti aansuun '.my.identity!publish @ma' oofaa. Bal'ina argachuuf '.help/publish' barreessi.
 msg-blocked = ⊗ uggurame [{ $cap }]: { $from }
 msg-focus-cleared = xiyyeeffannoon qulqullaa'e
+msg-left = left
 msg-focusing = { $did } gara { $prompt }tti xiyyeeffachaa jira
 msg-set = { $path }: { $value }
 msg-deleted = { $path } haaqame ({ $count } galmeewwan)

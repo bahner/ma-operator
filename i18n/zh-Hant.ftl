@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = 無法宣告本地 間
 msg-identity-not-published = 未在線找到身份 — 如果本地安裝了 ma，請執行 '.ma [port]' 然後 '.my.identity!publish @ma'。輸入 '.help/publish' 查看詳情。
 msg-blocked = ⊗ 已封鎖 [{ $cap }]: { $from }
 msg-focus-cleared = 焦點已清除
+msg-left = left
 msg-focusing = 將 { $did } 聚焦為 { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = 已刪除 { $path }（{ $count } 項）

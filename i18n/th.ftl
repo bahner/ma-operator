@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = อ้างสิทธิ์ 間 ในเคร�
 msg-identity-not-published = ไม่พบตัวตนออนไลน์ — ถ้าติดตั้ง ma ในเครื่องแล้ว ให้รัน '.ma [port]' จากนั้น '.my.identity!publish @ma' พิมพ์ '.help/publish' เพื่อดูรายละเอียด
 msg-blocked = ⊗ ถูกบล็อก [{ $cap }]: { $from }
 msg-focus-cleared = ล้างโฟกัสแล้ว
+msg-left = left
 msg-focusing = กำลังโฟกัส { $did } เป็น { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = ลบ { $path } แล้ว ({ $count } รายการ)

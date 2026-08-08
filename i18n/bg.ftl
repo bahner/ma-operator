@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = неуспешно заявяване на лока�
 msg-identity-not-published = Самоличността не е намерена онлайн — ако имаш инсталиран ma локално, изпълни '.ma [port]' и след това '.my.identity!publish @ma'. Напиши '.help/publish' за подробности.
 msg-blocked = ⊗ блокирано [{ $cap }]: { $from }
 msg-focus-cleared = фокусът е изчистен
+msg-left = left
 msg-focusing = фокусиране върху { $did } като { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = изтрито { $path } ({ $count } записа)

@@ -71,6 +71,7 @@ msg-local-ma-claim-failed = مطالبه 間 محلی ناموفق بود
 msg-identity-not-published = هویت در شبکه پیدا نشد — اگر ma را محلی نصب کرده‌اید، '.ma [port]' و سپس '.my.identity!publish @ma' را اجرا کنید. برای جزئیات '.help/publish' را تایپ کنید.
 msg-blocked = ⊗ مسدود شد [{ $cap }]: { $from }
 msg-focus-cleared = تمرکز پاک شد
+msg-left = left
 msg-focusing = تمرکز روی { $did } با اعلان { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = { $path } حذف شد ({ $count } ورودی)

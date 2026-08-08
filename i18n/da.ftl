@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kunne ikke gøre krav på lokal 間
 msg-identity-not-published = Identitet ikke fundet online — har du ma installeret lokalt, kør '.ma [port]' og derefter '.my.identity!publish @ma'. Skriv '.help/publish' for detaljer.
 msg-blocked = ⊗ blokeret [{ $cap }]: { $from }
 msg-focus-cleared = fokus ryddet
+msg-left = left
 msg-focusing = fokuserer { $did } som { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = slettede { $path } ({ $count } poster)

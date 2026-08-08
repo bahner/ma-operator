@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = lokalnega 間 ni bilo mogoče zahtevati
 msg-identity-not-published = Identiteta ni najdena v omrežju — če imaš ma nameščen lokalno, poženi '.ma [port]', nato '.my.identity!publish @ma'. Vtipkaj '.help/publish' za podrobnosti.
 msg-blocked = ⊗ blokirano [{ $cap }]: { $from }
 msg-focus-cleared = fokus izbrisan
+msg-left = left
 msg-focusing = fokusiranje na { $did } kot { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = izbrisano { $path } ({ $count } vnosov)

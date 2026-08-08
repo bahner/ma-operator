@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = αποτυχία διεκδίκησης του το�
 msg-identity-not-published = Η ταυτότητα δεν βρέθηκε διαδικτυακά — αν έχεις εγκατεστημένο το ma τοπικά, εκτέλεσε '.ma [port]' και μετά '.my.identity!publish @ma'. Πληκτρολόγησε '.help/publish' για λεπτομέρειες.
 msg-blocked = ⊗ αποκλεισμένο [{ $cap }]: { $from }
 msg-focus-cleared = η εστίαση διαγράφηκε
+msg-left = left
 msg-focusing = εστίαση σε { $did } ως { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = διαγράφηκε { $path } ({ $count } καταχωρήσεις)

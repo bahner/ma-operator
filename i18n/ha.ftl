@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = an kasa ɗaukar 間 na gida
 msg-identity-not-published = Ba a sami ainihi kan layi ba — idan an shigar da ma cikin gida, gudanar da '.ma [port]' sannan '.my.identity!publish @ma'. Rubuta '.help/publish' don cikakken bayani.
 msg-blocked = ⊗ an toshe [{ $cap }]: { $from }
 msg-focus-cleared = an share mai da hankali
+msg-left = left
 msg-focusing = ana mai da hankali { $did } a matsayin { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = an goge { $path } ({ $count } shigarwa)

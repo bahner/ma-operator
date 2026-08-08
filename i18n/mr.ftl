@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = स्थानिक 間 दाखल करता 
 msg-identity-not-published = ओळख ऑनलाइन सापडली नाही — जर ma स्थानिकपणे स्थापित असेल, तर '.ma [port]' नंतर '.my.identity!publish @ma' चालवा। तपशीलांसाठी '.help/publish' टाइप करा।
 msg-blocked = ⊗ अवरोधित [{ $cap }]: { $from }
 msg-focus-cleared = फोकस साफ केले
+msg-left = left
 msg-focusing = { $did } ला { $prompt } म्हणून फोकस केले जात आहे
 msg-set = { $path }: { $value }
 msg-deleted = { $path } हटवले ({ $count } नोंदी)

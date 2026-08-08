@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nɔ bin able claim local 間
 msg-identity-not-published = Ɔpsɛt nɔ fɔ gɛt ɔnlain — ɛf ma dɔn sɛt ɛp fo yɔ, ron '.ma [port]' den '.my.identity!publish @ma'. Rait '.help/publish' fo mɔ infɔmeshɔn.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokɔs klia
+msg-left = left
 msg-focusing = fokɔs { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = delete { $path } ({ $count } entri dem)

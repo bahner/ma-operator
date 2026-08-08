@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = yerel 間 talep edilemedi
 msg-identity-not-published = Kimlik çevrimiçi bulunamadı — ma yerel olarak yüklüyse, '.ma [port]' ardından '.my.identity!publish @ma' çalıştırın. Ayrıntılar için '.help/publish' yazın.
 msg-blocked = ⊗ engellendi [{ $cap }]: { $from }
 msg-focus-cleared = odak temizlendi
+msg-left = left
 msg-focusing = { $did } üzerine { $prompt } olarak odaklanılıyor
 msg-set = { $path }: { $value }
 msg-deleted = { $path } silindi ({ $count } girdi)

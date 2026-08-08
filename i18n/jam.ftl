@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = couldn't claim local 間
 msg-identity-not-published = Di identity nuh foun online — if yu have ma install locally, run '.ma [port]' den '.my.identity!publish @ma'. Type '.help/publish' fi details.
 msg-blocked = ⊗ blocked [{ $cap }]: { $from }
 msg-focus-cleared = konsantre klè
+msg-left = left
 msg-focusing = focusing { $did } as { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = deleted { $path } ({ $count } entries)

@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = ɗaɓɓude 間 nokku woorii
 msg-identity-not-published = Ko tigi alaa woyowoyii dow — so ma sappidi dow, laato '.ma [port]' ɓe '.my.identity!publish @ma'. Windu '.help/publish' ngam tabitinde.
 msg-blocked = ⊗ haɗaa [{ $cap }]: { $from }
 msg-focus-cleared = nelaande dellaama
+msg-left = left
 msg-focusing = nelitaade { $did } haa { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = { $path } dellaama ({ $count } jottaandi)

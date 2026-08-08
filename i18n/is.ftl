@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = tókst ekki að gera tilkall til staðbundins 間
 msg-identity-not-published = Auðkenni finnst ekki á netinu — ef ma er uppsett á þessum tölvu, keyrðu '.ma [port]' og svo '.my.identity!publish @ma'. Skrifaðu '.help/publish' fyrir frekari upplýsingar.
 msg-blocked = ⊗ lokað á [{ $cap }]: { $from }
 msg-focus-cleared = fókus hreinsaður
+msg-left = left
 msg-focusing = beinir athygli að { $did } sem { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = eyddi { $path } ({ $count } færslur)

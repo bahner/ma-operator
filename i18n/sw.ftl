@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = imeshindikana kudai 間 ya ndani
 msg-identity-not-published = Utambulisho haukupatikana mtandaoni — ikiwa ma imewekwa ndani, endesha '.ma [port]' kisha '.my.identity!publish @ma'. Andika '.help/publish' kwa maelezo.
 msg-blocked = ⊗ imezuiwa [{ $cap }]: { $from }
 msg-focus-cleared = umakini umefutwa
+msg-left = left
 msg-focusing = kuzingatia { $did } kama { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = imefutwa { $path } ({ $count } ingizo)

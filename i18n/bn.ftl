@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = স্থানীয় 間 দাবি করা 
 msg-identity-not-published = পরিচয় অনলাইনে পাওয়া যায়নি — যদি ma স্থানীয়ভাবে ইনস্টল থাকে, '.ma [port]' তারপর '.my.identity!publish @ma' চালান। বিস্তারিত জানতে '.help/publish' লিখুন।
 msg-blocked = ⊗ অবরুদ্ধ [{ $cap }]: { $from }
 msg-focus-cleared = ফোকাস সরানো হয়েছে
+msg-left = left
 msg-focusing = { $did }-কে { $prompt } হিসেবে ফোকাস করা হচ্ছে
 msg-set = { $path }: { $value }
 msg-deleted = { $path } মুছে ফেলা হয়েছে ({ $count } এন্ট্রি)

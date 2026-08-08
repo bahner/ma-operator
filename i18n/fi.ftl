@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = paikallisen 間 varaaminen epäonnistui
 msg-identity-not-published = Henkilöllisyyttä ei löydetty verkosta — jos ma on asennettu paikallisesti, aja '.ma [port]' sitten '.my.identity!publish @ma'. Kirjoita '.help/publish' yksityiskohtia varten.
 msg-blocked = ⊗ estetty [{ $cap }]: { $from }
 msg-focus-cleared = kohdistus tyhjennetty
+msg-left = left
 msg-focusing = kohdistetaan { $did } nimellä { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = poistettiin { $path } ({ $count } merkintää)

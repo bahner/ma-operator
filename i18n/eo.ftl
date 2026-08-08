@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = malsukcesis reklami lokan 間
 msg-identity-not-published = Identeco ne trovita en la reto — se ma estas instalita loke, rulu '.ma [port]' poste '.my.identity!publish @ma'. Skribu '.help/publish' por detaloj.
 msg-blocked = ⊗ blokita [{ $cap }]: { $from }
 msg-focus-cleared = fokuso malaktivigita
+msg-left = left
 msg-focusing = fokuso { $did } kiel { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = forigita { $path } ({ $count } eroj)

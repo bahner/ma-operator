@@ -76,25 +76,7 @@ pub(crate) async fn execute_outbox_task(
             cmd_id,
             cancel_epoch,
             config,
-        } => {
-            log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
-            let result = match verb.as_deref() {
-                Some(v) => {
-                    dispatch_verb_to_transport(v, &target, &body, cmd_id, state, config).await
-                }
-                None => Some(transport::send_text(&target, &body).await),
-            };
-            log::debug!(
-                "[outbox] Actor done cmd_id={cmd_id} result={:?}",
-                result.as_ref().map(|r| r.is_ok())
-            );
-            if state.was_cancelled_since(cancel_epoch) {
-                return;
-            }
-            if let Some(r) = result {
-                handle_send_result(r, verb.as_deref(), cmd_id, state);
-            }
-        }
+        } => run_actor_task(target, verb, body, cmd_id, cancel_epoch, state, config).await,
 
         OutboxTask::ActorLocal {
             target,
@@ -102,48 +84,7 @@ pub(crate) async fn execute_outbox_task(
             body,
             cmd_id,
             cancel_epoch,
-        } => {
-            let result = match command.as_str() {
-                "msg" | "message" | "text" => Some(transport::send_text(&target, &body).await),
-                other => match crate::parser::command::shell_split(&body) {
-                    Ok(args) => {
-                        let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
-                        let bind_state = state.clone();
-                        let result = transport::send_rpc_with_msg_id(
-                            &target,
-                            other,
-                            &arg_refs,
-                            move |msg_id| {
-                                if !bind_state.was_cancelled_since(cancel_epoch) {
-                                    bind_state.bind_rpc_message_id(
-                                        cmd_id,
-                                        msg_id,
-                                        other.to_string(),
-                                    );
-                                }
-                            },
-                        )
-                        .await;
-                        if result.is_ok() {
-                            None
-                        } else {
-                            Some(result)
-                        }
-                    }
-                    Err(e) => Some(Err(e)),
-                },
-            };
-            if let Some(r) = result {
-                if state.was_cancelled_since(cancel_epoch) {
-                    return;
-                }
-                let reply_verb = match command.as_str() {
-                    "msg" | "message" | "text" => None,
-                    other => Some(other),
-                };
-                handle_send_result(r, reply_verb, cmd_id, state);
-            }
-        }
+        } => run_actor_local_task(target, command, body, cmd_id, cancel_epoch, state).await,
 
         OutboxTask::CrudSet {
             target_did,
@@ -151,42 +92,119 @@ pub(crate) async fn execute_outbox_task(
             value,
             cmd_id,
             cancel_epoch,
-        } => match transport::send_crud_set_with_msg_id(&target_did, &crud_path, value, {
-            let bind_state = state.clone();
-            move |set_msg_id| {
-                if let Some(original_cmd_id) = cmd_id {
-                    if bind_state.was_cancelled_since(cancel_epoch) {
-                        return;
-                    }
-                    bind_state.register_pending(
-                        set_msg_id,
-                        PendingKind::CrudConfirm {
-                            cmd_id: original_cmd_id,
-                        },
-                        None,
-                    );
-                }
-            }
-        })
-        .await
-        {
-            Ok(_) => {}
-            Err(e) => {
-                if state.was_cancelled_since(cancel_epoch) {
-                    return;
-                }
-                if let Some(cid) = cmd_id {
-                    state.resolve_command_by_id(cid, crate::core::CommandStatus::Error(e.clone()));
-                }
-                state.push_error(e);
-            }
-        },
+        } => run_crud_set_task(target_did, crud_path, value, cmd_id, cancel_epoch, state).await,
 
         OutboxTask::RpcPong {
             target,
             reply_to_id,
         } => {
             let _ = transport::send_rpc_pong(&target, &reply_to_id).await;
+        }
+    }
+}
+
+async fn run_actor_task(
+    target: String,
+    verb: Option<String>,
+    body: String,
+    cmd_id: u64,
+    cancel_epoch: u64,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
+    let result = match verb.as_deref() {
+        Some(v) => dispatch_verb_to_transport(v, &target, &body, cmd_id, state, config).await,
+        None => Some(transport::send_text(&target, &body).await),
+    };
+    log::debug!(
+        "[outbox] Actor done cmd_id={cmd_id} result={:?}",
+        result.as_ref().map(|r| r.is_ok())
+    );
+    if state.was_cancelled_since(cancel_epoch) {
+        return;
+    }
+    if let Some(r) = result {
+        handle_send_result(r, verb.as_deref(), cmd_id, state);
+    }
+}
+
+async fn run_actor_local_task(
+    target: String,
+    command: String,
+    body: String,
+    cmd_id: u64,
+    cancel_epoch: u64,
+    state: &AppState,
+) {
+    let result = match command.as_str() {
+        "msg" | "message" | "text" => Some(transport::send_text(&target, &body).await),
+        other => match crate::parser::command::shell_split(&body) {
+            Ok(args) => {
+                let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
+                let bind_state = state.clone();
+                let result =
+                    transport::send_rpc_with_msg_id(&target, other, &arg_refs, move |msg_id| {
+                        if !bind_state.was_cancelled_since(cancel_epoch) {
+                            bind_state.bind_rpc_message_id(cmd_id, msg_id, other.to_string());
+                        }
+                    })
+                    .await;
+                if result.is_ok() {
+                    None
+                } else {
+                    Some(result)
+                }
+            }
+            Err(e) => Some(Err(e)),
+        },
+    };
+    if let Some(r) = result {
+        if state.was_cancelled_since(cancel_epoch) {
+            return;
+        }
+        let reply_verb = match command.as_str() {
+            "msg" | "message" | "text" => None,
+            other => Some(other),
+        };
+        handle_send_result(r, reply_verb, cmd_id, state);
+    }
+}
+
+async fn run_crud_set_task(
+    target_did: String,
+    crud_path: String,
+    value: ciborium::Value,
+    cmd_id: Option<u64>,
+    cancel_epoch: u64,
+    state: &AppState,
+) {
+    let bind_state = state.clone();
+    match transport::send_crud_set_with_msg_id(&target_did, &crud_path, value, move |set_msg_id| {
+        if let Some(original_cmd_id) = cmd_id {
+            if bind_state.was_cancelled_since(cancel_epoch) {
+                return;
+            }
+            bind_state.register_pending(
+                set_msg_id,
+                PendingKind::CrudConfirm {
+                    cmd_id: original_cmd_id,
+                },
+                None,
+            );
+        }
+    })
+    .await
+    {
+        Ok(_) => {}
+        Err(e) => {
+            if state.was_cancelled_since(cancel_epoch) {
+                return;
+            }
+            if let Some(cid) = cmd_id {
+                state.resolve_command_by_id(cid, crate::core::CommandStatus::Error(e.clone()));
+            }
+            state.push_error(e);
         }
     }
 }
@@ -222,58 +240,52 @@ pub(crate) fn eval_remote_crud(
     let cancel_epoch = state.cancel_epoch();
     leptos::task::spawn_local(async move {
         match op {
-            RemoteCrudOp::Get => match transport::send_crud_get_with_msg_id(&target, &path, {
-                let bind_state = state2.clone();
-                move |msg_id| {
-                    if !bind_state.was_cancelled_since(cancel_epoch) {
-                        bind_state.bind_message_id(cmd_id, msg_id);
-                    }
-                }
-            })
-            .await
-            {
-                Ok(_) => {}
-                Err(e) => {
-                    if !state2.was_cancelled_since(cancel_epoch) {
-                        fail_cmd(e, cmd_id, &state2);
-                    }
-                }
-            },
+            RemoteCrudOp::Get => {
+                crud_send_result(
+                    transport::send_crud_get_with_msg_id(&target, &path, {
+                        let s = state2.clone();
+                        move |msg_id| {
+                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
+                        }
+                    })
+                    .await,
+                    &state2,
+                    cancel_epoch,
+                    cmd_id,
+                );
+            }
             RemoteCrudOp::Edit => {
                 let editor_mode = editor_mode_for_path(&path, &target);
-                match transport::send_crud_get_with_msg_id(&target, &path, {
-                    let bind_state = state2.clone();
-                    let target = target.clone();
-                    let path = path.clone();
-                    move |msg_id| {
-                        if !bind_state.was_cancelled_since(cancel_epoch) {
-                            bind_state.register_pending(
-                                msg_id,
-                                PendingKind::EditOpen {
-                                    target,
-                                    crud_path: path,
-                                    editor_mode,
-                                    cmd_id,
-                                },
-                                None,
-                            );
+                crud_send_result(
+                    transport::send_crud_get_with_msg_id(&target, &path, {
+                        let s = state2.clone();
+                        let target = target.clone();
+                        let path = path.clone();
+                        move |msg_id| {
+                            bind_if_live(&s, cancel_epoch, || {
+                                s.register_pending(
+                                    msg_id,
+                                    PendingKind::EditOpen {
+                                        target: target.clone(),
+                                        crud_path: path.clone(),
+                                        editor_mode: editor_mode.clone(),
+                                        cmd_id,
+                                    },
+                                    None,
+                                );
+                            })
                         }
-                    }
-                })
-                .await
-                {
-                    Ok(_) => {}
-                    Err(e) => {
-                        if !state2.was_cancelled_since(cancel_epoch) {
-                            fail_cmd(e, cmd_id, &state2);
-                        }
-                    }
-                }
+                    })
+                    .await,
+                    &state2,
+                    cancel_epoch,
+                    cmd_id,
+                );
             }
             RemoteCrudOp::Set(value) => {
                 let value =
                     match normalize_remote_crud_set_value(&path, &value, &config.get_untracked()) {
-                        Ok(value) => value,
+                        Ok(v) => v,
                         Err(e) => {
                             if !state2.was_cancelled_since(cancel_epoch) {
                                 fail_cmd(e, cmd_id, &state2);
@@ -281,46 +293,38 @@ pub(crate) fn eval_remote_crud(
                             return;
                         }
                     };
-                match transport::send_crud_set_with_msg_id(
-                    &target,
-                    &path,
-                    ciborium::Value::Text(value),
-                    {
-                        let bind_state = state2.clone();
-                        move |msg_id| {
-                            if !bind_state.was_cancelled_since(cancel_epoch) {
-                                bind_state.bind_message_id(cmd_id, msg_id);
+                crud_send_result(
+                    transport::send_crud_set_with_msg_id(
+                        &target,
+                        &path,
+                        ciborium::Value::Text(value),
+                        {
+                            let s = state2.clone();
+                            move |msg_id| {
+                                bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
                             }
-                        }
-                    },
-                )
-                .await
-                {
-                    Ok(_) => {}
-                    Err(e) => {
-                        if !state2.was_cancelled_since(cancel_epoch) {
-                            fail_cmd(e, cmd_id, &state2);
-                        }
-                    }
-                }
+                        },
+                    )
+                    .await,
+                    &state2,
+                    cancel_epoch,
+                    cmd_id,
+                );
             }
-            RemoteCrudOp::Delete => match transport::send_crud_delete_with_msg_id(&target, &path, {
-                let bind_state = state2.clone();
-                move |msg_id| {
-                    if !bind_state.was_cancelled_since(cancel_epoch) {
-                        bind_state.bind_message_id(cmd_id, msg_id);
-                    }
-                }
-            })
-            .await
-            {
-                Ok(_) => {}
-                Err(e) => {
-                    if !state2.was_cancelled_since(cancel_epoch) {
-                        fail_cmd(e, cmd_id, &state2);
-                    }
-                }
-            },
+            RemoteCrudOp::Delete => {
+                crud_send_result(
+                    transport::send_crud_delete_with_msg_id(&target, &path, {
+                        let s = state2.clone();
+                        move |msg_id| {
+                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
+                        }
+                    })
+                    .await,
+                    &state2,
+                    cancel_epoch,
+                    cmd_id,
+                );
+            }
         }
     });
 }
@@ -399,6 +403,27 @@ async fn dispatch_verb_to_transport(
 }
 
 // ── Helpers ───────────────────────────────────────────────────────────────
+
+/// Run `f` only if the cancel epoch has not advanced.
+fn bind_if_live<F: FnOnce()>(state: &AppState, cancel_epoch: u64, f: F) {
+    if !state.was_cancelled_since(cancel_epoch) {
+        f();
+    }
+}
+
+/// Handle a CRUD send result: on error, fail the command if not cancelled.
+fn crud_send_result(
+    result: Result<String, String>,
+    state: &AppState,
+    cancel_epoch: u64,
+    cmd_id: u64,
+) {
+    if let Err(e) = result {
+        if !state.was_cancelled_since(cancel_epoch) {
+            fail_cmd(e, cmd_id, state);
+        }
+    }
+}
 
 /// Handle the result of a transport call: bind reply tracking or push error.
 fn handle_send_result(

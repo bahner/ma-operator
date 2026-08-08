@@ -71,6 +71,7 @@ msg-local-ma-claim-failed = не вдалося заявити локальни�
 msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '.my.identity!publish @ma'. Введіть '.help/publish' для деталей.
 msg-blocked = ⊗ заблоковано [{ $cap }]: { $from }
 msg-focus-cleared = фокус знято
+msg-left = left
 msg-focusing = фокус на { $did } як { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = видалено { $path } ({ $count } записів)

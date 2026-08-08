@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = không thể yêu cầu 間 cục bộ
 msg-identity-not-published = Không tìm thấy danh tính trực tuyến — nếu ma được cài đặt cục bộ, hãy chạy '.ma [port]' rồi '.my.identity!publish @ma'. Gõ '.help/publish' để xem chi tiết.
 msg-blocked = ⊗ bị chặn [{ $cap }]: { $from }
 msg-focus-cleared = đã xóa tiêu điểm
+msg-left = left
 msg-focusing = đang tập trung { $did } thành { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = đã xóa { $path } ({ $count } mục)

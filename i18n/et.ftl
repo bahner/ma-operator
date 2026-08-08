@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kohaliku 間 nõudmine ebaõnnestus
 msg-identity-not-published = Identiteeti ei leitud veebist — kui ma on kohalikult installitud, käivita '.ma [port]' ja seejärel '.my.identity!publish @ma'. Kirjuta '.help/publish' üksikasjade jaoks.
 msg-blocked = ⊗ blokeeritud [{ $cap }]: { $from }
 msg-focus-cleared = fookus tühjendatud
+msg-left = left
 msg-focusing = fokuseeritakse { $did } kui { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = kustutati { $path } ({ $count } kirjet)

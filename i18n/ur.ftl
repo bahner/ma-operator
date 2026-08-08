@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = مقامی 間 کا دعویٰ ناکام ہوا
 msg-identity-not-published = شناخت آن لائن نہیں ملی — اگر ma مقامی طور پر نصب ہے، تو '.ma [port]' چلائیں پھر '.my.identity!publish @ma'۔ تفصیلات کے لیے '.help/publish' ٹائپ کریں۔
 msg-blocked = ⊗ بلاک کیا گیا [{ $cap }]: { $from }
 msg-focus-cleared = فوکس صاف کیا گیا
+msg-left = left
 msg-focusing = { $did } کو { $prompt } کے طور پر فوکس کیا جا رہا ہے
 msg-set = { $path }: { $value }
 msg-deleted = { $path } حذف کیا گیا ({ $count } اندراجات)

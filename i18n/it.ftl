@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = impossibile reclamare il 間 locale
 msg-identity-not-published = Identità non trovata online — se hai ma installato localmente, esegui '.ma [port]' poi '.my.identity!publish @ma'. Digita '.help/publish' per i dettagli.
 msg-blocked = ⊗ bloccato [{ $cap }]: { $from }
 msg-focus-cleared = focus cancellato
+msg-left = left
 msg-focusing = focus su { $did } come { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = eliminato { $path } ({ $count } voci)

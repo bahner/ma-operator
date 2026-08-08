@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = i no inap klemim local 間
 msg-identity-not-published = Nem bilong yu i no stap long net — sapos ma i istap long komputa bilong yu, ran '.ma [port]' na '.my.identity!publish @ma'. Rait '.help/publish' bilong kisim sampela save.
 msg-blocked = ⊗ blok [{ $cap }]: { $from }
 msg-focus-cleared = fokus i klia pinis
+msg-left = left
 msg-focusing = fokus { $did } olsem { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = rausim { $path } ({ $count } lain)

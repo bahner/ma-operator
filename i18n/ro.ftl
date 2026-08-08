@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nu s-a putut revendica 間 local
 msg-identity-not-published = Identitate negăsită online — dacă ai ma instalat local, rulează '.ma [port]' apoi '.my.identity!publish @ma'. Tastează '.help/publish' pentru detalii.
 msg-blocked = ⊗ blocat [{ $cap }]: { $from }
 msg-focus-cleared = focus șters
+msg-left = left
 msg-focusing = focalizare pe { $did } ca { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = șters { $path } ({ $count } intrări)

@@ -234,7 +234,6 @@ fn handle_did_entry_reply(
     };
 
     config.update(|cfg| {
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", runtime);
         cfg.set(".my.ctx.room", &entry.parent);
         cfg.delete(".my.ctx.kind");
@@ -385,7 +384,10 @@ fn maybe_queue_ctx_recovery(reason: &str, state: &AppState, config: RwSignal<Ego
     }
 
     let cfg = config.get_untracked();
-    if cfg.get(".my.ctx.use") != Some("true") {
+    if cfg
+        .get(".my.ctx.runtime")
+        .is_none_or(|r| r.trim().is_empty())
+    {
         return;
     }
 

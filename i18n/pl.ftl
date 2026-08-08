@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nie udało się przejąć lokalnego 間
 msg-identity-not-published = Tożsamość nie znaleziona online — jeśli masz ma zainstalowane lokalnie, uruchom '.ma [port]', a potem '.my.identity!publish @ma'. Wpisz '.help/publish' po szczegóły.
 msg-blocked = ⊗ zablokowano [{ $cap }]: { $from }
 msg-focus-cleared = fokus wyczyszczony
+msg-left = left
 msg-focusing = fokusowanie na { $did } jako { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = usunięto { $path } ({ $count } wpisów)

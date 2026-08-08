@@ -240,9 +240,7 @@ fn normalize_startup_enter(runtime: String) -> String {
 }
 
 fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
-    if cfg.get(".my.ctx.use") != Some("true") {
-        return None;
-    }
+    // Auto-enter saved ctx if runtime is present — no .my.ctx.use flag needed.
     let runtime = cfg.get(".my.ctx.runtime")?.trim();
     if !runtime.starts_with("did:ma:") {
         return None;
@@ -346,7 +344,12 @@ fn queue_startup_context(
         return;
     }
     let cfg = config.get_untracked();
-    if cfg.get(".my.ctx.use") == Some("true") {
+    // If a saved ctx exists, attempt to re-enter it; if invalid, don't fall
+    // through to the generic fallback — the user has an explicit context.
+    let has_saved_ctx = cfg
+        .get(".my.ctx.runtime")
+        .is_some_and(|r| !r.trim().is_empty());
+    if has_saved_ctx {
         if let Some(room) = startup_ctx_enter(&cfg) {
             state
                 .input_queue
@@ -479,7 +482,6 @@ mod tests {
     #[test]
     fn startup_ctx_enter_reestablishes_nick_runtime_room_intent() {
         let mut cfg = EgoConfig::new();
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
         cfg.set(".my.ctx.nick", "klaim");
@@ -493,7 +495,6 @@ mod tests {
     #[test]
     fn startup_ctx_enter_reestablishes_unaliased_room_without_double_at() {
         let mut cfg = EgoConfig::new();
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
         cfg.set(".my.ctx.nick", "klaim");
@@ -506,7 +507,6 @@ mod tests {
     #[test]
     fn startup_ctx_enter_requires_a_room_in_the_saved_runtime() {
         let mut cfg = EgoConfig::new();
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51other#construct");
         cfg.set(".my.ctx.nick", "bad nick");
@@ -519,7 +519,6 @@ mod tests {
         let state = AppState::new();
         let config = leptos::prelude::RwSignal::new(EgoConfig::new());
         config.update_untracked(|cfg| {
-            cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
             cfg.set(".my.ctx.room", "did:ma:k51other#construct");
         });

@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nepodarilo sa prevziať lokálne 間
 msg-identity-not-published = Identita nenájdená online — ak máš ma nainštalované lokálne, spusti '.ma [port]' a potom '.my.identity!publish @ma'. Napíš '.help/publish' pre podrobnosti.
 msg-blocked = ⊗ zablokované [{ $cap }]: { $from }
 msg-focus-cleared = fokus vymazaný
+msg-left = left
 msg-focusing = zameranie na { $did } ako { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = vymazané { $path } ({ $count } záznamov)

@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = neizdevās pieprasīt lokālo 間
 msg-identity-not-published = Identitāte nav atrasta tiešsaistē — ja ma ir instalēts lokāli, izpildi '.ma [port]' un pēc tam '.my.identity!publish @ma'. Raksti '.help/publish' detaļām.
 msg-blocked = ⊗ bloķēts [{ $cap }]: { $from }
 msg-focus-cleared = fokuss notīrīts
+msg-left = left
 msg-focusing = fokusē { $did } kā { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = dzēsa { $path } ({ $count } ierakstus)

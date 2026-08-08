@@ -169,40 +169,14 @@ fn handle_input_line(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
-    // Are we inside a batch collector?
-    let collecting_id = state.batches.with_untracked(|b| {
-        b.iter()
-            .find_map(|(id, ab)| if ab.collecting { Some(*id) } else { None })
-    });
-
+    let collecting_id = collecting_batch_id(state);
     let continues_scheme = !state.multiline_input.get_untracked().is_empty();
-
-    // Hash-led lines are local notes: retain them in history, but never
-    // evaluate or dispatch them.
     let is_note = !continues_scheme && is_note_line(&line);
-    let is_batch_delimiter = line.trim() == ".batch"
-        || line.trim().starts_with(".batch:sync")
-        || line.trim().starts_with(".batch:async");
-    if !is_batch_delimiter {
-        state.history.update(|h| {
-            if h.last().map(|s| s.as_str()) != Some(line.as_str()) {
-                h.push(line.clone());
-            }
-            if h.len() > 200 {
-                h.drain(0..h.len() - 200);
-            }
-        });
-        if let Some(sess) = state.session.get_untracked() {
-            let username = sess.username;
-            let hist = state.history.get_untracked();
-            wasm_bindgen_futures::spawn_local(async move {
-                if let Ok(json) = serde_json::to_string(&hist) {
-                    let _ = save_history(&username, &json).await;
-                }
-            });
-        }
-    }
+    let is_batch_delimiter = is_batch_delimiter_line(&line);
 
+    if !is_batch_delimiter {
+        save_line_to_history(&line, state);
+    }
     if is_note {
         return;
     }
@@ -220,7 +194,6 @@ fn handle_input_line(
         return;
     }
 
-    // Batch open?
     let trimmed = line.trim();
     if trimmed.starts_with(".batch:sync") || trimmed.starts_with(".batch:async") {
         open_batch(trimmed, state);
@@ -238,55 +211,90 @@ fn handle_input_line(
         return;
     }
 
-    // Focus contributes only terminal shorthand: unqualified words are one
-    // global Scheme call, never a separate actor-routing mode.
-    let focus_scheme = focus_scheme_form(trimmed, state.focus_actor.get_untracked().is_some())
+    // Focus shorthand: unqualified words become a global Scheme call.
+    let line = focus_scheme_form(trimmed, state.focus_actor.get_untracked().is_some())
         .unwrap_or_else(|| trimmed.to_string());
 
-    // Scheme expansion: pre-process `(…)` spans before normal dispatch.
-    if crate::scheme::needs_expansion(&focus_scheme) {
+    if crate::scheme::needs_expansion(&line) {
         let state2 = state.clone();
-        let line_owned = focus_scheme;
         let cancel_epoch = state.cancel_epoch();
-        let show_editor2 = show_editor;
-        let on_eval2 = on_eval;
         wasm_bindgen_futures::spawn_local(async move {
-            match crate::scheme::eval_standalone(&line_owned, &state2, config).await {
-                Ok(Some(value)) => {
-                    if should_display_scheme_value(&value)
-                        && !state2.was_cancelled_since(cancel_epoch)
-                    {
-                        state2.push_output(value.display());
-                    }
-                    return;
-                }
-                Ok(None) => {}
-                Err(error) => {
-                    if !state2.was_cancelled_since(cancel_epoch) {
-                        state2.push_error(format!("scheme: {error}"));
-                    }
-                    return;
-                }
-            }
-            match crate::scheme::expand(&line_owned, &state2, config).await {
-                Ok(expanded) => {
-                    let t = expanded.trim().to_string();
-                    if !t.is_empty() && !state2.was_cancelled_since(cancel_epoch) {
-                        dispatch_eval_line(&t, &state2, config, show_editor2, on_eval2, None);
-                    }
-                }
-                Err(e) => {
-                    if !state2.was_cancelled_since(cancel_epoch) {
-                        state2.push_error(format!("scheme: {e}"));
-                    }
-                }
-            }
+            handle_scheme_expansion(line, &state2, config, show_editor, on_eval, cancel_epoch)
+                .await;
         });
         return;
     }
 
-    // Regular (non-batch) dispatch.
-    dispatch_eval_line(&focus_scheme, state, config, show_editor, on_eval, None);
+    dispatch_eval_line(&line, state, config, show_editor, on_eval, None);
+}
+
+fn collecting_batch_id(state: &AppState) -> Option<u64> {
+    state.batches.with_untracked(|b| {
+        b.iter()
+            .find_map(|(id, ab)| if ab.collecting { Some(*id) } else { None })
+    })
+}
+
+fn is_batch_delimiter_line(line: &str) -> bool {
+    let t = line.trim();
+    t == ".batch" || t.starts_with(".batch:sync") || t.starts_with(".batch:async")
+}
+
+fn save_line_to_history(line: &str, state: &AppState) {
+    state.history.update(|h| {
+        if h.last().map(|s| s.as_str()) != Some(line) {
+            h.push(line.to_string());
+        }
+        if h.len() > 200 {
+            h.drain(0..h.len() - 200);
+        }
+    });
+    if let Some(sess) = state.session.get_untracked() {
+        let hist = state.history.get_untracked();
+        wasm_bindgen_futures::spawn_local(async move {
+            if let Ok(json) = serde_json::to_string(&hist) {
+                let _ = save_history(&sess.username, &json).await;
+            }
+        });
+    }
+}
+
+async fn handle_scheme_expansion(
+    line: String,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    show_editor: RwSignal<Option<EditorContext>>,
+    on_eval: Callback<String>,
+    cancel_epoch: u64,
+) {
+    match crate::scheme::eval_standalone(&line, state, config).await {
+        Ok(Some(value)) => {
+            if should_display_scheme_value(&value) && !state.was_cancelled_since(cancel_epoch) {
+                state.push_output(value.display());
+            }
+            return;
+        }
+        Ok(None) => {}
+        Err(error) => {
+            if !state.was_cancelled_since(cancel_epoch) {
+                state.push_error(format!("scheme: {error}"));
+            }
+            return;
+        }
+    }
+    match crate::scheme::expand(&line, state, config).await {
+        Ok(expanded) => {
+            let t = expanded.trim().to_string();
+            if !t.is_empty() && !state.was_cancelled_since(cancel_epoch) {
+                dispatch_eval_line(&t, state, config, show_editor, on_eval, None);
+            }
+        }
+        Err(e) => {
+            if !state.was_cancelled_since(cancel_epoch) {
+                state.push_error(format!("scheme: {e}"));
+            }
+        }
+    }
 }
 
 fn complete_scheme_input(pending: &mut String, line: &str) -> Option<String> {

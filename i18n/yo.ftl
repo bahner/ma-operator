@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = kò ṣeé ṣe láti gba 間 agbègbè
 msg-identity-not-published = Ìdánimọ̀ kò rí lórí ayelujara — tí o bá fi ma sórí kọ̀mpútà rẹ, ṣe '.ma [port]' lẹ́hìn náà '.my.identity!publish @ma'. Tẹ '.help/publish' fún àlàyé.
 msg-blocked = ⊗ a dènà [{ $cap }]: { $from }
 msg-focus-cleared = a pa ìfọkànsí rẹ
+msg-left = left
 msg-focusing = ìfọkànsí { $did } gẹ́gẹ́ bí { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = a pa { $path } rẹ̀ ({ $count } àwọn ìforúkọsílẹ̀)

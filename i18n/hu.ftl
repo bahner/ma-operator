@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = nem sikerült igénybe venni a helyi 間-t
 msg-identity-not-published = Az identitás nem található online — ha helyileg telepítve van a ma, futtasd '.ma [port]', majd '.my.identity!publish @ma'. Írd '.help/publish' a részletekért.
 msg-blocked = ⊗ letiltva [{ $cap }]: { $from }
 msg-focus-cleared = fókusz törölve
+msg-left = left
 msg-focusing = fókuszálás: { $did } mint { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = törölve: { $path } ({ $count } bejegyzés)

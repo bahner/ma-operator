@@ -262,6 +262,9 @@ fn eval_control(
                 }
             }
         }
+        ".leave" => {
+            handle_leave(state, config);
+        }
         ".enter" => {
             eval_enter(args, state, config);
         }
@@ -299,7 +302,7 @@ fn eval_control(
 
 fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let Some(raw) = args.first() else {
-        toggle_existing_ctx(state, config);
+        enter_no_args(state, config);
         return;
     };
     let cfg = config.get_untracked();
@@ -310,14 +313,10 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             return;
         }
     };
-    let resolved = match crate::parser::command::parse(&actor_input, &cfg) {
-        Ok(crate::parser::command::Command::ActorMessage { target, .. }) => target,
-        Ok(_) => {
-            state.push_error(format!("not an actor address: {raw}"));
-            return;
-        }
+    let resolved = match crate::parser::command::resolve_target(&actor_input, &cfg) {
+        Ok(target) => target,
         Err(e) => {
-            state.push_error(e);
+            state.push_error(format!("not an actor address: {raw}: {e}"));
             return;
         }
     };
@@ -406,7 +405,6 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             return;
         }
         config.update(|c| {
-            c.set(".my.ctx.use", "true");
             c.set(".my.ctx.runtime", &entry_runtime);
             c.set(".my.ctx.root", &root);
             c.delete(".my.ctx.room");
@@ -446,29 +444,38 @@ fn enter_target_display(
     }
 }
 
-fn toggle_existing_ctx(state: &AppState, config: RwSignal<EgoConfig>) {
+fn enter_no_args(state: &AppState, config: RwSignal<EgoConfig>) {
     let cfg = config.get_untracked();
-    if cfg.get(".my.ctx.use") == Some("true") {
-        config.update(|c| c.set(".my.ctx.use", "false"));
-        state.focus_actor.set(None);
-        state.push_system(t("msg-focus-cleared"));
+    // Re-enter existing ctx if present.
+    if cfg.get(".my.ctx.runtime").is_some_and(|r| !r.is_empty()) {
+        apply_ctx_focus(&cfg, state);
         return;
     }
-
-    let has_runtime = cfg
-        .get(".my.ctx.runtime")
-        .is_some_and(|runtime| !runtime.is_empty());
-    if !has_runtime {
-        state.push_error(
-            "no saved runtime context; use .enter [nick]@runtime[#room] first before toggling with .enter"
-                .to_string(),
-        );
+    // Fall back to .my.config.ctx default.
+    if let Some(default_ctx) = cfg.get(".my.config.ctx").filter(|s| !s.is_empty()) {
+        eval_enter(&[default_ctx.to_string()], state, config);
         return;
     }
+    state.push_error(
+        "no context to enter; use .enter @runtime[#room] or set .my.config.ctx".to_string(),
+    );
+}
 
-    config.update(|c| c.set(".my.ctx.use", "true"));
+fn handle_leave(state: &AppState, config: RwSignal<EgoConfig>) {
     let cfg = config.get_untracked();
-    apply_ctx_focus(&cfg, state);
+    let target = cfg
+        .get(".my.ctx.room")
+        .or_else(|| cfg.get(".my.ctx.runtime"))
+        .filter(|s| !s.is_empty())
+        .map(str::to_string);
+    if let Some(target) = target {
+        let state2 = state.clone();
+        spawn_local(async move {
+            let _ = crate::transport::send_rpc(&target, "leave", &[]).await;
+            state2.push_system(t("msg-left"));
+        });
+    }
+    state.focus_actor.set(None);
 }
 
 #[cfg(test)]
@@ -602,17 +609,6 @@ fn parse_enter_target(raw: &str) -> Result<(Option<String>, String, Option<Strin
     Ok((Some(nick.to_string()), format!("@{runtime}"), kind))
 }
 
-fn focus_target_for_room(runtime: &str, room: &str) -> Option<String> {
-    let room = room.trim();
-    if room.is_empty() {
-        Some(runtime.to_string())
-    } else if room.starts_with("did:ma:") {
-        Some(room.to_string())
-    } else {
-        None
-    }
-}
-
 fn eval_local(
     path: &str,
     op: DotOp,
@@ -652,28 +648,13 @@ fn handle_dot_set(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    if EgoConfig::is_read_only(path) {
-        state.push_error(tf("msg-read-only", &[("path", path)]));
-        return;
-    }
-    if let Err(e) = validate_alias_set(path, &value) {
+    let cfg = config.get_untracked();
+    if let Err(e) = validate_dot_set(path, &value, &cfg) {
         state.push_error(e);
         return;
     }
-    let (has_children, has_ancestor) = {
-        let cfg = config.get_untracked();
-        (cfg.has_children(path), cfg.has_leaf_ancestor(path))
-    };
-    if has_children {
-        state.push_error(tf("msg-subtree-set", &[("path", path)]));
-        return;
-    }
-    if has_ancestor {
-        state.push_error(tf("msg-ancestor-leaf", &[("path", path)]));
-        return;
-    }
     config.update(|c| c.set(path, &value));
-    // Reactive: .my.ctx.use: true/false drives focus_actor immediately.
+    // Reactive: .my.ctx.* writes rebuild the prompt immediately.
     if path.starts_with(".my.ctx") {
         let cfg = config.get_untracked();
         apply_ctx_focus(&cfg, state);
@@ -701,6 +682,20 @@ fn handle_dot_set(
         }
         state2.push_system(tf("msg-set", &[("path", &path_owned), ("value", &value)]));
     });
+}
+
+fn validate_dot_set(path: &str, value: &str, cfg: &EgoConfig) -> Result<(), String> {
+    if EgoConfig::is_read_only(path) {
+        return Err(tf("msg-read-only", &[("path", path)]));
+    }
+    validate_alias_set(path, value)?;
+    if cfg.has_children(path) {
+        return Err(tf("msg-subtree-set", &[("path", path)]));
+    }
+    if cfg.has_leaf_ancestor(path) {
+        return Err(tf("msg-ancestor-leaf", &[("path", path)]));
+    }
+    Ok(())
 }
 
 fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSignal<EgoConfig>) {
@@ -769,87 +764,73 @@ fn lazy_link_traverse(
     state: &AppState,
     _config: RwSignal<EgoConfig>,
 ) {
-    let path_owned = path.to_string();
-    let mut split_pos = path_owned.len();
-    while let Some(dot) = path_owned[..split_pos].rfind('.') {
+    if let Some((link, subpath)) = find_link_ancestor(path, cfg) {
+        let state2 = state.clone();
+        let cache = state.doc_cache;
+        spawn_local(async move {
+            resolve_and_traverse(&link, &subpath, &state2, cache).await;
+        });
+    } else {
+        state.push_error(tf("msg-key-not-found", &[("path", path)]));
+    }
+}
+
+/// Return (link_value, sub_path) for the nearest ancestor that holds a DID/CID link.
+fn find_link_ancestor(path: &str, cfg: &crate::config::EgoConfig) -> Option<(String, String)> {
+    let mut split_pos = path.len();
+    while let Some(dot) = path[..split_pos].rfind('.') {
         split_pos = dot;
-        let ancestor = &path_owned[..split_pos];
+        let ancestor = &path[..split_pos];
         if ancestor.is_empty() {
             break;
         }
         if let Some(link_val) = cfg.get(ancestor) {
             if crate::mailbox::is_link_value(link_val) {
-                let link = link_val.to_string();
-                let subpath = path_owned[split_pos + 1..].to_string();
-                let state2 = state.clone();
-                let cache = state.doc_cache;
-                spawn_local(async move {
-                    resolve_and_traverse(&link, &subpath, &state2, cache).await;
-                });
-                return;
+                return Some((link_val.to_string(), path[split_pos + 1..].to_string()));
             }
         }
         if split_pos == 0 {
             break;
         }
     }
-    state.push_error(tf("msg-key-not-found", &[("path", path)]));
+    None
 }
 
-/// Build and apply a `FocusMode` from the current `.my.ctx.*` config values.
+/// Build and apply a `FocusMode` prompt from the current `.my.ctx.*` config values.
 ///
-/// Called after any write to `.my.ctx.*` and at login to restore focus.
-/// If `.my.ctx.use` is not `"true"` or `.my.ctx.runtime` is absent,
-/// `focus_actor` is cleared.
+/// Called after any write to `.my.ctx.*` and at login to restore the prompt.
 pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
-    let enabled = cfg.get(".my.ctx.use").map(|s| s == "true").unwrap_or(false);
-    if !enabled {
-        state.focus_actor.set(None);
-        return;
-    }
-    let Some(runtime) = cfg.get(".my.ctx.runtime").map(|s| s.to_string()) else {
+    let Some(runtime) = cfg.get(".my.ctx.runtime").filter(|s| !s.is_empty()) else {
         state.focus_actor.set(None);
         return;
     };
-    let room = cfg.get(".my.ctx.room").unwrap_or("").to_string();
+    state.focus_actor.set(Some(FocusMode {
+        prompt: build_ctx_prompt(cfg, runtime),
+    }));
+}
+
+fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
     let nick = cfg
         .get(".my.ctx.nick")
         .or_else(|| cfg.get(".my.ctx.alias"))
-        .unwrap_or("")
-        .to_string();
-    let Some(target) = focus_target_for_room(&runtime, &room) else {
-        state.focus_actor.set(None);
-        return;
-    };
-    let base_prompt = if let Some(alias) = cfg.reverse_alias(&runtime) {
-        format!("@{alias}")
+        .unwrap_or_default();
+    let base = cfg
+        .reverse_alias(runtime)
+        .map(|a| format!("@{a}"))
+        .unwrap_or_else(|| format!("@{runtime}"));
+    if nick.is_empty() {
+        base
     } else {
-        format!("@{runtime}")
-    };
-    let prompt = if nick.is_empty() {
-        base_prompt
-    } else {
-        format!("{nick}{base_prompt}")
-    };
-    log::debug!(
-        "[focus] apply runtime={runtime:?} room={room:?} target={target:?} root={:?} prompt={prompt:?}",
-        cfg.get(".my.ctx.root")
-    );
-    state.focus_actor.set(Some(FocusMode {
-        runtime,
-        room: if room.is_empty() { None } else { Some(room) },
-        target,
-        root_actor: cfg.get(".my.ctx.root").map(|s| s.to_string()),
-        prompt,
-    }));
+        format!("{nick}{base}")
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
         apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_args,
-        enter_ctx_kind, enter_target_display, focus_target_for_room, parse_enter_target,
-        toggle_existing_ctx, validate_alias_set,
+        enter_ctx_kind, enter_no_args, enter_target_display, parse_enter_target,
+        validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal};
@@ -1026,24 +1007,8 @@ mod tests {
     }
 
     #[test]
-    fn focus_target_requires_full_room_did_url() {
-        let runtime = "did:ma:k51runtime";
-        assert_eq!(
-            focus_target_for_room(runtime, ""),
-            Some(runtime.to_string())
-        );
-        assert_eq!(focus_target_for_room(runtime, "#construct"), None);
-        assert_eq!(focus_target_for_room(runtime, "construct"), None);
-        assert_eq!(
-            focus_target_for_room(runtime, "did:ma:k51runtime#construct"),
-            Some("did:ma:k51runtime#construct".to_string())
-        );
-    }
-
-    #[test]
     fn focus_prompt_prefixes_unaliased_runtime_did() {
         let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         let state = AppState::new();
@@ -1059,7 +1024,6 @@ mod tests {
     #[test]
     fn focus_prompt_keeps_aliased_runtime_display() {
         let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.use", "true");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
@@ -1074,17 +1038,15 @@ mod tests {
     }
 
     #[test]
-    fn enter_without_args_toggles_into_saved_ctx() {
+    fn enter_without_args_with_saved_ctx_restores_prompt() {
         let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.use", "false");
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         let config = RwSignal::new(cfg);
         let state = AppState::new();
 
-        toggle_existing_ctx(&state, config);
+        enter_no_args(&state, config);
 
-        assert_eq!(config.get_untracked().get(".my.ctx.use"), Some("true"));
         assert_eq!(
             state.focus_actor.get_untracked().unwrap().prompt,
             "avatar@did:ma:k51runtime"
@@ -1092,34 +1054,27 @@ mod tests {
     }
 
     #[test]
-    fn enter_without_args_toggles_out_of_active_ctx() {
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.ctx.use", "true");
-        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-        let config = RwSignal::new(cfg.clone());
-        let state = AppState::new();
-        apply_ctx_focus(&cfg, &state);
-
-        toggle_existing_ctx(&state, config);
-
-        assert_eq!(config.get_untracked().get(".my.ctx.use"), Some("false"));
-        assert!(state.focus_actor.get_untracked().is_none());
-    }
-
-    #[test]
-    fn enter_without_args_explains_missing_runtime() {
+    fn enter_without_args_without_saved_ctx_shows_error() {
         let config = RwSignal::new(EgoConfig::default());
         let state = AppState::new();
 
-        toggle_existing_ctx(&state, config);
+        enter_no_args(&state, config);
 
         let entries = state.entries.get_untracked();
         let Entry::System(entry) = entries.last().unwrap() else {
             panic!("expected system error entry");
         };
-        assert!(entry
-            .text
-            .contains("use .enter [nick]@runtime[#room] first"));
+        assert!(entry.text.contains(".my.config.ctx"));
+        assert!(state.focus_actor.get_untracked().is_none());
+    }
+
+    #[test]
+    fn enter_without_args_without_saved_ctx_is_silent() {
+        let config = RwSignal::new(EgoConfig::default());
+        let state = AppState::new();
+
+        enter_no_args(&state, config);
+
         assert!(state.focus_actor.get_untracked().is_none());
     }
 }

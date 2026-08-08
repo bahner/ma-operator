@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = lama hanti karin 間 maxalli ah
 msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '.my.identity!publish @ma'. Qor '.help/publish' faahfaahin.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
+msg-left = left
 msg-focusing = xushmadda { $did } ahaan { $prompt }
 msg-set = { $path }: { $value }
 msg-deleted = { $path } la tirtirtay ({ $count } gelitaan)

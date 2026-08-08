@@ -31,10 +31,7 @@ pub(crate) fn handle_ipfs_crud_reply(
     state: &AppState,
 ) {
     if incoming.is_error {
-        if let Some(cid) = cmd_id {
-            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
-        }
-        state.push_error(incoming.display.clone());
+        fail_cmd(state, cmd_id, incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -50,12 +47,7 @@ pub(crate) fn handle_ipfs_crud_reply(
                 });
             });
         }
-        Err(e) => {
-            if let Some(cid) = cmd_id {
-                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-            }
-            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
-        }
+        Err(e) => fail_cmd_decode(state, cmd_id, &e),
     }
 }
 
@@ -68,10 +60,7 @@ pub(crate) fn handle_ipfs_kind_reply(
     state: &AppState,
 ) {
     if incoming.is_error {
-        if let Some(cid) = cmd_id {
-            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
-        }
-        state.push_error(incoming.display.clone());
+        fail_cmd(state, cmd_id, incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -89,12 +78,7 @@ pub(crate) fn handle_ipfs_kind_reply(
                 });
             });
         }
-        Err(e) => {
-            if let Some(cid) = cmd_id {
-                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-            }
-            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
-        }
+        Err(e) => fail_cmd_decode(state, cmd_id, &e),
     }
 }
 
@@ -106,10 +90,7 @@ pub(crate) fn handle_ipfs_actor_behaviour_reply(
     state: &AppState,
 ) {
     if incoming.is_error {
-        if let Some(cid) = cmd_id {
-            state.resolve_command_by_id(cid, CommandStatus::Error(incoming.display.clone()));
-        }
-        state.push_error(incoming.display.clone());
+        fail_cmd(state, cmd_id, incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -123,21 +104,11 @@ pub(crate) fn handle_ipfs_actor_behaviour_reply(
                             state2.bind_message_id(id, msg_id);
                         }
                     }
-                    Err(e) => {
-                        if let Some(id) = cmd_id {
-                            state2.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(e);
-                    }
+                    Err(e) => fail_cmd(&state2, cmd_id, e),
                 }
             });
         }
-        Err(e) => {
-            if let Some(cid) = cmd_id {
-                state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
-            }
-            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
-        }
+        Err(e) => fail_cmd_decode(state, cmd_id, &e),
     }
 }
 
@@ -170,10 +141,7 @@ pub(crate) fn handle_profile_publish_reply(
     config: RwSignal<EgoConfig>,
 ) {
     if incoming.is_error {
-        if let Some(id) = cmd_id {
-            state.resolve_command_by_id(id, CommandStatus::Error(incoming.display.clone()));
-        }
-        state.push_error(incoming.display.clone());
+        fail_cmd(state, cmd_id, incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -215,21 +183,11 @@ pub(crate) fn handle_profile_publish_reply(
                             crate::startup::queue_saved_context_reentry(&state2, config);
                         }
                     }
-                    Err(e) => {
-                        if let Some(id) = cmd_id {
-                            state2.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
-                        }
-                        state2.push_error(e);
-                    }
+                    Err(e) => fail_cmd(&state2, cmd_id, e),
                 }
             });
         }
-        Err(e) => {
-            if let Some(id) = cmd_id {
-                state.resolve_command_by_id(id, CommandStatus::Error(e.clone()));
-            }
-            state.push_error(tf("err-ipfs-reply-decode", &[("e", &e)]));
-        }
+        Err(e) => fail_cmd_decode(state, cmd_id, &e),
     }
 }
 
@@ -438,6 +396,22 @@ fn open_editor(
             .with_mode(mode)
             .with_cmd_id(cmd_id),
     ));
+}
+
+/// Fail a tracked command (if any) and push the same message as a terminal error.
+fn fail_cmd(state: &AppState, cmd_id: Option<u64>, error: String) {
+    if let Some(id) = cmd_id {
+        state.resolve_command_by_id(id, CommandStatus::Error(error.clone()));
+    }
+    state.push_error(error);
+}
+
+/// Fail a tracked command with the raw error and push a translated decode error.
+fn fail_cmd_decode(state: &AppState, cmd_id: Option<u64>, e: &str) {
+    if let Some(id) = cmd_id {
+        state.resolve_command_by_id(id, CommandStatus::Error(e.to_string()));
+    }
+    state.push_error(tf("err-ipfs-reply-decode", &[("e", e)]));
 }
 
 /// Record an edit-open error on the command and push an error line.

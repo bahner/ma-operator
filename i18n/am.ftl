@@ -68,6 +68,7 @@ msg-local-ma-claim-failed = አካባቢያዊ 間 መጠየቅ አልተሳካ�
 msg-identity-not-published = ህሊና ኦንላይን አልተገኘም — ma በአካባቢ ከተጫነ፣ '.ma [port]' ከዚያም '.my.identity!publish @ma' ያሂዱ። ዝርዝር ለማየት '.help/publish' ይጻፉ።
 msg-blocked = ⊗ ታግዷል [{ $cap }]: { $from }
 msg-focus-cleared = ትኩረት ጠፋ
+msg-left = left
 msg-focusing = { $did } እንደ { $prompt } ላይ ትኩረት እያደረገ
 msg-set = { $path }: { $value }
 msg-deleted = { $path } ተሰርዟል ({ $count } ግቤቶች)
