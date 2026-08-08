@@ -235,6 +235,12 @@ bytes as CBOR byte strings in actor traffic. Implement host I/O through
 Consumers keep published semver dependencies. During unreleased multi-repo
 development, validate with temporary Cargo `--config patch.crates-io...`
 overrides; do not commit path dependencies or path-sourced lock entries.
+Zion requires published `ma-core` `^0.14.4` or newer.
+
+Identity exports with legacy fractional `created_at` values must be migrated to
+RFC 3339 UTC whole-second form before `SecretBundle::build_document`. Before
+delegating an identity-publish request, validate and verify the final signed DID
+document. Both `createdAt` and `updatedAt` must be whole-second UTC timestamps.
 
 #### `(<bafy…>)` — CID as callable
 
