@@ -1,11 +1,11 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
-    resolve_endpoint_for_protocol, Did, DidDocumentResolver, IpfsGatewayResolver, Ipld, Message,
-    SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE,
-    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
-    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    resolve_endpoint_for_protocol, Did, DidDocumentResolver, EncryptionKey, IpfsGatewayResolver,
+    Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY,
+    MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
+    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
 
@@ -76,7 +76,12 @@ pub async fn connect(
             .with_base_cooldown(Duration::ZERO)
             .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
     );
-    let mut endpoint = new_ma_endpoint(iroh_key, false)
+    let encryption_did = Did::try_from(sender_did.as_str())
+        .and_then(|did| did.with_fragment("enc"))
+        .map_err(|error| error.to_string())?;
+    let encryption_key = EncryptionKey::from_private_key_bytes(encryption_did, did_encryption_key)
+        .map_err(|error| error.to_string())?;
+    let mut endpoint = new_ma_endpoint(iroh_key, encryption_key, resolver.clone(), false)
         .await
         .map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
@@ -412,16 +417,16 @@ pub async fn send_text_reply(
     reply_to_id: &str,
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info("inbox")?;
-    let mut msg = Message::new(
+    let msg = Message::new_reply(
         &sender_did,
         target_did,
         MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TEXT,
         body.as_bytes(),
+        reply_to_id,
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
-    msg.reply_to = Some(reply_to_id.to_string());
     let msg_id = msg.id.clone();
     send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
@@ -434,16 +439,16 @@ pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String
     let mut pong = Vec::new();
     ciborium::ser::into_writer(&ciborium::Value::Text(":pong".to_string()), &mut pong)
         .map_err(|e| e.to_string())?;
-    let mut msg = Message::new(
+    let msg = Message::new_reply(
         &sender_did,
         target_did,
         MESSAGE_TYPE_RPC_REPLY,
         CONTENT_TYPE_TERM,
         &pong,
+        reply_to_id,
         &signing_key,
     )
     .map_err(|e| e.to_string())?;
-    msg.reply_to = Some(reply_to_id.to_string());
     let msg_id = msg.id.clone();
     send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
