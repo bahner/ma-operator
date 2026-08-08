@@ -19,8 +19,6 @@ use ma_zscheme::DotRegistry;
 
 use crate::identity::storage::{load_config, save_config};
 
-pub const DEFAULT_AVATAR_SOURCE: &str = include_str!("../../examples/zscheme/avatar.zscheme");
-
 // ── Types ──────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
@@ -55,7 +53,6 @@ impl EgoConfig {
             (".my.config.editor.persistent", "false"),
             (".my.ctx.tail.length", "100"),
             (".my.z.scheme", ""),
-            (".my.z.avatar", DEFAULT_AVATAR_SOURCE),
         ];
         for (k, v) in &defaults {
             self.tree
@@ -571,7 +568,7 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
         assert_eq!(cfg.get(".my.z.scheme"), Some(""));
-        assert_eq!(cfg.get(".my.z.avatar"), Some(DEFAULT_AVATAR_SOURCE));
+        assert_eq!(cfg.get(".my.z.avatar"), None);
         assert_eq!(cfg.get(".my.scheme"), None);
         assert_eq!(cfg.get(".my.avatar"), None);
     }
