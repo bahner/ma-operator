@@ -163,7 +163,7 @@ fn dispatch_reply(
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
-        PendingKind::Simple { cmd_id, reply_verb } => {
+        PendingKind::Simple { cmd_id } => {
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             if incoming.is_error {
                 if let Some(reason) = text_opt.as_deref() {
@@ -171,30 +171,6 @@ fn dispatch_reply(
                 }
             }
             state.resolve_command_by_id(cmd_id, status);
-            if let Some(verb) = reply_verb {
-                if !incoming.is_error && crate::scheme::has_reply_handler() {
-                    match cbor_reply_to_scheme_val(&incoming.content, false, &display) {
-                        Ok(value)
-                            if matches!(
-                                value,
-                                crate::scheme::SchemeVal::Map(_)
-                                    | crate::scheme::SchemeVal::List(_)
-                            ) =>
-                        {
-                            let state = state.clone();
-                            spawn_local(async move {
-                                if let Err(error) =
-                                    crate::scheme::call_reply(&verb, value, &state, config).await
-                                {
-                                    state.push_error(format!("reply {verb}: {error}"));
-                                }
-                            });
-                            return;
-                        }
-                        Ok(_) | Err(_) => {}
-                    }
-                }
-            }
             if let Some(text) = text_opt {
                 let text = config.get_untracked().substitute_display_dids(&text);
                 state.push_incoming(text, Some(cmd_id), incoming.is_error);
@@ -229,7 +205,7 @@ fn handle_did_entry_reply(
     if !runtime.starts_with("did:ma:") {
         return false;
     }
-    let Some(PendingKind::Simple { cmd_id, .. }) = state.take_pending(msg_id) else {
+    let Some(PendingKind::Simple { cmd_id }) = state.take_pending(msg_id) else {
         return false;
     };
 
@@ -569,7 +545,9 @@ fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> St
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::core::Entry;
     use crate::messages::IncomingMessage;
+    use futures::executor::block_on;
     use std::collections::VecDeque;
 
     fn incoming(from: &str, display: &str) -> IncomingMessage {
@@ -685,6 +663,63 @@ mod tests {
             ),
             "@home arrives."
         );
+    }
+
+    #[test]
+    fn explicit_rpc_reply_bypasses_avatar_reply_handler() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let show_editor = RwSignal::new(None);
+        crate::scheme::init_session_env();
+        block_on(crate::scheme::load_content(
+            "(define (on-reply verb value) nil)",
+            &state,
+            config,
+        ))
+        .expect("reply handler loads");
+
+        let cmd_id = state.push_command("@sky#construct:look");
+        state.pending_requests.update(|requests| {
+            requests.insert(
+                "request-1".to_string(),
+                crate::state::TrackedRequest {
+                    kind: PendingKind::Simple { cmd_id },
+                    batch_id: None,
+                    sent_at_ms: 0.0,
+                },
+            );
+        });
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(
+            &ciborium::Value::Array(vec![
+                ciborium::Value::Text(":ok".to_string()),
+                ciborium::Value::Map(vec![(
+                    ciborium::Value::Text("name".to_string()),
+                    ciborium::Value::Text("Sky Construct".to_string()),
+                )]),
+            ]),
+            &mut content,
+        )
+        .unwrap();
+        let mut reply = incoming("did:ma:sky#construct", "RAW STRUCTURED REPLY");
+        reply.reply_to = Some("request-1".to_string());
+        reply.content = content;
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            "RAW STRUCTURED REPLY".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        assert!(state
+            .entries
+            .with_untracked(|entries| entries.iter().any(|entry| {
+                matches!(entry, Entry::Incoming(record) if record.display == "RAW STRUCTURED REPLY")
+            })));
     }
 
     #[cfg(any())]

@@ -146,7 +146,7 @@ async fn run_actor_local_task(
                 let result =
                     transport::send_rpc_with_msg_id(&target, other, &arg_refs, move |msg_id| {
                         if !bind_state.was_cancelled_since(cancel_epoch) {
-                            bind_state.bind_rpc_message_id(cmd_id, msg_id, other.to_string());
+                            bind_state.bind_message_id(cmd_id, msg_id);
                         }
                     })
                     .await;
@@ -387,9 +387,8 @@ async fn dispatch_verb_to_transport(
         Ok(args) => {
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
             let bind_state = state.clone();
-            let reply_verb = v.to_string();
             let result = transport::send_rpc_with_msg_id(target, v, &arg_refs, move |msg_id| {
-                bind_state.bind_rpc_message_id(cmd_id, msg_id, reply_verb.clone());
+                bind_state.bind_message_id(cmd_id, msg_id);
             })
             .await;
             if result.is_ok() {

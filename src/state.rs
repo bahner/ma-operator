@@ -83,10 +83,7 @@ pub struct PendingEnter {
 #[derive(Clone, Debug)]
 pub enum PendingKind {
     /// One-shot send: just resolve the command status when the reply arrives.
-    Simple {
-        cmd_id: u64,
-        reply_verb: Option<String>,
-    },
+    Simple { cmd_id: u64 },
     /// IPFS-store reply should trigger a CRUD SET (returned CID becomes the value).
     IpfsCrud {
         target_did: String,
@@ -123,7 +120,7 @@ impl PendingKind {
     /// Returns `None` for variants where no command is associated.
     pub fn cmd_id(&self) -> Option<u64> {
         match self {
-            PendingKind::Simple { cmd_id, .. } => Some(*cmd_id),
+            PendingKind::Simple { cmd_id } => Some(*cmd_id),
             PendingKind::CrudConfirm { cmd_id } => Some(*cmd_id),
             PendingKind::EditOpen { cmd_id, .. } => Some(*cmd_id),
             PendingKind::IpfsCrud { cmd_id, .. } => *cmd_id,
@@ -445,23 +442,10 @@ impl AppState {
 
     /// Record the `Message.id` returned by a successful send.
     pub fn bind_message_id(&self, cmd_id: u64, msg_id: String) {
-        self.bind_reply_message_id(cmd_id, msg_id, None);
-    }
-
-    /// Record an RPC reply and retain its verb for the global Scheme layer.
-    pub fn bind_rpc_message_id(&self, cmd_id: u64, msg_id: String, verb: String) {
-        self.bind_reply_message_id(cmd_id, msg_id, Some(verb));
-    }
-
-    fn bind_reply_message_id(&self, cmd_id: u64, msg_id: String, reply_verb: Option<String>) {
         let batch_id = self
             .cmd_to_batch
             .with_untracked(|m| m.get(&cmd_id).copied());
-        self.register_pending(
-            msg_id.clone(),
-            PendingKind::Simple { cmd_id, reply_verb },
-            batch_id,
-        );
+        self.register_pending(msg_id.clone(), PendingKind::Simple { cmd_id }, batch_id);
         self.entries.update(|v| {
             if let Some(Entry::Command(c)) = v.iter_mut().find(|e| e.id() == cmd_id) {
                 c.message_id = Some(msg_id);
