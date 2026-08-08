@@ -1,7 +1,7 @@
 # zion — 日本語
 lang-name = 日本語
 label-nick = ニックネーム
-new-identity-nick-help = ma-space で使うニックネームを選んでください。これはただのニックネームで、いつでも変更できます。
+new-identity-nick-help = 間-space で使うニックネームを選んでください。これはただのニックネームで、いつでも変更できます。
 error-nick-required = ニックネームが必要です
 error-nick-invalid = ニックネームには空白や @ を含められません
 
@@ -53,12 +53,12 @@ msg-getting-started = まずは say Hello world、look、.help、help を試し�
 msg-connecting = iroh に接続中...
 msg-iroh-ready = iroh エンドポイント準備完了
 msg-iroh-failed = iroh: { $e }
-msg-auto-published = DID がローカル ma ({ $url }) 経由で公開されました
+msg-auto-published = DID がローカル 間 ({ $url }) 経由で公開されました
 msg-identity-publication-propagating = identity の公開はまだ伝播中です。entry は遅延しています: { $e }
 msg-identity-first-publish = identity を初めて公開しています。最大 { $seconds } 秒かかる場合があります。
 msg-ma-connecting-matrix = 間trix へ接続しようとしています
-msg-ma-checking-url = ma: { $url }
-msg-local-ma-unreachable = ma: { $url } × { $seconds }s
+msg-ma-checking-url = 間: { $url }
+msg-local-ma-unreachable = 間: { $url } × { $seconds }s
 msg-runtime-pinging = ping: { $did }
 msg-runtime-ping-timeout = ping: { $did } × { $seconds }s
 msg-startup-enter-skipped = ↛ { $target }
@@ -128,11 +128,11 @@ discover-json-error = 検出に失敗しました: { $url } からの無効な J
 discover-missing-did = 検出に失敗しました: status.json に必須フィールド `did` がありません
 discover-invalid-did = 検出に失敗しました: `did` は did:ma: で始まる必要がありますが、`{ $did }` を受け取りました
 discover-no-endpoint = 検出の警告: status.json に `endpoint_id` がありません。DID のみ保存しました
-discover-hint-endpoint-not-found = ヒント: エンドポイントが見つかりません。`ma` が実行中で、ポート 5003 で /status.json を公開していることを確認してください。
-discover-hint-server-error = ヒント: ランタイムがサーバーエラーを返しました。`ma` のログを確認して再試行してください。
-discover-hint-network = ヒント: ネットワーク/接続の問題です。`ma` を起動し、localhost:5003 に到達できることと、ブラウザでローカル HTTP アクセスが許可されていることを確認してください。
-discover-hint-generic = ヒント: `ma` と IPFS Desktop が実行中であることを確認してから `.ma` を再試行してください。
-discover-success = { $url } で ma を検出しました
+discover-hint-endpoint-not-found = ヒント: エンドポイントが見つかりません。間 が実行中で、ポート 5003 で /status.json を公開していることを確認してください。
+discover-hint-server-error = ヒント: ランタイムがサーバーエラーを返しました。間 のログを確認して再試行してください。
+discover-hint-network = ヒント: ネットワーク/接続の問題です。間 を起動し、localhost:5003 に到達できることと、ブラウザでローカル HTTP アクセスが許可されていることを確認してください。
+discover-hint-generic = ヒント: 間 と IPFS Desktop が実行中であることを確認してから `.ma` を再試行してください。
+discover-success = { $url } で 間 を検出しました
 discover-did-line = DID: { $did }
 discover-alias-hint =   エイリアス @ma が作成されました — '.my.identity!publish @ma'を実行して身元を公開してください。
 claim-success = { $did } のランタイムを要求しました
@@ -165,7 +165,7 @@ doc-publish-error-detail = 公開に失敗しました [{ $code }]: { $err }
 doc-publish-error-hint = ヒント: { $hint }
 doc-publish-hint-session = ego が識別キーにアクセスできるように再ログインしてください
 doc-publish-hint-target = 有効な発行者 DID、または裸の did:ma:<ipns> に解決されるエイリアスを使用してください
-doc-publish-hint-network = ma ランタイムと IPFS に到達できることを確認して再試行してください
+doc-publish-hint-network = 間 ランタイムと IPFS に到達できることを確認して再試行してください
 doc-publish-hint-resolve = 発行者の DID ドキュメントが公開され、到達可能なエンドポイントを含むことを確認してください
 doc-publish-hint-acl = 発行者の運用者に ACL であなたの DID を許可してもらってください
 doc-publish-hint-runtime = ランタイム/プラグインが要求を拒否しました。理由を確認し、エンティティ/ランタイム修正後に再試行してください
@@ -189,7 +189,7 @@ help-header-common = ── よく使うパス ───────────
 help-header-inbox = ── 受信トレイ ──────────────────────────────────────────────────────────────
 help-header-documents = ── ドキュメント ────────────────────────────────────────────────────────────
 help-header-i18n = ── 言語 ───────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma = ── 間-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── 間に入ります ─────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -251,10 +251,10 @@ help-i18n-list = .my.i18n!list               利用可能な言語コードを�
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = 間の部屋は、間のアイデンティティ同士のあいだにある場所です。ma はそれらのアイデンティティが互いを見つけ、通信できるようにします。あなたのアイデンティティが公開されると、参加できるようになります。
-help-ma-command =   .ma [port]                   ローカルの ma runtime に接続し、/status.json を読み、.ma.ctx.* を保存する
+help-ma-command =   .ma [port]                   ローカルの 間 runtime に接続し、/status.json を読み、.ma.ctx.* を保存する
 help-ma-publish =   .my.identity!publish @ma     DID ドキュメントを公開し、他の人が鍵と endpoint を解決できるようにする
-help-ma-security = もっとも明確な信頼境界は、自分の ma runtime と自分の IPFS Desktop/Kubo です。リモート publisher は便利な場合もありますが、その場合は他人のサービスに依存します。
-help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-security = もっとも明確な信頼境界は、自分の 間 runtime と自分の IPFS Desktop/Kubo です。リモート publisher は便利な場合もありますが、その場合は他人のサービスに依存します。
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  間 runtime: https://github.com/bahner/ma-runtime
 help-ma-entry-topic =   .help/ma/entry             間の部屋への入り方
 
 # ── Help text — ma-space entry ────────────────────────────────────────────
@@ -313,7 +313,7 @@ profile-delete-no-session = アクティブなセッションがありません 
 profile-delete-error = プロフィールの削除に失敗しました: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-ma = no 間 runtime configured — run '.ma [port]' first
 profile-no-cid = no CID stored for this profile — run '!publish' first
 profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = プロファイルは暗号化されて IPFS に送信されました。CID が届くと DID ドキュメントが更新されます
@@ -338,7 +338,7 @@ profiles-not-found = プロフィールが見つかりません: { $name }
 # -- Help topics index
 help-header-topics = -- トピック -- 詳細は .help/<topic> と入力
 help-topic-msg =   .help/msg                    メッセージ
-help-topic-ma = .help/ma                     ma-スペース、公開、およびエントリ
+help-topic-ma = .help/ma                     間-スペース、公開、およびエントリ
 help-topic-path = .help/path                   ローカルドットパス文法
 help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  受信箱

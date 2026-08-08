@@ -1,7 +1,7 @@
 # zion — Soomaaliga
 lang-name = Soomaali
 label-nick = naanays
-new-identity-nick-help = Dooro naanays loogu talagalay ma-space. Waa naanays keliya, waadna beddeli kartaa goor kasta.
+new-identity-nick-help = Dooro naanays loogu talagalay 間-space. Waa naanays keliya, waadna beddeli kartaa goor kasta.
 error-nick-required = naanays ayaa loo baahan yahay
 error-nick-invalid = naanaysku ma lahaan karo meel bannaan ama @
 
@@ -53,19 +53,19 @@ msg-getting-started = Isku day: say Hello world, look, .help, ama help.
 msg-connecting = iroh lagula xidhanayo...
 msg-iroh-ready = dhamaadka iroh ayaa diyaar ah
 msg-iroh-failed = iroh: { $e }
-msg-auto-published = DID lagu daabacay ma maxalliga ({ $url })
+msg-auto-published = DID lagu daabacay 間 maxalliga ({ $url })
 msg-identity-publication-propagating = Daabacaadda aqoonsigu wali way faafaysaa; entry waa dib u dhacay: { $e }
 msg-identity-first-publish = Aqoonsiga ayaa markii ugu horreysay la daabacayaa. Tani waxay qaadan kartaa ilaa { $seconds } ilbiriqsi.
 msg-ma-connecting-matrix = waxaan isku dayeynaa inaan kugu xirno 間trix
-msg-ma-checking-url = ma: { $url }
-msg-local-ma-unreachable = ma: { $url } × { $seconds }s
+msg-ma-checking-url = 間: { $url }
+msg-local-ma-unreachable = 間: { $url } × { $seconds }s
 msg-runtime-pinging = ping: { $did }
 msg-runtime-ping-timeout = ping: { $did } × { $seconds }s
 msg-startup-enter-skipped = ↛ { $target }
 msg-local-ma-claimed = 間 maxalli ah waa la hantiyay
 msg-local-ma-already-claimed = 間 maxalli ah hore ayaa loo hantiyay
 msg-local-ma-claim-failed = lama hanti karin 間 maxalli ah
-msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii ma la rakibay gudaha, orod '.ma [port]' ka dibna '.my.identity!publish @ma'. Qor '.help/publish' faahfaahin.
+msg-identity-not-published = Aqoonsigii lama helin onlayn — haddii 間 la rakibay gudaha, orod '.ma [port]' ka dibna '.my.identity!publish @ma'. Qor '.help/publish' faahfaahin.
 msg-blocked = ⊗ la xiday [{ $cap }]: { $from }
 msg-focus-cleared = xushmadda la tirtiray
 msg-left = left
@@ -128,11 +128,11 @@ discover-json-error = ogaanshaha ku guuldareystay: JSON khalad ah oo ka timid { 
 discover-missing-did = ogaanshaha ku guuldareystay: status.json goobta `did` waad ka maqan tahay
 discover-invalid-did = ogaanshaha ku guuldareystay: `did` waa inuu ku billowdo did:ma:, `{ $did }` la helay
 discover-no-endpoint = digniin ogaanshaha: `endpoint_id` ka maqan status.json; DID oo keliya la keydiay
-discover-hint-endpoint-not-found = Tilmaan: endpoint not found. Check that `ma` exposes /status.json on port 5003.
-discover-hint-server-error = Tilmaan: runtime returned a server error. Check `ma` logs and retry.
-discover-hint-network = Tilmaan: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
-discover-hint-generic = Tilmaan: verify `ma` and IPFS Desktop are running, then retry `.ma`.
-discover-success = ma laga ogaaday { $url }
+discover-hint-endpoint-not-found = Tilmaan: endpoint not found. Check that 間 exposes /status.json on port 5003.
+discover-hint-server-error = Tilmaan: runtime returned a server error. Check 間 logs and retry.
+discover-hint-network = Tilmaan: network/connectivity issue. Start 間, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Tilmaan: verify 間 and IPFS Desktop are running, then retry `.ma`.
+discover-success = 間 laga ogaaday { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   magac-beelka @ma ayaa la abuuray — orod '.my.identity!publish @ma' si aad u baahiso aqoonsikaaga.
 claim-success = Runtime waxaa loo hantiyay { $did }
@@ -165,7 +165,7 @@ doc-publish-error-detail = daabacaaddu way fashilantay [{ $code }]: { $err }
 doc-publish-error-hint = Tilmaan: { $hint }
 doc-publish-hint-session = mar kale gal si ego uu u galo furayaasha aqoonsigaga
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = xaqiiji in daabacaha DID dukumeentiga la daabacay oo ka kooban yahay barta dhamaadka la gaari karo
 doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Runtime/plugin ayaa diiday codsiga; kormeer sababta oo isku day dib u hagaajinta goobta/waqtiga runtu tahay
@@ -189,7 +189,7 @@ help-header-common = ── wadooyinka caadiga ah ──────────
 help-header-inbox = ── sanduuqa gelitaanka ────────────────────────────────────────────────────
 help-header-documents = ── dokumantigyada ────────────────────────────────────────────────────────
 help-header-i18n = ── luqadda ──────────────── ────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma = ── 間-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ─ gelitaanka 間-space ──────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -258,10 +258,10 @@ help-i18n-list = .my.i18n!list               qor kood luqadeed ee la heli karo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Qolka 間 waa meesha u dhaxaysa aqoonsiyada 間. ma waxay aqoonsiyadaas ka caawisaa inay is helaan oo wada xiriiraan; marka aqoonsigaagu la daabaco, waad ka qayb qaadan kartaa.
-help-ma-command =   .ma [port]                   ku xir ma runtime-kaaga maxalliga ah, akhri /status.json, kuna kaydi .ma.ctx.*
+help-ma-command =   .ma [port]                   ku xir 間 runtime-kaaga maxalliga ah, akhri /status.json, kuna kaydi .ma.ctx.*
 help-ma-publish =   .my.identity!publish @ma     daabac dukumentigaaga DID si kuwa kale u heli karaan furayaashaada iyo endpoint-kaaga
-help-ma-security = Xadka kalsoonida ugu cad waa ma runtime-kaaga adiga kuu gaar ah oo wata IPFS Desktop/Kubo-kaaga. Publisher fog wuu faa’iido yeelan karaa, laakiin markaas waxaad ku tiirsan tahay adeeg qof kale.
-help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-security = Xadka kalsoonida ugu cad waa 間 runtime-kaaga adiga kuu gaar ah oo wata IPFS Desktop/Kubo-kaaga. Publisher fog wuu faa’iido yeelan karaa, laakiin markaas waxaad ku tiirsan tahay adeeg qof kale.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  間 runtime: https://github.com/bahner/ma-runtime
 help-ma-entry-topic =   .help/ma/entry             sida loo galo qolka 間
 
 # ── Help text — ma-space entry ────────────────────────────────────────────
@@ -316,11 +316,11 @@ err-edit-decode-failed = tafatirka: khalad sharraxaad: { $e }
 err-edit-fetch-failed = tafatirka: khalad keenista: { $e }
 
 # ── Profile management ────────────────────────────────────────────────────
-profile-delete-no-session = ma jirto fadhiga firfircoon — liiska ma la tirsan karo
+profile-delete-no-session = 間 jirto fadhiga firfircoon — liiska ma la tirsan karo
 profile-delete-error = tirirka liiska wuu guul-dareystay: { $e }
 profile-wrong-user = cannot set CID for another profile — only your own
 profile-wrong-user-name = cannot set CID for '{ $name }' — only your own profile
-profile-no-ma = no ma runtime configured — run '.ma [port]' first
+profile-no-ma = no 間 runtime configured — run '.ma [port]' first
 profile-no-cid = no CID stored for this profile — run '!publish' first
 profile-no-cid-in-doc = no profile CID found in DID document — run '!publish' first
 profile-publish-sent = astaanta waa la siray oo loo diray IPFS; dukumentiga DID waa la cusboonaysiin doonaa marka CID yimaado
@@ -345,7 +345,7 @@ profiles-not-found = liiska lama helin: { $name }
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
 help-topic-msg =   .help/msg                    መልዕክት
-help-topic-ma = .help/ma                     ma-meel, daabacaad, iyo gelid
+help-topic-ma = .help/ma                     間-meel, daabacaad, iyo gelid
 help-topic-path = .help/path                   naxwaha dhibco-dariiqa maxaliga ah
 help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
@@ -392,7 +392,7 @@ help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si a
 help-topic-publish =   .help/publish                ku baahiso aqoonsikaaga shabakadda
 help-header-publish = ── baahinta aqoonsiga ───────────────────────────────────────────────────────
 help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo shabakadda. Dadka kaleba waxay raadsan karaan DID-kaaga si ay kugu soo dhawaadaan.
-help-publish-ma = Si aad u baahiso, waxaad u baahan tahay ma (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
+help-publish-ma = Si aad u baahiso, waxaad u baahan tahay 間 (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
 help-publish-steps = Tallaabooyinka: orod '.ma [port]' si aad u ogaato ma gudaha ah, ka dibna '.my.identity!publish @ma'.
 help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -420,7 +420,7 @@ help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገ
 scheme-cid-fetch-error = Keenista CID { $cid } ku guuldarreysatay: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID aan saxnayn: { $value }
-label-runtime = ma
+label-runtime = 間
 label-runtime-placeholder = did:ma:... or http://localhost:5003
 warning-remote-runtime = Digniin: Furahaada sirta ah ee IPNS waxaa loo diri doonaa runtime-kan si lagu daabaco aqoonsiga. Waxaad isticmaali kartaa oo keliya runtime aad si buuxda u aaminsan tahay.
 

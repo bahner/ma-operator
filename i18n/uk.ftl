@@ -1,7 +1,7 @@
 # zion — Українська
 lang-name = Українська
 label-nick = нік
-new-identity-nick-help = Виберіть нік для ma-space. Це лише нік, і його можна змінити будь-коли.
+new-identity-nick-help = Виберіть нік для 間-space. Це лише нік, і його можна змінити будь-коли.
 error-nick-required = потрібен нік
 error-nick-invalid = нік не повинен містити пробіли або @
 
@@ -56,19 +56,19 @@ msg-getting-started = Спробуйте: say Hello world, look, .help або he
 msg-connecting = підключення до iroh...
 msg-iroh-ready = iroh endpoint готовий
 msg-iroh-failed = iroh: { $e }
-msg-auto-published = DID опубліковано через локальний ma ({ $url })
+msg-auto-published = DID опубліковано через локальний 間 ({ $url })
 msg-identity-publication-propagating = Публікація ідентичності ще поширюється; вхід відкладено: { $e }
 msg-identity-first-publish = Ідентичність публікується вперше. Це може тривати до { $seconds } секунд.
 msg-ma-connecting-matrix = намагаємося підключити вас до 間trix
-msg-ma-checking-url = ma: { $url }
-msg-local-ma-unreachable = ma: { $url } × { $seconds }s
+msg-ma-checking-url = 間: { $url }
+msg-local-ma-unreachable = 間: { $url } × { $seconds }s
 msg-runtime-pinging = ping: { $did }
 msg-runtime-ping-timeout = ping: { $did } × { $seconds }s
 msg-startup-enter-skipped = ↛ { $target }
 msg-local-ma-claimed = локальний 間 заявлено
 msg-local-ma-already-claimed = локальний 間 уже заявлено
 msg-local-ma-claim-failed = не вдалося заявити локальний 間
-msg-identity-not-published = Особистість не знайдена онлайн — якщо ma встановлено локально, виконайте '.ma [port]', а потім '.my.identity!publish @ma'. Введіть '.help/publish' для деталей.
+msg-identity-not-published = Особистість не знайдена онлайн — якщо 間 встановлено локально, виконайте '.ma [port]', а потім '.my.identity!publish @ma'. Введіть '.help/publish' для деталей.
 msg-blocked = ⊗ заблоковано [{ $cap }]: { $from }
 msg-focus-cleared = фокус знято
 msg-left = left
@@ -132,11 +132,11 @@ discover-json-error = виявлення не вдалося: неправиль
 discover-missing-did = виявлення не вдалося: у status.json відсутнє поле `did`
 discover-invalid-did = виявлення не вдалося: очікувалося, що `did` починається з did:ma:, отримано `{ $did }`
 discover-no-endpoint = попередження: `endpoint_id` відсутній у status.json; збережено лише DID
-discover-hint-endpoint-not-found = Підказка: endpoint not found. Check that `ma` exposes /status.json on port 5003.
-discover-hint-server-error = Підказка: runtime returned a server error. Check `ma` logs and retry.
-discover-hint-network = Підказка: network/connectivity issue. Start `ma`, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
-discover-hint-generic = Підказка: verify `ma` and IPFS Desktop are running, then retry `.ma`.
-discover-success = ma знайдено за { $url }
+discover-hint-endpoint-not-found = Підказка: endpoint not found. Check that 間 exposes /status.json on port 5003.
+discover-hint-server-error = Підказка: runtime returned a server error. Check 間 logs and retry.
+discover-hint-network = Підказка: network/connectivity issue. Start 間, verify localhost:5003 is reachable, and allow local HTTP access in the browser.
+discover-hint-generic = Підказка: verify 間 and IPFS Desktop are running, then retry `.ma`.
+discover-success = 間 знайдено за { $url }
 discover-did-line = DID: { $did }
 discover-alias-hint =   псевдонім @ma створено — виконайте '.my.identity!publish @ma' для публікації особистості.
 claim-success = середовище виконання заявлено для { $did }
@@ -172,7 +172,7 @@ doc-publish-error-detail = публікація не вдалася [{ $code }]:
 doc-publish-error-hint = Підказка: { $hint }
 doc-publish-hint-session = увійдіть знову, щоб ego міг отримати доступ до ваших ідентифікаційних ключів
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
-doc-publish-hint-network = verify ma runtime and IPFS are reachable, then retry
+doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = перевірити, що документ видавця DID опубліковано та містить доступну кінцеву точку
 doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = середовище виконання/плагін відхилив запит; перевірте причину та повторіть спробу після виправлення сутності/середовища виконання
@@ -196,7 +196,7 @@ help-header-common = ── загальні шляхи ────────
 help-header-inbox = ── вхідні ───────────────────────────────────────────────────────────────
 help-header-documents = ── документи ────────────────────────────────────────────────────────────
 help-header-i18n = ── мова ───────────────────────────────────────────────────────────────
-help-header-ma = ── ma-space ──────────────────────────────────────────────────────────────
+help-header-ma = ── 間-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── введення 間-пробілу ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -212,7 +212,7 @@ help-cmd-batch-sync =   .batch:sync / .batch         виконати коман
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
 help-topic-msg =   .help/msg                    повідомлення — @actor, надсилання, RPC
-help-topic-ma = .help/ma                     ma-простір, видавництво та вступ
+help-topic-ma = .help/ma                     間-простір, видавництво та вступ
 help-topic-path =   .help/path                   синтаксис локального шляху
 help-topic-my =   .help/my                     особиста конфігурація
 help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
@@ -248,7 +248,7 @@ help-identity =   .my.identity                 показати конфігур
 help-identity-did =   .my.identity.did             показати власний DID (лише читання)
 help-identity-publish =   .my.identity!publish @pub    опублікувати DID через службу публікацій
 help-identity-export =   .my.identity!export          завантажити власний пакет особистості
-help-config-path =   .ma.ctx                      локальний контекст ma runtime
+help-config-path =   .ma.ctx                      локальний контекст 間 runtime
 
 # ── Довідка — вхідні ──────────────────────────────────────────────────────
 help-inbox =   .my.inbox                    список вхідних (перегляд піддерева)
@@ -279,10 +279,10 @@ help-i18n-list = .my.i18n!list               список доступних к�
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
 help-ma-intro = Кімната 間 — це простір між ідентичностями 間. ma допомагає цим ідентичностям знаходити одна одну й спілкуватися; коли твою ідентичність опубліковано, ти можеш брати участь.
-help-ma-command =   .ma [port]                   підключитися до локального ma runtime, прочитати /status.json і зберегти .ma.ctx.*
+help-ma-command =   .ma [port]                   підключитися до локального 間 runtime, прочитати /status.json і зберегти .ma.ctx.*
 help-ma-publish =   .my.identity!publish @ma     опублікувати твій DID-документ, щоб інші могли знайти твої ключі й endpoint
-help-ma-security = Найчіткіша межа довіри — твій власний ma runtime із твоїм власним IPFS Desktop/Kubo. Віддалений publisher може бути корисним, але тоді ти покладаєшся на чужу службу.
-help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  ma runtime: https://github.com/bahner/ma-runtime
+help-ma-security = Найчіткіша межа довіри — твій власний 間 runtime із твоїм власним IPFS Desktop/Kubo. Віддалений publisher може бути корисним, але тоді ти покладаєшся на чужу службу.
+help-ma-links = IPFS Desktop: https://docs.ipfs.tech/install/ipfs-desktop/  間 runtime: https://github.com/bahner/ma-runtime
 help-ma-entry-topic =   .help/ma/entry             як увійти до кімнати 間
 
 # ── Help text — ma-space entry ────────────────────────────────────────────
@@ -355,7 +355,7 @@ profiles-deleted = профіль { $name } видалено
 profiles-not-found = профіль не знайдено: { $name }
 profile-wrong-user = не можна встановити CID для іншого профілю — лише для свого
 profile-wrong-user-name = не можна встановити CID для '{ $name }' — лише для свого профілю
-profile-no-ma = середовище виконання ma не налаштовано — спочатку виконайте '.ma [port]'
+profile-no-ma = середовище виконання 間 не налаштовано — спочатку виконайте '.ma [port]'
 profile-no-cid = CID не збережено для цього профілю — спочатку виконайте '!publish'
 profile-no-cid-in-doc = CID профілю не знайдено в DID-документі — спочатку виконайте '!publish'
 profile-publish-sent = профіль зашифровано та надіслано до IPFS; DID-документ буде оновлено, коли надійде CID
@@ -403,7 +403,7 @@ help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for t
 help-topic-publish =   .help/publish                публікація особистості в мережі
 help-header-publish = ── публікація особистості ───────────────────────────────────────────────────
 help-publish-intro = Публікація робить вашу особистість доступною для пошуку в мережі. Інші можуть знайти ваш DID, щоб зв'язатися з вами.
-help-publish-ma = Для публікації потрібен встановлений ma (локальне середовище виконання). Він з'єднує ego з IPFS/IPNS від вашого імені.
+help-publish-ma = Для публікації потрібен встановлений 間 (локальне середовище виконання). Він з'єднує ego з IPFS/IPNS від вашого імені.
 help-publish-steps = Кроки: виконайте '.ma [port]' для виявлення локального ma, потім '.my.identity!publish @ma'.
 help-publish-without = Без публікації інші не зможуть вас знайти — навіть знаючи ваш DID, вони не зможуть знайти ваш endpoint.
 
