@@ -23,6 +23,10 @@ pub(crate) fn eval_actor(
     config: RwSignal<EgoConfig>,
 ) {
     let cmd_id = state.push_command(raw);
+    if let Err(error) = validate_actor_recipient(&target) {
+        fail_cmd(error, cmd_id, state);
+        return;
+    }
     if let Some(meta) = meta {
         fail_cmd(
             format!("unsupported local actor meta: !{meta}"),
@@ -51,6 +55,10 @@ pub(crate) fn eval_actor_local(
     state: &AppState,
 ) {
     let cmd_id = state.push_command(raw);
+    if let Err(error) = validate_actor_recipient(&target) {
+        fail_cmd(error, cmd_id, state);
+        return;
+    }
     state.outbox_queue.update(|q| {
         q.push_back(OutboxTask::ActorLocal {
             target,
@@ -60,6 +68,20 @@ pub(crate) fn eval_actor_local(
             cancel_epoch: state.cancel_epoch(),
         })
     });
+}
+
+fn validate_actor_recipient(target: &str) -> Result<(), String> {
+    if target
+        .split_once('#')
+        .is_some_and(|(_, fragment)| !fragment.is_empty())
+    {
+        Ok(())
+    } else {
+        Err(
+            "actor recipient must be a full DID-URL with a #fragment; use #root for runtime RPC"
+                .to_string(),
+        )
+    }
 }
 
 /// Execute one queued outbox task. Called serially from the dispatch loop.
@@ -478,7 +500,7 @@ fn normalize_remote_crud_set_value(
 
 #[cfg(test)]
 mod tests {
-    use super::{editor_mode_for_path, normalize_remote_crud_set_value};
+    use super::{editor_mode_for_path, normalize_remote_crud_set_value, validate_actor_recipient};
     use crate::config::EgoConfig;
     use crate::views::editor::EditorMode;
 
@@ -488,6 +510,12 @@ mod tests {
         cfg.set(".my.aliases.sky", "did:ma:k51sky");
         let value = normalize_remote_crud_set_value("/config/root", "@sky#root", &cfg).unwrap();
         assert_eq!(value, "did:ma:k51sky#root");
+    }
+
+    #[test]
+    fn actor_recipient_requires_fragment() {
+        assert!(validate_actor_recipient("did:ma:k51runtime#root").is_ok());
+        assert!(validate_actor_recipient("did:ma:k51runtime").is_err());
     }
 
     #[test]
