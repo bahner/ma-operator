@@ -204,21 +204,14 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
-    let scheme_source = config
+    if config
         .get_untracked()
         .get(".my.z.scheme")
-        .unwrap_or_default()
-        .to_string();
-    let avatar_source = config
-        .get_untracked()
-        .get(".my.z.avatar")
-        .unwrap_or_default()
-        .to_string();
-    if let Err(error) =
-        crate::scheme::bootstrap_session(&scheme_source, &avatar_source, &state, config).await
+        .is_some_and(|source| !source.trim().is_empty())
     {
-        crate::scheme::reset_session_env();
-        state.push_error(format!("Scheme bootstrap stopped: {error}"));
+        state
+            .input_queue
+            .update(|q| q.push_back(".my.z.scheme!eval".to_string()));
     }
     state.push_system(tf(
         "msg-logged-in",

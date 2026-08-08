@@ -26,11 +26,6 @@ pub(crate) fn has_event_handler() -> bool {
     matches!(get_env().get("on-event"), Some(SchemeVal::Lambda { .. }))
 }
 
-#[cfg(test)]
-pub(crate) fn has_reply_handler() -> bool {
-    matches!(get_env().get("on-reply"), Some(SchemeVal::Lambda { .. }))
-}
-
 /// Invoke the local event entry point with decoded, typed event data.
 ///
 /// Event values are placed in a child environment and referenced by a fixed
@@ -47,30 +42,6 @@ pub async fn call_event(
         parser::SchemeExpr::Atom("on-event".to_string()),
         parser::SchemeExpr::Str(event.to_string()),
         parser::SchemeExpr::Atom("__ma_event_args".to_string()),
-    ]);
-    let ctx: Ctx = Rc::new(EvalCtx {
-        state: state.clone(),
-        config,
-    });
-    ma_zscheme::eval::eval(expr, env, ctx)
-        .await
-        .map_err(|error| error.to_string())
-}
-
-/// Invoke the local query-reply entry point with decoded, typed data.
-#[cfg(test)]
-pub async fn call_reply(
-    verb: &str,
-    value: SchemeVal,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) -> Result<SchemeVal, String> {
-    let env = Env::extend(&get_env());
-    env.define("__ma_reply_value", value);
-    let expr = parser::SchemeExpr::List(vec![
-        parser::SchemeExpr::Atom("on-reply".to_string()),
-        parser::SchemeExpr::Str(verb.to_string()),
-        parser::SchemeExpr::Atom("__ma_reply_value".to_string()),
     ]);
     let ctx: Ctx = Rc::new(EvalCtx {
         state: state.clone(),
@@ -359,25 +330,6 @@ pub async fn load_content(
     load_content_into_env(content, env, ctx).await
 }
 
-/// Build a fresh session from the stable Scheme layer and then the avatar.
-/// The candidate is installed only after both layers evaluate successfully.
-pub async fn bootstrap_session(
-    scheme_source: &str,
-    avatar_source: &str,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) -> Result<(), String> {
-    let env = Env::new_root();
-    let ctx: Ctx = Rc::new(EvalCtx {
-        state: state.clone(),
-        config,
-    });
-    load_content_into_env(scheme_source, env.clone(), ctx.clone()).await?;
-    load_content_into_env(avatar_source, env.clone(), ctx).await?;
-    ma_zscheme::install_session_env(env);
-    Ok(())
-}
-
 async fn load_content_into_env(content: &str, env: Env, ctx: Ctx) -> Result<(), String> {
     let tokens = parser::tokenize(content).map_err(|e| e.to_string())?;
     let mut pos = 0;
@@ -447,9 +399,9 @@ async fn eval_span(span: &str, env: Env, ctx: Ctx) -> Result<SchemeVal, String> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::EgoConfig, core::Entry, state::AppState};
+    use crate::{config::EgoConfig, state::AppState};
     use futures::executor::block_on;
-    use leptos::prelude::{Owner, RwSignal, WithUntracked};
+    use leptos::prelude::{Owner, RwSignal};
 
     #[test]
     fn needs_expansion_ignores_single_quoted_parentheses() {
@@ -522,53 +474,6 @@ mod tests {
     }
 
     #[test]
-    fn bootstrap_loads_scheme_before_avatar() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-
-        block_on(bootstrap_session(
-            "(define dialect-value 40)",
-            "(define avatar-value (+ dialect-value 2))",
-            &state,
-            config,
-        ))
-        .expect("bootstrap succeeds");
-
-        assert!(matches!(
-            get_env().get("avatar-value"),
-            Some(SchemeVal::Int(42))
-        ));
-    }
-
-    #[test]
-    fn failed_bootstrap_does_not_install_partial_candidate() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content("(define existing-value 1)", &state, config))
-            .expect("existing session loads");
-
-        let error = block_on(bootstrap_session(
-            "(define partial-value 2) (error \"broken dialect\")",
-            "(define avatar-value 3)",
-            &state,
-            config,
-        ))
-        .expect_err("bootstrap fails");
-
-        assert!(error.contains("broken dialect"));
-        assert!(matches!(
-            get_env().get("existing-value"),
-            Some(SchemeVal::Int(1))
-        ));
-        assert!(get_env().get("partial-value").is_none());
-        assert!(get_env().get("avatar-value").is_none());
-    }
-
-    #[test]
     fn standalone_expression_returns_its_value() {
         let _owner = Owner::new();
         let state = AppState::new();
@@ -607,274 +512,5 @@ mod tests {
         ))
         .expect("event handler is callable");
         assert!(matches!(value, SchemeVal::Str(ref text) if text == "(error \"must not run\")"));
-    }
-
-    #[test]
-    fn default_avatar_displays_typed_speech_events() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-        let mut ctx = std::collections::BTreeMap::new();
-        ctx.insert("did".to_string(), SchemeVal::Str("did:ma:duck".to_string()));
-        ctx.insert("nick".to_string(), SchemeVal::Str("Duckie".to_string()));
-
-        block_on(call_event(
-            ":say",
-            vec![SchemeVal::Map(ctx), SchemeVal::Str("Kvakk!".to_string())],
-            &state,
-            config,
-        ))
-        .expect("speech event is handled");
-
-        let text = state.entries.with_untracked(|entries| {
-            entries.iter().find_map(|entry| match entry {
-                Entry::System(record) => Some(record.text.clone()),
-                _ => None,
-            })
-        });
-        assert_eq!(text.as_deref(), Some("Duckie: Kvakk!"));
-    }
-
-    #[test]
-    fn default_avatar_handles_every_standard_event() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-        let mut ctx = std::collections::BTreeMap::new();
-        ctx.insert("did".to_string(), SchemeVal::Str("did:ma:duck".to_string()));
-        ctx.insert("nick".to_string(), SchemeVal::Str("Duckie".to_string()));
-        let subject = SchemeVal::Map(ctx);
-        let events = vec![
-            (":print", vec![SchemeVal::Str("Kvakk!".to_string())]),
-            (":arrive", vec![subject.clone()]),
-            (":leave", vec![subject.clone()]),
-            (
-                ":say",
-                vec![subject.clone(), SchemeVal::Str("Kvakk!".to_string())],
-            ),
-            (
-                ":emote",
-                vec![subject.clone(), SchemeVal::Str("waddles".to_string())],
-            ),
-            (":take", vec![subject.clone()]),
-            (":drop", vec![subject.clone()]),
-            (
-                ":dig",
-                vec![subject.clone(), SchemeVal::Str("north".to_string())],
-            ),
-            (":fill", vec![subject, SchemeVal::Str("north".to_string())]),
-        ];
-
-        for (event, args) in events {
-            block_on(call_event(event, args, &state, config)).expect("standard event is handled");
-        }
-
-        let displays = state.entries.with_untracked(|entries| {
-            entries
-                .iter()
-                .filter(|entry| matches!(entry, Entry::System(_)))
-                .count()
-        });
-        assert_eq!(displays, 9);
-    }
-
-    #[test]
-    fn default_avatar_pretty_prints_room_look() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-
-        let mut occupant = std::collections::BTreeMap::new();
-        occupant.insert("nick".to_string(), SchemeVal::Str("lars".to_string()));
-        let mut occupants = std::collections::BTreeMap::new();
-        occupants.insert("did:ma:me".to_string(), SchemeVal::Map(occupant));
-        let mut agent = std::collections::BTreeMap::new();
-        agent.insert("nick".to_string(), SchemeVal::Str("Morpheus".to_string()));
-        let mut thing = std::collections::BTreeMap::new();
-        thing.insert("nick".to_string(), SchemeVal::Str("phone".to_string()));
-        let mut exits = std::collections::BTreeMap::new();
-        exits.insert(
-            "north".to_string(),
-            SchemeVal::Str("did:ma:room#north".to_string()),
-        );
-        let mut room = std::collections::BTreeMap::new();
-        room.insert(
-            "name".to_string(),
-            SchemeVal::Str("Sky Construct".to_string()),
-        );
-        room.insert("nick".to_string(), SchemeVal::Str("Construct".to_string()));
-        room.insert(
-            "description".to_string(),
-            SchemeVal::Str("A loading programme.".to_string()),
-        );
-        room.insert("who".to_string(), SchemeVal::Map(occupants));
-        room.insert(
-            "agents".to_string(),
-            SchemeVal::List(vec![SchemeVal::Map(agent)]),
-        );
-        room.insert(
-            "things".to_string(),
-            SchemeVal::List(vec![SchemeVal::Map(thing)]),
-        );
-        room.insert("exits".to_string(), SchemeVal::Map(exits));
-
-        block_on(call_reply("look", SchemeVal::Map(room), &state, config))
-            .expect("look reply is handled");
-
-        assert!(matches!(
-            get_env().get("last-room"),
-            Some(SchemeVal::Map(_))
-        ));
-
-        let text = state.entries.with_untracked(|entries| {
-            entries.iter().find_map(|entry| match entry {
-                Entry::System(record) => Some(record.text.clone()),
-                _ => None,
-            })
-        });
-        assert_eq!(
-            text.as_deref(),
-            Some("Sky Construct\nA loading programme.\nHere:\nlars\nOccupants:\nMorpheus\nThings:\nphone\nExits:\nnorth")
-        );
-    }
-
-    #[test]
-    fn default_avatar_look_returns_nil_after_rendering() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-
-        block_on(load_content(
-            "(define (room-call method . args) (make-map \"name\" \"Construct\"))",
-            &state,
-            config,
-        ))
-        .expect("room call stub loads");
-
-        assert!(matches!(
-            block_on(eval_standalone("(look)", &state, config)),
-            Ok(Some(SchemeVal::Nil))
-        ));
-    }
-
-    #[test]
-    fn default_avatar_pretty_prints_room_queries() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-
-        let mut north = std::collections::BTreeMap::new();
-        north.insert("direction".to_string(), SchemeVal::Str("north".to_string()));
-        let mut lars = std::collections::BTreeMap::new();
-        lars.insert("nick".to_string(), SchemeVal::Str("lars".to_string()));
-        let who = SchemeVal::List(vec![SchemeVal::List(vec![
-            SchemeVal::Str("did:ma:lars".to_string()),
-            SchemeVal::Map(lars.clone()),
-        ])]);
-
-        for (event, values) in [
-            ("exits?", SchemeVal::List(vec![SchemeVal::Map(north)])),
-            ("who?", who),
-            (
-                "occupants?",
-                SchemeVal::List(vec![SchemeVal::Map(lars.clone())]),
-            ),
-            ("things?", SchemeVal::List(vec![SchemeVal::Map(lars)])),
-        ] {
-            block_on(call_reply(event, values, &state, config))
-                .expect("room query reply is handled");
-        }
-
-        let texts = state.entries.with_untracked(|entries| {
-            entries
-                .iter()
-                .filter_map(|entry| match entry {
-                    Entry::System(record) => Some(record.text.clone()),
-                    _ => None,
-                })
-                .collect::<Vec<_>>()
-        });
-        assert_eq!(
-            texts,
-            [
-                "Exits:\nnorth",
-                "Here:\nlars",
-                "Occupants:\nlars",
-                "Things:\nlars"
-            ]
-        );
-    }
-
-    #[test]
-    fn default_avatar_exposes_only_the_event_handler() {
-        let _owner = Owner::new();
-        let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
-        init_session_env();
-
-        block_on(load_content(
-            crate::config::DEFAULT_AVATAR_SOURCE,
-            &state,
-            config,
-        ))
-        .expect("default avatar source loads");
-
-        assert!(has_event_handler());
-        assert!(has_reply_handler());
-        for command in [
-            "actor-call",
-            "room",
-            "room-call",
-            "look",
-            "go",
-            "dig",
-            "fill",
-            "leave",
-            "enter",
-            "take",
-            "drop",
-            "put",
-            "take-from",
-        ] {
-            assert!(matches!(
-                get_env().get(command),
-                Some(SchemeVal::Lambda { .. })
-            ));
-        }
     }
 }

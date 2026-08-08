@@ -35,33 +35,6 @@ pub(super) fn handle_doc(
     }
 }
 
-fn eval_lines(content: &str) -> Vec<String> {
-    let mut inputs = Vec::new();
-    let mut buffer = String::new();
-
-    for line in content.lines() {
-        let trimmed = line.trim();
-        if buffer.is_empty() && (trimmed.is_empty() || trimmed.starts_with(';')) {
-            continue;
-        }
-
-        if !buffer.is_empty() {
-            buffer.push('\n');
-        }
-        buffer.push_str(line);
-
-        if !crate::scheme::has_incomplete_expression(&buffer) {
-            inputs.push(std::mem::take(&mut buffer));
-        }
-    }
-
-    if !buffer.is_empty() {
-        inputs.push(buffer);
-    }
-
-    inputs
-}
-
 // ── Verb handlers ─────────────────────────────────────────────────────────
 
 /// `:edit` — open with stored content, or fetch a CID for review (never exec).
@@ -118,23 +91,12 @@ fn doc_eval(
     state.push_command_done(format!("{path}!eval"));
     let state2 = state.clone();
     leptos::task::spawn_local(async move {
-        let lines = eval_lines(&content);
-        for line in lines {
-            let to_dispatch = if crate::scheme::needs_expansion(&line) {
-                match crate::scheme::expand(&line, &state2, config).await {
-                    Ok(expanded) => expanded,
-                    Err(e) => {
-                        state2.push_error(format!("scheme: {e}"));
-                        break;
-                    }
-                }
-            } else {
-                line
-            };
-            let trimmed = to_dispatch.trim().to_string();
-            if !trimmed.is_empty() {
-                state2.input_queue.update(|q| q.push_back(trimmed));
+        for line in content.lines() {
+            let trimmed = line.trim();
+            if trimmed.is_empty() || trimmed.starts_with(';') {
+                continue;
             }
+            state2.input_queue.update(|q| q.push_back(line.to_string()));
         }
     });
     Ok(())

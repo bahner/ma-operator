@@ -36,11 +36,10 @@ Scheme expression that returns the source text:
 ```
 
 The first line stores `(define foo 'bar)` without the surrounding quotation
-marks. The second line rebuilds the current Scheme session from `.my.z.scheme`
-and `.my.z.avatar`.
+marks. The second line runs the saved `.my.z.scheme` script as normal `!eval`.
 
 The same expansion and CRUD rules apply to every local configuration path;
-`.my.z.scheme` and `.my.z.avatar` have no special storage behaviour.
+`.my.z.scheme` has no special storage behaviour.
 
 ## Why did `(display "some text")` delete my key?
 
@@ -91,10 +90,9 @@ fill with `()` lines. Errors still appear in red.
 
 ## What does `.my.z.scheme!eval` do, and why can it take a moment?
 
-`.my.z.scheme!eval` builds a fresh Scheme session by evaluating the saved
-`.my.z.scheme` source followed by `.my.z.avatar`. It stays dark green while remote
-content is loading, turns bright green on success, and turns red with the
-bootstrap error on failure.
+`.my.z.scheme!eval` runs the saved `.my.z.scheme` source as a normal Zion
+script. The command stays dark green while remote content is loading, turns bright
+green on success, and turns red with the bootstrap error on failure.
 
 It does not print the values of `define` or `include` forms. Verify a loaded
 binding with a Scheme expression such as `(begin foo)`.

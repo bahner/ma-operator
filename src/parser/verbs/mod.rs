@@ -64,7 +64,7 @@ pub fn dispatch_meta(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") || path == ".my.z.avatar" {
+    if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") {
         return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
     }
     if path == ".my.inbox" || path.starts_with(".my.inbox.") {

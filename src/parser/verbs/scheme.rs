@@ -1,6 +1,5 @@
 /// Handler for the persistent Scheme bootstrap sources.
 use crate::config::{persist_config, EgoConfig};
-use crate::core::CommandStatus;
 use crate::i18n::tf;
 use crate::state::AppState;
 use crate::views::editor::EditorContext;
@@ -16,33 +15,9 @@ pub(super) fn handle_scheme(
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     match verb {
-        // Rebuild the sole active session from the stable Scheme layer and
-        // the avatar layer. This removes bindings deleted from either source.
+        // Evaluate as a normal Zion script.
         "eval" => {
-            let display = format!("{path}!eval");
-            let command_id = state.push_command(display);
-            let state2 = state.clone();
-            leptos::task::spawn_local(async move {
-                let cfg = config.get_untracked();
-                let scheme_source = cfg.get(".my.z.scheme").unwrap_or_default().to_string();
-                let avatar_source = cfg.get(".my.z.avatar").unwrap_or_default().to_string();
-                if let Err(error) = crate::scheme::bootstrap_session(
-                    &scheme_source,
-                    &avatar_source,
-                    &state2,
-                    config,
-                )
-                .await
-                {
-                    crate::scheme::reset_session_env();
-                    let message = format!("Scheme bootstrap stopped: {error}");
-                    state2.resolve_command_by_id(command_id, CommandStatus::Error(message.clone()));
-                    state2.push_error(message);
-                } else {
-                    state2.resolve_command_by_id(command_id, CommandStatus::Replied(String::new()));
-                }
-            });
-            Ok(())
+            super::doc::handle_doc(path, verb, args, state, config, show_editor, on_eval)
         }
         // !save — serialise the current session env and persist.
         "save" if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") => {

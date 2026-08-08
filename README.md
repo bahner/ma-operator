@@ -234,6 +234,24 @@ Once your identity is published, you can enter the room through your runtime:
 Running `.enter` again toggles room focus off without logging you out or
 changing your identity. Run `.enter` once more to return to the saved context.
 
+## Scheme startup convention
+
+Zion treats `.my.z.scheme` as an ordinary stored script.
+
+- On login, if `.my.z.scheme` is non-empty, Zion queues `.my.z.scheme!eval` once.
+- There is no automatic `.my.z.avatar` execution.
+- There is no special parser mode for `.my.z.scheme`; it runs through the same
+   `!eval` flow as any other local script path.
+
+This keeps startup customisation explicit and user-owned. If you want layered
+startup scripts, compose them directly in `.my.z.scheme`, for example:
+
+```text
+.my.z.stdlib!eval
+.my.z.irc!eval
+.my.z.avatar!eval
+```
+
 ---
 
 ## Status
