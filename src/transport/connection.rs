@@ -365,6 +365,12 @@ pub async fn send_identity_publish_with_msg_id(
     let document = bundle
         .build_document(ma_ext)
         .map_err(|e| format!("build document failed: {e}"))?;
+    document
+        .validate()
+        .map_err(|e| format!("build document invalid: {e}"))?;
+    document
+        .verify()
+        .map_err(|e| format!("build document signature invalid: {e}"))?;
 
     let payload = generate_identity_publish_request(&document, &ipns_key)
         .map_err(|e| format!("build ipfs request: {e}"))?;
@@ -861,6 +867,16 @@ fn decode_incoming(msg: Message) -> IncomingMessage {
 mod tests {
     use super::*;
     use ciborium::Value as V;
+
+    #[test]
+    fn build_document_with_legacy_timestamp_fails_validation() {
+        let mut bundle = SecretBundle::generate();
+        bundle.created_at = "2026-08-08T12:34:56.789Z".to_string();
+        let document = bundle
+            .build_document(ma_core::MaExtension::new().kind("agent"))
+            .expect("document");
+        assert!(document.validate().is_err());
+    }
 
     #[test]
     fn actor_url_constructs_and_preserves_absolute_actor_addresses() {
