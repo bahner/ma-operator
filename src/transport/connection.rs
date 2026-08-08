@@ -153,7 +153,7 @@ pub(crate) fn actor_url(identity_did: &str, fragment: &str) -> Result<String, St
     }
 }
 
-pub(crate) fn get_session_info(fragment: &str) -> Result<(String, SigningKey), String> {
+pub(crate) fn get_session_info() -> Result<(String, SigningKey), String> {
     let signing_key_bytes = SESSION_SIGNING_KEY
         .with(|k| *k.borrow())
         .ok_or_else(|| "not logged in".to_string())?;
@@ -161,16 +161,19 @@ pub(crate) fn get_session_info(fragment: &str) -> Result<(String, SigningKey), S
         .with(|d| d.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
     let did = Did::try_from(sender_did_str.as_str()).map_err(|e| e.to_string())?;
+    if !did.is_bare() {
+        return Err("session sender must be a bare DID".to_string());
+    }
     let signing_key =
         SigningKey::from_private_key_bytes(did, signing_key_bytes).map_err(|e| e.to_string())?;
-    Ok((actor_url(&sender_did_str, fragment)?, signing_key))
+    Ok((sender_did_str, signing_key))
 }
 
 // ── Messaging ──────────────────────────────────────────────────────────────
 
 /// Send a plain-text message. Returns the dispatched `Message.id` on success.
 pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("inbox")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = Message::new(
         &sender_did,
         target_did,
@@ -197,7 +200,7 @@ pub async fn send_rpc_with_msg_id(
     args: &[&str],
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("rpc")?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
         verb.to_string()
@@ -252,7 +255,7 @@ pub async fn send_rpc_vals_with_msg_id(
     args: &[SchemeVal],
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("rpc")?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let atom = if verb.starts_with(':') {
         verb.to_string()
@@ -313,7 +316,7 @@ pub async fn send_identity_publish_with_msg_id(
     publisher_did: &str,
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("rpc")?;
+    let (sender_did, signing_key) = get_session_info()?;
 
     let ipns_key = SESSION_IPNS_KEY
         .with(|k| *k.borrow())
@@ -399,7 +402,7 @@ pub async fn send_ipfs_store(
     content: Vec<u8>,
     content_type: &str,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("rpc")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let publisher_url = actor_url(publisher_did, "ipfs")?;
     let msg = generate_ipfs_store_request(
         &sender_did,
@@ -422,7 +425,7 @@ pub async fn send_text_reply(
     body: &str,
     reply_to_id: &str,
 ) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("inbox")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let msg = Message::new_reply(
         &sender_did,
         target_did,
@@ -441,7 +444,7 @@ pub async fn send_text_reply(
 /// Send a `:pong` reply to a peer that sent `:ping`.
 /// `reply_to_id` is the `Message.id` of the incoming `:ping`.
 pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String, String> {
-    let (sender_did, signing_key) = get_session_info("rpc")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let mut pong = Vec::new();
     ciborium::ser::into_writer(&ciborium::Value::Text(":pong".to_string()), &mut pong)
         .map_err(|e| e.to_string())?;
@@ -519,7 +522,7 @@ pub async fn send_crud_get_with_msg_id(
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session_info("crud")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('/') {
         path.to_string()
     } else {
@@ -561,7 +564,7 @@ pub async fn send_crud_set_with_msg_id(
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session_info("crud")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('/') {
         path.to_string()
     } else {
@@ -592,7 +595,7 @@ pub async fn send_crud_delete_with_msg_id(
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     use ma_core::MESSAGE_TYPE_CRUD;
-    let (sender_did, signing_key) = get_session_info("crud")?;
+    let (sender_did, signing_key) = get_session_info()?;
     let atom = if path.starts_with('/') {
         path.to_string()
     } else {
@@ -890,6 +893,19 @@ mod tests {
     fn actor_url_rejects_a_conflicting_actor_fragment() {
         let did = format!("did:ma:{}", ma_core::ipns_from_secret([9; 32]).unwrap());
         assert!(actor_url(&format!("{did}#room"), "root").is_err());
+    }
+
+    #[test]
+    fn session_info_uses_bare_identity_did_as_sender() {
+        let did = format!("did:ma:{}", ma_core::ipns_from_secret([9; 32]).unwrap());
+        SESSION_SENDER_DID.with(|sender| *sender.borrow_mut() = Some(did.clone()));
+        SESSION_SIGNING_KEY.with(|key| *key.borrow_mut() = Some([7; 32]));
+
+        let (sender, _) = get_session_info().expect("session info");
+
+        assert_eq!(sender, did);
+        SESSION_SENDER_DID.with(|sender| *sender.borrow_mut() = None);
+        SESSION_SIGNING_KEY.with(|key| *key.borrow_mut() = None);
     }
 
     #[test]
