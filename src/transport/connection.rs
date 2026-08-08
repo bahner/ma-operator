@@ -1,11 +1,11 @@
 /// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
 use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
-    resolve_endpoint_for_protocol, Did, DidDocumentResolver, IpfsGatewayResolver, Ipld, Message,
-    SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID,
-    IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY, MESSAGE_TYPE_EMOTE,
-    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
-    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    resolve_endpoint_for_protocol, Did, DidDocumentResolver, EncryptionKey, IpfsGatewayResolver,
+    Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_CRUD_REPLY,
+    MESSAGE_TYPE_EMOTE, MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
+    MESSAGE_TYPE_RPC, MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
 
@@ -18,6 +18,7 @@ use crate::state::{
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
+use std::sync::Arc;
 use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
@@ -70,7 +71,16 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {}", sender_did);
-    let mut endpoint = new_ma_endpoint(iroh_key, false)
+    let (sender_identifier, _) = Did::parse(&sender_did).map_err(|e| e.to_string())?;
+    let encryption_did = Did::new_url(sender_identifier, Some("enc")).map_err(|e| e.to_string())?;
+    let encryption_key = EncryptionKey::from_private_key_bytes(encryption_did, did_encryption_key)
+        .map_err(|e| e.to_string())?;
+    let resolver = Arc::new(
+        session_resolver()
+            .with_base_cooldown(Duration::ZERO)
+            .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
+    );
+    let mut endpoint = new_ma_endpoint(iroh_key, encryption_key, resolver.clone(), false)
         .await
         .map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
@@ -93,11 +103,6 @@ pub async fn connect(
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
     // Keep one resolver for configuration, but do not positive-cache DID docs:
     // remote runtimes may restart with a new iroh endpoint after OOM/redeploy.
-    let resolver = Rc::new(
-        session_resolver()
-            .with_base_cooldown(Duration::ZERO)
-            .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
-    );
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())

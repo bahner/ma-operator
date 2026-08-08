@@ -6,6 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
 use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
+use std::sync::Arc;
 
 /// Oneshot sender for a plain-text reply.
 pub type ReplySender = oneshot::Sender<String>;
@@ -734,7 +735,7 @@ thread_local! {
     /// Shared DID resolver — created once at connect() so its cache is
     /// reused across all concurrent sends instead of each call fetching
     /// the same DID document from scratch.
-    pub static SESSION_RESOLVER: RefCell<Option<Rc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
+    pub static SESSION_RESOLVER: RefCell<Option<Arc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
     /// CID of the most recently stored encrypted profile blob.
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_identity_publish` to embed `ma.agent` in the DID document.
