@@ -329,11 +329,12 @@ mod tests {
 
     #[test]
     fn did_payload_accepts_only_bare_dids() {
-        assert_eq!(
-            did_payload(b"did:ma:k51example"),
-            Some("did:ma:k51example".to_string())
+        let did = format!(
+            "did:ma:{}",
+            ma_core::ipns_from_secret([1; 32]).expect("test IPNS identifier")
         );
-        assert!(did_payload(b"did:ma:k51example#room").is_none());
+        assert_eq!(did_payload(did.as_bytes()), Some(did.clone()));
+        assert!(did_payload(format!("{did}#room").as_bytes()).is_none());
         assert!(did_payload(b"hello").is_none());
     }
 }
