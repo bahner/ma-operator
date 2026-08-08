@@ -211,6 +211,13 @@ pub(crate) fn eval_remote_crud(
     config: RwSignal<EgoConfig>,
 ) {
     let cmd_id = state.push_command(raw);
+    let target = match transport::actor_url(&target, "root") {
+        Ok(target) => target,
+        Err(error) => {
+            fail_cmd(error, cmd_id, state);
+            return;
+        }
+    };
     let state2 = state.clone();
     let cancel_epoch = state.cancel_epoch();
     leptos::task::spawn_local(async move {

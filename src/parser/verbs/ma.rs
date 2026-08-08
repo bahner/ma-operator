@@ -435,10 +435,11 @@ async fn ping_and_publish_fallback(
 
 async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
     state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
+    let root = crate::transport::actor_url(did, "root")?;
     let send_and_wait = async move {
         let mut rx = None;
         let mut registered_msg_id = None;
-        let send_result = transport::send_rpc_with_msg_id(did, "ping", &[], |msg_id| {
+        let send_result = transport::send_rpc_with_msg_id(&root, "ping", &[], |msg_id| {
             registered_msg_id = Some(msg_id.clone());
             rx = Some(crate::state::AwaitingReply::register(msg_id));
         })
