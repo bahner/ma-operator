@@ -26,6 +26,7 @@ pub(crate) fn has_event_handler() -> bool {
     matches!(get_env().get("on-event"), Some(SchemeVal::Lambda { .. }))
 }
 
+#[cfg(test)]
 pub(crate) fn has_reply_handler() -> bool {
     matches!(get_env().get("on-reply"), Some(SchemeVal::Lambda { .. }))
 }
@@ -57,6 +58,7 @@ pub async fn call_event(
 }
 
 /// Invoke the local query-reply entry point with decoded, typed data.
+#[cfg(test)]
 pub async fn call_reply(
     verb: &str,
     value: SchemeVal,
