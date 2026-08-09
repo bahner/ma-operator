@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        此帮助文本
 help-cmd-clear =   .clear                       清屏
 help-cmd-panic =   .panic                       最后手段 — 遇到问题时使用
-help-cmd-history =   .history                     命令历史（连续重复项已合并）
+help-cmd-history =   .history [n]                 命令历史（连续重复项已合并）；可选的 n 只显示最后 n 行
 help-cmd-logout =   .logout                      退出登录
 help-cmd-batch =   .batch                       并行执行临时文档
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         逐行执行临时文档
@@ -296,6 +296,7 @@ err-config-load = 配置加载错误：{ $e }
 err-lang-persist = 语言保存错误：{ $e }
 err-history-parse = 历史记录解析错误：{ $e }
 err-history-load = 历史记录加载错误：{ $e }
+err-history-count-invalid = 历史记录数量必须为正整数
 err-ipfs-reply-decode = IPFS 回复解码失败：{ $e }
 err-edit-cbor = CBOR 编辑错误：{ $e }
 err-popup-blocked = 浏览器屏蔽了弹窗

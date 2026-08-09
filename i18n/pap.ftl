@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        e teksto aki
 help-cmd-clear =   .clear                       limpiá terminal
 help-cmd-panic =   .panic                       último rekurso — usá si bo haya bou di problema
-help-cmd-history =   .history                     historial di komando (duplikado konsekutivo kombiná)
+help-cmd-history =   .history [n]                 historial di komando (duplikado konsekutivo kombiná); n opshonal ta mustra solamente e último n lininan
 help-cmd-logout =   .logout                      sali
 help-cmd-batch =   .batch                       avaliar documento rascunho em paralelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         avaliar documento rascunho linha por linha
@@ -282,6 +282,7 @@ err-config-load = Error di karga konfigurasjon: { $e }
 err-lang-persist = Error di garda idioma: { $e }
 err-history-parse = Error di analisa historia: { $e }
 err-history-load = Error di karga historia: { $e }
+err-history-count-invalid = e kantidat di historial mester ta un number entero positivo
 err-ipfs-reply-decode = Fayo di dekofikashon di respuesta IPFS: { $e }
 err-edit-cbor = Error di edishan CBOR: { $e }
 err-popup-blocked = Popup blokea pa browser

@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis lit-pej
 help-cmd-clear =   .clear                       kel terminal
 help-cmd-panic =   .panic                       owkwa keting — du wit problem
-help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
+help-cmd-history =   .history [n]                 komand histori (sekwens duplikat mash bikik); optional n show only da last n lain
 help-cmd-logout =   .logout                      tek-out
 help-cmd-batch =   .batch                       run scratch document parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
@@ -298,6 +298,7 @@ err-config-load = config load error: { $e }
 err-lang-persist = lang persist: { $e }
 err-history-parse = history parse error: { $e }
 err-history-load = history load error: { $e }
+err-history-count-invalid = histori namba mus be positive hol namba
 err-ipfs-reply-decode = IPFS reply decode failed: { $e }
 err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by browser

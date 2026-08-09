@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        teks ini
 help-cmd-clear =   .clear                       bersihkan terminal
 help-cmd-panic =   .panic                       pilihan terakhir — gunakan saat bermasalah
-help-cmd-history =   .history                     riwayat perintah (duplikat berurutan digabung)
+help-cmd-history =   .history [n]                 riwayat perintah (duplikat berurutan digabung); n opsional hanya menampilkan n baris terakhir
 help-cmd-logout =   .logout                      keluar
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
@@ -296,6 +296,7 @@ err-config-load = Kesalahan memuat konfigurasi: { $e }
 err-lang-persist = Kesalahan simpan bahasa: { $e }
 err-history-parse = Kesalahan penguraian riwayat: { $e }
 err-history-load = Kesalahan memuat riwayat: { $e }
+err-history-count-invalid = jumlah riwayat harus berupa bilangan bulat positif
 err-ipfs-reply-decode = Gagal dekode balasan IPFS: { $e }
 err-edit-cbor = Kesalahan edit CBOR: { $e }
 err-popup-blocked = Popup diblokir oleh browser

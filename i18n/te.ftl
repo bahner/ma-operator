@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ఈ టెక్స్ట్
 help-cmd-clear =   .clear                       టెర్మినల్ క్లియర్ చేయండి
 help-cmd-panic =   .panic                       చివరి మార్గం — సమస్య వస్తే వాడండి
-help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
+help-cmd-history =   .history [n]                 ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి); ఐచ్ఛిక n చివరి n పంక్తులను మాత్రమే చూపిస్తుంది
 help-cmd-logout =   .logout                      లాగ్ అవుట్
 help-cmd-batch =   .batch                       scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch పత్రాన్ని పంక్తి పంక్తిగా అమలు చేయి
@@ -296,6 +296,7 @@ err-config-load = కాన్ఫిగ్ లోడ్ లోపం: { $e }
 err-lang-persist = భాష నిల్వ లోపం: { $e }
 err-history-parse = చరిత్ర పార్సింగ్ లోపం: { $e }
 err-history-load = చరిత్ర లోడ్ లోపం: { $e }
+err-history-count-invalid = చరిత్ర సంఖ్య తప్పనిసరిగా ధనాత్మక పూర్ణాంకం అయి ఉండాలి
 err-ipfs-reply-decode = IPFS జవాబు డీకోడ్ విఫలమైంది: { $e }
 err-edit-cbor = CBOR సవరణ లోపం: { $e }
 err-popup-blocked = బ్రౌజర్ పాప్‌అప్‌ను బ్లాక్ చేసింది

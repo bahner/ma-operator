@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
 help-cmd-panic =   .panic                       las resort — yus am if yu waka enter wahala
-help-cmd-history =   .history                     history of command (repeat wey follow each oda don join)
+help-cmd-history =   .history [n]                 history of command (repeat wey follow each oda don join); if you put n e go show only di last n lines
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       run scratch document parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
@@ -282,6 +282,7 @@ err-config-load = config load wahala: { $e }
 err-lang-persist = language save wahala: { $e }
 err-history-parse = history parse wahala: { $e }
 err-history-load = history load wahala: { $e }
+err-history-count-invalid = history number must be positive whole number
 err-ipfs-reply-decode = IPFS reply decode no work: { $e }
 err-edit-cbor = edit CBOR wahala: { $e }
 err-popup-blocked = browser block popup

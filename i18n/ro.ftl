@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        acest text
 help-cmd-clear =   .clear                       șterge terminalul
 help-cmd-panic =   .panic                       ultima soluție — folosiți dacă aveți probleme
-help-cmd-history =   .history                     istoricul comenzilor (duplicate consecutive îmbinate)
+help-cmd-history =   .history [n]                 istoricul comenzilor (duplicate consecutive îmbinate); n opțional afișează doar ultimele n linii
 help-cmd-logout =   .logout                      deconectare
 help-cmd-batch =   .batch                       evaluează documentul temporar în paralel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluează documentul temporar linie cu linie
@@ -289,6 +289,7 @@ err-config-load = Eroare la încărcarea configurației: { $e }
 err-lang-persist = Eroare la salvarea limbii: { $e }
 err-history-parse = Eroare de analiză a istoricului: { $e }
 err-history-load = Eroare la încărcarea istoricului: { $e }
+err-history-count-invalid = numărul istoricului trebuie să fie un întreg pozitiv
 err-ipfs-reply-decode = Eșec la decodificarea răspunsului IPFS: { $e }
 err-edit-cbor = Eroare de editare CBOR: { $e }
 err-popup-blocked = Fereastra pop-up a fost blocată de browser

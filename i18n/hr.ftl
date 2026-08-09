@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ovaj tekst
 help-cmd-clear =   .clear                       očisti terminal
 help-cmd-panic =   .panic                       zadnja mogućnost — koristite ako ste u nevolji
-help-cmd-history =   .history                     povijest naredbi (uzastopni duplikati spojeni)
+help-cmd-history =   .history [n]                 povijest naredbi (uzastopni duplikati spojeni); neobavezni n prikazuje samo zadnjih n redaka
 help-cmd-logout =   .logout                      odjava
 help-cmd-batch =   .batch                       evaluiraj privremeni dokument paralelno
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluiraj privremeni dokument red po red
@@ -289,6 +289,7 @@ err-config-load = Greška pri učitavanju konfiguracije: { $e }
 err-lang-persist = Greška pri pohrani jezika: { $e }
 err-history-parse = Greška pri parsiranju povijesti: { $e }
 err-history-load = Greška pri učitavanju povijesti: { $e }
+err-history-count-invalid = broj povijesti mora biti pozitivan cijeli broj
 err-ipfs-reply-decode = Greška dekodiranja IPFS odgovora: { $e }
 err-edit-cbor = Greška uređivanja CBOR-a: { $e }
 err-popup-blocked = Preglednik je blokirao skočni prozor

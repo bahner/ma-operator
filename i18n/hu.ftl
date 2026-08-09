@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ez a szöveg
 help-cmd-clear =   .clear                       terminál törlése
 help-cmd-panic =   .panic                       végső megoldás — ha bajban van, használja
-help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
+help-cmd-history =   .history [n]                 parancselőzmények (egymást követő ismétlések összevonva); az opcionális n csak az utolsó n sort mutatja
 help-cmd-logout =   .logout                      kijelentkezés
 help-cmd-batch =   .batch                       vázlatdokumentum párhuzamos kiértékelése
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vázlatdokumentum soronkénti kiértékelése
@@ -289,6 +289,7 @@ err-config-load = Konfiguráció betöltési hiba: { $e }
 err-lang-persist = Nyelv mentési hiba: { $e }
 err-history-parse = Előzmények elemzési hiba: { $e }
 err-history-load = Előzmények betöltési hiba: { $e }
+err-history-count-invalid = az előzményszámnak pozitív egész számnak kell lennie
 err-ipfs-reply-decode = IPFS válasz dekódolási hiba: { $e }
 err-edit-cbor = CBOR szerkesztési hiba: { $e }
 err-popup-blocked = A böngésző blokkolta a felugró ablakot

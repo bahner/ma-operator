@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        هذا النص
 help-cmd-clear =   .clear                       مسح الطرفية
 help-cmd-panic =   .panic                       الملاذ الأخير — استخدم عند المشاكل
-help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
+help-cmd-history =   .history [n]                 سجل الأوامر (التكرارات المتتالية مدمجة)؛ يعرض n السطور الأخيرة فقط إذا تم تحديده اختياريًا
 help-cmd-logout =   .logout                      تسجيل الخروج
 help-cmd-batch =   .batch                       قيّم مستند المسودة (بالتوازي)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مستند المسودة سطراً بسطر
@@ -296,6 +296,7 @@ err-config-load = خطأ في تحميل الإعداد: { $e }
 err-lang-persist = خطأ في حفظ اللغة: { $e }
 err-history-parse = خطأ في تحليل السجل: { $e }
 err-history-load = خطأ في تحميل السجل: { $e }
+err-history-count-invalid = يجب أن يكون عدد السجل عددًا صحيحًا موجبًا
 err-ipfs-reply-decode = فشل فك ترميز استجابة IPFS: { $e }
 err-edit-cbor = خطأ تعديل CBOR: { $e }
 err-popup-blocked = النوافذ المنبثقة محجوبة من المتصفح

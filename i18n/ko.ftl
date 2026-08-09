@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        이 텍스트
 help-cmd-clear =   .clear                       터미널 지우기
 help-cmd-panic =   .panic                       최후 수단 — 문제 발생 시 사용
-help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
+help-cmd-history =   .history [n]                 명령 기록 (연속 중복 항목 병합); 선택적 n은 마지막 n줄만 표시
 help-cmd-logout =   .logout                      로그아웃
 help-cmd-batch =   .batch                       스크래치 문서를 병렬 평가
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         스크래치 문서를 줄 단위로 평가
@@ -296,6 +296,7 @@ err-config-load = 설정 불러오기 오류: { $e }
 err-lang-persist = 언어 저장 오류: { $e }
 err-history-parse = 기록 파싱 오류: { $e }
 err-history-load = 기록 불러오기 오류: { $e }
+err-history-count-invalid = 기록 개수는 양의 정수여야 합니다
 err-ipfs-reply-decode = IPFS 응답 디코딩 실패: { $e }
 err-edit-cbor = CBOR 편집 오류: { $e }
 err-popup-blocked = 팝업이 브라우저에 의해 차단됨

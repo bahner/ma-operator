@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        questo testo
 help-cmd-clear =   .clear                       pulisci terminale
 help-cmd-panic =   .panic                       ultima risorsa — usa se sei nei guai
-help-cmd-history =   .history                     cronologia comandi (duplicati consecutivi uniti)
+help-cmd-history =   .history [n]                 cronologia comandi (duplicati consecutivi uniti); n opzionale mostra solo le ultime n righe
 help-cmd-logout =   .logout                      disconnetti
 help-cmd-batch =   .batch                       valuta documento temporaneo in parallelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         valuta documento temporaneo riga per riga
@@ -289,6 +289,7 @@ err-config-load = Errore di caricamento configurazione: { $e }
 err-lang-persist = Errore di salvataggio della lingua: { $e }
 err-history-parse = Errore analisi cronologia: { $e }
 err-history-load = Errore di caricamento cronologia: { $e }
+err-history-count-invalid = il numero della cronologia deve essere un intero positivo
 err-ipfs-reply-decode = Decodifica risposta IPFS fallita: { $e }
 err-edit-cbor = Errore di modifica CBOR: { $e }
 err-popup-blocked = Finestra popup bloccata dal browser

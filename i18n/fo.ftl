@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        hesin tekstur
 help-cmd-clear =   .clear                       reinsa terminalen
 help-cmd-panic =   .panic                       seinasti ráður — nýt um tú ert í vandræðum
-help-cmd-history =   .history                     skipanaferill (eftirfylgjandi endurtøkur samlagar)
+help-cmd-history =   .history [n]                 skipanaferill (eftirfylgjandi endurtøkur samlagar); valfrítt n vísir bara seinastu n reglur
 help-cmd-logout =   .logout                      rita út
 help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladdedokument linje for linje
@@ -289,6 +289,7 @@ err-config-load = Stillingsmistak við lesing: { $e }
 err-lang-persist = Mállagar geymingarmistak: { $e }
 err-history-parse = Søgugreiningarmistak: { $e }
 err-history-load = Søgulesing mistak: { $e }
+err-history-count-invalid = søgutalið skal vera eitt positivt heiltal
 err-ipfs-reply-decode = IPFS-svar afkóðingarmistak: { $e }
 err-edit-cbor = CBOR-redigeringsmistak: { $e }
 err-popup-blocked = Uppsprettugluggi stoppað av vøktara

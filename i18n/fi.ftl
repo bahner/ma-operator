@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        tämä teksti
 help-cmd-clear =   .clear                       tyhjennä terminaali
 help-cmd-panic =   .panic                       viimeinen keino — käytä jos olet pulassa
-help-cmd-history =   .history                     komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty)
+help-cmd-history =   .history [n]                 komentohistoria (peräkkäiset kaksoiskappaleet yhdistetty); valinnainen n näyttää vain viimeiset n riviä
 help-cmd-logout =   .logout                      kirjaudu ulos
 help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakkain
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         arvioi luonnosdokumentti riveittäin
@@ -289,6 +289,7 @@ err-config-load = Konfiguraation latausvirhe: { $e }
 err-lang-persist = Kielitallennus virhe: { $e }
 err-history-parse = Historiaanalyysivirhe: { $e }
 err-history-load = Historian latausvirhe: { $e }
+err-history-count-invalid = historian määrän on oltava positiivinen kokonaisluku
 err-ipfs-reply-decode = IPFS-vastauksen dekoodausvirhe: { $e }
 err-edit-cbor = CBOR-muokkausvirhe: { $e }
 err-popup-blocked = Ponnahdusikkuna estetty selaimelta

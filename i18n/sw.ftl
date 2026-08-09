@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        maandishi haya
 help-cmd-clear =   .clear                       futa terminal
 help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa katika shida
-help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
+help-cmd-history =   .history [n]                 historia ya amri (marudio yanayofuatana yamejumuishwa); n hiari inaonyesha tu mistari n ya mwisho
 help-cmd-logout =   .logout                      toka
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
@@ -289,6 +289,7 @@ err-config-load = Kosa la kupakia mipangilio: { $e }
 err-lang-persist = Kosa la kuhifadhi lugha: { $e }
 err-history-parse = Kosa la kuchanganua historia: { $e }
 err-history-load = Kosa la kupakia historia: { $e }
+err-history-count-invalid = idadi ya historia lazima iwe nambari nzima chanya
 err-ipfs-reply-decode = Kushindwa kusimbua jibu la IPFS: { $e }
 err-edit-cbor = Kosa la kuhariri CBOR: { $e }
 err-popup-blocked = Kivinjari kimezuia dirisha la popup

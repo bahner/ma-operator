@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis text
 help-cmd-clear =   .clear                       klia terminal
 help-cmd-panic =   .panic                       las opshen — yus if yu los yoself
-help-cmd-history =   .history                     komand istri (kopi dem wey dɔn folo sɛf bia wanwan)
+help-cmd-history =   .history [n]                 komand istri (kopi dem wey dɔn folo sɛf bia wanwan); optional n go sho na di las n lain dem
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       run scratch document parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
@@ -282,6 +282,7 @@ err-config-load = config lod ɛrɔ: { $e }
 err-lang-persist = lang persist ɛrɔ: { $e }
 err-history-parse = history parse ɛrɔ: { $e }
 err-history-load = history lod ɛrɔ: { $e }
+err-history-count-invalid = di istri numba fɔ bi wan pozitiv hol namba
 err-ipfs-reply-decode = IPFS reply dɛkod fɛl: { $e }
 err-edit-cbor = ɛdit CBOR ɛrɔ: { $e }
 err-popup-blocked = popup bɔlɔk bai browser

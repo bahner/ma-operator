@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        এই পাঠ্য
 help-cmd-clear =   .clear                       টার্মিনাল পরিষ্কার করুন
 help-cmd-panic =   .panic                       শেষ অবলম্বন — সমস্যায় ব্যবহার করুন
-help-cmd-history =   .history                     কমান্ড ইতিহাস (ক্রমাগত পুনরাবৃত্তি একত্রিত)
+help-cmd-history =   .history [n]                 কমান্ড ইতিহাস (ক্রমাগত পুনরাবৃত্তি একত্রিত); ঐচ্ছিক n শুধুমাত্র শেষ n লাইন দেখায়
 help-cmd-logout =   .logout                      লগ আউট
 help-cmd-batch =   .batch                       scratch दस्तावेज़ समानांतर चलाएँ
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch दस्तावेज़ पंक्ति-दर-पंक्ति चलाएँ
@@ -296,6 +296,7 @@ err-config-load = কনফিগারেশন লোড ত্রুটি: {
 err-lang-persist = ভাষা সংরক্ষণ ত্রুটি: { $e }
 err-history-parse = ইতিহাস পার্স ত্রুটি: { $e }
 err-history-load = ইতিহাস লোড ত্রুটি: { $e }
+err-history-count-invalid = ইতিহাসের সংখ্যা অবশ্যই একটি ধনাত্মক পূর্ণসংখ্যা হতে হবে
 err-ipfs-reply-decode = IPFS উত্তর ডিকোড ব্যর্থ: { $e }
 err-edit-cbor = CBOR সম্পাদনা ত্রুটি: { $e }
 err-popup-blocked = পপআপ ব্রাউজার দ্বারা অবরুদ্ধ

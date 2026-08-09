@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        हा मजकूर
 help-cmd-clear =   .clear                       टर्मिनल साफ करा
 help-cmd-panic =   .panic                       शेवटचा उपाय — समस्या असल्यास वापरा
-help-cmd-history =   .history                     आदेश इतिहास (क्रमिक डुप्लिकेट एकत्रित)
+help-cmd-history =   .history [n]                 आदेश इतिहास (क्रमिक डुप्लिकेट एकत्रित); पर्यायी n फक्त शेवटच्या n ओळी दाखवते
 help-cmd-logout =   .logout                      लॉग आउट
 help-cmd-batch =   .batch                       scratch दस्तावेज़ समानांतर चलाएँ
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch दस्तावेज़ पंक्ति-दर-पंक्ति चलाएँ
@@ -296,6 +296,7 @@ err-config-load = कॉन्फिग लोड त्रुटी: { $e }
 err-lang-persist = भाषा जतन त्रुटी: { $e }
 err-history-parse = इतिहास पार्स त्रुटी: { $e }
 err-history-load = इतिहास लोड त्रुटी: { $e }
+err-history-count-invalid = इतिहासाची संख्या धनात्मक पूर्णांक असावी
 err-ipfs-reply-decode = IPFS उत्तर डिकोड अयशस्वी: { $e }
 err-edit-cbor = CBOR संपादन त्रुटी: { $e }
 err-popup-blocked = ब्राउझरने पॉपअप अवरोधित केले

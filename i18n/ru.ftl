@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        этот текст
 help-cmd-clear =   .clear                       очистить терминал
 help-cmd-panic =   .panic                       последний resort — использовать при проблемах
-help-cmd-history =   .history                     история команд (последовательные дубликаты объединены)
+help-cmd-history =   .history [n]                 история команд (последовательные дубликаты объединены); необязательный n показывает только последние n строк
 help-cmd-logout =   .logout                      выйти
 help-cmd-batch =   .batch                       выполнить черновой документ параллельно
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         выполнить черновой документ построчно
@@ -296,6 +296,7 @@ err-config-load = Ошибка загрузки конфигурации: { $e }
 err-lang-persist = Ошибка сохранения языка: { $e }
 err-history-parse = Ошибка разбора истории: { $e }
 err-history-load = Ошибка загрузки истории: { $e }
+err-history-count-invalid = число истории должно быть положительным целым числом
 err-ipfs-reply-decode = Ошибка декодирования ответа IPFS: { $e }
 err-edit-cbor = Ошибка редактирования CBOR: { $e }
 err-popup-blocked = Всплывающее окно заблокировано браузером

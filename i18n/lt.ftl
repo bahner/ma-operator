@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        šis tekstas
 help-cmd-clear =   .clear                       išvalyti terminalą
 help-cmd-panic =   .panic                       paskutinė priemonė — naudokite, jei esate bėdoje
-help-cmd-history =   .history                     komandų istorija (nuoseklūs dublikatai sujungti)
+help-cmd-history =   .history [n]                 komandų istorija (nuoseklios dublikatai sujungti); pasirinktinis n rodo tik paskutines n eilutes
 help-cmd-logout =   .logout                      atsijungti
 help-cmd-batch =   .batch                       oceń dokument roboczy równolegle
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
@@ -289,6 +289,7 @@ err-config-load = Konfigūracijos įkėlimo klaida: { $e }
 err-lang-persist = Kalbos išsaugojimo klaida: { $e }
 err-history-parse = Istorijos analizės klaida: { $e }
 err-history-load = Istorijos įkėlimo klaida: { $e }
+err-history-count-invalid = istorijos skaičius turi būti teigiamas sveikasis skaičius
 err-ipfs-reply-decode = IPFS atsakymo dekodavimo klaida: { $e }
 err-edit-cbor = CBOR redagavimo klaida: { $e }
 err-popup-blocked = Iššokantysis langas užblokuotas naršyklės

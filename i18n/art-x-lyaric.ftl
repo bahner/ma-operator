@@ -201,7 +201,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis I-text
 help-cmd-clear =   .clear                       clear di terminal
 help-cmd-panic =   .panic                       last resort — use if I-self find trouble in Babylon
-help-cmd-history =   .history                     I-command history (consecutive repeats mash inna one)
+help-cmd-history =   .history [n]                 I-command history (consecutive repeats mash inna one); optional n show ongle di lickle n lines dem
 help-cmd-logout =   .logout                      depart from Zion
 help-cmd-batch =   .batch                       eval scratch dakiment parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch dakiment lain bai lain
@@ -284,6 +284,7 @@ err-config-load = config load error: { $e }
 err-lang-persist = lang persist: { $e }
 err-history-parse = history parse error: { $e }
 err-history-load = history load error: { $e }
+err-history-count-invalid = history count haffi be a positive whole number
 err-ipfs-reply-decode = IPFS reply decode failed: { $e }
 err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by di browser

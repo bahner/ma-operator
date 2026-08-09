@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ọ̀rọ̀ yìí
 help-cmd-clear =   .clear                       pa terminal mọ́
 help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò bí o bá rí ìṣòro
-help-cmd-history =   .history                     ìtàn àṣẹ (àwọn tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀)
+help-cmd-history =   .history [n]                 ìtàn àṣẹ́ (àwon tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀); n tí a fẹ́ fí kún un yóó fi hàn àwon ìlà n tí ó kẹ́hìn níkạn
 help-cmd-logout =   .logout                      jáde
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
@@ -295,8 +295,7 @@ err-inbox-prune-persist = Aṣiṣe fipamọ ifipabanilọ apoti apo: { $e }
 err-config-load = Aṣiṣe igba iwọle iṣeto: { $e }
 err-lang-persist = Aṣiṣe fipamọ ede: { $e }
 err-history-parse = Aṣiṣe itupalẹ itan: { $e }
-err-history-load = Aṣiṣe gbigba itan: { $e }
-err-ipfs-reply-decode = Iṣipopada idahun IPFS kuna: { $e }
+err-history-load = Aṣiṣe gbigba itan: { $e }err-history-count-invalid = iye ìtàn gbọ̣́dọ̀ jẹ́ nó́mbà odidi rereerr-ipfs-reply-decode = Iṣipopada idahun IPFS kuna: { $e }
 err-edit-cbor = Aṣiṣe ṣatunṣe CBOR: { $e }
 err-popup-blocked = Aṣàwákiri dina ferese afihan
 status-publishing = n gbejade

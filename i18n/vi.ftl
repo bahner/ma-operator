@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        văn bản này
 help-cmd-clear =   .clear                       xóa terminal
 help-cmd-panic =   .panic                       phương án cuối cùng — dùng khi gặp sự cố
-help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
+help-cmd-history =   .history [n]                 lịch sử lệnh (bản trùng lặp liên tiếp được gộp); n tùy chọn chỉ hiển thị n dòng cuối cùng
 help-cmd-logout =   .logout                      đăng xuất
 help-cmd-batch =   .batch                       đánh giá tài liệu nháp song song
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         đánh giá tài liệu nháp từng dòng
@@ -296,6 +296,7 @@ err-config-load = Lỗi tải cấu hình: { $e }
 err-lang-persist = Lỗi lưu ngôn ngữ: { $e }
 err-history-parse = Lỗi phân tích lịch sử: { $e }
 err-history-load = Lỗi tải lịch sử: { $e }
+err-history-count-invalid = số lượng lịch sử phải là số nguyên dương
 err-ipfs-reply-decode = Giải mã phản hồi IPFS thất bại: { $e }
 err-edit-cbor = Lỗi chỉnh sửa CBOR: { $e }
 err-popup-blocked = Trình duyệt đã chặn cửa sổ bật lên

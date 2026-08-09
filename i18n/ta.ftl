@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        இந்த உரை
 help-cmd-clear =   .clear                       முனையம் அழிக்கவும்
 help-cmd-panic =   .panic                       கடைசி வழி — சிக்கலில் பயன்படுத்தவும்
-help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
+help-cmd-history =   .history [n]                 கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன); விருப்பமான n கடைசி ந வரிகளை மட்டும் காட்டும்
 help-cmd-logout =   .logout                      வெளியேறவும்
 help-cmd-batch =   .batch                       scratch ஆவணத்தை இணையாக மதிப்பிடு
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch ஆவணத்தை வரி வரியாக மதிப்பிடு
@@ -296,6 +296,7 @@ err-config-load = கட்டமைப்பு ஏற்றல் பிழை
 err-lang-persist = மொழி சேமிப்பு பிழை: { $e }
 err-history-parse = வரலாறு பாகுபடுத்தல் பிழை: { $e }
 err-history-load = வரலாறு ஏற்றல் பிழை: { $e }
+err-history-count-invalid = வரலாற்று எண் ஒரு நேர்மறை முழு எண்ணாக இருக்க வேண்டும்
 err-ipfs-reply-decode = IPFS பதில் மறைகுறியாக்கல் தோல்வி: { $e }
 err-edit-cbor = CBOR திருத்தல் பிழை: { $e }
 err-popup-blocked = உலாவி பாப்அப்பை தடுத்தது

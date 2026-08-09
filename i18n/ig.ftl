@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ederede a
 help-cmd-clear =   .clear                       kpochaa terminal
 help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mgbe ị nọ n'nsogbu
-help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
+help-cmd-history =   .history [n]                 akụkọ ihe mere (ndị mwepụta n'usoro jikọtara); n nhọrọ na-egosi naanị ahịrị n ikpeazụ
 help-cmd-logout =   .logout                      pụọ
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
@@ -296,6 +296,7 @@ err-config-load = Njehie nbudata nhazi: { $e }
 err-lang-persist = Njehie chekwa asụsụ: { $e }
 err-history-parse = Njehie nyochaa akụkọ ihe mere eme: { $e }
 err-history-load = Njehie nbudata akụkọ ihe mere eme: { $e }
+err-history-count-invalid = ọnụọgụ akụkọ ihe mere aghaghị ịbụ nọmba zuru oke dị mma
 err-ipfs-reply-decode = Njehie denye azịza IPFS: { $e }
 err-edit-cbor = Njehie mmezi CBOR: { $e }
 err-popup-blocked = Browser egbochi popup

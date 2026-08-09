@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        deze tekst
 help-cmd-clear =   .clear                       terminal leegmaken
 help-cmd-panic =   .panic                       laatste redmiddel — gebruik als u in de problemen zit
-help-cmd-history =   .history                     opdrachtgeschiedenis (opeenvolgende duplicaten samengevoegd)
+help-cmd-history =   .history [n]                 opdrachtgeschiedenis (opeenvolgende duplicaten samengevoegd); optionele n toont alleen de laatste n regels
 help-cmd-logout =   .logout                      afmelden
 help-cmd-batch =   .batch                       klad-document parallel evalueren
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         klad-document regel voor regel evalueren
@@ -289,6 +289,7 @@ err-config-load = Configuratielaadfouten: { $e }
 err-lang-persist = Taalopslaan-fout: { $e }
 err-history-parse = Geschiedenisparserfout: { $e }
 err-history-load = Geschiedenislaad-fout: { $e }
+err-history-count-invalid = het geschiedenisaantal moet een positief geheel getal zijn
 err-ipfs-reply-decode = IPFS-antwoord decoderen mislukt: { $e }
 err-edit-cbor = CBOR-bewerkingsfout: { $e }
 err-popup-blocked = Pop-up geblokkeerd door browser

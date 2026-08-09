@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        þessi texti
 help-cmd-clear =   .clear                       hreinsa útstöðina
 help-cmd-panic =   .panic                       síðasta úrræði — notaðu ef þú ert í vandræðum
-help-cmd-history =   .history                     skipanasaga (samhliða endurtekningar sameinaðar)
+help-cmd-history =   .history [n]                 skipanasaga (samhliða endurtekningar sameinaðar); valfrjálst n sýnir aðeins síðustu n línur
 help-cmd-logout =   .logout                      skrá út
 help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladdedokument linje for linje
@@ -289,6 +289,7 @@ err-config-load = Stillinga hleðsluvilla: { $e }
 err-lang-persist = Tungumáls geymingarvilla: { $e }
 err-history-parse = Söguþáttunarvilla: { $e }
 err-history-load = Sögu hleðsluvilla: { $e }
+err-history-count-invalid = sögutalan verður að vera jákvæð heiltala
 err-ipfs-reply-decode = IPFS-svar afkóðunarvilla: { $e }
 err-edit-cbor = CBOR-breytingarvilla: { $e }
 err-popup-blocked = Vafrinn lokaði á sprettiglugga

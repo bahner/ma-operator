@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        wannan rubutu
 help-cmd-clear =   .clear                       share terminal
 help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani idan akwai matsala
-help-cmd-history =   .history                     tarihin umarni (maimaita masu jere sun haɗu)
+help-cmd-history =   .history [n]                 tarihin umarni (maimaita masu jere sun haɗu); n na zaɓi yana nuna layuka n na ƙarshe kaɗai
 help-cmd-logout =   .logout                      fita
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
@@ -296,6 +296,7 @@ err-config-load = Kuskuren loda saita: { $e }
 err-lang-persist = Kuskuren adana yare: { $e }
 err-history-parse = Kuskuren binciken tarihi: { $e }
 err-history-load = Kuskuren loda tarihi: { $e }
+err-history-count-invalid = adadin tarihin dole ne ya zama lamba mai kyau
 err-ipfs-reply-decode = Rashin lalata amsar IPFS: { $e }
 err-edit-cbor = Kuskuren gyara CBOR: { $e }
 err-popup-blocked = Popup ta toshe ta browser

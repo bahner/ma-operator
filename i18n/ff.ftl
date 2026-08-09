@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        deftere ndee
 help-cmd-clear =   .clear                       yaltina terminal
 help-cmd-panic =   .panic                       laawol ɓurno — faala e nder nafoore
-help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
+help-cmd-history =   .history [n]                 taariki juurde (laawol dow dow ɗiɗi nde fiilata); n so a suɓike hollay ko ɗemngal n gonduɗi
 help-cmd-logout =   .logout                      yalta
 help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
@@ -296,6 +296,7 @@ err-config-load = Juulnde heɓtude: { $e }
 err-lang-persist = Juulnde wolde: { $e }
 err-history-parse = Juulnde taariika: { $e }
 err-history-load = Juulnde heɓtude taariika: { $e }
+err-history-count-invalid = limoore taariki foti wonde limoore moƴƴere
 err-ipfs-reply-decode = Juulnde IPFS: { $e }
 err-edit-cbor = Juulnde CBOR: { $e }
 err-popup-blocked = Wannde ñalaaɗe jaabii

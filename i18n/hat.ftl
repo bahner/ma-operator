@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        teks sa a
 help-cmd-clear =   .clear                       efase terminal
 help-cmd-panic =   .panic                       dènye rekous — itilize si ou pèdi
-help-cmd-history =   .history                     istwa kòmand (repetisyon konsekitif konbine)
+help-cmd-history =   .history [n]                 istwa kòmand (repetisyon konsekitif konbine); n opsyonèl montre sèlman dènye n liy yo
 help-cmd-logout =   .logout                      dekonekte
 help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch document line-by-line (sequential)
@@ -282,6 +282,7 @@ err-config-load = Erè chajman konfigirasyon: { $e }
 err-lang-persist = Erè sove lang: { $e }
 err-history-parse = Erè pars istwa: { $e }
 err-history-load = Erè chajman istwa: { $e }
+err-history-count-invalid = kantite istwa a dwe yon nonb antye pozitif
 err-ipfs-reply-decode = Echèk dekodaj repons IPFS: { $e }
 err-edit-cbor = Erè edisyon CBOR: { $e }
 err-popup-blocked = Popup bloke pa navigatè

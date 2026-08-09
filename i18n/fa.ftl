@@ -206,7 +206,7 @@ help-footer = ──────────────────────
 # ── متن راهنما — فرمان‌های zion ─────────────────────────────────────────
 help-cmd-help =   .help                        این متن
 help-cmd-clear =   .clear                       پاک کردن ترمینال
-help-cmd-history =   .history                     تاریخچه فرمان‌ها (تکرارهای پیاپی ادغام می‌شوند)
+help-cmd-history =   .history [n]                 تاریخچه فرمان‌ها (تکرارهای پیاپی ادغام می‌شوند)؛ n اختیاری فقط n خط آخر را نشان می‌دهد
 help-cmd-panic =   .panic                       آخرین چاره — اگر به دردسر افتادید استفاده کنید
 help-cmd-logout =   .logout                      خروج
 help-cmd-batch =   .batch                       اجرای سند scratch (موازی، بدون انتظار)
@@ -351,6 +351,7 @@ err-config-load = خطای بارگذاری پیکربندی: { $e }
 err-lang-persist = ذخیره‌سازی زبان: { $e }
 err-history-parse = خطای تجزیه تاریخچه: { $e }
 err-history-load = خطای بارگذاری تاریخچه: { $e }
+err-history-count-invalid = تعداد تاریخچه باید یک عدد صحیح مثبت باشد
 err-ipfs-reply-decode = رمزگشایی پاسخ IPFS ناموفق بود: { $e }
 err-edit-cbor = خطای CBOR در ویرایش: { $e }
 err-popup-blocked = پنجره popup توسط مرورگر مسدود شد

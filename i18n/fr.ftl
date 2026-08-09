@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ce texte
 help-cmd-clear =   .clear                       effacer le terminal
 help-cmd-panic =   .panic                       dernier recours — utilisez si vous êtes dans la difficulté
-help-cmd-history =   .history                     historique des commandes (doublons consécutifs fusionnés)
+help-cmd-history =   .history [n]                 historique des commandes (doublons consécutifs fusionnés); n optionnel n'affiche que les n dernières lignes
 help-cmd-logout =   .logout                      se déconnecter
 help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
@@ -289,6 +289,7 @@ err-config-load = Erreur de chargement de la configuration : { $e }
 err-lang-persist = Erreur de sauvegarde de la langue : { $e }
 err-history-parse = Erreur d'analyse de l'historique : { $e }
 err-history-load = Erreur de chargement de l'historique : { $e }
+err-history-count-invalid = le nombre d'historique doit être un entier positif
 err-ipfs-reply-decode = Échec du décodage de la réponse IPFS : { $e }
 err-edit-cbor = Erreur d'édition CBOR : { $e }
 err-popup-blocked = Fenêtre contextuelle bloquée par le navigateur

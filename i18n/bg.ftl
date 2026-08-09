@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        този текст
 help-cmd-clear =   .clear                       изчистване на терминала
 help-cmd-panic =   .panic                       последна мярка — използвайте ако сте в затруднение
-help-cmd-history =   .history                     история на командите (последователните дублирания се обединяват)
+help-cmd-history =   .history [n]                 история на командите (последователните дублирания се обединяват); незадължителният n показва само последните n реда
 help-cmd-logout =   .logout                      изход
 help-cmd-batch =   .batch                       изпълни временен документ (паралелно)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         изпълни временен документ ред по ред
@@ -289,6 +289,7 @@ err-config-load = Грешка при зареждане на конфигура
 err-lang-persist = Грешка при запазване на езика: { $e }
 err-history-parse = Грешка при разбор на историята: { $e }
 err-history-load = Грешка при зареждане на историята: { $e }
+err-history-count-invalid = броят за историята трябва да е положително цяло число
 err-ipfs-reply-decode = Грешка при декодиране на IPFS отговор: { $e }
 err-edit-cbor = Грешка при редактиране на CBOR: { $e }
 err-popup-blocked = Изскачащият прозорец е блокиран от браузъра

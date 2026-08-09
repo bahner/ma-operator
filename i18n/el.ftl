@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        αυτό το κείμενο
 help-cmd-clear =   .clear                       εκκαθάριση τερματικού
 help-cmd-panic =   .panic                       τελευταία λύση — χρησιμοποιήστε αν αντιμετωπίζετε πρόβλημα
-help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
+help-cmd-history =   .history [n]                 ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν); το προαιρετικό n εμφανίζει μόνο τις τελευταίες n γραμμές
 help-cmd-logout =   .logout                      αποσύνδεση
 help-cmd-batch =   .batch                       εκτέλεση πρόχειρου εγγράφου παράλληλα
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         εκτέλεση πρόχειρου εγγράφου γραμμή-γραμμή
@@ -289,6 +289,7 @@ err-config-load = Σφάλμα φόρτωσης ρυθμίσεων: { $e }
 err-lang-persist = Σφάλμα αποθήκευσης γλώσσας: { $e }
 err-history-parse = Σφάλμα ανάλυσης ιστορικού: { $e }
 err-history-load = Σφάλμα φόρτωσης ιστορικού: { $e }
+err-history-count-invalid = ο αριθμός ιστορικού πρέπει να είναι θετικός ακέραιος
 err-ipfs-reply-decode = Αποτυχία αποκωδικοποίησης απόκρισης IPFS: { $e }
 err-edit-cbor = Σφάλμα επεξεργασίας CBOR: { $e }
 err-popup-blocked = Το αναδυόμενο παράθυρο αποκλείστηκε από τον περιηγητή

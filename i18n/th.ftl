@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ข้อความนี้
 help-cmd-clear =   .clear                       ล้าง terminal
 help-cmd-panic =   .panic                       ทางเลือกสุดท้าย — ใช้เมื่อมีปัญหา
-help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
+help-cmd-history =   .history [n]                 ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม); n ที่เป็นทางเลือกจะแสดงเฉพาะ n บรรทัดสุดท้าย
 help-cmd-logout =   .logout                      ออกจากระบบ
 help-cmd-batch =   .batch                       ประเมินเอกสาร scratch แบบขนาน
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ประเมินเอกสาร scratch ทีละบรรทัด
@@ -296,6 +296,7 @@ err-config-load = ข้อผิดพลาดในการโหลดก�
 err-lang-persist = ข้อผิดพลาดการบันทึกภาษา: { $e }
 err-history-parse = ข้อผิดพลาดการแยกวิเคราะห์ประวัติ: { $e }
 err-history-load = ข้อผิดพลาดการโหลดประวัติ: { $e }
+err-history-count-invalid = จำนวนประวัติต้องเป็นจำนวนเต็มบวก
 err-ipfs-reply-decode = การถอดรหัสการตอบกลับ IPFS ล้มเหลว: { $e }
 err-edit-cbor = ข้อผิดพลาดการแก้ไข CBOR: { $e }
 err-popup-blocked = เบราว์เซอร์บล็อกป็อปอัป

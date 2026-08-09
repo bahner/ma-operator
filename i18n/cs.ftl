@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        tento text
 help-cmd-clear =   .clear                       vymazat terminál
 help-cmd-panic =   .panic                       poslední záchrana — použijte v nouzi
-help-cmd-history =   .history                     historie příkazů (po sobě jdoucí duplikáty sloučeny)
+help-cmd-history =   .history [n]                 historie příkazů (po sobě jdoucí duplikáty sloučeny); volitelné n zobrazí jen posledních n řádků
 help-cmd-logout =   .logout                      odhlásit
 help-cmd-batch =   .batch                       vyhodnotit pracovní dokument paralelně
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vyhodnotit pracovní dokument po řádcích
@@ -289,6 +289,7 @@ err-config-load = Chyba načítání konfigurace: { $e }
 err-lang-persist = Chyba uložení jazyka: { $e }
 err-history-parse = Chyba analýzy historie: { $e }
 err-history-load = Chyba načítání historie: { $e }
+err-history-count-invalid = počet historie musí být kladné celé číslo
 err-ipfs-reply-decode = Selhání dekódování IPFS odpovědi: { $e }
 err-edit-cbor = Chyba úpravy CBOR: { $e }
 err-popup-blocked = Vyskakovací okno zablokováno prohlížečem

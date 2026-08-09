@@ -198,7 +198,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        denne teksten
 help-cmd-clear =   .clear                       tøm terminalen
 help-cmd-panic =   .panic                       siste utvei — bruk hvis du er i en vanskelig situasjon
-help-cmd-history =   .history                     kommandohistorikk (påfølgende duplikater slås sammen)
+help-cmd-history =   .history [n]                 kommandohistorikk (påfølgende duplikater slås sammen); valgfri n viser bare de siste n linjene
 help-cmd-logout =   .logout                      logg ut
 help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladdedokument linje for linje
@@ -313,6 +313,7 @@ err-config-load = konfigurasjonslastingsfeil: { $e }
 err-lang-persist = språklagringsfeil: { $e }
 err-history-parse = historikkparsefeil: { $e }
 err-history-load = historikklastingsfeil: { $e }
+err-history-count-invalid = historikkantallet må være et positivt heltall
 err-ipfs-reply-decode = IPFS-svar-avkodingsfeil: { $e }
 err-edit-cbor = redigeringsfeil (CBOR): { $e }
 err-popup-blocked = popup blokkert av nettleseren

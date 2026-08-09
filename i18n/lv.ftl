@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        šis teksts
 help-cmd-clear =   .clear                       notīrīt termināli
 help-cmd-panic =   .panic                       pēdējais līdzeklis — izmantojiet, ja esat nonācis grūtībās
-help-cmd-history =   .history                     komandu vēsture (secīgie dublikāti apvienoti)
+help-cmd-history =   .history [n]                 komandu vēsture (secīgie dublikāti apvienoti); izvēles n rāda tikai pēdējās n rindas
 help-cmd-logout =   .logout                      atteikties
 help-cmd-batch =   .batch                       oceń dokument roboczy równolegle
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
@@ -289,6 +289,7 @@ err-config-load = Konfigurācijas ielādes kļūda: { $e }
 err-lang-persist = Valodas saglabāšanas kļūda: { $e }
 err-history-parse = Vēstures parsēšanas kļūda: { $e }
 err-history-load = Vēstures ielādes kļūda: { $e }
+err-history-count-invalid = vēstures skaitlim jābūt pozitīvam veselam skaitlim
 err-ipfs-reply-decode = IPFS atbildes dekodēšanas kļūda: { $e }
 err-edit-cbor = CBOR rediģēšanas kļūda: { $e }
 err-popup-blocked = Uznirstošais logs ir bloķēts pārlūkprogrammā

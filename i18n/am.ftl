@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ይህ ጽሑፍ
 help-cmd-clear =   .clear                       terminal ያጽዱ
 help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — ችግር ሲያጋጥምዎ ይጠቀሙ
-help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
+help-cmd-history =   .history [n]                 የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)፤ አማራጭ n ካለ የመጨረሻዎቹን n መስመሮች ብቻ ያሳያል
 help-cmd-logout =   .logout                      ይውጡ
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
@@ -296,6 +296,7 @@ err-config-load = ውቅር ጫን ስህተት፡ { $e }
 err-lang-persist = ቋንቋ አስቀምጥ ስህተት፡ { $e }
 err-history-parse = ታሪክ ፍቺ ስህተት፡ { $e }
 err-history-load = ታሪክ ጫን ስህተት፡ { $e }
+err-history-count-invalid = የታሪክ ቁጥር አዎንታዊ ኢንቲጀር መሆን አለበት
 err-ipfs-reply-decode = IPFS ምላሽ ፍቺ ስህተት፡ { $e }
 err-edit-cbor = CBOR ማረሚያ ስህተት፡ { $e }
 err-popup-blocked = ፖፕ-አፕ በአሳሽ ታግዷል

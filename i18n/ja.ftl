@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        このテキスト
 help-cmd-clear =   .clear                       ターミナルをクリア
 help-cmd-panic =   .panic                       最後の手段 — 困ったときに使用
-help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
+help-cmd-history =   .history [n]                 コマンド履歴（連続する重複を省略）；省略可能なnを指定すると最後のn行だけ表示
 help-cmd-logout =   .logout                      ログアウト
 help-cmd-batch =   .batch                       スクラッチ文書を並列評価
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         スクラッチ文書を行ごとに評価
@@ -289,6 +289,7 @@ err-config-load = 設定読み込みエラー: { $e }
 err-lang-persist = 言語保存エラー: { $e }
 err-history-parse = 履歴解析エラー: { $e }
 err-history-load = 履歴読み込みエラー: { $e }
+err-history-count-invalid = 履歴の件数は正の整数でなければなりません
 err-ipfs-reply-decode = IPFS返信デコード失敗: { $e }
 err-edit-cbor = CBOR編集エラー: { $e }
 err-popup-blocked = ブラウザによりポップアップがブロックされました

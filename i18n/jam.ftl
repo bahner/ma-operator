@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dis text ya
 help-cmd-clear =   .clear                       wipe di terminal
 help-cmd-panic =   .panic                       last resort — use if yuh find yuhself inna trouble
-help-cmd-history =   .history                     command histri (consecutive duplicate dem merge)
+help-cmd-history =   .history [n]                 command histri (consecutive duplicate dem merge); optional n show onli di last n lain dem
 help-cmd-logout = .logout                      dekonekte
 help-cmd-batch =   .batch                       eval scratch dakiment parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch dakiment lain bai lain
@@ -282,6 +282,7 @@ err-config-load = config load error: { $e }
 err-lang-persist = lang persist: { $e }
 err-history-parse = history parse error: { $e }
 err-history-load = history load error: { $e }
+err-history-count-invalid = history kount fi be a pozitiv hool numba
 err-ipfs-reply-decode = IPFS reply decode failed: { $e }
 err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by browser

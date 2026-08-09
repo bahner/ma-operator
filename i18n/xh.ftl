@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        lo mbhalo
 help-cmd-clear =   .clear                       coca i-terminal
 help-cmd-panic =   .panic                       indlela yokugqibela — sebenzisa xa uneengxaki
-help-cmd-history =   .history                     imbali yemiyalelo (izinto eziphindwayo ezilandelanayo zidityanisiwe)
+help-cmd-history =   .history [n]                 imbali yemiyalelo (izinto eziphindwayo ezilandelanayo zidityanisiwe); u-n ozikhethelayo ubonisa kuphela imigca engu-n yokugqibela
 help-cmd-logout =   .logout                      phuma
 help-cmd-batch =   .batch                       hlola idokhumenti ye-scratch ngokuhambisana
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
@@ -296,6 +296,7 @@ err-config-load = Impazamo yokulouda ukucwangciswa: { $e }
 err-lang-persist = Impazamo yokugcina ulwimi: { $e }
 err-history-parse = Impazamo yokuhlalutya imbali: { $e }
 err-history-load = Impazamo yokulouda imbali: { $e }
+err-history-count-invalid = inani lembali kufuneka libe yinombolo epheleleyo entle
 err-ipfs-reply-decode = Ukuvula impendulo ye-IPFS kuhlulekile: { $e }
 err-edit-cbor = Impazamo yokuhlela i-CBOR: { $e }
 err-popup-blocked = Isiphequluli sivimba isaziso esivela

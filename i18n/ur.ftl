@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        یہ متن
 help-cmd-clear =   .clear                       ٹرمینل صاف کریں
 help-cmd-panic =   .panic                       آخری چارہ — مسئلہ ہونے پر استعمال کریں
-help-cmd-history =   .history                     کمانڈ ہسٹری (مسلسل تکرار ضم ہو گئی)
+help-cmd-history =   .history [n]                 کمانڈ ہسٹری (مسلسل تکرار ضم ہو گئی)؛ اختیاری n صرف آخری n سطریں دکھاتا ہے
 help-cmd-logout =   .logout                      لاگ آؤٹ
 help-cmd-batch =   .batch                       قيّم مستند المسودة (بالتوازي)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مستند المسودة سطراً بسطر
@@ -296,6 +296,7 @@ err-config-load = کنفگریشن لوڈ خرابی: { $e }
 err-lang-persist = زبان محفوظ کریں خرابی: { $e }
 err-history-parse = تاریخ تجزیہ خرابی: { $e }
 err-history-load = تاریخ لوڈ خرابی: { $e }
+err-history-count-invalid = ہسٹری کی تعداد ایک مثبت عدد صحیح ہونی چاہیے
 err-ipfs-reply-decode = IPFS جواب ڈی کوڈنگ ناکام: { $e }
 err-edit-cbor = CBOR ترمیم خرابی: { $e }
 err-popup-blocked = براؤزر نے پاپ اپ روک لیا

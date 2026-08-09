@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        see tekst
 help-cmd-clear =   .clear                       tühjenda terminal
 help-cmd-panic =   .panic                       viimane abinõu — kasuta, kui oled hätta sattunud
-help-cmd-history =   .history                     käsuajalugu (järjestikused kordused ühendatud)
+help-cmd-history =   .history [n]                 käsuajalugu (järjestikused kordused ühendatud); valikuline n näitab ainult viimased n rida
 help-cmd-logout =   .logout                      logi välja
 help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakkain
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         arvioi luonnosdokumentti riveittäin
@@ -289,6 +289,7 @@ err-config-load = Konfiguratsiooni laadimise viga: { $e }
 err-lang-persist = Keele salvestamise viga: { $e }
 err-history-parse = Ajaloo parsimise viga: { $e }
 err-history-load = Ajaloo laadimise viga: { $e }
+err-history-count-invalid = ajaloo arv peab olema positiivne täisarv
 err-ipfs-reply-decode = IPFS vastuse dekodeerimine ebaõnnestus: { $e }
 err-edit-cbor = CBOR redigeerimise viga: { $e }
 err-popup-blocked = Brauser blokeeris hüpikakna

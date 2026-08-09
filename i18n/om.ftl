@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        barruu kana
 help-cmd-clear =   .clear                       terminal qulqulleessi
 help-cmd-panic =   .panic                       karaa dhumaa — rakkoo yoo mudateef fayyadami
-help-cmd-history =   .history                     seenaa ajajaa (irra deddeebi'iinsa walitti-aanaa walitti-qabame)
+help-cmd-history =   .history [n]                 seenaa ajajaa (irra deddeebi'iinsa walitti-aanaa walitti-qabame); n filannoo sararoota n dhumaa qofa argisiisa
 help-cmd-logout =   .logout                      bahu
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
@@ -296,6 +296,7 @@ err-config-load = Dogoggora fe'umsaa: { $e }
 err-lang-persist = Dogoggora qusachuu afaan: { $e }
 err-history-parse = Dogoggora falanqaynta seenaa: { $e }
 err-history-load = Dogoggora fe'umsaa seenaa: { $e }
+err-history-count-invalid = lakkoofsi seenaa lakkoofsa guutuu positiivii ta'uu qaba
 err-ipfs-reply-decode = Deebii IPFS decode kufe: { $e }
 err-edit-cbor = Dogoggora gulaala CBOR: { $e }
 err-popup-blocked = Popup daldhaame birauzaraan

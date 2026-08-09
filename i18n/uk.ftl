@@ -203,7 +203,7 @@ help-footer = ──────────────────────
 # ── Довідка — команди zion ────────────────────────────────────────────────
 help-cmd-help =   .help                        цей текст
 help-cmd-clear =   .clear                       очистити термінал
-help-cmd-history =   .history                     історія команд (послідовні дублікати об'єднані)
+help-cmd-history =   .history [n]                 історія команд (послідовні дублікати об'єднані); необов'язковий n показує лише останні n рядків
 help-cmd-panic =   .panic                       останній засіб — використовувати при проблемах
 help-cmd-logout =   .logout                      вийти
 help-cmd-batch =   .batch                       виконати чернетку (паралельно)
@@ -343,6 +343,7 @@ err-config-load = Помилка завантаження конфігураці
 err-lang-persist = Помилка збереження мови: { $e }
 err-history-parse = Помилка розбору історії: { $e }
 err-history-load = Помилка завантаження історії: { $e }
+err-history-count-invalid = кількість історії має бути додатним цілим числом
 err-ipfs-reply-decode = Помилка декодування відповіді IPFS: { $e }
 err-edit-cbor = Помилка CBOR при редагуванні: { $e }
 err-popup-blocked = Спливаюче вікно заблоковано браузером

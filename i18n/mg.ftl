@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        lahatsoratra ity
 help-cmd-clear =   .clear                       manadio terminal
 help-cmd-panic =   .panic                       fanalana farany — ampiasao raha ahitana olana
-help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
+help-cmd-history =   .history [n]                 tantaran'ny baiko (kopy mifandimby voaangona); ny n tsy voatery mampiseho ny n andalana farany ihany
 help-cmd-logout =   .logout                      mivoaka
 help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
@@ -296,6 +296,7 @@ err-config-load = Hadisoana fampidirana: { $e }
 err-lang-persist = Hadisoana fitehirizana fiteny: { $e }
 err-history-parse = Hadisoana famakiana tantara: { $e }
 err-history-load = Hadisoana fampidirana tantara: { $e }
+err-history-count-invalid = tokony ho isa manontolo tsara ny isan'ny tantara
 err-ipfs-reply-decode = Tsy nisy fivoaran'ny valiny IPFS: { $e }
 err-edit-cbor = Hadisoana CBOR fanavaozana: { $e }
 err-popup-blocked = Voasakan'ny navigateur ny popup

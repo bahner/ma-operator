@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        ĉi tiu teksto
 help-cmd-clear =   .clear                       malplenigu terminalon
 help-cmd-panic =   .panic                       lasta rimedo — uzu se vi perdas sin
-help-cmd-history =   .history                     komanda historio (sinsekvaj duplikaĵoj kunfanditaj)
+help-cmd-history =   .history [n]                 komanda historio (sinsekvaj duplikaĵoj kunfanditaj); malnepra n montras nur la lastajn n liniojn
 help-cmd-logout =   .logout                      elsaluti
 help-cmd-batch =   .batch                       evaluar documento temporal en paralelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluar documento temporal línea por línea
@@ -282,6 +282,7 @@ err-config-load = Agordaj ŝarĝado eraro: { $e }
 err-lang-persist = Lingvo konservado eraro: { $e }
 err-history-parse = Historia analizilo eraro: { $e }
 err-history-load = Historia ŝarĝado eraro: { $e }
+err-history-count-invalid = la historia nombro devas esti pozitiva entjero
 err-ipfs-reply-decode = IPFS-respondo dekodado malsukcesis: { $e }
 err-edit-cbor = CBOR-redaktado eraro: { $e }
 err-popup-blocked = Fenestro blokita de retumilo

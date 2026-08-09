@@ -196,7 +196,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dieser Text
 help-cmd-clear =   .clear                       Terminal leeren
 help-cmd-panic =   .panic                       letztes Mittel — verwenden, wenn Sie in der Klemme sitzen
-help-cmd-history =   .history                     Befehlsverlauf (aufeinanderfolgende Duplikate zusammengefasst)
+help-cmd-history =   .history [n]                 Befehlsverlauf (aufeinanderfolgende Duplikate zusammengefasst); optionales n zeigt nur die letzten n Zeilen
 help-cmd-logout =   .logout                      abmelden
 help-cmd-batch =   .batch                       Scratch-Dokument parallel auswerten
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         Scratch-Dokument zeilenweise auswerten
@@ -289,6 +289,7 @@ err-config-load = Konfigurationsladefolher: { $e }
 err-lang-persist = Sprachspeicherfehler: { $e }
 err-history-parse = Verlaufsanalysefehler: { $e }
 err-history-load = Verlaufsladefolher: { $e }
+err-history-count-invalid = die Verlaufsanzahl muss eine positive Ganzzahl sein
 err-ipfs-reply-decode = IPFS-Antwort-Dekodierung fehlgeschlagen: { $e }
 err-edit-cbor = CBOR-Bearbeitungsfehler: { $e }
 err-popup-blocked = Popup vom Browser blockiert

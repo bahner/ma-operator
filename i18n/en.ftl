@@ -209,7 +209,7 @@ help-footer = ──────────────────────
 # ── Help text — zion commands ─────────────────────────────────────────────
 help-cmd-help =   .help                        this text
 help-cmd-clear =   .clear                       clear terminal
-help-cmd-history =   .history                     command history (consecutive duplicates merged)
+help-cmd-history =   .history [n]                 command history (consecutive duplicates merged); optional n shows only the last n lines
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
 help-cmd-batch =   .batch                       eval scratch document (parallel, fire-and-forget)
@@ -358,6 +358,7 @@ err-zscheme-manifest-persist = zscheme manifest persist: { $e }
 err-zscheme-manifest-not-dag-cbor = .my.z.manifest is not a dag-cbor link — expected a manifest, not plain content
 err-history-parse = history parse error: { $e }
 err-history-load = history load error: { $e }
+err-history-count-invalid = history count must be a positive integer
 err-ipfs-reply-decode = IPFS reply decode failed: { $e }
 err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup blocked by browser

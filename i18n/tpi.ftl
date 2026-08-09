@@ -199,7 +199,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        dispela tok
 help-cmd-clear =   .clear                       klinim terminal
 help-cmd-panic =   .panic                       las rot — yusim sapos yu bagarap
-help-cmd-history =   .history                     histri bilong komand (ol sem koman i stap wantaim)
+help-cmd-history =   .history [n]                 histri bilong komand (ol sem koman i stap wantaim); sapos yu putim n em bai soim ol las n lain tasol
 help-cmd-logout =   .logout                      autim
 help-cmd-batch =   .batch                       run scratch document parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
@@ -282,6 +282,7 @@ err-config-load = config load ero: { $e }
 err-lang-persist = lang persist ero: { $e }
 err-history-parse = history parse ero: { $e }
 err-history-load = history load ero: { $e }
+err-history-count-invalid = namba bilong histri mas i pozitiv hul namba
 err-ipfs-reply-decode = IPFS reply decode i no go: { $e }
 err-edit-cbor = edit CBOR ero: { $e }
 err-popup-blocked = browser i blokim popup

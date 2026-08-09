@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        bu metin
 help-cmd-clear =   .clear                       terminali temizle
 help-cmd-panic =   .panic                       son çare — sorun çıkarsa kullan
-help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
+help-cmd-history =   .history [n]                 komut geçmişi (ardışık tekrarlar birleştirildi); isteğe bağlı n yalnızca son n satırı gösterir
 help-cmd-logout =   .logout                      çıkış yap
 help-cmd-batch =   .batch                       taslak belgeyi paralel değerlendir
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         taslak belgeyi satır satır değerlendir
@@ -296,6 +296,7 @@ err-config-load = Yapılandırma yükleme hatası: { $e }
 err-lang-persist = Dil kaydetme hatası: { $e }
 err-history-parse = Geçmiş ayrıştırma hatası: { $e }
 err-history-load = Geçmiş yükleme hatası: { $e }
+err-history-count-invalid = geçmiş sayısı pozitif bir tam sayı olmalıdır
 err-ipfs-reply-decode = IPFS yanıt kodu çözme hatası: { $e }
 err-edit-cbor = CBOR düzenleme hatası: { $e }
 err-popup-blocked = Tarayıcı açılır pencereyi engelledi

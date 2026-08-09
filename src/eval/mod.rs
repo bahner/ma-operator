@@ -247,14 +247,24 @@ fn eval_control(
         }
         ".history" => {
             let hist = state.history.get_untracked();
-            let mut n = 0usize;
+            let mut deduped: Vec<&str> = Vec::new();
             let mut last: Option<&str> = None;
             for entry in &hist {
                 if last != Some(entry.as_str()) {
-                    n += 1;
-                    state.push_system(format!("{n:>4}  {entry}"));
+                    deduped.push(entry.as_str());
                     last = Some(entry.as_str());
                 }
+            }
+            let tail = match args.first().map(|s| s.parse::<usize>()) {
+                Some(Ok(n)) => deduped.len().saturating_sub(n),
+                Some(Err(_)) => {
+                    state.push_error(t("err-history-count-invalid"));
+                    return;
+                }
+                None => 0,
+            };
+            for (i, entry) in deduped.iter().enumerate().skip(tail) {
+                state.push_system(format!("{:>4}  {entry}", i + 1));
             }
         }
         ".leave" => {

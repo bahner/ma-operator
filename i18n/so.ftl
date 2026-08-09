@@ -197,7 +197,7 @@ help-footer = ──────────────────────
 help-cmd-help =   .help                        qoraalkan
 help-cmd-clear =   .clear                       nadiifi terminal
 help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticmaal haddaad dhibaato ku jirto
-help-cmd-history =   .history                     taariikhda amarrada (nuqulaha xiriirka biirtay)
+help-cmd-history =   .history [n]                 taariikhda amarrada (nuqulaha xiriirka biirtay); n ikhtiyaari ayaa muujinaya kaliya n safaf ee ugu dambeeya
 help-cmd-logout =   .logout                      ka bax
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
@@ -296,6 +296,7 @@ err-config-load = Khalad dejinta habaynta: { $e }
 err-lang-persist = Khalad kaydinta luqadda: { $e }
 err-history-parse = Khalad falanqaynta tariikhdda: { $e }
 err-history-load = Khalad dejinta tariikhdda: { $e }
+err-history-count-invalid = tirada taariikhda waa inay noqotaa tiro dhan oo togan
 err-ipfs-reply-decode = Khalad koodka-goynta jawaabta IPFS: { $e }
 err-edit-cbor = Khalad tafatirka CBOR: { $e }
 err-popup-blocked = Daaqadda pop-up waxaa xidday daaweynaha
