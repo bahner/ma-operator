@@ -317,8 +317,7 @@ pub async fn call_content(
 ///
 /// Callers supply only trusted local profile content. This function never
 /// resolves a DID, CID, or other remote source on its own.
-#[cfg(test)]
-pub async fn load_content(
+pub(crate) async fn load_content(
     content: &str,
     state: &AppState,
     config: RwSignal<EgoConfig>,

@@ -1,11 +1,14 @@
 use super::resolve_bare_did;
 use crate::config::EgoConfig;
+use crate::core::CommandStatus;
 use crate::http::fetch_path_text;
 use crate::i18n::{t, tf};
-use crate::state::AppState;
+use crate::parser::command::{parse, Command, DotOp};
+use crate::state::{AppState, AwaitingReply};
 use crate::transport;
 use crate::views::editor::EditorContext;
 use leptos::prelude::*;
+use std::collections::BTreeMap;
 
 pub(super) fn handle_doc(
     path: &str,
@@ -27,12 +30,141 @@ pub(super) fn handle_doc(
     match verb {
         "edit" => doc_edit(path, args, state, config, show_editor),
         "eval" => doc_eval(path, state, config, on_eval),
+        "publish" if path == ".my.z" => z_tree_publish(args, state, config),
         "publish" => doc_publish(path, args, state, config),
         "publish-ipld" => doc_publish_ipld(path, args, state, config),
         "cid" => doc_cid(path, args, state, config),
         "fetch" => doc_fetch(path, args, state, config),
         other => Err(tf("doc-no-verb", &[("verb", other), ("path", path)])),
     }
+}
+
+/// Publish the direct `.my.z.<name>` source leaves and their DAG-CBOR root.
+fn z_tree_publish(
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    if args.len() != 1 {
+        return Err(t("doc-publish-usage"));
+    }
+    let cfg = config.get_untracked();
+    let publisher = resolve_bare_did(&args[0], &cfg)?;
+    let parts = z_tree_parts(&cfg);
+    if parts.is_empty() {
+        return Err(tf("doc-content-empty", &[("path", ".my.z")]));
+    }
+
+    let cmd_id = state.push_command(format!(".my.z!publish {}", args[0]));
+    let state2 = state.clone();
+    let username = state
+        .session
+        .get_untracked()
+        .map(|session| session.username)
+        .unwrap_or_default();
+    leptos::task::spawn_local(async move {
+        match publish_z_tree(&publisher, parts).await {
+            Ok(manifest_cid) => {
+                let manifest_ref = format!("/ipfs/{manifest_cid}");
+                config.update(|cfg| cfg.set(".my.z.manifest", &manifest_ref));
+                let cfg = config.get_untracked();
+                if let Err(error) = crate::config::persist_config(&username, &cfg).await {
+                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
+                    state2.push_error(error);
+                    return;
+                }
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Replied(String::new()));
+                state2.push_system(tf(
+                    "msg-set",
+                    &[("path", ".my.z.manifest"), ("value", &manifest_ref)],
+                ));
+            }
+            Err(error) => {
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
+                state2.push_error(tf(
+                    "doc-publish-failed",
+                    &[("path", ".my.z"), ("e", &format_publish_error(&error))],
+                ));
+            }
+        }
+    });
+    Ok(())
+}
+
+fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
+    const PREFIX: &str = ".my.z.";
+    cfg.list(PREFIX)
+        .into_iter()
+        .filter_map(|(path, value)| {
+            let name = path.strip_prefix(PREFIX)?;
+            (!name.is_empty() && !name.contains('.') && name != "manifest" && !value.is_empty())
+                .then(|| (name.to_string(), value.to_string()))
+        })
+        .collect()
+}
+
+async fn publish_z_tree(
+    publisher: &str,
+    parts: BTreeMap<String, String>,
+) -> Result<String, String> {
+    let mut manifest = BTreeMap::new();
+    for (name, source) in parts {
+        let path = format!(".my.z.{name}");
+        let cid = match z_tree_source_cid(&source) {
+            Some(cid) => {
+                match crate::doc_link::resolve_doc_link(&source)
+                    .await
+                    .map_err(|error| format!("{path}: {error}"))?
+                {
+                    crate::doc_link::ResolvedDocContent::Text(_) => cid,
+                    crate::doc_link::ResolvedDocContent::Manifest(_) => {
+                        return Err(format!(
+                            "{path}: expected text content, found a DAG-CBOR manifest"
+                        ));
+                    }
+                }
+            }
+            None => store_and_wait(publisher, source.into_bytes(), "text/plain")
+                .await
+                .map_err(|error| format!("{path}: {error}"))?,
+        };
+        manifest.insert(name, cid);
+    }
+    let bytes = serde_ipld_dagcbor::to_vec(&manifest).map_err(|error| error.to_string())?;
+    store_and_wait(publisher, bytes, "application/vnd.ipld.dag-cbor").await
+}
+
+fn z_tree_source_cid(source: &str) -> Option<String> {
+    crate::doc_link::parse_link_cid(source).map(|cid| cid.to_string())
+}
+
+async fn store_and_wait(
+    publisher: &str,
+    content: Vec<u8>,
+    content_type: &str,
+) -> Result<String, String> {
+    let mut receiver = None;
+    let mut registered_id = None;
+    let send_result =
+        transport::send_ipfs_store_with_msg_id(publisher, content, content_type, |msg_id| {
+            registered_id = Some(msg_id.clone());
+            receiver = Some(AwaitingReply::register(msg_id));
+        })
+        .await;
+    if let Err(error) = send_result {
+        if let Some(msg_id) = registered_id {
+            AwaitingReply::take(&msg_id);
+        }
+        return Err(error);
+    }
+    let receiver = receiver.ok_or_else(|| "IPFS store reply was not registered".to_string())?;
+    let reply = receiver
+        .await
+        .map_err(|_| "IPFS store reply was cancelled".to_string())?;
+    let cid = reply.trim().strip_prefix("/ipfs/").unwrap_or(reply.trim());
+    cid::Cid::try_from(cid)
+        .map(|parsed| parsed.to_string())
+        .map_err(|_| format!("IPFS store returned an invalid CID: {reply}"))
 }
 
 // ── Verb handlers ─────────────────────────────────────────────────────────
@@ -87,26 +219,97 @@ fn doc_eval(
     if content.is_empty() {
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
-    state.push_command_done(format!("{path}!eval"));
-    // Literal content stays fully synchronous, unchanged from before link
-    // resolution existed. Only a recognised link value needs a fetch.
-    if crate::doc_link::parse_link_cid(&content).is_none() {
-        on_eval.run(content);
-        return Ok(());
-    }
+    let cmd_id = state.push_command(format!("{path}!eval"));
     let state2 = state.clone();
     let path2 = path.to_string();
     leptos::task::spawn_local(async move {
-        match crate::doc_link::resolve_doc_link(&content).await {
-            Ok(crate::doc_link::ResolvedDocContent::Text(text)) => on_eval.run(text),
-            Ok(crate::doc_link::ResolvedDocContent::Manifest(_)) => {
-                state2.push_error(tf("doc-eval-manifest", &[("path", &path2)]));
-            }
-            Err(e) => {
-                state2.push_error(tf("doc-link-fetch-failed", &[("path", &path2), ("e", &e)]));
+        let result = if needs_sequential_eval(&content) {
+            eval_document_content(&content, &state2, config, on_eval).await
+        } else {
+            on_eval.run(content);
+            Ok(())
+        };
+        match result {
+            Ok(()) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
+            Err(error) => {
+                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
+                state2.push_error(tf(
+                    "doc-link-fetch-failed",
+                    &[("path", &path2), ("e", &error)],
+                ));
             }
         }
     });
+    Ok(())
+}
+
+fn needs_sequential_eval(content: &str) -> bool {
+    crate::doc_link::parse_link_cid(content).is_some()
+        || content
+            .lines()
+            .map(str::trim)
+            .find(|line| !line.is_empty() && !line.starts_with(';'))
+            .is_some_and(|line| line.starts_with('('))
+        || content.lines().any(|line| {
+            line.split_whitespace()
+                .next()
+                .is_some_and(|head| head.contains("!eval"))
+        })
+}
+
+async fn eval_document_content(
+    content: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    on_eval: Callback<String>,
+) -> Result<(), String> {
+    let text = match crate::doc_link::parse_link_cid(content) {
+        Some(_) => match crate::doc_link::resolve_doc_link(content).await? {
+            crate::doc_link::ResolvedDocContent::Text(text) => text,
+            crate::doc_link::ResolvedDocContent::Manifest(_) => {
+                return Err(t("doc-eval-manifest"));
+            }
+        },
+        None => content.to_string(),
+    };
+
+    if text.trim_start().starts_with('(') {
+        return crate::scheme::load_content(&text, state, config).await;
+    }
+
+    for line in text.lines().map(str::trim).filter(|line| !line.is_empty()) {
+        let cfg = config.get_untracked();
+        let command = parse(line, &cfg).map_err(|error| format!("'{line}': {error}"))?;
+        let nested_path = match command {
+            Command::DotCommand {
+                path,
+                op: DotOp::Meta(verb),
+                args,
+            }
+            | Command::LocalCrud {
+                path,
+                op: DotOp::Meta(verb),
+                args,
+            } if verb == "eval" && args.is_empty() => Some(path),
+            _ => None,
+        };
+        if let Some(path) = nested_path {
+            let nested_content = config
+                .get_untracked()
+                .get(&path)
+                .ok_or_else(|| tf("doc-content-empty", &[("path", &path)]))?
+                .to_string();
+            Box::pin(eval_document_content(
+                &nested_content,
+                state,
+                config,
+                on_eval,
+            ))
+            .await?;
+        } else {
+            on_eval.run(line.to_string());
+        }
+    }
     Ok(())
 }
 
@@ -287,6 +490,50 @@ pub(super) fn classify_publish_error(err: &str) -> (&'static str, &'static str) 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn z_tree_parts_collects_direct_source_leaves_only() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.z.stdlib", "(define x 1)");
+        cfg.set(
+            ".my.z.runtime",
+            "/ipfs/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
+        );
+        cfg.set(".my.z.manifest", "/ipfs/bafyreimanifest");
+        cfg.set(".my.z.runtime.debug", "ignored");
+
+        let parts = z_tree_parts(&cfg);
+
+        assert_eq!(parts.len(), 2);
+        assert_eq!(parts.get("stdlib"), Some(&"(define x 1)".to_string()));
+        assert!(parts.contains_key("runtime"));
+    }
+
+    #[test]
+    fn z_tree_source_cid_canonicalises_existing_links() {
+        let cid = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
+
+        assert_eq!(
+            z_tree_source_cid(&format!("/ipfs/{cid}")),
+            Some(cid.to_string())
+        );
+        assert_eq!(z_tree_source_cid("(define x 1)"), None);
+    }
+
+    #[test]
+    fn z_tree_manifest_encodes_as_the_startup_map_shape() {
+        let mut manifest = BTreeMap::new();
+        manifest.insert(
+            "stdlib".to_string(),
+            "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy".to_string(),
+        );
+
+        let bytes = serde_ipld_dagcbor::to_vec(&manifest).expect("manifest should encode");
+        let decoded: BTreeMap<String, String> =
+            serde_ipld_dagcbor::from_slice(&bytes).expect("manifest should decode");
+
+        assert_eq!(decoded, manifest);
+    }
 
     #[test]
     fn classify_publish_error_identifies_session_errors() {

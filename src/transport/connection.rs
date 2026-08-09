@@ -426,6 +426,17 @@ pub async fn send_ipfs_store(
     content: Vec<u8>,
     content_type: &str,
 ) -> Result<String, String> {
+    send_ipfs_store_with_msg_id(publisher_did, content, content_type, |_| {}).await
+}
+
+/// Send arbitrary content to an IPFS publisher and expose the message id before
+/// the send starts, so callers can register a reply receiver without a race.
+pub async fn send_ipfs_store_with_msg_id(
+    publisher_did: &str,
+    content: Vec<u8>,
+    content_type: &str,
+    on_msg_id: impl FnOnce(String),
+) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
     let publisher_url = actor_url(publisher_did, "ipfs")?;
     let msg = generate_ipfs_store_request(
@@ -437,6 +448,7 @@ pub async fn send_ipfs_store(
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
+    on_msg_id(msg_id.clone());
     send_message_on(&publisher_url, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }

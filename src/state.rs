@@ -236,6 +236,7 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
+    pub startup_zscheme_after_enter: RwSignal<bool>,
     pub ctx_recovery_runtime: RwSignal<Option<String>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
@@ -281,6 +282,7 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
+            startup_zscheme_after_enter: RwSignal::new(false),
             ctx_recovery_runtime: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),

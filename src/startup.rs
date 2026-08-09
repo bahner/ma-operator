@@ -210,40 +210,6 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
-    if let Some(manifest) = config
-        .get_untracked()
-        .get(".my.z.manifest")
-        .filter(|v| !v.trim().is_empty())
-        .map(std::string::ToString::to_string)
-    {
-        // `.my.z.manifest` is a link to a dag-cbor map of part name → CID.
-        // Populate any currently-empty `.my.z.<name>` child with a link to
-        // its part — never overwrites an existing value. Generic: driven
-        // entirely by whatever names appear in the manifest, not hardcoded.
-        match crate::doc_link::resolve_doc_link(&manifest).await {
-            Ok(crate::doc_link::ResolvedDocContent::Manifest(parts)) => {
-                let mut cfg = config.get_untracked();
-                let mut changed = false;
-                for (name, cid) in parts {
-                    let target = format!(".my.z.{name}");
-                    if cfg.get(&target).is_none_or(|v| v.trim().is_empty()) {
-                        cfg.set(&target, format!("/ipfs/{cid}"));
-                        changed = true;
-                    }
-                }
-                if changed {
-                    if let Err(e) = persist_config(&username, &cfg).await {
-                        state.push_error(tf("err-zscheme-manifest-persist", &[("e", &e)]));
-                    }
-                    config.set(cfg);
-                }
-            }
-            Ok(crate::doc_link::ResolvedDocContent::Text(_)) => {
-                state.push_error(t("err-zscheme-manifest-not-dag-cbor"));
-            }
-            Err(e) => state.push_error(tf("err-zscheme-manifest-fetch", &[("e", &e)])),
-        }
-    }
     if !crate::scheme::seed::DEFAULT_ZSCHEME_SEED_CID.is_empty()
         && config
             .get_untracked()
@@ -261,15 +227,6 @@ pub(crate) async fn startup_load_config(
             state.push_error(tf("err-zscheme-seed-persist", &[("e", &e)]));
         }
         config.set(cfg);
-    }
-    if config
-        .get_untracked()
-        .get(".my.z.scheme")
-        .is_some_and(|source| !source.trim().is_empty())
-    {
-        state
-            .input_queue
-            .update(|q| q.push_back(".my.z.scheme!eval".to_string()));
     }
     state.push_system(tf(
         "msg-logged-in",
@@ -378,7 +335,7 @@ fn queue_startup_context(
     state: &AppState,
     config: RwSignal<EgoConfig>,
     discovered_runtime_did: Option<&str>,
-) {
+) -> bool {
     let explicit = state
         .startup_enter
         .update_untracked(std::option::Option::take)
@@ -387,7 +344,7 @@ fn queue_startup_context(
         state
             .input_queue
             .update(|q| q.push_back(format!(".enter {runtime}")));
-        return;
+        return runtime.contains('#');
     }
     let cfg = config.get_untracked();
     // If a saved ctx exists, attempt to re-enter it; if invalid, don't fall
@@ -400,8 +357,9 @@ fn queue_startup_context(
             state
                 .input_queue
                 .update(|q| q.push_back(format!(".enter {room}")));
+            return true;
         }
-        return;
+        return false;
     }
     let fallback_enter = discovered_runtime_did
         .and_then(|_| standard_runtime_enter(&cfg))
@@ -411,6 +369,7 @@ fn queue_startup_context(
             .input_queue
             .update(|q| q.push_back(format!(".enter {runtime}")));
     }
+    false
 }
 
 pub(crate) fn queue_saved_context_reentry(state: &AppState, config: RwSignal<EgoConfig>) -> bool {
@@ -471,6 +430,7 @@ pub(crate) async fn startup_connect(
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
+            hydrate_zscheme_sources(&state, config, &username).await;
             let startup_enter = state.startup_enter.get_untracked();
             let ma_outcome = startup_local_ma(
                 state.clone(),
@@ -489,23 +449,128 @@ pub(crate) async fn startup_connect(
                 if let Some(did) = discovered_runtime_did {
                     ensure_standard_runtime_alias(&username, config, did).await;
                 }
-                queue_startup_context(&state, config, discovered_runtime_did);
+                let wait_for_room_entry =
+                    queue_startup_context(&state, config, discovered_runtime_did);
+                state.startup_zscheme_after_enter.set(wait_for_room_entry);
             } else {
                 state.startup_enter.update_untracked(|v| {
                     let _ = v.take();
                 });
                 state.push_system(skip_startup_enter_message(&ma_outcome));
             }
+            if !state.startup_zscheme_after_enter.get_untracked() {
+                queue_startup_zscheme_eval(&state, config);
+            }
         }
         Err(e) => state.push_error(tf("msg-iroh-failed", &[("e", &e)])),
     }
+}
+
+/// Materialise linked `.my.z` sources while loading the `.my` profile. Later
+/// startup evaluation only consumes local text, never performs an IPFS fetch.
+async fn hydrate_zscheme_sources(state: &AppState, config: RwSignal<EgoConfig>, username: &str) {
+    let cfg = config.get_untracked();
+    let mut linked_parts = std::collections::BTreeMap::new();
+    if let Some(manifest) = cfg
+        .get(".my.z.manifest")
+        .filter(|value| !value.trim().is_empty())
+    {
+        match crate::doc_link::resolve_doc_link(manifest).await {
+            Ok(crate::doc_link::ResolvedDocContent::Manifest(parts)) => {
+                for (name, cid) in parts {
+                    let path = format!(".my.z.{name}");
+                    if cfg.get(&path).is_none_or(|value| {
+                        value.trim().is_empty() || crate::doc_link::parse_link_cid(value).is_some()
+                    }) {
+                        linked_parts.insert(path, format!("/ipfs/{cid}"));
+                    }
+                }
+            }
+            Ok(crate::doc_link::ResolvedDocContent::Text(_)) => {
+                state.push_error(t("err-zscheme-manifest-not-dag-cbor"));
+                return;
+            }
+            Err(error) => {
+                state.push_error(tf("err-zscheme-manifest-fetch", &[("e", &error)]));
+                return;
+            }
+        }
+    }
+    for (path, value) in cfg.list(".my.z.") {
+        let name = path.trim_start_matches(".my.z.");
+        if !name.is_empty()
+            && !name.contains('.')
+            && name != "manifest"
+            && crate::doc_link::parse_link_cid(value).is_some()
+        {
+            linked_parts
+                .entry(path.to_string())
+                .or_insert_with(|| value.to_string());
+        }
+    }
+    if linked_parts.is_empty() {
+        return;
+    }
+
+    let mut hydrated_parts = Vec::new();
+    for (path, source) in linked_parts {
+        match crate::doc_link::resolve_doc_link(&source).await {
+            Ok(crate::doc_link::ResolvedDocContent::Text(text)) => {
+                hydrated_parts.push((path, text));
+            }
+            Ok(crate::doc_link::ResolvedDocContent::Manifest(_)) => {
+                let error = format!("{path} is a DAG-CBOR manifest, not source text");
+                state.push_error(tf("err-zscheme-manifest-fetch", &[("e", &error)]));
+                return;
+            }
+            Err(error) => {
+                let error = format!("{path}: {error}");
+                state.push_error(tf("err-zscheme-manifest-fetch", &[("e", &error)]));
+                return;
+            }
+        }
+    }
+    config.update(|cfg| {
+        for (path, source) in &hydrated_parts {
+            cfg.set(path, source);
+        }
+    });
+    let cfg = config.get_untracked();
+    if let Err(error) = persist_config(username, &cfg).await {
+        state.push_error(tf("err-zscheme-manifest-persist", &[("e", &error)]));
+    }
+}
+
+pub(crate) fn queue_startup_zscheme_eval(state: &AppState, config: RwSignal<EgoConfig>) {
+    let Some(source) = config
+        .get_untracked()
+        .get(".my.z.scheme")
+        .filter(|source| !source.trim().is_empty())
+        .map(ToString::to_string)
+    else {
+        return;
+    };
+    if !startup_zscheme_source_is_unhydrated_link(&source) {
+        queue_startup_zscheme_eval_command(state);
+    }
+}
+
+fn startup_zscheme_source_is_unhydrated_link(source: &str) -> bool {
+    crate::doc_link::parse_link_cid(source).is_some()
+}
+
+fn queue_startup_zscheme_eval_command(state: &AppState) {
+    state
+        .input_queue
+        .update(|q| q.push_back(".my.z.scheme!eval".to_string()));
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
         apply_standard_runtime_alias, normalize_startup_enter, queue_startup_context,
-        should_queue_startup_enter, standard_runtime_enter, startup_ctx_enter, startup_ma_url,
+        queue_startup_zscheme_eval, should_queue_startup_enter, standard_runtime_enter,
+        startup_ctx_enter, startup_ma_url, startup_zscheme_source_is_unhydrated_link,
     };
     use crate::parser::verbs::ma::ConnectMaOutcome;
     use crate::{config::EgoConfig, state::AppState};
@@ -569,7 +634,11 @@ mod tests {
             cfg.set(".my.ctx.room", "did:ma:k51other#construct");
         });
 
-        queue_startup_context(&state, config, Some("did:ma:k51runtime"));
+        assert!(!queue_startup_context(
+            &state,
+            config,
+            Some("did:ma:k51runtime")
+        ));
 
         assert!(state.input_queue.get_untracked().is_empty());
     }
@@ -595,6 +664,50 @@ mod tests {
         assert_eq!(cfg.get(".my.aliases.ma"), Some("did:ma:k51runtime"));
         assert_eq!(cfg.get(".my.ctx.nick"), Some("klaim"));
         assert_eq!(standard_runtime_enter(&cfg), Some("klaim@ma".to_string()));
+    }
+
+    #[test]
+    fn startup_zscheme_eval_is_queued_after_connection() {
+        let _owner = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        config.update_untracked(|cfg| cfg.set(".my.z.scheme", "(define x 1)"));
+
+        queue_startup_zscheme_eval(&state, config);
+
+        assert_eq!(
+            state
+                .input_queue
+                .get_untracked()
+                .into_iter()
+                .collect::<Vec<_>>(),
+            [".my.z.scheme!eval"]
+        );
+    }
+
+    #[test]
+    fn startup_room_context_waits_for_confirmed_entry_before_zscheme_eval() {
+        let _owner = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        config.update_untracked(|cfg| {
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+        });
+
+        assert!(queue_startup_context(
+            &state,
+            config,
+            Some("did:ma:k51runtime")
+        ));
+    }
+
+    #[test]
+    fn startup_zscheme_linked_eval_waits_for_profile_hydration() {
+        assert!(startup_zscheme_source_is_unhydrated_link(
+            "/ipfs/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy"
+        ));
+        assert!(!startup_zscheme_source_is_unhydrated_link("(define x 1)"));
     }
 
     #[test]

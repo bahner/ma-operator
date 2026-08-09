@@ -855,16 +855,13 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        complete_scheme_input, dispatch_eval_line, focus_scheme_form, is_note_line,
+        attach_command_to_batch, complete_scheme_input, focus_scheme_form, is_note_line,
         should_display_scheme_value,
     };
-    use crate::config::EgoConfig;
-    use crate::core::{CommandStatus, Entry};
+    use crate::core::CommandStatus;
     use crate::scheme::SchemeVal;
-    use crate::state::AppState;
-    use crate::views::editor::EditorContext;
+    use crate::state::{AppState, OnError, DEFAULT_TIMEOUT_MS};
     use leptos::prelude::*;
-    use std::sync::{Arc, Mutex};
 
     #[test]
     fn semicolon_led_lines_are_terminal_notes() {
@@ -945,48 +942,44 @@ mod tests {
     }
 
     #[test]
-    fn doc_eval_step_is_not_treated_as_pending_batch_reply() {
-        let mut cfg = EgoConfig::default();
-        cfg.set(".my.doc.scratch", "say hello\n");
-        let config = RwSignal::new(cfg);
+    fn pending_doc_eval_releases_sync_batch_on_completion() {
         let state = AppState::new();
-        let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
-
-        let seen = Arc::new(Mutex::new(Vec::<String>::new()));
-        let seen2 = Arc::clone(&seen);
-        let on_eval = Callback::new(move |text: String| {
-            seen2
-                .lock()
-                .expect("test callback mutex poisoned")
-                .push(text);
+        state.batches.update(|batches| {
+            batches.insert(
+                42,
+                crate::state::ActiveBatch {
+                    mode: crate::state::BatchMode::Sync,
+                    timeout_ms: DEFAULT_TIMEOUT_MS,
+                    on_error: OnError::Break,
+                    started_at_ms: 0.0,
+                    collecting: false,
+                    lines: std::collections::VecDeque::new(),
+                    sync_cmd_id: None,
+                    had_error: false,
+                    header_cmd_id: 0,
+                    async_pending: 0,
+                    step_count: 1,
+                },
+            );
         });
 
-        let cmd_id = dispatch_eval_line(
-            ".my.doc.scratch!eval",
-            &state,
-            config,
-            show_editor,
-            on_eval,
-            Some(42),
-        );
+        let cmd_id = state.push_command(".my.z.scheme!eval");
+        attach_command_to_batch(&state, cmd_id, Some(42));
+        state.batches.update(|batches| {
+            batches
+                .get_mut(&42)
+                .expect("batch should exist")
+                .sync_cmd_id = Some(cmd_id);
+        });
 
-        // !eval should complete immediately, so sync batch must not wait on it.
-        assert_eq!(cmd_id, None);
-        assert!(state.cmd_to_batch.get_untracked().is_empty());
+        state.resolve_command_by_id(cmd_id, CommandStatus::Done);
 
-        let entries = state.entries.get_untracked();
-        let Some(Entry::Command(command)) = entries
-            .iter()
-            .find(|entry| matches!(entry, Entry::Command(c) if c.raw == ".my.doc.scratch!eval"))
-        else {
-            panic!("expected .my.doc.scratch!eval command entry");
-        };
-        assert!(matches!(
-            command.status.get_untracked(),
-            CommandStatus::Done
-        ));
-
-        let captured = seen.lock().expect("test callback mutex poisoned");
-        assert_eq!(captured.as_slice(), ["say hello\n"]);
+        let batch = state
+            .batches
+            .get_untracked()
+            .remove(&42)
+            .expect("batch should exist");
+        assert_eq!(batch.sync_cmd_id, None);
+        assert!(!batch.had_error);
     }
 }
