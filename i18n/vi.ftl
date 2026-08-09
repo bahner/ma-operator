@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name theo nghĩa đen (không 
 
 # ── Trợ giúp — cú pháp cấu hình ─────────────────────────────────────────
 help-config-get =   .path                        lấy giá trị lá hoặc liệt kê cây con
+help-config-filter =   .path [tên]                  liệt kê tên khóa con chứa tên
+help-config-full =   .path. [tên]                 liệt kê giá trị đầy đủ của cây con chứa tên
 help-config-set =   .path: value                 đặt lá
 help-config-delete =   .path:                       xóa lá hoặc cây con
 help-config-verb =   .path!verb [args]            gọi động từ cục bộ

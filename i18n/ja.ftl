@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       リテラル @name (エイリ�
 
 
 help-config-get =   .path                        リーフの値を取得またはサブツリーを一覧表示
+help-config-filter =   .path [名前]                 名前を含む子キー名を一覧表示
+help-config-full =   .path. [名前]                名前を含む完全なサブツリー値を一覧表示
 help-config-set =   .path: value                 リーフを設定
 help-config-delete =   .path:                       リーフまたはサブツリーを削除
 help-config-verb =   .path!verb [args]            ローカル動詞を実行

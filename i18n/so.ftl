@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name dhab ah (raadinta magaca 
 
 # ── Gargaarku — naxwaha dejinta ───────────────────────────────────────────
 help-config-get =   .path                        hel qiimaha caleenta ama liiska geedka yar
+help-config-filter =   .path [magac]                tax magacyada furayaasha carruurta ee magac ku jira
+help-config-full =   .path. [magac]               tax qiimayaasha geedka yar oo dhan ee magac ku jira
 help-config-set =   .path: value                 dejiso caleenta
 help-config-delete =   .path:                       tirtir caleenta ama geedka yar
 help-config-verb =   .path!verb [args]            wac ficilka deegaanka

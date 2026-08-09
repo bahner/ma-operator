@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name gangan (kò sí ìwádì�
 
 # ── Ìrànlọ́wọ́ — gírámà ìtúpalẹ̀ ─────────────────────────────────────────
 help-config-get =   .path                        gba iye ewé tàbí ṣàkójọ igi-abẹ
+help-config-filter =   .path [orúkọ]               ṣàkójọ orúkọ kọ́kọ́rọ̀ ọmọ tí ó ní orúkọ
+help-config-full =   .path. [orúkọ]              ṣàkójọ iye igi-abẹ kíkún tí ó ní orúkọ
 help-config-set =   .path: value                 fi iye sí ewé
 help-config-delete =   .path:                       pa ewé tàbí igi-abẹ rẹ̀
 help-config-verb =   .path!verb [args]            pè ìgbésẹ̀ ẹbí

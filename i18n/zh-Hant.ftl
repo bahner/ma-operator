@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       字面 @name（不查找別名�
 
 # ── 說明文字 — 設定語法 ───────────────────────────────────────────────────
 help-config-get =   .path                        取得葉值或列出子樹
+help-config-filter =   .path [名稱]                 列出包含名稱的子鍵名稱
+help-config-full =   .path. [名稱]                列出包含名稱的完整子樹值
 help-config-set =   .path: value                 設定葉值
 help-config-delete =   .path:                       刪除葉或子樹
 help-config-verb =   .path!verb [args]            呼叫本地動詞

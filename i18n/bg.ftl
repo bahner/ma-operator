@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       буквален @name (без 
 
 
 help-config-get =   .path                        получава стойността на лист или изброява поддърво
+help-config-filter =   .path [име]                  изброява имена на дъщерни ключове, съдържащи име
+help-config-full =   .path. [име]                 изброява пълни стойности на поддърво, съдържащи име
 help-config-set =   .path: value                 задава лист
 help-config-delete =   .path:                       изтрива лист или поддърво
 help-config-verb =   .path!verb [args]            изпълнява локален глагол

@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       আক্ষরিক @name (�
 
 # ── সহায়তা — কনফিগ ব্যাকরণ ──────────────────────────────────────────────
 help-config-get =   .path                        লিফ মান পান বা সাবট্রি তালিকা করুন
+help-config-filter =   .path [নাম]                 নাম ধারণকারী চাইল্ড-কীর নাম তালিকাভুক্ত করুন
+help-config-full =   .path. [নাম]                নাম ধারণকারী সম্পূর্ণ সাবট্রি মান তালিকাভুক্ত করুন
 help-config-set =   .path: value                 লিফ সেট করুন
 help-config-delete =   .path:                       লিফ বা সাবট্রি মুছুন
 help-config-verb =   .path!verb [args]            স্থানীয় ক্রিয়া কল করুন

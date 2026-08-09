@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       bókstaflegur @name (engin samn
 
 
 help-config-get =   .path                        sækja laufsgildi eða lista undirtré
+help-config-filter =   .path [nafn]                 lista nöfn undirlykla sem innihalda nafn
+help-config-full =   .path. [nafn]                lista öll gildi undirtrés sem innihalda nafn
 help-config-set =   .path: value                 stilla lauf
 help-config-delete =   .path:                       eyða laufi eða undirtré
 help-config-verb =   .path!verb [args]            keyra staðbundna sögn

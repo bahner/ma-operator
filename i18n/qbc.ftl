@@ -214,6 +214,8 @@ help-msg-escape =   \@name                       @name leshi (na du alias)
 
 # ── Halp — konfig naxwe ───────────────────────────────────────────────────
 help-config-get =   .path                        sasa lef sanda oyedeng lit gova-kopeng
+help-config-filter =   .path [nem]                  lit pikin ki nem dem get nem
+help-config-full =   .path. [nem]                 lit gova-kopeng sanda ful we get nem
 help-config-set =   .path: value                 set lef
 help-config-delete =   .path:                       na-du lef oyedeng gova-kopeng
 help-config-verb =   .path!verb [args]            kol lokal verb

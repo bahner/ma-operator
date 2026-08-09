@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       bókstavligur @name (ongin samn
 
 
 help-config-get =   .path                        sók lav-gildi ella lista undirtré
+help-config-filter =   .path [navn]               lista undirlykla-nøvn, ið innihalda navn
+help-config-full =   .path. [navn]                lista full undirtræsvirði, ið innihalda navn
 help-config-set =   .path: value                 set lav
 help-config-delete =   .path:                       strika lav ella undirtré
 help-config-verb =   .path!verb [args]            keyra lokal sagnorð

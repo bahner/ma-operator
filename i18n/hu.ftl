@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       szó szerinti @name (alias kere
 
 
 help-config-get =   .path                        levél értékének lekérése vagy részfa listázása
+help-config-filter =   .path [név]                  névet tartalmazó gyermekkulcs-nevek listázása
+help-config-full =   .path. [név]                 névet tartalmazó teljes részfaértékek listázása
 help-config-set =   .path: value                 levél beállítása
 help-config-delete =   .path:                       levél vagy részfa törlése
 help-config-verb =   .path!verb [args]            helyi ige futtatása

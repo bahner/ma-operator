@@ -226,7 +226,9 @@ help-ma-entry-toggle =   .enter                       slå romfokus av eller på
 help-ma-entry-url =   ?enter=<runtime>             tre inn etter innlogging fra en delt URL
 
 # ── Hjelpetekst — konfigurasjonsgrammatikk ───────────────────────────────
-help-config-get =   .path                        hent bladverdi eller list undertre
+help-config-get =   .path                        hent bladverdi eller vis undernøkler
+help-config-filter =   .path [navn]               vis undernøkler som inneholder navn
+help-config-full =   .path. [navn]                vis hele undertreet med verdier som inneholder navn
 help-config-set =   .path: value                 sett blad
 help-config-delete =   .path:                       slett blad eller undertre
 help-config-verb =   .path!verb [args]             kjør lokalt verb

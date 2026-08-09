@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       literalne @name (bez wyszukiwan
 
 
 help-config-get =   .path                        pobierz wartość liścia lub wylistuj poddrzewo
+help-config-filter =   .path [nazwa]                wylistuj nazwy kluczy potomnych zawierające nazwę
+help-config-full =   .path. [nazwa]               wylistuj pełne wartości poddrzewa zawierające nazwę
 help-config-set =   .path: value                 ustaw liść
 help-config-delete =   .path:                       usuń liść lub poddrzewo
 help-config-verb =   .path!verb [args]            wykonaj lokalny czasownik

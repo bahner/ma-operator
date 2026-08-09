@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       @name literal (sin búsqueda de
 
 
 help-config-get =   .path                        obtener valor de hoja o listar subárbol
+help-config-filter =   .path [nombre]               listar nombres de claves hijas que contienen nombre
+help-config-full =   .path. [nombre]              listar valores completos del subárbol que contienen nombre
 help-config-set =   .path: value                 establecer hoja
 help-config-delete =   .path:                       eliminar hoja o subárbol
 help-config-verb =   .path!verb [args]            ejecutar verbo local

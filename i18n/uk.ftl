@@ -233,6 +233,8 @@ help-msg-escape =   \@name                       буквальний @name (б�
 
 # ── Довідка — синтаксис конфігурації ─────────────────────────────────────
 help-config-get =   .path                        отримати значення або список піддерева
+help-config-filter =   .path [назва]                список назв дочірніх ключів, що містять назву
+help-config-full =   .path. [назва]               список повних значень піддерева, що містять назву
 help-config-set =   .path: value                 встановити лист
 help-config-delete =   .path:                       видалити лист або піддерево
 help-config-verb =   .path!verb [args]            викликати локальне дієслово

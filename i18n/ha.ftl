@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name na zahiri (babu binciken 
 
 # ── Rubutun taimako — nahawun saitunan ───────────────────────────────────
 help-config-get =   .path                        sami ƙimar ganye ko jera ƙananan reshe
+help-config-filter =   .path [suna]                 jera sunayen maɓallan yara masu ɗauke da suna
+help-config-full =   .path. [suna]                jera cikakkun ƙimomin ƙananan reshe masu ɗauke da suna
 help-config-set =   .path: value                 saita ganye
 help-config-delete =   .path:                       goge ganye ko ƙananan reshe
 help-config-verb =   .path!verb [args]            kira aikatau gida

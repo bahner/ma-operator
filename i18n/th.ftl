@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name ตามตัวอั�
 
 # ── ช่วยเหลือ — ไวยากรณ์การกำหนดค่า ──────────────────────────────────────
 help-config-get =   .path                        ดึงค่า leaf หรือแสดงรายการ subtree
+help-config-filter =   .path [ชื่อ]                 แสดงชื่อคีย์ย่อยที่มีชื่อ
+help-config-full =   .path. [ชื่อ]                แสดงค่าทั้งหมดของ subtree ที่มีชื่อ
 help-config-set =   .path: value                 ตั้งค่า leaf
 help-config-delete =   .path:                       ลบ leaf หรือ subtree
 help-config-verb =   .path!verb [args]            เรียกใช้กริยาท้องถิ่น

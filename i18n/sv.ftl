@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       bokstavlig @name (ingen alias-s
 
 # ── Hjälptext — konfigurationsgrammatik ──────────────────────────────────
 help-config-get =   .path                        hämta löv-värde eller lista underträd
+help-config-filter =   .path [namn]               lista undernyckelnamn som innehåller namn
+help-config-full =   .path. [namn]                lista fullständiga underträdsvärden som innehåller namn
 help-config-set =   .path: value                 ange löv
 help-config-delete =   .path:                       radera löv eller underträd
 help-config-verb =   .path!verb [args]            kör lokalt verb

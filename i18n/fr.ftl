@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       @name littéral (pas de recherc
 
 
 help-config-get =   .path                        obtenir la valeur de la feuille ou lister le sous-arbre
+help-config-filter =   .path [nom]                  lister les noms de clés enfants contenant le nom
+help-config-full =   .path. [nom]                 lister les valeurs complètes du sous-arbre contenant le nom
 help-config-set =   .path: value                 définir la feuille
 help-config-delete =   .path:                       supprimer la feuille ou le sous-arbre
 help-config-verb =   .path!verb [args]            exécuter un verbe local

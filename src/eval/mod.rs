@@ -718,34 +718,63 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
     });
 }
 
-fn handle_dot_get(path: &str, _args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
     let cfg = config.get_untracked();
+    let filter = args.first().map(String::as_str);
+    if let Some(list_path) = path.strip_suffix('.').filter(|path| !path.is_empty()) {
+        if cfg.has_children(list_path) {
+            show_full_listing(list_path, &cfg, state, filter);
+        } else {
+            state.push_error(tf("msg-key-not-found", &[("path", list_path)]));
+        }
+        return;
+    }
     if cfg.is_leaf(path) {
         let value = cfg.get(path).unwrap_or("");
         state.push_output(format!("{path}: {value}"));
     } else if cfg.has_children(path) {
-        show_children(path, &cfg, state);
+        show_children(path, &cfg, state, filter);
     } else {
         lazy_link_traverse(path, &cfg, state, config);
     }
 }
 
-fn show_children(path: &str, cfg: &crate::config::EgoConfig, state: &AppState) {
+fn show_children(
+    path: &str,
+    cfg: &crate::config::EgoConfig,
+    state: &AppState,
+    filter: Option<&str>,
+) {
     let prefix = format!("{path}.");
     let prefix_len = prefix.len();
     let mut children: std::collections::BTreeSet<String> = std::collections::BTreeSet::new();
     for (k, _) in cfg.list(&prefix) {
         let tail = &k[prefix_len..];
         let immediate = tail.split('.').next().unwrap_or(tail);
-        children.insert(immediate.to_string());
+        if filter.is_none_or(|filter| immediate.contains(filter)) {
+            children.insert(immediate.to_string());
+        }
     }
     state.push_output(format!("{path}:"));
     for child in &children {
-        let child_path = format!("{path}.{child}");
-        if let Some(v) = cfg.get(&child_path) {
-            state.push_output(format!("  {child}: {v}"));
-        } else {
-            state.push_output(format!("  {child}"));
+        state.push_output(format!("  {child}"));
+    }
+}
+
+fn show_full_listing(
+    path: &str,
+    cfg: &crate::config::EgoConfig,
+    state: &AppState,
+    filter: Option<&str>,
+) {
+    let prefix = format!("{path}.");
+    let prefix_len = prefix.len();
+    state.push_output(format!("{path}:"));
+    for (key, value) in cfg.list(&prefix) {
+        let tail = &key[prefix_len..];
+        let immediate = tail.split('.').next().unwrap_or(tail);
+        if filter.is_none_or(|filter| immediate.contains(filter)) {
+            state.push_output(format!("  {tail}: {value}"));
         }
     }
 }
@@ -822,11 +851,11 @@ fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
 mod tests {
     use super::{
         apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_args,
-        enter_ctx_kind, enter_no_args, enter_target_display, parse_enter_target,
+        enter_ctx_kind, enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
         validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
-    use leptos::prelude::{GetUntracked, RwSignal};
+    use leptos::prelude::{GetUntracked, RwSignal, Set};
     use ma_zscheme::value::SchemeVal;
 
     #[test]
@@ -841,6 +870,48 @@ mod tests {
         assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#bad fragment").is_err());
         assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#bad.fragment").is_err());
         assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example/path").is_err());
+    }
+
+    #[test]
+    fn subtree_listing_filters_names_and_trailing_dot_shows_values() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.alice", "did:ma:alice");
+        cfg.set(".my.aliases.alice-smith", "did:ma:alice-smith");
+        cfg.set(".my.aliases.sky", "did:ma:sky");
+        let config = RwSignal::new(cfg);
+        let state = AppState::new();
+
+        handle_dot_get(".my.aliases", &["alice".to_string()], &state, config);
+        let names: Vec<String> = state
+            .entries
+            .get_untracked()
+            .into_iter()
+            .filter_map(|entry| match entry {
+                Entry::System(record) => Some(record.text),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(names, [".my.aliases:", "  alice", "  alice-smith"]);
+
+        state.entries.set(Vec::new());
+        handle_dot_get(".my.aliases.", &["alice".to_string()], &state, config);
+        let values: Vec<String> = state
+            .entries
+            .get_untracked()
+            .into_iter()
+            .filter_map(|entry| match entry {
+                Entry::System(record) => Some(record.text),
+                _ => None,
+            })
+            .collect();
+        assert_eq!(
+            values,
+            [
+                ".my.aliases:",
+                "  alice: did:ma:alice",
+                "  alice-smith: did:ma:alice-smith"
+            ]
+        );
     }
 
     #[test]

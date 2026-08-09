@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       @name letterale (nessuna ricerc
 
 
 help-config-get =   .path                        ottieni valore foglia o elenca sottoalbero
+help-config-filter =   .path [nome]                 elenca nomi di chiavi figlie contenenti nome
+help-config-full =   .path. [nome]                elenca valori completi del sottoalbero contenenti nome
 help-config-set =   .path: value                 imposta foglia
 help-config-delete =   .path:                       elimina foglia o sottoalbero
 help-config-verb =   .path!verb [args]            esegui verbo locale

@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       doslovni @name (bez pretraživa
 
 
 help-config-get =   .path                        dohvati vrijednost lista ili izlistaj podstablo
+help-config-filter =   .path [naziv]                izlistaj nazive podključeva koji sadrže naziv
+help-config-full =   .path. [naziv]               izlistaj potpune vrijednosti podstabla koje sadrže naziv
 help-config-set =   .path: value                 postavi list
 help-config-delete =   .path:                       obriši list ili podstablo
 help-config-verb =   .path!verb [args]            pokreni lokalni glagol

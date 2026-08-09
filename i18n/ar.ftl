@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name حرفياً (بلا بح
 
 # ── المساعدة — قواعد الضبط ────────────────────────────────────────────────
 help-config-get =   .path                        الحصول على قيمة ورقة أو سرد الشجرة الفرعية
+help-config-filter =   .path [اسم]                  سرد أسماء المفاتيح الفرعية التي تحتوي على اسم
+help-config-full =   .path. [اسم]                 سرد قيم الشجرة الفرعية الكاملة التي تحتوي على اسم
 help-config-set =   .path: value                 تعيين قيمة ورقة
 help-config-delete =   .path:                       حذف ورقة أو شجرة فرعية
 help-config-verb =   .path!verb [args]            استدعاء فعل محلي

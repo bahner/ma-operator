@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም 
 
 # ── እርዳታ — ቅርጸት ሰዋስው ──────────────────────────────────────────────────
 help-config-get =   .path                        የቅጠሉን ዋጋ ያግኙ ወይም ንዑስ ዛፍ ዘርዝሩ
+help-config-filter =   .path [ስም]                  ስሙን የያዙ የልጅ ቁልፎችን ዘርዝሩ
+help-config-full =   .path. [ስም]                 ስሙን የያዙ የሙሉ ንዑስ ዛፍ እሴቶችን ዘርዝሩ
 help-config-set =   .path: value                 ቅጠሉን ያዘጋጁ
 help-config-delete =   .path:                       ቅጠሉን ወይም ንዑስ ዛፍ ይሰርዙ
 help-config-verb =   .path!verb [args]            ሁናቴ ተግባር ይጥሩ

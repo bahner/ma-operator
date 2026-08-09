@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       لفظی @name (عرفی نام
 
 # ── مدد — ترتیب کا قواعد ──────────────────────────────────────────────────
 help-config-get =   .path                        پتی کی قدر حاصل کریں یا ذیلی درخت کی فہرست
+help-config-filter =   .path [نام]                  نام رکھنے والی ذیلی کلیدی ناموں کی فہرست
+help-config-full =   .path. [نام]                 نام رکھنے والی مکمل ذیلی درخت قدروں کی فہرست
 help-config-set =   .path: value                 پتی ترتیب دیں
 help-config-delete =   .path:                       پتی یا ذیلی درخت حذف کریں
 help-config-verb =   .path!verb [args]            مقامی فعل کال کریں

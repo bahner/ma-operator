@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       letterlijke @name (geen aliaszo
 
 
 help-config-get =   .path                        bladwaarde ophalen of deelboom weergeven
+help-config-filter =   .path [naam]                 namen van deelsleutels met naam weergeven
+help-config-full =   .path. [naam]                volledige deelboomwaarden met naam weergeven
 help-config-set =   .path: value                 blad instellen
 help-config-delete =   .path:                       blad of deelboom verwijderen
 help-config-verb =   .path!verb [args]            lokaal werkwoord uitvoeren

@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name ngokunyaniseka (akukho up
 
 # ── Uncedo — inkqubo yokuphatha ──────────────────────────────────────────
 help-config-get =   .path                        fumana ixabiso legqabi okanye uluhlu lwesihlahla
+help-config-filter =   .path [igama]                dwelisa amagama ezitshixo zabantwana aqulethe igama
+help-config-full =   .path. [igama]               dwelisa amaxabiso apheleleyo omthi aqulethe igama
 help-config-set =   .path: value                 setha igqabi
 help-config-delete =   .path:                       cima igqabi okanye isihlahla
 help-config-verb =   .path!verb [args]            biza isenzo sendawo

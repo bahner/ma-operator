@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       शब्दशः @name (क�
 
 # ── मदत — कॉन्फिग व्याकरण ────────────────────────────────────────────────
 help-config-get =   .path                        पानाचे मूल्य मिळवा किंवा उपवृक्ष सूची
+help-config-filter =   .path [नाव]                 नाव असलेल्या बाल-कळींची नावे सूचीबद्ध करा
+help-config-full =   .path. [नाव]                नाव असलेल्या संपूर्ण उपवृक्ष मूल्यांची सूचीबद्ध करा
 help-config-set =   .path: value                 पान सेट करा
 help-config-delete =   .path:                       पान किंवा उपवृक्ष हटवा
 help-config-verb =   .path!verb [args]            स्थानिक क्रिया कॉल करा

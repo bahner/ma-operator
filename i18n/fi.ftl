@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       kirjaimellinen @name (ei aliash
 
 
 help-config-get =   .path                        hae lehden arvo tai listaa alipuu
+help-config-filter =   .path [nimi]                 listaa nimen sisältävät aliavainten nimet
+help-config-full =   .path. [nimi]                listaa nimen sisältävät alipuuhun kuuluvat arvot
 help-config-set =   .path: value                 aseta lehti
 help-config-delete =   .path:                       poista lehti tai alipuu
 help-config-verb =   .path!verb [args]            suorita paikallinen verbi

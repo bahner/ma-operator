@@ -88,6 +88,8 @@ fn path() -> Vec<String> {
     vec![
         t("help-header-config"),
         t("help-config-get"),
+        t("help-config-filter"),
+        t("help-config-full"),
         t("help-config-set"),
         t("help-config-delete"),
         t("help-config-verb"),

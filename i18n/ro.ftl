@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       @name literal (fără căutare 
 
 
 help-config-get =   .path                        obține valoarea frunzei sau listează subarborele
+help-config-filter =   .path [nume]                 listează numele cheilor-copil care conțin numele
+help-config-full =   .path. [nume]                listează valorile complete ale subarborelui care conțin numele
 help-config-set =   .path: value                 setează frunza
 help-config-delete =   .path:                       șterge frunza sau subarborele
 help-config-verb =   .path!verb [args]            execută verb local

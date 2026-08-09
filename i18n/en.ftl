@@ -252,7 +252,9 @@ help-ma-entry-toggle =   .enter                       toggle room focus on or of
 help-ma-entry-url =   ?enter=<runtime>             enter after login from a shared URL
 
 # ── Help text — config grammar ────────────────────────────────────────────
-help-config-get =   .path                        get leaf value or list subtree
+help-config-get =   .path                        get leaf value or list child names
+help-config-filter =   .path [name]                 list child names containing name
+help-config-full =   .path. [name]                list full subtree values containing name
 help-config-set =   .path: value                 set leaf
 help-config-delete =   .path:                       delete leaf or subtree
 help-config-verb =   .path!verb [args]            invoke local verb

@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name haqiiqaajo (yiytude hesbu
 
 # ── Ballal — naawre-daande ────────────────────────────────────────────────
 help-config-get =   .path                        heɓ njamu leehol walla listal aawre
+help-config-filter =   .path [inde]                 doggol inɗe cuɓe ɓiɓɓe ɗe njogii inde
+help-config-full =   .path. [inde]                doggol njamu aawre timmunde ɗe njogii inde
 help-config-set =   .path: value                 weel leehol
 help-config-delete =   .path:                       yaltina leehol walla aawre
 help-config-verb =   .path!verb [args]            noddu baɗe tiiɗnde

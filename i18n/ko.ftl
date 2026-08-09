@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       리터럴 @name (별칭 조회 
 
 # ── 도움말 — 설정 문법 ────────────────────────────────────────────────────
 help-config-get =   .path                        리프 값 가져오기 또는 서브트리 나열
+help-config-filter =   .path [이름]                 이름을 포함한 하위 키 이름 나열
+help-config-full =   .path. [이름]                이름을 포함한 전체 서브트리 값 나열
 help-config-set =   .path: value                 리프 설정
 help-config-delete =   .path:                       리프 또는 서브트리 삭제
 help-config-verb =   .path!verb [args]            로컬 동사 호출

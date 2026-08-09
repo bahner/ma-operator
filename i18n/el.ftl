@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       κυριολεκτικό @name 
 
 
 help-config-get =   .path                        λήψη τιμής φύλλου ή καταγραφή υποδέντρου
+help-config-filter =   .path [όνομα]                κατάλογος ονομάτων θυγατρικών κλειδιών που περιέχουν όνομα
+help-config-full =   .path. [όνομα]               κατάλογος πλήρων τιμών υποδέντρου που περιέχουν όνομα
 help-config-set =   .path: value                 ρύθμιση φύλλου
 help-config-delete =   .path:                       διαγραφή φύλλου ή υποδέντρου
 help-config-verb =   .path!verb [args]            εκτέλεση τοπικού ρήματος

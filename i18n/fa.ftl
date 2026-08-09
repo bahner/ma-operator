@@ -250,6 +250,8 @@ help-ma-entry-url =   ?enter=<runtime>             پس از ورود از URL �
 
 # ── متن راهنما — دستور زبان پیکربندی ────────────────────────────────────
 help-config-get =   .path                        گرفتن مقدار برگ یا فهرست زیردرخت
+help-config-filter =   .path [نام]                  فهرست نام کلیدهای فرزند دارای نام
+help-config-full =   .path. [نام]                 فهرست مقدارهای کامل زیردرخت دارای نام
 help-config-set =   .path: value                 تنظیم برگ
 help-config-delete =   .path:                       حذف برگ یا زیردرخت
 help-config-verb =   .path!verb [args]            فراخوانی فعل محلی

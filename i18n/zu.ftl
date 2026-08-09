@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name ngqo (akukho ukusesha isi
 
 # ── Usizo — uhlelo lwezintela ─────────────────────────────────────────────
 help-config-get =   .path                        thola inani lekhasi noma ubala isihlahla esincane
+help-config-filter =   .path [igama]                bala amagama okhiye bezingane aqukethe igama
+help-config-full =   .path. [igama]               bala amanani esihlahla esincane aphelele aqukethe igama
 help-config-set =   .path: value                 setha ikhasi
 help-config-delete =   .path:                       susa ikhasi noma isihlahla esincane
 help-config-verb =   .path!verb [args]            biza isenzo sendawo

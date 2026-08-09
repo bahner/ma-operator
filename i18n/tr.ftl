@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       değişmez @name (takma ad aram
 
 # ── Yardım — yapılandırma sözdizimi ──────────────────────────────────────
 help-config-get =   .path                        yaprak değer al veya alt ağacı listele
+help-config-filter =   .path [ad]                   adı içeren alt anahtar adlarını listele
+help-config-full =   .path. [ad]                  adı içeren tam alt ağaç değerlerini listele
 help-config-set =   .path: value                 yaprak değer ayarla
 help-config-delete =   .path:                       yaprak veya alt ağacı sil
 help-config-verb =   .path!verb [args]            yerel fiil çağır

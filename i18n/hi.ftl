@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       शाब्दिक @name (�
 
 # ── सहायता — कॉन्फ़िग व्याकरण ─────────────────────────────────────────────
 help-config-get =   .path                        लीफ़ मान प्राप्त करें या सबट्री सूची
+help-config-filter =   .path [नाम]                 नाम वाले चाइल्ड कुंजी नामों की सूची
+help-config-full =   .path. [नाम]                नाम वाले पूर्ण सबट्री मानों की सूची
 help-config-set =   .path: value                 लीफ़ सेट करें
 help-config-delete =   .path:                       लीफ़ या सबट्री हटाएं
 help-config-verb =   .path!verb [args]            स्थानीय क्रिया बुलाएं

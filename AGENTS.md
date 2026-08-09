@@ -322,8 +322,9 @@ Missing paths and subtree paths are errors.
 
 | Syntax | Meaning |
 |--------|----------|
-| `.path` | get — print leaf value or subtree listing |
-| `.path query` | filter — subtree listing matching `query` |
+| `.path` | get — print leaf value or immediate subtree child names |
+| `.path [name]` | get — list immediate subtree child names containing `name` |
+| `.path. [name]` | get — list full subtree values, optionally filtered by immediate child name |
 | `.path: value` | set leaf |
 | `.path:` | delete subtree (or leaf) |
 | `.path!verb [args]` | side-effect / system operation |

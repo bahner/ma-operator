@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       wörtliches @name (keine Alias-
 
 
 help-config-get =   .path                        Blattwert abrufen oder Teilbaum auflisten
+help-config-filter =   .path [Name]                 Namen von Unterschlüsseln mit Name auflisten
+help-config-full =   .path. [Name]                vollständige Teilbaumwerte mit Name auflisten
 help-config-set =   .path: value                 Blatt setzen
 help-config-delete =   .path:                       Blatt oder Teilbaum löschen
 help-config-verb =   .path!verb [args]            lokales Verb ausführen

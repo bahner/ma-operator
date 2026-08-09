@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       అక్షరార్థ @na
 
 # ── సహాయం — కాన్ఫిగ్ వ్యాకరణం ────────────────────────────────────────────
 help-config-get =   .path                        లీఫ్ విలువ పొందండి లేదా సబ్‌ట్రీ జాబితా చేయండి
+help-config-filter =   .path [పేరు]                 పేరు ఉన్న చైల్డ్ కీ పేర్లను జాబితా చేయండి
+help-config-full =   .path. [పేరు]                పేరు ఉన్న పూర్తి సబ్‌ట్రీ విలువలను జాబితా చేయండి
 help-config-set =   .path: value                 లీఫ్ సెట్ చేయండి
 help-config-delete =   .path:                       లీఫ్ లేదా సబ్‌ట్రీ తొలగించండి
 help-config-verb =   .path!verb [args]            స్థానిక క్రియ కాల్ చేయండి

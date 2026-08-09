@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name ara-bakiteny (tsy mikarok
 
 # ── Fanampiana — fitsipi-teny fikajiana ───────────────────────────────────
 help-config-get =   .path                        alao ny sanda ravin-kazo na lisitry ny hazo kely
+help-config-filter =   .path [anarana]              tanisao ny anaran'ny zana-fanalahidy misy anarana
+help-config-full =   .path. [anarana]             tanisao ny sanda feno amin'ny hazo kely misy anarana
 help-config-set =   .path: value                 apetraho ny ravin-kazo
 help-config-delete =   .path:                       fafao ny ravin-kazo na hazo kely
 help-config-verb =   .path!verb [args]            antsoy ny fiasa toerana

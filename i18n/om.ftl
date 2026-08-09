@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       @name dhugaa (moggaasni hin bar
 
 # ── Gargaarsa — giiraama qindaa'inaa ─────────────────────────────────────
 help-config-get =   .path                        gatii dahoo argadhu ykn imitee tarreessi
+help-config-filter =   .path [maqaa]               maqaa furtuuwwan ijoollee maqaa qaban tarreessi
+help-config-full =   .path. [maqaa]              gatii guutuu muka xiqqaa maqaa qaban tarreessi
 help-config-set =   .path: value                 dahoo qindi'i
 help-config-delete =   .path:                       dahoo ykn imitee haaqama
 help-config-verb =   .path!verb [args]            gochaa naannoo waami

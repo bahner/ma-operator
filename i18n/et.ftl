@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       sõnasõnaline @name (aliast ei
 
 
 help-config-get =   .path                        too lehe väärtus või loetle alampuu
+help-config-filter =   .path [nimi]                 loetle nime sisaldavate alamvõtmete nimed
+help-config-full =   .path. [nimi]                loetle nime sisaldavad alampuu täisväärtused
 help-config-set =   .path: value                 sea leht
 help-config-delete =   .path:                       kustuta leht või alampuu
 help-config-verb =   .path!verb [args]            käivita kohalik verb

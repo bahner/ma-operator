@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       burtiski @name (nav aizstājvā
 
 
 help-config-get =   .path                        iegūt lapas vērtību vai uzskaitīt apakškoku
+help-config-filter =   .path [nosaukums]            uzskaitīt apakšatslēgu nosaukumus, kas satur nosaukumu
+help-config-full =   .path. [nosaukums]           uzskaitīt visas apakškoka vērtības, kas satur nosaukumu
 help-config-set =   .path: value                 iestatīt lapu
 help-config-delete =   .path:                       dzēst lapu vai apakškoku
 help-config-verb =   .path!verb [args]            izpildīt lokālo darbības vārdu

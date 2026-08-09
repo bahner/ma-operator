@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       @name halisi (bila utafutaji wa
 
 
 help-config-get =   .path                        pata thamani ya jani au orodhesha mti mdogo
+help-config-filter =   .path [jina]                 orodhesha majina ya funguo za watoto zenye jina
+help-config-full =   .path. [jina]                orodhesha thamani kamili za mti mdogo zenye jina
 help-config-set =   .path: value                 weka jani
 help-config-delete =   .path:                       futa jani au mti mdogo
 help-config-verb =   .path!verb [args]            tekeleza kitenzi cha ndani

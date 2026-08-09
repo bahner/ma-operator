@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       literal @name (tidak ada pencar
 
 # ── Bantuan — sintaks konfigurasi ─────────────────────────────────────────
 help-config-get =   .path                        ambil nilai daun atau daftar subpohon
+help-config-filter =   .path [nama]                 daftar nama kunci anak yang mengandung nama
+help-config-full =   .path. [nama]                daftar nilai lengkap subpohon yang mengandung nama
 help-config-set =   .path: value                 atur nilai daun
 help-config-delete =   .path:                       hapus daun atau subpohon
 help-config-verb =   .path!verb [args]            panggil kata kerja lokal

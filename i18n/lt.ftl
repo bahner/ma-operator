@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       pažodinis @name (be pseudonimo
 
 
 help-config-get =   .path                        gauti lapo reikšmę arba išvardyti pomedį
+help-config-filter =   .path [pavadinimas]          išvardyti vaikinių raktų pavadinimus su pavadinimu
+help-config-full =   .path. [pavadinimas]         išvardyti visas pomedžio reikšmes su pavadinimu
 help-config-set =   .path: value                 nustatyti lapą
 help-config-delete =   .path:                       ištrinti lapą arba pomedį
 help-config-verb =   .path!verb [args]            vykdyti vietinį veiksmažodį

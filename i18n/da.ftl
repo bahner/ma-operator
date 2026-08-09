@@ -212,6 +212,8 @@ help-msg-escape =   \@name                       bogstavelig @name (ingen alias-
 
 # ── Hjælpetekst — konfigurationsgrammatik ────────────────────────────────
 help-config-get =   .path                        hent bladværdi eller list undertræ
+help-config-filter =   .path [navn]               list undernøglenavne, der indeholder navn
+help-config-full =   .path. [navn]                list fulde undertræsværdier, der indeholder navn
 help-config-set =   .path: value                 angiv blad
 help-config-delete =   .path:                       slet blad eller undertræ
 help-config-verb =   .path!verb [args]            kør lokalt verb

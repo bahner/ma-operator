@@ -208,6 +208,8 @@ help-msg-escape =   \@name                       doslovné @name (bez vyhledáv�
 
 
 help-config-get =   .path                        získat hodnotu listu nebo vypsat podstrom
+help-config-filter =   .path [název]                vypsat názvy podklíčů obsahující název
+help-config-full =   .path. [název]               vypsat úplné hodnoty podstromu obsahující název
 help-config-set =   .path: value                 nastavit list
 help-config-delete =   .path:                       smazat list nebo podstrom
 help-config-verb =   .path!verb [args]            spustit lokální sloveso
