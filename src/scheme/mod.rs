@@ -273,6 +273,115 @@ pub async fn expand(
     Ok(result)
 }
 
+/// Split already-expanded shorthand text into words for `call_shorthand`.
+///
+/// A `"..."` span (escape-aware, `\"` for a literal quote) collapses to one
+/// token flagged as quoted; every other run of non-whitespace characters is
+/// one unquoted token. Bare `'` has no special meaning here — unlike Scheme
+/// source, shorthand words are never parsed, so an apostrophe in ordinary
+/// text (e.g. "don't") must not be mistaken for a quote delimiter.
+pub(crate) fn split_words(line: &str) -> Vec<(String, bool)> {
+    let mut words = Vec::new();
+    let mut current = String::new();
+    let mut quoted = false;
+    let mut in_quotes = false;
+    let mut escaped = false;
+    let mut has_token = false;
+
+    for ch in line.chars() {
+        if escaped {
+            current.push(ch);
+            escaped = false;
+            has_token = true;
+            continue;
+        }
+        if ch == '\\' && in_quotes {
+            escaped = true;
+            continue;
+        }
+        if ch == '"' {
+            if in_quotes {
+                in_quotes = false;
+            } else {
+                in_quotes = true;
+                quoted = true;
+            }
+            has_token = true;
+            continue;
+        }
+        if in_quotes {
+            current.push(ch);
+            continue;
+        }
+        if ch.is_whitespace() {
+            if has_token {
+                words.push((std::mem::take(&mut current), quoted));
+                quoted = false;
+                has_token = false;
+            }
+            continue;
+        }
+        current.push(ch);
+        has_token = true;
+    }
+    if has_token {
+        words.push((current, quoted));
+    }
+    words
+}
+
+/// Convert one word from `split_words` into the literal `SchemeVal` it
+/// stands for — never a symbol lookup. A quoted word is always a plain
+/// string; an unquoted word gets the same literal recognition `eval_atom`
+/// gives real Scheme atoms (numbers, `#t`/`#f`, `nil`/`()`), falling back to
+/// a plain string (which also covers `#`-prefixed fragment atoms as-is).
+fn shorthand_arg_val(word: String, was_quoted: bool) -> SchemeVal {
+    if was_quoted {
+        return SchemeVal::Str(word);
+    }
+    if let Ok(n) = word.parse::<i64>() {
+        return SchemeVal::Int(n);
+    }
+    if let Ok(f) = word.parse::<f64>() {
+        return SchemeVal::Float(f);
+    }
+    match word.as_str() {
+        "#t" | "true" => SchemeVal::Bool(true),
+        "#f" | "false" => SchemeVal::Bool(false),
+        "nil" | "()" => SchemeVal::Nil,
+        _ => SchemeVal::Str(word),
+    }
+}
+
+/// Call a focus-shorthand command directly: `head` is the Scheme function
+/// name, `args` the pre-tokenized remaining words (see `split_words`).
+///
+/// Argument values are placed in a child environment and referenced by a
+/// fixed AST, the same trick `call_event` uses — words are never re-parsed
+/// or re-serialised as Scheme source, so none of them need quoting to avoid
+/// being looked up as a symbol.
+pub async fn call_shorthand(
+    head: &str,
+    args: Vec<(String, bool)>,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<SchemeVal, String> {
+    let env = Env::extend(&get_env());
+    let mut call = vec![parser::SchemeExpr::Atom(head.to_string())];
+    for (i, (word, was_quoted)) in args.into_iter().enumerate() {
+        let name = format!("__ma_arg_{i}");
+        env.define(name.clone(), shorthand_arg_val(word, was_quoted));
+        call.push(parser::SchemeExpr::Atom(name));
+    }
+    let ctx: Ctx = Rc::new(EvalCtx {
+        state: state.clone(),
+        config,
+    });
+    ma_zscheme::eval::eval(parser::SchemeExpr::List(call), env, ctx)
+        .await
+        .map_err(|error| error.to_string())
+}
+
 /// Evaluate one complete Scheme expression entered as a terminal line.
 ///
 /// Returns `Ok(None)` when the line contains text beyond the expression, so

@@ -144,16 +144,39 @@ Makefile
 
 ## Focus shorthand routing contract
 
-In focus mode, zion expands terminal shorthand before parsing and queues an
-`ActorArgs` RPC directly to the focused room/target. The local zscheme avatar
-stored at `.my.z.avatar` formats received room events; it is not a remote command
-proxy. Examples: `look`, `say hello`, `go north`, `dig east`.
+In focus mode, a bare line (no leading `.`/`@`/`/`/`(` — see
+`is_focus_shorthand_command`) is dispatched as a direct local Scheme call, not
+as raw Scheme source. `dispatch::handle_focus_shorthand` runs, in order:
+
+1. `scheme::expand` — resolves any embedded `(...)` sub-expressions first
+   (unchanged, works the same in and out of focus mode).
+2. `parser::alias::resolve_targets` — expands `@alias` references over the
+   expanded text; an alias that doesn't resolve is a hard error here, same as
+   the non-focus `PlainText` path.
+3. `scheme::split_words` — a quote-aware whitespace tokenizer. A `"..."` span
+   collapses into one token; otherwise words split on whitespace. Bare `'` has
+   no special meaning (so apostrophes like "don't" stay literal).
+4. `scheme::call_shorthand` — word 1 is the Scheme function name (the local
+   zscheme avatar's verb, e.g. `say`, `go`, `forge`), the rest are passed as
+   literal positional arguments via a synthetic AST (the same trick
+   `call_event` uses), never re-parsed as Scheme source. So bare words are
+   never looked up as symbols and never need quoting: `put lamp in kiste`,
+   `forge lamp named Brass Lamp in Wardrobe`.
+
+Unquoted words get the same literal-recognition `eval_atom` gives real Scheme
+atoms: `i64`/`f64` numbers, `#t`/`true`/`#f`/`false`, `nil`/`()`, else a plain
+string. A double-quoted word (`"5"`) always stays a literal string — quoting
+is the escape hatch when a string is really meant. Because `expand()` runs
+first and unconditionally evaluates unquoted `(...)`, there is no way to pass
+a literal, un-evaluated parenthesized/list-looking value through as one
+argument (a quoted list evaluates and then flattens back to space-separated
+words on splice). To pass text that merely *looks* like a list, double-quote
+it: `forge look "(a b c)"`.
 
 Commands with a leading colon are direct methods on the focused room/target,
 such as `:prop name Garden`, `:prop description ...`, and `:look`. The leading
 colon is stripped only from the verb sent on the wire; it still controls
-routing. Keep `dispatch::focus_command_target` and its tests in sync with this
-rule.
+routing.
 
 Zion is a client, not part of any runtime. Runtime-local short forms such as
 `#construct` or bare entity fragments must never be stored in zion context,

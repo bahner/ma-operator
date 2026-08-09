@@ -211,11 +211,19 @@ fn handle_input_line(
         return;
     }
 
-    // Focus shorthand: unqualified words become a global Scheme call.
-    let line = focus_scheme_form(trimmed, state.focus_actor.get_untracked().is_some())
-        .unwrap_or_else(|| trimmed.to_string());
+    // Focus shorthand: unqualified words become a direct word-list call.
+    if state.focus_actor.get_untracked().is_some() && is_focus_shorthand_command(trimmed) {
+        let line = trimmed.to_string();
+        let state2 = state.clone();
+        let cancel_epoch = state.cancel_epoch();
+        wasm_bindgen_futures::spawn_local(async move {
+            handle_focus_shorthand(line, &state2, config, cancel_epoch).await;
+        });
+        return;
+    }
 
-    if crate::scheme::needs_expansion(&line) {
+    if crate::scheme::needs_expansion(trimmed) {
+        let line = trimmed.to_string();
         let state2 = state.clone();
         let cancel_epoch = state.cancel_epoch();
         wasm_bindgen_futures::spawn_local(async move {
@@ -225,7 +233,7 @@ fn handle_input_line(
         return;
     }
 
-    dispatch_eval_line(&line, state, config, show_editor, on_eval, None);
+    dispatch_eval_line(trimmed, state, config, show_editor, on_eval, None);
 }
 
 fn collecting_batch_id(state: &AppState) -> Option<u64> {
@@ -277,7 +285,7 @@ async fn handle_scheme_expansion(
         Ok(None) => {}
         Err(error) => {
             if !state.was_cancelled_since(cancel_epoch) {
-                state.push_error(format!("scheme: {error}"));
+                state.push_error(scheme_error_message(&error));
             }
             return;
         }
@@ -291,10 +299,61 @@ async fn handle_scheme_expansion(
         }
         Err(e) => {
             if !state.was_cancelled_since(cancel_epoch) {
-                state.push_error(format!("scheme: {e}"));
+                state.push_error(scheme_error_message(&e));
             }
         }
     }
+}
+
+/// Expand embedded `(...)`, unalias `@targets`, split into words, and call
+/// the first word as a Scheme function with the rest as literal arguments —
+/// never re-parsed as Scheme source, so no word needs quoting.
+async fn handle_focus_shorthand(
+    line: String,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    cancel_epoch: u64,
+) {
+    let expanded = match crate::scheme::expand(&line, state, config).await {
+        Ok(expanded) => expanded,
+        Err(e) => {
+            if !state.was_cancelled_since(cancel_epoch) {
+                state.push_error(scheme_error_message(&e));
+            }
+            return;
+        }
+    };
+    let cfg = config.get_untracked();
+    let resolved = match crate::parser::alias::resolve_targets(&expanded, &cfg) {
+        Ok(resolved) => resolved,
+        Err(e) => {
+            if !state.was_cancelled_since(cancel_epoch) {
+                state.push_error(format!("'{line}': {e}"));
+            }
+            return;
+        }
+    };
+    let mut words = crate::scheme::split_words(&resolved);
+    if words.is_empty() {
+        return;
+    }
+    let (head, _) = words.remove(0);
+    match crate::scheme::call_shorthand(&head, words, state, config).await {
+        Ok(value) => {
+            if should_display_scheme_value(&value) && !state.was_cancelled_since(cancel_epoch) {
+                state.push_output(value.display());
+            }
+        }
+        Err(error) => {
+            if !state.was_cancelled_since(cancel_epoch) {
+                state.push_error(scheme_error_message(&error));
+            }
+        }
+    }
+}
+
+fn scheme_error_message(error: &str) -> String {
+    format!("scheme: {error}")
 }
 
 fn complete_scheme_input(pending: &mut String, line: &str) -> Option<String> {
@@ -773,13 +832,6 @@ fn is_focus_shorthand_command(line: &str) -> bool {
         && !line.trim().is_empty()
 }
 
-fn focus_scheme_form(line: &str, focused: bool) -> Option<String> {
-    if !focused || !is_focus_shorthand_command(line) {
-        return None;
-    }
-    Some(format!("({line})"))
-}
-
 fn open_actor_behaviour_editor(
     target: &str,
     line: &str,
@@ -855,11 +907,11 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        attach_command_to_batch, complete_scheme_input, focus_scheme_form, is_batch_delimiter_line,
-        is_note_line, should_display_scheme_value,
+        attach_command_to_batch, complete_scheme_input, is_batch_delimiter_line,
+        is_focus_shorthand_command, is_note_line, scheme_error_message, should_display_scheme_value,
     };
     use crate::core::CommandStatus;
-    use crate::scheme::SchemeVal;
+    use crate::scheme::{split_words, SchemeVal};
     use crate::state::{AppState, OnError, DEFAULT_TIMEOUT_MS};
     use leptos::prelude::*;
 
@@ -910,11 +962,74 @@ mod tests {
     }
 
     #[test]
-    fn focus_shorthand_builds_a_global_scheme_call() {
-        assert_eq!(focus_scheme_form("look", true), Some("(look)".to_string()));
+    fn focus_shorthand_gate_accepts_bare_words_only() {
+        assert!(is_focus_shorthand_command("look"));
+        assert!(is_focus_shorthand_command("look north"));
+        assert!(!is_focus_shorthand_command("@ma#room:look"));
+        assert!(!is_focus_shorthand_command(".my.z.avatar"));
+        assert!(!is_focus_shorthand_command("/local/path"));
+        assert!(!is_focus_shorthand_command("(look)"));
+        assert!(!is_focus_shorthand_command(""));
+        assert!(!is_focus_shorthand_command("   "));
+    }
+
+    #[test]
+    fn split_words_splits_on_whitespace() {
         assert_eq!(
-            focus_scheme_form("look north", true),
-            Some("(look north)".to_string())
+            split_words("put lamp in kiste"),
+            vec![
+                ("put".to_string(), false),
+                ("lamp".to_string(), false),
+                ("in".to_string(), false),
+                ("kiste".to_string(), false),
+            ]
+        );
+    }
+
+    #[test]
+    fn split_words_collapses_a_quoted_phrase_into_one_token() {
+        assert_eq!(
+            split_words("say \"hello there\""),
+            vec![("say".to_string(), false), ("hello there".to_string(), true)]
+        );
+    }
+
+    #[test]
+    fn split_words_does_not_treat_apostrophes_as_quotes() {
+        assert_eq!(
+            split_words("say don't stop"),
+            vec![
+                ("say".to_string(), false),
+                ("don't".to_string(), false),
+                ("stop".to_string(), false),
+            ]
+        );
+    }
+
+    #[test]
+    fn split_words_handles_emoji_as_plain_words() {
+        assert_eq!(
+            split_words("give 🎂 to 💃"),
+            vec![
+                ("give".to_string(), false),
+                ("🎂".to_string(), false),
+                ("to".to_string(), false),
+                ("💃".to_string(), false),
+            ]
+        );
+    }
+
+    #[test]
+    fn split_words_handles_ordinary_multibyte_utf8() {
+        assert_eq!(
+            split_words("gå til Bjørn på øya"),
+            vec![
+                ("gå".to_string(), false),
+                ("til".to_string(), false),
+                ("Bjørn".to_string(), false),
+                ("på".to_string(), false),
+                ("øya".to_string(), false),
+            ]
         );
     }
 
@@ -943,11 +1058,15 @@ mod tests {
     }
 
     #[test]
-    fn focus_shorthand_leaves_qualified_input_unchanged() {
-        assert_eq!(focus_scheme_form("@ma#room:look", true), None);
-        assert_eq!(focus_scheme_form(".my.z.avatar", true), None);
-        assert_eq!(focus_scheme_form("(look)", true), None);
-        assert_eq!(focus_scheme_form("look north", false), None);
+    fn scheme_error_message_is_prefixed_plainly() {
+        assert_eq!(
+            scheme_error_message("undefined: mirror"),
+            "scheme: undefined: mirror"
+        );
+        assert_eq!(
+            scheme_error_message("quote: expected exactly one argument"),
+            "scheme: quote: expected exactly one argument"
+        );
     }
 
     #[test]
