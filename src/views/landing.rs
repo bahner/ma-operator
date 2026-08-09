@@ -19,6 +19,18 @@ const LAST_DID_KEY: &str = "zion_last_did";
 const LAST_RUNTIME_KEY: &str = "zion_last_runtime";
 const IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
 
+fn validate_new_passphrase(pass: &str, confirm: &str) -> Result<(), &'static str> {
+    if pass.is_empty() {
+        Err("error-passphrase-required")
+    } else if pass.chars().count() < 20 {
+        Err("error-passphrase-too-short")
+    } else if pass != confirm {
+        Err("error-passphrases-no-match")
+    } else {
+        Ok(())
+    }
+}
+
 fn load_ipfs_gateway_pref() -> String {
     web_sys::window()
         .and_then(|w| w.local_storage().ok().flatten())
@@ -248,13 +260,12 @@ pub fn Landing() -> impl IntoView {
                     error.set(t("error-nick-invalid"));
                     return;
                 }
-                if pass.is_empty() {
-                    error.set(t("error-passphrase-required"));
-                    return;
-                }
-                if pass != confirm {
-                    error.set(t("error-passphrases-no-match"));
-                    return;
+                match validate_new_passphrase(&pass, &confirm) {
+                    Ok(()) => {}
+                    Err(key) => {
+                        error.set(t(key));
+                        return;
+                    }
                 }
                 status.set(t("status-generating"));
                 let state2 = state.clone();
@@ -913,7 +924,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
                         <input
                             type="password"
-                            placeholder="••••••••"
+                            placeholder=move || { let _ = lang.get(); t("passphrase-placeholder") }
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
                                     .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
@@ -931,7 +942,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-confirm-passphrase") }}</label>
                         <input
                             type="password"
-                            placeholder="••••••••"
+                            placeholder=move || { let _ = lang.get(); t("passphrase-placeholder") }
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
                                     .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
@@ -985,6 +996,35 @@ pub fn Landing() -> impl IntoView {
                 </Show>
             </div>
         </div>
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_new_passphrase;
+
+    #[test]
+    fn short_passphrase_is_rejected() {
+        assert_eq!(
+            validate_new_passphrase("shortpass", "shortpass"),
+            Err("error-passphrase-too-short")
+        );
+    }
+
+    #[test]
+    fn matching_long_passphrase_is_accepted() {
+        assert_eq!(
+            validate_new_passphrase("this-is-a-strong-passphrase", "this-is-a-strong-passphrase"),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn mismatched_passphrase_is_rejected() {
+        assert_eq!(
+            validate_new_passphrase("this-is-a-strong-passphrase", "different-passphrase"),
+            Err("error-passphrases-no-match")
+        );
     }
 }
 

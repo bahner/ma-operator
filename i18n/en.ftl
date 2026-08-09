@@ -12,6 +12,7 @@ tab-import-profile = import profile
 label-passphrase = passphrase
 label-username = username
 label-confirm-passphrase = confirm passphrase
+passphrase-placeholder = This password is your only defense against the Dark Arts!
 label-did = did
 label-runtime = 間
 label-runtime-placeholder = did:ma:... or http://localhost:5003
@@ -437,3 +438,5 @@ label-local-ipfs = Local IPFS gateway (requires browser exception)
 
 tab-config = settings
 label-gateway = gateway
+help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
+error-passphrase-too-short = passphrase must be at least 20 characters
