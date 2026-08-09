@@ -156,8 +156,8 @@ identity-exported = Bundle downpressed as { $filename }
 identity-export-failed = Export nah work: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content empty
-doc-save-first = { $path }.content empty — keep it first
+doc-content-empty = { $path } empty
+doc-save-first = { $path } empty — keep it first
 doc-missing-name = document I-name missing
 doc-publish-usage = livity: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = livity: .my.doc.<name>!publish-ipld <publisher>
@@ -175,7 +175,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
 doc-store-sent = store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
 doc-ipld-store-sent = IPLD store request forward ({ $id }) → { $publisher }; CID will arrive via RPC
-doc-fetch-done = brought { $cid } → { $path }.content (not livity)
+doc-fetch-done = brought { $cid } → { $path } (not livity)
 doc-fetch-failed = bringing { $cid }: { $e }
 doc-fetch-usage = livity: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -204,7 +204,7 @@ help-cmd-panic =   .panic                       last resort — use if I-self fi
 help-cmd-history =   .history                     I-command history (consecutive repeats mash inna one)
 help-cmd-logout =   .logout                      depart from Zion
 help-cmd-batch =   .batch                       eval scratch dakiment parallel
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch dakiment lain bai lain
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch dakiment lain bai lain
 help-msg-echo = @alias                       show resolved DID/DID-URL (no message sent)
 help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to I-dren
 help-msg-fragment =   @alias#fragment:verb body  send to I-name wid explicit DID fragment
@@ -401,7 +401,7 @@ batch-done-error = Batch don wid error inna { $secs }s — { $steps } step
 msg-timeout = Message taim out (no reply inna 60s)
 err-unknown-command = command no known: { $path }
 err-read-only-path = { $path } a read-only
-help-cmd-batch-async =   .batch:async / .batch        eval scratch dakiment parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        eval scratch dakiment parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

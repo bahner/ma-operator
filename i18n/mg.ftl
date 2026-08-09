@@ -154,8 +154,8 @@ identity-exported = Nampidina ny vondrona ho { $filename }
 identity-export-failed = Tsy nahomby ny fanondranana: { $e }
 
 # ── Fiasa — antontan-taratasy ─────────────────────────────────────────────
-doc-content-empty = { $path }.content foana
-doc-save-first = { $path }.content foana — tehirizo aloha
+doc-content-empty = { $path } foana
+doc-save-first = { $path } foana — tehirizo aloha
 doc-missing-name = anarana antontan-taratasy tsy hita
 doc-publish-usage = fampiasana: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = fampiasana: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = jereo ny diarin'ny fotoam-pivoriana mba hahitana antony amin'ny antsipiriany ary andramo indray
 doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
 doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
-doc-fetch-done = voaaka { $cid } → { $path }.content (tsy naosina)
+doc-fetch-done = voaaka { $cid } → { $path } (tsy naosina)
 doc-fetch-failed = fetching { $cid }: { $e }
 doc-fetch-usage = fampiasana: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       fanalana farany — ampiasao rah
 help-cmd-history =   .history                     tantaran'ny baiko (kopy mifandimby voaangona)
 help-cmd-logout =   .logout                      mivoaka
 help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
-help-cmd-batch-sync =   .batch:sync / .batch         évaluer le document brouillon ligne par ligne
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       asehoy DID/DID-URL voavaha (tsy misy hafatra alefa)
@@ -413,7 +413,7 @@ batch-done-error = Batch terminé avec erreurs en { $secs }s — { $steps } éta
 msg-timeout = Message expiré (aucune réponse en 60s)
 err-unknown-command = baiko tsy fantatra: { $path }
 err-read-only-path = { $path } dia vakiana fotsiny
-help-cmd-batch-async =   .batch:async / .batch        évaluer le document brouillon en parallèle
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        évaluer le document brouillon en parallèle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

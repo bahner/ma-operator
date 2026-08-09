@@ -154,8 +154,8 @@ identity-exported = Pachetul a fost descărcat ca { $filename }
 identity-export-failed = Exportul a eșuat: { $e }
 
 # ── Verbe — documente ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content este gol
-doc-save-first = { $path }.content este gol — salvați mai întâi
+doc-content-empty = { $path } este gol
+doc-save-first = { $path } este gol — salvați mai întâi
 doc-missing-name = lipsește numele documentului
 doc-publish-usage = utilizare: .my.doc.<nume>!publish <editor>
 doc-publish-ipld-usage = utilizare: .my.doc.<nume>!publish-ipld <editor>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspectați jurnalele de rulare pentru cauze detaliate și reîncercați
 doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
 doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
-doc-fetch-done = { $cid } obținut → { $path }.content (neexecutat)
+doc-fetch-done = { $cid } obținut → { $path } (neexecutat)
 doc-fetch-failed = obținere { $cid }: { $e }
 doc-fetch-usage = utilizare: .my.doc.<nume>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       ultima soluție — folosiți da
 help-cmd-history =   .history                     istoricul comenzilor (duplicate consecutive îmbinate)
 help-cmd-logout =   .logout                      deconectare
 help-cmd-batch =   .batch                       evaluează documentul temporar în paralel
-help-cmd-batch-sync =   .batch:sync / .batch         evaluează documentul temporar linie cu linie
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluează documentul temporar linie cu linie
 
 help-msg-echo =   @alias                       afișează DID/DID-URL rezolvat (nu se trimite mesaj)
 help-msg-send =   @alias!msg body / @alias:verb args           trimite mesaj / RPC actorului
@@ -406,7 +406,7 @@ batch-done-error = Batch terminat cu erori în { $secs }s — { $steps } pași
 msg-timeout = Mesaj expirat (niciun răspuns în 60s)
 err-unknown-command = comandă necunoscută: { $path }
 err-read-only-path = { $path } este doar pentru citire
-help-cmd-batch-async =   .batch:async / .batch        evaluează documentul temporar în paralel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluează documentul temporar în paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

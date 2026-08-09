@@ -154,8 +154,8 @@ identity-exported = Paketas atsisiųstas kaip { $filename }
 identity-export-failed = Eksportas nepavyko: { $e }
 
 # ── Veiksmažodžiai — dokumentai ───────────────────────────────────────────
-doc-content-empty = { $path }.content yra tuščias
-doc-save-first = { $path }.content yra tuščias — pirmiausia išsaugokite
+doc-content-empty = { $path } yra tuščias
+doc-save-first = { $path } yra tuščias — pirmiausia išsaugokite
 doc-missing-name = trūksta dokumento pavadinimo
 doc-publish-usage = naudojimas: .my.doc.<pavadinimas>!publish <leidėjas>
 doc-publish-ipld-usage = naudojimas: .my.doc.<pavadinimas>!publish-ipld <leidėjas>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = patikrinkite vykdymo laiko žurnalus, kad sužinotumėte išsamią priežastį, ir bandykite dar kartą
 doc-store-sent = saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
 doc-ipld-store-sent = IPLD saugojimo užklausa išsiųsta ({ $id }) → { $publisher }; CID ateis per RPC atsakymą
-doc-fetch-done = gauta { $cid } → { $path }.content (nevykdyta)
+doc-fetch-done = gauta { $cid } → { $path } (nevykdyta)
 doc-fetch-failed = gavimas { $cid }: { $e }
 doc-fetch-usage = naudojimas: .my.doc.<pavadinimas>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       paskutinė priemonė — naudoki
 help-cmd-history =   .history                     komandų istorija (nuoseklūs dublikatai sujungti)
 help-cmd-logout =   .logout                      atsijungti
 help-cmd-batch =   .batch                       oceń dokument roboczy równolegle
-help-cmd-batch-sync =   .batch:sync / .batch         oceń dokument roboczy linia po linii
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
 
 help-msg-echo =   @alias                       rodyti išspręstą DID/DID-URL (žinutė nesiunčiama)
 help-msg-send =   @alias!msg body / @alias:verb args           siųsti pranešimą / RPC dalyviui
@@ -406,7 +406,7 @@ batch-done-error = Batch zakończony z błędami w { $secs }s — { $steps } kro
 msg-timeout = Wiadomość wygasła (brak odpowiedzi przez 60s)
 err-unknown-command = nežinoma komanda: { $path }
 err-read-only-path = { $path } yra tik skaitomas
-help-cmd-batch-async =   .batch:async / .batch        oceń dokument roboczy równolegle
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        oceń dokument roboczy równolegle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

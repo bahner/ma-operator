@@ -154,8 +154,8 @@ identity-exported = Pakè a telechaje kòm { $filename }
 identity-export-failed = Ekspòtasyon echwe: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content vid
-doc-save-first = { $path }.content vid — sove dabò
+doc-content-empty = { $path } vid
+doc-save-first = { $path } vid — sove dabò
 doc-missing-name = non dokiman manke
 doc-publish-usage = itilizasyon: .my.doc.<non>!publish <piblikatè>
 doc-publish-ipld-usage = itilizasyon: .my.doc.<non>!publish-ipld <piblikatè>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
 doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
 doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
-doc-fetch-done = chèche { $cid } → { $path }.content (pa egzekite)
+doc-fetch-done = chèche { $cid } → { $path } (pa egzekite)
 doc-fetch-failed = chèche { $cid }: { $e }
 doc-fetch-usage = itilizasyon: .my.doc.<non>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       dènye rekous — itilize si ou 
 help-cmd-history =   .history                     istwa kòmand (repetisyon konsekitif konbine)
 help-cmd-logout =   .logout                      dekonekte
 help-cmd-batch =   .batch                       eval scratch document (parallel)
-help-cmd-batch-sync =   .batch:sync / .batch         eval scratch document line-by-line (sequential)
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       montre DID/DID-URL rezoud la (pa voye mesaj)
 help-msg-send =   @alias!msg body / @alias:verb args           voye mesaj / RPC bay aktè
 help-msg-fragment =   @alias#fragment:verb body  voye ba alias avèk fragman DID eksplisit
@@ -399,7 +399,7 @@ batch-done-error = Batch fini ak erè an { $secs }s — { $steps } etap
 msg-timeout = Mesaj la ekspire (pa gen repons nan 60s)
 err-unknown-command = kòmand enkoni: { $path }
 err-read-only-path = { $path } se lekti sèlman
-help-cmd-batch-async =   .batch:async / .batch        evalye dokiman bouyon an paralèl
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evalye dokiman bouyon an paralèl
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

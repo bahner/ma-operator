@@ -154,8 +154,8 @@ identity-exported = Iqoqo lilandisiwe njenge { $filename }
 identity-export-failed = Ukuthumela ngaphandle kuhlulekile: { $e }
 
 # ── Izenzo — imibhalo ─────────────────────────────────────────────────────
-doc-content-empty = u{ $path }.content ungenalutho
-doc-save-first = u{ $path }.content ungenalutho — gcina kuqala
+doc-content-empty = u{ $path } ungenalutho
+doc-save-first = u{ $path } ungenalutho — gcina kuqala
 doc-missing-name = igama lemibhalo lilahlekile
 doc-publish-usage = ukusetshenziswa: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = ukusetshenziswa: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = hlola amalogi esikhathi sokusebenza ukuze uthole imbangela enemininingwane bese uzama futhi
 doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
 doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
-doc-fetch-done = u{ $cid } ulandwe → u{ $path }.content (akuqalisiwe)
+doc-fetch-done = u{ $cid } ulandwe → u{ $path } (akuqalisiwe)
 doc-fetch-failed = ukulanda u{ $cid }: { $e }
 doc-fetch-usage = ukusetshenziswa: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       indlela yokugcina — sebenzisa 
 help-cmd-history =   .history                     umlando wemiyalelo (izinhlobo ezifanayo ezilandelanayo zihlanganiswé)
 help-cmd-logout =   .logout                      phuma
 help-cmd-batch =   .batch                       hlola idokhumenti ye-scratch ngokuhambisana
-help-cmd-batch-sync =   .batch:sync / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
 
 # ── Usizo — ukuthumela ────────────────────────────────────────────────────
 help-msg-echo =   @alias                       bonisa i-DID/DID-URL exazululiwe (akuthunyelwa mlayezo)
@@ -413,7 +413,7 @@ batch-done-error = I-batch iphelile ngamaphutha ngo-{ $secs }s — { $steps } iz
 msg-timeout = Umlayezo uphelelwe isikhathi (akukho mpendulo ku-60s)
 err-unknown-command = umyalo ongaziwa: { $path }
 err-read-only-path = { $path } ifundeka kuphela
-help-cmd-batch-async =   .batch:async / .batch        hlola idokhumenti ye-scratch ngokuhambisana
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        hlola idokhumenti ye-scratch ngokuhambisana
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -154,8 +154,8 @@ identity-exported = బండిల్ { $filename } గా డౌన్‌ల�
 identity-export-failed = ఎగుమతి విఫలమైంది: { $e }
 
 # ── క్రియలు — డాక్యుమెంట్‌లు ────────────────────────────────────────────
-doc-content-empty = { $path }.content ఖాళీగా ఉంది
-doc-save-first = { $path }.content ఖాళీగా ఉంది — ముందు సేవ్ చేయండి
+doc-content-empty = { $path } ఖాళీగా ఉంది
+doc-save-first = { $path } ఖాళీగా ఉంది — ముందు సేవ్ చేయండి
 doc-missing-name = డాక్యుమెంట్ పేరు లేదు
 doc-publish-usage = వాడకం: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = వాడకం: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = వివరణాత్మక కారణం కోసం రన్‌టైమ్ లాగ్‌లను తనిఖీ చేసి, మళ్లీ ప్రయత్నించండి
 doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
 doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
-doc-fetch-done = { $cid } తెచ్చబడింది → { $path }.content (అమలు చేయలేదు)
+doc-fetch-done = { $cid } తెచ్చబడింది → { $path } (అమలు చేయలేదు)
 doc-fetch-failed = పొందు { $cid }: { $e }
 doc-fetch-usage = వాడకం: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       చివరి మార్గ�
 help-cmd-history =   .history                     ఆదేశ చరిత్ర (వరుస నకళ్ళు విలీనమయ్యాయి)
 help-cmd-logout =   .logout                      లాగ్ అవుట్
 help-cmd-batch =   .batch                       scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
-help-cmd-batch-sync =   .batch:sync / .batch         scratch పత్రాన్ని పంక్తి పంక్తిగా అమలు చేయి
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch పత్రాన్ని పంక్తి పంక్తిగా అమలు చేయి
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID/DID-URL చూపించు (సందేశం పంపబడదు)
@@ -413,7 +413,7 @@ batch-done-error = batch లోపాలతో { $secs }sలో పూర్త�
 msg-timeout = సందేశం గడువు ముగిసింది (60sలో ప్రత్యుత్తరం లేదు)
 err-unknown-command = తెలియని ఆదేశం: { $path }
 err-read-only-path = { $path } చదవడానికి మాత్రమే
-help-cmd-batch-async =   .batch:async / .batch        scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

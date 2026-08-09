@@ -154,8 +154,8 @@ identity-exported = Bɔndɔl dɔnlod as { $filename }
 identity-export-failed = Ekspɔt fɛl: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content empty
-doc-save-first = { $path }.content empty — sev fɛs
+doc-content-empty = { $path } empty
+doc-save-first = { $path } empty — sev fɛs
 doc-missing-name = dokument nem nor dɛ
 doc-publish-usage = yusij: .my.doc.<nem>!publish <pɔblisha>
 doc-publish-ipld-usage = yusij: .my.doc.<nem>!publish-ipld <pɔblisha>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
 doc-ipld-store-sent = IPLD stɔ rikwest don sen ({ $id }) → { $publisher }; CID go kam via RPC rɛpli
-doc-fetch-done = fetch { $cid } → { $path }.content (nor execute)
+doc-fetch-done = fetch { $cid } → { $path } (nor execute)
 doc-fetch-failed = fetch { $cid }: { $e }
 doc-fetch-usage = yusij: .my.doc.<nem>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       las opshen — yus if yu los yos
 help-cmd-history =   .history                     komand istri (kopi dem wey dɔn folo sɛf bia wanwan)
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       run scratch document parallel
-help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
 help-msg-echo =   @alias                       sho resolved DID/DID-URL (noh send message)
 help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go to ator
 help-msg-fragment =   @alias#fragment:verb body  send go to alias wid eksplisit DID fragment
@@ -399,7 +399,7 @@ batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
 err-unknown-command = no sabi koman: { $path }
 err-read-only-path = { $path } na for rid nomo
-help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

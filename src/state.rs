@@ -173,7 +173,7 @@ pub struct ActiveBatch {
     pub on_error: OnError,
     /// `js_sys::Date::now()` when dispatch started (reset when `.batch` closes).
     pub started_at_ms: f64,
-    /// Still accumulating lines (between `.batch:sync/async` and `.batch`).
+    /// Still accumulating lines (between `.batch!sync/async` and `.batch`).
     pub collecting: bool,
     /// Lines pending dispatch.
     pub lines: VecDeque<String>,
@@ -181,7 +181,7 @@ pub struct ActiveBatch {
     pub sync_cmd_id: Option<u64>,
     /// Whether any step has errored.
     pub had_error: bool,
-    /// Terminal entry id for the `.batch:sync/async` header line.
+    /// Terminal entry id for the `.batch!sync/async` header line.
     pub header_cmd_id: u64,
     /// Async only: number of still-unresolved steps.
     pub async_pending: u32,
@@ -236,7 +236,6 @@ pub struct AppState {
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
-    pub startup_zscheme_after_enter: RwSignal<bool>,
     pub ctx_recovery_runtime: RwSignal<Option<String>>,
     pub screensaver: RwSignal<bool>,
     /// All in-flight outgoing messages, keyed by `ma_core::Message.id`.
@@ -282,7 +281,6 @@ impl AppState {
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
-            startup_zscheme_after_enter: RwSignal::new(false),
             ctx_recovery_runtime: RwSignal::new(None),
             screensaver: RwSignal::new(false),
             pending_requests: RwSignal::new(HashMap::new()),

@@ -154,8 +154,8 @@ identity-exported = Balík stiahnutý ako { $filename }
 identity-export-failed = Export zlyhal: { $e }
 
 # ── Slovesá — dokumenty ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content je prázdne
-doc-save-first = { $path }.content je prázdne — najprv uložte
+doc-content-empty = { $path } je prázdne
+doc-save-first = { $path } je prázdne — najprv uložte
 doc-missing-name = chýba názov dokumentu
 doc-publish-usage = použitie: .my.doc.<názov>!publish <vydavateľ>
 doc-publish-ipld-usage = použitie: .my.doc.<názov>!publish-ipld <vydavateľ>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = skontrolujte protokoly runtime pre podrobnú príčinu a skúste to znova
 doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
 doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
-doc-fetch-done = { $cid } načítané → { $path }.content (nespustené)
+doc-fetch-done = { $cid } načítané → { $path } (nespustené)
 doc-fetch-failed = načítanie { $cid }: { $e }
 doc-fetch-usage = použitie: .my.doc.<názov>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       posledná záchrana — použite
 help-cmd-history =   .history                     história príkazov (za sebou idúce duplikáty zlúčené)
 help-cmd-logout =   .logout                      odhlásiť
 help-cmd-batch =   .batch                       vyhodnotit pracovní dokument paralelně
-help-cmd-batch-sync =   .batch:sync / .batch         vyhodnotit pracovní dokument po řádcích
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vyhodnotit pracovní dokument po řádcích
 
 help-msg-echo =   @alias                       zobraziť vyriešený DID/DID-URL (správa sa neodošle)
 help-msg-send =   @alias!msg body / @alias:verb args           odoslať správu / RPC aktérovi
@@ -406,7 +406,7 @@ batch-done-error = Dávka skončila s chybami za { $secs }s — { $steps } krok�
 msg-timeout = Zprávě vypršel čas (žádná odpověď za 60s)
 err-unknown-command = neznámy príkaz: { $path }
 err-read-only-path = { $path } je iba na čítanie
-help-cmd-batch-async =   .batch:async / .batch        vyhodnotit pracovní dokument paralelně
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        vyhodnotit pracovní dokument paralelně
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

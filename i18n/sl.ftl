@@ -154,8 +154,8 @@ identity-exported = Paket prenesen kot { $filename }
 identity-export-failed = Izvoz ni uspel: { $e }
 
 # ── Glagoli — dokumenti ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content je prazno
-doc-save-first = { $path }.content je prazno — najprej shranite
+doc-content-empty = { $path } je prazno
+doc-save-first = { $path } je prazno — najprej shranite
 doc-missing-name = manjka ime dokumenta
 doc-publish-usage = uporaba: .my.doc.<ime>!publish <založnik>
 doc-publish-ipld-usage = uporaba: .my.doc.<ime>!publish-ipld <založnik>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = preglejte dnevnike izvajalnega časa za podroben vzrok in poskusite znova
 doc-store-sent = zahteva za shranjevanje poslana ({ $id }) → { $publisher }; CID bo prišel v odgovoru RPC
 doc-ipld-store-sent = zahteva za shranjevanje IPLD poslana ({ $id }) → { $publisher }; CID bo prišel v odgovoru RPC
-doc-fetch-done = { $cid } pridobljeno → { $path }.content (ni zagnano)
+doc-fetch-done = { $cid } pridobljeno → { $path } (ni zagnano)
 doc-fetch-failed = pridobivanje { $cid }: { $e }
 doc-fetch-usage = uporaba: .my.doc.<ime>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       zadnja možnost — uporabite, �
 help-cmd-history =   .history                     zgodovina ukazov (zaporedni dvojniki združeni)
 help-cmd-logout =   .logout                      odjava
 help-cmd-batch =   .batch                       evaluiraj privremeni dokument paralelno
-help-cmd-batch-sync =   .batch:sync / .batch         evaluiraj privremeni dokument red po red
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluiraj privremeni dokument red po red
 
 help-msg-echo =   @alias                       prikaži razrešeni DID/DID-URL (sporočilo se ne pošlje)
 help-msg-send =   @alias!msg body / @alias:verb args           pošlji sporočilo / RPC akterju
@@ -406,7 +406,7 @@ batch-done-error = Batch završen s pogreškama za { $secs }s — { $steps } kor
 msg-timeout = Poruka je istekla (nema odgovora u 60s)
 err-unknown-command = neznan ukaz: { $path }
 err-read-only-path = { $path } je samo za branje
-help-cmd-batch-async =   .batch:async / .batch        evaluiraj privremeni dokument paralelno
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluiraj privremeni dokument paralelno
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

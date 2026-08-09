@@ -164,8 +164,8 @@ identity-exported = Bundle downloaded as { $filename }
 identity-export-failed = export failed: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content is empty
-doc-save-first = { $path }.content is empty — save first
+doc-content-empty = { $path } is empty
+doc-save-first = { $path } is empty — save first
 doc-missing-name = missing document name
 doc-publish-usage = usage: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = usage: .my.doc.<name>!publish-ipld <publisher>
@@ -183,7 +183,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
 doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
-doc-fetch-done = fetched { $cid } → { $path }.content (not executed)
+doc-fetch-done = fetched { $cid } → { $path } (not executed)
 doc-fetch-failed = fetch { $cid }: { $e }
 doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-header-messaging = ── messaging ─────────────
 help-header-config = ── local config grammar ─────────────────────────────────────────────────
 help-header-common = ── common paths ─────────────────────────────────────────────────────────
 help-header-inbox = ── inbox ────────────────────────────────────────────────────────────────
-help-header-documents = ── content verbs (any .path with .content) ──────────────────────────────────
+help-header-documents = ── documents (.my.doc.*) ──────────────────────────────────────────────────
 help-header-i18n = ── language ─────────────────────────────────────────────────────────────
 help-header-ma = ── 間-space ──────────────────────────────────────────────────────────────
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
@@ -213,7 +213,7 @@ help-cmd-history =   .history                     command history (consecutive d
 help-cmd-panic =   .panic                       last resort — use if you find yourself in trouble
 help-cmd-logout =   .logout                      log out
 help-cmd-batch =   .batch                       eval scratch document (parallel, fire-and-forget)
-help-cmd-batch-sync =   .batch:sync / .batch         run commands sequentially, one per line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run commands sequentially, one per line
 
 # ── Help text — topics index ──────────────────────────────────────────────
 help-header-topics = ── topics — type .help/<topic> for details ────────────────────────────────
@@ -432,7 +432,7 @@ batch-step-timeout = batch step timed out
 batch-done = Batch done in { $secs }s — { $steps } steps
 batch-done-error = Batch finished with errors in { $secs }s — { $steps } steps
 msg-timeout = Message timed out (no reply in 60s)
-help-cmd-batch-async =   .batch:async / .batch        run commands in parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run commands in parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

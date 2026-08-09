@@ -154,8 +154,8 @@ identity-exported = Paquete descargado como { $filename }
 identity-export-failed = Exportación fallida: { $e }
 
 # ── Verbos — documentos ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content está vacío
-doc-save-first = { $path }.content está vacío — guarda primero
+doc-content-empty = { $path } está vacío
+doc-save-first = { $path } está vacío — guarda primero
 doc-missing-name = falta el nombre del documento
 doc-publish-usage = uso: .my.doc.<nombre>!publish <editor>
 doc-publish-ipld-usage = uso: .my.doc.<nombre>!publish-ipld <editor>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = comprueba la salud local de Kubo/IPFS y el estado del ru
 doc-publish-hint-unknown = revisa los registros del runtime para ver la causa detallada y reintenta
 doc-store-sent = solicitud de almacenamiento enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
 doc-ipld-store-sent = solicitud de almacenamiento IPLD enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
-doc-fetch-done = { $cid } obtenido → { $path }.content (no ejecutado)
+doc-fetch-done = { $cid } obtenido → { $path } (no ejecutado)
 doc-fetch-failed = obtención { $cid }: { $e }
 doc-fetch-usage = uso: .my.doc.<nombre>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       último recurso — úsalo si es
 help-cmd-history =   .history                     historial de comandos (duplicados consecutivos combinados)
 help-cmd-logout =   .logout                      cerrar sesión
 help-cmd-batch =   .batch                       evaluar documento temporal en paralelo
-help-cmd-batch-sync =   .batch:sync / .batch         evaluar documento temporal línea por línea
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluar documento temporal línea por línea
 
 help-msg-echo =   @alias                       mostrar DID/DID-URL resuelto (no se envía ningún mensaje)
 help-msg-send =   @alias!msg body / @alias:verb args           enviar mensaje / RPC a actor
@@ -405,7 +405,7 @@ batch-done-error = Lote terminado con errores en { $secs }s — { $steps } pasos
 msg-timeout = Mensaje agotado (sin respuesta en 60s)
 err-unknown-command = comando desconocido: { $path }
 err-read-only-path = { $path } es de solo lectura
-help-cmd-batch-async =   .batch:async / .batch        evaluar documento temporal en paralelo
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluar documento temporal en paralelo
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

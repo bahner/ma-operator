@@ -154,8 +154,8 @@ identity-exported = Bundle a baha komo { $filename }
 identity-export-failed = Eksportashon a faya: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ta bashi
-doc-save-first = { $path }.content ta bashi — wardá promé
+doc-content-empty = { $path } ta bashi
+doc-save-first = { $path } ta bashi — wardá promé
 doc-missing-name = nòmber di dokumentu falta
 doc-publish-usage = uso: .my.doc.<nòmber>!publish <publikadó>
 doc-publish-ipld-usage = uso: .my.doc.<nòmber>!publish-ipld <publikadó>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspekshoná e registronan di tempu di ehekushon pa kousa detayá i purba di nobo
 doc-store-sent = petishon di almacenamentu mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
 doc-ipld-store-sent = petishon di almacenamentu IPLD mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
-doc-fetch-done = bishitá { $cid } → { $path }.content (no ehekulá)
+doc-fetch-done = bishitá { $cid } → { $path } (no ehekulá)
 doc-fetch-failed = bishitá { $cid }: { $e }
 doc-fetch-usage = uso: .my.doc.<nòmber>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       último rekurso — usá si bo h
 help-cmd-history =   .history                     historial di komando (duplikado konsekutivo kombiná)
 help-cmd-logout =   .logout                      sali
 help-cmd-batch =   .batch                       avaliar documento rascunho em paralelo
-help-cmd-batch-sync =   .batch:sync / .batch         avaliar documento rascunho linha por linha
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         avaliar documento rascunho linha por linha
 help-msg-echo =   @alias                       mustra DID/DID-URL resolví (no ta manda mensahe)
 help-msg-send =   @alias!msg body / @alias:verb args           mandá mensahe / RPC na aktor
 help-msg-fragment =   @alias#fragment:verb body  mandá na alias ku fragmento DID eksplísito
@@ -399,7 +399,7 @@ batch-done-error = Lote concluído com erros em { $secs }s — { $steps } passos
 msg-timeout = Mensagem expirou (sem resposta em 60s)
 err-unknown-command = komando deskonosí: { $path }
 err-read-only-path = { $path } ta solamente pa lesa
-help-cmd-batch-async =   .batch:async / .batch        avaliar documento rascunho em paralelo
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        avaliar documento rascunho em paralelo
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

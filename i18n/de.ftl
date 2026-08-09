@@ -154,8 +154,8 @@ identity-exported = Paket heruntergeladen als { $filename }
 identity-export-failed = Export fehlgeschlagen: { $e }
 
 # ── Verben — Dokumente ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ist leer
-doc-save-first = { $path }.content ist leer — bitte zuerst speichern
+doc-content-empty = { $path } ist leer
+doc-save-first = { $path } ist leer — bitte zuerst speichern
 doc-missing-name = Dokumentname fehlt
 doc-publish-usage = Verwendung: .my.doc.<name>!publish <herausgeber>
 doc-publish-ipld-usage = Verwendung: .my.doc.<name>!publish-ipld <herausgeber>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = prüfe lokalen Kubo/IPFS-Zustand und den Status der Publ
 doc-publish-hint-unknown = prüfe die Laufzeit-Logs auf die genaue Ursache und versuche es erneut
 doc-store-sent = Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per RPC-Antwort
 doc-ipld-store-sent = IPLD-Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per RPC-Antwort
-doc-fetch-done = { $cid } abgerufen → { $path }.content (nicht ausgeführt)
+doc-fetch-done = { $cid } abgerufen → { $path } (nicht ausgeführt)
 doc-fetch-failed = Abruf { $cid }: { $e }
 doc-fetch-usage = Verwendung: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       letztes Mittel — verwenden, we
 help-cmd-history =   .history                     Befehlsverlauf (aufeinanderfolgende Duplikate zusammengefasst)
 help-cmd-logout =   .logout                      abmelden
 help-cmd-batch =   .batch                       Scratch-Dokument parallel auswerten
-help-cmd-batch-sync =   .batch:sync / .batch         Scratch-Dokument zeilenweise auswerten
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         Scratch-Dokument zeilenweise auswerten
 
 help-msg-echo =   @alias                       aufgelöste DID/DID-URL anzeigen (keine Nachricht gesendet)
 help-msg-send =   @alias!msg body / @alias:verb args           Nachricht / RPC an Akteur senden
@@ -405,7 +405,7 @@ batch-done-error = Batch mit Fehlern fertig in { $secs }s — { $steps } Schritt
 msg-timeout = Nachricht abgelaufen (keine Antwort in 60s)
 err-unknown-command = unbekannter Befehl: { $path }
 err-read-only-path = { $path } ist schreibgeschützt
-help-cmd-batch-async =   .batch:async / .batch        Scratch-Dokument parallel auswerten
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        Scratch-Dokument parallel auswerten
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

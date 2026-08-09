@@ -154,8 +154,8 @@ identity-exported = Gói đã tải xuống là { $filename }
 identity-export-failed = Xuất thất bại: { $e }
 
 # ── Động từ — tài liệu ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content trống
-doc-save-first = { $path }.content trống — lưu trước
+doc-content-empty = { $path } trống
+doc-save-first = { $path } trống — lưu trước
 doc-missing-name = thiếu tên tài liệu
 doc-publish-usage = cách dùng: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = cách dùng: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = kiểm tra nhật ký thời gian chạy để biết nguyên nhân chi tiết và thử lại
 doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
 doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
-doc-fetch-done = đã tải { $cid } → { $path }.content (chưa chạy)
+doc-fetch-done = đã tải { $cid } → { $path } (chưa chạy)
 doc-fetch-failed = tải { $cid }: { $e }
 doc-fetch-usage = cách dùng: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       phương án cuối cùng — d�
 help-cmd-history =   .history                     lịch sử lệnh (bản trùng lặp liên tiếp được gộp)
 help-cmd-logout =   .logout                      đăng xuất
 help-cmd-batch =   .batch                       đánh giá tài liệu nháp song song
-help-cmd-batch-sync =   .batch:sync / .batch         đánh giá tài liệu nháp từng dòng
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         đánh giá tài liệu nháp từng dòng
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hiển thị DID/DID-URL đã phân giải (không gửi tin nhắn)
@@ -413,7 +413,7 @@ batch-done-error = Batch hoàn tất với lỗi trong { $secs }s — { $steps }
 msg-timeout = Tin nhắn hết thời gian chờ (không có trả lời trong 60s)
 err-unknown-command = lệnh không xác định: { $path }
 err-read-only-path = { $path } chỉ đọc
-help-cmd-batch-async =   .batch:async / .batch        đánh giá tài liệu nháp song song
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        đánh giá tài liệu nháp song song
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

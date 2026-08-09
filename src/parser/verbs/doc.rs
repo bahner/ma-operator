@@ -111,19 +111,21 @@ async fn publish_z_tree(
     for (name, source) in parts {
         let path = format!(".my.z.{name}");
         let cid = match z_tree_source_cid(&source) {
-            Some(cid) => {
-                match crate::doc_link::resolve_doc_link(&source)
-                    .await
-                    .map_err(|error| format!("{path}: {error}"))?
-                {
-                    crate::doc_link::ResolvedDocContent::Text(_) => cid,
-                    crate::doc_link::ResolvedDocContent::Manifest(_) => {
-                        return Err(format!(
-                            "{path}: expected text content, found a DAG-CBOR manifest"
-                        ));
-                    }
+            Some(cid) => match crate::doc_link::resolve_doc_link(&source)
+                .await
+                .map_err(|error| format!("{path}: {error}"))?
+            {
+                crate::doc_link::ResolvedDocContent::Text(text) => {
+                    let _content_length = text.len();
+                    cid
                 }
-            }
+                crate::doc_link::ResolvedDocContent::Manifest(parts) => {
+                    return Err(format!(
+                        "{path}: expected text content, found a DAG-CBOR manifest with {} entries",
+                        parts.len()
+                    ));
+                }
+            },
             None => store_and_wait(publisher, source.into_bytes(), "text/plain")
                 .await
                 .map_err(|error| format!("{path}: {error}"))?,
@@ -200,11 +202,10 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute saved content as an ordinary Zion script.
+/// `:eval` — execute saved local content as an ordinary Zion script.
 ///
-/// A link value (bare CID, or `/ipfs/`/`/ipld/`-prefixed) is fetched and
-/// resolved before evaluation; literal content evaluates unchanged. The
-/// editor callback submits it through the same path as a multi-line paste.
+/// Network content must be imported with `:fetch` before it can be evaluated.
+/// The editor callback submits it through the same path as a multi-line paste.
 fn doc_eval(
     path: &str,
     state: &AppState,
@@ -233,10 +234,7 @@ fn doc_eval(
             Ok(()) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
             Err(error) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
-                state2.push_error(tf(
-                    "doc-link-fetch-failed",
-                    &[("path", &path2), ("e", &error)],
-                ));
+                state2.push_error(format!("{path2}!eval: {error}"));
             }
         }
     });
@@ -244,17 +242,20 @@ fn doc_eval(
 }
 
 fn needs_sequential_eval(content: &str) -> bool {
-    crate::doc_link::parse_link_cid(content).is_some()
-        || content
-            .lines()
-            .map(str::trim)
-            .find(|line| !line.is_empty() && !line.starts_with(';'))
-            .is_some_and(|line| line.starts_with('('))
+    first_document_source_line(content).is_some_and(|line| line.starts_with('('))
+        || content.lines().map(str::trim).any(is_sync_batch_delimiter)
         || content.lines().any(|line| {
             line.split_whitespace()
                 .next()
                 .is_some_and(|head| head.contains("!eval"))
         })
+}
+
+fn first_document_source_line(content: &str) -> Option<&str> {
+    content
+        .lines()
+        .map(str::trim)
+        .find(|line| !line.is_empty() && !line.starts_with(';'))
 }
 
 async fn eval_document_content(
@@ -263,21 +264,17 @@ async fn eval_document_content(
     config: RwSignal<EgoConfig>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    let text = match crate::doc_link::parse_link_cid(content) {
-        Some(_) => match crate::doc_link::resolve_doc_link(content).await? {
-            crate::doc_link::ResolvedDocContent::Text(text) => text,
-            crate::doc_link::ResolvedDocContent::Manifest(_) => {
-                return Err(t("doc-eval-manifest"));
-            }
-        },
-        None => content.to_string(),
-    };
+    let text = content;
 
-    if text.trim_start().starts_with('(') {
-        return crate::scheme::load_content(&text, state, config).await;
+    if first_document_source_line(text).is_some_and(|line| line.starts_with('(')) {
+        return crate::scheme::load_content(text, state, config).await;
     }
 
-    for line in text.lines().map(str::trim).filter(|line| !line.is_empty()) {
+    for line in text
+        .lines()
+        .map(str::trim)
+        .filter(|line| !line.is_empty() && !line.starts_with(';') && !is_sync_batch_delimiter(line))
+    {
         let cfg = config.get_untracked();
         let command = parse(line, &cfg).map_err(|error| format!("'{line}': {error}"))?;
         let nested_path = match command {
@@ -311,6 +308,10 @@ async fn eval_document_content(
         }
     }
     Ok(())
+}
+
+fn is_sync_batch_delimiter(line: &str) -> bool {
+    matches!(line, ".batch!sync" | ".batch")
 }
 
 /// Validate publish args, resolve publisher DID, and read content.
@@ -490,6 +491,24 @@ pub(super) fn classify_publish_error(err: &str) -> (&'static str, &'static str) 
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn commented_scheme_source_uses_its_first_form_for_detection() {
+        let source = ";; local zscheme library\n; loaded at startup\n\n(define value 1)\n";
+
+        assert_eq!(first_document_source_line(source), Some("(define value 1)"));
+        assert!(needs_sequential_eval(source));
+    }
+
+    #[test]
+    fn local_sync_batch_delimiters_are_sequential_eval_control_lines() {
+        let source = ".batch!sync\n.my.z.stdlib!eval\n.batch\n";
+
+        assert!(needs_sequential_eval(source));
+        assert!(is_sync_batch_delimiter(".batch!sync"));
+        assert!(is_sync_batch_delimiter(".batch"));
+        assert!(!is_sync_batch_delimiter(".batch!async"));
+    }
 
     #[test]
     fn z_tree_parts_collects_direct_source_leaves_only() {

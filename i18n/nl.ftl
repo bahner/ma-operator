@@ -154,8 +154,8 @@ identity-exported = Bundel gedownload als { $filename }
 identity-export-failed = Export mislukt: { $e }
 
 # ── Werkwoorden — documenten ──────────────────────────────────────────────
-doc-content-empty = { $path }.content is leeg
-doc-save-first = { $path }.content is leeg — sla eerst op
+doc-content-empty = { $path } is leeg
+doc-save-first = { $path } is leeg — sla eerst op
 doc-missing-name = documentnaam ontbreekt
 doc-publish-usage = gebruik: .my.doc.<naam>!publish <uitgever>
 doc-publish-ipld-usage = gebruik: .my.doc.<naam>!publish-ipld <uitgever>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = controleer lokale Kubo/IPFS-gezondheid en status van de 
 doc-publish-hint-unknown = bekijk runtime-logs voor de gedetailleerde oorzaak en probeer opnieuw
 doc-store-sent = opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
 doc-ipld-store-sent = IPLD-opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
-doc-fetch-done = { $cid } opgehaald → { $path }.content (niet uitgevoerd)
+doc-fetch-done = { $cid } opgehaald → { $path } (niet uitgevoerd)
 doc-fetch-failed = ophalen { $cid }: { $e }
 doc-fetch-usage = gebruik: .my.doc.<naam>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       laatste redmiddel — gebruik al
 help-cmd-history =   .history                     opdrachtgeschiedenis (opeenvolgende duplicaten samengevoegd)
 help-cmd-logout =   .logout                      afmelden
 help-cmd-batch =   .batch                       klad-document parallel evalueren
-help-cmd-batch-sync =   .batch:sync / .batch         klad-document regel voor regel evalueren
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         klad-document regel voor regel evalueren
 
 help-msg-echo =   @alias                       opgeloste DID/DID-URL weergeven (geen bericht verzonden)
 help-msg-send =   @alias!msg body / @alias:verb args           bericht / RPC sturen naar actor
@@ -405,7 +405,7 @@ batch-done-error = Batch klaar met fouten in { $secs }s — { $steps } stappen
 msg-timeout = Bericht verlopen (geen antwoord in 60s)
 err-unknown-command = onbekende opdracht: { $path }
 err-read-only-path = { $path } is alleen-lezen
-help-cmd-batch-async =   .batch:async / .batch        klad-document parallel evalueren
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        klad-document parallel evalueren
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

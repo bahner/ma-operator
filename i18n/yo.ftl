@@ -154,8 +154,8 @@ identity-exported = A gba bundle silẹ bi { $filename }
 identity-export-failed = Okeere kuna: { $e }
 
 # ── Àwọn ìgbésẹ̀ — àwọn ìwé ──────────────────────────────────────────────
-doc-content-empty = { $path }.content ṣofo
-doc-save-first = { $path }.content ṣofo — pamọ́ ṣáájú
+doc-content-empty = { $path } ṣofo
+doc-save-first = { $path } ṣofo — pamọ́ ṣáájú
 doc-missing-name = orúkọ ìwé àánù
 doc-publish-usage = lílo: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = lílo: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ṣayẹwo awọn igbasilẹ akoko ṣiṣe fun idi alaye ati tun gbiyanju
 doc-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
 doc-ipld-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú IPLD ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
-doc-fetch-done = a gba { $cid } → { $path }.content (a kò ṣe)
+doc-fetch-done = a gba { $cid } → { $path } (a kò ṣe)
 doc-fetch-failed = gbígba { $cid }: { $e }
 doc-fetch-usage = lílo: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò b
 help-cmd-history =   .history                     ìtàn àṣẹ (àwọn tún-ṣe tẹ̀lé ara wọn jẹ́ papọ̀)
 help-cmd-logout =   .logout                      jáde
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
-help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       ṣàfihàn DID/DID-URL tí a túmọ̀ (a kò fi ifiranṣẹ ranṣẹ)
@@ -413,7 +413,7 @@ batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
 err-unknown-command = àṣẹ tí a kò mọ̀: { $path }
 err-read-only-path = { $path } jẹ́ fún kíkà nìkan
-help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

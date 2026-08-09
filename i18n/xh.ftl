@@ -154,8 +154,8 @@ identity-exported = Ibundle ikhutshelwe njengo { $filename }
 identity-export-failed = Ukuthumela ngaphandle kuhlulekile: { $e }
 
 # ── Izenzo — imibhalo ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ingenaluto
-doc-save-first = { $path }.content ingenaluto — gcina kuqala
+doc-content-empty = { $path } ingenaluto
+doc-save-first = { $path } ingenaluto — gcina kuqala
 doc-missing-name = igama lemibhalo lilahlekile
 doc-publish-usage = ukusetyenziswa: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = ukusetyenziswa: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = NONE
 doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
 doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; CID iyofika nge-RPC reply
-doc-fetch-done = { $cid } ilandwe → { $path }.content (ayenziwanga)
+doc-fetch-done = { $cid } ilandwe → { $path } (ayenziwanga)
 doc-fetch-failed = ukupheka { $cid }: { $e }
 doc-fetch-usage = ukusetyenziswa: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       indlela yokugqibela — sebenzis
 help-cmd-history =   .history                     imbali yemiyalelo (izinto eziphindwayo ezilandelanayo zidityanisiwe)
 help-cmd-logout =   .logout                      phuma
 help-cmd-batch =   .batch                       hlola idokhumenti ye-scratch ngokuhambisana
-help-cmd-batch-sync =   .batch:sync / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         hlola idokhumenti ye-scratch umugqa nomugqa
 
 # ── Uncedo — ukuthumela ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       bonisa i-DID/DID-URL esonjululiweyo (akuthunyelwa myalezo)
@@ -413,7 +413,7 @@ batch-done-error = I-batch iphelile ngamaphutha ngo-{ $secs }s — { $steps } iz
 msg-timeout = Umlayezo uphelelwe isikhathi (akukho mpendulo ku-60s)
 err-unknown-command = umyalelo ongaziwayo: { $path }
 err-read-only-path = { $path } yeyokufunda kuphela
-help-cmd-batch-async =   .batch:async / .batch        hlola idokhumenti ye-scratch ngokuhambisana
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        hlola idokhumenti ye-scratch ngokuhambisana
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

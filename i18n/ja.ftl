@@ -154,8 +154,8 @@ identity-exported = バンドルを { $filename } としてダウンロードし
 identity-export-failed = エクスポート失敗: { $e }
 
 # ── 動詞 — ドキュメント ──────────────────────────────────────────────────
-doc-content-empty = { $path }.content が空です
-doc-save-first = { $path }.content が空です — 先に保存してください
+doc-content-empty = { $path } が空です
+doc-save-first = { $path } が空です — 先に保存してください
 doc-missing-name = ドキュメント名がありません
 doc-publish-usage = 使用方法: .my.doc.<名前>!publish <発行者>
 doc-publish-ipld-usage = 使用方法: .my.doc.<名前>!publish-ipld <発行者>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = ローカル Kubo/IPFS の状態と発行者ランタイ
 doc-publish-hint-unknown = 詳細な原因をランタイムログで確認して再試行してください
 doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
 doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
-doc-fetch-done = { $cid } を取得しました → { $path }.content (実行されていません)
+doc-fetch-done = { $cid } を取得しました → { $path } (実行されていません)
 doc-fetch-failed = { $cid } の取得エラー: { $e }
 doc-fetch-usage = 使用方法: .my.doc.<名前>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       最後の手段 — 困ったと
 help-cmd-history =   .history                     コマンド履歴（連続する重複を省略）
 help-cmd-logout =   .logout                      ログアウト
 help-cmd-batch =   .batch                       スクラッチ文書を並列評価
-help-cmd-batch-sync =   .batch:sync / .batch         スクラッチ文書を行ごとに評価
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         スクラッチ文書を行ごとに評価
 
 help-msg-echo =   @alias                       解決済み DID/DID-URL を表示 (メッセージは送信されません)
 help-msg-send =   @alias!msg body / @alias:verb args           アクターにメッセージ / RPC を送信
@@ -405,7 +405,7 @@ batch-done-error = batch はエラー付きで完了: { $secs }s — { $steps } 
 msg-timeout = メッセージがタイムアウトしました (60s 応答なし)
 err-unknown-command = 不明なコマンド: { $path }
 err-read-only-path = { $path } は読み取り専用です
-help-cmd-batch-async =   .batch:async / .batch        スクラッチ文書を並列評価
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        スクラッチ文書を並列評価
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

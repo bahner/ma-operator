@@ -154,8 +154,8 @@ identity-exported = Bundle garagalche { $filename }
 identity-export-failed = Baasuun hin dandeenye: { $e }
 
 # ── Gochaalee — galmeelee ─────────────────────────────────────────────────
-doc-content-empty = { $path }.content duwwaadha
-doc-save-first = { $path }.content duwwaadha — jalqaba olkaa'i
+doc-content-empty = { $path } duwwaadha
+doc-save-first = { $path } duwwaadha — jalqaba olkaa'i
 doc-missing-name = maqaan galmee hin jiru
 doc-publish-usage = fayyadamuu: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = fayyadamuu: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
 doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
-doc-fetch-done = { $cid } fiddame → { $path }.content (raawwatamuu dide)
+doc-fetch-done = { $cid } fiddame → { $path } (raawwatamuu dide)
 doc-fetch-failed = { $cid } fiduu: { $e }
 doc-fetch-usage = fayyadamuu: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       karaa dhumaa — rakkoo yoo muda
 help-cmd-history =   .history                     seenaa ajajaa (irra deddeebi'iinsa walitti-aanaa walitti-qabame)
 help-cmd-logout =   .logout                      bahu
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
-help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── Gargaarsa — ergaa erguuf ──────────────────────────────────────────────
 help-msg-echo =   @alias                       DID/DID-URL furame agarsiisi (ergaan hin ergamu)
@@ -413,7 +413,7 @@ batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
 err-unknown-command = ajaja hin beekamne: { $path }
 err-read-only-path = { $path } dubbisuu qofa
-help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

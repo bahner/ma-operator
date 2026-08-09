@@ -154,8 +154,8 @@ identity-exported = A csomag letöltve { $filename } névvel
 identity-export-failed = Az export sikertelen: { $e }
 
 # ── Igék — dokumentumok ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content üres
-doc-save-first = { $path }.content üres — először mentse el
+doc-content-empty = { $path } üres
+doc-save-first = { $path } üres — először mentse el
 doc-missing-name = hiányzó dokumentumnév
 doc-publish-usage = használat: .my.doc.<név>!publish <kiadó>
 doc-publish-ipld-usage = használat: .my.doc.<név>!publish-ipld <kiadó>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ellenőrizze a futásidejű naplókat a részletes okokért, és próbálkozzon újra
 doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
 doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
-doc-fetch-done = { $cid } letöltve → { $path }.content (nem futtatva)
+doc-fetch-done = { $cid } letöltve → { $path } (nem futtatva)
 doc-fetch-failed = letöltés { $cid }: { $e }
 doc-fetch-usage = használat: .my.doc.<név>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       végső megoldás — ha bajban 
 help-cmd-history =   .history                     parancselőzmények (egymást követő ismétlések összevonva)
 help-cmd-logout =   .logout                      kijelentkezés
 help-cmd-batch =   .batch                       vázlatdokumentum párhuzamos kiértékelése
-help-cmd-batch-sync =   .batch:sync / .batch         vázlatdokumentum soronkénti kiértékelése
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vázlatdokumentum soronkénti kiértékelése
 
 help-msg-echo =   @alias                       feloldott DID/DID-URL megjelenítése (nincs üzenetküldés)
 help-msg-send =   @alias!msg body / @alias:verb args           üzenet / RPC küldése szereplőnek
@@ -406,7 +406,7 @@ batch-done-error = Batch hibákkal fejeződött be { $secs }s alatt — { $steps
 msg-timeout = Az üzenet időtúllépett (nincs válasz 60s alatt)
 err-unknown-command = ismeretlen parancs: { $path }
 err-read-only-path = { $path } csak olvasható
-help-cmd-batch-async =   .batch:async / .batch        vázlatdokumentum párhuzamos kiértékelése
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        vázlatdokumentum párhuzamos kiértékelése
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

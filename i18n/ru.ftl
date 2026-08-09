@@ -154,8 +154,8 @@ identity-exported = Пакет загружен как { $filename }
 identity-export-failed = Экспорт не удался: { $e }
 
 # ── Глаголы — документы ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content пуст
-doc-save-first = { $path }.content пуст — сначала сохраните
+doc-content-empty = { $path } пуст
+doc-save-first = { $path } пуст — сначала сохраните
 doc-missing-name = отсутствует имя документа
 doc-publish-usage = использование: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = использование: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = проверьте журналы времени выполнения для подробной причины и повторите попытку.
 doc-store-sent = запрос хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
 doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
-doc-fetch-done = загружено { $cid } → { $path }.content (не выполнено)
+doc-fetch-done = загружено { $cid } → { $path } (не выполнено)
 doc-fetch-failed = загрузка { $cid }: { $e }
 doc-fetch-usage = использование: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       последний resort — и
 help-cmd-history =   .history                     история команд (последовательные дубликаты объединены)
 help-cmd-logout =   .logout                      выйти
 help-cmd-batch =   .batch                       выполнить черновой документ параллельно
-help-cmd-batch-sync =   .batch:sync / .batch         выполнить черновой документ построчно
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         выполнить черновой документ построчно
 
 # ── Справка — сообщения ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       показать разрешённый DID/DID-URL (сообщение не отправляется)
@@ -412,7 +412,7 @@ batch-done-error = Batch завершён с ошибками за { $secs }s �
 msg-timeout = Сообщение истекло (нет ответа за 60s)
 err-unknown-command = неизвестная команда: { $path }
 err-read-only-path = { $path } доступен только для чтения
-help-cmd-batch-async =   .batch:async / .batch        выполнить черновой документ параллельно
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        выполнить черновой документ параллельно
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

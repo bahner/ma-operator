@@ -154,8 +154,8 @@ identity-exported = Пакетът е изтеглен като { $filename }
 identity-export-failed = Грешка при експортиране: { $e }
 
 # ── Глаголи — документи ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content е празно
-doc-save-first = { $path }.content е празно — първо запазете
+doc-content-empty = { $path } е празно
+doc-save-first = { $path } е празно — първо запазете
 doc-missing-name = липсва името на документа
 doc-publish-usage = употреба: .my.doc.<име>!publish <издател>
 doc-publish-ipld-usage = употреба: .my.doc.<име>!publish-ipld <издател>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = проверете регистрационните файлове по време на изпълнение за подробна причина и опитайте отново
 doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
 doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
-doc-fetch-done = { $cid } е извлечен → { $path }.content (не е изпълнено)
+doc-fetch-done = { $cid } е извлечен → { $path } (не е изпълнено)
 doc-fetch-failed = извличане { $cid }: { $e }
 doc-fetch-usage = употреба: .my.doc.<име>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       последна мярка — 
 help-cmd-history =   .history                     история на командите (последователните дублирания се обединяват)
 help-cmd-logout =   .logout                      изход
 help-cmd-batch =   .batch                       изпълни временен документ (паралелно)
-help-cmd-batch-sync =   .batch:sync / .batch         изпълни временен документ ред по ред
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         изпълни временен документ ред по ред
 
 help-msg-echo =   @alias                       покажи разрешения DID/DID-URL (не се изпраща съобщение)
 help-msg-send =   @alias!msg body / @alias:verb args           изпраща съобщение / RPC на актьор
@@ -406,7 +406,7 @@ batch-done-error = Batch завърши с грешки за { $secs }s — { $s
 msg-timeout = Съобщението изтече (няма отговор за 60s)
 err-unknown-command = непозната команда: { $path }
 err-read-only-path = { $path } е само за четене
-help-cmd-batch-async =   .batch:async / .batch        изпълни временен документ (паралелно)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        изпълни временен документ (паралелно)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

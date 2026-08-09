@@ -154,8 +154,8 @@ identity-exported = Paket { $filename } olarak indirildi
 identity-export-failed = Dışa aktarma başarısız: { $e }
 
 # ── Fiiller — belgeler ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content boş
-doc-save-first = { $path }.content boş — önce kaydedin
+doc-content-empty = { $path } boş
+doc-save-first = { $path } boş — önce kaydedin
 doc-missing-name = belge adı eksik
 doc-publish-usage = kullanım: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = kullanım: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ayrıntılı neden için çalışma zamanı günlüklerini inceleyin ve yeniden deneyin
 doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
 doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
-doc-fetch-done = { $cid } getirildi → { $path }.content (çalıştırılmadı)
+doc-fetch-done = { $cid } getirildi → { $path } (çalıştırılmadı)
 doc-fetch-failed = getirme { $cid }: { $e }
 doc-fetch-usage = kullanım: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       son çare — sorun çıkarsa ku
 help-cmd-history =   .history                     komut geçmişi (ardışık tekrarlar birleştirildi)
 help-cmd-logout =   .logout                      çıkış yap
 help-cmd-batch =   .batch                       taslak belgeyi paralel değerlendir
-help-cmd-batch-sync =   .batch:sync / .batch         taslak belgeyi satır satır değerlendir
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         taslak belgeyi satır satır değerlendir
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID/DID-URL göster (mesaj gönderilmez)
@@ -412,7 +412,7 @@ batch-done-error = Batch hatalarla { $secs }s içinde bitti — { $steps } adım
 msg-timeout = Mesaj zaman aşımına uğradı (60s içinde yanıt yok)
 err-unknown-command = bilinmeyen komut: { $path }
 err-read-only-path = { $path } salt okunur
-help-cmd-batch-async =   .batch:async / .batch        taslak belgeyi paralel değerlendir
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        taslak belgeyi paralel değerlendir
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

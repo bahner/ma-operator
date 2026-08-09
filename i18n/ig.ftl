@@ -154,8 +154,8 @@ identity-exported = A budata bundle dị ka { $filename }
 identity-export-failed = Nbupu enweghị ike: { $e }
 
 # ── Ọrụ — akwụkwọ ────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content di efu
-doc-save-first = { $path }.content di efu — chekwaa ka ọ bụrụ nke mbụ
+doc-content-empty = { $path } di efu
+doc-save-first = { $path } di efu — chekwaa ka ọ bụrụ nke mbụ
 doc-missing-name = aha akwụkwọ hapụrụ
 doc-publish-usage = ojiji: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = ojiji: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = lelee ndekọ oge ojiri gaa maka ihe kpatara ya wee nwaa ọzọ
 doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
 doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
-doc-fetch-done = enwetara { $cid } → { $path }.content (arụghị ọrụ)
+doc-fetch-done = enwetara { $cid } → { $path } (arụghị ọrụ)
 doc-fetch-failed = ịnweta { $cid }: { $e }
 doc-fetch-usage = ojiji: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mg
 help-cmd-history =   .history                     akụkọ ihe mere (ndị mwepụta n'usoro jikọtara)
 help-cmd-logout =   .logout                      pụọ
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
-help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID/DID-URL e dozierela (ezigaghị ozi)
@@ -413,7 +413,7 @@ batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps 
 msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
 err-unknown-command = iwu a na-amaghị: { $path }
 err-read-only-path = { $path } bụ naanị ọgụgụ
-help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

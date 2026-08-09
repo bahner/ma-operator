@@ -154,8 +154,8 @@ identity-exported = 번들을 { $filename }(으)로 다운로드했습니다
 identity-export-failed = 내보내기 실패: { $e }
 
 # ── 동사 — 문서 ───────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content이(가) 비어있음
-doc-save-first = { $path }.content이(가) 비어있음 — 먼저 저장하세요
+doc-content-empty = { $path }이(가) 비어있음
+doc-save-first = { $path }이(가) 비어있음 — 먼저 저장하세요
 doc-missing-name = 문서 이름 없음
 doc-publish-usage = 사용법: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = 사용법: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = 로컬 Kubo/IPFS 상태와 게시자 런타임 상태를
 doc-publish-hint-unknown = 자세한 원인을 런타임 로그에서 확인하고 다시 시도하세요
 doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
 doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
-doc-fetch-done = { $cid } 가져옴 → { $path }.content (실행되지 않음)
+doc-fetch-done = { $cid } 가져옴 → { $path } (실행되지 않음)
 doc-fetch-failed = 가져오기 { $cid }: { $e }
 doc-fetch-usage = 사용법: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       최후 수단 — 문제 발생 
 help-cmd-history =   .history                     명령 기록 (연속 중복 항목 병합)
 help-cmd-logout =   .logout                      로그아웃
 help-cmd-batch =   .batch                       스크래치 문서를 병렬 평가
-help-cmd-batch-sync =   .batch:sync / .batch         스크래치 문서를 줄 단위로 평가
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         스크래치 문서를 줄 단위로 평가
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       확인된 DID/DID-URL 표시 (메시지는 전송되지 않음)
@@ -412,7 +412,7 @@ batch-done-error = batch가 오류와 함께 완료됨: { $secs }s — { $steps 
 msg-timeout = 메시지 시간 초과(60s 동안 응답 없음)
 err-unknown-command = 알 수 없는 명령: { $path }
 err-read-only-path = { $path }은(는) 읽기 전용입니다
-help-cmd-batch-async =   .batch:async / .batch        스크래치 문서를 병렬 평가
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        스크래치 문서를 병렬 평가
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

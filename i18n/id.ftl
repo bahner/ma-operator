@@ -154,8 +154,8 @@ identity-exported = Paket diunduh sebagai { $filename }
 identity-export-failed = Ekspor gagal: { $e }
 
 # ── Kata kerja — dokumen ──────────────────────────────────────────────────
-doc-content-empty = { $path }.content kosong
-doc-save-first = { $path }.content kosong — simpan dulu
+doc-content-empty = { $path } kosong
+doc-save-first = { $path } kosong — simpan dulu
 doc-missing-name = nama dokumen tidak ada
 doc-publish-usage = penggunaan: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = penggunaan: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = periksa log waktu proses untuk mengetahui penyebab detailnya dan coba lagi
 doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
 doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
-doc-fetch-done = mengambil { $cid } → { $path }.content (tidak dijalankan)
+doc-fetch-done = mengambil { $cid } → { $path } (tidak dijalankan)
 doc-fetch-failed = pengambilan { $cid }: { $e }
 doc-fetch-usage = penggunaan: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       pilihan terakhir — gunakan saa
 help-cmd-history =   .history                     riwayat perintah (duplikat berurutan digabung)
 help-cmd-logout =   .logout                      keluar
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
-help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       tampilkan DID/DID-URL yang diselesaikan (tidak mengirim pesan)
@@ -413,7 +413,7 @@ batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps 
 msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
 err-unknown-command = perintah tidak dikenal: { $path }
 err-read-only-path = { $path } hanya-baca
-help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

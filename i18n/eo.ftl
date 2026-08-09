@@ -154,8 +154,8 @@ identity-exported = Pakaĵo elŝutita kiel { $filename }
 identity-export-failed = Eksporto malsukcesis: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content estas malplena
-doc-save-first = { $path }.content estas malplena — konservu unue
+doc-content-empty = { $path } estas malplena
+doc-save-first = { $path } estas malplena — konservu unue
 doc-missing-name = mankas dokumentonomo
 doc-publish-usage = uzado: .my.doc.<nomo>!publish <eldonisto>
 doc-publish-ipld-usage = uzado: .my.doc.<nomo>!publish-ipld <eldonisto>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspektu rultempajn protokolojn por detala kaŭzo kaj reprovu
 doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
 doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
-doc-fetch-done = elŝutita { $cid } → { $path }.content (ne efektivigita)
+doc-fetch-done = elŝutita { $cid } → { $path } (ne efektivigita)
 doc-fetch-failed = elŝuti { $cid }: { $e }
 doc-fetch-usage = uzado: .my.doc.<nomo>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       lasta rimedo — uzu se vi perda
 help-cmd-history =   .history                     komanda historio (sinsekvaj duplikaĵoj kunfanditaj)
 help-cmd-logout =   .logout                      elsaluti
 help-cmd-batch =   .batch                       evaluar documento temporal en paralelo
-help-cmd-batch-sync =   .batch:sync / .batch         evaluar documento temporal línea por línea
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluar documento temporal línea por línea
 help-msg-echo =   @alias                       montri solvitajn DID/DID-URL (neniu mesaĝo sendita)
 help-msg-send =   @alias!msg body / @alias:verb args           sendi mesaĝon / RPC al aktoro
 help-msg-fragment =   @alias#fragment:verb body  sendi al alias kun eksplicita DID-fragmento
@@ -398,7 +398,7 @@ batch-done-error = Lote terminado con errores en { $secs }s — { $steps } pasos
 msg-timeout = Mensaje agotado (sin respuesta en 60s)
 err-unknown-command = nekonata komando: { $path }
 err-read-only-path = { $path } estas nurlega
-help-cmd-batch-async =   .batch:async / .batch        evaluar documento temporal en paralelo
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluar documento temporal en paralelo
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

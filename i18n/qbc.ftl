@@ -156,8 +156,8 @@ identity-exported = Bundle downye as { $filename }
 identity-export-failed = Export bombauch: { $e }
 
 # ── Du — dokuments ────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content im nating
-doc-save-first = { $path }.content im nating — hol diching
+doc-content-empty = { $path } im nating
+doc-save-first = { $path } im nating — hol diching
 doc-missing-name = dokument nim na finyish
 doc-publish-usage = showxa: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = showxa: .my.doc.<name>!publish-ipld <publisher>
@@ -175,7 +175,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
 doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
-doc-fetch-done = { $cid } fech finyish → { $path }.content (na du-im)
+doc-fetch-done = { $cid } fech finyish → { $path } (na du-im)
 doc-fetch-failed = feching { $cid }: { $e }
 doc-fetch-usage = showxa: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       owkwa keting — du wit problem
 help-cmd-history =   .history                     komand histori (sekwens duplikat mash bikik)
 help-cmd-logout =   .logout                      tek-out
 help-cmd-batch =   .batch                       run scratch document parallel
-help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       lit resolved DID/DID-URL (na send message)
@@ -415,7 +415,7 @@ batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
 err-unknown-command = komang na du sabe: { $path }
 err-read-only-path = { $path } pensa read-only
-help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -154,8 +154,8 @@ identity-exported = Το πακέτο λήφθηκε ως { $filename }
 identity-export-failed = Η εξαγωγή απέτυχε: { $e }
 
 # ── Ρήματα — έγγραφα ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content είναι κενό
-doc-save-first = { $path }.content είναι κενό — αποθηκεύστε πρώτα
+doc-content-empty = { $path } είναι κενό
+doc-save-first = { $path } είναι κενό — αποθηκεύστε πρώτα
 doc-missing-name = λείπει το όνομα εγγράφου
 doc-publish-usage = χρήση: .my.doc.<όνομα>!publish <εκδότης>
 doc-publish-ipld-usage = χρήση: .my.doc.<όνομα>!publish-ipld <εκδότης>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = επιθεωρήστε τα αρχεία καταγραφής χρόνου εκτέλεσης για λεπτομερή αιτία και δοκιμάστε ξανά
 doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
 doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
-doc-fetch-done = { $cid } ανακτήθηκε → { $path }.content (δεν εκτελέστηκε)
+doc-fetch-done = { $cid } ανακτήθηκε → { $path } (δεν εκτελέστηκε)
 doc-fetch-failed = ανάκτηση { $cid }: { $e }
 doc-fetch-usage = χρήση: .my.doc.<όνομα>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       τελευταία λύση — 
 help-cmd-history =   .history                     ιστορικό εντολών (διαδοχικά διπλότυπα ενοποιήθηκαν)
 help-cmd-logout =   .logout                      αποσύνδεση
 help-cmd-batch =   .batch                       εκτέλεση πρόχειρου εγγράφου παράλληλα
-help-cmd-batch-sync =   .batch:sync / .batch         εκτέλεση πρόχειρου εγγράφου γραμμή-γραμμή
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         εκτέλεση πρόχειρου εγγράφου γραμμή-γραμμή
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID/DID-URL (δεν αποστέλλεται μήνυμα)
 help-msg-send =   @alias!msg body / @alias:verb args           αποστολή μηνύματος / RPC σε ηθοποιό
@@ -406,7 +406,7 @@ batch-done-error = Το batch ολοκληρώθηκε με σφάλματα σ�
 msg-timeout = Το μήνυμα έληξε (καμία απάντηση σε 60s)
 err-unknown-command = άγνωστη εντολή: { $path }
 err-read-only-path = το { $path } είναι μόνο για ανάγνωση
-help-cmd-batch-async =   .batch:async / .batch        εκτέλεση πρόχειρου εγγράφου παράλληλα
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        εκτέλεση πρόχειρου εγγράφου παράλληλα
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

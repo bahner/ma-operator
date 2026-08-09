@@ -154,8 +154,8 @@ identity-exported = ดาวน์โหลดบันเดิลเป็น
 identity-export-failed = การส่งออกล้มเหลว: { $e }
 
 # ── กริยา — documents ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ว่างเปล่า
-doc-save-first = { $path }.content ว่างเปล่า — บันทึกก่อน
+doc-content-empty = { $path } ว่างเปล่า
+doc-save-first = { $path } ว่างเปล่า — บันทึกก่อน
 doc-missing-name = ขาดชื่อเอกสาร
 doc-publish-usage = การใช้งาน: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = การใช้งาน: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ตรวจสอบบันทึกรันไทม์เพื่อดูสาเหตุโดยละเอียดแล้วลองอีกครั้ง
 doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
 doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
-doc-fetch-done = ดึง { $cid } แล้ว → { $path }.content (ยังไม่รัน)
+doc-fetch-done = ดึง { $cid } แล้ว → { $path } (ยังไม่รัน)
 doc-fetch-failed = ดึง { $cid }: { $e }
 doc-fetch-usage = การใช้งาน: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       ทางเลือกสุ�
 help-cmd-history =   .history                     ประวัติคำสั่ง (รายการที่ซ้ำกันติดต่อกันถูกรวม)
 help-cmd-logout =   .logout                      ออกจากระบบ
 help-cmd-batch =   .batch                       ประเมินเอกสาร scratch แบบขนาน
-help-cmd-batch-sync =   .batch:sync / .batch         ประเมินเอกสาร scratch ทีละบรรทัด
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ประเมินเอกสาร scratch ทีละบรรทัด
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID/DID-URL ที่แก้แล้ว (ไม่ส่งข้อความ)
@@ -413,7 +413,7 @@ batch-done-error = batch เสร็จพร้อมข้อผิดพล�
 msg-timeout = ข้อความหมดเวลา (ไม่มีคำตอบใน 60s)
 err-unknown-command = คำสั่งที่ไม่รู้จัก: { $path }
 err-read-only-path = { $path } เป็นแบบอ่านอย่างเดียว
-help-cmd-batch-async =   .batch:async / .batch        ประเมินเอกสาร scratch แบบขนาน
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ประเมินเอกสาร scratch แบบขนาน
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

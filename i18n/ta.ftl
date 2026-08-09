@@ -154,8 +154,8 @@ identity-exported = தொகுப்பு { $filename } என பதிவ�
 identity-export-failed = ஏற்றுமதி தோல்வி: { $e }
 
 # ── வினைச்சொற்கள் — ஆவணங்கள் ───────────────────────────────────────────
-doc-content-empty = { $path }.content காலியாக உள்ளது
-doc-save-first = { $path }.content காலியாக உள்ளது — முதலில் சேமிக்கவும்
+doc-content-empty = { $path } காலியாக உள்ளது
+doc-save-first = { $path } காலியாக உள்ளது — முதலில் சேமிக்கவும்
 doc-missing-name = ஆவணப் பெயர் இல்லை
 doc-publish-usage = பயன்பாடு: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = பயன்பாடு: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = விரிவான காரணத்திற்காக இயக்க நேர பதிவுகளை ஆய்வு செய்து மீண்டும் முயற்சிக்கவும்
 doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
 doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
-doc-fetch-done = { $cid } பெறப்பட்டது → { $path }.content (இயக்கப்படவில்லை)
+doc-fetch-done = { $cid } பெறப்பட்டது → { $path } (இயக்கப்படவில்லை)
 doc-fetch-failed = பெறு { $cid }: { $e }
 doc-fetch-usage = பயன்பாடு: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       கடைசி வழி — �
 help-cmd-history =   .history                     கட்டளை வரலாறு (தொடர்ச்சியான நகல்கள் இணைக்கப்பட்டன)
 help-cmd-logout =   .logout                      வெளியேறவும்
 help-cmd-batch =   .batch                       scratch ஆவணத்தை இணையாக மதிப்பிடு
-help-cmd-batch-sync =   .batch:sync / .batch         scratch ஆவணத்தை வரி வரியாக மதிப்பிடு
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch ஆவணத்தை வரி வரியாக மதிப்பிடு
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID/DID-URL காட்டு (செய்தி அனுப்பப்படாது)
@@ -413,7 +413,7 @@ batch-done-error = batch பிழைகளுடன் { $secs }s-ல் மு
 msg-timeout = செய்தி நேரம் முடிந்தது (60s-ல் பதில் இல்லை)
 err-unknown-command = தெரியாத கட்டளை: { $path }
 err-read-only-path = { $path } வாசிக்க மட்டும்
-help-cmd-batch-async =   .batch:async / .batch        scratch ஆவணத்தை இணையாக மதிப்பிடு
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch ஆவணத்தை இணையாக மதிப்பிடு
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

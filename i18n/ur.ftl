@@ -154,8 +154,8 @@ identity-exported = بنڈل { $filename } کے طور پر ڈاؤن لوڈ ہو
 identity-export-failed = برآمد ناکام: { $e }
 
 # ── افعال — دستاویزات ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content خالی ہے
-doc-save-first = { $path }.content خالی ہے — پہلے محفوظ کریں
+doc-content-empty = { $path } خالی ہے
+doc-save-first = { $path } خالی ہے — پہلے محفوظ کریں
 doc-missing-name = دستاویز کا نام غائب
 doc-publish-usage = استعمال: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = استعمال: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = تفصیلی وجہ کے لیے رن ٹائم لاگ کا معائنہ کریں اور دوبارہ کوشش کریں۔
 doc-store-sent = ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID RPC جواب کے ذریعے آئے گا
 doc-ipld-store-sent = IPLD ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID RPC جواب کے ذریعے آئے گا
-doc-fetch-done = { $cid } حاصل کیا → { $path }.content (چلایا نہیں گیا)
+doc-fetch-done = { $cid } حاصل کیا → { $path } (چلایا نہیں گیا)
 doc-fetch-failed = حاصل کریں { $cid }: { $e }
 doc-fetch-usage = استعمال: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       آخری چارہ — مسئلہ
 help-cmd-history =   .history                     کمانڈ ہسٹری (مسلسل تکرار ضم ہو گئی)
 help-cmd-logout =   .logout                      لاگ آؤٹ
 help-cmd-batch =   .batch                       قيّم مستند المسودة (بالتوازي)
-help-cmd-batch-sync =   .batch:sync / .batch         قيّم مستند المسودة سطراً بسطر
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مستند المسودة سطراً بسطر
 
 # ── مدد — پیغام رسانی ─────────────────────────────────────────────────────
 help-msg-echo =   @alias                       حل شدہ DID/DID-URL دکھائیں (کوئی پیغام نہیں بھیجا جاتا)
@@ -413,7 +413,7 @@ batch-done-error = اكتملت الدفعة مع أخطاء في { $secs }ث �
 msg-timeout = انتهت مهلة الرسالة (لا رد خلال 60ث)
 err-unknown-command = نامعلوم کمانڈ: { $path }
 err-read-only-path = { $path } صرف پڑھنے کے لیے ہے
-help-cmd-batch-async =   .batch:async / .batch        قيّم مستند المسودة (بالتوازي)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        قيّم مستند المسودة (بالتوازي)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

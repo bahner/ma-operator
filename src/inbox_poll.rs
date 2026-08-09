@@ -233,11 +233,6 @@ fn handle_did_entry_reply(
 
     let cfg = config.get_untracked();
     crate::eval::apply_ctx_focus(&cfg, state);
-    let queue_startup_zscheme_eval = state.startup_zscheme_after_enter.get_untracked();
-    state.startup_zscheme_after_enter.set(false);
-    if queue_startup_zscheme_eval {
-        crate::startup::queue_startup_zscheme_eval(state, config);
-    }
     if let Some(session) = state.session.get_untracked() {
         let username = session.username.clone();
         let config_to_persist = cfg.clone();

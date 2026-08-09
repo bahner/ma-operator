@@ -154,8 +154,8 @@ identity-exported = Bundle i save kamdaun olsem { $filename }
 identity-export-failed = Eksport i no wok: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content i emptipela
-doc-save-first = { $path }.content i emptipela — seivim pastaim
+doc-content-empty = { $path } i emptipela
+doc-save-first = { $path } i emptipela — seivim pastaim
 doc-missing-name = nem bilong dokumen i no stap
 doc-publish-usage = yusim olsem: .my.doc.<nem>!publish <publishman>
 doc-publish-ipld-usage = yusim olsem: .my.doc.<nem>!publish-ipld <publishman>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = sekim ol 'runtime' log bilong painimaut as bilong en na traim gen
 doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
 doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
-doc-fetch-done = kisim { $cid } → { $path }.content (i noران)
+doc-fetch-done = kisim { $cid } → { $path } (i noران)
 doc-fetch-failed = kisim { $cid }: { $e }
 doc-fetch-usage = yusim olsem: .my.doc.<nem>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       las rot — yusim sapos yu bagar
 help-cmd-history =   .history                     histri bilong komand (ol sem koman i stap wantaim)
 help-cmd-logout =   .logout                      autim
 help-cmd-batch =   .batch                       run scratch document parallel
-help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
 help-msg-echo =   @alias                       soim resolved DID/DID-URL (no salim mesij)
 help-msg-send =   @alias!msg body / @alias:verb args           salim mesej / RPC i go long aktor
 help-msg-fragment =   @alias#fragment:verb body  salim i go long alias wantaim DID fragment
@@ -399,7 +399,7 @@ batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
 err-unknown-command = komand i no save: { $path }
 err-read-only-path = { $path } em bilong rit tasol
-help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -154,8 +154,8 @@ identity-exported = Pakett alla laaditud nimega { $filename }
 identity-export-failed = Eksport ebaõnnestus: { $e }
 
 # ── Verbid — dokumendid ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content on tühi
-doc-save-first = { $path }.content on tühi — salvesta esmalt
+doc-content-empty = { $path } on tühi
+doc-save-first = { $path } on tühi — salvesta esmalt
 doc-missing-name = dokumendi nimi puudub
 doc-publish-usage = kasutus: .my.doc.<nimi>!publish <avaldaja>
 doc-publish-ipld-usage = kasutus: .my.doc.<nimi>!publish-ipld <avaldaja>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = kontrollige käitusaja logisid üksikasjaliku põhjuse leidmiseks ja proovige uuesti
 doc-store-sent = salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
 doc-ipld-store-sent = IPLD-salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
-doc-fetch-done = toodi { $cid } → { $path }.content (pole käivitatud)
+doc-fetch-done = toodi { $cid } → { $path } (pole käivitatud)
 doc-fetch-failed = toomine { $cid }: { $e }
 doc-fetch-usage = kasutus: .my.doc.<nimi>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       viimane abinõu — kasuta, kui 
 help-cmd-history =   .history                     käsuajalugu (järjestikused kordused ühendatud)
 help-cmd-logout =   .logout                      logi välja
 help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakkain
-help-cmd-batch-sync =   .batch:sync / .batch         arvioi luonnosdokumentti riveittäin
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         arvioi luonnosdokumentti riveittäin
 
 help-msg-echo =   @alias                       kuva lahendatud DID/DID-URL (ühtegi sõnumit pole saadetud)
 help-msg-send =   @alias!msg body / @alias:verb args           saada sõnum / RPC osalejale
@@ -406,7 +406,7 @@ batch-done-error = Erä päättyi virheisiin { $secs }s ajassa — { $steps } va
 msg-timeout = Viestin aika loppui (ei vastausta 60s aikana)
 err-unknown-command = tundmatu käsk: { $path }
 err-read-only-path = { $path } on kirjutuskaitstud
-help-cmd-batch-async =   .batch:async / .batch        arvioi luonnosdokumentti rinnakkain
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        arvioi luonnosdokumentti rinnakkain
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

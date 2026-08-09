@@ -154,8 +154,8 @@ identity-exported = An sauke ƙunshin a matsayin { $filename }
 identity-export-failed = Fitarwa ta kasa: { $e }
 
 # ── Aikatau — takardu ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content fanko ne
-doc-save-first = { $path }.content fanko ne — ajiye da farko
+doc-content-empty = { $path } fanko ne
+doc-save-first = { $path } fanko ne — ajiye da farko
 doc-missing-name = suna na takarda ya ɓace
 doc-publish-usage = amfani: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = amfani: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = duba rajistan ayyukan lokaci don cikakken dalili kuma sake gwadawa
 doc-store-sent = an aika buƙatar ajiye ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
 doc-ipld-store-sent = an aika buƙatar ajiye IPLD ({ $id }) → { $publisher }; CID zai zo ta RPC amsa
-doc-fetch-done = an ɗauko { $cid } → { $path }.content (ba a gudanar ba)
+doc-fetch-done = an ɗauko { $cid } → { $path } (ba a gudanar ba)
 doc-fetch-failed = ɗaukar { $cid }: { $e }
 doc-fetch-usage = amfani: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani 
 help-cmd-history =   .history                     tarihin umarni (maimaita masu jere sun haɗu)
 help-cmd-logout =   .logout                      fita
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
-help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── Rubutun taimako — aikawasiku ──────────────────────────────────────────
 help-msg-echo =   @alias                       nuna DID/DID-URL da aka warware (ba a aika saƙo ba)
@@ -413,7 +413,7 @@ batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
 err-unknown-command = umarni da ba a sani ba: { $path }
 err-read-only-path = { $path } na karantawa kawai ne
-help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

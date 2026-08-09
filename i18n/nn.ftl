@@ -154,8 +154,8 @@ identity-exported = Bundle lasta ned som { $filename }
 identity-export-failed = Eksport mislukkast: { $e }
 
 # ── Verb — dokument ───────────────────────────────────────────────────────
-doc-content-empty = { $path }.content er tom
-doc-save-first = { $path }.content er tom — lagre fyrst
+doc-content-empty = { $path } er tom
+doc-save-first = { $path } er tom — lagre fyrst
 doc-missing-name = manglande dokumentnamn
 doc-publish-usage = bruk: .my.doc.<namn>!publish <utgjevar>
 doc-publish-ipld-usage = bruk: .my.doc.<namn>!publish-ipld <utgjevar>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = sjekk lokal Kubo/IPFS-helse og status for utgjevarkøyre
 doc-publish-hint-unknown = sjå i køyretidsloggane etter detaljert årsak og prøv igjen
 doc-store-sent = lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
 doc-ipld-store-sent = IPLD-lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
-doc-fetch-done = henta { $cid } → { $path }.content (ikkje køyrd)
+doc-fetch-done = henta { $cid } → { $path } (ikkje køyrd)
 doc-fetch-failed = henting { $cid }: { $e }
 doc-fetch-usage = bruk: .my.doc.<namn>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       siste utveg — bruk om du er i 
 help-cmd-history =   .history                     kommandohistorikk (etterfylgjande duplikatar vert samanslåtte)
 help-cmd-logout =   .logout                      logg ut
 help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
-help-cmd-batch-sync =   .batch:sync / .batch         evaluer kladdedokument line for line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladdedokument line for line
 
 # ── Hjelptekst — meldingar ────────────────────────────────────────────────
 help-msg-echo =   @alias                       vis løyst DID/DID-URL (inkje melding sendt)
@@ -412,7 +412,7 @@ batch-done-error = Batch ferdig med feil på { $secs }s — { $steps } steg
 msg-timeout = Meldinga fekk tidsavbrot (ingen svar på 60s)
 err-unknown-command = ukjend kommando: { $path }
 err-read-only-path = { $path } er skriveverna
-help-cmd-batch-async =   .batch:async / .batch        evaluer kladdedokument parallelt
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluer kladdedokument parallelt
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

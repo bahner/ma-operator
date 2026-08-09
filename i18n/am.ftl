@@ -154,8 +154,8 @@ identity-exported = ቅጅ እንደ { $filename } ወርዷል
 identity-export-failed = ወደ ውጪ ማስቀረት አልተሳካም: { $e }
 
 # ── ተግባራት — ሰነዶች ───────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ባዶ ነው
-doc-save-first = { $path }.content ባዶ ነው — መጀመሪያ ያስቀምጡ
+doc-content-empty = { $path } ባዶ ነው
+doc-save-first = { $path } ባዶ ነው — መጀመሪያ ያስቀምጡ
 doc-missing-name = የሰነድ ስም ጎደለ
 doc-publish-usage = አጠቃቀም: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = አጠቃቀም: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ለዝርዝር ምክንያት የሩጫ ጊዜ መዝገቦችን ይፈትሹ እና እንደገና ይሞክሩ
 doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
 doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
-doc-fetch-done = { $cid } ተሰብስቧል → { $path }.content (አልተሰራም)
+doc-fetch-done = { $cid } ተሰብስቧል → { $path } (አልተሰራም)
 doc-fetch-failed = { $cid } ማምጣት: { $e }
 doc-fetch-usage = አጠቃቀም: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — �
 help-cmd-history =   .history                     የትዕዛዝ ታሪክ (ተከታታይ ዳግምዎች ተዋህደዋል)
 help-cmd-logout =   .logout                      ይውጡ
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
-help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       የተፈታ DID/DID-URL አሳይ (መልዕክት አይላክም)
@@ -413,7 +413,7 @@ batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
 err-unknown-command = ያልታወቀ ትእዛዝ፦ { $path }
 err-read-only-path = { $path } ለንባብ ብቻ ነው
-help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

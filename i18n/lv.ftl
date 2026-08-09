@@ -154,8 +154,8 @@ identity-exported = Pakotne lejupielādēta kā { $filename }
 identity-export-failed = Eksports neizdevās: { $e }
 
 # ── Darbības vārdi — dokumenti ───────────────────────────────────────────
-doc-content-empty = { $path }.content ir tukšs
-doc-save-first = { $path }.content ir tukšs — vispirms saglabājiet
+doc-content-empty = { $path } ir tukšs
+doc-save-first = { $path } ir tukšs — vispirms saglabājiet
 doc-missing-name = trūkst dokumenta nosaukuma
 doc-publish-usage = lietošana: .my.doc.<nosaukums>!publish <izdevējs>
 doc-publish-ipld-usage = lietošana: .my.doc.<nosaukums>!publish-ipld <izdevējs>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = pārbaudiet izpildlaika žurnālus, lai uzzinātu detalizētu iemeslu, un mēģiniet vēlreiz
 doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
 doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
-doc-fetch-done = ielādēja { $cid } → { $path }.content (nav izpildīts)
+doc-fetch-done = ielādēja { $cid } → { $path } (nav izpildīts)
 doc-fetch-failed = ielāde { $cid }: { $e }
 doc-fetch-usage = lietošana: .my.doc.<nosaukums>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       pēdējais līdzeklis — izmant
 help-cmd-history =   .history                     komandu vēsture (secīgie dublikāti apvienoti)
 help-cmd-logout =   .logout                      atteikties
 help-cmd-batch =   .batch                       oceń dokument roboczy równolegle
-help-cmd-batch-sync =   .batch:sync / .batch         oceń dokument roboczy linia po linii
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
 
 help-msg-echo =   @alias                       parādīt atrisināto DID/DID-URL (ziņa netiek sūtīta)
 help-msg-send =   @alias!msg body / @alias:verb args           nosūtīt ziņojumu / RPC dalībniekam
@@ -406,7 +406,7 @@ batch-done-error = Batch zakończony z błędami w { $secs }s — { $steps } kro
 msg-timeout = Wiadomość wygasła (brak odpowiedzi przez 60s)
 err-unknown-command = nezināma komanda: { $path }
 err-read-only-path = { $path } ir tikai lasāms
-help-cmd-batch-async =   .batch:async / .batch        oceń dokument roboczy równolegle
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        oceń dokument roboczy równolegle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

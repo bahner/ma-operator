@@ -1,7 +1,7 @@
 //! Input dispatch loop.
 //!
 //! `run_dispatch_loop` is spawned once at login.  It drains `input_queue`
-//! every 50 ms, handles `.batch:sync`/`.batch:async`/`.batch` delimiters,
+//! every 50 ms, handles `.batch!sync`/`.batch!async`/`.batch` delimiters,
 //! advances sync batches when their current step resolves, and finalises
 //! completed async batches.
 
@@ -195,7 +195,7 @@ fn handle_input_line(
     }
 
     let trimmed = line.trim();
-    if trimmed.starts_with(".batch:sync") || trimmed.starts_with(".batch:async") {
+    if trimmed.starts_with(".batch!sync") || trimmed.starts_with(".batch!async") {
         open_batch(trimmed, state);
         return;
     }
@@ -237,7 +237,7 @@ fn collecting_batch_id(state: &AppState) -> Option<u64> {
 
 fn is_batch_delimiter_line(line: &str) -> bool {
     let t = line.trim();
-    t == ".batch" || t.starts_with(".batch:sync") || t.starts_with(".batch:async")
+    t == ".batch" || t.starts_with(".batch!sync") || t.starts_with(".batch!async")
 }
 
 fn save_line_to_history(line: &str, state: &AppState) {
@@ -357,7 +357,7 @@ fn open_batch(line: &str, state: &AppState) {
         return;
     }
 
-    let mode = if line.starts_with(".batch:sync") {
+    let mode = if line.starts_with(".batch!sync") {
         BatchMode::Sync
     } else {
         BatchMode::Async
@@ -855,8 +855,8 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        attach_command_to_batch, complete_scheme_input, focus_scheme_form, is_note_line,
-        should_display_scheme_value,
+        attach_command_to_batch, complete_scheme_input, focus_scheme_form, is_batch_delimiter_line,
+        is_note_line, should_display_scheme_value,
     };
     use crate::core::CommandStatus;
     use crate::scheme::SchemeVal;
@@ -868,6 +868,15 @@ mod tests {
         assert!(is_note_line("; This is a (.my.ctx.room) note"));
         assert!(is_note_line("  ;;also-a-note"));
         assert!(!is_note_line("say ;not-a-note"));
+    }
+
+    #[test]
+    fn batch_delimiters_use_bang_verbs() {
+        assert!(is_batch_delimiter_line(".batch!sync"));
+        assert!(is_batch_delimiter_line(".batch!async timeout=5s"));
+        assert!(is_batch_delimiter_line(".batch"));
+        assert!(!is_batch_delimiter_line(".batch:sync"));
+        assert!(!is_batch_delimiter_line(".batch:async"));
     }
 
     #[test]

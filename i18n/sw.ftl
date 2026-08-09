@@ -154,8 +154,8 @@ identity-exported = Kifurushi kilipakuliwa kama { $filename }
 identity-export-failed = Usafirishaji umeshindwa: { $e }
 
 # ── Vitenzi — nyaraka ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content ipo wazi
-doc-save-first = { $path }.content ipo wazi — hifadhi kwanza
+doc-content-empty = { $path } ipo wazi
+doc-save-first = { $path } ipo wazi — hifadhi kwanza
 doc-missing-name = jina la hati linakosekana
 doc-publish-usage = matumizi: .my.doc.<jina>!publish <mchapishaji>
 doc-publish-ipld-usage = matumizi: .my.doc.<jina>!publish-ipld <mchapishaji>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = kagua kumbukumbu za wakati wa utekelezaji kwa sababu za kina na ujaribu tena
 doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
 doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
-doc-fetch-done = { $cid } imepatikana → { $path }.content (haijatekelezwa)
+doc-fetch-done = { $cid } imepatikana → { $path } (haijatekelezwa)
 doc-fetch-failed = kupata { $cid }: { $e }
 doc-fetch-usage = matumizi: .my.doc.<jina>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       njia ya mwisho — tumia ukiwa k
 help-cmd-history =   .history                     historia ya amri (marudio yanayofuatana yamejumuishwa)
 help-cmd-logout =   .logout                      toka
 help-cmd-batch =   .batch                       evaluasi dokumen coretan secara paralel
-help-cmd-batch-sync =   .batch:sync / .batch         evaluasi dokumen coretan baris demi baris
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
 
 help-msg-echo =   @alias                       onyesha DID/DID-URL iliyotatuliwa (hakuna ujumbe unaotumwa)
 help-msg-send =   @alias!msg body / @alias:verb args           tuma ujumbe / RPC kwa muigizaji
@@ -406,7 +406,7 @@ batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps 
 msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
 err-unknown-command = amri isiyojulikana: { $path }
 err-read-only-path = { $path } ni ya kusoma tu
-help-cmd-batch-async =   .batch:async / .batch        evaluasi dokumen coretan secara paralel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

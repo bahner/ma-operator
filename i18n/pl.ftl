@@ -154,8 +154,8 @@ identity-exported = Pakiet pobrany jako { $filename }
 identity-export-failed = Eksport nie powiódł się: { $e }
 
 # ── Czasowniki — dokumenty ────────────────────────────────────────────────
-doc-content-empty = { $path }.content jest puste
-doc-save-first = { $path }.content jest puste — najpierw zapisz
+doc-content-empty = { $path } jest puste
+doc-save-first = { $path } jest puste — najpierw zapisz
 doc-missing-name = brak nazwy dokumentu
 doc-publish-usage = użycie: .my.doc.<nazwa>!publish <wydawca>
 doc-publish-ipld-usage = użycie: .my.doc.<nazwa>!publish-ipld <wydawca>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = sprawdź lokalny stan Kubo/IPFS i status runtime publiku
 doc-publish-hint-unknown = sprawdź logi runtime, aby poznać szczegółową przyczynę, i spróbuj ponownie
 doc-store-sent = żądanie przechowywania wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
 doc-ipld-store-sent = żądanie przechowywania IPLD wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
-doc-fetch-done = { $cid } pobrano → { $path }.content (nie uruchomiono)
+doc-fetch-done = { $cid } pobrano → { $path } (nie uruchomiono)
 doc-fetch-failed = pobieranie { $cid }: { $e }
 doc-fetch-usage = użycie: .my.doc.<nazwa>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -199,7 +199,7 @@ help-cmd-panic =   .panic                       ostateczność — użyj gdy mas
 help-cmd-history =   .history                     historia poleceń (kolejne duplikaty połączone)
 help-cmd-logout =   .logout                      wyloguj
 help-cmd-batch =   .batch                       oceń dokument roboczy równolegle
-help-cmd-batch-sync =   .batch:sync / .batch         oceń dokument roboczy linia po linii
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
 
 help-msg-echo =   @alias                       pokaż rozwiązany DID/DID-URL (nie wysyła wiadomości)
 help-msg-send =   @alias!msg body / @alias:verb args           wyślij wiadomość / RPC do aktora
@@ -406,7 +406,7 @@ batch-done-error = Batch zakończony z błędami w { $secs }s — { $steps } kro
 msg-timeout = Wiadomość wygasła (brak odpowiedzi przez 60s)
 err-unknown-command = nieznane polecenie: { $path }
 err-read-only-path = { $path } jest tylko do odczytu
-help-cmd-batch-async =   .batch:async / .batch        oceń dokument roboczy równolegle
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        oceń dokument roboczy równolegle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

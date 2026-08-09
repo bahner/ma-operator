@@ -161,8 +161,8 @@ identity-exported = Пакет завантажено як { $filename }
 identity-export-failed = Експорт не вдався: { $e }
 
 # ── Дієслова — документи ─────────────────────────────────────────────────
-doc-content-empty = { $path }.content порожній
-doc-save-first = { $path }.content порожній — спочатку збережіть
+doc-content-empty = { $path } порожній
+doc-save-first = { $path } порожній — спочатку збережіть
 doc-missing-name = відсутня назва документу
 doc-publish-usage = використання: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = використання: .my.doc.<name>!publish-ipld <publisher>
@@ -180,7 +180,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = перевірте журнали виконання для детальної інформації про причину та повторіть спробу
 doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
 doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
-doc-fetch-done = завантажено { $cid } → { $path }.content (не виконано)
+doc-fetch-done = завантажено { $cid } → { $path } (не виконано)
 doc-fetch-failed = завантаження { $cid }: { $e }
 doc-fetch-usage = використання: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -207,7 +207,7 @@ help-cmd-history =   .history                     історія команд (�
 help-cmd-panic =   .panic                       останній засіб — використовувати при проблемах
 help-cmd-logout =   .logout                      вийти
 help-cmd-batch =   .batch                       виконати чернетку (паралельно)
-help-cmd-batch-sync =   .batch:sync / .batch         виконати команди послідовно, по одній
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         виконати команди послідовно, по одній
 
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
@@ -420,7 +420,7 @@ batch-done-error = Пакет завершено з помилками за { $s
 msg-timeout = Час очікування повідомлення вичерпано (немає відповіді протягом 60 с)
 err-unknown-command = невідома команда: { $path }
 err-read-only-path = { $path } лише для читання
-help-cmd-batch-async =   .batch:async / .batch        виконати команди паралельно
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        виконати команди паралельно
 
 # ── Схема ─────────────────────────────────────────────────────────────────
 scheme-cid-fetch-error = Не вдалося отримати CID { $cid }: { $reason }

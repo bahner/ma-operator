@@ -154,8 +154,8 @@ identity-exported = Paake ɗownlooday haa { $filename }
 identity-export-failed = Ɗaɓɓude rewaani: { $e }
 
 # ── Baɗe — takka ─────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content luuɗi
-doc-save-first = { $path }.content luuɗi — mooftu ɓaawo
+doc-content-empty = { $path } luuɗi
+doc-save-first = { $path } luuɗi — mooftu ɓaawo
 doc-missing-name = innde takka tawaaka
 doc-publish-usage = golle: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = golle: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = ƴeewto binndanɗe runtime ngam humpitaade sabaabu laaɓtuɗo e ƴeewtaade
 doc-store-sent = gollal mooftude nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
 doc-ipld-store-sent = gollal mooftude IPLD nawnaaɗo ({ $id }) → { $publisher }; CID ara e jaabiri RPC
-doc-fetch-done = { $cid } heɓaama → { $path }.content (hooraaka)
+doc-fetch-done = { $cid } heɓaama → { $path } (hooraaka)
 doc-fetch-failed = heɓtude { $cid }: { $e }
 doc-fetch-usage = golle: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       laawol ɓurno — faala e nder n
 help-cmd-history =   .history                     taariki juurde (laawol dow dow ɗiɗi nde fiilata)
 help-cmd-logout =   .logout                      yalta
 help-cmd-batch =   .batch                       évaluer le document brouillon en parallèle
-help-cmd-batch-sync =   .batch:sync / .batch         évaluer le document brouillon ligne par ligne
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
 
 # ── Ballal — winnditaade ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hollu DID/DID-URL ɗaaɓtunde (ɓatakuru neldaaka)
@@ -413,7 +413,7 @@ batch-done-error = Batch terminé avec erreurs en { $secs }s — { $steps } éta
 msg-timeout = Message expiré (aucune réponse en 60s)
 err-unknown-command = yamiroore anndaaka: { $path }
 err-read-only-path = { $path } ko janngorde tan
-help-cmd-batch-async =   .batch:async / .batch        évaluer le document brouillon en parallèle
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        évaluer le document brouillon en parallèle
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

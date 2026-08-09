@@ -154,8 +154,8 @@ identity-exported = Bundle don download as { $filename }
 identity-export-failed = Export fail: { $e }
 
 # ── Verbs — documents ────────────────────────────────────────────────────
-doc-content-empty = { $path }.content dey empty
-doc-save-first = { $path }.content dey empty — save am first
+doc-content-empty = { $path } dey empty
+doc-save-first = { $path } dey empty — save am first
 doc-missing-name = document name dey missing
 doc-publish-usage = usage: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = usage: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = store request send ({ $id }) → { $publisher }; CID go arrive via RPC reply
 doc-ipld-store-sent = IPLD store request send ({ $id }) → { $publisher }; CID go arrive via RPC reply
-doc-fetch-done = fetched { $cid } → { $path }.content (no execute)
+doc-fetch-done = fetched { $cid } → { $path } (no execute)
 doc-fetch-failed = fetch { $cid }: { $e }
 doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -202,7 +202,7 @@ help-cmd-panic =   .panic                       las resort — yus am if yu waka
 help-cmd-history =   .history                     history of command (repeat wey follow each oda don join)
 help-cmd-logout =   .logout                      log owt
 help-cmd-batch =   .batch                       run scratch document parallel
-help-cmd-batch-sync =   .batch:sync / .batch         run scratch document line by line
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
 help-msg-echo = @alias                       show resolved DID/DID-URL (no message sent)
 help-msg-send =   @alias!msg body / @alias:verb args           send mesej / RPC go aktor
 help-msg-fragment =   @alias#fragment:verb body  send go alias wey get eksplisit DID fragment
@@ -399,7 +399,7 @@ batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
 err-unknown-command = no sabi command: { $path }
 err-read-only-path = { $path } na read-only
-help-cmd-batch-async =   .batch:async / .batch        run scratch document parallel
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

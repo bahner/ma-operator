@@ -1,22 +1,14 @@
-//! Generic link-value resolution for `.my.*` doc leaves.
-//!
-//! A doc leaf (e.g. `.my.z.scheme`) may hold either literal content — today's
-//! behaviour, unchanged — or a link to content addressed elsewhere: a bare
-//! CID, or a `/ipfs/<cid>` / `/ipld/<cid>` path. This module detects that
-//! case and resolves it, picking a codec-appropriate fetch based on the
-//! CID's own multicodec (`cid::Cid::codec()`) — no network round-trip is
-//! needed to decide which branch to take. Applies to any `.my.*` doc path;
-//! never special-cased to a particular one.
+//! Generic link-value resolution for explicitly loaded `.my.*` documents.
 
 use crate::http::{fetch_cid_bytes, fetch_cid_text};
 use ma_core::CODEC_DAG_CBOR;
 use std::collections::BTreeMap;
 
-/// Resolved content of a `.my.*` doc leaf, after link resolution.
+/// Resolved content of a linked document.
 pub enum ResolvedDocContent {
-    /// Plain text — literal content, or fetched from a non-dag-cbor CID.
+    /// Plain text loaded from a non-DAG-CBOR CID.
     Text(String),
-    /// A structured manifest — fetched from a dag-cbor CID.
+    /// A structured manifest loaded from a DAG-CBOR CID.
     Manifest(BTreeMap<String, String>),
 }
 
@@ -30,12 +22,10 @@ pub fn parse_link_cid(value: &str) -> Option<cid::Cid> {
     stripped.parse::<cid::Cid>().ok()
 }
 
-/// Resolve a doc leaf's stored value.
+/// Resolve an explicitly requested document link.
 ///
-/// Literal content (anything that doesn't parse as a CID/link) is returned
-/// unchanged as `Text`. A link value is fetched; its codec picks the
-/// interpretation: `dag-cbor` decodes as a `Manifest`, anything else fetches
-/// as plain `Text`.
+/// This is never called during startup; startup evaluates already-loaded local
+/// profile state only.
 pub async fn resolve_doc_link(value: &str) -> Result<ResolvedDocContent, String> {
     let Some(cid) = parse_link_cid(value) else {
         return Ok(ResolvedDocContent::Text(value.to_string()));
@@ -44,7 +34,7 @@ pub async fn resolve_doc_link(value: &str) -> Result<ResolvedDocContent, String>
     if cid.codec() == CODEC_DAG_CBOR {
         let bytes = fetch_cid_bytes(&cid_str).await?;
         let map: BTreeMap<String, String> =
-            serde_ipld_dagcbor::from_slice(&bytes).map_err(|e| e.to_string())?;
+            serde_ipld_dagcbor::from_slice(&bytes).map_err(|error| error.to_string())?;
         Ok(ResolvedDocContent::Manifest(map))
     } else {
         let text = fetch_cid_text(&cid_str).await?;

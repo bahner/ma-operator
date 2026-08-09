@@ -163,8 +163,8 @@ identity-exported = بسته با نام { $filename } دریافت شد
 identity-export-failed = خروجی گرفتن ناموفق بود: { $e }
 
 # ── فعل‌ها — سندها ───────────────────────────────────────────────────────
-doc-content-empty = { $path }.content خالی است
-doc-save-first = { $path }.content خالی است — ابتدا ذخیره کنید
+doc-content-empty = { $path } خالی است
+doc-save-first = { $path } خالی است — ابتدا ذخیره کنید
 doc-missing-name = نام سند نیست
 doc-publish-usage = کاربرد: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = کاربرد: .my.doc.<name>!publish-ipld <publisher>
@@ -182,7 +182,7 @@ doc-publish-hint-ipfs = سلامت Kubo/IPFS محلی و وضعیت runtime نا
 doc-publish-hint-unknown = برای علت دقیق‌تر گزارش‌های runtime را بررسی کنید و دوباره بکوشید
 doc-store-sent = درخواست ذخیره‌سازی فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ RPC خواهد رسید
 doc-ipld-store-sent = درخواست ذخیره‌سازی IPLD فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ RPC خواهد رسید
-doc-fetch-done = { $cid } واکشی شد → { $path }.content (اجرا نشد)
+doc-fetch-done = { $cid } واکشی شد → { $path } (اجرا نشد)
 doc-fetch-failed = واکشی { $cid }: { $e }
 doc-fetch-usage = کاربرد: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -196,7 +196,7 @@ help-header-messaging = ── پیام‌رسانی ─────────
 help-header-config = ── دستور زبان پیکربندی محلی ───────────────────────────────────────────────
 help-header-common = ── مسیرهای رایج ───────────────────────────────────────────────────────────
 help-header-inbox = ── صندوق ورودی ────────────────────────────────────────────────────────────
-help-header-documents = ── فعل‌های محتوا (هر .path با .content) ───────────────────────────────
+help-header-documents = ── اسناد (.my.doc.*) ───────────────────────────────────────────────────
 help-header-i18n = ── زبان ───────────────────────────────────────────────────────────────────
 help-header-ma = ── 間-space ─────────────────────────────────────────────────────────────────
 help-header-ma-entry = ── ورود به 間-space ────────────────────────────────────────────────────
@@ -210,7 +210,7 @@ help-cmd-history =   .history                     تاریخچه فرمان‌ه
 help-cmd-panic =   .panic                       آخرین چاره — اگر به دردسر افتادید استفاده کنید
 help-cmd-logout =   .logout                      خروج
 help-cmd-batch =   .batch                       اجرای سند scratch (موازی، بدون انتظار)
-help-cmd-batch-sync =   .batch:sync / .batch         اجرای فرمان‌ها به ترتیب، هر خط یکی
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         اجرای فرمان‌ها به ترتیب، هر خط یکی
 
 # ── متن راهنما — فهرست موضوع‌ها ─────────────────────────────────────────
 help-header-topics = ── موضوع‌ها — برای جزئیات .help/<topic> را تایپ کنید ─────────────────────
@@ -425,7 +425,7 @@ batch-step-timeout = مهلت گام batch پایان یافت
 batch-done = Batch در { $secs } ثانیه کامل شد — { $steps } گام
 batch-done-error = Batch با خطا در { $secs } ثانیه پایان یافت — { $steps } گام
 msg-timeout = مهلت پیام پایان یافت (در ۶۰ ثانیه پاسخی نیامد)
-help-cmd-batch-async =   .batch:async / .batch        اجرای فرمان‌ها به صورت موازی
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        اجرای فرمان‌ها به صورت موازی
 
 
 # ── پخش gossip ──────────────────────────────────────────────────────────

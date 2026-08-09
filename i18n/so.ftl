@@ -154,8 +154,8 @@ identity-exported = Bundle-ka waxaa loo dejisay { $filename }
 identity-export-failed = Dhoofinta waxay la kulmeen: { $e }
 
 # ── Ficilada — dokumantigyada ─────────────────────────────────────────────
-doc-content-empty = { $path }.content wuu maran yahay
-doc-save-first = { $path }.content wuu maran yahay — horta keydi
+doc-content-empty = { $path } wuu maran yahay
+doc-save-first = { $path } wuu maran yahay — horta keydi
 doc-missing-name = magaca dokumantigga waa la waayay
 doc-publish-usage = isticmaalka: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = isticmaalka: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = baadh diiwaanka runtime sababta faahfaahsan oo dib u tijaabi
 doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
 doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
-doc-fetch-done = { $cid } la soo qaatay → { $path }.content (lama socodsiin)
+doc-fetch-done = { $cid } la soo qaatay → { $path } (lama socodsiin)
 doc-fetch-failed = qaadashada { $cid }: { $e }
 doc-fetch-usage = isticmaalka: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticm
 help-cmd-history =   .history                     taariikhda amarrada (nuqulaha xiriirka biirtay)
 help-cmd-logout =   .logout                      ka bax
 help-cmd-batch =   .batch                       ጊዜያዊ ሰነድ ገምግም (በትይዩ)
-help-cmd-batch-sync =   .batch:sync / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ ሰነድ መስመር በመስመር ገምግም
 
 # ── Gargaarku — farriin diridda ───────────────────────────────────────────
 help-msg-echo =   @alias                       muuji DID/DID-URL la xaliyay (farriin lama diro)
@@ -413,7 +413,7 @@ batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
 err-unknown-command = amar aan la aqoon: { $path }
 err-read-only-path = { $path } waa akhris-kaliya
-help-cmd-batch-async =   .batch:async / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

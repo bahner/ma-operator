@@ -154,8 +154,8 @@ identity-exported = تم تنزيل الحزمة باسم { $filename }
 identity-export-failed = فشل التصدير: { $e }
 
 # ── الأفعال — المستندات ───────────────────────────────────────────────────
-doc-content-empty = { $path }.content فارغ
-doc-save-first = { $path }.content فارغ — احفظ أولاً
+doc-content-empty = { $path } فارغ
+doc-save-first = { $path } فارغ — احفظ أولاً
 doc-missing-name = اسم المستند مفقود
 doc-publish-usage = الاستخدام: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = الاستخدام: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
 doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
 doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
-doc-fetch-done = تم جلب { $cid } → { $path }.content (لم يُنفَّذ)
+doc-fetch-done = تم جلب { $cid } → { $path } (لم يُنفَّذ)
 doc-fetch-failed = جلب { $cid }: { $e }
 doc-fetch-usage = الاستخدام: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       الملاذ الأخير — ا
 help-cmd-history =   .history                     سجل الأوامر (التكرارات المتتالية مدمجة)
 help-cmd-logout =   .logout                      تسجيل الخروج
 help-cmd-batch =   .batch                       قيّم مستند المسودة (بالتوازي)
-help-cmd-batch-sync =   .batch:sync / .batch         قيّم مستند المسودة سطراً بسطر
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مستند المسودة سطراً بسطر
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       اعرض DID/DID-URL المحلول (لا تُرسل رسالة)
@@ -412,7 +412,7 @@ batch-done-error = اكتملت الدفعة مع أخطاء في { $secs }ث �
 msg-timeout = انتهت مهلة الرسالة (لا رد خلال 60ث)
 err-unknown-command = أمر غير معروف: { $path }
 err-read-only-path = { $path } للقراءة فقط
-help-cmd-batch-async =   .batch:async / .batch        قيّم مستند المسودة (بالتوازي)
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        قيّم مستند المسودة (بالتوازي)
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

@@ -154,8 +154,8 @@ identity-exported = 包已下載為 { $filename }
 identity-export-failed = 匯出失敗：{ $e }
 
 # ── 動詞 — 文件 ───────────────────────────────────────────────────────────
-doc-content-empty = { $path }.content 為空
-doc-save-first = { $path }.content 為空 — 請先儲存
+doc-content-empty = { $path } 為空
+doc-save-first = { $path } 為空 — 請先儲存
 doc-missing-name = 缺少文件名稱
 doc-publish-usage = 用法: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = 用法: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = 檢查本機 Kubo/IPFS 健康狀態和發布者執行階
 doc-publish-hint-unknown = 查看執行階段記錄以取得詳細原因，然後重試
 doc-store-sent = 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
 doc-ipld-store-sent = IPLD 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
-doc-fetch-done = 已擷取 { $cid } → { $path }.content（未執行）
+doc-fetch-done = 已擷取 { $cid } → { $path }（未執行）
 doc-fetch-failed = 擷取 { $cid }: { $e }
 doc-fetch-usage = 用法: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       最後手段 — 遇到問題時
 help-cmd-history =   .history                     命令歷史（連續重複項已合併）
 help-cmd-logout =   .logout                      登出
 help-cmd-batch =   .batch                       平行執行暫存文件
-help-cmd-batch-sync =   .batch:sync / .batch         逐行執行暫存文件
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         逐行執行暫存文件
 
 # ── 說明文字 — 訊息傳遞 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       顯示已解析的 DID/DID-URL（不傳送訊息）
@@ -412,7 +412,7 @@ batch-done-error = batch 已完成但有錯誤，用時 { $secs }s — { $steps 
 msg-timeout = 訊息逾時（60s 內無回覆）
 err-unknown-command = 未知命令：{ $path }
 err-read-only-path = { $path } 為唯讀
-help-cmd-batch-async =   .batch:async / .batch        平行執行暫存文件
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        平行執行暫存文件
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────

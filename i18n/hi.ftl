@@ -154,8 +154,8 @@ identity-exported = बंडल { $filename } के रूप में डा
 identity-export-failed = निर्यात विफल: { $e }
 
 # ── क्रिया — दस्तावेज़ ─────────────────────────────────────────────────────
-doc-content-empty = { $path }.content खाली है
-doc-save-first = { $path }.content खाली है — पहले सहेजें
+doc-content-empty = { $path } खाली है
+doc-save-first = { $path } खाली है — पहले सहेजें
 doc-missing-name = दस्तावेज़ का नाम नहीं
 doc-publish-usage = उपयोग: .my.doc.<name>!publish <publisher>
 doc-publish-ipld-usage = उपयोग: .my.doc.<name>!publish-ipld <publisher>
@@ -173,7 +173,7 @@ doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime statu
 doc-publish-hint-unknown = विस्तृत कारण के लिए रनटाइम लॉग का निरीक्षण करें और पुनः प्रयास करें
 doc-store-sent = संग्रह अनुरोध भेजा ({ $id }) → { $publisher }; CID RPC उत्तर से आएगा
 doc-ipld-store-sent = IPLD संग्रह अनुरोध भेजा ({ $id }) → { $publisher }; CID RPC उत्तर से आएगा
-doc-fetch-done = { $cid } प्राप्त → { $path }.content (चलाया नहीं गया)
+doc-fetch-done = { $cid } प्राप्त → { $path } (चलाया नहीं गया)
 doc-fetch-failed = फ़ेच { $cid }: { $e }
 doc-fetch-usage = उपयोग: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
@@ -200,7 +200,7 @@ help-cmd-panic =   .panic                       अंतिम उपाय —
 help-cmd-history =   .history                     आदेश इतिहास (क्रमिक दोहराव एकत्रित)
 help-cmd-logout =   .logout                      लॉग आउट
 help-cmd-batch =   .batch                       scratch दस्तावेज़ समानांतर चलाएँ
-help-cmd-batch-sync =   .batch:sync / .batch         scratch दस्तावेज़ पंक्ति-दर-पंक्ति चलाएँ
+help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch दस्तावेज़ पंक्ति-दर-पंक्ति चलाएँ
 
 # ── सहायता — संदेश ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       हल किया गया DID/DID-URL दिखाएँ (कोई संदेश नहीं भेजा गया)
@@ -413,7 +413,7 @@ batch-done-error = batch त्रुटियों के साथ { $secs }s
 msg-timeout = संदेश समयसीमा पार (60s में कोई उत्तर नहीं)
 err-unknown-command = अज्ञात कमांड: { $path }
 err-read-only-path = { $path } केवल पढ़ने योग्य है
-help-cmd-batch-async =   .batch:async / .batch        scratch दस्तावेज़ समानांतर चलाएँ
+help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch दस्तावेज़ समानांतर चलाएँ
 
 
 # ── Gossip broadcast ──────────────────────────────────────────────────────
