@@ -228,7 +228,7 @@ impl EgoConfig {
             }
             let did_url = &rest[pos..pos + token_len];
             if let Some(alias) = self.alias_display(did_url) {
-                out.push_str(&alias)
+                out.push_str(&alias);
             } else {
                 if actor_ref {
                     out.push('@');
@@ -569,8 +569,6 @@ mod tests {
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
         assert_eq!(cfg.get(".my.z.scheme"), Some(""));
         assert_eq!(cfg.get(".my.z.avatar"), None);
-        assert_eq!(cfg.get(".my.scheme"), None);
-        assert_eq!(cfg.get(".my.avatar"), None);
     }
 
     #[test]

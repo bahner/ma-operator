@@ -144,7 +144,7 @@ async fn resolve_and_traverse(
     let mut cur = &doc;
     for key in subpath.split(['/', '.']) {
         if let Some(v) = cur.get(key) {
-            cur = v
+            cur = v;
         } else {
             state.push_error(tf("msg-link-key-not-found", &[("key", key)]));
             return;

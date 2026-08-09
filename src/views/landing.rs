@@ -993,35 +993,6 @@ pub fn Landing() -> impl IntoView {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::validate_new_passphrase;
-
-    #[test]
-    fn short_passphrase_is_rejected() {
-        assert_eq!(
-            validate_new_passphrase("shortpass", "shortpass"),
-            Err("error-passphrase-too-short")
-        );
-    }
-
-    #[test]
-    fn matching_long_passphrase_is_accepted() {
-        assert_eq!(
-            validate_new_passphrase("this-is-a-strong-passphrase", "this-is-a-strong-passphrase"),
-            Ok(())
-        );
-    }
-
-    #[test]
-    fn mismatched_passphrase_is_rejected() {
-        assert_eq!(
-            validate_new_passphrase("this-is-a-strong-passphrase", "different-passphrase"),
-            Err("error-passphrases-no-match")
-        );
-    }
-}
-
 // ── Download helper ────────────────────────────────────────────────────────
 
 fn trigger_download(filename: &str, content: &str) {
@@ -1057,4 +1028,33 @@ fn trigger_download(filename: &str, content: &str) {
     anchor.set_download(filename);
     anchor.click();
     let _ = web_sys::Url::revoke_object_url(&url);
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_new_passphrase;
+
+    #[test]
+    fn short_passphrase_is_rejected() {
+        assert_eq!(
+            validate_new_passphrase("shortpass", "shortpass"),
+            Err("error-passphrase-too-short")
+        );
+    }
+
+    #[test]
+    fn matching_long_passphrase_is_accepted() {
+        assert_eq!(
+            validate_new_passphrase("this-is-a-strong-passphrase", "this-is-a-strong-passphrase"),
+            Ok(())
+        );
+    }
+
+    #[test]
+    fn mismatched_passphrase_is_rejected() {
+        assert_eq!(
+            validate_new_passphrase("this-is-a-strong-passphrase", "different-passphrase"),
+            Err("error-passphrases-no-match")
+        );
+    }
 }

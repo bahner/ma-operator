@@ -302,7 +302,7 @@ pub(crate) fn eval_remote_crud(
                             let s = state2.clone();
                             move |msg_id| {
                                 bind_if_live(&s, cancel_epoch, || {
-                                    s.bind_message_id(cmd_id, msg_id)
+                                    s.bind_message_id(cmd_id, msg_id);
                                 });
                             }
                         },

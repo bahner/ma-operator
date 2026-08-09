@@ -20,6 +20,7 @@ mod app;
 mod config;
 mod core;
 mod dispatch;
+mod doc_link;
 mod eval;
 mod help;
 mod http;

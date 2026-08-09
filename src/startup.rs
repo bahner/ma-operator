@@ -210,6 +210,58 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
+    if let Some(manifest) = config
+        .get_untracked()
+        .get(".my.z.manifest")
+        .filter(|v| !v.trim().is_empty())
+        .map(std::string::ToString::to_string)
+    {
+        // `.my.z.manifest` is a link to a dag-cbor map of part name → CID.
+        // Populate any currently-empty `.my.z.<name>` child with a link to
+        // its part — never overwrites an existing value. Generic: driven
+        // entirely by whatever names appear in the manifest, not hardcoded.
+        match crate::doc_link::resolve_doc_link(&manifest).await {
+            Ok(crate::doc_link::ResolvedDocContent::Manifest(parts)) => {
+                let mut cfg = config.get_untracked();
+                let mut changed = false;
+                for (name, cid) in parts {
+                    let target = format!(".my.z.{name}");
+                    if cfg.get(&target).is_none_or(|v| v.trim().is_empty()) {
+                        cfg.set(&target, format!("/ipfs/{cid}"));
+                        changed = true;
+                    }
+                }
+                if changed {
+                    if let Err(e) = persist_config(&username, &cfg).await {
+                        state.push_error(tf("err-zscheme-manifest-persist", &[("e", &e)]));
+                    }
+                    config.set(cfg);
+                }
+            }
+            Ok(crate::doc_link::ResolvedDocContent::Text(_)) => {
+                state.push_error(t("err-zscheme-manifest-not-dag-cbor"));
+            }
+            Err(e) => state.push_error(tf("err-zscheme-manifest-fetch", &[("e", &e)])),
+        }
+    }
+    if !crate::scheme::seed::DEFAULT_ZSCHEME_SEED_CID.is_empty()
+        && config
+            .get_untracked()
+            .get(".my.z.scheme")
+            .is_none_or(|source| source.trim().is_empty())
+    {
+        // New user, nothing saved yet — seed with a link to the bundled
+        // default; the eval-queue check below resolves it lazily on first use.
+        let mut cfg = config.get_untracked();
+        cfg.set(
+            ".my.z.scheme",
+            format!("/ipfs/{}", crate::scheme::seed::DEFAULT_ZSCHEME_SEED_CID),
+        );
+        if let Err(e) = persist_config(&username, &cfg).await {
+            state.push_error(tf("err-zscheme-seed-persist", &[("e", &e)]));
+        }
+        config.set(cfg);
+    }
     if config
         .get_untracked()
         .get(".my.z.scheme")

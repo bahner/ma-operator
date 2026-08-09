@@ -152,13 +152,12 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                 gloo_timers::future::TimeoutFuture::new(50).await;
             };
 
-            let stream = match crate::views::qr::open_camera(&video).await {
-                Ok(s) => s,
-                Err(_) => {
-                    scan_feedback.set("capture-error");
-                    scanning.set(false);
-                    return;
-                }
+            let stream = if let Ok(s) = crate::views::qr::open_camera(&video).await {
+                s
+            } else {
+                scan_feedback.set("capture-error");
+                scanning.set(false);
+                return;
             };
 
             let mut native_detector = crate::views::qr::NativeQrDetector::new();

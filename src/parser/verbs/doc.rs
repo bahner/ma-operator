@@ -70,7 +70,9 @@ fn doc_edit(
 
 /// `:eval` — execute saved content as an ordinary Zion script.
 ///
-/// The editor callback submits it through the same path as a multi-line paste.
+/// A link value (bare CID, or `/ipfs/`/`/ipld/`-prefixed) is fetched and
+/// resolved before evaluation; literal content evaluates unchanged. The
+/// editor callback submits it through the same path as a multi-line paste.
 fn doc_eval(
     path: &str,
     state: &AppState,
@@ -86,7 +88,25 @@ fn doc_eval(
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
     state.push_command_done(format!("{path}!eval"));
-    on_eval.run(content);
+    // Literal content stays fully synchronous, unchanged from before link
+    // resolution existed. Only a recognised link value needs a fetch.
+    if crate::doc_link::parse_link_cid(&content).is_none() {
+        on_eval.run(content);
+        return Ok(());
+    }
+    let state2 = state.clone();
+    let path2 = path.to_string();
+    leptos::task::spawn_local(async move {
+        match crate::doc_link::resolve_doc_link(&content).await {
+            Ok(crate::doc_link::ResolvedDocContent::Text(text)) => on_eval.run(text),
+            Ok(crate::doc_link::ResolvedDocContent::Manifest(_)) => {
+                state2.push_error(tf("doc-eval-manifest", &[("path", &path2)]));
+            }
+            Err(e) => {
+                state2.push_error(tf("doc-link-fetch-failed", &[("path", &path2), ("e", &e)]));
+            }
+        }
+    });
     Ok(())
 }
 
