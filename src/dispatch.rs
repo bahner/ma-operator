@@ -57,7 +57,7 @@ pub async fn run_dispatch_loop(
         //    sends to different targets run in parallel while sends to the
         //    same target queue up inside ma-core without blocking others.
         loop {
-            let next_task = state.outbox_queue.update_untracked(|q| q.pop_front());
+            let next_task = state.outbox_queue.update_untracked(std::collections::VecDeque::pop_front);
             match next_task {
                 None => break,
                 Some(task) => {
@@ -73,7 +73,7 @@ pub async fn run_dispatch_loop(
 
 // ── TTL expiry ────────────────────────────────────────────────────────────
 
-/// Expire all pending requests that have exceeded their TTL (all PendingKind variants).
+/// Expire all pending requests that have exceeded their TTL (all `PendingKind` variants).
 /// Uses the owning batch's `timeout_ms` when available; falls back to
 /// `DEFAULT_TIMEOUT_MS` for standalone (non-batch) requests.
 /// Called every tick from the dispatch loop — no JS callbacks involved.
@@ -86,10 +86,10 @@ fn expire_pending_requests(state: &AppState) {
     let expired: Vec<(String, PendingKind)> = state.pending_requests.with_untracked(|m| {
         m.iter()
             .filter_map(|(msg_id, tr)| {
-                let timeout_ms = tr
+                let timeout_ms = f64::from(tr
                     .batch_id
                     .and_then(|bid| batch_timeouts.get(&bid).copied())
-                    .unwrap_or(DEFAULT_TIMEOUT_MS) as f64;
+                    .unwrap_or(DEFAULT_TIMEOUT_MS));
                 if now - tr.sent_at_ms > timeout_ms {
                     log::debug!(
                         "[pending] expire msg_id={} kind={:?} age={:.0}ms ttl={:.0}ms",
@@ -113,13 +113,12 @@ fn expire_pending_requests(state: &AppState) {
             .update_untracked(|m| m.remove(&msg_id));
         let cmd_id_opt = kind.cmd_id();
         if let Some(cmd_id) = cmd_id_opt {
-            log::debug!("[pending] failing cmd_id={} due to TTL expiry", cmd_id);
+            log::debug!("[pending] failing cmd_id={cmd_id} due to TTL expiry");
             state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("msg-timeout")));
             state.push_error(t("msg-timeout"));
         } else {
             log::debug!(
-                "[pending] silently dropped expired entry msg_id={} (no cmd_id)",
-                msg_id
+                "[pending] silently dropped expired entry msg_id={msg_id} (no cmd_id)"
             );
         }
     }
@@ -132,14 +131,14 @@ fn expire_pending_requests(state: &AppState) {
     }
     // Also expire stuck Scheme RPC senders so awaiting evaluator tasks can
     // return (:timeout) rather than blocking forever.
-    state.expire_scheme_senders(DEFAULT_TIMEOUT_MS as f64);
+    state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS));
 }
 
 fn expire_pending_enter(state: &AppState, now: f64) {
     let expired = state.pending_enter.with_untracked(|pending| {
         pending
             .as_ref()
-            .filter(|pending| now - pending.issued_at_ms > DEFAULT_TIMEOUT_MS as f64)
+            .filter(|pending| now - pending.issued_at_ms > f64::from(DEFAULT_TIMEOUT_MS))
             .cloned()
     });
     let Some(pending) = expired else {
@@ -242,7 +241,7 @@ fn is_batch_delimiter_line(line: &str) -> bool {
 
 fn save_line_to_history(line: &str, state: &AppState) {
     state.history.update(|h| {
-        if h.last().map(|s| s.as_str()) != Some(line) {
+        if h.last().map(std::string::String::as_str) != Some(line) {
             h.push(line.to_string());
         }
         if h.len() > 200 {
@@ -396,8 +395,7 @@ fn close_batch(
 ) {
     let (mode, is_empty) = state.batches.with_untracked(|b| {
         b.get(&batch_id)
-            .map(|ab| (ab.mode.clone(), ab.lines.is_empty()))
-            .unwrap_or((BatchMode::Sync, true))
+            .map_or((BatchMode::Sync, true), |ab| (ab.mode.clone(), ab.lines.is_empty()))
     });
 
     if is_empty {
@@ -465,8 +463,7 @@ fn advance_sync_batches(
     for batch_id in ready {
         let should_break = state.batches.with_untracked(|b| {
             b.get(&batch_id)
-                .map(|ab| ab.had_error && ab.on_error == OnError::Break)
-                .unwrap_or(false)
+                .is_some_and(|ab| ab.had_error && ab.on_error == OnError::Break)
         });
         if should_break {
             let had_error = true;
@@ -497,7 +494,7 @@ fn advance_sync_batches(
 /// Dispatch the next pending line of a sync batch.
 ///
 /// Loops for consecutive dot commands (which complete synchronously without
-/// creating a pending cmd_id) so they don't stall for a full 50 ms tick.
+/// creating a pending `cmd_id`) so they don't stall for a full 50 ms tick.
 fn advance_sync_batch_step(
     batch_id: u64,
     state: &AppState,
@@ -509,8 +506,7 @@ fn advance_sync_batch_step(
         // Break on error if configured.
         let should_break = state.batches.with_untracked(|b| {
             b.get(&batch_id)
-                .map(|ab| ab.had_error && ab.on_error == OnError::Break)
-                .unwrap_or(false)
+                .is_some_and(|ab| ab.had_error && ab.on_error == OnError::Break)
         });
         if should_break {
             finish_batch(batch_id, state, true);
@@ -524,7 +520,7 @@ fn advance_sync_batch_step(
             // All lines dispatched — finalise.
             let had_error = state
                 .batches
-                .with_untracked(|b| b.get(&batch_id).map(|ab| ab.had_error).unwrap_or(false));
+                .with_untracked(|b| b.get(&batch_id).is_some_and(|ab| ab.had_error));
             finish_batch(batch_id, state, had_error);
             return;
         };
@@ -536,8 +532,7 @@ fn advance_sync_batch_step(
             // @-command — wait for its reply.
             let timeout_ms = state.batches.with_untracked(|b| {
                 b.get(&batch_id)
-                    .map(|ab| ab.timeout_ms)
-                    .unwrap_or(DEFAULT_TIMEOUT_MS)
+                    .map_or(DEFAULT_TIMEOUT_MS, |ab| ab.timeout_ms)
             });
             state.batches.update(|b| {
                 if let Some(ab) = b.get_mut(&batch_id) {
@@ -549,8 +544,7 @@ fn advance_sync_batch_step(
             gloo_timers::callback::Timeout::new(timeout_ms, move || {
                 let still_waiting = state2.batches.with_untracked(|b| {
                     b.get(&batch_id)
-                        .map(|ab| ab.sync_cmd_id == Some(cmd_id))
-                        .unwrap_or(false)
+                        .is_some_and(|ab| ab.sync_cmd_id == Some(cmd_id))
                 });
                 if still_waiting {
                     state2.push_error(t("batch-step-timeout"));
@@ -612,7 +606,7 @@ fn finish_batch(batch_id: u64, state: &AppState, had_error: bool) {
         CommandStatus::Done
     };
     state.entries.with_untracked(|v| {
-        for entry in v.iter() {
+        for entry in v {
             if let crate::core::Entry::Command(c) = entry {
                 if c.id == ab.header_cmd_id {
                     c.status.set(status);
@@ -632,7 +626,7 @@ fn finish_batch(batch_id: u64, state: &AppState, had_error: bool) {
 /// entry (i.e. an @-message), or `None` for dot commands and local-only
 /// operations.
 ///
-/// When `batch_id` is `Some`, registers the new cmd_id in `cmd_to_batch` so
+/// When `batch_id` is `Some`, registers the new `cmd_id` in `cmd_to_batch` so
 /// `resolve_command_by_id` can advance the batch when the reply arrives.
 fn dispatch_eval_line(
     line: &str,
@@ -658,7 +652,7 @@ fn dispatch_eval_line(
             if is_actor {
                 log::debug!(
                     "[dispatch] actor eval: before={before} after={after} queue_len={}",
-                    state.outbox_queue.with_untracked(|q| q.len())
+                    state.outbox_queue.with_untracked(std::collections::VecDeque::len)
                 );
             }
             if after > before {
