@@ -227,7 +227,9 @@ impl EgoConfig {
                 continue;
             }
             let did_url = &rest[pos..pos + token_len];
-            if let Some(alias) = self.alias_display(did_url) { out.push_str(&alias) } else {
+            if let Some(alias) = self.alias_display(did_url) {
+                out.push_str(&alias)
+            } else {
                 if actor_ref {
                     out.push('@');
                 }
@@ -496,7 +498,8 @@ impl DotRegistry for EgoConfig {
     }
 
     fn resolve_alias(&self, name: &str) -> Option<String> {
-        EgoConfig::resolve_alias(self, name.trim_start_matches('@')).map(std::string::ToString::to_string)
+        EgoConfig::resolve_alias(self, name.trim_start_matches('@'))
+            .map(std::string::ToString::to_string)
     }
 
     fn is_read_only(&self, path: &str) -> bool {

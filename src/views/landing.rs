@@ -314,7 +314,9 @@ pub fn Landing() -> impl IntoView {
 
             // ── Import ────────────────────────────────────────────────────
             if current_mode == Mode::Import {
-                let p = if let Some(p) = parsed.get_untracked() { p } else {
+                let p = if let Some(p) = parsed.get_untracked() {
+                    p
+                } else {
                     error.set(t("error-profile-source-required"));
                     return;
                 };
@@ -398,7 +400,9 @@ pub fn Landing() -> impl IntoView {
                                         }
                                     }
                                 }
-                                if let Some(profile_cid) = crate::parser::verbs::doc_profile_cid(&doc) {
+                                if let Some(profile_cid) =
+                                    crate::parser::verbs::doc_profile_cid(&doc)
+                                {
                                     match crate::http::fetch_cid_bytes(&profile_cid).await {
                                         Ok(cbor) => {
                                             let profile_key = profile_crypto::derive_key(&pass);
@@ -425,13 +429,9 @@ pub fn Landing() -> impl IntoView {
                                                     .get("username")?
                                                     .as_str()?
                                                     .to_string();
-                                                let id_json = match profile_val
-                                                    .get("identity")?
-                                                {
+                                                let id_json = match profile_val.get("identity")? {
                                                     serde_json::Value::String(s) => s.clone(),
-                                                    other => {
-                                                        serde_json::to_string(other).ok()?
-                                                    }
+                                                    other => serde_json::to_string(other).ok()?,
                                                 };
                                                 let cfg_json = {
                                                     let mut tmp = EgoConfig::new();
@@ -442,15 +442,11 @@ pub fn Landing() -> impl IntoView {
                                                 Some((username, id_json, cfg_json))
                                             });
                                             if let Some((pname, id_json, cfg_opt)) = parsed_opt {
-                                                match unlock_identity_migrating(
-                                                    &id_json, &pass,
-                                                ) {
+                                                match unlock_identity_migrating(&id_json, &pass) {
                                                     Ok((id, migrated)) => {
                                                         if let Err(e) = save_identity(
                                                             &pname,
-                                                            migrated
-                                                                .as_deref()
-                                                                .unwrap_or(&id_json),
+                                                            migrated.as_deref().unwrap_or(&id_json),
                                                         )
                                                         .await
                                                         {
@@ -459,14 +455,10 @@ pub fn Landing() -> impl IntoView {
                                                             return;
                                                         }
                                                         if let Some(cfg) = cfg_opt {
-                                                            let _ =
-                                                                save_config(&pname, &cfg)
-                                                                    .await;
+                                                            let _ = save_config(&pname, &cfg).await;
                                                         }
                                                         status.set(String::new());
-                                                        finish_login(
-                                                            id, pname, pass, state2,
-                                                        );
+                                                        finish_login(id, pname, pass, state2);
                                                     }
                                                     Err(e) => {
                                                         status.set(String::new());
@@ -623,7 +615,9 @@ pub fn Landing() -> impl IntoView {
                     break;
                 }
                 let scan_result = if let Some(detector) = native_detector.as_ref() {
-                    if let Ok(result) = detector.decode(&video).await { result } else {
+                    if let Ok(result) = detector.decode(&video).await {
+                        result
+                    } else {
                         native_detector = None;
                         crate::views::qr::try_decode_frame(&video)
                     }

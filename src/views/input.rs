@@ -202,7 +202,8 @@ pub fn InputBar(
 
     let prompt_text = move || {
         focus_actor
-            .get().map_or_else(|| "› ".to_string(), |focus| format!("{}› ", focus.prompt))
+            .get()
+            .map_or_else(|| "› ".to_string(), |focus| format!("{}› ", focus.prompt))
     };
 
     let prompt_class = move || {

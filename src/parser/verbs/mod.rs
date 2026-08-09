@@ -11,7 +11,7 @@ mod scheme;
 
 use crate::config::EgoConfig;
 use crate::i18n::tf;
-use crate::state::AppState;
+use crate::state::{AppState, QrIntent};
 use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 use ma_core::Ipld;
@@ -64,6 +64,26 @@ pub fn dispatch_meta(
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
+    if verb == "qr" {
+        if !path.starts_with(".my.") {
+            return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
+        }
+        let cfg = config.get_untracked();
+        if EgoConfig::is_read_only(path) {
+            return Err(tf("msg-read-only", &[("path", path)]));
+        }
+        if cfg.has_children(path) {
+            return Err(tf("msg-subtree-set", &[("path", path)]));
+        }
+        if cfg.has_leaf_ancestor(path) {
+            return Err(tf("msg-ancestor-leaf", &[("path", path)]));
+        }
+        state.qr_intent.set(Some(QrIntent::Capture {
+            path: path.to_string(),
+        }));
+        return Ok(());
+    }
+
     if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") {
         return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
     }
@@ -98,7 +118,10 @@ pub fn dispatch_meta(
     }
     // Scheme function call: any other verb on a leaf path.
     let content = if has_content {
-        config.get_untracked().get(path).map(std::string::ToString::to_string)
+        config
+            .get_untracked()
+            .get(path)
+            .map(std::string::ToString::to_string)
     } else {
         None
     };

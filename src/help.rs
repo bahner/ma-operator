@@ -102,6 +102,7 @@ fn my() -> Vec<String> {
         t("help-aliases"),
         t("help-aliases-set"),
         t("help-aliases-del"),
+        t("help-aliases-qr"),
         String::new(),
         t("help-runtime-discover"),
         String::new(),

@@ -76,6 +76,11 @@ pub struct PendingEnter {
     pub visible: bool,
 }
 
+#[derive(Clone, Debug, PartialEq)]
+pub enum QrIntent {
+    Capture { path: String },
+}
+
 // ── Pending request kinds ─────────────────────────────────────────────────
 
 /// Unified tag for every in-flight outgoing message.  Keyed by
@@ -250,6 +255,8 @@ pub struct AppState {
     /// Runtime DID or HTTP URL from the landing page runtime field (`?ma=` or user entry).
     /// Consumed once by `startup_connect` to auto-connect after login.
     pub startup_ma: RwSignal<Option<String>>,
+    /// Terminal QR intent opened by `.my.*!qr`.
+    pub qr_intent: RwSignal<Option<QrIntent>>,
     /// FIFO queue of raw input lines waiting to be dispatched.
     pub input_queue: RwSignal<VecDeque<String>>,
     /// Incomplete Scheme input retained until all opened parentheses close.
@@ -283,6 +290,7 @@ impl AppState {
             prefill_input: RwSignal::new(None),
             startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
+            qr_intent: RwSignal::new(None),
             input_queue: RwSignal::new(VecDeque::new()),
             multiline_input: RwSignal::new(String::new()),
             batches: RwSignal::new(HashMap::new()),
@@ -311,7 +319,9 @@ impl AppState {
         self.input_queue.update(std::collections::VecDeque::clear);
         self.multiline_input.set(String::new());
         self.outbox_queue.update(std::collections::VecDeque::clear);
-        self.pending_requests.update(std::collections::HashMap::clear);
+        self.pending_requests
+            .update(std::collections::HashMap::clear);
+        self.qr_intent.set(None);
         self.pending_enter.set(None);
         self.ctx_recovery_runtime.set(None);
         self.batches.update(std::collections::HashMap::clear);

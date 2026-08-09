@@ -309,10 +309,7 @@ fn startup_enter_publish_did(
     } else {
         raw.split_once('@')?.1
     };
-    let runtime = target
-        .split_once('#')
-        .map_or(target, |(did, _)| did)
-        .trim();
+    let runtime = target.split_once('#').map_or(target, |(did, _)| did).trim();
     if runtime.starts_with("did:ma:") {
         return Some(runtime.to_string());
     }

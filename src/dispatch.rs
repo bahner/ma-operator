@@ -57,7 +57,9 @@ pub async fn run_dispatch_loop(
         //    sends to different targets run in parallel while sends to the
         //    same target queue up inside ma-core without blocking others.
         loop {
-            let next_task = state.outbox_queue.update_untracked(std::collections::VecDeque::pop_front);
+            let next_task = state
+                .outbox_queue
+                .update_untracked(std::collections::VecDeque::pop_front);
             match next_task {
                 None => break,
                 Some(task) => {
@@ -86,10 +88,11 @@ fn expire_pending_requests(state: &AppState) {
     let expired: Vec<(String, PendingKind)> = state.pending_requests.with_untracked(|m| {
         m.iter()
             .filter_map(|(msg_id, tr)| {
-                let timeout_ms = f64::from(tr
-                    .batch_id
-                    .and_then(|bid| batch_timeouts.get(&bid).copied())
-                    .unwrap_or(DEFAULT_TIMEOUT_MS));
+                let timeout_ms = f64::from(
+                    tr.batch_id
+                        .and_then(|bid| batch_timeouts.get(&bid).copied())
+                        .unwrap_or(DEFAULT_TIMEOUT_MS),
+                );
                 if now - tr.sent_at_ms > timeout_ms {
                     log::debug!(
                         "[pending] expire msg_id={} kind={:?} age={:.0}ms ttl={:.0}ms",
@@ -117,9 +120,7 @@ fn expire_pending_requests(state: &AppState) {
             state.resolve_command_by_id(cmd_id, CommandStatus::Error(t("msg-timeout")));
             state.push_error(t("msg-timeout"));
         } else {
-            log::debug!(
-                "[pending] silently dropped expired entry msg_id={msg_id} (no cmd_id)"
-            );
+            log::debug!("[pending] silently dropped expired entry msg_id={msg_id} (no cmd_id)");
         }
     }
     if should_reconnect {
@@ -394,8 +395,9 @@ fn close_batch(
     on_eval: Callback<String>,
 ) {
     let (mode, is_empty) = state.batches.with_untracked(|b| {
-        b.get(&batch_id)
-            .map_or((BatchMode::Sync, true), |ab| (ab.mode.clone(), ab.lines.is_empty()))
+        b.get(&batch_id).map_or((BatchMode::Sync, true), |ab| {
+            (ab.mode.clone(), ab.lines.is_empty())
+        })
     });
 
     if is_empty {
@@ -652,7 +654,9 @@ fn dispatch_eval_line(
             if is_actor {
                 log::debug!(
                     "[dispatch] actor eval: before={before} after={after} queue_len={}",
-                    state.outbox_queue.with_untracked(std::collections::VecDeque::len)
+                    state
+                        .outbox_queue
+                        .with_untracked(std::collections::VecDeque::len)
                 );
             }
             if after > before {

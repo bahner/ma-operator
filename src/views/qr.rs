@@ -24,8 +24,18 @@ pub enum QrScanResult {
     Decoded(Vec<u8>),
 }
 
-pub fn did_payload(bytes: &[u8]) -> Option<String> {
+pub fn text_payload(bytes: &[u8]) -> Option<String> {
     let value = std::str::from_utf8(bytes).ok()?.trim();
+    if value.is_empty() {
+        None
+    } else {
+        Some(value.to_string())
+    }
+}
+
+pub fn did_payload(bytes: &[u8]) -> Option<String> {
+    let value = text_payload(bytes)?;
+    let value = value.as_str();
     if value.contains('#') || ma_core::Did::try_from(value).is_err() {
         return None;
     }
@@ -198,7 +208,13 @@ pub fn try_decode_frame(video: &HtmlVideoElement) -> QrScanResult {
         return QrScanResult::CaptureError;
     };
     if ctx
-        .draw_image_with_html_video_element_and_dw_and_dh(video, 0.0, 0.0, f64::from(w), f64::from(h))
+        .draw_image_with_html_video_element_and_dw_and_dh(
+            video,
+            0.0,
+            0.0,
+            f64::from(w),
+            f64::from(h),
+        )
         .is_err()
     {
         return QrScanResult::CaptureError;
@@ -336,5 +352,16 @@ mod tests {
         assert_eq!(did_payload(did.as_bytes()), Some(did.clone()));
         assert!(did_payload(format!("{did}#room").as_bytes()).is_none());
         assert!(did_payload(b"hello").is_none());
+    }
+
+    #[test]
+    fn text_payload_trims_and_rejects_empty() {
+        assert_eq!(text_payload(b"  hello  "), Some("hello".to_string()));
+        assert_eq!(text_payload(b"   \n\t  "), None);
+    }
+
+    #[test]
+    fn text_payload_rejects_non_utf8() {
+        assert_eq!(text_payload(&[0xff, 0xfe]), None);
     }
 }

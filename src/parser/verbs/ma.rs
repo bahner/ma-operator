@@ -282,7 +282,9 @@ pub(crate) async fn connect_ma_runtime(
             return outcome;
         }
 
-        let did = if let Ok(did) = rediscover_ma(&ma_base, config).await { did } else {
+        let did = if let Ok(did) = rediscover_ma(&ma_base, config).await {
+            did
+        } else {
             if !options.quiet_local_probe {
                 state.push_error(tf(
                     "msg-local-ma-unreachable",
@@ -400,7 +402,8 @@ async fn ping_and_publish_fallback(
             log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
-    if let Ok(()) = ping_runtime(state, &did).await {} else {
+    if let Ok(()) = ping_runtime(state, &did).await {
+    } else {
         state.push_error(tf(
             "msg-runtime-ping-timeout",
             &[
@@ -522,7 +525,9 @@ pub(crate) async fn do_publish(
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
 ) -> bool {
-    let username = if let Some(u) = state.session.get_untracked().map(|s| s.username.clone()) { u } else {
+    let username = if let Some(u) = state.session.get_untracked().map(|s| s.username.clone()) {
+        u
+    } else {
         state.push_error(t("msg-not-logged-in"));
         return false;
     };
@@ -564,7 +569,11 @@ pub(crate) async fn do_publish(
             return false;
         }
     };
-    let profile_key = if let Some(key) = crate::state::SESSION_PROFILE_KEY.with(|k| k.borrow().as_ref().copied()) { key } else {
+    let profile_key = if let Some(key) =
+        crate::state::SESSION_PROFILE_KEY.with(|k| k.borrow().as_ref().copied())
+    {
+        key
+    } else {
         state.push_error(tf(
             "profile-publish-failed",
             &[("e", "missing profile encryption key for this session")],
@@ -644,7 +653,10 @@ pub(crate) async fn rediscover_ma(
         .get("rpc_requests")
         .and_then(serde_json::Value::as_u64)
         .unwrap_or(0);
-    let started_at = json.get("started_at").and_then(serde_json::Value::as_u64).unwrap_or(0);
+    let started_at = json
+        .get("started_at")
+        .and_then(serde_json::Value::as_u64)
+        .unwrap_or(0);
     let uptime_secs = json
         .get("uptime_secs")
         .and_then(serde_json::Value::as_u64)
@@ -765,7 +777,8 @@ mod tests {
         let bundle = SecretBundle::generate();
         let ma = match profile_cid {
             Some(cid) => {
-                let profile = cid::Cid::try_from(cid).map_or_else(|_| Ipld::String(cid.to_string()), Ipld::Link);
+                let profile = cid::Cid::try_from(cid)
+                    .map_or_else(|_| Ipld::String(cid.to_string()), Ipld::Link);
                 MaExtension::new().kind("agent").extra("profile", profile)
             }
             None => MaExtension::new().kind("agent"),

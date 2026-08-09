@@ -428,3 +428,7 @@ label-local-ipfs = Kohalik IPFS-lüüs (vajab brauseri erandit)
 
 tab-config = Seaded
 label-gateway = gateway
+help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
+
+passphrase-placeholder = This password is your only defense against the Dark Arts!
+error-passphrase-too-short = passphrase must be at least 20 characters

@@ -2,6 +2,7 @@
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::spawn_local;
+use web_sys::MouseEvent;
 
 use crate::{
     config::EgoConfig,
@@ -9,7 +10,7 @@ use crate::{
     dispatch::run_dispatch_loop,
     inbox_poll::run_inbox_poll,
     startup::{startup_connect, startup_load_config, startup_load_history},
-    state::AppState,
+    state::{AppState, QrIntent},
     views::editor::{EditorContext, EditorModal},
 };
 
@@ -101,6 +102,7 @@ pub fn Terminal() -> impl IntoView {
              class:placement-left=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "left"
              class:placement-right=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "right"
         >
+            <QrOverlay state=state.clone()/>
             <OutputPane state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>
             <crate::views::input::InputBar
@@ -115,6 +117,172 @@ pub fn Terminal() -> impl IntoView {
 }
 
 // ── Output pane ────────────────────────────────────────────────────────────
+
+#[component]
+fn QrOverlay(state: AppState) -> impl IntoView {
+    let lang = state.lang;
+    let qr_intent = state.qr_intent;
+    let scan_feedback = RwSignal::new("searching");
+    let scan_frames = RwSignal::new(0_u32);
+    let scanning = RwSignal::new(false);
+    let video_ref = NodeRef::<leptos::html::Video>::new();
+
+    Effect::new(move |_| {
+        let is_capture = matches!(qr_intent.get(), Some(QrIntent::Capture { .. }));
+        if !is_capture || scanning.get_untracked() {
+            return;
+        }
+        scanning.set(true);
+        scan_feedback.set("searching");
+        scan_frames.set(0);
+
+        let state2 = state.clone();
+        leptos::task::spawn_local(async move {
+            let video = loop {
+                if !matches!(
+                    state2.qr_intent.get_untracked(),
+                    Some(QrIntent::Capture { .. })
+                ) {
+                    scanning.set(false);
+                    return;
+                }
+                if let Some(v) = video_ref.get_untracked() {
+                    break v;
+                }
+                gloo_timers::future::TimeoutFuture::new(50).await;
+            };
+
+            let stream = match crate::views::qr::open_camera(&video).await {
+                Ok(s) => s,
+                Err(_) => {
+                    scan_feedback.set("capture-error");
+                    scanning.set(false);
+                    return;
+                }
+            };
+
+            let mut native_detector = crate::views::qr::NativeQrDetector::new();
+            loop {
+                if !matches!(
+                    state2.qr_intent.get_untracked(),
+                    Some(QrIntent::Capture { .. })
+                ) {
+                    break;
+                }
+
+                let scan_result = if let Some(detector) = native_detector.as_ref() {
+                    if let Ok(result) = detector.decode(&video).await {
+                        result
+                    } else {
+                        native_detector = None;
+                        crate::views::qr::try_decode_frame(&video)
+                    }
+                } else {
+                    crate::views::qr::try_decode_frame(&video)
+                };
+
+                match scan_result {
+                    crate::views::qr::QrScanResult::WaitingForVideo => {
+                        scan_feedback.set("waiting");
+                    }
+                    crate::views::qr::QrScanResult::CaptureError => {
+                        scan_feedback.set("capture-error");
+                    }
+                    crate::views::qr::QrScanResult::NoCode => {
+                        let frame = scan_frames.get_untracked().wrapping_add(1);
+                        scan_frames.set(frame);
+                        scan_feedback.set(if frame.is_multiple_of(2) {
+                            "searching phase-a"
+                        } else {
+                            "searching phase-b"
+                        });
+                    }
+                    crate::views::qr::QrScanResult::Unreadable => {
+                        scan_frames.update(|frame| *frame = frame.wrapping_add(1));
+                        scan_feedback.set("unreadable");
+                    }
+                    crate::views::qr::QrScanResult::Decoded(bytes) => {
+                        scan_frames.update(|frame| *frame = frame.wrapping_add(1));
+                        scan_feedback.set("decoded");
+
+                        if let Some(payload) = crate::views::qr::text_payload(&bytes) {
+                            let payload = payload.replace(['\n', '\r'], " ");
+                            if let Some(QrIntent::Capture { path }) =
+                                state2.qr_intent.get_untracked()
+                            {
+                                state2
+                                    .input_queue
+                                    .update(|q| q.push_back(format!("{path}: {payload}")));
+                            }
+                            state2.qr_intent.set(None);
+                            break;
+                        }
+
+                        scan_feedback.set("unreadable");
+                    }
+                }
+                gloo_timers::future::TimeoutFuture::new(300).await;
+            }
+
+            crate::views::qr::close_camera(&stream);
+            video.set_src_object(None);
+            scanning.set(false);
+        });
+    });
+
+    let close_overlay = move |_: MouseEvent| {
+        qr_intent.set(None);
+    };
+
+    view! {
+        <Show when=move || qr_intent.get().is_some()>
+            <div class="qr-export-overlay" role="dialog" aria-modal="true">
+                <div class="qr-export-content">
+                    <p class="qr-export-did">{move || match qr_intent.get() {
+                        Some(QrIntent::Capture { path }) => path,
+                        None => String::new(),
+                    }}</p>
+
+                    <div class="qr-panel">
+                        <div class=move || format!("qr-video-frame {}", scan_feedback.get())>
+                            <video
+                                node_ref=video_ref
+                                class="qr-video"
+                                autoplay=""
+                                muted=""
+                                playsinline=""
+                            ></video>
+                            <span class="qr-scan-marker" aria-hidden="true"></span>
+                        </div>
+                        <p class=move || format!("qr-scan-status {}", scan_feedback.get())>
+                            {move || {
+                                let _ = lang.get();
+                                crate::i18n::t("qr-scan-hint")
+                            }}
+                            <span class="qr-scan-stats">
+                                {move || format!(
+                                    "{}×{} · {}",
+                                    video_ref.get().map_or(0, |video| video.video_width()),
+                                    video_ref.get().map_or(0, |video| video.video_height()),
+                                    scan_frames.get(),
+                                )}
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="btn-row">
+                        <button class="btn" on:click=close_overlay>
+                            {move || {
+                                let _ = lang.get();
+                                crate::i18n::t("btn-close")
+                            }}
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </Show>
+    }
+}
 
 #[component]
 fn OutputPane(state: AppState) -> impl IntoView {

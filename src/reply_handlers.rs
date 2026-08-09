@@ -118,10 +118,7 @@ fn ipfs_ref_from_store_reply(reply: &str) -> String {
 
 fn crud_link_fetch_path(value: &str) -> Option<String> {
     let cid = value.trim();
-    if cid.starts_with('b')
-        && Cid::try_from(cid)
-            .is_ok_and(|cid| cid.version() == Version::V1)
-    {
+    if cid.starts_with('b') && Cid::try_from(cid).is_ok_and(|cid| cid.version() == Version::V1) {
         Some(format!("/ipfs/{cid}"))
     } else {
         None
@@ -218,7 +215,8 @@ pub(crate) fn handle_edit_open_reply(
     } = *ctx;
     // Resolve alias: show @sky/path instead of @did:ma:.../path in the editor toolbar.
     let display_target = config.with_untracked(|c| {
-        c.reverse_alias(&target).map_or_else(|| target.clone(), std::string::ToString::to_string)
+        c.reverse_alias(&target)
+            .map_or_else(|| target.clone(), std::string::ToString::to_string)
     });
     let save_to = format!("@{display_target}{crud_path}");
     // For KindEdit, show just the crud_path (e.g. /kinds/ma/avatar/0.0.1) as title.

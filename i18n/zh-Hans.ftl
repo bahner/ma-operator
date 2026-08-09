@@ -434,3 +434,7 @@ label-local-ipfs = 本地 IPFS 网关（需要浏览器例外）
 
 tab-config = 设置
 label-gateway = gateway
+help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
+
+passphrase-placeholder = This password is your only defense against the Dark Arts!
+error-passphrase-too-short = passphrase must be at least 20 characters

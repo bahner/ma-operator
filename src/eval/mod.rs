@@ -104,12 +104,13 @@ async fn resolve_and_traverse(
 ) {
     // Check cache first.
     let cached = cache.with_untracked(|m| m.get(link).cloned());
-    let doc = if let Some(v) = cached { v } else {
+    let doc = if let Some(v) = cached {
+        v
+    } else {
         let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
             // Use the session resolver — it owns the gateway URL, has a
             // positive cache, and falls back to public gateways automatically.
-            let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-            else {
+            let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone()) else {
                 state.push_error(t("msg-link-not-connected"));
                 return;
             };
@@ -121,9 +122,7 @@ async fn resolve_and_traverse(
         } else {
             // Bare CID (IPLD link value) — fetch from local gateway.
             match crate::http::fetch_cid_text(link).await {
-                Ok(t) => {
-                    serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
-                }
+                Ok(t) => serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string()),
                 Err(e) => Err(e),
             }
         };
@@ -144,7 +143,9 @@ async fn resolve_and_traverse(
     // Traverse subpath keys into the JSON document.
     let mut cur = &doc;
     for key in subpath.split(['/', '.']) {
-        if let Some(v) = cur.get(key) { cur = v } else {
+        if let Some(v) = cur.get(key) {
+            cur = v
+        } else {
             state.push_error(tf("msg-link-key-not-found", &[("key", key)]));
             return;
         }
@@ -347,8 +348,10 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             state2.resolve_command_by_id(cmd_id, CommandStatus::Error("cancelled".to_string()));
             return;
         }
-        let (entry_runtime, requested_room) = target_actor
-            .split_once('#').map_or_else(|| (target_actor.clone(), None), |(runtime, _)| (runtime.to_string(), Some(target_actor.clone())));
+        let (entry_runtime, requested_room) = target_actor.split_once('#').map_or_else(
+            || (target_actor.clone(), None),
+            |(runtime, _)| (runtime.to_string(), Some(target_actor.clone())),
+        );
 
         if let Some(room_actor) = requested_room.as_ref() {
             if state2.was_cancelled_since(cancel_epoch) {
@@ -524,7 +527,8 @@ fn build_enter_ctx(
 ) -> SchemeVal {
     let username = state
         .session
-        .get_untracked().map_or_else(|| "traveler".to_string(), |s| s.username);
+        .get_untracked()
+        .map_or_else(|| "traveler".to_string(), |s| s.username);
     let name = trim_or_fallback(
         cfg.get(".my.profile.name")
             .map(str::to_string)
@@ -805,7 +809,8 @@ fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
         .or_else(|| cfg.get(".my.ctx.alias"))
         .unwrap_or_default();
     let base = cfg
-        .reverse_alias(runtime).map_or_else(|| format!("@{runtime}"), |a| format!("@{a}"));
+        .reverse_alias(runtime)
+        .map_or_else(|| format!("@{runtime}"), |a| format!("@{a}"));
     if nick.is_empty() {
         base
     } else {
