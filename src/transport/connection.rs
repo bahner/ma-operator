@@ -13,9 +13,9 @@ use crate::i18n::tf;
 use crate::messages::{format_crud_reply, format_incoming, format_rpc_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
-    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LOCAL_IPFS,
-    SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID,
-    SESSION_SIGNING_KEY,
+    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LIVE_INBOX,
+    SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX,
+    SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -24,6 +24,7 @@ use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
 const SEND_TIMEOUT_MS: u32 = 10_000;
+pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 
 use log::info;
 
@@ -88,6 +89,7 @@ pub async fn connect(
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
     let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
     let crud_inbox = endpoint.service(CRUD_PROTOCOL_ID);
+    let live_inbox = endpoint.service(LIVE_PROTOCOL_ID);
     let ep: Rc<dyn ma_core::MaEndpoint> = Rc::from(endpoint);
     let endpoint_id = ep.id();
     web_sys::console::info_1(
@@ -99,6 +101,7 @@ pub async fn connect(
     SESSION_INBOX.with(|i| *i.borrow_mut() = Some(inbox));
     SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = Some(rpc_inbox));
     SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = Some(crud_inbox));
+    SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = Some(live_inbox));
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = Some(did_signing_key));
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
@@ -117,6 +120,7 @@ pub fn disconnect() {
     SESSION_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = None);
+    SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
@@ -187,6 +191,24 @@ pub async fn send_text(target_did: &str, text: &str) -> Result<String, String> {
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
     send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
+    Ok(msg_id)
+}
+
+/// Send a live signalling message to a peer.
+/// This is the first slice for `/ma/live/0.0.1`; the media plane lives below ma.
+pub async fn send_live_dial(target_did: &str, body: &str) -> Result<String, String> {
+    let (sender_did, signing_key) = get_session_info()?;
+    let msg = Message::new(
+        &sender_did,
+        target_did,
+        MESSAGE_TYPE_MESSAGE,
+        CONTENT_TYPE_TEXT,
+        body.as_bytes(),
+        &signing_key,
+    )
+    .map_err(|e| e.to_string())?;
+    let msg_id = msg.id.clone();
+    send_message_on(target_did, LIVE_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
 
@@ -511,6 +533,23 @@ pub fn drain_crud_inbox() -> Vec<IncomingMessage> {
                         );
                         decode_incoming(msg, CRUD_PROTOCOL_ID)
                     })
+                    .collect()
+            })
+            .unwrap_or_default()
+    })
+}
+
+/// Drain pending live-signalling inbox messages.
+pub fn drain_live_inbox() -> Vec<IncomingMessage> {
+    let now = (js_sys::Date::now() / 1000.0) as u64;
+    SESSION_LIVE_INBOX.with(|i| {
+        i.borrow_mut()
+            .as_mut()
+            .map(|inbox| {
+                inbox
+                    .drain(now)
+                    .into_iter()
+                    .map(|msg| decode_incoming(msg, LIVE_PROTOCOL_ID))
                     .collect()
             })
             .unwrap_or_default()

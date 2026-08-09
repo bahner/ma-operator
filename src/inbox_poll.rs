@@ -38,6 +38,7 @@ pub async fn run_inbox_poll(
             .into_iter()
             .chain(transport::drain_rpc_inbox())
             .chain(transport::drain_crud_inbox())
+            .chain(transport::drain_live_inbox())
         {
             route_incoming(incoming, &state, config, show_editor);
         }
@@ -537,6 +538,9 @@ fn loopback_suppress(incoming: &IncomingMessage) -> bool {
 fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
     let cfg = config.get_untracked();
     let mut display = cfg.substitute_display_dids(&incoming.display);
+    if incoming.service == crate::transport::LIVE_PROTOCOL_ID {
+        display = format!("[live] {display}");
+    }
     let Some((alias, frag)) = cfg.split_alias(&incoming.from) else {
         return display;
     };
@@ -688,6 +692,16 @@ mod tests {
             ),
             "@home arrives."
         );
+    }
+
+    #[test]
+    fn format_display_marks_live_service_messages() {
+        let _runtime = leptos::prelude::Owner::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let mut live = incoming("did:ma:room", "dial request");
+        live.service = crate::transport::LIVE_PROTOCOL_ID.to_string();
+
+        assert_eq!(format_display(&live, config), "[live] dial request");
     }
 
     #[test]

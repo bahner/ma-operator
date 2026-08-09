@@ -1,0 +1,97 @@
+; live.szcheme
+; Zion-local non-builtin live helpers.
+; Load into your session/profile script and extend with your own sugar.
+;
+; Core state maps used by the helpers.
+(define live-next-session-id 1)
+(define live-next-stream-id 1)
+(define live-sessions (make-map))
+(define live-streams (make-map))
+
+; Open a logical live session handle for a target DID/DID-URL.
+(define (live-open target)
+  (let* ((sid (number->string live-next-session-id))
+         (session (make-map "id" sid "target" target "state" "open" "streams" (list))))
+    (set! live-next-session-id (+ live-next-session-id 1))
+    (set! live-sessions (map-set live-sessions sid session))
+    (list ":ok" sid)))
+
+(define (live-close sid)
+  (let ((session (map-ref live-sessions sid #f)))
+    (if session
+        (begin
+          (set! live-sessions
+                (map-set live-sessions sid (map-set session "state" "closed")))
+          (list ":ok" sid))
+        (list ":error" (string-append "unknown session: " sid)))))
+
+(define (live-state sid)
+  (let ((session (map-ref live-sessions sid #f)))
+    (if session
+        (list ":ok" session)
+        (list ":error" (string-append "unknown session: " sid)))))
+
+(define (live-sessions-list)
+  (list ":ok" (map-keys live-sessions)))
+
+; Open a stream handle under a session.
+(define (stream-open sid kind)
+  (let ((session (map-ref live-sessions sid #f)))
+    (if session
+        (let* ((stid (number->string live-next-stream-id))
+               (stream (make-map "id" stid "session" sid "kind" kind "state" "open")))
+          (set! live-next-stream-id (+ live-next-stream-id 1))
+          (set! live-streams (map-set live-streams stid stream))
+          (set! live-sessions
+                (map-set live-sessions sid
+                         (map-set session "streams"
+                                  (append (map-ref session "streams" (list)) (list stid)))))
+          (list ":ok" stid))
+        (list ":error" (string-append "unknown session: " sid)))))
+
+(define (stream-close stid)
+  (let ((stream (map-ref live-streams stid #f)))
+    (if stream
+        (begin
+          (set! live-streams
+                (map-set live-streams stid (map-set stream "state" "closed")))
+          (list ":ok" stid))
+        (list ":error" (string-append "unknown stream: " stid)))))
+
+(define (stream-list sid)
+  (let ((session (map-ref live-sessions sid #f)))
+    (if session
+        (list ":ok" (map-ref session "streams" (list)))
+        (list ":error" (string-append "unknown session: " sid)))))
+
+(define (stream-state stid)
+  (let ((stream (map-ref live-streams stid #f)))
+    (if stream
+        (list ":ok" stream)
+        (list ":error" (string-append "unknown stream: " stid)))))
+
+(define (stream-set stid key value)
+  (let ((stream (map-ref live-streams stid #f)))
+    (if stream
+        (begin
+          (set! live-streams (map-set live-streams stid (map-set stream key value)))
+          (list ":ok" value))
+        (list ":error" (string-append "unknown stream: " stid)))))
+
+; Placeholder transport hook for payload-like values on a stream handle.
+(define (stream-send stid payload)
+  (stream-set stid "last_payload" payload))
+
+; Sugar: invite via plain message, then open a local session handle.
+(define (live-call target)
+  (let ((invite (msg-send target "live-call invite")))
+    (if (ok? invite)
+        (live-open target)
+        invite)))
+
+; Sugar aliases.
+(define (live-enable sid kind)
+  (stream-open sid kind))
+
+(define (live-disable stid)
+  (stream-close stid))

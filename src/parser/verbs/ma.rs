@@ -76,6 +76,9 @@ pub(super) fn handle_ma(
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
     if path != ".ma" {
+        if path == ".ma.live" || path.starts_with(".ma.live.") {
+            return handle_ma_live(path, verb, args, state, config, _show_editor, _on_eval);
+        }
         return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
     }
     if verb != "connect" {
@@ -702,6 +705,70 @@ pub(crate) async fn rediscover_ma(
     Ok(did)
 }
 
+fn handle_ma_live(
+    path: &str,
+    verb: &str,
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    _show_editor: RwSignal<Option<EditorContext>>,
+    _on_eval: Callback<String>,
+) -> Result<(), String> {
+    if path != ".ma.live" {
+        return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
+    }
+    match verb {
+        "dial" => {
+            let target = args
+                .first()
+                .ok_or_else(|| "usage: .ma.live!dial @peer [label]".to_string())?;
+            let dial_target = resolve_live_target(target, &config.get_untracked())?;
+            let body = if args.len() > 1 {
+                args[1..].join(" ")
+            } else {
+                "dial".to_string()
+            };
+            let cmd_id = state.push_command(format!("{path}!{verb} {}", args.join(" ")));
+            let state2 = state.clone();
+            wasm_bindgen_futures::spawn_local(async move {
+                match transport::send_live_dial(&dial_target, &body).await {
+                    Ok(msg_id) => state2.bind_message_id(cmd_id, msg_id),
+                    Err(e) => {
+                        state2.resolve_command_by_id(
+                            cmd_id,
+                            crate::core::CommandStatus::Error(e.clone()),
+                        );
+                        state2.push_error(e);
+                    }
+                }
+            });
+            Ok(())
+        }
+        other => Err(tf("runtime-no-verb", &[("verb", other), ("path", path)])),
+    }
+}
+
+fn resolve_live_target(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
+    let raw = arg.trim_start_matches('@');
+    if raw.starts_with("did:") {
+        return if raw.contains('/') {
+            Err(format!(
+                "live target must be a bare DID or DID-URL with one fragment: {raw}"
+            ))
+        } else {
+            Ok(raw.to_string())
+        };
+    }
+    let resolved = cfg
+        .resolve_alias(raw)
+        .map(|s| s.to_string())
+        .ok_or_else(|| tf("err-unknown-alias", &[("name", raw)]))?;
+    if resolved.contains('/') {
+        return Err(format!("live target must not contain a path: {resolved}"));
+    }
+    Ok(resolved)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -803,6 +870,26 @@ mod tests {
             stored_local_ma_url(&cfg),
             Some("http://localhost:5999".to_string())
         );
+    }
+
+    #[test]
+    fn resolve_live_target_accepts_alias_and_bare_did() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.alice", "did:ma:alice");
+
+        assert_eq!(resolve_live_target("@alice", &cfg).unwrap(), "did:ma:alice");
+        assert_eq!(
+            resolve_live_target("did:ma:bob", &cfg).unwrap(),
+            "did:ma:bob"
+        );
+    }
+
+    #[test]
+    fn resolve_live_target_rejects_path_targets() {
+        let cfg = EgoConfig::default();
+
+        assert!(resolve_live_target("did:ma:bob#room/path", &cfg).is_err());
+        assert!(resolve_live_target("@missing", &cfg).is_err());
     }
 
     #[test]
