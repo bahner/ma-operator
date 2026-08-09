@@ -3,7 +3,7 @@ use futures::{
     pin_mut,
 };
 use gloo_timers::future::TimeoutFuture;
-/// IndexedDB storage for ego identities — implemented directly with web-sys.
+/// `IndexedDB` storage for ego identities — implemented directly with web-sys.
 ///
 /// Schema: db="ego" version=2  (keep name "ego" for backward compat with stored bundles)
 ///   store "identities": out-of-line key (username string) -> JSON string

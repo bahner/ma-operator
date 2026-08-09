@@ -131,7 +131,7 @@ fn bundle_to_unlocked(bundle: &SecretBundle) -> Result<UnlockedIdentity, String>
     })
 }
 
-/// Bundle an identity export and optional EgoConfig snapshot into a `ZionExport`
+/// Bundle an identity export and optional `EgoConfig` snapshot into a `ZionExport`
 /// JSON string ready for file download.
 ///
 /// `username` is stored explicitly since `Config::to_yaml_string` omits the slug.
@@ -146,7 +146,7 @@ pub fn export_for_download(
         version: 1,
         username: username.to_string(),
         identity: identity_json.to_string(),
-        ego_config: ego_config_json.map(|s| s.to_string()),
+        ego_config: ego_config_json.map(std::string::ToString::to_string),
     };
     serde_json::to_string(&export).unwrap_or_else(|_| identity_json.to_string())
 }

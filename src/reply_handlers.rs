@@ -66,7 +66,7 @@ pub(crate) fn handle_ipfs_kind_reply(
     match crate::messages::extract_ok_text(&incoming.content) {
         Ok(cid) => {
             // Path: /kinds/ma/avatar/0.0.1 (strip leading / from protocol_id)
-            let path = format!("/kinds{}", protocol_id);
+            let path = format!("/kinds{protocol_id}");
             let ipfs_ref = ipfs_ref_from_store_reply(&cid);
             state.outbox_queue.update(|q| {
                 q.push_back(OutboxTask::CrudSet {
@@ -120,8 +120,7 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
     let cid = value.trim();
     if cid.starts_with('b')
         && Cid::try_from(cid)
-            .map(|cid| cid.version() == Version::V1)
-            .unwrap_or(false)
+            .is_ok_and(|cid| cid.version() == Version::V1)
     {
         Some(format!("/ipfs/{cid}"))
     } else {
@@ -219,16 +218,14 @@ pub(crate) fn handle_edit_open_reply(
     } = *ctx;
     // Resolve alias: show @sky/path instead of @did:ma:.../path in the editor toolbar.
     let display_target = config.with_untracked(|c| {
-        c.reverse_alias(&target)
-            .map(|a| a.to_string())
-            .unwrap_or_else(|| target.clone())
+        c.reverse_alias(&target).map_or_else(|| target.clone(), std::string::ToString::to_string)
     });
-    let save_to = format!("@{}{}", display_target, crud_path);
+    let save_to = format!("@{display_target}{crud_path}");
     // For KindEdit, show just the crud_path (e.g. /kinds/ma/avatar/0.0.1) as title.
     // For everything else, include the target DID to make the path unambiguous.
     let doc_path = match &editor_mode {
         EditorMode::KindEdit { .. } => crud_path.clone(),
-        _ => format!("@{}{}", target, crud_path),
+        _ => format!("@{target}{crud_path}"),
     };
 
     if incoming.is_error {

@@ -73,7 +73,7 @@ async fn fetch_with_timeout(
             let resp_val = resp_val.map_err(|e| format!("{e:?}"))?;
             resp_val.dyn_into().map_err(|_| "not a Response".to_string())
         }
-        _ = timeout => {
+        () = timeout => {
             controller.abort();
             Err(format!("timeout after {timeout_ms}ms"))
         }

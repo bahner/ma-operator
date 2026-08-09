@@ -34,7 +34,7 @@ impl AwaitingReply {
     }
 }
 
-/// (sender, sent_at_ms) for Scheme RPC reply channels.
+/// (sender, `sent_at_ms`) for Scheme RPC reply channels.
 type SchemeSender = (oneshot::Sender<Result<SchemeVal, String>>, f64);
 
 thread_local! {
@@ -172,7 +172,7 @@ pub struct ActiveBatch {
     pub collecting: bool,
     /// Lines pending dispatch.
     pub lines: VecDeque<String>,
-    /// Sync only: cmd_id currently being waited on; `None` = ready to advance.
+    /// Sync only: `cmd_id` currently being waited on; `None` = ready to advance.
     pub sync_cmd_id: Option<u64>,
     /// Whether any step has errored.
     pub had_error: bool,
@@ -191,7 +191,7 @@ pub struct ActiveBatch {
 /// `outbox()` calls on the WASM single-threaded runtime.
 #[derive(Clone, Debug)]
 pub enum OutboxTask {
-    /// A user-typed actor message (primary send from eval_actor).
+    /// A user-typed actor message (primary send from `eval_actor`).
     Actor {
         target: String,
         verb: Option<String>,
@@ -242,7 +242,7 @@ pub struct AppState {
     entry_counter: RwSignal<u64>,
     pub lang: RwSignal<String>,
     /// Pre-filled input text from URL params (`?chat=` / `?say=`).
-    /// Set at app startup, consumed once by InputBar after login.
+    /// Set at app startup, consumed once by `InputBar` after login.
     pub prefill_input: RwSignal<Option<String>>,
     /// Runtime target from `?enter=` URL param — e.g. `did:ma:xyz`.
     /// Consumed once by `startup_load_config` to call `.enter` after login.
@@ -258,7 +258,7 @@ pub struct AppState {
     pub batches: RwSignal<HashMap<u64, ActiveBatch>>,
     /// Counter for generating unique batch ids.
     pub batch_id_counter: RwSignal<u64>,
-    /// Maps cmd_id → batch_id for commands dispatched as batch steps.
+    /// Maps `cmd_id` → `batch_id` for commands dispatched as batch steps.
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
@@ -308,19 +308,19 @@ impl AppState {
         let batch_headers: Vec<u64> = self
             .batches
             .with_untracked(|b| b.values().map(|batch| batch.header_cmd_id).collect());
-        self.input_queue.update(|q| q.clear());
+        self.input_queue.update(std::collections::VecDeque::clear);
         self.multiline_input.set(String::new());
-        self.outbox_queue.update(|q| q.clear());
-        self.pending_requests.update(|m| m.clear());
+        self.outbox_queue.update(std::collections::VecDeque::clear);
+        self.pending_requests.update(std::collections::HashMap::clear);
         self.pending_enter.set(None);
         self.ctx_recovery_runtime.set(None);
-        self.batches.update(|b| b.clear());
-        self.cmd_to_batch.update(|m| m.clear());
+        self.batches.update(std::collections::HashMap::clear);
+        self.cmd_to_batch.update(std::collections::HashMap::clear);
         AwaitingReply::clear();
         SCHEME_SENDERS.with(|m| m.borrow_mut().clear());
 
         self.entries.with_untracked(|v| {
-            for entry in v.iter() {
+            for entry in v {
                 if let Entry::Command(command) = entry {
                     let should_cancel = batch_headers.contains(&command.id)
                         || matches!(
@@ -351,7 +351,7 @@ impl AppState {
     }
 
     /// Peek at the next entry id without consuming it.
-    /// Used by the dispatch loop to detect cmd_ids created by eval.
+    /// Used by the dispatch loop to detect `cmd_ids` created by eval.
     pub fn peek_next_entry_id(&self) -> u64 {
         self.entry_counter.get_untracked()
     }
@@ -365,7 +365,7 @@ impl AppState {
                 id,
                 text: text.into(),
                 kind: SystemKind::Info,
-            }))
+            }));
         });
     }
 
@@ -376,7 +376,7 @@ impl AppState {
                 id,
                 text: text.into(),
                 kind: SystemKind::Error,
-            }))
+            }));
         });
     }
 
@@ -396,7 +396,7 @@ impl AppState {
                 raw: raw.into(),
                 message_id: None,
                 status: ArcRwSignal::new(CommandStatus::Sent),
-            }))
+            }));
         });
         id
     }
@@ -410,7 +410,7 @@ impl AppState {
                 raw: raw.into(),
                 message_id: None,
                 status: ArcRwSignal::new(CommandStatus::Done),
-            }))
+            }));
         });
     }
 
@@ -425,7 +425,7 @@ impl AppState {
                 raw: raw.into(),
                 message_id: None,
                 status: ArcRwSignal::new(CommandStatus::Done),
-            }))
+            }));
         });
         id
     }
@@ -439,7 +439,7 @@ impl AppState {
                 raw: raw.into(),
                 message_id: None,
                 status: ArcRwSignal::new(CommandStatus::Replied(String::new())),
-            }))
+            }));
         });
     }
 
@@ -520,11 +520,7 @@ impl AppState {
             })
             .unwrap_or(DEFAULT_TIMEOUT_MS);
         log::debug!(
-            "[pending] register msg_id={} kind={:?} batch={:?} ttl={}ms",
-            msg_id,
-            kind,
-            batch_id,
-            ttl_ms
+            "[pending] register msg_id={msg_id} kind={kind:?} batch={batch_id:?} ttl={ttl_ms}ms"
         );
         self.pending_requests.update(|m| {
             m.insert(
@@ -631,18 +627,16 @@ impl AppState {
                 let mut insert_at = v.len();
                 let mut seen_command = false;
                 for (i, e) in v.iter().enumerate() {
-                    if !seen_command {
-                        if e.id() == target {
-                            seen_command = true;
-                            insert_at = i + 1;
-                        }
-                    } else {
+                    if seen_command {
                         match e {
                             Entry::Incoming(ir) if ir.after_cmd_id == Some(target) => {
                                 insert_at = i + 1;
                             }
                             _ => break,
                         }
+                    } else if e.id() == target {
+                        seen_command = true;
+                        insert_at = i + 1;
                     }
                 }
                 v.insert(insert_at, Entry::Incoming(rec));
@@ -654,7 +648,7 @@ impl AppState {
 
     // ── Mailbox ───────────────────────────────────────────────────────────
 
-    /// Ingest a message into the EgoConfig inbox tree and return the new
+    /// Ingest a message into the `EgoConfig` inbox tree and return the new
     /// entry count.  The caller is responsible for persisting `config`.
     ///
     /// Only `application/vnd.ma.message` messages are stored; others are ignored.

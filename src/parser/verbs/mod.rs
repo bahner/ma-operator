@@ -45,7 +45,7 @@ fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
         raw.to_string()
     } else {
         cfg.resolve_alias(raw)
-            .map(|s| s.to_string())
+            .map(std::string::ToString::to_string)
             .ok_or_else(|| tf("err-unknown-alias", &[("name", raw)]))?
     };
     if resolved.contains('#') || resolved.contains('/') {
@@ -98,7 +98,7 @@ pub fn dispatch_meta(
     }
     // Scheme function call: any other verb on a leaf path.
     let content = if has_content {
-        config.get_untracked().get(path).map(|s| s.to_string())
+        config.get_untracked().get(path).map(std::string::ToString::to_string)
     } else {
         None
     };

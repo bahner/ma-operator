@@ -44,7 +44,7 @@ pub fn Terminal() -> impl IntoView {
     // from the restored config, and ?enter= must run after connect/publish.
     if let Some(sess) = state.session.get_untracked() {
         crate::scheme::init_session_env();
-        let startup_ma = state.startup_ma.update_untracked(|v| v.take());
+        let startup_ma = state.startup_ma.update_untracked(std::option::Option::take);
         let startup_state = state.clone();
         spawn_local(async move {
             startup_load_config(
@@ -173,7 +173,7 @@ fn render_entry(entry: Entry) -> impl IntoView {
                 CommandStatus::Publishing => {
                     format!("→ {}  {}…", raw, crate::i18n::t("status-publishing"))
                 }
-                _ => format!("→ {}", raw),
+                _ => format!("→ {raw}"),
             };
             view! { <div class=cls>{text}</div> }.into_any()
         }

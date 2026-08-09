@@ -1,24 +1,24 @@
 /// Command parser for ego terminal input.
 ///
 /// Grammar:
-///   .cmd                 → DotCommand      (control command: .ma, .enter, .help, …)
-///   .cmd!verb [args]     → DotCommand::Meta
-///   .my.path             → LocalCrud::Get  (local profile config)
-///   .ma.ctx.path         → LocalCrud::Get  (local ma runtime context)
-///   .my.path: value      → LocalCrud::Set
-///   .my.path:            → LocalCrud::Delete
-///   .my.path!verb [args] → LocalCrud::Meta
-///   @alias/path          → RemoteCrud::Get
-///   @alias/path: value   → RemoteCrud::Set(value)
-///   @alias/path:         → RemoteCrud::Delete
-///   @alias/path!edit     → RemoteCrud::Edit
-///   @alias!msg [body]    → ActorLocalCommand (local zion text message command)
-///   @alias#entity!edit   → ActorMessage `:behaviour!edit` meta workflow
-///   @alias[:verb] [body] → ActorMessage  (remote method / RPC)
-///   @did:ma:<id>[:verb]  → ActorMessage
-///   did:ma:<id>[:verb]   → ActorMessage  (bare DID from expansion)
-///   \@literal text       → PlainText
-///   \.literal text       → PlainText  (escape a leading control-command dot)
+///   .cmd                 → `DotCommand`      (control command: .ma, .enter, .help, …)
+///   .cmd!verb [args]     → `DotCommand::Meta`
+///   .my.path             → `LocalCrud::Get`  (local profile config)
+///   .ma.ctx.path         → `LocalCrud::Get`  (local ma runtime context)
+///   .my.path: value      → `LocalCrud::Set`
+///   .my.path:            → `LocalCrud::Delete`
+///   .my.path!verb [args] → `LocalCrud::Meta`
+///   @alias/path          → `RemoteCrud::Get`
+///   @alias/path: value   → `RemoteCrud::Set(value)`
+///   @alias/path:         → `RemoteCrud::Delete`
+///   @alias/path!edit     → `RemoteCrud::Edit`
+///   @alias!msg [body]    → `ActorLocalCommand` (local zion text message command)
+///   @alias#entity!edit   → `ActorMessage` `:behaviour!edit` meta workflow
+///   @alias[:verb] [body] → `ActorMessage`  (remote method / RPC)
+///   @did:ma:<id>[:verb]  → `ActorMessage`
+///   did:ma:<id>[:verb]   → `ActorMessage`  (bare DID from expansion)
+///   \@literal text       → `PlainText`
+///   \.literal text       → `PlainText`  (escape a leading control-command dot)
 use super::alias::resolve_targets;
 use crate::config::EgoConfig;
 
@@ -415,7 +415,7 @@ pub fn resolve_target(raw: &str, cfg: &EgoConfig) -> Result<String, String> {
         return Ok(format!("{did}#{fragment}"));
     }
     cfg.resolve_alias(raw)
-        .map(|s| s.to_string())
+        .map(std::string::ToString::to_string)
         .ok_or_else(|| format!("unknown alias: @{raw}"))
 }
 
@@ -449,8 +449,8 @@ pub(crate) fn split_actor_head(head: &str) -> (&str, Option<String>) {
 
     if let Some((before, verb)) = head.rsplit_once(':') {
         if !verb.is_empty() {
-            let alias = before.find('.').map(|p| &before[..p]).unwrap_or(before);
-            let path = before.find('.').map(|p| &before[p + 1..]).unwrap_or("");
+            let alias = before.find('.').map_or(before, |p| &before[..p]);
+            let path = before.find('.').map_or("", |p| &before[p + 1..]);
             return (
                 alias,
                 Some(if path.is_empty() {
@@ -559,7 +559,7 @@ mod tests {
     #[test]
     fn shell_split_accepts_posix_single_quote_escape() {
         assert_eq!(
-            shell_split(r#"make thing 'Lars'\'' lamp'"#).unwrap(),
+            shell_split(r"make thing 'Lars'\'' lamp'").unwrap(),
             vec!["make", "thing", "Lars' lamp"]
         );
     }

@@ -29,7 +29,7 @@ pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
 
 /// A fully-open ACL: every caller may use inbox **and** rpc.
 pub fn open_acl() -> AclMap {
-    let caps = CapabilityEntry::Allow([CAP_INBOX, CAP_RPC].iter().map(|s| s.to_string()).collect());
+    let caps = CapabilityEntry::Allow([CAP_INBOX, CAP_RPC].iter().map(std::string::ToString::to_string).collect());
     [("*".to_string(), caps)].into_iter().collect()
 }
 

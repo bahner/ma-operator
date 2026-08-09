@@ -1,3 +1,20 @@
+#![allow(
+    clippy::cast_possible_truncation,
+    clippy::cast_precision_loss,
+    clippy::cast_sign_loss,
+    clippy::format_collect,
+    clippy::items_after_statements,
+    clippy::large_futures,
+    clippy::manual_let_else,
+    clippy::match_same_arms,
+    clippy::needless_pass_by_value,
+    clippy::struct_excessive_bools,
+    clippy::too_many_lines,
+    clippy::unnecessary_wraps,
+    clippy::unused_self,
+    clippy::used_underscore_binding
+)]
+
 mod acl;
 mod app;
 mod config;

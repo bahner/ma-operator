@@ -1,4 +1,4 @@
-/// iroh transport layer — wraps ma_core::MaEndpoint for use in WASM.
+/// iroh transport layer — wraps `ma_core::MaEndpoint` for use in WASM.
 use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
     resolve_endpoint_for_protocol, Did, DidDocumentResolver, EncryptionKey, IpfsGatewayResolver,
@@ -72,7 +72,7 @@ pub async fn connect(
     sender_did: String,
     created_at: String,
 ) -> Result<(), String> {
-    info!("Connecting with sender DID: {}", sender_did);
+    info!("Connecting with sender DID: {sender_did}");
     let resolver = Arc::new(
         session_resolver()
             .with_base_cooldown(Duration::ZERO)
@@ -714,7 +714,7 @@ async fn with_send_timeout<T>(
     futures::pin_mut!(op, timeout);
     futures::select! {
         result = op => result,
-        _ = timeout => Err(format!("{label} timed out after {SEND_TIMEOUT_MS}ms")),
+        () = timeout => Err(format!("{label} timed out after {SEND_TIMEOUT_MS}ms")),
     }
 }
 
@@ -817,7 +817,7 @@ pub fn drain_inbox() -> Vec<IncomingMessage> {
 }
 
 /// Decode an `application/vnd.ma.room.event` CBOR payload into a display string.
-/// Format: [:verb, avatar_id, name_or_null, ...args]
+/// Format: [:verb, `avatar_id`, `name_or_null`, ...args]
 fn decode_room_event(payload: Vec<u8>) -> String {
     let val = match ciborium::de::from_reader::<ciborium::Value, _>(payload.as_slice()) {
         Ok(v) => v,

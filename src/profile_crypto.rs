@@ -20,7 +20,7 @@ const AAD: &[u8] = b"zion-profile-v1";
 const ROUNDS: u32 = 50_000;
 
 /// Derive a 32-byte key from a passphrase (PBKDF2-HMAC-SHA256).
-/// Called once at login; the key is kept in SESSION_PROFILE_KEY.
+/// Called once at login; the key is kept in `SESSION_PROFILE_KEY`.
 pub fn derive_key(passphrase: &str) -> [u8; 32] {
     let mut key = [0u8; 32];
     pbkdf2_hmac::<Sha256>(passphrase.as_bytes(), SALT, ROUNDS, &mut key);

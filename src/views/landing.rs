@@ -66,7 +66,7 @@ fn load_last_did() -> Option<String> {
         .filter(|s| !s.is_empty())
 }
 
-/// Derive the IndexedDB storage key from a DID.
+/// Derive the `IndexedDB` storage key from a DID.
 fn username_from_did(did: &str) -> String {
     did.strip_prefix("did:ma:").unwrap_or(did).to_string()
 }
@@ -282,7 +282,7 @@ pub fn Landing() -> impl IntoView {
                                         }
                                         Err(e) => {
                                             status.set(String::new());
-                                            error.set(e.to_string());
+                                            error.set(e.clone());
                                         }
                                     }
                                 }
@@ -303,12 +303,9 @@ pub fn Landing() -> impl IntoView {
 
             // ── Import ────────────────────────────────────────────────────
             if current_mode == Mode::Import {
-                let p = match parsed.get_untracked() {
-                    Some(p) => p,
-                    None => {
-                        error.set(t("error-profile-source-required"));
-                        return;
-                    }
+                let p = if let Some(p) = parsed.get_untracked() { p } else {
+                    error.set(t("error-profile-source-required"));
+                    return;
                 };
                 if pass.is_empty() {
                     error.set(t("error-passphrase-required"));
@@ -390,103 +387,97 @@ pub fn Landing() -> impl IntoView {
                                         }
                                     }
                                 }
-                                match crate::parser::verbs::doc_profile_cid(&doc) {
-                                    Some(profile_cid) => {
-                                        match crate::http::fetch_cid_bytes(&profile_cid).await {
-                                            Ok(cbor) => {
-                                                let profile_key = profile_crypto::derive_key(&pass);
-                                                // Temporary backward compatibility: during migration
-                                                // we still accept legacy plaintext DAG-CBOR profile
-                                                // blobs if decryption fails.
-                                                // Remove after 2026-08-20.
-                                                let decoded = match profile_crypto::decrypt_with_key(
-                                                    &cbor,
-                                                    &profile_key,
-                                                ) {
-                                                    Ok(plain) => plain,
-                                                    Err(_) => cbor.clone(),
-                                                };
-                                                // Decode DAG-CBOR → nested profile.
-                                                let parsed_opt = serde_ipld_dagcbor::from_slice::<
-                                                    serde_json::Value,
-                                                >(
-                                                    &decoded
-                                                )
-                                                .ok()
-                                                .and_then(|profile_val| {
-                                                    let username = profile_val
-                                                        .get("username")?
-                                                        .as_str()?
-                                                        .to_string();
-                                                    let id_json = match profile_val
-                                                        .get("identity")?
-                                                    {
-                                                        serde_json::Value::String(s) => s.clone(),
-                                                        other => {
-                                                            serde_json::to_string(other).ok()?
-                                                        }
-                                                    };
-                                                    let cfg_json = {
-                                                        let mut tmp = EgoConfig::new();
-                                                        tmp.merge_from_nested_profile(&profile_val)
-                                                            .ok()?;
-                                                        tmp.to_json().ok()
-                                                    };
-                                                    Some((username, id_json, cfg_json))
-                                                });
-                                                match parsed_opt {
-                                                    Some((pname, id_json, cfg_opt)) => {
-                                                        match unlock_identity_migrating(
-                                                            &id_json, &pass,
-                                                        ) {
-                                                            Ok((id, migrated)) => {
-                                                                if let Err(e) = save_identity(
-                                                                    &pname,
-                                                                    migrated
-                                                                        .as_deref()
-                                                                        .unwrap_or(&id_json),
-                                                                )
-                                                                .await
-                                                                {
-                                                                    status.set(String::new());
-                                                                    error.set(e);
-                                                                    return;
-                                                                }
-                                                                if let Some(cfg) = cfg_opt {
-                                                                    let _ =
-                                                                        save_config(&pname, &cfg)
-                                                                            .await;
-                                                                }
-                                                                status.set(String::new());
-                                                                finish_login(
-                                                                    id, pname, pass, state2,
-                                                                );
-                                                            }
-                                                            Err(e) => {
-                                                                status.set(String::new());
-                                                                error.set(tf(
-                                                                    "error-wrong-passphrase",
-                                                                    &[("e", &e)],
-                                                                ));
-                                                            }
-                                                        }
+                                if let Some(profile_cid) = crate::parser::verbs::doc_profile_cid(&doc) {
+                                    match crate::http::fetch_cid_bytes(&profile_cid).await {
+                                        Ok(cbor) => {
+                                            let profile_key = profile_crypto::derive_key(&pass);
+                                            // Temporary backward compatibility: during migration
+                                            // we still accept legacy plaintext DAG-CBOR profile
+                                            // blobs if decryption fails.
+                                            // Remove after 2026-08-20.
+                                            let decoded = match profile_crypto::decrypt_with_key(
+                                                &cbor,
+                                                &profile_key,
+                                            ) {
+                                                Ok(plain) => plain,
+                                                Err(_) => cbor.clone(),
+                                            };
+                                            // Decode DAG-CBOR → nested profile.
+                                            let parsed_opt = serde_ipld_dagcbor::from_slice::<
+                                                serde_json::Value,
+                                            >(
+                                                &decoded
+                                            )
+                                            .ok()
+                                            .and_then(|profile_val| {
+                                                let username = profile_val
+                                                    .get("username")?
+                                                    .as_str()?
+                                                    .to_string();
+                                                let id_json = match profile_val
+                                                    .get("identity")?
+                                                {
+                                                    serde_json::Value::String(s) => s.clone(),
+                                                    other => {
+                                                        serde_json::to_string(other).ok()?
                                                     }
-                                                    None => {
+                                                };
+                                                let cfg_json = {
+                                                    let mut tmp = EgoConfig::new();
+                                                    tmp.merge_from_nested_profile(&profile_val)
+                                                        .ok()?;
+                                                    tmp.to_json().ok()
+                                                };
+                                                Some((username, id_json, cfg_json))
+                                            });
+                                            if let Some((pname, id_json, cfg_opt)) = parsed_opt {
+                                                match unlock_identity_migrating(
+                                                    &id_json, &pass,
+                                                ) {
+                                                    Ok((id, migrated)) => {
+                                                        if let Err(e) = save_identity(
+                                                            &pname,
+                                                            migrated
+                                                                .as_deref()
+                                                                .unwrap_or(&id_json),
+                                                        )
+                                                        .await
+                                                        {
+                                                            status.set(String::new());
+                                                            error.set(e);
+                                                            return;
+                                                        }
+                                                        if let Some(cfg) = cfg_opt {
+                                                            let _ =
+                                                                save_config(&pname, &cfg)
+                                                                    .await;
+                                                        }
                                                         status.set(String::new());
-                                                        error.set(t("profile-no-cid-in-doc"));
+                                                        finish_login(
+                                                            id, pname, pass, state2,
+                                                        );
+                                                    }
+                                                    Err(e) => {
+                                                        status.set(String::new());
+                                                        error.set(tf(
+                                                            "error-wrong-passphrase",
+                                                            &[("e", &e)],
+                                                        ));
                                                     }
                                                 }
-                                            }
-                                            Err(e) => {
+                                            } else {
                                                 status.set(String::new());
-                                                error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                                error.set(t("profile-no-cid-in-doc"));
                                             }
                                         }
+                                        Err(e) => {
+                                            status.set(String::new());
+                                            error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                        }
                                     }
-                                    None => {
-                                        status.set(String::new());
-                                        error.set(t("profile-no-cid-in-doc"));
-                                    }
+                                } else {
+                                    status.set(String::new());
+                                    error.set(t("profile-no-cid-in-doc"));
                                 }
                             }
                             Err(e) => {
@@ -621,12 +612,9 @@ pub fn Landing() -> impl IntoView {
                     break;
                 }
                 let scan_result = if let Some(detector) = native_detector.as_ref() {
-                    match detector.decode(&video).await {
-                        Ok(result) => result,
-                        Err(_) => {
-                            native_detector = None;
-                            crate::views::qr::try_decode_frame(&video)
-                        }
+                    if let Ok(result) = detector.decode(&video).await { result } else {
+                        native_detector = None;
+                        crate::views::qr::try_decode_frame(&video)
                     }
                 } else {
                     crate::views::qr::try_decode_frame(&video)

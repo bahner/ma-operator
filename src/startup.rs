@@ -53,7 +53,7 @@ pub(crate) async fn startup_profile_exists(
     let local_published_at = config
         .get_untracked()
         .get(EgoConfig::PROFILE_PUBLISHED_AT_KEY)
-        .map(|s| s.to_string());
+        .map(std::string::ToString::to_string);
     if let Some(ref local) = local_published_at {
         if doc_updated_at <= local.as_str() {
             // DID doc is same age or older — remote blob is stale (IPNS lag).
@@ -69,9 +69,8 @@ pub(crate) async fn startup_profile_exists(
             }
             merged
         })
-        .and_then(|r| r.ok())
-        .map(|(count, _)| count)
-        .unwrap_or(0);
+        .and_then(std::result::Result::ok)
+        .map_or(0, |(count, _)| count);
     state.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
     let cfg = config.get_untracked();
     let _ = persist_config(&username, &cfg).await;
@@ -185,7 +184,7 @@ pub(crate) async fn startup_load_config(
         .get_untracked()
         .get(EgoConfig::PROFILE_CID_KEY)
         .filter(|cid| !cid.is_empty())
-        .map(|cid| cid.to_string())
+        .map(std::string::ToString::to_string)
     {
         crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(profile_cid));
     }
@@ -193,7 +192,7 @@ pub(crate) async fn startup_load_config(
     if let Some(lang) = config
         .get_untracked()
         .get(".my.i18n")
-        .map(|s| s.to_string())
+        .map(std::string::ToString::to_string)
     {
         let first = lang.split(':').next().unwrap_or(&lang).to_string();
         crate::i18n::init(&first).await;
@@ -312,8 +311,7 @@ fn startup_enter_publish_did(
     };
     let runtime = target
         .split_once('#')
-        .map(|(did, _)| did)
-        .unwrap_or(target)
+        .map_or(target, |(did, _)| did)
         .trim();
     if runtime.starts_with("did:ma:") {
         return Some(runtime.to_string());
@@ -322,8 +320,7 @@ fn startup_enter_publish_did(
     let resolved = cfg.resolve_alias(runtime)?;
     let did = resolved
         .split_once('#')
-        .map(|(did, _)| did)
-        .unwrap_or(resolved)
+        .map_or(resolved, |(did, _)| did)
         .trim();
     did.starts_with("did:ma:").then(|| did.to_string())
 }
@@ -335,7 +332,7 @@ fn queue_startup_context(
 ) {
     let explicit = state
         .startup_enter
-        .update_untracked(|v| v.take())
+        .update_untracked(std::option::Option::take)
         .map(normalize_startup_enter);
     if let Some(runtime) = explicit {
         state

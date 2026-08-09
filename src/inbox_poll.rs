@@ -1207,7 +1207,7 @@ mod tests {
             .any(|line| line == ".enter foo@did:ma:k51runtime"));
         assert!(!queued.iter().any(|line| line.contains(missing_room)));
 
-        state.input_queue.update(|queue| queue.clear());
+        state.input_queue.update(std::collections::VecDeque::clear);
         maybe_queue_ctx_recovery(
             &format!("unknown entity fragment: {missing_room}"),
             cmd_id,

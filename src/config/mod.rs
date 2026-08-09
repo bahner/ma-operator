@@ -10,7 +10,7 @@
 ///   .my.config.colour.replied   → #00ff41
 ///   .my.config.screensaver.timeout → 300
 ///
-/// The tree is stored as a flat HashMap<String, String> in IndexedDB
+/// The tree is stored as a flat `HashMap`<String, String> in `IndexedDB`
 /// (per-user) and serialised as JSON.
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
@@ -64,7 +64,7 @@ impl EgoConfig {
     // ── CRUD ──────────────────────────────────────────────────────────────
 
     pub fn get(&self, key: &str) -> Option<&str> {
-        self.tree.get(key).map(|s| s.as_str())
+        self.tree.get(key).map(std::string::String::as_str)
     }
 
     pub fn set(&mut self, key: impl Into<String>, value: impl Into<String>) {
@@ -142,7 +142,7 @@ impl EgoConfig {
 
     pub fn resolve_alias(&self, name: &str) -> Option<&str> {
         let key = format!(".my.aliases.{name}");
-        self.tree.get(&key).map(|s| s.as_str())
+        self.tree.get(&key).map(std::string::String::as_str)
     }
 
     /// Reverse-lookup: given a DID or DID-URL, return the alias name (without `@`), if any.
@@ -227,14 +227,11 @@ impl EgoConfig {
                 continue;
             }
             let did_url = &rest[pos..pos + token_len];
-            match self.alias_display(did_url) {
-                Some(alias) => out.push_str(&alias),
-                None => {
-                    if actor_ref {
-                        out.push('@');
-                    }
-                    out.push_str(did_url);
+            if let Some(alias) = self.alias_display(did_url) { out.push_str(&alias) } else {
+                if actor_ref {
+                    out.push('@');
                 }
+                out.push_str(did_url);
             }
             rest = &rest[pos + token_len..];
         }
@@ -382,7 +379,7 @@ impl EgoConfig {
         match val {
             serde_json::Value::Object(map) => {
                 for (k, v) in map {
-                    let new_prefix = format!("{}.{}", prefix, k);
+                    let new_prefix = format!("{prefix}.{k}");
                     Self::flatten_nested(&new_prefix, v, out);
                 }
             }
@@ -468,8 +465,8 @@ impl EgoConfig {
 
 // ── DotRegistry impl ──────────────────────────────────────────────────────
 
-/// EgoConfig stores keys with a leading `.` (e.g. `.my.aliases.foo`).
-/// DotRegistry paths may arrive without it; we normalise by adding it.
+/// `EgoConfig` stores keys with a leading `.` (e.g. `.my.aliases.foo`).
+/// `DotRegistry` paths may arrive without it; we normalise by adding it.
 fn ego_key(path: &str) -> String {
     if path.starts_with('.') || path.starts_with('/') {
         path.to_string()
@@ -480,7 +477,7 @@ fn ego_key(path: &str) -> String {
 
 impl DotRegistry for EgoConfig {
     fn get(&self, path: &str) -> Option<String> {
-        EgoConfig::get(self, &ego_key(path)).map(|s| s.to_string())
+        EgoConfig::get(self, &ego_key(path)).map(std::string::ToString::to_string)
     }
 
     fn set(&mut self, path: &str, value: &str) {
@@ -499,7 +496,7 @@ impl DotRegistry for EgoConfig {
     }
 
     fn resolve_alias(&self, name: &str) -> Option<String> {
-        EgoConfig::resolve_alias(self, name.trim_start_matches('@')).map(|s| s.to_string())
+        EgoConfig::resolve_alias(self, name.trim_start_matches('@')).map(std::string::ToString::to_string)
     }
 
     fn is_read_only(&self, path: &str) -> bool {

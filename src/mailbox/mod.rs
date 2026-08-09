@@ -1,7 +1,7 @@
 //! EgoConfig-backed inbox storage.
 //!
 //! Incoming `application/vnd.ma.message` messages are stored as flat leaves
-//! in EgoConfig under `.my.inbox.<N>.*`, where N is a stable non-negative
+//! in `EgoConfig` under `.my.inbox.<N>.*`, where N is a stable non-negative
 //! integer.  Indices may have gaps after deletion — always list first.
 
 use crate::config::EgoConfig;

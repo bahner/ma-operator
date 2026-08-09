@@ -39,7 +39,7 @@ pub(crate) fn eval_actor(
             cmd_id,
             cancel_epoch: state.cancel_epoch(),
             config,
-        })
+        });
     });
 }
 
@@ -58,7 +58,7 @@ pub(crate) fn eval_actor_local(
             body,
             cmd_id,
             cancel_epoch: state.cancel_epoch(),
-        })
+        });
     });
 }
 
@@ -119,7 +119,7 @@ async fn run_actor_task(
     };
     log::debug!(
         "[outbox] Actor done cmd_id={cmd_id} result={:?}",
-        result.as_ref().map(|r| r.is_ok())
+        result.as_ref().map(std::result::Result::is_ok)
     );
     if state.was_cancelled_since(cancel_epoch) {
         return;
@@ -245,7 +245,7 @@ pub(crate) fn eval_remote_crud(
                     transport::send_crud_get_with_msg_id(&target, &path, {
                         let s = state2.clone();
                         move |msg_id| {
-                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
+                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id));
                         }
                     })
                     .await,
@@ -273,7 +273,7 @@ pub(crate) fn eval_remote_crud(
                                     },
                                     None,
                                 );
-                            })
+                            });
                         }
                     })
                     .await,
@@ -301,7 +301,7 @@ pub(crate) fn eval_remote_crud(
                         {
                             let s = state2.clone();
                             move |msg_id| {
-                                bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
+                                bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id));
                             }
                         },
                     )
@@ -316,7 +316,7 @@ pub(crate) fn eval_remote_crud(
                     transport::send_crud_delete_with_msg_id(&target, &path, {
                         let s = state2.clone();
                         move |msg_id| {
-                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id))
+                            bind_if_live(&s, cancel_epoch, || s.bind_message_id(cmd_id, msg_id));
                         }
                     })
                     .await,
@@ -433,7 +433,7 @@ fn handle_send_result(
 ) {
     match result {
         Ok(msg_id) => {
-            if matches!(verb, None | Some("say") | Some("emote")) {
+            if matches!(verb, None | Some("say" | "emote")) {
                 state.resolve_command_by_id(cmd_id, CommandStatus::Done);
             } else {
                 state.bind_message_id(cmd_id, msg_id);

@@ -102,7 +102,7 @@ pub fn generate_qr_svg(payload: &str) -> Result<String, QrGenError> {
 }
 
 fn js_err(e: JsValue) -> String {
-    e.as_string().unwrap_or_else(|| format!("{:?}", e))
+    e.as_string().unwrap_or_else(|| format!("{e:?}"))
 }
 
 /// Request camera access and attach the stream to `video`.
@@ -176,9 +176,9 @@ pub fn try_decode_frame(video: &HtmlVideoElement) -> QrScanResult {
         return QrScanResult::WaitingForVideo;
     }
     // Dense profile codes need enough pixels per module when they fill only part of the frame.
-    let scale = if vw > 800 { 800.0 / vw as f64 } else { 1.0 };
-    let w = (vw as f64 * scale) as u32;
-    let h = (vh as f64 * scale) as u32;
+    let scale = if vw > 800 { 800.0 / f64::from(vw) } else { 1.0 };
+    let w = (f64::from(vw) * scale) as u32;
+    let h = (f64::from(vh) * scale) as u32;
 
     let Some(document) = web_sys::window().and_then(|window| window.document()) else {
         return QrScanResult::CaptureError;
@@ -198,12 +198,12 @@ pub fn try_decode_frame(video: &HtmlVideoElement) -> QrScanResult {
         return QrScanResult::CaptureError;
     };
     if ctx
-        .draw_image_with_html_video_element_and_dw_and_dh(video, 0.0, 0.0, w as f64, h as f64)
+        .draw_image_with_html_video_element_and_dw_and_dh(video, 0.0, 0.0, f64::from(w), f64::from(h))
         .is_err()
     {
         return QrScanResult::CaptureError;
     }
-    let Ok(image) = ctx.get_image_data(0.0, 0.0, w as f64, h as f64) else {
+    let Ok(image) = ctx.get_image_data(0.0, 0.0, f64::from(w), f64::from(h)) else {
         return QrScanResult::CaptureError;
     };
     let rgba = image.data();

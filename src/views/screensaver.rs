@@ -45,7 +45,7 @@ const FREE_SPEED: f64 = 0.35;
 #[derive(Clone)]
 enum EntityMode {
     Free,
-    /// Orbiting actor_idx, with jitter — not a clean circle
+    /// Orbiting `actor_idx`, with jitter - not a clean circle.
     Grouped {
         actor_idx: usize,
         angle: f64,
@@ -118,10 +118,13 @@ pub fn Screensaver() -> impl IntoView {
             if state2.screensaver.get_untracked() {
                 return;
             }
-            let timeout = config.with_untracked(|c| c.screensaver_timeout_secs()) as u32;
+            let timeout = u32::try_from(
+                config.with_untracked(crate::config::EgoConfig::screensaver_timeout_secs),
+            )
+            .unwrap_or(u32::MAX);
             let now = now_secs();
             let elapsed = now - *la.borrow();
-            if elapsed > timeout as f64 {
+            if elapsed > f64::from(timeout) {
                 state2.screensaver.set(true);
             }
         });
@@ -185,14 +188,22 @@ pub fn Screensaver() -> impl IntoView {
 
 // ── ATC-style animation ────────────────────────────────────────────────────────────
 
+#[allow(clippy::many_single_char_names, clippy::too_many_lines)]
 fn start_atc_animation(canvas: &HtmlCanvasElement) {
-    let window = match web_sys::window() {
-        Some(w) => w,
-        None => return,
+    let Some(window) = web_sys::window() else {
+        return;
     };
 
-    let w = window.inner_width().unwrap().as_f64().unwrap_or(1280.0) as u32;
-    let h = window.inner_height().unwrap().as_f64().unwrap_or(720.0) as u32;
+    let w = window
+        .inner_width()
+        .ok()
+        .and_then(|v| v.as_f64())
+        .map_or(1280_u32, f64_to_canvas_px);
+    let h = window
+        .inner_height()
+        .ok()
+        .and_then(|v| v.as_f64())
+        .map_or(720_u32, f64_to_canvas_px);
     canvas.set_width(w);
     canvas.set_height(h);
 
@@ -203,15 +214,15 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
         .dyn_into()
         .unwrap();
 
-    let wf = w as f64;
-    let hf = h as f64;
+    let wf = f64::from(w);
+    let hf = f64::from(h);
 
     // Initialise actors spread around the canvas
     let actors_init: Vec<Actor> = ACTOR_DIDS
         .iter()
         .enumerate()
         .map(|(i, did)| {
-            let angle = (i as f64 / ACTOR_DIDS.len() as f64) * std::f64::consts::TAU;
+            let angle = (usize_to_f64(i) / usize_to_f64(ACTOR_DIDS.len())) * std::f64::consts::TAU;
             let r = wf.min(hf) * 0.28;
             Actor {
                 did,
@@ -291,11 +302,11 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
         // ── 2. DON'T PANIC watermark — large, centred, softly pulsing
         {
             let pulse = 0.09 + 0.05 * (t / 90.0).sin();
-            let font_px = (wf / 7.0).max(60.0) as u32;
+            let font_px = (wf / 7.0).max(60.0).round();
             ctx.save();
             ctx.set_global_alpha(pulse);
             ctx.set_fill_style_str("#ffffff");
-            ctx.set_font(&format!("bold {}px sans-serif", font_px));
+            ctx.set_font(&format!("bold {font_px:.0}px sans-serif"));
             ctx.set_text_align("center");
             ctx.set_text_baseline("middle");
             ctx.fill_text("DON'T PANIC", wf / 2.0, hf / 2.0)
@@ -369,7 +380,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     let n = free_nearby.len();
                     for (slot, &ei) in free_nearby.iter().enumerate() {
                         let base_angle = if n > 0 {
-                            (slot as f64 / n as f64) * std::f64::consts::TAU
+                            (usize_to_f64(slot) / usize_to_f64(n)) * std::f64::consts::TAU
                         } else {
                             0.0
                         };
@@ -455,8 +466,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                                         a.1.partial_cmp(&b.1).unwrap_or(std::cmp::Ordering::Equal)
                                     });
                                 if let Some((to_idx, _)) = nearest {
-                                    let mx = (ent.x + av[to_idx].x) / 2.0;
-                                    let my = (ent.y + av[to_idx].y) / 2.0;
+                                    let mx = f64::midpoint(ent.x, av[to_idx].x);
+                                    let my = f64::midpoint(ent.y, av[to_idx].y);
                                     let perp = (js_sys::Math::random() - 0.5) * 140.0;
                                     transition = Transition::Hop {
                                         to_idx,
@@ -464,10 +475,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                                         cy: my + perp,
                                     };
                                 } else {
-                                    let (ox, oy) = av
-                                        .get(ai)
-                                        .map(|a| (a.x, a.y))
-                                        .unwrap_or((wf / 2.0, hf / 2.0));
+                                    let (ox, oy) =
+                                        av.get(ai).map_or((wf / 2.0, hf / 2.0), |a| (a.x, a.y));
                                     let dx = ent.x - ox;
                                     let dy = ent.y - oy;
                                     let len = (dx * dx + dy * dy).sqrt().max(1.0);
@@ -478,10 +487,8 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                                     };
                                 }
                             } else {
-                                let (ox, oy) = av
-                                    .get(ai)
-                                    .map(|a| (a.x, a.y))
-                                    .unwrap_or((wf / 2.0, hf / 2.0));
+                                let (ox, oy) =
+                                    av.get(ai).map_or((wf / 2.0, hf / 2.0), |a| (a.x, a.y));
                                 let dx = ent.x - ox;
                                 let dy = ent.y - oy;
                                 let len = (dx * dx + dy * dy).sqrt().max(1.0);
@@ -566,10 +573,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                     Transition::ArriveAt { actor_idx } => {
                         let angle = js_sys::Math::random() * std::f64::consts::TAU;
                         let orbit_r = 45.0 + js_sys::Math::random() * 35.0;
-                        ent.colour_idx = av
-                            .get(actor_idx)
-                            .map(|a| a.colour_idx)
-                            .unwrap_or(ent.colour_idx);
+                        ent.colour_idx = av.get(actor_idx).map_or(ent.colour_idx, |a| a.colour_idx);
                         ent.timer = GROUP_DURATION * (0.5 + js_sys::Math::random() * 0.6);
                         ent.mode = EntityMode::Grouped {
                             actor_idx,
@@ -649,7 +653,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
 
                 // Trajectory trail (fading dots)
                 for (ti, (tx, ty)) in actor.trail.iter().enumerate() {
-                    let alpha = (ti as f64 / trail_len as f64) * 0.35;
+                    let alpha = (usize_to_f64(ti) / usize_to_f64(trail_len)) * 0.35;
                     ctx.save();
                     ctx.set_global_alpha(alpha);
                     ctx.set_fill_style_str(colour);
@@ -666,7 +670,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 } else {
                     actor.did
                 };
-                let box_w = label.len() as f64 * did_font_size * 0.62 + 16.0;
+                let box_w = usize_to_f64(label.len()) * did_font_size * 0.62 + 16.0;
                 let bx = actor.x - box_w / 2.0;
                 let by = actor.y - widget_h;
 
@@ -683,7 +687,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
                 ctx.stroke();
                 // DID text
                 ctx.set_fill_style_str(colour);
-                ctx.set_font(&format!("{}px monospace", did_font_size as u32));
+                ctx.set_font(&format!("{did_font_size:.0}px monospace"));
                 ctx.set_text_align("center");
                 ctx.set_text_baseline("middle");
                 ctx.fill_text(label, actor.x, actor.y).unwrap_or(());
@@ -742,6 +746,7 @@ fn start_atc_animation(canvas: &HtmlCanvasElement) {
         .unwrap();
 }
 
+#[allow(clippy::many_single_char_names)]
 /// Draw a rounded rectangle path (does not fill or stroke — caller does that).
 fn rounded_rect(ctx: &CanvasRenderingContext2d, x: f64, y: f64, w: f64, h: f64, r: f64) {
     let r = r.min(w / 2.0).min(h / 2.0);
@@ -777,6 +782,18 @@ fn rounded_rect(ctx: &CanvasRenderingContext2d, x: f64, y: f64, w: f64, h: f64, 
 fn now_secs() -> f64 {
     web_sys::window()
         .and_then(|w| w.performance())
-        .map(|p| p.now() / 1000.0)
-        .unwrap_or(0.0)
+        .map_or(0.0, |p| p.now() / 1000.0)
+}
+
+fn usize_to_f64(value: usize) -> f64 {
+    u32::try_from(value).map_or(f64::from(u32::MAX), f64::from)
+}
+
+#[allow(clippy::cast_possible_truncation, clippy::cast_sign_loss)]
+fn f64_to_canvas_px(value: f64) -> u32 {
+    if !value.is_finite() {
+        return 1;
+    }
+    let clamped = value.round().clamp(1.0, f64::from(u32::MAX));
+    clamped as u32
 }

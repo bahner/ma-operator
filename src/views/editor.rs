@@ -1,4 +1,4 @@
-/// CodeMirror 6 editor modal.
+/// `CodeMirror` 6 editor modal.
 ///
 /// Driven by `RwSignal<Option<EditorContext>>`. When `Some`, renders a
 /// full-screen overlay with a CM6 editor and action buttons:
@@ -70,7 +70,7 @@ pub enum EditorMode {
     /// Edit a raw config key: Save + Cancel, no eval.
     /// The editor content is written directly to `key` (not `<key>.content`).
     ConfigEdit {
-        /// The EgoConfig key to write on save, e.g. `".my.acl"`.
+        /// The `EgoConfig` key to write on save, e.g. `".my.acl"`.
         key: String,
     },
     /// Edit the root transport ACL of a remote runtime: Publish + Cancel.
@@ -81,9 +81,9 @@ pub enum EditorMode {
     },
     /// Edit an arbitrary CRUD path on a remote runtime: Publish + Cancel.
     /// Save behaviour is determined by `is_link`:
-    /// - `true` (the GET reply value was a bare CIDv1 link) → serialise to
+    /// - `true` (the GET reply value was a bare `CIDv1` link) → serialise to
     ///   DAG-CBOR, upload to IPFS, register the CID
-    ///   (as a bare CIDv1 reference) via CRUD set at `crud_path`.
+    ///   (as a bare `CIDv1` reference) via CRUD set at `crud_path`.
     /// - `false` → parse editor YAML, send inline via CRUD set at
     ///   `crud_path`.
     CrudEdit {
@@ -127,7 +127,7 @@ pub struct EditorContext {
     pub save_to: String,
     /// Initial content to load into the editor.
     pub initial: String,
-    /// Language mode for CodeMirror (e.g. "markdown", "yaml").
+    /// Language mode for `CodeMirror` (e.g. "markdown", "yaml").
     pub language: String,
     /// Determines which toolbar buttons are shown.
     pub mode: EditorMode,
@@ -224,7 +224,7 @@ pub fn EditorModal(
                     let lang = ctx.language.clone();
                     let _ = web_sys::window().and_then(|w| {
                         let cb = wasm_bindgen::closure::Closure::<dyn FnMut()>::new(move || {
-                            js_editor_create(EDITOR_EL_ID, &initial, &lang)
+                            js_editor_create(EDITOR_EL_ID, &initial, &lang);
                         });
                         let r = w.request_animation_frame(cb.as_ref().unchecked_ref()).ok();
                         cb.forget();
@@ -416,8 +416,7 @@ pub fn EditorModal(
             // the ACL path itself is always fixed).
             let target = config
                 .with_untracked(|c| resolve_save_to(&save_to.get_untracked(), c))
-                .map(|(t, _)| t)
-                .unwrap_or(target);
+                .map_or(target, |(t, _)| t);
             let cmd_id = ctx.cmd_id;
             show.set(None);
             let state2 = state.clone();
@@ -749,7 +748,7 @@ async fn do_entity_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
-            state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]))
+            state.push_error(tf("msg-entity-publish-failed", &[("e", &e)]));
         }
     }
 }
@@ -794,7 +793,7 @@ async fn do_entity_field_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
-            state.push_error(tf("msg-field-publish-failed", &[("e", &e)]))
+            state.push_error(tf("msg-field-publish-failed", &[("e", &e)]));
         }
     }
 }
@@ -819,7 +818,7 @@ async fn do_acl_publish(text: String, target: String, cmd_id: Option<u64>, state
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
-            state.push_error(tf("msg-acl-publish-failed", &[("e", &e)]))
+            state.push_error(tf("msg-acl-publish-failed", &[("e", &e)]));
         }
     }
 }
@@ -943,7 +942,7 @@ async fn do_kind_publish(
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Error(e.clone()));
             }
-            state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]))
+            state.push_error(tf("msg-kind-publish-failed", &[("e", &e)]));
         }
     }
 }

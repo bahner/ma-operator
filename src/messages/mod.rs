@@ -10,8 +10,8 @@ use ma_core::{
 
 /// Convert a YAML string into a DAG-CBOR byte vector.
 ///
-/// Flow: YAML → `serde_json::Value` (via serde_yaml) → DAG-CBOR bytes
-/// (via serde_ipld_dagcbor).  The resulting bytes can be sent directly
+/// Flow: YAML → `serde_json::Value` (via `serde_yaml`) → DAG-CBOR bytes
+/// (via `serde_ipld_dagcbor`).  The resulting bytes can be sent directly
 /// to the runtime's `:entities.<name>:edit` RPC verb, which will
 /// `dag_put` them and register the entity.
 ///
@@ -42,7 +42,7 @@ pub fn yaml_any_to_dag_cbor(yaml: &str) -> Result<Vec<u8>, String> {
 
 /// Convert a YAML string into a `ciborium::Value`.
 ///
-/// Flow: YAML → `serde_json::Value` (via serde_yaml) → `ciborium::Value`.
+/// Flow: YAML → `serde_json::Value` (via `serde_yaml`) → `ciborium::Value`.
 /// Handles scalars, sequences, and mappings — unlike [`yaml_to_dag_cbor`]
 /// this accepts any valid YAML, not only objects/maps.
 ///

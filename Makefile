@@ -77,7 +77,8 @@ js-bundle:
 
 test:
 	cargo test
-	cargo clippy --target wasm32-unknown-unknown -- -D warnings
+	cargo clippy --all-targets -- -W clippy::pedantic -D warnings
+	cargo clippy --target wasm32-unknown-unknown -- -W clippy::pedantic -D warnings
 
 twiggy: $(WASM)
 	twiggy top -n 40 $(WASM)

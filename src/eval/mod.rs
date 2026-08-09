@@ -104,42 +104,39 @@ async fn resolve_and_traverse(
 ) {
     // Check cache first.
     let cached = cache.with_untracked(|m| m.get(link).cloned());
-    let doc = match cached {
-        Some(v) => v,
-        None => {
-            let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
-                // Use the session resolver — it owns the gateway URL, has a
-                // positive cache, and falls back to public gateways automatically.
-                let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
-                else {
-                    state.push_error(t("msg-link-not-connected"));
-                    return;
-                };
-                resolver
-                    .resolve(link)
-                    .await
-                    .map_err(|e| e.to_string())
-                    .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
-            } else {
-                // Bare CID (IPLD link value) — fetch from local gateway.
-                match crate::http::fetch_cid_text(link).await {
-                    Ok(t) => {
-                        serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
-                    }
-                    Err(e) => Err(e),
-                }
+    let doc = if let Some(v) = cached { v } else {
+        let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
+            // Use the session resolver — it owns the gateway URL, has a
+            // positive cache, and falls back to public gateways automatically.
+            let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone())
+            else {
+                state.push_error(t("msg-link-not-connected"));
+                return;
             };
-            match val {
-                Ok(v) => {
-                    cache.update(|m| {
-                        m.insert(link.to_string(), v.clone());
-                    });
-                    v
+            resolver
+                .resolve(link)
+                .await
+                .map_err(|e| e.to_string())
+                .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
+        } else {
+            // Bare CID (IPLD link value) — fetch from local gateway.
+            match crate::http::fetch_cid_text(link).await {
+                Ok(t) => {
+                    serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string())
                 }
-                Err(e) => {
-                    state.push_error(tf("msg-link-fetch-error", &[("e", &e)]));
-                    return;
-                }
+                Err(e) => Err(e),
+            }
+        };
+        match val {
+            Ok(v) => {
+                cache.update(|m| {
+                    m.insert(link.to_string(), v.clone());
+                });
+                v
+            }
+            Err(e) => {
+                state.push_error(tf("msg-link-fetch-error", &[("e", &e)]));
+                return;
             }
         }
     };
@@ -147,12 +144,9 @@ async fn resolve_and_traverse(
     // Traverse subpath keys into the JSON document.
     let mut cur = &doc;
     for key in subpath.split(['/', '.']) {
-        match cur.get(key) {
-            Some(v) => cur = v,
-            None => {
-                state.push_error(tf("msg-link-key-not-found", &[("key", key)]));
-                return;
-            }
+        if let Some(v) = cur.get(key) { cur = v } else {
+            state.push_error(tf("msg-link-key-not-found", &[("key", key)]));
+            return;
         }
     }
     let display = match cur {
@@ -354,9 +348,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             return;
         }
         let (entry_runtime, requested_room) = target_actor
-            .split_once('#')
-            .map(|(runtime, _)| (runtime.to_string(), Some(target_actor.clone())))
-            .unwrap_or_else(|| (target_actor.clone(), None));
+            .split_once('#').map_or_else(|| (target_actor.clone(), None), |(runtime, _)| (runtime.to_string(), Some(target_actor.clone())));
 
         if let Some(room_actor) = requested_room.as_ref() {
             if state2.was_cancelled_since(cancel_epoch) {
@@ -393,7 +385,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             return;
         }
 
-        let entry_runtime = entry_runtime.to_string();
+        let entry_runtime = entry_runtime.clone();
         let root = format!("{entry_runtime}#root");
         let enter_args = enter_args_root(
             requested_room.as_deref(),
@@ -532,9 +524,7 @@ fn build_enter_ctx(
 ) -> SchemeVal {
     let username = state
         .session
-        .get_untracked()
-        .map(|s| s.username)
-        .unwrap_or_else(|| "traveler".to_string());
+        .get_untracked().map_or_else(|| "traveler".to_string(), |s| s.username);
     let name = trim_or_fallback(
         cfg.get(".my.profile.name")
             .map(str::to_string)
@@ -775,7 +765,7 @@ fn lazy_link_traverse(
     }
 }
 
-/// Return (link_value, sub_path) for the nearest ancestor that holds a DID/CID link.
+/// Return (`link_value`, `sub_path`) for the nearest ancestor that holds a DID/CID link.
 fn find_link_ancestor(path: &str, cfg: &crate::config::EgoConfig) -> Option<(String, String)> {
     let mut split_pos = path.len();
     while let Some(dot) = path[..split_pos].rfind('.') {
@@ -815,9 +805,7 @@ fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
         .or_else(|| cfg.get(".my.ctx.alias"))
         .unwrap_or_default();
     let base = cfg
-        .reverse_alias(runtime)
-        .map(|a| format!("@{a}"))
-        .unwrap_or_else(|| format!("@{runtime}"));
+        .reverse_alias(runtime).map_or_else(|| format!("@{runtime}"), |a| format!("@{a}"));
     if nick.is_empty() {
         base
     } else {

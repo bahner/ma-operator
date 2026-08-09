@@ -39,7 +39,7 @@ pub(super) fn handle_identity(
                     state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));
                 }
                 Ok(None) => {
-                    state2.push_error(tf("error-identity-not-found", &[("name", &username)]))
+                    state2.push_error(tf("error-identity-not-found", &[("name", &username)]));
                 }
                 Err(e) => state2.push_error(tf("identity-export-failed", &[("e", &e)])),
             }
@@ -53,7 +53,7 @@ pub(super) fn handle_identity(
         }
         let cfg = config.get_untracked();
         let publisher = resolve_bare_did(&args[0], &cfg)?;
-        let publisher_disp = args[0].to_string();
+        let publisher_disp = args[0].clone();
         let cmd_id = state.push_command(format!(".my.identity!publish {publisher_disp}"));
         let state2 = state.clone();
         leptos::task::spawn_local(async move {
