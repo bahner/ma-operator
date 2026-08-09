@@ -4,8 +4,8 @@
 ///
 /// Output: `$OUT_DIR/supported_langs.rs`
 /// Usage in `src/i18n.rs`:
-///   include!(concat!(env!("OUT_DIR"), "/supported_langs.rs"));
-use std::{env, fs, path::Path};
+///   `include!(concat!(env!("OUT_DIR"), "/supported_langs.rs"));`
+use std::{env, fmt::Write as _, fs, path::Path};
 
 fn main() {
     let manifest_dir = env::var("CARGO_MANIFEST_DIR").unwrap();
@@ -59,7 +59,7 @@ fn main() {
     );
     for (code, name) in &entries {
         let name_esc = name.replace('\\', "\\\\").replace('"', "\\\"");
-        src.push_str(&format!("    (\"{code}\", \"{name_esc}\"),\n"));
+        let _ = writeln!(src, "    (\"{code}\", \"{name_esc}\"),");
     }
     src.push_str("];\n");
 

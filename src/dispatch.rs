@@ -663,12 +663,27 @@ fn dispatch_eval_line(
             }
             if after > before {
                 let new_cmd_id = after - 1;
-                if let Some(bid) = batch_id {
-                    state.cmd_to_batch.update(|m| {
-                        m.insert(new_cmd_id, bid);
-                    });
+                let waits_for_reply = state.entries.with_untracked(|entries| {
+                    entries.iter().find_map(|entry| match entry {
+                        crate::core::Entry::Command(command) if command.id == new_cmd_id => {
+                            Some(matches!(
+                                command.status.get_untracked(),
+                                CommandStatus::Sent | CommandStatus::Publishing
+                            ))
+                        }
+                        _ => None,
+                    })
+                });
+                if waits_for_reply.unwrap_or(false) {
+                    if let Some(bid) = batch_id {
+                        state.cmd_to_batch.update(|m| {
+                            m.insert(new_cmd_id, bid);
+                        });
+                    }
+                    Some(new_cmd_id)
+                } else {
+                    None
                 }
-                Some(new_cmd_id)
             } else {
                 None
             }
@@ -842,9 +857,16 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
 #[cfg(test)]
 mod tests {
     use super::{
-        complete_scheme_input, focus_scheme_form, is_note_line, should_display_scheme_value,
+        complete_scheme_input, dispatch_eval_line, focus_scheme_form, is_note_line,
+        should_display_scheme_value,
     };
+    use crate::config::EgoConfig;
+    use crate::core::{CommandStatus, Entry};
     use crate::scheme::SchemeVal;
+    use crate::state::AppState;
+    use crate::views::editor::EditorContext;
+    use leptos::prelude::*;
+    use std::sync::{Arc, Mutex};
 
     #[test]
     fn semicolon_led_lines_are_terminal_notes() {
@@ -922,5 +944,51 @@ mod tests {
         assert_eq!(focus_scheme_form(".my.z.avatar", true), None);
         assert_eq!(focus_scheme_form("(look)", true), None);
         assert_eq!(focus_scheme_form("look north", false), None);
+    }
+
+    #[test]
+    fn doc_eval_step_is_not_treated_as_pending_batch_reply() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.doc.scratch", "say hello\n");
+        let config = RwSignal::new(cfg);
+        let state = AppState::new();
+        let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);
+
+        let seen = Arc::new(Mutex::new(Vec::<String>::new()));
+        let seen2 = Arc::clone(&seen);
+        let on_eval = Callback::new(move |text: String| {
+            seen2
+                .lock()
+                .expect("test callback mutex poisoned")
+                .push(text);
+        });
+
+        let cmd_id = dispatch_eval_line(
+            ".my.doc.scratch!eval",
+            &state,
+            config,
+            show_editor,
+            on_eval,
+            Some(42),
+        );
+
+        // !eval should complete immediately, so sync batch must not wait on it.
+        assert_eq!(cmd_id, None);
+        assert!(state.cmd_to_batch.get_untracked().is_empty());
+
+        let entries = state.entries.get_untracked();
+        let Some(Entry::Command(command)) = entries
+            .iter()
+            .find(|entry| matches!(entry, Entry::Command(c) if c.raw == ".my.doc.scratch!eval"))
+        else {
+            panic!("expected .my.doc.scratch!eval command entry");
+        };
+        assert!(matches!(
+            command.status.get_untracked(),
+            CommandStatus::Done
+        ));
+
+        let captured = seen.lock().expect("test callback mutex poisoned");
+        assert_eq!(captured.as_slice(), ["say hello\n"]);
     }
 }

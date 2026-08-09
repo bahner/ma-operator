@@ -96,3 +96,9 @@ green on success, and turns red with the bootstrap error on failure.
 
 It does not print the values of `define` or `include` forms. Verify a loaded
 binding with a Scheme expression such as `(begin foo)`.
+
+## Is a trailing newline required in saved eval source?
+
+Yes. Any source executed via `!eval` should end with a trailing newline.
+Missing trailing newline is invalid source data, because line-oriented flows
+can otherwise drop or delay the last logical line.

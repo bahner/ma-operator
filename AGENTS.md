@@ -274,6 +274,10 @@ at a time**.  Each Scheme expression is fully expanded (including any CID
 fetches) before the next line starts.  This guarantees that defines loaded
 via `(<bafy…>)` or `(include …)` are available to subsequent lines.
 
+All stored eval sources are required to end with a trailing newline (`\n`).
+Treat missing trailing newline as invalid source data, because it can cause the
+final logical line to be dropped or delayed by line-oriented tooling.
+
 ### Session environment
 
 `(define …)` bindings persist for the login session.  The environment is
