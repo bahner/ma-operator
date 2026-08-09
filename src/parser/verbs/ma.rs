@@ -570,10 +570,29 @@ pub(crate) async fn do_publish(
             return false;
         }
     };
+    let profile_key = match crate::state::SESSION_PROFILE_KEY.with(|k| k.borrow().as_ref().copied())
+    {
+        Some(key) => key,
+        None => {
+            state.push_error(tf(
+                "profile-publish-failed",
+                &[("e", "missing profile encryption key for this session")],
+            ));
+            return false;
+        }
+    };
+    let encrypted_profile =
+        match crate::profile_crypto::encrypt_with_key(&profile_bytes, &profile_key) {
+            Ok(bytes) => bytes,
+            Err(e) => {
+                state.push_error(tf("profile-publish-failed", &[("e", &e)]));
+                return false;
+            }
+        };
     match crate::transport::send_ipfs_store(
         &publisher,
-        profile_bytes,
-        "application/vnd.ipld.dag-cbor",
+        encrypted_profile,
+        "application/octet-stream",
     )
     .await
     {

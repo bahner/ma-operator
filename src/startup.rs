@@ -31,7 +31,14 @@ pub(crate) async fn startup_profile_exists(
         Ok(b) => b,
         Err(_) => return,
     };
-    let profile_val: serde_json::Value = match serde_ipld_dagcbor::from_slice(&cbor_bytes) {
+    // Temporary backward compatibility: during migration we still accept
+    // legacy plaintext DAG-CBOR profile blobs if decryption fails.
+    // Remove after 2026-08-20.
+    let decoded = crate::state::SESSION_PROFILE_KEY
+        .with(|k| k.borrow().as_ref().copied())
+        .and_then(|key| crate::profile_crypto::decrypt_with_key(&cbor_bytes, &key).ok())
+        .unwrap_or(cbor_bytes);
+    let profile_val: serde_json::Value = match serde_ipld_dagcbor::from_slice(&decoded) {
         Ok(v) => v,
         Err(_) => return,
     };

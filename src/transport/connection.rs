@@ -14,7 +14,8 @@ use crate::messages::{format_crud_reply, format_incoming, format_rpc_reply, Inco
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
     SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LOCAL_IPFS,
-    SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX, SESSION_SENDER_DID,
+    SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -120,6 +121,7 @@ pub fn disconnect() {
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
+    SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
 }

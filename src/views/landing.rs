@@ -11,7 +11,8 @@ use crate::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
         save_config, save_identity, storage::load_config, unlock_identity_migrating,
     },
-    state::{AppState, SessionState, SESSION_LOCAL_IPFS},
+    profile_crypto,
+    state::{AppState, SessionState, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY},
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
@@ -203,9 +204,11 @@ pub fn Landing() -> impl IntoView {
     fn finish_login(
         id: crate::identity::UnlockedIdentity,
         uname: String,
-        _pass: String,
+        pass: String,
         state: AppState,
     ) {
+        let profile_key = profile_crypto::derive_key(&pass);
+        SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = Some(profile_key));
         save_last_did(&id.sender_did);
         state.session.set(Some(SessionState {
             username: uname,
@@ -391,11 +394,23 @@ pub fn Landing() -> impl IntoView {
                                     Some(profile_cid) => {
                                         match crate::http::fetch_cid_bytes(&profile_cid).await {
                                             Ok(cbor) => {
+                                                let profile_key = profile_crypto::derive_key(&pass);
+                                                // Temporary backward compatibility: during migration
+                                                // we still accept legacy plaintext DAG-CBOR profile
+                                                // blobs if decryption fails.
+                                                // Remove after 2026-08-20.
+                                                let decoded = match profile_crypto::decrypt_with_key(
+                                                    &cbor,
+                                                    &profile_key,
+                                                ) {
+                                                    Ok(plain) => plain,
+                                                    Err(_) => cbor.clone(),
+                                                };
                                                 // Decode DAG-CBOR → nested profile.
                                                 let parsed_opt = serde_ipld_dagcbor::from_slice::<
                                                     serde_json::Value,
                                                 >(
-                                                    &cbor
+                                                    &decoded
                                                 )
                                                 .ok()
                                                 .and_then(|profile_val| {

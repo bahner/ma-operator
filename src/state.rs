@@ -715,6 +715,9 @@ thread_local! {
     /// Language preference chain for this session, e.g. `"nb_NO:en_GB:en"`.
     /// Injected into the `ma["lang"]` field of the published DID document.
     pub static SESSION_LANG: RefCell<Option<String>> = const { RefCell::new(None) };
+    /// Profile encryption key derived from the current login passphrase.
+    /// Used to encrypt/decrypt the profile blob stored in IPFS.
+    pub static SESSION_PROFILE_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
     /// Shared DID resolver — created once at connect() so its cache is
     /// reused across all concurrent sends instead of each call fetching
     /// the same DID document from scratch.

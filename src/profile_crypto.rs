@@ -8,6 +8,7 @@ use chacha20poly1305::{
     aead::{Aead, Payload},
     KeyInit, XChaCha20Poly1305, XNonce,
 };
+use getrandom::fill as fill_random;
 use pbkdf2::pbkdf2_hmac;
 use sha2::Sha256;
 
@@ -24,6 +25,26 @@ pub fn derive_key(passphrase: &str) -> [u8; 32] {
     let mut key = [0u8; 32];
     pbkdf2_hmac::<Sha256>(passphrase.as_bytes(), SALT, ROUNDS, &mut key);
     key
+}
+
+/// Encrypt with an already-derived key (used when publishing profile blobs).
+pub fn encrypt_with_key(plaintext: &[u8], key: &[u8; 32]) -> Result<Vec<u8>, String> {
+    let mut nonce_bytes = [0u8; 24];
+    fill_random(&mut nonce_bytes).map_err(|e| format!("{e}"))?;
+    let nonce = XNonce::from_slice(&nonce_bytes);
+    let cipher = XChaCha20Poly1305::new_from_slice(key).map_err(|e| format!("{e}"))?;
+    let mut out = nonce_bytes.to_vec();
+    let ciphertext = cipher
+        .encrypt(
+            nonce,
+            Payload {
+                msg: plaintext,
+                aad: AAD,
+            },
+        )
+        .map_err(|e| format!("{e}"))?;
+    out.extend_from_slice(&ciphertext);
+    Ok(out)
 }
 
 /// Decrypt with an already-derived key (used during active session).
