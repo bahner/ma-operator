@@ -61,6 +61,9 @@ fn route_incoming(
     if handle_client_term(&incoming, state, config) {
         return;
     }
+    if handle_hold_parent_proposal(&incoming, state, config) {
+        return;
+    }
     if handle_unsolicited_rpc(&incoming, state) {
         return;
     }
@@ -496,6 +499,86 @@ fn handle_inbox_message(
         false,
     );
     true
+}
+
+/// Recognise a `:parent <ctx>` proposal addressed to our own DID and resolve
+/// the client-side `hold` state machine (see avatar.zscheme's `hold`/`take`):
+/// confirm a pending hold by replying `:child`, or clear a completed hold on
+/// its departure-notice re-announcement to a different parent. Returns true
+/// when handled (still unsolicited RPC either way, so always swallowed).
+fn handle_hold_parent_proposal(
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> bool {
+    if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
+        return false;
+    }
+    let Ok(ciborium::Value::Array(items)) =
+        ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
+    else {
+        return false;
+    };
+    if term_head(&items) != Some(":parent") {
+        return false;
+    }
+    let Some(ctx_value) = items.get(1) else {
+        return false;
+    };
+    let ciborium::Value::Map(entries) = ctx_value else {
+        return false;
+    };
+    let Some(actor) = map_text(entries, "actor").map(str::to_string) else {
+        return false;
+    };
+    let claimed_parent = map_text(entries, "parent").unwrap_or("").to_string();
+    let own_did = transport::get_sender_did().unwrap_or_default();
+    let cfg = config.get_untracked();
+    let pending = cfg.get(".my.ctx.hold-pending").unwrap_or("").to_string();
+    let held = cfg.get(".my.ctx.hold").unwrap_or("").to_string();
+    let hold_then = cfg.get(".my.ctx.hold-then").unwrap_or("").to_string();
+
+    if !pending.is_empty() && pending == actor && claimed_parent == own_did {
+        let ctx_val = cbor_to_scheme_val(ctx_value);
+        let proposer = incoming.from.clone();
+        config.update(|cfg| {
+            cfg.set(".my.ctx.hold", &actor);
+            cfg.delete(".my.ctx.hold-pending");
+            cfg.delete(".my.ctx.hold-then");
+        });
+        spawn_persist_config(state, config);
+        spawn_local(async move {
+            let _ = transport::send_rpc_vals(&proposer, "child", &[ctx_val]).await;
+            if !hold_then.is_empty() {
+                let _ = transport::send_rpc(&proposer, "set-parent", &[hold_then.as_str()]).await;
+            }
+        });
+        return true;
+    }
+
+    if !held.is_empty() && held == actor && claimed_parent != own_did {
+        config.update(|cfg| {
+            cfg.delete(".my.ctx.hold");
+        });
+        spawn_persist_config(state, config);
+        return true;
+    }
+
+    false
+}
+
+/// Save the current config snapshot for the logged-in session, if any.
+fn spawn_persist_config(state: &AppState, config: RwSignal<EgoConfig>) {
+    let Some(session) = state.session.get_untracked() else {
+        return;
+    };
+    let username = session.username.clone();
+    let config_to_persist = config.get_untracked();
+    spawn_local(async move {
+        if let Err(error) = persist_config(&username, &config_to_persist).await {
+            web_sys::console::error_1(&format!("hold state persist: {error}").into());
+        }
+    });
 }
 
 /// Auto-pong :ping; silently drop all other unsolicited RPC. Returns true when handled.
