@@ -847,9 +847,13 @@ fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
         .get(".my.ctx.nick")
         .or_else(|| cfg.get(".my.ctx.alias"))
         .unwrap_or_default();
+    let target = cfg
+        .get(".my.ctx.room")
+        .filter(|room| !room.is_empty())
+        .unwrap_or(runtime);
     let base = cfg
-        .reverse_alias(runtime)
-        .map_or_else(|| format!("@{runtime}"), |a| format!("@{a}"));
+        .alias_display(target)
+        .unwrap_or_else(|| format!("@{target}"));
     if nick.is_empty() {
         base
     } else {
@@ -1108,6 +1112,29 @@ mod tests {
         assert_eq!(
             state.focus_actor.get_untracked().unwrap().prompt,
             "avatar@ma"
+        );
+    }
+
+    #[test]
+    fn focus_prompt_updates_when_room_changes() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.nick", "avatar");
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#garden");
+        let state = AppState::new();
+
+        apply_ctx_focus(&cfg, &state);
+        assert_eq!(
+            state.focus_actor.get_untracked().unwrap().prompt,
+            "avatar@ma#garden"
+        );
+
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#house");
+        apply_ctx_focus(&cfg, &state);
+        assert_eq!(
+            state.focus_actor.get_untracked().unwrap().prompt,
+            "avatar@ma#house"
         );
     }
 

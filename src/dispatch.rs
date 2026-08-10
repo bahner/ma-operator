@@ -908,7 +908,8 @@ fn normalize_ipfs_reference_token(token: &str) -> Option<String> {
 mod tests {
     use super::{
         attach_command_to_batch, complete_scheme_input, is_batch_delimiter_line,
-        is_focus_shorthand_command, is_note_line, scheme_error_message, should_display_scheme_value,
+        is_focus_shorthand_command, is_note_line, scheme_error_message,
+        should_display_scheme_value,
     };
     use crate::core::CommandStatus;
     use crate::scheme::{split_words, SchemeVal};
@@ -990,7 +991,10 @@ mod tests {
     fn split_words_collapses_a_quoted_phrase_into_one_token() {
         assert_eq!(
             split_words("say \"hello there\""),
-            vec![("say".to_string(), false), ("hello there".to_string(), true)]
+            vec![
+                ("say".to_string(), false),
+                ("hello there".to_string(), true)
+            ]
         );
     }
 
