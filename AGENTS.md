@@ -3,6 +3,8 @@
 ## Agent rules
 
 - **Never modify files outside the current workspace without explicit user approval.** Always ask first.
+- Write DRY, KISS code: avoid duplicated logic and prefer the simplest
+  implementation that meets the requirement.
 - Use British English for project-owned naming and prose in Rust code, UI text,
   i18n keys, docs, and local protocols. Prefer `behaviour`, `authorise`,
   `authorised`, `authorisation`, `initialise`, `initialised`, `serialise`,
