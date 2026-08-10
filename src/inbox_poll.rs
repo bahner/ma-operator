@@ -898,6 +898,73 @@ mod tests {
         assert!(did_entry_reply(&incomplete_content).is_none());
     }
 
+    #[test]
+    fn matching_entry_reply_updates_focus_prompt() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
+        let config = RwSignal::new(cfg);
+        let room = "did:ma:k51runtime#garden";
+        let cmd_id = state.push_command(format!(".enter {room}"));
+        state.pending_enter.set(Some(crate::state::PendingEnter {
+            cmd_id: Some(cmd_id),
+            desired_runtime: "did:ma:k51runtime".to_string(),
+            desired_room: room.to_string(),
+            issued_at_ms: 0.0,
+            visible: true,
+        }));
+        state.pending_requests.update(|requests| {
+            requests.insert(
+                "request-1".to_string(),
+                crate::state::TrackedRequest {
+                    kind: PendingKind::Simple { cmd_id },
+                    batch_id: None,
+                    sent_at_ms: 0.0,
+                },
+            );
+        });
+        let reply = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":ok".to_string()),
+            ciborium::Value::Map(vec![
+                (
+                    ciborium::Value::Text("parent".to_string()),
+                    ciborium::Value::Text(room.to_string()),
+                ),
+                (
+                    ciborium::Value::Text("name".to_string()),
+                    ciborium::Value::Text("Alice".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("nick".to_string()),
+                    ciborium::Value::Text("Alice".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("description".to_string()),
+                    ciborium::Value::Text("A visitor.".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("rev".to_string()),
+                    ciborium::Value::Integer(1.into()),
+                ),
+            ]),
+        ]);
+        let mut incoming = incoming(room, "");
+        ciborium::ser::into_writer(&reply, &mut incoming.content).unwrap();
+
+        assert!(handle_did_entry_reply(
+            "request-1",
+            &incoming,
+            &state,
+            config
+        ));
+        assert_eq!(config.get_untracked().get(".my.ctx.room"), Some(room));
+        assert_eq!(
+            state.focus_actor.get_untracked().unwrap().prompt,
+            "Alice@ma#garden"
+        );
+    }
+
     #[cfg(any())]
     #[test]
     fn ctx_receipt_applies_flat_avatar_ctx_fields() {

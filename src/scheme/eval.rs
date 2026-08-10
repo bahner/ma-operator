@@ -54,12 +54,14 @@ impl SchemeCtx for EvalCtx {
                 }
                 DotOp::Set(val) => {
                     self.config.update(|c| c.set(&path, &val));
+                    self.refresh_focus(&path);
                     Ok(SchemeVal::Nil)
                 }
                 DotOp::Delete => {
                     self.config.update(|c| {
                         c.delete_subtree(&path);
                     });
+                    self.refresh_focus(&path);
                     Ok(SchemeVal::Nil)
                 }
                 // Side-effect verbs are queued back to the terminal input.
@@ -255,5 +257,62 @@ impl SchemeCtx for EvalCtx {
         let target = target.to_string();
         let body = body.to_string();
         Box::pin(async move { crate::transport::send_text(&target, &body).await })
+    }
+}
+
+impl EvalCtx {
+    fn refresh_focus(&self, path: &str) {
+        if path.starts_with(".my.ctx") {
+            crate::eval::apply_ctx_focus(&self.config.get_untracked(), &self.state);
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use leptos::prelude::GetUntracked;
+
+    #[test]
+    fn scheme_ctx_setter_updates_focus_prompt_location() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.nick", "avatar");
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#garden");
+        let ctx = EvalCtx {
+            state: AppState::new(),
+            config: RwSignal::new(cfg),
+        };
+        crate::eval::apply_ctx_focus(&ctx.config.get_untracked(), &ctx.state);
+
+        ctx.eval_dot(".my.ctx.room: did:ma:k51runtime#house")
+            .unwrap();
+
+        assert_eq!(
+            ctx.state.focus_actor.get_untracked().unwrap().prompt,
+            "avatar@ma#house"
+        );
+    }
+
+    #[test]
+    fn scheme_ctx_delete_updates_focus_prompt_nick() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#garden");
+        cfg.set(".my.ctx.nick", "avatar");
+        cfg.set(".my.aliases.ma", "did:ma:k51runtime");
+        let ctx = EvalCtx {
+            state: AppState::new(),
+            config: RwSignal::new(cfg),
+        };
+        crate::eval::apply_ctx_focus(&ctx.config.get_untracked(), &ctx.state);
+
+        ctx.eval_dot(".my.ctx.nick:").unwrap();
+
+        assert_eq!(
+            ctx.state.focus_actor.get_untracked().unwrap().prompt,
+            "@ma#garden"
+        );
     }
 }
