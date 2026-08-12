@@ -118,6 +118,15 @@ pub enum PendingKind {
         cmd_id: Option<u64>,
         reenter_saved_ctx: bool,
     },
+    /// House `:did-ctx?` reply for a bare-runtime `.enter` should resume
+    /// direct room entry against the discovered `parent` room DID-URL.
+    HouseDiscovery {
+        entry_runtime: String,
+        cmd_id: u64,
+        effective_nick: Option<String>,
+        enter_kind: Option<String>,
+        inventory: Option<String>,
+    },
 }
 
 impl PendingKind {
@@ -132,6 +141,7 @@ impl PendingKind {
             PendingKind::IpfsKindUpsert { cmd_id, .. } => *cmd_id,
             PendingKind::IpfsActorBehaviour { cmd_id, .. } => *cmd_id,
             PendingKind::ProfilePublish { cmd_id, .. } => *cmd_id,
+            PendingKind::HouseDiscovery { cmd_id, .. } => Some(*cmd_id),
         }
     }
 }

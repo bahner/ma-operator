@@ -125,6 +125,50 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
     }
 }
 
+// ── Room entry ─────────────────────────────────────────────────────────────
+
+/// House `:did-ctx?` reply for a bare-runtime `.enter`: on a known previous
+/// room (`ctx.parent`), resume direct room entry there; otherwise there is no
+/// protocol-level default room, so fail with an actionable message.
+#[allow(clippy::too_many_arguments)]
+pub(crate) fn handle_house_discovery_reply(
+    entry_runtime: String,
+    cmd_id: u64,
+    effective_nick: Option<String>,
+    enter_kind: Option<String>,
+    inventory: Option<String>,
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) {
+    let Some(room) = crate::inbox_poll::did_entry_reply(&incoming.content) else {
+        fail_cmd(
+            state,
+            Some(cmd_id),
+            format!(
+                "no known room in this world yet; ask for a room address, e.g. .enter <nick>@{entry_runtime}#construct"
+            ),
+        );
+        return;
+    };
+    let state2 = state.clone();
+    let cancel_epoch = state.cancel_epoch();
+    spawn_local(async move {
+        crate::eval::enter_room(
+            &state2,
+            config,
+            cmd_id,
+            cancel_epoch,
+            &entry_runtime,
+            &room.parent,
+            effective_nick.as_deref(),
+            enter_kind.as_deref(),
+            inventory.as_deref(),
+        )
+        .await;
+    });
+}
+
 // ── Profile publish ────────────────────────────────────────────────────────
 
 /// Profile-publish reply: the encrypted blob CID is now stored — republish DID doc.

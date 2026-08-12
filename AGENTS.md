@@ -133,10 +133,17 @@ Makefile
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
 - [x] Embedded Scheme evaluator — `(…)` expressions in any command line
+- [x] `hold` object-transfer state machine (`.my.ctx.hold*`, see below) —
+      confirms/clears lambda-ma `:set-parent` proposals for avatar.zscheme's
+      `hold`/`take`/`drop`/`put`/`take-from`
+- [x] `.enter @runtime` default-room discovery — a bare-runtime `.enter`
+      queries `#house`'s `:did-ctx?` for our own DID and resumes direct room
+      entry against the discovered `parent` room; a runtime with no recorded
+      ctx yet fails with an actionable message (there is no protocol-level
+      default room)
 
 ## Pending / not yet implemented
 
-- [ ] `.enter @runtime` ma-space entry polish — room-aware prompt and entry affordances
 - [ ] Alias colour rendering in input field
 - [ ] `.my.doc.<name>!publish` — `application/vnd.ma.ipfs.request` protocol
 - [ ] `.my.home` — default actor context
@@ -729,6 +736,9 @@ Auto-seeded from `navigator.language` on first login if absent.
 Changing it (`.my.i18n: sv`) takes effect immediately and persists.
 Also included in the published DID document as `ma.lang`.
 
+`.my.ctx.hold` / `.my.ctx.hold-pending` / `.my.ctx.hold-then` — see
+"Hold — client-side object-transfer state" below.
+
 ---
 
 ## Build & deploy
@@ -815,4 +825,46 @@ by message ID, not filtered by sender.
 `.my.acl!edit` opens `EditorMode::ConfigEdit { key: ACL_KEY.to_string() }`
 in YAML mode. On save the value is written directly to `EgoConfig` (not via
 the document `.content` path). Takes effect on the next poll tick.
+
+---
+
+## Hold — client-side object-transfer state
+
+lambda-ma's actors (thing/container/agent) take no name argument for
+transfer — they accept only `:set-parent <target-parent-did-url> [ctx]` sent
+directly to the object, confirmed via the ordinary `/ma/node/0.0.1`
+`:parent`/`:child` handshake (ma-spec `runtime/ma-lambda-ma-v1.md` section 6).
+`hold` is zion's client-side answer to who to confirm as, and when to stop
+holding it: a single-slot pointer to whatever actor DID-URL zion currently
+acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
+
+```
+.my.ctx.hold          the actor DID-URL zion is currently holding (parent of)
+.my.ctx.hold-pending  the actor DID-URL zion is waiting to become parent of
+.my.ctx.hold-then     optional follow-up target for take's second hop
+```
+
+avatar.zscheme's `hold`/`take`/`take-from` send `:set-parent <my-did>` to the
+resolved item and set `.my.ctx.hold-pending` (`take` additionally sets
+`.my.ctx.hold-then` to the caller's own inventory, so confirmation can
+immediately relay a second `:set-parent` and land the item there). `drop`/
+`put` act on whatever `.my.ctx.hold` currently holds — there is no name
+argument, only one thing can be held at a time.
+
+`handle_hold_parent_proposal` in `src/inbox_poll.rs` recognises an unsolicited
+`:parent <ctx>` addressed to our own DID and resolves the state machine:
+
+- If `ctx.actor` matches `.my.ctx.hold-pending` and `ctx.parent` is our own
+  DID, reply `:child <ctx>` to confirm, promote `hold-pending` to `hold`,
+  clear `hold-pending`/`hold-then`, and — if `hold-then` was set — immediately
+  fire a follow-up `:set-parent <hold-then>` to the now-held item.
+- If `ctx.actor` matches `.my.ctx.hold` and `ctx.parent` is no longer our own
+  DID (a departure re-announcement to a new parent), clear `.my.ctx.hold`.
+- Otherwise the message is not a hold proposal; fall through to normal
+  unsolicited-RPC handling.
+
+Both branches always return `true` (swallowed) — an unsolicited `:parent` is
+never displayed to the user directly; the visible outcome is a `:print` event
+from the actor's own authoritative state change (lambda-ma's RPC-vs-print
+rule), not this technical confirm/clear plumbing.
 

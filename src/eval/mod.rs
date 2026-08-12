@@ -19,7 +19,7 @@ use crate::{
     i18n::{msg_jobs_cancelled, t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
-    state::{AppState, FocusMode},
+    state::{AppState, FocusMode, PendingKind},
     transport,
     views::editor::EditorContext,
 };
@@ -363,76 +363,137 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
             |(runtime, _)| (runtime.to_string(), Some(target_actor.clone())),
         );
 
-        if let Some(room_actor) = requested_room.as_ref() {
-            if state2.was_cancelled_since(cancel_epoch) {
-                return;
-            }
-            state2.set_pending_enter(cmd_id, entry_runtime.clone(), room_actor.clone());
-            let send_result = if enter_kind.is_none() {
-                let enter_args = did_enter_args(effective_nick.as_deref(), inventory.as_deref());
-                transport::send_rpc(room_actor, "enter", &enter_args).await
-            } else {
-                let enter_args = build_enter_ctx(
-                    &state2,
-                    effective_nick.as_deref(),
-                    enter_kind
-                        .as_deref()
-                        .expect("direct enter kind is checked above"),
-                    &cfg,
-                );
-                transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await
-            };
-            if state2.was_cancelled_since(cancel_epoch) {
-                return;
-            }
-            match send_result {
-                Ok(msg_id) => {
-                    state2.bind_message_id(cmd_id, msg_id);
-                }
-                Err(e) => {
-                    state2.clear_pending_enter();
-                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                    state2.push_error(tf("msg-send-failed", &[("e", &e)]));
-                }
-            }
+        if let Some(room_actor) = requested_room {
+            enter_room(
+                &state2,
+                config,
+                cmd_id,
+                cancel_epoch,
+                &entry_runtime,
+                &room_actor,
+                effective_nick.as_deref(),
+                enter_kind.as_deref(),
+                inventory.as_deref(),
+            )
+            .await;
             return;
         }
 
-        let entry_runtime = entry_runtime.clone();
-        let root = format!("{entry_runtime}#root");
-        let enter_args = enter_args_root(
-            requested_room.as_deref(),
-            effective_nick.as_deref(),
-            inventory.as_deref(),
-        );
-        if state2.was_cancelled_since(cancel_epoch) {
-            state2.resolve_command_by_id(cmd_id, CommandStatus::Error("cancelled".to_string()));
-            return;
-        }
-        config.update(|c| {
-            c.set(".my.ctx.runtime", &entry_runtime);
-            c.set(".my.ctx.root", &root);
-            c.delete(".my.ctx.room");
-        });
-        state2.focus_actor.set(None);
-        let bind_state = state2.clone();
-        match transport::send_rpc_with_msg_id(&root, "enter", &enter_args, move |msg_id| {
-            if !bind_state.was_cancelled_since(cancel_epoch) {
-                bind_state.bind_message_id(cmd_id, msg_id);
-            }
-        })
-        .await
-        {
-            Ok(_) => {}
-            Err(e) => {
-                if state2.was_cancelled_since(cancel_epoch) {
-                    return;
-                }
-                state2.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
-                state2.push_error(tf("msg-send-failed", &[("e", &e)]));
-            }
-        }
+        // A bare runtime has no default room on the wire (lambda-ma
+        // REFERENCE.md "Entry and room API"): root no longer implements
+        // :enter. Ask house whether it remembers a previous room for our own
+        // DID and, if so, resume entry there via `enter_room`.
+        discover_and_enter_room(
+            &state2,
+            cmd_id,
+            cancel_epoch,
+            entry_runtime,
+            effective_nick,
+            enter_kind,
+            inventory,
+        )
+        .await;
     });
+}
+
+/// Send `:enter` directly to a known room and track the reply via
+/// `pending_enter`/`handle_did_entry_reply`.
+#[allow(clippy::too_many_arguments)]
+pub(crate) async fn enter_room(
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    cmd_id: u64,
+    cancel_epoch: u64,
+    entry_runtime: &str,
+    room_actor: &str,
+    effective_nick: Option<&str>,
+    enter_kind: Option<&str>,
+    inventory: Option<&str>,
+) {
+    if state.was_cancelled_since(cancel_epoch) {
+        return;
+    }
+    state.set_pending_enter(cmd_id, entry_runtime.to_string(), room_actor.to_string());
+    let cfg = config.get_untracked();
+    let send_result = match enter_kind {
+        None => {
+            let enter_args = did_enter_args(effective_nick, inventory);
+            transport::send_rpc(room_actor, "enter", &enter_args).await
+        }
+        Some(kind) => {
+            let enter_args = build_enter_ctx(state, effective_nick, kind, &cfg);
+            transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await
+        }
+    };
+    if state.was_cancelled_since(cancel_epoch) {
+        return;
+    }
+    match send_result {
+        Ok(msg_id) => {
+            state.bind_message_id(cmd_id, msg_id);
+        }
+        Err(e) => {
+            state.clear_pending_enter();
+            state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+            state.push_error(tf("msg-send-failed", &[("e", &e)]));
+        }
+    }
+}
+
+/// Ask `#house` whether it remembers a previous room ctx for our own DID and,
+/// if so, resume entry there. This is the only default-room discovery the
+/// wire protocol supports (`house.ma`'s `:did-ctx?`); there is no protocol
+/// concept of a runtime-wide default room.
+async fn discover_and_enter_room(
+    state: &AppState,
+    cmd_id: u64,
+    cancel_epoch: u64,
+    entry_runtime: String,
+    effective_nick: Option<String>,
+    enter_kind: Option<String>,
+    inventory: Option<String>,
+) {
+    let Some(own_did) = state.session.get_untracked().map(|s| s.sender_did) else {
+        state.resolve_command_by_id(
+            cmd_id,
+            CommandStatus::Error("no active session".to_string()),
+        );
+        return;
+    };
+    let house = format!("{entry_runtime}#house");
+    let batch_id = state
+        .cmd_to_batch
+        .with_untracked(|m| m.get(&cmd_id).copied());
+    let mut registered_msg_id: Option<String> = None;
+    let send_result =
+        transport::send_rpc_with_msg_id(&house, "did-ctx?", &[own_did.as_str()], |msg_id| {
+            registered_msg_id = Some(msg_id.clone());
+            state.register_pending(
+                msg_id,
+                PendingKind::HouseDiscovery {
+                    entry_runtime: entry_runtime.clone(),
+                    cmd_id,
+                    effective_nick: effective_nick.clone(),
+                    enter_kind: enter_kind.clone(),
+                    inventory: inventory.clone(),
+                },
+                batch_id,
+            );
+        })
+        .await;
+    if state.was_cancelled_since(cancel_epoch) {
+        if let Some(msg_id) = registered_msg_id {
+            state.take_pending(&msg_id);
+        }
+        return;
+    }
+    if let Err(e) = send_result {
+        if let Some(msg_id) = registered_msg_id {
+            state.take_pending(&msg_id);
+        }
+        state.resolve_command_by_id(cmd_id, CommandStatus::Error(e.clone()));
+        state.push_error(tf("msg-send-failed", &[("e", &e)]));
+    }
 }
 
 fn enter_target_display(
@@ -481,32 +542,6 @@ fn handle_leave(state: &AppState, config: RwSignal<EgoConfig>) {
         });
     }
     state.focus_actor.set(None);
-}
-
-#[cfg(test)]
-fn enter_args<'a>(
-    room_actor: Option<&'a str>,
-    nick: Option<&'a str>,
-    inventory: Option<&'a str>,
-) -> Vec<&'a str> {
-    enter_args_root(room_actor, nick, inventory)
-}
-
-fn enter_args_root<'a>(
-    room_actor: Option<&'a str>,
-    nick: Option<&'a str>,
-    inventory: Option<&'a str>,
-) -> Vec<&'a str> {
-    match (room_actor, nick, inventory) {
-        (Some(room), Some(nick), Some(inventory)) => vec![room, nick, inventory],
-        (Some(room), None, Some(inventory)) => vec![room, "", inventory],
-        (None, Some(nick), Some(inventory)) => vec!["", nick, inventory],
-        (None, None, Some(inventory)) => vec!["", "", inventory],
-        (Some(room), Some(nick), None) => vec![room, nick],
-        (Some(room), None, None) => vec![room],
-        (None, Some(nick), None) => vec!["", nick],
-        (None, None, None) => Vec::new(),
-    }
 }
 
 fn did_enter_args<'a>(nick: Option<&'a str>, inventory: Option<&'a str>) -> Vec<&'a str> {
@@ -864,8 +899,8 @@ fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_args,
-        enter_ctx_kind, enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
+        apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_ctx_kind,
+        enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
         validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
@@ -1043,31 +1078,9 @@ mod tests {
     }
 
     #[test]
-    fn enter_args_include_nick_when_available() {
-        assert_eq!(
-            enter_args(Some("did:ma:k51runtime#room"), Some("klaim"), None),
-            vec!["did:ma:k51runtime#room", "klaim"]
-        );
-        assert_eq!(enter_args(None, Some("klaim"), None), vec!["", "klaim"]);
-    }
-
-    #[test]
-    fn enter_args_allow_room_without_nick() {
-        assert_eq!(
-            enter_args(Some("did:ma:k51runtime#room"), None, None),
-            vec!["did:ma:k51runtime#room"]
-        );
-        assert!(enter_args(None, None, None).is_empty());
-    }
-
-    #[test]
     fn did_enter_args_carry_inventory_without_requiring_nick() {
         let inventory = "did:ma:k51source#inventory";
 
-        assert_eq!(
-            enter_args(None, None, Some(inventory)),
-            vec!["", "", inventory]
-        );
         assert_eq!(did_enter_args(None, Some(inventory)), vec!["", inventory]);
     }
 

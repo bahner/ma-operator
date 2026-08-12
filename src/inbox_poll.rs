@@ -14,8 +14,9 @@ use crate::{
     messages::IncomingMessage,
     reply_handlers::{
         cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm,
-        handle_crud_get_reply, handle_edit_open_reply, handle_ipfs_actor_behaviour_reply,
-        handle_ipfs_crud_reply, handle_ipfs_kind_reply, handle_profile_publish_reply, ReplyContext,
+        handle_crud_get_reply, handle_edit_open_reply, handle_house_discovery_reply,
+        handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
+        handle_profile_publish_reply, ReplyContext,
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
@@ -168,6 +169,24 @@ fn dispatch_reply(
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
+        PendingKind::HouseDiscovery {
+            entry_runtime,
+            cmd_id,
+            effective_nick,
+            enter_kind,
+            inventory,
+        } => {
+            handle_house_discovery_reply(
+                entry_runtime,
+                cmd_id,
+                effective_nick,
+                enter_kind,
+                inventory,
+                &incoming,
+                state,
+                config,
+            );
+        }
         PendingKind::Simple { cmd_id } => {
             if incoming.service == CRUD_PROTOCOL_ID {
                 handle_crud_get_reply(cmd_id, &incoming, state, &display, config);
@@ -188,9 +207,9 @@ fn dispatch_reply(
     }
 }
 
-struct DidEntryReply {
-    parent: String,
-    nick: String,
+pub(crate) struct DidEntryReply {
+    pub(crate) parent: String,
+    pub(crate) nick: String,
 }
 
 fn handle_did_entry_reply(
@@ -248,7 +267,7 @@ fn handle_did_entry_reply(
     true
 }
 
-fn did_entry_reply(content: &[u8]) -> Option<DidEntryReply> {
+pub(crate) fn did_entry_reply(content: &[u8]) -> Option<DidEntryReply> {
     let ciborium::Value::Array(items) =
         ciborium::de::from_reader::<ciborium::Value, _>(&mut &content[..]).ok()?
     else {
