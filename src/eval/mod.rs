@@ -382,7 +382,8 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         // A bare runtime has no default room on the wire (lambda-ma
         // REFERENCE.md "Entry and room API"): root no longer implements
         // :enter. Ask house whether it remembers a previous room for our own
-        // DID and, if so, resume entry there via `enter_room`.
+        // DID; if not, `handle_house_discovery_reply` falls back to the
+        // bootstrap default room, `#construct`.
         discover_and_enter_room(
             &state2,
             cmd_id,
@@ -441,9 +442,9 @@ pub(crate) async fn enter_room(
 }
 
 /// Ask `#house` whether it remembers a previous room ctx for our own DID and,
-/// if so, resume entry there. This is the only default-room discovery the
-/// wire protocol supports (`house.ma`'s `:did-ctx?`); there is no protocol
-/// concept of a runtime-wide default room.
+/// if so, resume entry there (`house.ma`'s `:did-ctx?`). If house has no
+/// record, `handle_house_discovery_reply` falls back to `#construct`, the
+/// bootstrap default room every lambda-ma world creates.
 async fn discover_and_enter_room(
     state: &AppState,
     cmd_id: u64,

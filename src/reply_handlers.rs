@@ -128,8 +128,9 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
 // ── Room entry ─────────────────────────────────────────────────────────────
 
 /// House `:did-ctx?` reply for a bare-runtime `.enter`: on a known previous
-/// room (`ctx.parent`), resume direct room entry there; otherwise there is no
-/// protocol-level default room, so fail with an actionable message.
+/// room (`ctx.parent`), resume direct room entry there; otherwise fall back
+/// to the bootstrap default room, `#construct` (every lambda-ma world
+/// creates it — see lambda-ma's README.md).
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn handle_house_discovery_reply(
     entry_runtime: String,
@@ -141,16 +142,8 @@ pub(crate) fn handle_house_discovery_reply(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    let Some(room) = crate::inbox_poll::did_entry_reply(&incoming.content) else {
-        fail_cmd(
-            state,
-            Some(cmd_id),
-            format!(
-                "no known room in this world yet; ask for a room address, e.g. .enter <nick>@{entry_runtime}#construct"
-            ),
-        );
-        return;
-    };
+    let room_actor = crate::inbox_poll::did_entry_reply(&incoming.content)
+        .map_or_else(|| format!("{entry_runtime}#construct"), |room| room.parent);
     let state2 = state.clone();
     let cancel_epoch = state.cancel_epoch();
     spawn_local(async move {
@@ -160,7 +153,7 @@ pub(crate) fn handle_house_discovery_reply(
             cmd_id,
             cancel_epoch,
             &entry_runtime,
-            &room.parent,
+            &room_actor,
             effective_nick.as_deref(),
             enter_kind.as_deref(),
             inventory.as_deref(),
