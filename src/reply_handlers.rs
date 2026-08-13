@@ -209,11 +209,10 @@ pub(crate) fn handle_profile_publish_reply(
                     Ok(()) => {
                         if let Some(id) = cmd_id {
                             state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
-                        } else if !reenter_saved_ctx {
+                        } else {
                             state2.push_output("間");
                         }
                         if reenter_saved_ctx {
-                            state2.push_output("[3b");
                             crate::startup::queue_saved_context_reentry(&state2, config);
                         }
                     }

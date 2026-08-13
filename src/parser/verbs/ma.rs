@@ -119,6 +119,7 @@ pub(super) fn handle_ma(
                 publish_identity_before_ping: false,
                 prefer_fallback_did,
                 local_probe,
+                terse: true,
             },
         )
         .await;
@@ -219,6 +220,9 @@ pub(crate) struct ConnectMaOptions {
     pub publish_identity_before_ping: bool,
     pub prefer_fallback_did: bool,
     pub local_probe: bool,
+    /// Interactive `.ma` summary: skip probe/discovery narration and print
+    /// just "間" once everything is confirmed in sync.
+    pub terse: bool,
 }
 
 pub(crate) async fn connect_ma_runtime(
@@ -249,11 +253,17 @@ pub(crate) async fn connect_ma_runtime(
 
     if options.local_probe {
         let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
-        if !options.quiet_local_probe {
+        if !options.quiet_local_probe && !options.terse {
             state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
         }
         let claim_result = claim_ma(&ma_base, &our_did).await;
-        if !options.quiet_local_probe {
+        if options.terse {
+            // Only the actual claim transition is worth reporting; an
+            // already-claimed runtime is the normal, silent case.
+            if claim_result == ClaimResult::Claimed {
+                state.push_system(t("msg-local-ma-claimed"));
+            }
+        } else if !options.quiet_local_probe {
             match &claim_result {
                 ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
                 ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
@@ -309,8 +319,10 @@ pub(crate) async fn connect_ma_runtime(
             }
             return outcome;
         };
-        state.push_system(tf("discover-success", &[("url", &ma_base)]));
-        state.push_system(tf("discover-did-line", &[("did", &did)]));
+        if !options.terse {
+            state.push_system(tf("discover-success", &[("url", &ma_base)]));
+            state.push_system(tf("discover-did-line", &[("did", &did)]));
+        }
         if let Err(e) = transport::reconnect().await {
             web_sys::console::warn_1(
                 &format!("[transport] reconnect after ma discovery failed: {e}").into(),

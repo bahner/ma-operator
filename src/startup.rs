@@ -126,6 +126,7 @@ pub(crate) async fn startup_local_ma(
             publish_identity_before_ping,
             prefer_fallback_did,
             local_probe,
+            terse: false,
         },
     )
     .await
