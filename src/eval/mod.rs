@@ -380,10 +380,8 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
         }
 
         // A bare runtime has no default room on the wire (lambda-ma
-        // REFERENCE.md "Entry and room API"): root no longer implements
-        // :enter. Ask house whether it remembers a previous room for our own
-        // DID; if not, `handle_house_discovery_reply` falls back to the
-        // bootstrap default room, `#construct`.
+        // REFERENCE.md "Entry and room API"): ask root's `:enter?`, which
+        // always names a room to enter.
         discover_and_enter_room(
             &state2,
             cmd_id,
@@ -441,10 +439,11 @@ pub(crate) async fn enter_room(
     }
 }
 
-/// Ask `#house` whether it remembers a previous room ctx for our own DID and,
-/// if so, resume entry there (`house.ma`'s `:did-ctx?`). If house has no
-/// record, `handle_house_discovery_reply` falls back to `#construct`, the
-/// bootstrap default room every lambda-ma world creates.
+/// Ask `#root` for a room to enter (`root.ma`'s `:enter?`). Root always
+/// replies with a ctx naming a room, defaulting to the configured `start`
+/// room; `handle_root_enter_reply` falls back to `#construct` client-side
+/// only if root's reply cannot be parsed (e.g. an older root without this
+/// verb).
 async fn discover_and_enter_room(
     state: &AppState,
     cmd_id: u64,
@@ -454,34 +453,26 @@ async fn discover_and_enter_room(
     enter_kind: Option<String>,
     inventory: Option<String>,
 ) {
-    let Some(own_did) = state.session.get_untracked().map(|s| s.sender_did) else {
-        state.resolve_command_by_id(
-            cmd_id,
-            CommandStatus::Error("no active session".to_string()),
-        );
-        return;
-    };
-    let house = format!("{entry_runtime}#house");
+    let root = format!("{entry_runtime}#root");
     let batch_id = state
         .cmd_to_batch
         .with_untracked(|m| m.get(&cmd_id).copied());
     let mut registered_msg_id: Option<String> = None;
-    let send_result =
-        transport::send_rpc_with_msg_id(&house, "did-ctx?", &[own_did.as_str()], |msg_id| {
-            registered_msg_id = Some(msg_id.clone());
-            state.register_pending(
-                msg_id,
-                PendingKind::HouseDiscovery {
-                    entry_runtime: entry_runtime.clone(),
-                    cmd_id,
-                    effective_nick: effective_nick.clone(),
-                    enter_kind: enter_kind.clone(),
-                    inventory: inventory.clone(),
-                },
-                batch_id,
-            );
-        })
-        .await;
+    let send_result = transport::send_rpc_with_msg_id(&root, "enter?", &[], |msg_id| {
+        registered_msg_id = Some(msg_id.clone());
+        state.register_pending(
+            msg_id,
+            PendingKind::RootEnterDiscovery {
+                entry_runtime: entry_runtime.clone(),
+                cmd_id,
+                effective_nick: effective_nick.clone(),
+                enter_kind: enter_kind.clone(),
+                inventory: inventory.clone(),
+            },
+            batch_id,
+        );
+    })
+    .await;
     if state.was_cancelled_since(cancel_epoch) {
         if let Some(msg_id) = registered_msg_id {
             state.take_pending(&msg_id);

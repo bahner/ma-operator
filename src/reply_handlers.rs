@@ -127,12 +127,13 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
 
 // ── Room entry ─────────────────────────────────────────────────────────────
 
-/// House `:did-ctx?` reply for a bare-runtime `.enter`: on a known previous
-/// room (`ctx.parent`), resume direct room entry there; otherwise fall back
-/// to the bootstrap default room, `#construct` (every lambda-ma world
-/// creates it — see lambda-ma's README.md).
+/// Root `:enter?` reply for a bare-runtime `.enter`: resume direct room
+/// entry against the room root named. If root's reply cannot be parsed (e.g.
+/// an older root without this verb), fall back to the bootstrap default
+/// room, `#construct` (every lambda-ma world creates it — see lambda-ma's
+/// README.md).
 #[allow(clippy::too_many_arguments)]
-pub(crate) fn handle_house_discovery_reply(
+pub(crate) fn handle_root_enter_reply(
     entry_runtime: String,
     cmd_id: u64,
     effective_nick: Option<String>,
@@ -142,8 +143,8 @@ pub(crate) fn handle_house_discovery_reply(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
-    let room_actor = crate::inbox_poll::did_entry_reply(&incoming.content)
-        .map_or_else(|| format!("{entry_runtime}#construct"), |room| room.parent);
+    let room_actor = crate::inbox_poll::root_enter_reply(&incoming.content)
+        .unwrap_or_else(|| format!("{entry_runtime}#construct"));
     let state2 = state.clone();
     let cancel_epoch = state.cancel_epoch();
     spawn_local(async move {

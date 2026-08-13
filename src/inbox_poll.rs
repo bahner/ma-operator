@@ -14,7 +14,7 @@ use crate::{
     messages::IncomingMessage,
     reply_handlers::{
         cbor_reply_to_scheme_val, cbor_to_scheme_val, classify_reply, handle_crud_confirm,
-        handle_crud_get_reply, handle_edit_open_reply, handle_house_discovery_reply,
+        handle_crud_get_reply, handle_edit_open_reply, handle_root_enter_reply,
         handle_ipfs_actor_behaviour_reply, handle_ipfs_crud_reply, handle_ipfs_kind_reply,
         handle_profile_publish_reply, ReplyContext,
     },
@@ -169,14 +169,14 @@ fn dispatch_reply(
         PendingKind::CrudConfirm { cmd_id } => {
             handle_crud_confirm(cmd_id, &incoming, state, &display, config);
         }
-        PendingKind::HouseDiscovery {
+        PendingKind::RootEnterDiscovery {
             entry_runtime,
             cmd_id,
             effective_nick,
             enter_kind,
             inventory,
         } => {
-            handle_house_discovery_reply(
+            handle_root_enter_reply(
                 entry_runtime,
                 cmd_id,
                 effective_nick,
@@ -296,6 +296,24 @@ fn map_text<'a>(entries: &'a [(ciborium::Value, ciborium::Value)], key: &str) ->
             .then(|| cbor_text(value))
             .flatten()
     })
+}
+
+/// Parse root's `:enter?` reply, `[:ok, { parent, rev }]`, into the room
+/// DID-URL to enter next.
+pub(crate) fn root_enter_reply(content: &[u8]) -> Option<String> {
+    let ciborium::Value::Array(items) =
+        ciborium::de::from_reader::<ciborium::Value, _>(&mut &content[..]).ok()?
+    else {
+        return None;
+    };
+    if term_head(&items) != Some(":ok") {
+        return None;
+    }
+    let ciborium::Value::Map(entries) = items.get(1)? else {
+        return None;
+    };
+    let parent = map_text(entries, "parent")?;
+    (parent.starts_with("did:ma:") && parent.contains('#')).then(|| parent.to_string())
 }
 
 /// Handle unsolicited actor-authored client terms. Returns true when handled.
@@ -998,6 +1016,48 @@ mod tests {
         let mut incomplete_content = Vec::new();
         ciborium::ser::into_writer(&incomplete, &mut incomplete_content).unwrap();
         assert!(did_entry_reply(&incomplete_content).is_none());
+    }
+
+    #[test]
+    fn root_enter_reply_extracts_parent_from_minimal_ctx() {
+        let ok = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":ok".to_string()),
+            ciborium::Value::Map(vec![
+                (
+                    ciborium::Value::Text("parent".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#construct".to_string()),
+                ),
+                (
+                    ciborium::Value::Text("rev".to_string()),
+                    ciborium::Value::Integer(1.into()),
+                ),
+            ]),
+        ]);
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(&ok, &mut content).unwrap();
+        assert_eq!(
+            root_enter_reply(&content).as_deref(),
+            Some("did:ma:k51runtime#construct")
+        );
+
+        let error = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":error".to_string()),
+            ciborium::Value::Text("root has no start room configured".to_string()),
+        ]);
+        let mut error_content = Vec::new();
+        ciborium::ser::into_writer(&error, &mut error_content).unwrap();
+        assert!(root_enter_reply(&error_content).is_none());
+
+        let bad_parent = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":ok".to_string()),
+            ciborium::Value::Map(vec![(
+                ciborium::Value::Text("parent".to_string()),
+                ciborium::Value::Text("not-a-did-url".to_string()),
+            )]),
+        ]);
+        let mut bad_parent_content = Vec::new();
+        ciborium::ser::into_writer(&bad_parent, &mut bad_parent_content).unwrap();
+        assert!(root_enter_reply(&bad_parent_content).is_none());
     }
 
     #[test]
