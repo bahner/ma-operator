@@ -128,7 +128,7 @@ Makefile
 - [x] Send reply (`.my.inbox.N!reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
-- [x] `.ma` — probes localhost:5003, creates `@ma` alias, persists config
+- [x] `.ma` trusted-runtime control — select by DID, explicitly claim localhost, publish profile
 - [x] i18n — async FTL translation, BCP-47 language detection, per-profile `.my.i18n`
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
@@ -449,37 +449,21 @@ it is needed to decrypt incoming messages.
 
 ---
 
-## `.ma.ctx` — local ma runtime context
+## `.ma` — trusted runtime control
 
-`.ma.ctx` is the config subtree for the user's local `ma` daemon.
-It is set by `.ma` and then used as the publish target.
+Each identity selects one trusted runtime DID. Zion keeps the working value in
+`.ma.ctx.did` and `.my.aliases.ma`, and publishes it in the identity DID
+document as the string field `ma.ma`.
 
-Leaves written by `.ma`:
-```
-.ma.ctx.did          DID of the local ma runtime
-.ma.ctx.endpoint_id  iroh endpoint ID (from status.json)
-```
-The alias `.my.aliases.ma` is also created, pointing to `.ma.ctx.did`.
+Commands:
+- `.ma: did:ma:trustedruntime` selects a bare runtime DID without network discovery.
+- `.ma: claim [port]` explicitly claims and discovers localhost, default port 5003,
+  then stores the discovered bare DID as the trusted runtime.
+- `.ma` pings the selected runtime and publishes the full profile and DID document.
 
-Configurable leaf:
-```
-.ma.ctx.url          base URL of the ma daemon (default: http://localhost:5003)
-```
-Set this if `ma` runs on a non-default port: `.ma.ctx.url: http://localhost:1234`
-
-Command:
-- `.ma [port]` — fetches `<.ma.ctx.url>/status.json` or the given port, reads `did`
-  and `endpoint_id`, writes the above leaves, creates alias `@ma`, persists config.
-  Reports an actionable error if `ma` is not running.
-- Startup and `.ma` discovery use a short HTTP timeout for `.ma.ctx.url` and
-  then ping existing runtime DID context before automatic publish/entry. Do not
-  blindly fall back to stale `.ma.ctx.did` after a local URL failure; only use a
-  stored DID for automatic flow after a successful `:ping` preflight.
-
-After discovery:
-```
-.my.identity!publish @ma
-```
+Normal startup never probes localhost. Landing resolves the entered identity's
+DID document and prefers its valid `ma.ma`; a valid `?ma=` DID is only selected
+when the document has no trusted runtime and otherwise remains an alternative.
 
 Prerequisites for publish to work:
 1. [IPFS Desktop](https://docs.ipfs.tech/install/ipfs-desktop/) — provides Kubo

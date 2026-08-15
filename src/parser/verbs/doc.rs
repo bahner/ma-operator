@@ -162,7 +162,7 @@ async fn store_and_wait(
     let receiver = receiver.ok_or_else(|| "IPFS store reply was not registered".to_string())?;
     let reply = receiver
         .await
-        .map_err(|_| "IPFS store reply was cancelled".to_string())?;
+        .map_err(|_| "IPFS store reply was cancelled".to_string())??;
     let cid = reply.trim().strip_prefix("/ipfs/").unwrap_or(reply.trim());
     cid::Cid::try_from(cid)
         .map(|parsed| parsed.to_string())

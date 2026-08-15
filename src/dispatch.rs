@@ -873,7 +873,7 @@ async fn fetch_actor_behaviour_source(target: &str) -> Result<String, String> {
     };
     let reply = rx
         .await
-        .map_err(|_| "behaviour reply channel closed".to_string())?;
+        .map_err(|_| "behaviour reply channel closed".to_string())??;
     let reference = actor_behaviour_reference(&reply);
     let Some(reference) = reference else {
         return Ok(String::new());

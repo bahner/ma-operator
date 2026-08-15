@@ -8,8 +8,8 @@ use std::collections::{HashMap, VecDeque};
 use std::rc::Rc;
 use std::sync::Arc;
 
-/// Oneshot sender for a plain-text reply.
-pub type ReplySender = oneshot::Sender<String>;
+/// Oneshot sender for a classified plain-text reply.
+pub type ReplySender = oneshot::Sender<Result<String, String>>;
 
 thread_local! {
     pub static AWAITING_REPLIES: RefCell<HashMap<String, ReplySender>> =
@@ -19,7 +19,7 @@ thread_local! {
 /// Helper for registering and taking one-shot reply channels.
 pub struct AwaitingReply;
 impl AwaitingReply {
-    pub fn register(msg_id: String) -> futures::channel::oneshot::Receiver<String> {
+    pub fn register(msg_id: String) -> futures::channel::oneshot::Receiver<Result<String, String>> {
         let (tx, rx) = oneshot::channel();
         AWAITING_REPLIES.with(|m| m.borrow_mut().insert(msg_id, tx));
         rx

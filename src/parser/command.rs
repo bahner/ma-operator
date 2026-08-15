@@ -667,6 +667,42 @@ mod tests {
     }
 
     #[test]
+    fn parses_dot_ma_trusted_runtime_setter() {
+        let cfg = EgoConfig::new();
+
+        assert_eq!(
+            parse(".ma: did:ma:trustedruntime", &cfg),
+            Ok(Command::DotCommand {
+                path: ".ma".to_string(),
+                op: DotOp::Set("did:ma:trustedruntime".to_string()),
+                args: vec![],
+            })
+        );
+    }
+
+    #[test]
+    fn parses_dot_ma_claim_with_optional_port() {
+        let cfg = EgoConfig::new();
+
+        assert_eq!(
+            parse(".ma: claim", &cfg),
+            Ok(Command::DotCommand {
+                path: ".ma".to_string(),
+                op: DotOp::Set("claim".to_string()),
+                args: vec![],
+            })
+        );
+        assert_eq!(
+            parse(".ma: claim 5009", &cfg),
+            Ok(Command::DotCommand {
+                path: ".ma".to_string(),
+                op: DotOp::Set("claim 5009".to_string()),
+                args: vec![],
+            })
+        );
+    }
+
+    #[test]
     fn parses_did_target_without_verb() {
         let cfg = EgoConfig::new();
         let cmd = parse(

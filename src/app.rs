@@ -4,20 +4,13 @@ use crate::config::EgoConfig;
 use crate::state::AppState;
 use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
 
-/// Read `?ma=` from the URL — a runtime DID or HTTP URL to connect to after login.
-///
-/// - `?ma=did:ma:<ipns>`  → remote runtime DID (shows privacy warning on landing page)
-/// - `?ma=http://...`     → local/LAN runtime HTTP URL
+/// Read a suggested runtime DID from `?ma=`.
 fn url_ma() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;
     let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
     let val = params.get("ma")?.trim().to_string();
-    if val.is_empty() {
-        None
-    } else {
-        Some(val)
-    }
+    crate::parser::verbs::is_bare_ma_did(&val).then_some(val)
 }
 
 /// Read `?msg=`, `?say=`, or `?emote=` from the current URL and return the

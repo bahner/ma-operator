@@ -202,9 +202,14 @@ pub(crate) fn handle_profile_publish_reply(
             // for untracked commands push 間 on completion.
             let state2 = state.clone();
             let cfg_snap = config.get_untracked();
+            let trusted_ma = crate::parser::verbs::ma::stored_ma_did(&cfg_snap);
             leptos::task::spawn_local(async move {
                 let _ = persist_config(&username, &cfg_snap).await;
-                match crate::parser::verbs::ma::send_identity_publish_and_wait(&publisher_did).await
+                match crate::parser::verbs::ma::send_identity_publish_and_wait(
+                    &publisher_did,
+                    trusted_ma,
+                )
+                .await
                 {
                     Ok(()) => {
                         if let Some(id) = cmd_id {

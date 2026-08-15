@@ -103,11 +103,13 @@ fn dispatch_reply(
         let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
         let cfg = config.get_untracked();
         let result = if incoming.is_error {
-            text_opt.unwrap_or_else(|| display.clone())
+            Err(text_opt.unwrap_or_else(|| display.clone()))
         } else {
-            text_opt.unwrap_or_default()
+            Ok(text_opt.unwrap_or_default())
         };
-        let _ = sender.send(cfg.substitute_display_dids(&result));
+        let result = result.map(|text| cfg.substitute_display_dids(&text));
+        let result = result.map_err(|error| cfg.substitute_display_dids(&error));
+        let _ = sender.send(result);
         return;
     }
 
@@ -776,6 +778,69 @@ mod tests {
         )
         .unwrap();
         message
+    }
+
+    #[test]
+    fn awaited_ok_reply_is_silent_success() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let show_editor = RwSignal::new(None);
+        let receiver = crate::state::AwaitingReply::register("request-1".to_string());
+        let mut reply = incoming("did:ma:runtime#root", ":ok");
+        reply.reply_to = Some("request-1".to_string());
+        ciborium::ser::into_writer(
+            &ciborium::Value::Text(":ok".to_string()),
+            &mut reply.content,
+        )
+        .unwrap();
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            ":ok".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        assert_eq!(block_on(receiver).unwrap(), Ok(String::new()));
+        assert!(state.entries.get_untracked().is_empty());
+    }
+
+    #[test]
+    fn awaited_error_reply_is_propagated_silently() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let show_editor = RwSignal::new(None);
+        let receiver = crate::state::AwaitingReply::register("request-1".to_string());
+        let mut reply = incoming("did:ma:runtime#root", "publication refused");
+        reply.reply_to = Some("request-1".to_string());
+        reply.is_error = true;
+        ciborium::ser::into_writer(
+            &ciborium::Value::Array(vec![
+                ciborium::Value::Text(":error".to_string()),
+                ciborium::Value::Text("publication refused".to_string()),
+            ]),
+            &mut reply.content,
+        )
+        .unwrap();
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            "publication refused".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        assert_eq!(
+            block_on(receiver).unwrap(),
+            Err("publication refused".to_string())
+        );
+        assert!(state.entries.get_untracked().is_empty());
     }
 
     #[test]

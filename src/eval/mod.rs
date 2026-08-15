@@ -205,7 +205,7 @@ pub(crate) fn eval(
 
 fn eval_control(
     path: &str,
-    _op: DotOp,
+    op: DotOp,
     args: &[String],
     state: &AppState,
     config: RwSignal<EgoConfig>,
@@ -239,8 +239,25 @@ fn eval_control(
             state.screensaver.set(true);
         }
         ".ma" => {
+            let (verb, ma_args) = match op {
+                DotOp::Get if args.is_empty() => ("publish", Vec::new()),
+                DotOp::Set(value) => {
+                    let value = value.trim();
+                    if value == "claim" {
+                        ("claim", Vec::new())
+                    } else if let Some(port) = value.strip_prefix("claim ") {
+                        ("claim", vec![port.trim().to_string()])
+                    } else {
+                        ("set", vec![value.to_string()])
+                    }
+                }
+                _ => {
+                    state.push_error("usage: .ma | .ma: did:ma:… | .ma: claim [port]");
+                    return;
+                }
+            };
             if let Err(e) =
-                dispatch_meta(".ma", "connect", args, state, config, show_editor, on_eval)
+                dispatch_meta(".ma", verb, &ma_args, state, config, show_editor, on_eval)
             {
                 state.push_error(e);
             }

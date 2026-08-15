@@ -1,4 +1,4 @@
-use super::{resolve_bare_did, MA_URL};
+use super::resolve_bare_did;
 use crate::config::EgoConfig;
 use crate::http::{fetch_url_text_timeout, post_json_text_timeout};
 use crate::i18n::{t, tf};
@@ -15,55 +15,12 @@ pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
 pub(crate) const IDENTITY_PUBLISH_TIMEOUT_MS: u32 = 60_000;
 const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000, 8_000];
 const MA_CTX_DID: &str = ".ma.ctx.did";
-const MA_CTX_MODE: &str = ".ma.ctx.mode";
 const MA_CTX_URL: &str = ".ma.ctx.url";
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum MaRuntimeMode {
-    Local,
-    Public,
-}
-
-impl MaRuntimeMode {
-    fn as_str(self) -> &'static str {
-        match self {
-            Self::Local => "local",
-            Self::Public => "public",
-        }
-    }
-}
-
-pub(crate) fn ma_runtime_mode(cfg: &EgoConfig) -> Option<MaRuntimeMode> {
-    match cfg.get(MA_CTX_MODE) {
-        Some("local") => Some(MaRuntimeMode::Local),
-        Some("public") => Some(MaRuntimeMode::Public),
-        _ => None,
-    }
-}
 
 pub(crate) fn stored_ma_did(cfg: &EgoConfig) -> Option<String> {
     cfg.get(MA_CTX_DID)
         .filter(|did| did.starts_with("did:ma:"))
         .map(ToString::to_string)
-}
-
-pub(crate) fn stored_public_ma_did(cfg: &EgoConfig) -> Option<String> {
-    matches!(ma_runtime_mode(cfg), Some(MaRuntimeMode::Public))
-        .then(|| stored_ma_did(cfg))
-        .flatten()
-}
-
-pub(crate) fn stored_local_ma_url(cfg: &EgoConfig) -> Option<String> {
-    matches!(ma_runtime_mode(cfg), Some(MaRuntimeMode::Local)).then(|| {
-        cfg.get(MA_CTX_URL)
-            .unwrap_or(MA_URL)
-            .trim_end_matches('/')
-            .to_string()
-    })
-}
-
-fn set_ma_runtime_mode(cfg: &mut EgoConfig, mode: MaRuntimeMode) {
-    cfg.set(MA_CTX_MODE, mode.as_str());
 }
 
 pub(super) fn handle_ma(
@@ -81,20 +38,79 @@ pub(super) fn handle_ma(
         }
         return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
     }
-    if verb != "connect" {
-        return Err(tf("runtime-no-verb", &[("verb", verb), ("path", path)]));
-    }
     state
         .session
         .get_untracked()
         .ok_or_else(|| t("msg-not-logged-in"))?;
 
-    let raw = args.first().map_or("", std::string::String::as_str);
+    match verb {
+        "set" => return set_trusted_runtime(args, state, config),
+        "claim" => return claim_trusted_runtime(args, state, config),
+        "publish" => {}
+        _ => return Err(tf("runtime-no-verb", &[("verb", verb), ("path", path)])),
+    }
+
     let cfg = config.get_untracked();
-    let ma_base = ma_base_from_arg(raw, &cfg);
-    let fallback_did = fallback_did_from_arg(raw, &cfg)?;
-    let local_probe = fallback_did.is_none();
-    let prefer_fallback_did = fallback_did.is_some();
+    let trusted_ma = stored_ma_did(&cfg)
+        .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
+    let state2 = state.clone();
+    leptos::task::spawn_local(async move {
+        publish_with_trusted_ma(trusted_ma, config, &state2).await;
+    });
+    Ok(())
+}
+
+async fn publish_with_trusted_ma(
+    trusted_ma: String,
+    config: RwSignal<EgoConfig>,
+    state: &AppState,
+) {
+    if let Err(error) = ping_runtime(state, &trusted_ma, true).await {
+        state.push_error(error);
+        return;
+    }
+    queue_profile_publish(trusted_ma, config, state, None, true).await;
+}
+
+fn set_trusted_runtime(
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let did = args
+        .first()
+        .filter(|_| args.len() == 1)
+        .ok_or_else(|| "usage: .ma: did:ma:trustedruntime".to_string())?;
+    let did = resolve_bare_did(did, &config.get_untracked())?;
+    config.update(|cfg| {
+        cfg.set(MA_CTX_DID, &did);
+        cfg.set(".my.aliases.ma", &did);
+    });
+    let username = state
+        .session
+        .get_untracked()
+        .ok_or_else(|| t("msg-not-logged-in"))?
+        .username;
+    let cfg = config.get_untracked();
+    leptos::task::spawn_local(async move {
+        let _ = crate::config::persist_config(&username, &cfg).await;
+    });
+    state.push_system(format!("ma: {did}"));
+    Ok(())
+}
+
+fn claim_trusted_runtime(
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let port = match args {
+        [] => 5003,
+        [port] => port
+            .parse::<u16>()
+            .map_err(|_| "usage: .ma: claim [port]".to_string())?,
+        _ => return Err("usage: .ma: claim [port]".to_string()),
+    };
     let session = state
         .session
         .get_untracked()
@@ -102,49 +118,17 @@ pub(super) fn handle_ma(
     let username = session.username;
     let our_did = session.sender_did;
     let state2 = state.clone();
-    state.push_system(t("msg-ma-connecting-matrix"));
     leptos::task::spawn_local(async move {
-        connect_ma_runtime(
+        claim_and_discover_local_ma(
             state2,
             config,
             username,
             our_did,
-            ma_base,
-            fallback_did,
-            ConnectMaOptions {
-                publish: true,
-                full_profile_publish: true,
-                reenter_saved_ctx: true,
-                quiet_local_probe: false,
-                publish_identity_before_ping: false,
-                prefer_fallback_did,
-                local_probe,
-                terse: true,
-            },
+            format!("http://localhost:{port}"),
         )
         .await;
     });
     Ok(())
-}
-
-fn ma_base_from_arg(raw: &str, cfg: &EgoConfig) -> String {
-    if raw.starts_with("http") {
-        return raw.trim_end_matches('/').to_string();
-    }
-    if let Ok(p) = raw.parse::<u16>() {
-        return format!("http://localhost:{p}");
-    }
-    cfg.get(MA_CTX_URL)
-        .unwrap_or(MA_URL)
-        .trim_end_matches('/')
-        .to_string()
-}
-
-fn fallback_did_from_arg(raw: &str, cfg: &EgoConfig) -> Result<Option<String>, String> {
-    if raw.starts_with('@') || raw.starts_with("did:") {
-        return resolve_bare_did(raw, cfg).map(Some);
-    }
-    Ok(None)
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -194,14 +178,7 @@ impl ConnectMaOutcome {
 }
 
 fn should_continue_after_claim(result: &ClaimResult) -> bool {
-    matches!(
-        result,
-        ClaimResult::Claimed
-            | ClaimResult::AlreadyOwned
-            | ClaimResult::OwnedByOther
-            | ClaimResult::Unavailable
-            | ClaimResult::UnexpectedStatus(_)
-    )
+    matches!(result, ClaimResult::Claimed | ClaimResult::AlreadyOwned)
 }
 
 fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
@@ -211,198 +188,64 @@ fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
         .is_some_and(|owners| owners.iter().any(|owner| owner.as_str() == Some(our_did)))
 }
 
-#[derive(Clone, Copy)]
-pub(crate) struct ConnectMaOptions {
-    pub publish: bool,
-    pub full_profile_publish: bool,
-    pub reenter_saved_ctx: bool,
-    pub quiet_local_probe: bool,
-    pub publish_identity_before_ping: bool,
-    pub prefer_fallback_did: bool,
-    pub local_probe: bool,
-    /// Interactive `.ma` summary: skip probe/discovery narration and print
-    /// just "間" once everything is confirmed in sync.
-    pub terse: bool,
-}
-
-pub(crate) async fn connect_ma_runtime(
+pub(crate) async fn claim_and_discover_local_ma(
     state: AppState,
     config: RwSignal<EgoConfig>,
     username: String,
     our_did: String,
     ma_base: String,
-    fallback_did: Option<String>,
-    options: ConnectMaOptions,
 ) -> ConnectMaOutcome {
-    if options.prefer_fallback_did {
-        let outcome = ping_and_publish_fallback(
-            &state,
-            config,
-            fallback_did.clone(),
-            &ma_base,
-            &our_did,
-            options,
-        )
-        .await;
-        if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
-            let cfg = config.get_untracked();
-            let _ = crate::config::persist_config(&username, &cfg).await;
-            return outcome;
+    let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
+    state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
+    let claim_result = claim_ma(&ma_base, &our_did).await;
+    match &claim_result {
+        ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
+        ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
+        ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) | ClaimResult::Unavailable => {
+            state.push_error(t("msg-local-ma-claim-failed"));
         }
     }
-
-    if options.local_probe {
-        let status_url = format!("{}/status.json", ma_base.trim_end_matches('/'));
-        if !options.quiet_local_probe && !options.terse {
-            state.push_system(tf("msg-ma-checking-url", &[("url", &status_url)]));
-        }
-        let claim_result = claim_ma(&ma_base, &our_did).await;
-        if options.terse {
-            // Only the actual claim transition is worth reporting; an
-            // already-claimed runtime is the normal, silent case.
-            if claim_result == ClaimResult::Claimed {
-                state.push_system(t("msg-local-ma-claimed"));
-            }
-        } else if !options.quiet_local_probe {
-            match &claim_result {
-                ClaimResult::Claimed => state.push_system(t("msg-local-ma-claimed")),
-                ClaimResult::AlreadyOwned => state.push_system(t("msg-local-ma-already-claimed")),
-                ClaimResult::OwnedByOther | ClaimResult::UnexpectedStatus(_) => {
-                    state.push_system(t("msg-local-ma-claim-failed"));
-                }
-                ClaimResult::Unavailable => {
-                    state.push_system(t("msg-local-ma-claim-failed"));
-                }
-            }
-        }
-        if !should_continue_after_claim(&claim_result) {
-            let outcome = ping_and_publish_fallback(
-                &state,
-                config,
-                fallback_did,
-                &ma_base,
-                &our_did,
-                options,
-            )
-            .await;
-            if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
-                let cfg = config.get_untracked();
-                let _ = crate::config::persist_config(&username, &cfg).await;
-            }
-            return outcome;
-        }
-
-        let did = if let Ok(did) = rediscover_ma(&ma_base, config).await {
-            did
-        } else {
-            if !options.quiet_local_probe {
-                state.push_error(tf(
-                    "msg-local-ma-unreachable",
-                    &[
-                        ("url", &ma_base),
-                        ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
-                    ],
-                ));
-            }
-            let outcome = ping_and_publish_fallback(
-                &state,
-                config,
-                fallback_did,
-                &ma_base,
-                &our_did,
-                options,
-            )
-            .await;
-            if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
-                let cfg = config.get_untracked();
-                let _ = crate::config::persist_config(&username, &cfg).await;
-            }
-            return outcome;
-        };
-        if !options.terse {
-            state.push_system(tf("discover-success", &[("url", &ma_base)]));
-            state.push_system(tf("discover-did-line", &[("did", &did)]));
-        }
-        if let Err(e) = transport::reconnect().await {
-            web_sys::console::warn_1(
-                &format!("[transport] reconnect after ma discovery failed: {e}").into(),
-            );
-        }
-        crate::views::landing::save_last_runtime(&ma_base);
-        let cfg = config.get_untracked();
-        let _ = crate::config::persist_config(&username, &cfg).await;
-        if !options.publish {
-            return ConnectMaOutcome::Ready { did };
-        }
-        if !options.full_profile_publish {
-            send_identity_publish_background(did.clone(), state.clone(), ma_base.clone());
-            return ConnectMaOutcome::Ready { did };
-        }
-
-        let published =
-            do_publish(did.clone(), config, &state, None, options.reenter_saved_ctx).await;
-        if !published {
-            let outcome = ping_and_publish_fallback(
-                &state,
-                config,
-                fallback_did,
-                &ma_base,
-                &our_did,
-                options,
-            )
-            .await;
-            if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
-                let cfg = config.get_untracked();
-                let _ = crate::config::persist_config(&username, &cfg).await;
-            }
-            return outcome;
-        }
-        return ConnectMaOutcome::Ready { did };
+    if !should_continue_after_claim(&claim_result) {
+        return ConnectMaOutcome::Unavailable { target: ma_base };
     }
-
-    let outcome =
-        ping_and_publish_fallback(&state, config, fallback_did, &ma_base, &our_did, options).await;
-    if matches!(outcome, ConnectMaOutcome::Ready { .. }) {
-        let cfg = config.get_untracked();
-        let _ = crate::config::persist_config(&username, &cfg).await;
-    }
-    outcome
-}
-
-fn send_identity_publish_background(publisher: String, state: AppState, label: String) {
-    leptos::task::spawn_local(async move {
-        match send_identity_publish_and_wait(&publisher).await {
-            Ok(()) => {
-                state.push_system(tf("msg-auto-published", &[("url", &label)]));
-            }
-            Err(e) => {
-                log::warn!("[ma] background identity publish failed: {e}");
-            }
+    let did = match rediscover_ma(&ma_base, config).await {
+        Ok(did) => did,
+        Err(_) => {
+            state.push_error(tf(
+                "msg-local-ma-unreachable",
+                &[
+                    ("url", &ma_base),
+                    ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
+                ],
+            ));
+            return ConnectMaOutcome::Unavailable { target: ma_base };
         }
+    };
+    config.update(|cfg| {
+        cfg.set(MA_CTX_DID, &did);
+        cfg.delete(MA_CTX_URL);
+        cfg.set(".my.aliases.ma", &did);
     });
+    state.push_system(tf("discover-success", &[("url", &ma_base)]));
+    state.push_system(tf("discover-did-line", &[("did", &did)]));
+    if let Err(error) = transport::reconnect().await {
+        web_sys::console::warn_1(
+            &format!("[transport] reconnect after ma discovery failed: {error}").into(),
+        );
+    }
+    let cfg = config.get_untracked();
+    let _ = crate::config::persist_config(&username, &cfg).await;
+    ConnectMaOutcome::Ready { did }
 }
 
-fn fallback_did_candidate(
-    config: RwSignal<EgoConfig>,
-    fallback_did: Option<String>,
-) -> Option<String> {
-    fallback_did.or_else(|| stored_public_ma_did(&config.get_untracked()))
-}
-
-async fn ping_and_publish_fallback(
+pub(crate) async fn connect_trusted_ma_on_startup(
     state: &AppState,
     config: RwSignal<EgoConfig>,
-    fallback_did: Option<String>,
-    unavailable_target: &str,
+    username: &str,
+    did: String,
     own_did: &str,
-    options: ConnectMaOptions,
 ) -> ConnectMaOutcome {
-    let Some(did) = fallback_did_candidate(config, fallback_did) else {
-        return ConnectMaOutcome::Unavailable {
-            target: unavailable_target.to_string(),
-        };
-    };
-    if options.publish_identity_before_ping && verify_self_publication(own_did).await.is_err() {
+    if verify_self_publication(own_did).await.is_err() {
         state.push_system(tf(
             "msg-identity-first-publish",
             &[(
@@ -410,43 +253,27 @@ async fn ping_and_publish_fallback(
                 &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
             )],
         ));
-        if let Err(e) = send_identity_publish_and_wait(&did).await {
+        if let Err(e) = send_identity_publish_and_wait(&did, Some(did.clone())).await {
             log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
-    if let Ok(()) = ping_runtime(state, &did).await {
-    } else {
-        state.push_error(tf(
-            "msg-runtime-ping-timeout",
-            &[
-                ("did", &did),
-                ("seconds", &(RUNTIME_PING_TIMEOUT_MS / 1_000).to_string()),
-            ],
-        ));
+    if let Err(error) = ping_runtime(state, &did, false).await {
+        state.push_error(error);
         return ConnectMaOutcome::PingTimedOut { did };
     }
     config.update(|cfg| {
         cfg.set(MA_CTX_DID, &did);
-        set_ma_runtime_mode(cfg, MaRuntimeMode::Public);
         cfg.set(".my.aliases.ma", &did);
     });
-    crate::views::landing::save_last_runtime(&did);
-    if !options.publish {
-        return ConnectMaOutcome::Ready { did };
-    }
-    let published = if options.full_profile_publish {
-        do_publish(did.clone(), config, state, None, options.reenter_saved_ctx).await
-    } else {
-        send_identity_publish_and_wait(&did).await.is_ok()
-    };
-    if published {
-        state.push_system(tf("msg-auto-published", &[("url", &did)]));
-    }
+    let cfg = config.get_untracked();
+    let _ = crate::config::persist_config(username, &cfg).await;
     ConnectMaOutcome::Ready { did }
 }
 
-async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
-    state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
+async fn ping_runtime(state: &AppState, did: &str, quiet: bool) -> Result<(), String> {
+    if !quiet {
+        state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
+    }
     let root = crate::transport::actor_url(did, "root")?;
     let send_and_wait = async move {
         let mut rx = None;
@@ -464,8 +291,8 @@ async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
         }
         let rx = rx.ok_or_else(|| "runtime ping reply was not registered".to_string())?;
         rx.await
+            .map_err(|_| "runtime ping reply was cancelled".to_string())?
             .map(|_| ())
-            .map_err(|_| "runtime ping reply was cancelled".to_string())
     }
     .fuse();
     let timeout = gloo_timers::future::TimeoutFuture::new(RUNTIME_PING_TIMEOUT_MS).fuse();
@@ -476,13 +303,20 @@ async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
     }
 }
 
-pub(crate) async fn send_identity_publish_and_wait(publisher: &str) -> Result<(), String> {
+pub(crate) async fn send_identity_publish_and_wait(
+    publisher: &str,
+    trusted_ma: Option<String>,
+) -> Result<(), String> {
     let mut rx = None;
     let mut registered_msg_id = None;
-    let send_result = crate::transport::send_identity_publish_with_msg_id(publisher, |msg_id| {
-        registered_msg_id = Some(msg_id.clone());
-        rx = Some(crate::state::AwaitingReply::register(msg_id));
-    })
+    let send_result = crate::transport::send_identity_publish_with_msg_id(
+        publisher,
+        trusted_ma.as_deref(),
+        |msg_id| {
+            registered_msg_id = Some(msg_id.clone());
+            rx = Some(crate::state::AwaitingReply::register(msg_id));
+        },
+    )
     .await;
     if let Err(e) = send_result {
         if let Some(msg_id) = registered_msg_id {
@@ -492,7 +326,9 @@ pub(crate) async fn send_identity_publish_and_wait(publisher: &str) -> Result<()
     }
     let rx = rx.ok_or_else(|| "identity publish reply was not registered".to_string())?;
     futures::select! {
-        reply = rx.fuse() => reply.map(|_| ()).map_err(|_| "identity publish reply was cancelled".to_string()),
+        reply = rx.fuse() => reply
+            .map_err(|_| "identity publish reply was cancelled".to_string())
+            .and_then(|result| result.map(|_| ())),
         () = gloo_timers::future::TimeoutFuture::new(IDENTITY_PUBLISH_TIMEOUT_MS).fuse() => Err("identity publish timed out".to_string()),
     }
 }
@@ -528,41 +364,60 @@ pub(crate) async fn verify_self_publication(own_did: &str) -> Result<(), String>
 }
 
 /// Build and upload the profile blob to IPFS, then queue the DID republish.
-/// Returns `true` if the request was sent, `false` if an error was pushed.
 /// Pass `cmd_id = Some(id)` to track the operation as a terminal command.
-pub(crate) async fn do_publish(
+pub(crate) async fn queue_profile_publish(
     publisher: String,
     config: RwSignal<EgoConfig>,
     state: &AppState,
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
-) -> bool {
-    let username = if let Some(u) = state.session.get_untracked().map(|s| s.username.clone()) {
-        u
-    } else {
-        state.push_error(t("msg-not-logged-in"));
-        return false;
+) {
+    let Some(username) = state.session.get_untracked().map(|s| s.username.clone()) else {
+        fail_profile_publish(state, cmd_id, t("msg-not-logged-in"));
+        return;
     };
     // Step 1: Publish the DID document so the runtime can authenticate the
     // profile-store request and route its reply to our current endpoint.
-    if let Err(error) = send_identity_publish_and_wait(&publisher).await {
-        if let Some(id) = cmd_id {
-            state.resolve_command_by_id(id, crate::core::CommandStatus::Error(error.clone()));
-        }
-        state.push_error(tf("profile-publish-failed", &[("e", &error)]));
-        return false;
+    let trusted_ma = stored_ma_did(&config.get_untracked());
+    if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma).await {
+        fail_profile_publish(state, cmd_id, error);
+        return;
     }
-    let identity_json = match load_identity(&username).await {
-        Ok(Some(s)) => s.export_json,
-        Ok(None) => {
-            state.push_error(tf("error-identity-not-found", &[("name", &username)]));
-            return false;
-        }
-        Err(e) => {
-            state.push_error(e);
-            return false;
+    let encrypted_profile = match build_encrypted_profile(&username, config).await {
+        Ok(profile) => profile,
+        Err(error) => {
+            fail_profile_publish(state, cmd_id, error);
+            return;
         }
     };
+    match crate::transport::send_ipfs_store(
+        &publisher,
+        encrypted_profile,
+        "application/octet-stream",
+    )
+    .await
+    {
+        Ok(msg_id) => state.register_pending(
+            msg_id,
+            PendingKind::ProfilePublish {
+                publisher_did: publisher,
+                cmd_id,
+                reenter_saved_ctx,
+            },
+            None,
+        ),
+        Err(error) => fail_profile_publish(state, cmd_id, error),
+    }
+}
+
+async fn build_encrypted_profile(
+    username: &str,
+    config: RwSignal<EgoConfig>,
+) -> Result<Vec<u8>, String> {
+    let identity_json = load_identity(username)
+        .await?
+        .ok_or_else(|| tf("error-identity-not-found", &[("name", username)]))?
+        .export_json;
     let identity_val: serde_json::Value =
         serde_json::from_str(&identity_json).unwrap_or(serde_json::Value::String(identity_json));
     let my_nested = config
@@ -574,59 +429,18 @@ pub(crate) async fn do_publish(
         "identity": identity_val,
         "my": my_nested,
     });
-    let profile_bytes = match serde_ipld_dagcbor::to_vec(&profile_val) {
-        Ok(b) => b,
-        Err(e) => {
-            state.push_error(tf("profile-publish-failed", &[("e", &e.to_string())]));
-            return false;
-        }
-    };
-    let profile_key = if let Some(key) =
-        crate::state::SESSION_PROFILE_KEY.with(|k| k.borrow().as_ref().copied())
-    {
-        key
-    } else {
-        state.push_error(tf(
-            "profile-publish-failed",
-            &[("e", "missing profile encryption key for this session")],
-        ));
-        return false;
-    };
-    let encrypted_profile =
-        match crate::profile_crypto::encrypt_with_key(&profile_bytes, &profile_key) {
-            Ok(bytes) => bytes,
-            Err(e) => {
-                state.push_error(tf("profile-publish-failed", &[("e", &e)]));
-                return false;
-            }
-        };
-    match crate::transport::send_ipfs_store(
-        &publisher,
-        encrypted_profile,
-        "application/octet-stream",
-    )
-    .await
-    {
-        Ok(msg_id) => {
-            state.register_pending(
-                msg_id,
-                PendingKind::ProfilePublish {
-                    publisher_did: publisher,
-                    cmd_id,
-                    reenter_saved_ctx,
-                },
-                None,
-            );
-            true
-        }
-        Err(e) => {
-            if let Some(id) = cmd_id {
-                state.resolve_command_by_id(id, crate::core::CommandStatus::Error(e.clone()));
-            }
-            state.push_error(tf("profile-publish-failed", &[("e", &e)]));
-            false
-        }
+    let profile_bytes = serde_ipld_dagcbor::to_vec(&profile_val).map_err(|e| e.to_string())?;
+    let profile_key = crate::state::SESSION_PROFILE_KEY
+        .with(|key| key.borrow().as_ref().copied())
+        .ok_or_else(|| "missing profile encryption key for this session".to_string())?;
+    crate::profile_crypto::encrypt_with_key(&profile_bytes, &profile_key)
+}
+
+fn fail_profile_publish(state: &AppState, cmd_id: Option<u64>, error: String) {
+    if let Some(id) = cmd_id {
+        state.resolve_command_by_id(id, crate::core::CommandStatus::Error(error.clone()));
     }
+    state.push_error(tf("profile-publish-failed", &[("e", &error)]));
 }
 
 pub(crate) async fn rediscover_ma(
@@ -693,7 +507,6 @@ pub(crate) async fn rediscover_ma(
     config.update(|cfg| {
         cfg.set(MA_CTX_URL, ma_base.trim_end_matches('/'));
         cfg.set(MA_CTX_DID, &did);
-        set_ma_runtime_mode(cfg, MaRuntimeMode::Local);
         if !endpoint_id.is_empty() {
             cfg.set(".ma.ctx.endpoint_id", &endpoint_id);
         }
@@ -813,12 +626,14 @@ mod tests {
     }
 
     #[test]
-    fn claim_failures_do_not_abort_publish_path() {
-        assert!(should_continue_after_claim(&ClaimResult::OwnedByOther));
-        assert!(should_continue_after_claim(&ClaimResult::UnexpectedStatus(
-            500
-        )));
-        assert!(should_continue_after_claim(&ClaimResult::Unavailable));
+    fn claim_requires_ownership_before_discovery() {
+        assert!(should_continue_after_claim(&ClaimResult::Claimed));
+        assert!(should_continue_after_claim(&ClaimResult::AlreadyOwned));
+        assert!(!should_continue_after_claim(&ClaimResult::OwnedByOther));
+        assert!(!should_continue_after_claim(
+            &ClaimResult::UnexpectedStatus(500)
+        ));
+        assert!(!should_continue_after_claim(&ClaimResult::Unavailable));
     }
 
     #[test]
@@ -836,49 +651,6 @@ mod tests {
             }
             .target(),
             "http://localhost:5003"
-        );
-    }
-
-    #[test]
-    fn explicit_fallback_did_wins_over_stored_ma_context() {
-        let config = RwSignal::new(EgoConfig::default());
-        config.update_untracked(|cfg| cfg.set(".ma.ctx.did", "did:ma:stored"));
-
-        assert_eq!(
-            fallback_did_candidate(config, Some("did:ma:explicit".to_string())),
-            Some("did:ma:explicit".to_string())
-        );
-    }
-
-    #[test]
-    fn stored_public_ma_did_requires_public_mode() {
-        let mut cfg = EgoConfig::default();
-        cfg.set(".ma.ctx.did", "did:ma:stored");
-        assert_eq!(stored_public_ma_did(&cfg), None);
-
-        cfg.set(".ma.ctx.mode", "local");
-        assert_eq!(stored_public_ma_did(&cfg), None);
-
-        cfg.set(".ma.ctx.mode", "public");
-        assert_eq!(
-            stored_public_ma_did(&cfg),
-            Some("did:ma:stored".to_string())
-        );
-    }
-
-    #[test]
-    fn stored_local_ma_url_requires_local_mode() {
-        let mut cfg = EgoConfig::default();
-        cfg.set(".ma.ctx.url", "http://localhost:5999");
-        assert_eq!(stored_local_ma_url(&cfg), None);
-
-        cfg.set(".ma.ctx.mode", "public");
-        assert_eq!(stored_local_ma_url(&cfg), None);
-
-        cfg.set(".ma.ctx.mode", "local");
-        assert_eq!(
-            stored_local_ma_url(&cfg),
-            Some("http://localhost:5999".to_string())
         );
     }
 

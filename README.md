@@ -183,41 +183,37 @@ they need to resolve it — fetch your public keys and your iroh endpoint from
 IPFS. That means your *DID document* must be published to IPFS at least once,
 and refreshed whenever your endpoint changes.
 
-You need two things running on your machine:
+You need access to two services:
 
 1. **IPFS Desktop** — installs a local [Kubo](https://docs.ipfs.tech/install/ipfs-desktop/)
    node that stores and serves content on IPFS.
    Download from [https://docs.ipfs.tech/install/ipfs-desktop/](https://docs.ipfs.tech/install/ipfs-desktop/).
    *(Brave no longer bundles Kubo, so this is the easiest path.)*
 
-2. **`ma`** — the 間 runtime daemon, a small bridge between ego and Kubo.
-   It runs on your machine, speaks the ma protocol over iroh QUIC, and handles
-   publish requests on your behalf.
+2. **`ma`** — a trusted 間 runtime daemon that handles publish requests on
+   your behalf. It may run locally or elsewhere.
    Source and releases: [github.com/bahner/ma-runtime](https://github.com/bahner/ma-runtime).
-
-Once `ma` is running, open [http://localhost:5003](http://localhost:5003) to confirm.
 
 ### ma-space
 
-Then run one command in zion:
+Select a trusted runtime by DID:
+
+```
+.ma: did:ma:trustedruntime
+```
+
+If you run `ma` locally, discover and select it explicitly with `.ma: claim`.
+Add a port for a non-default local instance, for example `.ma: claim 5009`.
+Normal login never probes localhost.
+
+Publish your profile and DID document through the selected runtime with:
 
 ```
 .ma
 ```
 
-This probes `http://localhost:5003/status.json` with a short timeout, reads
-`ma`'s DID and endpoint, stores them under `.ma.ctx.*`, and creates the alias
-`@ma` for you automatically. If local `ma` is not running, zion reports that
-quickly instead of waiting for the normal message timeout.
-
-After that, publishing your identity is just:
-
-```
-.my.identity!publish @ma
-```
-
-You only need to re-run this whenever your iroh endpoint changes (e.g. after
-a new install). The DID itself is permanent.
+The selected runtime is included in the DID document as `ma.ma`, so another
+browser can recover the correct per-identity runtime before login.
 
 ### What is ma-space?
 

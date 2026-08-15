@@ -338,6 +338,7 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
 /// Send an identity-publish request and expose its `Message.id` before dispatch.
 pub async fn send_identity_publish_with_msg_id(
     publisher_did: &str,
+    trusted_ma: Option<&str>,
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
@@ -371,6 +372,10 @@ pub async fn send_identity_publish_with_msg_id(
         .with(|e| e.borrow().as_ref().map(|ep| ep.ma_extension()))
         .unwrap_or_default()
         .kind("agent");
+    let ma_ext = match trusted_ma {
+        Some(did) => ma_ext.extra("ma", Ipld::String(did.to_string())),
+        None => ma_ext,
+    };
     // Inject language preference hint if set.
     let ma_ext = match SESSION_LANG.with(|l| l.borrow().clone()) {
         Some(lang) if !lang.is_empty() => ma_ext.extra("lang", Ipld::String(lang)),

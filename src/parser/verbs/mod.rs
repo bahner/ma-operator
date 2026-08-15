@@ -33,9 +33,19 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     }
 }
 
-/// Default base URL for the local `ma` daemon.
-/// Override with `.ma.ctx.url: http://host:port` or pass port as argument to `.ma`.
-pub(super) const MA_URL: &str = "http://localhost:5003";
+pub(crate) fn doc_trusted_ma(doc: &ma_core::Document) -> Option<String> {
+    let Some(Ipld::Map(map)) = &doc.ma else {
+        return None;
+    };
+    let Some(Ipld::String(did)) = map.get("ma") else {
+        return None;
+    };
+    is_bare_ma_did(did).then(|| did.clone())
+}
+
+pub(crate) fn is_bare_ma_did(did: &str) -> bool {
+    did.starts_with("did:ma:") && !did.contains('#') && !did.contains('/')
+}
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
 /// fragment, no path). Accepts either an alias name or a literal DID.
@@ -48,7 +58,7 @@ fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
             .map(std::string::ToString::to_string)
             .ok_or_else(|| tf("err-unknown-alias", &[("name", raw)]))?
     };
-    if resolved.contains('#') || resolved.contains('/') {
+    if !is_bare_ma_did(&resolved) {
         return Err(tf("err-bare-did", &[("did", &resolved)]));
     }
     Ok(resolved)
@@ -150,4 +160,37 @@ pub fn dispatch_meta(
         return Ok(());
     }
     Err(tf("path-no-verb", &[("verb", verb), ("path", path)]))
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use ma_core::{MaExtension, SecretBundle};
+
+    fn document_with_ma(value: Ipld) -> ma_core::Document {
+        SecretBundle::generate()
+            .build_document(MaExtension::new().kind("agent").extra("ma", value))
+            .expect("document")
+    }
+
+    #[test]
+    fn trusted_ma_accepts_bare_ma_did() {
+        let doc = document_with_ma(Ipld::String("did:ma:trusted".to_string()));
+
+        assert_eq!(doc_trusted_ma(&doc), Some("did:ma:trusted".to_string()));
+    }
+
+    #[test]
+    fn trusted_ma_rejects_urls_fragments_and_other_did_methods() {
+        let values = [
+            "http://localhost:5003",
+            "did:ma:trusted#root",
+            "did:web:runtime.example",
+        ];
+
+        for value in values {
+            let doc = document_with_ma(Ipld::String(value.to_string()));
+            assert_eq!(doc_trusted_ma(&doc), None);
+        }
+    }
 }

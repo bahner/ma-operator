@@ -14,16 +14,6 @@ pub struct HttpTextResponse {
     pub body: String,
 }
 
-/// GET a URL and return the response body as text.
-pub async fn fetch_url_text(url: &str) -> Result<String, String> {
-    let window = web_sys::window().ok_or("no window")?;
-    let resp_val = JsFuture::from(window.fetch_with_str(url))
-        .await
-        .map_err(|e| format!("{e:?}"))?;
-    let resp: web_sys::Response = resp_val.dyn_into().map_err(|_| "not a Response")?;
-    response_text(resp).await
-}
-
 /// GET a URL and return the response body as text, aborting the request on timeout.
 pub async fn fetch_url_text_timeout(url: &str, timeout_ms: u32) -> Result<String, String> {
     let opts = web_sys::RequestInit::new();

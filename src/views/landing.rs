@@ -16,7 +16,6 @@ use crate::{
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
-const LAST_RUNTIME_KEY: &str = "zion_last_runtime";
 const IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
 
 fn validate_new_passphrase(pass: &str, confirm: &str) -> Result<(), &'static str> {
@@ -47,22 +46,6 @@ fn save_ipfs_gateway_pref(url: &str) {
 
 fn is_local_gateway(url: &str) -> bool {
     url.contains("localhost") || url.contains("127.0.0.1")
-}
-
-/// Persist the last successfully connected runtime (DID or URL) to localStorage.
-/// Called by `src/parser/verbs/ma.rs` after a successful `.ma!connect`.
-pub(crate) fn save_last_runtime(runtime: &str) {
-    let _ = web_sys::window()
-        .and_then(|w| w.local_storage().ok().flatten())
-        .map(|s| s.set_item(LAST_RUNTIME_KEY, runtime));
-}
-
-fn load_last_runtime() -> String {
-    web_sys::window()
-        .and_then(|w| w.local_storage().ok().flatten())
-        .and_then(|s| s.get_item(LAST_RUNTIME_KEY).ok().flatten())
-        .filter(|s| !s.is_empty())
-        .unwrap_or_else(|| "http://localhost:5003".to_string())
 }
 
 fn save_last_did(did: &str) {
@@ -123,32 +106,11 @@ pub fn Landing() -> impl IntoView {
     let scan_frames = RwSignal::new(0_u32);
     let video_ref = NodeRef::<leptos::html::Video>::new();
 
-    // Runtime field: DID or HTTP URL to connect to after login.
-    // Seeded from `?ma=` URL param (already in state.startup_ma) or localStorage.
-    let startup_ma = state.startup_ma.get_untracked();
-    let prev_runtime = load_last_runtime();
-
-    // Suggestions: URL param, prev saved, default — deduplicated, max 3.
-    let ma_options: Vec<String> = {
-        let mut seen = std::collections::HashSet::new();
-        let mut opts = Vec::new();
-        for val in [
-            startup_ma.as_deref().unwrap_or(""),
-            prev_runtime.as_str(),
-            "http://localhost:5003",
-        ] {
-            if !val.is_empty() && seen.insert(val.to_string()) {
-                opts.push(val.to_string());
-            }
-        }
-        opts
-    };
-
-    let ma_input = RwSignal::new(
-        startup_ma
-            .filter(|v| v.starts_with("did:ma:") || v.starts_with("http"))
-            .unwrap_or_else(|| prev_runtime.clone()),
-    );
+    let invited_ma = state
+        .startup_ma
+        .get_untracked()
+        .filter(|did| crate::parser::verbs::is_bare_ma_did(did));
+    let ma_input = RwSignal::new(invited_ma.clone().unwrap_or_default());
 
     // Background music.
     Effect::new(move |_| {
@@ -167,17 +129,24 @@ pub fn Landing() -> impl IntoView {
         );
     });
 
-    // When the DID field has a value, try to load the user's language
-    // preference from IndexedDB so the landing page is shown in their language.
+    // Load identity-specific preferences before login.
     let state_lang = state.clone();
+    let invited_ma_for_lookup = invited_ma.clone();
     Effect::new(move |_| {
-        let did = did_input.get();
-        if did.trim().is_empty() {
+        let did = did_input.get().trim().to_string();
+        if !crate::parser::verbs::is_bare_ma_did(&did) {
+            ma_input.set(invited_ma_for_lookup.clone().unwrap_or_default());
             return;
         }
-        let uname = username_from_did(did.trim());
+        let uname = username_from_did(&did);
         let state2 = state_lang.clone();
+        let invited_ma = invited_ma_for_lookup.clone();
         spawn_local(async move {
+            gloo_timers::future::TimeoutFuture::new(250).await;
+            if did_input.get_untracked().trim() != did {
+                return;
+            }
+            let mut selected_ma = invited_ma;
             if let Ok(Some(cfg_json)) = crate::identity::storage::load_config(&uname).await {
                 if let Ok(cfg) = crate::config::EgoConfig::from_json(&cfg_json) {
                     if let Some(lang_tag) = cfg.get(".my.i18n") {
@@ -185,7 +154,23 @@ pub fn Landing() -> impl IntoView {
                             state2.lang.set(crate::i18n::lang());
                         }
                     }
+                    if let Some(runtime) = crate::parser::verbs::ma::stored_ma_did(&cfg) {
+                        ma_input.set(runtime.clone());
+                        selected_ma = Some(runtime);
+                    }
                 }
+            }
+            use ma_core::DidDocumentResolver;
+            let resolver = ma_core::IpfsGatewayResolver::default();
+            if let Ok(doc) = resolver.resolve(&did).await {
+                if did_input.get_untracked().trim() != did {
+                    return;
+                }
+                ma_input.set(
+                    crate::parser::verbs::doc_trusted_ma(&doc)
+                        .or(selected_ma)
+                        .unwrap_or_default(),
+                );
             }
         });
     });
@@ -730,48 +715,6 @@ pub fn Landing() -> impl IntoView {
 
                 // ── Settings / Config mode ────────────────────────────────
                 <Show when=move || mode.get() == Mode::Config>
-                    <Show when=move || ma_input.get().starts_with("did:ma:")>
-                        <p class="landing-warning">{move || { let _ = lang.get(); t("warning-remote-runtime") }}</p>
-                    </Show>
-                    <div class="form-row">
-                        <label>{move || { let _ = lang.get(); t("label-runtime") }}</label>
-                        <input
-                            type="text"
-                            list="ma-opts"
-                            prop:value=move || ma_input.get()
-                            placeholder=move || { let _ = lang.get(); t("label-runtime-placeholder") }
-                            on:focus=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
-                                { input.set_value(""); }
-                            }
-                            on:blur=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
-                                {
-                                    if input.value().is_empty() {
-                                        input.set_value(&ma_input.get_untracked());
-                                    }
-                                }
-                            }
-                            on:input=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                {
-                                    let v = input.value();
-                                    save_last_runtime(&v);
-                                    ma_input.set(v.clone());
-                                    // Probe immediately so the browser shows mixed-content exception dialog.
-                                    if v.starts_with("http://") {
-                                        let url = format!("{}/status.json", v.trim_end_matches('/'));
-                                        spawn_local(async move {
-                                            let _ = crate::http::fetch_url_text(&url).await;
-                                        });
-                                    }
-                                }
-                            }
-                        />
-                    </div>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-gateway") }}</label>
                         <input
@@ -808,7 +751,7 @@ pub fn Landing() -> impl IntoView {
 
                 // ── Always-present datalists (must be in DOM for list= attr) ──
                 <datalist id="ma-opts">
-                    {ma_options.into_iter().map(|v| view! { <option value=v /> }).collect::<Vec<_>>()}
+                    {invited_ma.into_iter().map(|v| view! { <option value=v /> }).collect::<Vec<_>>()}
                 </datalist>
                 <datalist id="gw-opts">
                     <option value="http://127.0.0.1:8080/" />
@@ -819,7 +762,7 @@ pub fn Landing() -> impl IntoView {
                 // ── DID field ─────────────────────────────────────────────
                 <Show when=move || mode.get() != Mode::Config && (mode.get() != Mode::New || !did_input.get().trim().is_empty())>
                     <div class="form-row">
-                        <label>{move || { let _ = lang.get(); t("label-did") }}</label>
+                        <label>{move || { let _ = lang.get(); format!("{}:", t("label-did")) }}</label>
                         <input
                             type="text"
                             prop:value=move || did_input.get()
@@ -830,6 +773,22 @@ pub fn Landing() -> impl IntoView {
                                     .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
                                 {
                                     did_input.set(input.value());
+                                }
+                            }
+                        />
+                    </div>
+                    <div class="form-row">
+                        <label>"ma:"</label>
+                        <input
+                            type="text"
+                            list="ma-opts"
+                            prop:value=move || ma_input.get()
+                            placeholder="did:ma:..."
+                            on:input=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    ma_input.set(input.value());
                                 }
                             }
                         />
