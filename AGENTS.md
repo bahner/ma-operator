@@ -842,6 +842,8 @@ acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
 .my.ctx.hold          the actor DID-URL zion is currently holding (parent of)
 .my.ctx.hold-pending  the actor DID-URL zion is waiting to become parent of
 .my.ctx.hold-then     optional follow-up target for take's second hop
+.my.ctx.hold-queued   one replacement actor to hold after automatic stow
+.my.ctx.hold-queued-then  optional follow-up target for that replacement
 ```
 
 avatar.zscheme's `hold`/`take`/`take-from` send `:set-parent <my-did>` to the
@@ -867,4 +869,12 @@ Both branches always return `true` (swallowed) — an unsolicited `:parent` is
 never displayed to the user directly; the visible outcome is a `:print` event
 from the actor's own authoritative state change (lambda-ma's RPC-vs-print
 rule), not this technical confirm/clear plumbing.
+
+When an avatar requests another item while it is already holding one,
+`avatar.zscheme` queues the replacement and sends its currently held item to
+the avatar's existing ordinary inventory. On that held item's departure
+re-announcement, `handle_hold_parent_proposal` clears `hold`, promotes the
+queued target to `hold-pending`, and starts its ordinary `:hold` request. This
+is avatar-client sequencing only: it does not change container behaviour or
+introduce an inventory kind.
 
