@@ -65,10 +65,6 @@ async fn publish_with_trusted_ma(
     config: RwSignal<EgoConfig>,
     state: &AppState,
 ) {
-    if let Err(error) = ping_runtime(state, &trusted_ma, true).await {
-        state.push_error(error);
-        return;
-    }
     queue_profile_publish(trusted_ma, config, state, None, true).await;
 }
 
@@ -257,7 +253,7 @@ pub(crate) async fn connect_trusted_ma_on_startup(
             log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
-    if let Err(error) = ping_runtime(state, &did, false).await {
+    if let Err(error) = ping_runtime(state, &did).await {
         state.push_error(error);
         return ConnectMaOutcome::PingTimedOut { did };
     }
@@ -270,15 +266,12 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     ConnectMaOutcome::Ready { did }
 }
 
-async fn ping_runtime(state: &AppState, did: &str, quiet: bool) -> Result<(), String> {
-    if !quiet {
-        state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
-    }
-    let root = crate::transport::actor_url(did, "root")?;
+async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
+    state.push_system(tf("msg-runtime-pinging", &[("did", did)]));
     let send_and_wait = async move {
         let mut rx = None;
         let mut registered_msg_id = None;
-        let send_result = transport::send_rpc_with_msg_id(&root, "ping", &[], |msg_id| {
+        let send_result = transport::send_rpc_with_msg_id(did, "ping", &[], |msg_id| {
             registered_msg_id = Some(msg_id.clone());
             rx = Some(crate::state::AwaitingReply::register(msg_id));
         })
