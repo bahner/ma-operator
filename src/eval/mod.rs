@@ -226,6 +226,10 @@ fn eval_control(
         ".logout" => {
             transport::disconnect();
             crate::scheme::reset_session_env();
+            config.update(|cfg| {
+                cfg.delete_subtree(".ma");
+                cfg.delete(".my.aliases.ma");
+            });
             state.session.set(None);
         }
         ".clear" => {

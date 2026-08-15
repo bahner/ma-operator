@@ -8,7 +8,7 @@ use crate::{
     http::fetch_cid_bytes,
     i18n::{t, tf},
     identity::storage::load_history,
-    parser::verbs::ma::{stored_ma_did, ConnectMaOutcome},
+    parser::verbs::ma::ConnectMaOutcome,
     state::{AppState, SessionState},
     transport,
 };
@@ -84,26 +84,33 @@ pub(crate) async fn startup_local_ma(
     startup_ma: Option<String>,
     startup_enter: Option<String>,
 ) -> ConnectMaOutcome {
-    let fallback_did = startup_ma
-        .as_deref()
-        .filter(|did| did.starts_with("did:ma:"))
-        .map(ToString::to_string);
+    let selected_did = select_startup_ma(startup_ma);
     let fallback_did =
-        fallback_did.or_else(|| startup_enter_publish_did(config, startup_enter.as_deref()));
-    let fallback_did = fallback_did.or_else(|| stored_ma_did(&config.get_untracked()));
+        selected_did.or_else(|| startup_enter_publish_did(config, startup_enter.as_deref()));
     if fallback_did.is_none() {
         return ConnectMaOutcome::Unavailable {
             target: "ma".to_string(),
         };
     }
+    let selected_did = fallback_did.expect("checked above");
+    config.update(|cfg| {
+        cfg.set(".ma.ctx.did", &selected_did);
+        cfg.set(".my.aliases.ma", &selected_did);
+    });
+    let cfg = config.get_untracked();
+    let _ = persist_config(&username, &cfg).await;
     crate::parser::verbs::ma::connect_trusted_ma_on_startup(
         &state,
         config,
         &username,
-        fallback_did.expect("checked above"),
+        selected_did,
         &sender_did,
     )
     .await
+}
+
+fn select_startup_ma(field: Option<String>) -> Option<String> {
+    field.filter(|did| crate::parser::verbs::is_bare_ma_did(did))
 }
 
 pub(crate) async fn startup_did_sync(
@@ -460,12 +467,25 @@ fn queue_startup_zscheme_before_context(
 mod tests {
     use super::{
         apply_standard_runtime_alias, normalize_startup_enter, queue_startup_context,
-        queue_startup_zscheme_before_context, should_queue_startup_enter, standard_runtime_enter,
-        startup_ctx_enter,
+        queue_startup_zscheme_before_context, select_startup_ma, should_queue_startup_enter,
+        standard_runtime_enter, startup_ctx_enter,
     };
     use crate::parser::verbs::ma::ConnectMaOutcome;
     use crate::{config::EgoConfig, state::AppState};
     use leptos::prelude::{GetUntracked, UpdateUntracked};
+
+    #[test]
+    fn landing_field_runtime_is_selected() {
+        assert_eq!(
+            select_startup_ma(Some("did:ma:new".to_string())),
+            Some("did:ma:new".to_string())
+        );
+    }
+
+    #[test]
+    fn empty_landing_field_selects_no_runtime() {
+        assert_eq!(select_startup_ma(Some(String::new())), None);
+    }
 
     #[test]
     fn normalize_startup_enter_accepts_url_did_and_alias_forms() {

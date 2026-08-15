@@ -17,10 +17,30 @@ const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000,
 const MA_CTX_DID: &str = ".ma.ctx.did";
 const MA_CTX_URL: &str = ".ma.ctx.url";
 
-pub(crate) fn stored_ma_did(cfg: &EgoConfig) -> Option<String> {
+pub(crate) fn active_ma_did(cfg: &EgoConfig) -> Option<String> {
     cfg.get(MA_CTX_DID)
         .filter(|did| did.starts_with("did:ma:"))
         .map(ToString::to_string)
+}
+
+pub(crate) fn preferred_ma_prefill(
+    published: Option<String>,
+    invited: Option<String>,
+) -> Option<String> {
+    published.or(invited)
+}
+
+pub(crate) fn ma_choices(
+    published: Option<String>,
+    invited: Option<String>,
+) -> Vec<String> {
+    let mut choices = Vec::new();
+    for did in [published, invited].into_iter().flatten() {
+        if !choices.contains(&did) {
+            choices.push(did);
+        }
+    }
+    choices
 }
 
 pub(super) fn handle_ma(
@@ -51,7 +71,7 @@ pub(super) fn handle_ma(
     }
 
     let cfg = config.get_untracked();
-    let trusted_ma = stored_ma_did(&cfg)
+    let trusted_ma = active_ma_did(&cfg)
         .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
     let state2 = state.clone();
     leptos::task::spawn_local(async move {
@@ -371,7 +391,7 @@ pub(crate) async fn queue_profile_publish(
     };
     // Step 1: Publish the DID document so the runtime can authenticate the
     // profile-store request and route its reply to our current endpoint.
-    let trusted_ma = stored_ma_did(&config.get_untracked());
+    let trusted_ma = active_ma_did(&config.get_untracked());
     if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma).await {
         fail_profile_publish(state, cmd_id, error);
         return;
@@ -590,6 +610,39 @@ fn resolve_live_target(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
 mod tests {
     use super::*;
     use ma_core::{Ipld, MaExtension, SecretBundle};
+
+    #[test]
+    fn published_runtime_takes_priority_over_invited_runtime() {
+        assert_eq!(
+            preferred_ma_prefill(
+                Some("did:ma:published".to_string()),
+                Some("did:ma:invited".to_string()),
+            ),
+            Some("did:ma:published".to_string())
+        );
+    }
+
+    #[test]
+    fn invited_runtime_is_used_without_published_runtime() {
+        assert_eq!(
+            preferred_ma_prefill(
+                None,
+                Some("did:ma:invited".to_string()),
+            ),
+            Some("did:ma:invited".to_string())
+        );
+    }
+
+    #[test]
+    fn ma_choices_include_distinct_published_and_invited_runtimes() {
+        assert_eq!(
+            ma_choices(
+                Some("did:ma:published".to_string()),
+                Some("did:ma:invited".to_string()),
+            ),
+            vec!["did:ma:published", "did:ma:invited"]
+        );
+    }
 
     fn document_with_profile(profile_cid: Option<&str>) -> ma_core::Document {
         let bundle = SecretBundle::generate();

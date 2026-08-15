@@ -400,22 +400,29 @@ impl EgoConfig {
         let tree = self
             .tree
             .iter()
-            .filter(|(k, _)| Self::is_profile_key(k.as_str()))
+            .filter(|(k, _)| {
+                Self::is_profile_key(k.as_str()) && k.as_str() != ".my.aliases.ma"
+            })
+            .map(|(k, v)| (k.clone(), v.clone()))
+            .collect();
+        Self { tree }
+    }
+
+    /// Return a copy containing only persistent profile state.
+    fn for_persistence(&self) -> Self {
+        let tree = self
+            .tree
+            .iter()
+            .filter(|(k, _)| k.starts_with(".my.") && k.as_str() != ".my.aliases.ma")
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
         Self { tree }
     }
 
     /// Return a copy of this config suitable for file export.
-    /// Excludes `.ma.ctx.*` (device-specific runtime state).
+    /// Excludes the session-only `.ma` tree.
     pub fn for_export(&self) -> Self {
-        let tree = self
-            .tree
-            .iter()
-            .filter(|(k, _)| k.as_str() != ".ma.ctx" && !k.starts_with(".ma.ctx."))
-            .map(|(k, v)| (k.clone(), v.clone()))
-            .collect();
-        Self { tree }
+        self.for_persistence()
     }
 
     fn migrate_slash_keys(&mut self) {
@@ -510,7 +517,7 @@ impl DotRegistry for EgoConfig {
 // ── Persistence ────────────────────────────────────────────────────────────────
 
 pub async fn persist_config(username: &str, cfg: &EgoConfig) -> Result<(), String> {
-    let json = cfg.to_json()?;
+    let json = cfg.for_persistence().to_json()?;
     save_config(username, &json).await
 }
 
@@ -519,10 +526,11 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
             cfg.migrate_slash_keys();
-            cfg.tree.retain(|k, _| {
-                k.starts_with(".my.") || k == ".ma.ctx" || k.starts_with(".ma.ctx.")
-            });
+            cfg.tree.retain(|k, _| k.starts_with(".my."));
+            cfg.delete(".my.aliases.ma");
             cfg.set_defaults();
+            let json = cfg.for_persistence().to_json()?;
+            save_config(username, &json).await?;
             Ok(cfg)
         }
         None => Ok(EgoConfig::new()),
@@ -905,6 +913,21 @@ mod tests {
         let restored = EgoConfig::from_json(&json).unwrap();
         assert_eq!(restored.get(".my.i18n"), Some("nb"));
         assert_eq!(restored.get(".my.aliases.alice"), Some("did:ma:abc"));
+    }
+
+    #[test]
+    fn persistence_excludes_entire_live_ma_tree() {
+        let mut cfg = bare();
+        cfg.set(".my.i18n", "nb");
+        cfg.set(".my.aliases.ma", "did:ma:runtime");
+        cfg.set(".ma.ctx.did", "did:ma:runtime");
+        cfg.set(".ma.live.peer", "did:ma:peer");
+
+        let persisted = cfg.for_persistence();
+
+        assert_eq!(persisted.get(".my.i18n"), Some("nb"));
+        assert_eq!(persisted.get(".my.aliases.ma"), None);
+        assert!(!persisted.has_children(".ma"));
     }
 
     #[test]

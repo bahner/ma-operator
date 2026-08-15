@@ -111,6 +111,11 @@ pub fn Landing() -> impl IntoView {
         .get_untracked()
         .filter(|did| crate::parser::verbs::is_bare_ma_did(did));
     let ma_input = RwSignal::new(invited_ma.clone().unwrap_or_default());
+    let ma_choices = RwSignal::new(crate::parser::verbs::ma::ma_choices(
+        None,
+        invited_ma.clone(),
+    ));
+    let ma_input_edited = RwSignal::new(false);
 
     // Background music.
     Effect::new(move |_| {
@@ -134,6 +139,11 @@ pub fn Landing() -> impl IntoView {
     let invited_ma_for_lookup = invited_ma.clone();
     Effect::new(move |_| {
         let did = did_input.get().trim().to_string();
+        ma_input_edited.set(false);
+        ma_choices.set(crate::parser::verbs::ma::ma_choices(
+            None,
+            invited_ma_for_lookup.clone(),
+        ));
         if !crate::parser::verbs::is_bare_ma_did(&did) {
             ma_input.set(invited_ma_for_lookup.clone().unwrap_or_default());
             return;
@@ -146,17 +156,13 @@ pub fn Landing() -> impl IntoView {
             if did_input.get_untracked().trim() != did {
                 return;
             }
-            let mut selected_ma = invited_ma;
+            let mut selected_ma = invited_ma.clone();
             if let Ok(Some(cfg_json)) = crate::identity::storage::load_config(&uname).await {
                 if let Ok(cfg) = crate::config::EgoConfig::from_json(&cfg_json) {
                     if let Some(lang_tag) = cfg.get(".my.i18n") {
                         if crate::i18n::init(lang_tag).await {
                             state2.lang.set(crate::i18n::lang());
                         }
-                    }
-                    if let Some(runtime) = crate::parser::verbs::ma::stored_ma_did(&cfg) {
-                        ma_input.set(runtime.clone());
-                        selected_ma = Some(runtime);
                     }
                 }
             }
@@ -166,11 +172,18 @@ pub fn Landing() -> impl IntoView {
                 if did_input.get_untracked().trim() != did {
                     return;
                 }
-                ma_input.set(
-                    crate::parser::verbs::doc_trusted_ma(&doc)
-                        .or(selected_ma)
-                        .unwrap_or_default(),
+                let published_ma = crate::parser::verbs::doc_trusted_ma(&doc);
+                ma_choices.set(crate::parser::verbs::ma::ma_choices(
+                    published_ma.clone(),
+                    invited_ma,
+                ));
+                selected_ma = crate::parser::verbs::ma::preferred_ma_prefill(
+                    published_ma,
+                    selected_ma,
                 );
+                if !ma_input_edited.get_untracked() {
+                    ma_input.set(selected_ma.unwrap_or_default());
+                }
             }
         });
     });
@@ -224,10 +237,8 @@ pub fn Landing() -> impl IntoView {
         move || {
             let state = state.clone(); // fresh clone each call → Fn not FnOnce
                                        // Capture runtime choice before any branching.
-            let ma_val = ma_input.get_untracked();
-            if !ma_val.is_empty() {
-                state.startup_ma.set(Some(ma_val));
-            }
+            let ma_val = ma_input.get_untracked().trim().to_string();
+            state.startup_ma.set(Some(ma_val));
             let current_mode = mode.get_untracked();
             let did = did_input.get_untracked().trim().to_string();
             let chosen_nick = nick.get_untracked().trim().to_string();
@@ -751,7 +762,7 @@ pub fn Landing() -> impl IntoView {
 
                 // ── Always-present datalists (must be in DOM for list= attr) ──
                 <datalist id="ma-opts">
-                    {invited_ma.into_iter().map(|v| view! { <option value=v /> }).collect::<Vec<_>>()}
+                    {move || ma_choices.get().into_iter().map(|v| view! { <option value=v /> }).collect_view()}
                 </datalist>
                 <datalist id="gw-opts">
                     <option value="http://127.0.0.1:8080/" />
@@ -784,10 +795,27 @@ pub fn Landing() -> impl IntoView {
                             list="ma-opts"
                             prop:value=move || ma_input.get()
                             placeholder="did:ma:..."
+                            on:focus=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    input.set_value("");
+                                }
+                            }
+                            on:blur=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    if input.value().is_empty() {
+                                        input.set_value(&ma_input.get_untracked());
+                                    }
+                                }
+                            }
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
                                     .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
                                 {
+                                    ma_input_edited.set(true);
                                     ma_input.set(input.value());
                                 }
                             }
