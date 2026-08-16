@@ -104,6 +104,7 @@ pub fn Terminal() -> impl IntoView {
              class:placement-right=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "right"
         >
             <QrOverlay state=state.clone()/>
+            <crate::views::secret::SecretModal state=state.clone()/>
             <OutputPane state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>
             <crate::views::input::InputBar

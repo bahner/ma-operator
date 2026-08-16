@@ -226,6 +226,7 @@ fn eval_control(
         ".logout" => {
             transport::disconnect();
             crate::scheme::reset_session_env();
+            state.secret_dialog.set(false);
             config.update(|cfg| {
                 cfg.delete_subtree(".ma");
                 cfg.delete(".my.aliases.ma");
@@ -241,6 +242,13 @@ fn eval_control(
         }
         ".panic" => {
             state.screensaver.set(true);
+        }
+        ".keymaker" => {
+            if !matches!(op, DotOp::Get) || !args.is_empty() {
+                state.push_error(tf("err-unknown-command", &[("path", path)]));
+                return;
+            }
+            state.secret_dialog.set(true);
         }
         ".ma" => {
             let (verb, ma_args) = match op {

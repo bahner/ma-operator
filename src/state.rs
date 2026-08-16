@@ -270,6 +270,8 @@ pub struct AppState {
     pub startup_z: RwSignal<Option<String>>,
     /// Terminal QR intent opened by `.my.*!qr`.
     pub qr_intent: RwSignal<Option<QrIntent>>,
+    /// Whether the passphrase-change dialog is open.
+    pub secret_dialog: RwSignal<bool>,
     /// FIFO queue of raw input lines waiting to be dispatched.
     pub input_queue: RwSignal<VecDeque<String>>,
     /// Incomplete Scheme input retained until all opened parentheses close.
@@ -305,6 +307,7 @@ impl AppState {
             startup_ma: RwSignal::new(None),
             startup_z: RwSignal::new(None),
             qr_intent: RwSignal::new(None),
+            secret_dialog: RwSignal::new(false),
             input_queue: RwSignal::new(VecDeque::new()),
             multiline_input: RwSignal::new(String::new()),
             batches: RwSignal::new(HashMap::new()),
@@ -336,6 +339,7 @@ impl AppState {
         self.pending_requests
             .update(std::collections::HashMap::clear);
         self.qr_intent.set(None);
+        self.secret_dialog.set(false);
         self.pending_enter.set(None);
         self.ctx_recovery_runtime.set(None);
         self.batches.update(std::collections::HashMap::clear);

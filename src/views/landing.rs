@@ -18,18 +18,6 @@ use crate::{
 const LAST_DID_KEY: &str = "zion_last_did";
 const IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
 
-fn validate_new_passphrase(pass: &str, confirm: &str) -> Result<(), &'static str> {
-    if pass.is_empty() {
-        Err("error-passphrase-required")
-    } else if pass.chars().count() < 20 {
-        Err("error-passphrase-too-short")
-    } else if pass != confirm {
-        Err("error-passphrases-no-match")
-    } else {
-        Ok(())
-    }
-}
-
 fn load_ipfs_gateway_pref() -> String {
     web_sys::window()
         .and_then(|w| w.local_storage().ok().flatten())
@@ -254,7 +242,7 @@ pub fn Landing() -> impl IntoView {
                     error.set(t("error-nick-invalid"));
                     return;
                 }
-                match validate_new_passphrase(&pass, &confirm) {
+                match crate::identity::validate_new_passphrase(&pass, &confirm) {
                     Ok(()) => {}
                     Err(key) => {
                         error.set(t(key));
@@ -1017,7 +1005,7 @@ fn trigger_download(filename: &str, content: &str) {
 
 #[cfg(test)]
 mod tests {
-    use super::validate_new_passphrase;
+    use crate::identity::validate_new_passphrase;
 
     #[test]
     fn short_passphrase_is_rejected() {

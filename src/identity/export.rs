@@ -107,6 +107,24 @@ pub fn unlock_identity_migrating(
     Ok((identity, migrated_export))
 }
 
+/// Re-encrypt an identity export with a new passphrase without changing its keys.
+pub fn change_passphrase(
+    export_json: &str,
+    current_passphrase: &str,
+    new_passphrase: &str,
+) -> Result<String, String> {
+    let export = BrowserIdentityExport::from_json_str(export_json).map_err(|e| e.to_string())?;
+    let encrypted = export
+        .encrypted_secret_bundle_bytes()
+        .map_err(|e| e.to_string())?;
+    let bundle =
+        SecretBundle::decrypt(&encrypted, current_passphrase).map_err(|e| e.to_string())?;
+    let new_encrypted = bundle.encrypt(new_passphrase).map_err(|e| e.to_string())?;
+    BrowserIdentityExport::new(export.config_yaml, &new_encrypted)
+        .to_json_string()
+        .map_err(|e| e.to_string())
+}
+
 fn canonicalise_created_at(value: &str) -> Result<String, String> {
     OffsetDateTime::parse(value, &Rfc3339)
         .map_err(|e| format!("invalid identity created_at: {e}"))?
@@ -337,6 +355,29 @@ mod tests {
         assert_eq!(original.did_encryption_key, unlocked.did_encryption_key);
         assert_eq!(original.sender_did, unlocked.sender_did);
         assert_eq!(original.created_at, unlocked.created_at);
+    }
+
+    #[test]
+    fn change_passphrase_preserves_identity_and_rejects_old_passphrase() {
+        let (json, original) = create_identity("alice", PASS).expect("create failed");
+        let changed =
+            change_passphrase(&json, PASS, "a-new-passphrase").expect("change passphrase failed");
+
+        assert!(unlock_identity(&changed, PASS).is_err());
+        let unlocked = unlock_identity(&changed, "a-new-passphrase")
+            .expect("new passphrase should unlock identity");
+        assert_eq!(original.iroh_key, unlocked.iroh_key);
+        assert_eq!(original.ipns_secret_key, unlocked.ipns_secret_key);
+        assert_eq!(original.did_signing_key, unlocked.did_signing_key);
+        assert_eq!(original.did_encryption_key, unlocked.did_encryption_key);
+        assert_eq!(original.sender_did, unlocked.sender_did);
+        assert_eq!(original.created_at, unlocked.created_at);
+    }
+
+    #[test]
+    fn change_passphrase_rejects_wrong_current_passphrase() {
+        let (json, _) = create_identity("alice", PASS).expect("create failed");
+        assert!(change_passphrase(&json, "wrong", "a-new-passphrase").is_err());
     }
 
     #[test]

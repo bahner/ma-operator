@@ -820,3 +820,69 @@ html, body {
     50%  { opacity: 0; }
     100% { opacity: 0.7; }
 }
+
+.secret-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.72);
+}
+
+.secret-dialog {
+    width: min(28rem, 100%);
+    display: grid;
+    gap: 1rem;
+    padding: 1.25rem;
+    border: 1px solid var(--colour-dimmed);
+    background: var(--colour-input-bg);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.45);
+}
+
+.secret-dialog header {
+    color: var(--colour-alias);
+    font-size: 1rem;
+}
+
+.secret-warning {
+    margin: 0;
+    color: var(--colour-text);
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.secret-dialog label {
+    display: grid;
+    gap: 0.35rem;
+    color: var(--colour-dimmed);
+    font-size: 0.85rem;
+}
+
+.secret-dialog input {
+    min-width: 0;
+    padding: 0.6rem;
+    border: 1px solid var(--colour-dimmed);
+    outline: none;
+    background: var(--colour-bg);
+    color: var(--colour-text);
+    font: inherit;
+}
+
+.secret-dialog input:focus {
+    border-color: var(--colour-alias);
+}
+
+.secret-dialog footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.5rem;
+}
+
+.secret-error {
+    min-height: 1.2em;
+    margin: 0;
+    color: var(--colour-error);
+    font-size: 0.85rem;
+}
