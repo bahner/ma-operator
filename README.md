@@ -218,6 +218,11 @@ profile. The final DID document therefore links both the encrypted profile and
 the same z manifest. The selected runtime is included as `ma.ma`, so another
 browser can recover the correct per-identity runtime before login.
 
+The final `間` output is a completion receipt: local profile metadata has been
+persisted, every IPFS store request has succeeded, and the DID document has
+been resolved back with the new `ma.profile` and `ma.z` links. Any failure in
+that sequence is reported instead of printing `間`.
+
 ### What is ma-space?
 
 ma-space is where your zion identity becomes reachable. The local `ma` daemon

@@ -14,7 +14,7 @@ use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
     http::fetch_path_bytes,
-    i18n::tf,
+    i18n::{t, tf},
     messages::{cid_bytes_to_editor_text, decode_crud_content, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
@@ -170,6 +170,7 @@ pub(crate) fn handle_profile_publish_reply(
     publisher_did: String,
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
+    verify_environment: bool,
     incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
@@ -205,25 +206,57 @@ pub(crate) fn handle_profile_publish_reply(
             let trusted_ma = crate::parser::verbs::ma::active_ma_did(&cfg_snap);
             let selected_z = cfg_snap.get(".my.z").map(str::to_string);
             leptos::task::spawn_local(async move {
-                let _ = persist_config(&username, &cfg_snap).await;
-                match crate::parser::verbs::ma::send_identity_publish_and_wait(
+                if let Err(error) = persist_config(&username, &cfg_snap).await {
+                    fail_cmd(&state2, cmd_id, error);
+                    return;
+                }
+                if let Err(error) = crate::parser::verbs::ma::send_identity_publish_and_wait(
                     &publisher_did,
                     trusted_ma,
-                    selected_z,
+                    selected_z.clone(),
                 )
                 .await
                 {
-                    Ok(()) => {
-                        if let Some(id) = cmd_id {
-                            state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
-                        } else {
-                            state2.push_output("間");
-                        }
-                        if reenter_saved_ctx {
-                            crate::startup::queue_saved_context_reentry(&state2, config);
-                        }
+                    fail_cmd(&state2, cmd_id, error);
+                    return;
+                }
+                if verify_environment {
+                    let Some(own_did) = state2
+                        .session
+                        .get_untracked()
+                        .map(|session| session.sender_did)
+                    else {
+                        fail_cmd(&state2, cmd_id, t("msg-not-logged-in"));
+                        return;
+                    };
+                    let Some(z_cid) = selected_z
+                        .as_deref()
+                        .and_then(crate::doc_link::parse_link_cid)
+                        .map(|cid| cid.to_string())
+                    else {
+                        fail_cmd(
+                            &state2,
+                            cmd_id,
+                            "published z manifest CID is missing".to_string(),
+                        );
+                        return;
+                    };
+                    if let Err(error) = crate::parser::verbs::ma::verify_environment_publication(
+                        &own_did, &cid_str, &z_cid,
+                    )
+                    .await
+                    {
+                        fail_cmd(&state2, cmd_id, error);
+                        return;
                     }
-                    Err(e) => fail_cmd(&state2, cmd_id, e),
+                }
+                if let Some(id) = cmd_id {
+                    state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
+                } else {
+                    state2.push_output("間");
+                }
+                if reenter_saved_ctx {
+                    crate::startup::queue_saved_context_reentry(&state2, config);
                 }
             });
         }

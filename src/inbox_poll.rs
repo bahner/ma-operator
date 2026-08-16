@@ -145,11 +145,13 @@ fn dispatch_reply(
             publisher_did,
             cmd_id,
             reenter_saved_ctx,
+            verify_environment,
         } => {
             handle_profile_publish_reply(
                 publisher_did,
                 cmd_id,
                 reenter_saved_ctx,
+                verify_environment,
                 &incoming,
                 state,
                 config,
