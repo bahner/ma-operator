@@ -10,6 +10,8 @@ use web_sys::{
 
 /// Largest payload that fits a version-40 QR code at EC level L.
 const QR_MAX_BYTES: usize = 2953;
+const QR_RENDER_SIZE: u32 = 640;
+const QR_LOGO_SIZE: u32 = 88;
 
 pub enum QrGenError {
     TooLarge,
@@ -96,19 +98,26 @@ pub fn generate_qr_svg(payload: &str) -> Result<String, QrGenError> {
     if payload.len() > QR_MAX_BYTES {
         return Err(QrGenError::TooLarge);
     }
-    // Prefer EC level M; fall back to L for payloads near the size limit.
-    let code = QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::M)
+    // Prefer high error correction so the centred brand remains scanner-safe.
+    let code = QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::H)
+        .or_else(|_| QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::M))
         .or_else(|_| QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::L))
         .map_err(|e| match e {
             qrcode::types::QrError::DataTooLong => QrGenError::TooLarge,
             other => QrGenError::Encode(other.to_string()),
         })?;
-    Ok(code
+    let mut svg = code
         .render::<svg::Color>()
-        .min_dimensions(640, 640)
+        .min_dimensions(QR_RENDER_SIZE, QR_RENDER_SIZE)
         .dark_color(svg::Color("#000000"))
         .light_color(svg::Color("#ffffff"))
-        .build())
+        .build();
+    let logo_offset = (QR_RENDER_SIZE - QR_LOGO_SIZE) / 2;
+    let logo = format!(
+        r##"<g aria-label="MA"><rect x="{logo_offset}" y="{logo_offset}" width="{QR_LOGO_SIZE}" height="{QR_LOGO_SIZE}" fill="#ffffff"/><text x="320" y="320" fill="#000000" font-family="serif" font-size="68" font-weight="700" text-anchor="middle" dominant-baseline="central">間</text></g>"##
+    );
+    svg.insert_str(svg.len() - "</svg>".len(), &logo);
+    Ok(svg)
 }
 
 fn js_err(e: JsValue) -> String {
@@ -277,10 +286,10 @@ mod tests {
         let (_, identity) = crate::identity::export::create_identity("testuser", "pw")
             .expect("create_identity failed");
         let payload = identity.sender_did;
-        let code = QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::M)
+        let code = QrCode::with_error_correction_level(payload.as_bytes(), EcLevel::H)
             .expect("profile payload should fit");
         let quiet_zone = 4;
-        let scale = 4;
+        let scale = 8;
         let modules = code.width();
         let size = (modules + quiet_zone * 2) * scale;
         let mut pixels = vec![255; size * size];
@@ -297,11 +306,18 @@ mod tests {
                 }
             }
         }
+        let logo_size = QR_LOGO_SIZE as usize * size / QR_RENDER_SIZE as usize;
+        let logo_offset = (size - logo_size) / 2;
+        for y in logo_offset..logo_offset + logo_size {
+            pixels[y * size + logo_offset..y * size + logo_offset + logo_size].fill(255);
+        }
 
         let QrScanResult::Decoded(decoded) = decode_greyscale(size, size, &pixels) else {
-            panic!("generated profile QR was not decoded");
+            panic!("branded profile QR was not decoded");
         };
         assert_eq!(decoded, payload.as_bytes());
+        let svg = generate_qr_svg(&payload).unwrap_or_else(|_| panic!("generate branded QR"));
+        assert!(svg.contains(">間</text>"));
     }
 
     #[test]
