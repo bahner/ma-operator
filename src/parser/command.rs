@@ -4,8 +4,10 @@
 ///   .cmd                 → `DotCommand`      (control command: .ma, .enter, .help, …)
 ///   .cmd!verb [args]     → `DotCommand::Meta`
 ///   .my.path             → `LocalCrud::Get`  (local profile config)
+///   .z.path              → `LocalCrud::Get`  (publishable local scripts)
 ///   .ma.ctx.path         → `LocalCrud::Get`  (local ma runtime context)
 ///   .my.path: value      → `LocalCrud::Set`
+///   .z.path: value       → `LocalCrud::Set`
 ///   .my.path:            → `LocalCrud::Delete`
 ///   .my.path!verb [args] → `LocalCrud::Meta`
 ///   @alias/path          → `RemoteCrud::Get`
@@ -56,7 +58,7 @@ pub enum Command {
         op: DotOp,
         args: Vec<String>,
     },
-    /// Local CRUD on a `.my` or `.ma.ctx` config path.
+    /// Local CRUD on a `.my`, `.z`, or `.ma.ctx` config path.
     LocalCrud {
         path: String,
         op: DotOp,
@@ -131,13 +133,18 @@ fn parse_dot(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     Ok(Command::DotCommand { path, op, args })
 }
 
-// ── Local path CRUD (`.my`, `.ma.ctx`) ────────────────────────────────────────
+// ── Local path CRUD (`.my`, `.z`, `.ma.ctx`) ─────────────────────────────────
 
 fn is_local_dot_root(input: &str) -> bool {
-    input == ".my"
-        || input.starts_with(".my.")
-        || input == ".ma.ctx"
-        || input.starts_with(".ma.ctx.")
+    has_local_root(input, ".my") || has_local_root(input, ".z") || has_local_root(input, ".ma.ctx")
+}
+
+fn has_local_root(input: &str, root: &str) -> bool {
+    input == root
+        || input
+            .strip_prefix(root)
+            .and_then(|suffix| suffix.chars().next())
+            .is_some_and(|delimiter| matches!(delimiter, '.' | '!' | ':'))
 }
 
 fn parse_local(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
@@ -501,6 +508,45 @@ mod tests {
                 op: DotOp::Set("http://localhost:5003".to_string()),
                 args: vec![],
             }
+        );
+    }
+
+    #[test]
+    fn parses_z_document_verbs_as_local_crud() {
+        let mut cfg = EgoConfig::new();
+        cfg.set(".my.aliases.ma", "did:ma:runtime");
+
+        assert_eq!(
+            parse(".z.scheme!fetch /ipfs/bafy-source", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".z.scheme".to_string(),
+                op: DotOp::Meta("fetch".to_string()),
+                args: vec!["/ipfs/bafy-source".to_string()],
+            })
+        );
+        assert_eq!(
+            parse(".z.scheme!eval", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".z.scheme".to_string(),
+                op: DotOp::Meta("eval".to_string()),
+                args: vec![],
+            })
+        );
+        assert_eq!(
+            parse(".z.scheme: (display \"ready\")", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".z.scheme".to_string(),
+                op: DotOp::Set("(display \"ready\")".to_string()),
+                args: vec![],
+            })
+        );
+        assert_eq!(
+            parse(".z!publish @ma", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".z".to_string(),
+                op: DotOp::Meta("publish".to_string()),
+                args: vec!["did:ma:runtime".to_string()],
+            })
         );
     }
 
