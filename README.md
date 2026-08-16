@@ -206,13 +206,16 @@ If you run `ma` locally, discover and select it explicitly with `.ma: claim`.
 Add a port for a non-default local instance, for example `.ma: claim 5009`.
 Normal login never probes localhost.
 
-Publish your profile and DID document through the selected runtime with:
+Publish your `.z` manifest, encrypted profile, and DID document through the
+selected runtime with:
 
 ```
 .ma
 ```
 
-The selected runtime is included in the DID document as `ma.ma`, so another
+Zion stores the new `.z` manifest reference in `.my.z` before serialising the
+profile. The final DID document therefore links both the encrypted profile and
+the same z manifest. The selected runtime is included as `ma.ma`, so another
 browser can recover the correct per-identity runtime before login.
 
 ### What is ma-space?

@@ -82,7 +82,7 @@ async fn publish_with_trusted_ma(
     config: RwSignal<EgoConfig>,
     state: &AppState,
 ) {
-    queue_profile_publish(trusted_ma, config, state, None, true).await;
+    queue_profile_publish(trusted_ma, config, state, None, true, true).await;
 }
 
 fn set_trusted_runtime(
@@ -375,7 +375,8 @@ pub(crate) async fn verify_self_publication(own_did: &str) -> Result<(), String>
     Err(last_error)
 }
 
-/// Build and upload the profile blob to IPFS, then queue the DID republish.
+/// Optionally publish `.z`, build and upload the profile blob, then queue the
+/// DID republish. The initial DID publish authenticates the store requests.
 /// Pass `cmd_id = Some(id)` to track the operation as a terminal command.
 pub(crate) async fn queue_profile_publish(
     publisher: String,
@@ -383,6 +384,7 @@ pub(crate) async fn queue_profile_publish(
     state: &AppState,
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
+    publish_z: bool,
 ) {
     let Some(username) = state.session.get_untracked().map(|s| s.username.clone()) else {
         fail_profile_publish(state, cmd_id, t("msg-not-logged-in"));
@@ -395,6 +397,21 @@ pub(crate) async fn queue_profile_publish(
     if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma, selected_z).await {
         fail_profile_publish(state, cmd_id, error);
         return;
+    }
+    if publish_z {
+        let parts = crate::parser::verbs::doc::z_tree_parts(&config.get_untracked());
+        if parts.is_empty() {
+            fail_profile_publish(state, cmd_id, tf("doc-content-empty", &[("path", ".z")]));
+            return;
+        }
+        if let Err(error) = crate::parser::verbs::doc::publish_z_tree_and_select(
+            &publisher, parts, &username, config,
+        )
+        .await
+        {
+            fail_profile_publish(state, cmd_id, error);
+            return;
+        }
     }
     let encrypted_profile = match build_encrypted_profile(&username, config).await {
         Ok(profile) => profile,

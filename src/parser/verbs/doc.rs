@@ -63,16 +63,8 @@ fn z_tree_publish(
         .map(|session| session.username)
         .unwrap_or_default();
     leptos::task::spawn_local(async move {
-        match publish_z_tree(&publisher, parts).await {
-            Ok(manifest_cid) => {
-                let manifest_ref = format!("/ipfs/{manifest_cid}");
-                config.update(|cfg| cfg.set(".my.z", &manifest_ref));
-                let cfg = config.get_untracked();
-                if let Err(error) = crate::config::persist_config(&username, &cfg).await {
-                    state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
-                    state2.push_error(error);
-                    return;
-                }
+        match publish_z_tree_and_select(&publisher, parts, &username, config).await {
+            Ok(manifest_ref) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Replied(String::new()));
                 state2.push_system(tf(
                     "msg-set",
@@ -91,7 +83,7 @@ fn z_tree_publish(
     Ok(())
 }
 
-fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
+pub(crate) fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
     const PREFIX: &str = ".z.";
     cfg.list(PREFIX)
         .into_iter()
@@ -101,6 +93,20 @@ fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
                 .then(|| (name.to_string(), value.to_string()))
         })
         .collect()
+}
+
+pub(crate) async fn publish_z_tree_and_select(
+    publisher: &str,
+    parts: BTreeMap<String, String>,
+    username: &str,
+    config: RwSignal<EgoConfig>,
+) -> Result<String, String> {
+    let manifest_cid = publish_z_tree(publisher, parts).await?;
+    let manifest_ref = format!("/ipfs/{manifest_cid}");
+    config.update(|cfg| cfg.set(".my.z", &manifest_ref));
+    let cfg = config.get_untracked();
+    crate::config::persist_config(username, &cfg).await?;
+    Ok(manifest_ref)
 }
 
 async fn publish_z_tree(

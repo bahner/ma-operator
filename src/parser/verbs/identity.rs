@@ -63,6 +63,7 @@ pub(super) fn handle_identity(
                 &state2,
                 Some(cmd_id),
                 false,
+                false,
             )
             .await;
         });
