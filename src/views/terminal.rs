@@ -9,7 +9,7 @@ use crate::{
     core::{CommandStatus, Entry, SystemKind},
     dispatch::run_dispatch_loop,
     inbox_poll::run_inbox_poll,
-    startup::{startup_connect, startup_load_config, startup_load_history},
+    startup::{queue_startup_zscheme, startup_connect, startup_load_config, startup_load_history},
     state::{AppState, QrIntent},
     views::editor::{EditorContext, EditorModal},
 };
@@ -46,6 +46,7 @@ pub fn Terminal() -> impl IntoView {
     if let Some(sess) = state.session.get_untracked() {
         crate::scheme::init_session_env();
         let startup_ma = state.startup_ma.update_untracked(std::option::Option::take);
+        let startup_z = state.startup_z.update_untracked(std::option::Option::take);
         let startup_state = state.clone();
         spawn_local(async move {
             startup_load_config(
@@ -53,8 +54,10 @@ pub fn Terminal() -> impl IntoView {
                 config,
                 sess.username.clone(),
                 sess.sender_did.clone(),
+                startup_z,
             )
             .await;
+            queue_startup_zscheme(&startup_state, config);
             startup_connect(startup_state, config, sess, startup_ma).await;
         });
     }

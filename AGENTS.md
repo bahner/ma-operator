@@ -25,6 +25,14 @@ The idea was: when `.use @actor` activates, load the remote actor's zscheme file
 
 **Why it was rejected:** A malicious or compromised runtime admin could publish a zscheme file that, upon loading, reads or writes the user's local config (`.my.aliases.*`, `.my.inbox.*`, `.my.identity.*`, etc.) or exfiltrates data by sending it to an attacker-controlled actor. Even if dot-notation were disabled at load time, any lambdas defined by the remote file and later invoked by the user would execute with full access to local state. There is no safe sandboxing boundary available here. The attack surface is too large and the blast radius is unacceptable.
 
+The explicit `?z=<manifest-cid>` onboarding bootstrap is distinct from this
+rejected feature. It is a one-time trust decision encoded by the URL author,
+accepted only when the profile has no `.my.z` tree. Zion fetches the complete
+DAG-CBOR manifest produced by `.my.z!publish`, requires a `scheme` entry,
+persists all sources atomically, and then uses the ordinary `.my.z.scheme!eval`
+startup path. It never merges or overwrites an existing z tree. Seed failure
+does not block login, `ma`, or `enter`.
+
 ---
 
 `zion` is a browser-based actor workstation compiled to WASM.
@@ -186,6 +194,13 @@ Commands with a leading colon are direct methods on the focused room/target,
 such as `:prop name Garden`, `:prop description ...`, and `:look`. The leading
 colon is stripped only from the verb sent on the wire; it still controls
 routing.
+
+Avatar object verbs dispatch through zscheme's `(command object method .
+params)` boundary. It resolves against every room child category (`who`,
+`agents`, `things`, `exits`) and inventory contents; exactly one match is
+required, while ambiguity lists all candidate addresses for the user to
+rephrase. `look <object>` uses that same candidate pool and renders the resolved
+ctx locally. Do not add per-verb object resolution in Zion.
 
 Zion is a client, not part of any runtime. Runtime-local short forms such as
 `#construct` or bare entity fragments must never be stored in zion context,
@@ -830,12 +845,13 @@ acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
 .my.ctx.hold-queued-then  optional follow-up target for that replacement
 ```
 
-avatar.zscheme's `hold`/`take`/`take-from` send `:set-parent <my-did>` to the
-resolved item and set `.my.ctx.hold-pending` (`take` additionally sets
+avatar.zscheme's `hold`/`take`/`take-from` send `:hold` to the resolved item
+and set `.my.ctx.hold-pending` (`take` additionally sets
 `.my.ctx.hold-then` to the caller's own inventory, so confirmation can
-immediately relay a second `:set-parent` and land the item there). `drop`/
-`put` act on whatever `.my.ctx.hold` currently holds — there is no name
-argument, only one thing can be held at a time.
+immediately relay `:set-parent` and land the item there). Bare `drop` acts on
+whatever `.my.ctx.hold` currently holds. `drop <name>` also resolves inventory
+children; because the avatar is not their current parent, it uses `:hold` with
+the room in `.my.ctx.hold-then` before Zion relays `:set-parent <room>`.
 
 `handle_hold_parent_proposal` in `src/inbox_poll.rs` recognises an unsolicited
 `:parent <ctx>` addressed to our own DID and resolves the state machine:

@@ -235,9 +235,20 @@ changing your identity. Run `.enter` once more to return to the saved context.
 Zion treats `.my.z.scheme` as an ordinary stored script.
 
 - On login, if `.my.z.scheme` is non-empty, Zion queues `.my.z.scheme!eval` once.
+- A `?z=<manifest-cid>` URL can bootstrap a profile that has no `.my.z` tree.
+   The CID must be the DAG-CBOR manifest produced by `.my.z!publish` and must
+   contain a non-empty `scheme` source.
+- The complete manifest is fetched and persisted atomically. Zion never merges
+   it into an existing `.my.z` tree and never overwrites user-owned z sources.
 - There is no automatic `.my.z.avatar` execution.
 - There is no special parser mode for `.my.z.scheme`; it runs through the same
    `!eval` flow as any other local script path.
+
+A `z=` link author is asking a new user to execute code with access to that
+user's local Zion state. Only use bootstrap links from a source you trust. The
+parameter may be combined with `ma=` and `enter=` for complete onboarding, but
+it can also be used independently. An invalid seed reports an error without
+blocking login, runtime connection, or room entry.
 
 This keeps startup customisation explicit and user-owned. If you want layered
 startup scripts, compose them directly in `.my.z.scheme`, for example:

@@ -265,6 +265,8 @@ pub struct AppState {
     /// Runtime DID or HTTP URL from the landing page runtime field (`?ma=` or user entry).
     /// Consumed once by `startup_connect` to auto-connect after login.
     pub startup_ma: RwSignal<Option<String>>,
+    /// Z tree manifest CID from `?z=`, consumed once while loading the profile.
+    pub startup_z: RwSignal<Option<String>>,
     /// Terminal QR intent opened by `.my.*!qr`.
     pub qr_intent: RwSignal<Option<QrIntent>>,
     /// FIFO queue of raw input lines waiting to be dispatched.
@@ -300,6 +302,7 @@ impl AppState {
             prefill_input: RwSignal::new(None),
             startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
+            startup_z: RwSignal::new(None),
             qr_intent: RwSignal::new(None),
             input_queue: RwSignal::new(VecDeque::new()),
             multiline_input: RwSignal::new(String::new()),

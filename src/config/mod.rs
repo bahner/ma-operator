@@ -52,7 +52,6 @@ impl EgoConfig {
             (".my.config.editor.placement", "bottom"),
             (".my.config.editor.persistent", "false"),
             (".my.ctx.tail.length", "100"),
-            (".my.z.scheme", ""),
         ];
         for (k, v) in &defaults {
             self.tree
@@ -575,7 +574,7 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
-        assert_eq!(cfg.get(".my.z.scheme"), Some(""));
+        assert_eq!(cfg.get(".my.z.scheme"), None);
         assert_eq!(cfg.get(".my.z.avatar"), None);
     }
 

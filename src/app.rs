@@ -57,6 +57,15 @@ fn url_enter() -> Option<String> {
     }
 }
 
+/// Read a z tree manifest CID from `?z=` for one-time profile bootstrap.
+fn url_z() -> Option<String> {
+    let window = web_sys::window()?;
+    let search = window.location().search().ok()?;
+    let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
+    let val = params.get("z")?.trim().to_string();
+    (!val.is_empty()).then_some(val)
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let state = AppState::new();
@@ -75,6 +84,10 @@ pub fn App() -> impl IntoView {
     // ?ma=<runtime> — runtime DID or URL, pre-fills the runtime field on the landing page.
     if let Some(ma) = url_ma() {
         state.startup_ma.set(Some(ma));
+    }
+    // ?z=<manifest-cid> — seed an empty profile's complete z tree once.
+    if let Some(z) = url_z() {
+        state.startup_z.set(Some(z));
     }
 
     view! {

@@ -1,7 +1,6 @@
 /// Embedded Scheme evaluator for the ma terminal — wired to ma-zscheme.
 pub mod eval;
 pub mod parser;
-pub mod seed;
 pub mod value;
 
 pub use eval::{Ctx, EvalCtx};

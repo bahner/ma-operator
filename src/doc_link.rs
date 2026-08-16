@@ -24,8 +24,7 @@ pub fn parse_link_cid(value: &str) -> Option<cid::Cid> {
 
 /// Resolve an explicitly requested document link.
 ///
-/// This is never called during startup; startup evaluates already-loaded local
-/// profile state only.
+/// Startup uses this only for the explicit `?z=` bootstrap of an empty profile.
 pub async fn resolve_doc_link(value: &str) -> Result<ResolvedDocContent, String> {
     let Some(cid) = parse_link_cid(value) else {
         return Ok(ResolvedDocContent::Text(value.to_string()));
