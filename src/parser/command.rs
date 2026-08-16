@@ -533,6 +533,14 @@ mod tests {
             })
         );
         assert_eq!(
+            parse(".z.scheme!eval /ipfs/bafy-source", &cfg),
+            Ok(Command::LocalCrud {
+                path: ".z.scheme".to_string(),
+                op: DotOp::Meta("eval".to_string()),
+                args: vec!["/ipfs/bafy-source".to_string()],
+            })
+        );
+        assert_eq!(
             parse(".z.scheme: (display \"ready\")", &cfg),
             Ok(Command::LocalCrud {
                 path: ".z.scheme".to_string(),

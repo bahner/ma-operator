@@ -139,7 +139,7 @@ pub fn dispatch_meta(
     }
     // Universal content-based verb routing: works on any leaf path.
     let has_content = config.get_untracked().get(path).is_some();
-    if has_content || verb == "edit" {
+    if has_content || verb == "edit" || (verb == "eval" && !args.is_empty()) {
         match verb {
             "edit" | "eval" => {
                 return doc::handle_doc(path, verb, args, state, config, show_editor, on_eval);

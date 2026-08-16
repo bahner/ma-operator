@@ -315,12 +315,19 @@ The caught variable is bound to the error message **string**.
 
 If no clause matches the error is re-raised.  `(#t …)` is the catch-all.
 
-#### `doc !eval` — sequential execution
+#### `doc !eval` — fetch and sequential execution
 
-When a document is run via `.my.doc.<name>!eval`, lines are executed **one
-at a time**.  Each Scheme expression is fully expanded (including any CID
-fetches) before the next line starts.  This guarantees that defines loaded
-via `(<bafy…>)` or `(include …)` are available to subsequent lines.
+Argument-free `.my.doc.<name>!eval` executes the source already stored at the
+target path.  With one content-path argument, for example
+`.z.foo!eval /ipfs/<cid>`, Zion first fetches and persistently replaces the
+target leaf exactly as `!fetch` does, then executes that newly stored source.
+A fetch or persistence failure leaves evaluation unstarted; an evaluation
+failure does not roll back the successfully stored source.
+
+Document lines are executed **one at a time**.  Each Scheme expression is
+fully expanded (including any CID fetches) before the next line starts.  This
+guarantees that defines loaded via `(<bafy…>)` or `(include …)` are available
+to subsequent lines.
 
 All stored eval sources are required to end with a trailing newline (`\n`).
 Treat missing trailing newline as invalid source data, because it can cause the
@@ -710,10 +717,12 @@ ancestor paths backward. If any ancestor leaf `is_link_value`, it calls
 
 ## Security rules
 
-**NEVER execute content fetched from a CID automatically.**
-`!edit <cid>` MUST open the editor for human review first.
-Only `!eval` (on saved `.content`) and the **Eval** editor button
-may trigger execution. This must never be bypassed.
+**NEVER execute fetched content without an explicit eval action.**
+`!edit <cid>` MUST open the editor for human review first, and `!fetch <path>`
+MUST only store the fetched source.  The **Eval** editor button, argument-free
+`!eval`, and `!eval <content-path>` may trigger execution; the parameterised
+form is the user's explicit request to fetch, persist, and execute.  This must
+never be inferred from a fetched value or bypassed.
 
 All secret key material lives in `SecretBundle`, encrypted with the
 user's passphrase. Keys are decrypted into thread-locals at login and

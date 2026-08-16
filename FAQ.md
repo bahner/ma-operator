@@ -95,6 +95,17 @@ fill with `()` lines. Errors still appear in red.
 script. The command stays dark green while remote content is loading, turns bright
 green on success, and turns red with the bootstrap error on failure.
 
+Giving `!eval` a content path combines fetch and eval explicitly:
+
+```text
+.z.foo!eval /ipfs/<cid>
+```
+
+Zion fetches the source, persistently creates or replaces `.z.foo`, and then
+evaluates the stored value.  If fetching or persistence fails, evaluation does
+not start.  If evaluation fails, the newly fetched `.z.foo` remains saved.
+Use `.z.foo!fetch /ipfs/<cid>` to fetch and save without executing.
+
 It does not print the values of `define` or `include` forms. Verify a loaded
 binding with a Scheme expression such as `(begin foo)`.
 

@@ -29,7 +29,7 @@ pub(super) fn handle_doc(
     }
     match verb {
         "edit" => doc_edit(path, args, state, config, show_editor),
-        "eval" => doc_eval(path, state, config, on_eval),
+        "eval" => doc_eval(path, args, state, config, on_eval),
         "publish" if path == ".z" => z_tree_publish(args, state, config),
         "publish" => doc_publish(path, args, state, config),
         "publish-ipld" => doc_publish_ipld(path, args, state, config),
@@ -202,34 +202,47 @@ fn doc_edit(
     Ok(())
 }
 
-/// `:eval` — execute saved local content as an ordinary Zion script.
-///
-/// Network content must be imported with `:fetch` before it can be evaluated.
-/// The editor callback submits it through the same path as a multi-line paste.
+/// `!eval [content-path]` — optionally fetch, store, then execute local content.
 fn doc_eval(
     path: &str,
+    args: &[String],
     state: &AppState,
     config: RwSignal<EgoConfig>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
-    let content = config
-        .get_untracked()
-        .get(path)
-        .unwrap_or_default()
-        .to_string();
-    if content.is_empty() {
+    if args.len() > 1 {
+        return Err(t("doc-fetch-usage"));
+    }
+    let source = args.first().cloned();
+    if source.is_none()
+        && config
+            .get_untracked()
+            .get(path)
+            .unwrap_or_default()
+            .is_empty()
+    {
         return Err(tf("doc-content-empty", &[("path", path)]));
     }
-    let cmd_id = state.push_command(format!("{path}!eval"));
+    let display = source.as_ref().map_or_else(
+        || format!("{path}!eval"),
+        |source| format!("{path}!eval {source}"),
+    );
+    let cmd_id = state.push_command(display);
     let state2 = state.clone();
     let path2 = path.to_string();
     leptos::task::spawn_local(async move {
-        let result = if needs_sequential_eval(&content) {
-            eval_document_content(&content, &state2, config, on_eval).await
-        } else {
-            on_eval.run(content);
-            Ok(())
-        };
+        let result = async {
+            if let Some(source) = source {
+                fetch_to_path(&source, &path2, &state2, config).await?;
+            }
+            let content = config
+                .get_untracked()
+                .get(&path2)
+                .unwrap_or_default()
+                .to_string();
+            eval_content(&content, &state2, config, on_eval).await
+        }
+        .await;
         match result {
             Ok(()) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
             Err(error) => {
@@ -239,6 +252,39 @@ fn doc_eval(
         }
     });
     Ok(())
+}
+
+async fn fetch_to_path(
+    source: &str,
+    path: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let content = fetch_path_text(source)
+        .await
+        .map_err(|error| tf("doc-fetch-failed", &[("cid", source), ("e", &error)]))?;
+    config.update(|cfg| cfg.set(path, content));
+    let username = state
+        .session
+        .get_untracked()
+        .map(|session| session.username)
+        .unwrap_or_default();
+    let cfg = config.get_untracked();
+    crate::config::persist_config(&username, &cfg).await
+}
+
+async fn eval_content(
+    content: &str,
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    on_eval: Callback<String>,
+) -> Result<(), String> {
+    if needs_sequential_eval(content) {
+        eval_document_content(content, state, config, on_eval).await
+    } else {
+        on_eval.run(content.to_string());
+        Ok(())
+    }
 }
 
 fn needs_sequential_eval(content: &str) -> bool {
@@ -434,12 +480,11 @@ fn doc_fetch(
     let state2 = state.clone();
     let path2 = path.to_string();
     leptos::task::spawn_local(async move {
-        match fetch_path_text(&cid).await {
-            Ok(text) => {
-                config.update(|c| c.set(&path2, &text));
+        match fetch_to_path(&cid, &path2, &state2, config).await {
+            Ok(()) => {
                 state2.push_system(tf("doc-fetch-done", &[("cid", &cid), ("path", &path2)]));
             }
-            Err(e) => state2.push_error(tf("doc-fetch-failed", &[("cid", &cid), ("e", &e)])),
+            Err(error) => state2.push_error(error),
         }
     });
     Ok(())
