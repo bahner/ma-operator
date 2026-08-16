@@ -33,6 +33,27 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     }
 }
 
+/// Extract the `ma.z` manifest CID string from a resolved `Document`, if present.
+pub(crate) fn doc_z_cid(doc: &ma_core::Document) -> Option<String> {
+    match &doc.ma {
+        Some(Ipld::Map(map)) => match map.get("z") {
+            Some(Ipld::Link(cid)) => Some(cid.to_string()),
+            Some(Ipld::String(value)) => {
+                crate::doc_link::parse_link_cid(value).map(|cid| cid.to_string())
+            }
+            Some(Ipld::Map(link)) => match link.get("/") {
+                Some(Ipld::String(value)) => {
+                    crate::doc_link::parse_link_cid(value).map(|cid| cid.to_string())
+                }
+                Some(Ipld::Link(cid)) => Some(cid.to_string()),
+                _ => None,
+            },
+            _ => None,
+        },
+        _ => None,
+    }
+}
+
 pub(crate) fn doc_trusted_ma(doc: &ma_core::Document) -> Option<String> {
     let Some(Ipld::Map(map)) = &doc.ma else {
         return None;
@@ -94,7 +115,7 @@ pub fn dispatch_meta(
         return Ok(());
     }
 
-    if path == ".my.z.scheme" || path.starts_with(".my.z.scheme.") {
+    if path == ".z.scheme" || path.starts_with(".z.scheme.") {
         return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
     }
     if path == ".my.inbox" || path.starts_with(".my.inbox.") {
@@ -167,9 +188,17 @@ mod tests {
     use super::*;
     use ma_core::{MaExtension, SecretBundle};
 
+    const RAW_CID: &str = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
+
     fn document_with_ma(value: Ipld) -> ma_core::Document {
         SecretBundle::generate()
             .build_document(MaExtension::new().kind("agent").extra("ma", value))
+            .expect("document")
+    }
+
+    fn document_with_z(value: Ipld) -> ma_core::Document {
+        SecretBundle::generate()
+            .build_document(MaExtension::new().kind("agent").extra("z", value))
             .expect("document")
     }
 
@@ -192,5 +221,26 @@ mod tests {
             let doc = document_with_ma(Ipld::String(value.to_string()));
             assert_eq!(doc_trusted_ma(&doc), None);
         }
+    }
+
+    #[test]
+    fn z_manifest_accepts_link_and_prefixed_string() {
+        let cid = cid::Cid::try_from(RAW_CID).expect("CID");
+        assert_eq!(
+            doc_z_cid(&document_with_z(Ipld::Link(cid))),
+            Some(RAW_CID.to_string())
+        );
+        assert_eq!(
+            doc_z_cid(&document_with_z(Ipld::String(format!("/ipfs/{RAW_CID}")))),
+            Some(RAW_CID.to_string())
+        );
+    }
+
+    #[test]
+    fn z_manifest_rejects_non_cid_strings() {
+        assert_eq!(
+            doc_z_cid(&document_with_z(Ipld::String("private source".to_string()))),
+            None
+        );
     }
 }

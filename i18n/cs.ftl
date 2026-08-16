@@ -145,7 +145,7 @@ runtime-no-verb = žádné sloveso `{ $verb }` pro { $path }
 
 # ── Slovesa — řízení přístupu ─────────────────────────────────────────────
 acl-reset = .my.acl obnoveno (plně otevřeno)
-acl-persist-error = chyba ukládání: { $e }
+err-persist = chyba ukládání: { $e }
 acl-no-verb = žádné sloveso `{ $verb }` pro .my.acl
 
 # ── Slovesa — identita ────────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  ponechat odpovědi 5 v prostředí relace
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    otevření zion přes URL odkaz
 help-topic-i18n = .help/i18n                   jazykové preference pro vaši identitu

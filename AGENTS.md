@@ -12,7 +12,7 @@
   as Rust/serde `Serialize`/`Deserialize`, CSS `color`, canvas `center`, web
   APIs, crate names, and third-party protocol terms.
 - **Never add special-case expansion, storage, or dispatch behaviour for
-  `.my.z.avatar`, `.my.zscheme`, or `.my.z.scheme`.** They use the same Scheme
+  `.z.avatar`, `.zscheme`, or `.z.scheme`.** They use the same Scheme
   expansion and CRUD semantics as every other local configuration path.
 
 ---
@@ -27,10 +27,11 @@ The idea was: when `.use @actor` activates, load the remote actor's zscheme file
 
 The explicit `?z=<manifest-cid>` onboarding bootstrap is distinct from this
 rejected feature. It is a one-time trust decision encoded by the URL author,
-accepted only when the profile has no `.my.z` tree. Zion fetches the complete
-DAG-CBOR manifest produced by `.my.z!publish`, requires a `scheme` entry,
-persists all sources atomically, and then uses the ordinary `.my.z.scheme!eval`
-startup path. It never merges or overwrites an existing z tree. Seed failure
+accepted only when the profile has no `.my.z` manifest selection. Zion first
+restores the encrypted profile, then falls back to DID `ma.z`, then to `?z=`.
+It fetches the DAG-CBOR manifest produced by `.z!publish`, requires a `scheme`
+entry, atomically replaces `.z.*`, and uses the ordinary `.z.scheme!eval`
+startup path. Seed failure
 does not block login, `ma`, or `enter`.
 
 ---

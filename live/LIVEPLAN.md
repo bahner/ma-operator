@@ -24,7 +24,7 @@ Live in zion is split into two layers.
 
 2. User workflow in `live.szcheme`
 - This is where user-friendly session/stream sugar belongs.
-- It is imported by the user into profile scripts such as `.my.z.live`.
+- It is imported by the user into publishable scripts such as `.z.live`.
 - It should not be hard-coded into Rust.
 
 This split is intentional.

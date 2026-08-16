@@ -123,7 +123,17 @@ pub(crate) async fn startup_did_sync(
     let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
     let Some(resolver) = resolver else { return };
     if let Ok(doc) = (*resolver).resolve(&own_did).await {
-        startup_profile_exists(doc, username, state, config).await;
+        let published_z = crate::parser::verbs::doc_z_cid(&doc);
+        startup_profile_exists(doc, username.clone(), state, config).await;
+        if config.get_untracked().get(".my.z").is_none() {
+            if let Some(cid) = published_z {
+                config.update(|cfg| cfg.set(".my.z", format!("/ipfs/{cid}")));
+                let cfg = config.get_untracked();
+                if let Err(error) = persist_config(&username, &cfg).await {
+                    log::warn!("[startup] failed to persist ma.z selection: {error}");
+                }
+            }
+        }
     }
 }
 
@@ -132,7 +142,6 @@ pub(crate) async fn startup_load_config(
     config: RwSignal<EgoConfig>,
     username: String,
     sender_did: String,
-    startup_z: Option<String>,
 ) {
     match restore_config(&username).await {
         Ok(mut cfg) => {
@@ -194,7 +203,6 @@ pub(crate) async fn startup_load_config(
         }
         config.set(cfg);
     }
-    seed_startup_z(&state, config, &username, startup_z).await;
     state.push_system(tf(
         "msg-logged-in",
         &[
@@ -206,19 +214,6 @@ pub(crate) async fn startup_load_config(
     state.push_system(t("msg-getting-started"));
 }
 
-fn remove_legacy_empty_z_default(cfg: &mut EgoConfig) -> bool {
-    let is_only_empty_scheme = cfg
-        .get(".my.z.scheme")
-        .is_some_and(|source| source.trim().is_empty())
-        && cfg.list(".my.z.").len() == 1
-        && !cfg.is_leaf(".my.z");
-    is_only_empty_scheme && cfg.delete(".my.z.scheme")
-}
-
-fn z_tree_is_absent(cfg: &EgoConfig) -> bool {
-    !cfg.is_leaf(".my.z") && !cfg.has_children(".my.z")
-}
-
 fn validate_z_manifest(
     manifest: BTreeMap<String, String>,
 ) -> Result<Vec<(String, cid::Cid)>, String> {
@@ -228,18 +223,18 @@ fn validate_z_manifest(
     manifest
         .into_iter()
         .map(|(name, value)| {
-            if name.is_empty() || name.contains('.') || name == "manifest" {
+            if name.is_empty() || name.contains('.') {
                 return Err(format!("invalid z manifest entry name '{name}'"));
             }
             let cid = crate::doc_link::parse_link_cid(&value)
                 .ok_or_else(|| format!("z manifest entry '{name}' is not a CID"))?;
-            Ok((format!(".my.z.{name}"), cid))
+            Ok((format!(".z.{name}"), cid))
         })
         .collect()
 }
 
 fn validate_z_source(path: &str, source: String) -> Result<String, String> {
-    if path == ".my.z.scheme" {
+    if path == ".z.scheme" {
         if source.trim().is_empty() {
             return Err("z manifest 'scheme' source is empty".to_string());
         }
@@ -276,25 +271,40 @@ async fn load_z_tree(seed: &str) -> Result<Vec<(String, String)>, String> {
     Ok(sources)
 }
 
-async fn seed_startup_z(
+fn normalise_z_reference(value: &str) -> Option<String> {
+    crate::doc_link::parse_link_cid(value).map(|cid| format!("/ipfs/{cid}"))
+}
+
+async fn load_selected_z(
     state: &AppState,
     config: RwSignal<EgoConfig>,
     username: &str,
     startup_z: Option<String>,
 ) {
     let mut current = config.get_untracked();
-    let removed_legacy_default = remove_legacy_empty_z_default(&mut current);
-    if removed_legacy_default {
-        if let Err(error) = persist_config(username, &current).await {
-            state.push_error(tf("err-zscheme-seed-persist", &[("e", &error)]));
-            return;
+    if current.get(".my.z").is_none() {
+        if let Some(seed) = startup_z {
+            let Some(seed) = normalise_z_reference(&seed) else {
+                let detail = "z seed: z URL parameter is not a CID";
+                state.push_error(tf("error-profile-fetch", &[("e", detail)]));
+                return;
+            };
+            current.set(".my.z", seed);
+            if let Err(error) = persist_config(username, &current).await {
+                state.push_error(tf("err-persist", &[("e", &error)]));
+                return;
+            }
+            config.set(current.clone());
         }
-        config.set(current.clone());
     }
-    let Some(seed) = startup_z.filter(|_| z_tree_is_absent(&current)) else {
+    let Some(selected) = current
+        .get(".my.z")
+        .filter(|value| !value.trim().is_empty())
+        .map(str::to_string)
+    else {
         return;
     };
-    let sources = match load_z_tree(&seed).await {
+    let sources = match load_z_tree(&selected).await {
         Ok(sources) => sources,
         Err(error) => {
             let detail = format!("z seed: {error}");
@@ -303,15 +313,16 @@ async fn seed_startup_z(
         }
     };
     let latest = config.get_untracked();
-    if !z_tree_is_absent(&latest) {
+    if latest.get(".my.z") != Some(selected.as_str()) {
         return;
     }
     let mut candidate = latest;
+    candidate.delete_subtree(".z");
     for (path, source) in sources {
         candidate.set(path, source);
     }
     if let Err(error) = persist_config(username, &candidate).await {
-        state.push_error(tf("err-zscheme-seed-persist", &[("e", &error)]));
+        state.push_error(tf("err-persist", &[("e", &error)]));
         return;
     }
     config.set(candidate);
@@ -483,6 +494,7 @@ pub(crate) async fn startup_connect(
     config: RwSignal<EgoConfig>,
     sess: SessionState,
     startup_ma: Option<String>,
+    startup_z: Option<String>,
 ) {
     let iroh_key = sess.iroh_key;
     let ipns_secret_key = sess.ipns_secret_key;
@@ -506,6 +518,8 @@ pub(crate) async fn startup_connect(
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
             startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
+            load_selected_z(&state, config, &username, startup_z).await;
+            queue_startup_zscheme(&state, config);
             let startup_enter = state.startup_enter.get_untracked();
             let ma_outcome = startup_local_ma(
                 state.clone(),
@@ -539,12 +553,12 @@ pub(crate) async fn startup_connect(
 pub(crate) fn queue_startup_zscheme(state: &AppState, config: RwSignal<EgoConfig>) {
     let has_zscheme_source = config
         .get_untracked()
-        .get(".my.z.scheme")
+        .get(".z.scheme")
         .is_some_and(|source| !source.trim().is_empty());
     if has_zscheme_source {
         state.input_queue.update(|queue| {
             queue.push_back(".batch!sync".to_string());
-            queue.push_back(".my.z.scheme!eval".to_string());
+            queue.push_back(".z.scheme!eval".to_string());
         });
     }
     if has_zscheme_source {
@@ -557,10 +571,10 @@ pub(crate) fn queue_startup_zscheme(state: &AppState, config: RwSignal<EgoConfig
 #[cfg(test)]
 mod tests {
     use super::{
-        apply_standard_runtime_alias, normalize_startup_enter, queue_startup_context,
-        queue_startup_zscheme, remove_legacy_empty_z_default, select_startup_ma,
+        apply_standard_runtime_alias, normalise_z_reference, normalize_startup_enter,
+        queue_startup_context, queue_startup_zscheme, select_startup_ma,
         should_queue_startup_enter, standard_runtime_enter, startup_ctx_enter, validate_z_manifest,
-        validate_z_source, z_tree_is_absent,
+        validate_z_source,
     };
     use crate::parser::verbs::ma::ConnectMaOutcome;
     use crate::{config::EgoConfig, state::AppState};
@@ -570,23 +584,16 @@ mod tests {
     const RAW_CID: &str = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
 
     #[test]
-    fn legacy_empty_z_default_is_treated_as_absent() {
-        let mut cfg = EgoConfig::new();
-        cfg.set(".my.z.scheme", "  ");
-
-        assert!(remove_legacy_empty_z_default(&mut cfg));
-        assert!(z_tree_is_absent(&cfg));
-    }
-
-    #[test]
-    fn existing_z_tree_is_never_treated_as_absent() {
-        let mut cfg = EgoConfig::new();
-        cfg.set(".my.z.scheme", "");
-        cfg.set(".my.z.avatar", "(define avatar #t)");
-
-        assert!(!remove_legacy_empty_z_default(&mut cfg));
-        assert!(!z_tree_is_absent(&cfg));
-        assert_eq!(cfg.get(".my.z.scheme"), Some(""));
+    fn z_reference_is_validated_and_canonicalised() {
+        assert_eq!(
+            normalise_z_reference(RAW_CID),
+            Some(format!("/ipfs/{RAW_CID}"))
+        );
+        assert_eq!(
+            normalise_z_reference(&format!("/ipfs/{RAW_CID}")),
+            Some(format!("/ipfs/{RAW_CID}"))
+        );
+        assert_eq!(normalise_z_reference("not-a-cid"), None);
     }
 
     #[test]
@@ -603,7 +610,7 @@ mod tests {
                 .iter()
                 .map(|(path, _)| path.as_str())
                 .collect::<Vec<_>>(),
-            [".my.z.avatar", ".my.z.scheme"]
+            [".z.avatar", ".z.scheme"]
         );
     }
 
@@ -631,14 +638,14 @@ mod tests {
 
     #[test]
     fn z_manifest_scheme_source_must_be_non_empty_and_line_complete() {
-        assert!(validate_z_source(".my.z.scheme", String::new()).is_err());
-        assert!(validate_z_source(".my.z.scheme", "(define x 1)".to_string()).is_err());
+        assert!(validate_z_source(".z.scheme", String::new()).is_err());
+        assert!(validate_z_source(".z.scheme", "(define x 1)".to_string()).is_err());
         assert_eq!(
-            validate_z_source(".my.z.scheme", "(define x 1)\n".to_string()).unwrap(),
+            validate_z_source(".z.scheme", "(define x 1)\n".to_string()).unwrap(),
             "(define x 1)\n"
         );
         assert_eq!(
-            validate_z_source(".my.z.example", "notes".to_string()).unwrap(),
+            validate_z_source(".z.example", "notes".to_string()).unwrap(),
             "notes"
         );
     }
@@ -748,7 +755,7 @@ mod tests {
         let state = AppState::new();
         let config = leptos::prelude::RwSignal::new(EgoConfig::new());
         config.update_untracked(|cfg| {
-            cfg.set(".my.z.scheme", "(define x 1)");
+            cfg.set(".z.scheme", "(define x 1)");
             cfg.set(".my.ctx.nick", "klaim");
         });
 
@@ -763,7 +770,7 @@ mod tests {
                 .collect::<Vec<_>>(),
             [
                 ".batch!sync",
-                ".my.z.scheme!eval",
+                ".z.scheme!eval",
                 ".batch",
                 ".enter @did:ma:k51runtime"
             ]
@@ -776,7 +783,7 @@ mod tests {
         let state = AppState::new();
         let config = leptos::prelude::RwSignal::new(EgoConfig::new());
         config.update_untracked(|cfg| {
-            cfg.set(".my.z.scheme", "   ");
+            cfg.set(".z.scheme", "   ");
         });
 
         queue_startup_zscheme(&state, config);

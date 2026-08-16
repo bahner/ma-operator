@@ -232,17 +232,21 @@ changing your identity. Run `.enter` once more to return to the saved context.
 
 ## Scheme startup convention
 
-Zion treats `.my.z.scheme` as an ordinary stored script.
+`.z.*` is Zion's explicitly publishable script collection. Do not store
+passwords, keys, or other secrets there. `.my.*` remains private profile state:
+the encrypted profile stores only `.my.z`, the selected z manifest reference,
+and identity publication repeats that selection as `ma.z` in the DID document.
 
-- On login, if `.my.z.scheme` is non-empty, Zion queues `.my.z.scheme!eval` once.
-- A `?z=<manifest-cid>` URL can bootstrap a profile that has no `.my.z` tree.
-   The CID must be the DAG-CBOR manifest produced by `.my.z!publish` and must
-   contain a non-empty `scheme` source.
-- The complete manifest is fetched and persisted atomically. Zion never merges
-   it into an existing `.my.z` tree and never overwrites user-owned z sources.
-- There is no automatic `.my.z.avatar` execution.
-- There is no special parser mode for `.my.z.scheme`; it runs through the same
-   `!eval` flow as any other local script path.
+- `.z!publish <publisher>` publishes the direct `.z.*` source leaves and their
+   DAG-CBOR manifest, then stores its reference in `.my.z`.
+- On login Zion restores the encrypted profile first. If `.my.z` is absent it
+   uses `ma.z` from the DID document, then an explicit `?z=<manifest-cid>` as the
+   final onboarding fallback.
+- Zion fetches the selected manifest and atomically replaces `.z.*` only after
+   every entry is valid. The manifest must contain a non-empty `scheme` source.
+- Before room entry, Zion queues `.z.scheme!eval` once when that source exists.
+- There is no automatic `.z.avatar` execution and no special parser mode for
+   `.z.scheme`; it uses the ordinary local-script `!eval` flow.
 
 A `z=` link author is asking a new user to execute code with access to that
 user's local Zion state. Only use bootstrap links from a source you trust. The
@@ -251,12 +255,12 @@ it can also be used independently. An invalid seed reports an error without
 blocking login, runtime connection, or room entry.
 
 This keeps startup customisation explicit and user-owned. If you want layered
-startup scripts, compose them directly in `.my.z.scheme`, for example:
+startup scripts, compose them directly in `.z.scheme`, for example:
 
 ```text
-.my.z.stdlib!eval
-.my.z.irc!eval
-.my.z.avatar!eval
+.z.stdlib!eval
+.z.irc!eval
+.z.avatar!eval
 ```
 
 ---

@@ -145,7 +145,7 @@ runtime-no-verb = babu aikatau `{ $verb }` don { $path }
 
 # ── Aikatau — ACL ─────────────────────────────────────────────────────────
 acl-reset = an sake saita .my.acl (buɗe gaba ɗaya)
-acl-persist-error = kuskuren ajiye: { $e }
+err-persist = kuskuren ajiye: { $e }
 acl-no-verb = babu aikatau `{ $verb }` don .my.acl
 
 # ── Aikatau — asali ───────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  kiyaye martanin 5 a cikin yanayin zama
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    buɗe zion ta hanyar URL link
 help-topic-i18n = .help/i18n                   zaɓin harshe don ainihin ku

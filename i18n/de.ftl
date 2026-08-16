@@ -145,7 +145,7 @@ runtime-no-verb = kein Verb `{ $verb }` für { $path }
 
 # ── Verben — Zugriffskontrolle ────────────────────────────────────────────
 acl-reset = .my.acl zurückgesetzt (vollständig offen)
-acl-persist-error = Speicherfehler: { $e }
+err-persist = Speicherfehler: { $e }
 acl-no-verb = kein Verb `{ $verb }` für .my.acl
 
 # ── Verben — Identität ────────────────────────────────────────────────────
@@ -373,7 +373,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  Behalten Sie 5-Antworten in der Sitzungsumgebung bei
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-Parameter ───────────────────────────────────────────────────────────
 help-url-intro =   Link teilen, der zion mit vorausgefülltem Empfänger öffnet:
 help-url-msg =   ?msg=<did>                   vorausfüllen: @<did>!msg (Textnachricht)

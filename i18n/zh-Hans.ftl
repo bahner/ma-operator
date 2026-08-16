@@ -145,7 +145,7 @@ runtime-no-verb = { $path } 没有 `{ $verb }` 动词
 
 # ── 动词 — ACL ────────────────────────────────────────────────────────────
 acl-reset = .my.acl 已重置（完全开放）
-acl-persist-error = 持久化错误: { $e }
+err-persist = 持久化错误: { $e }
 acl-no-verb = .my.acl 没有 `{ $verb }` 动词
 
 # ── 动词 — 身份 ───────────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  在会话环境中保留 5 回复
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 参数 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一个链接，打开 zion 时自动填入收件人：
 help-url-msg =   ?msg=<did>                   预填：@<did>!msg（文本消息）

@@ -145,7 +145,7 @@ runtime-no-verb = { $path } için `{ $verb }` fiili yok
 
 # ── Fiiller — ACL ─────────────────────────────────────────────────────────
 acl-reset = .my.acl sıfırlandı (tamamen açık)
-acl-persist-error = kaydetme hatası: { $e }
+err-persist = kaydetme hatası: { $e }
 acl-no-verb = .my.acl için `{ $verb }` fiili yok
 
 # ── Fiiller — kimlik ──────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  5 yanıtlarını oturum ortamında tut
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
 help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)

@@ -145,7 +145,7 @@ runtime-no-verb = gochan `{ $verb }` { $path }f hin jiru
 
 # ── Gochaalee — ACL ───────────────────────────────────────────────────────
 acl-reset = .my.acl deebi'ee qindaa'e (guutummaatti banaa)
-acl-persist-error = dogoggora kuusaa: { $e }
+err-persist = dogoggora kuusaa: { $e }
 acl-no-verb = gochan `{ $verb }` .my.aclf hin jiru
 
 # ── Gochaalee — eenyummaa ─────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zion URL link tiin banuu
 help-topic-i18n = .help/i18n                   language preference for your identity

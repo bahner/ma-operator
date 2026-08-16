@@ -24,22 +24,23 @@ The first position in a parenthesised form is a procedure position. If `foo`
 is bound to `bar`, then `(foo)` tries to call `bar`. To read the value, use
 `(begin foo)` instead.
 
-## How do I save Scheme source in `.my.z.scheme` from the prompt?
+## How do I save Scheme source in `.z.scheme` from the prompt?
 
 A plain setter stores its text literally, including quotation marks. Use a
 Scheme expression that returns the source text:
 
 ```scheme
-.my.z.scheme: (quote "(define foo 'bar)")
-.my.z.scheme!eval
+.z.scheme: (quote "(define foo 'bar)")
+.z.scheme!eval
 (begin foo)
 ```
 
 The first line stores `(define foo 'bar)` without the surrounding quotation
-marks. The second line runs the saved `.my.z.scheme` script as normal `!eval`.
+marks. The second line runs the saved `.z.scheme` script as normal `!eval`.
 
 The same expansion and CRUD rules apply to every local configuration path;
-`.my.z.scheme` has no special storage behaviour.
+`.z.scheme` has no special storage behaviour. Everything under `.z` is an
+explicitly publishable script collection, so it must not contain secrets.
 
 ## Why did `(display "some text")` delete my key?
 
@@ -63,7 +64,7 @@ computed value, the expression itself must return a string:
 storing fetched source in a local key:
 
 ```scheme
-.my.z.scheme: (ipfs-cat #/ipfs/<cid>)
+.z.scheme: (ipfs-cat #/ipfs/<cid>)
 ```
 
 `include` fetches and evaluates Scheme source immediately. It normally returns
@@ -88,9 +89,9 @@ There must be a space between the primitive name and its argument:
 Zion deliberately suppresses successful `nil` output, so the terminal does not
 fill with `()` lines. Errors still appear in red.
 
-## What does `.my.z.scheme!eval` do, and why can it take a moment?
+## What does `.z.scheme!eval` do, and why can it take a moment?
 
-`.my.z.scheme!eval` runs the saved `.my.z.scheme` source as a normal Zion
+`.z.scheme!eval` runs the saved `.z.scheme` source as a normal Zion
 script. The command stays dark green while remote content is loading, turns bright
 green on success, and turns red with the bootstrap error on failure.
 

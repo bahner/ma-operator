@@ -149,7 +149,7 @@ runtime-no-verb = немає команди `{ $verb }` для { $path }
 
 # ── Дієслова — ACL ────────────────────────────────────────────────────────
 acl-reset = .my.acl скинуто (повністю відкрито)
-acl-persist-error = помилка збереження: { $e }
+err-persist = помилка збереження: { $e }
 acl-no-verb = немає команди `{ $verb }` для .my.acl
 
 # ── Дієслова — мова ───────────────────────────────────────────────────────
@@ -400,7 +400,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  зберігати відповіді 5 у середовищі сеансу
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 # ── Довідка — публікація ──────────────────────────────────────────────────
 help-topic-publish =   .help/publish                публікація особистості в мережі

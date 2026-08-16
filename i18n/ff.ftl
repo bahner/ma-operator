@@ -145,7 +145,7 @@ runtime-no-verb = baɗe `{ $verb }` { $path } alaa
 
 # ── Baɗe — ACL ────────────────────────────────────────────────────────────
 acl-reset = .my.acl happaama caggal (udditaa haa timmi)
-acl-persist-error = juumre mooftude: { $e }
+err-persist = juumre mooftude: { $e }
 acl-no-verb = baɗe `{ $verb }` .my.acl alaa
 
 # ── Baɗe — ɗemngal ───────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  jogaade jaabawuuli 5 e nder nokku jonnde
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    udditde zion e nder togol URL
 help-topic-i18n = .help/i18n                   ɗemngal ɓurngal welde ngam anndinde ma

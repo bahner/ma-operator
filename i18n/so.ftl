@@ -145,7 +145,7 @@ runtime-no-verb = ficil `{ $verb }` { $path } ma jiro
 
 # ── Ficilada — ACL ────────────────────────────────────────────────────────
 acl-reset = .my.acl dib loo dejiyay (si buuxda u furan)
-acl-persist-error = khaladka keydinта: { $e }
+err-persist = khaladka keydinта: { $e }
 acl-no-verb = ficil `{ $verb }` .my.acl ma jiro
 
 # ── Ficilada — aqoonsiga ──────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  Ku hay jawaabaha 5 ee jawiga fadhiga
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    furista zion adeegsiga xiriirka URL
 help-topic-i18n = .help/i18n                   doorashada luqadda ee aqoonsigaaga

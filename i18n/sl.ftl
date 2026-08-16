@@ -145,7 +145,7 @@ runtime-no-verb = ni glagola `{ $verb }` za { $path }
 
 # ── Glagoli — nadzor dostopa ──────────────────────────────────────────────
 acl-reset = .my.acl ponastavljen (popolnoma odprt)
-acl-persist-error = napaka pri shranjevanju: { $e }
+err-persist = napaka pri shranjevanju: { $e }
 acl-no-verb = ni glagola `{ $verb }` za .my.acl
 
 # ── Glagoli — identiteta ──────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  obdrži odgovore 5 v okolju seje
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    odpiranje zion prek URL povezave
 help-topic-i18n = .help/i18n                   nastavitev jezika za vašo identiteto

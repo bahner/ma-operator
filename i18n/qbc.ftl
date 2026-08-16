@@ -147,7 +147,7 @@ runtime-no-verb = na du `{ $verb }` fo { $path }
 
 # ── Du — ACL ──────────────────────────────────────────────────────────────
 acl-reset = .my.acl reset finyish (udda kowl-wit)
-acl-persist-error = hámfalla hol: { $e }
+err-persist = hámfalla hol: { $e }
 acl-no-verb = na du `{ $verb }` fo .my.acl
 
 # ── Du — selfmang ─────────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ help-actor-cat =   (@actor#entity:verb arg...)  call entity RPC from Scheme and 
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and eval Scheme from IPFS CID
 help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in session env
-help-actor-wc-l =   .my.z.scheme.ma!edit           edit saved Scheme helpers fo dis selfmang
+help-actor-wc-l =   .z.scheme.ma!edit           edit saved Scheme helpers fo dis selfmang
 
 help-topic-url =   .help/url                    open zion tru URL peng
 help-topic-i18n =   .help/i18n                   lang choice fo yer selfmang

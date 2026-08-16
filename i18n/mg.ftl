@@ -145,7 +145,7 @@ runtime-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 
 # ── Fiasa — ACL ───────────────────────────────────────────────────────────
 acl-reset = .my.acl novàna (misokatra tanteraka)
-acl-persist-error = hadisoana fitahirizana: { $e }
+err-persist = hadisoana fitahirizana: { $e }
 acl-no-verb = tsy misy fiasa `{ $verb }` ho an'ny .my.acl
 
 # ── Fiasa — mombamomba ────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  mitazona valiny 5 ao amin'ny tontolon'ny session
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
 help-topic-i18n = .help/i18n                   safidin'ny fiteny amin'ny maha-ianao anao

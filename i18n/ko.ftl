@@ -145,7 +145,7 @@ runtime-no-verb = { $path }에 `{ $verb }` 동사가 없음
 
 # ── 동사 — ACL ────────────────────────────────────────────────────────────
 acl-reset = .my.acl 초기화됨 (완전히 열림)
-acl-persist-error = 저장 오류: { $e }
+err-persist = 저장 오류: { $e }
 acl-no-verb = .my.acl에 `{ $verb }` 동사가 없음
 
 # ── 동사 — 신원 ───────────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ help-actor-cat = (@actor#entity:verb arg...)  24에서 엔터티 15를 호출하
 help-actor-head = (@actor/path)                31에서 원격 CRUD 콘텐츠 가져오기
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  세션 환경에서 5 응답 유지
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)

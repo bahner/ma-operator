@@ -373,6 +373,7 @@ impl EgoConfig {
         Self::flatten_nested(".my", my, &mut flat);
         let count = flat.len();
         self.tree.extend(flat);
+        self.migrate_legacy_z_tree();
         Ok((count, username))
     }
 
@@ -399,9 +400,7 @@ impl EgoConfig {
         let tree = self
             .tree
             .iter()
-            .filter(|(k, _)| {
-                Self::is_profile_key(k.as_str()) && k.as_str() != ".my.aliases.ma"
-            })
+            .filter(|(k, _)| Self::is_profile_key(k.as_str()) && k.as_str() != ".my.aliases.ma")
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
         Self { tree }
@@ -412,7 +411,9 @@ impl EgoConfig {
         let tree = self
             .tree
             .iter()
-            .filter(|(k, _)| k.starts_with(".my.") && k.as_str() != ".my.aliases.ma")
+            .filter(|(k, _)| {
+                (k.starts_with(".my.") && k.as_str() != ".my.aliases.ma") || k.starts_with(".z.")
+            })
             .map(|(k, v)| (k.clone(), v.clone()))
             .collect();
         Self { tree }
@@ -444,6 +445,29 @@ impl EgoConfig {
         for (old_key, migrated, value) in moved {
             self.tree.entry(migrated).or_insert(value);
             self.tree.remove(&old_key);
+        }
+        self.migrate_legacy_z_tree();
+    }
+
+    fn migrate_legacy_z_tree(&mut self) {
+        let selected = self
+            .tree
+            .remove(".my.z.manifest")
+            .filter(|value| !value.trim().is_empty());
+        let sources: Vec<(String, String)> = self
+            .tree
+            .iter()
+            .filter_map(|(key, value)| {
+                key.strip_prefix(".my.z.")
+                    .map(|suffix| (format!(".z.{suffix}"), value.clone()))
+            })
+            .collect();
+        self.delete_subtree(".my.z");
+        for (path, source) in sources {
+            self.tree.entry(path).or_insert(source);
+        }
+        if let Some(selected) = selected {
+            self.tree.insert(".my.z".to_string(), selected);
         }
     }
 
@@ -525,7 +549,8 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
         Some(json) => {
             let mut cfg = EgoConfig::from_json(&json)?;
             cfg.migrate_slash_keys();
-            cfg.tree.retain(|k, _| k.starts_with(".my."));
+            cfg.tree
+                .retain(|k, _| k.starts_with(".my.") || k.starts_with(".z."));
             cfg.delete(".my.aliases.ma");
             cfg.set_defaults();
             let json = cfg.for_persistence().to_json()?;
@@ -574,21 +599,18 @@ mod tests {
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
-        assert_eq!(cfg.get(".my.z.scheme"), None);
-        assert_eq!(cfg.get(".my.z.avatar"), None);
+        assert_eq!(cfg.get(".z.scheme"), None);
+        assert_eq!(cfg.get(".z.avatar"), None);
     }
 
     #[test]
     fn new_does_not_overwrite_existing() {
         let mut cfg = bare();
         cfg.set(".my.config.colour.text", "#ffffff");
-        cfg.set(".my.z.avatar", "(define (custom-avatar) :ok)");
+        cfg.set(".z.avatar", "(define (custom-avatar) :ok)");
         cfg.set_defaults();
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#ffffff"));
-        assert_eq!(
-            cfg.get(".my.z.avatar"),
-            Some("(define (custom-avatar) :ok)")
-        );
+        assert_eq!(cfg.get(".z.avatar"), Some("(define (custom-avatar) :ok)"));
     }
 
     // ── is_read_only ──────────────────────────────────────────────────────
@@ -921,12 +943,62 @@ mod tests {
         cfg.set(".my.aliases.ma", "did:ma:runtime");
         cfg.set(".ma.ctx.did", "did:ma:runtime");
         cfg.set(".ma.live.peer", "did:ma:peer");
+        cfg.set(".z.scheme", "(define x 1)\n");
 
         let persisted = cfg.for_persistence();
 
         assert_eq!(persisted.get(".my.i18n"), Some("nb"));
+        assert_eq!(persisted.get(".z.scheme"), Some("(define x 1)\n"));
         assert_eq!(persisted.get(".my.aliases.ma"), None);
         assert!(!persisted.has_children(".ma"));
+    }
+
+    #[test]
+    fn profile_includes_z_selection_but_excludes_public_z_sources() {
+        let mut cfg = bare();
+        cfg.set(".my.z", "/ipfs/bafyreimanifest");
+        cfg.set(".z.scheme", "(define x 1)\n");
+
+        let profile = cfg.for_profile();
+
+        assert_eq!(profile.get(".my.z"), Some("/ipfs/bafyreimanifest"));
+        assert_eq!(profile.get(".z.scheme"), None);
+    }
+
+    #[test]
+    fn legacy_z_tree_moves_sources_and_promotes_manifest() {
+        let mut cfg = bare();
+        cfg.set(".my.z.scheme", "(define x 1)\n");
+        cfg.set(".my.z.avatar", "(define avatar #t)\n");
+        cfg.set(".my.z.manifest", "/ipfs/bafyreimanifest");
+
+        cfg.migrate_legacy_z_tree();
+
+        assert_eq!(cfg.get(".my.z"), Some("/ipfs/bafyreimanifest"));
+        assert_eq!(cfg.get(".z.scheme"), Some("(define x 1)\n"));
+        assert_eq!(cfg.get(".z.avatar"), Some("(define avatar #t)\n"));
+        assert!(!cfg.has_children(".my.z"));
+    }
+
+    #[test]
+    fn legacy_z_tree_is_migrated_when_merging_an_encrypted_profile() {
+        let mut cfg = bare();
+        let profile = serde_json::json!({
+            "username": "alice",
+            "my": {
+                "z": {
+                    "scheme": "(define x 1)\n",
+                    "manifest": "/ipfs/bafyreimanifest"
+                }
+            }
+        });
+
+        cfg.merge_from_nested_profile(&profile)
+            .expect("profile merge");
+
+        assert_eq!(cfg.get(".my.z"), Some("/ipfs/bafyreimanifest"));
+        assert_eq!(cfg.get(".z.scheme"), Some("(define x 1)\n"));
+        assert!(!cfg.has_children(".my.z"));
     }
 
     #[test]

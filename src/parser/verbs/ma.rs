@@ -30,10 +30,7 @@ pub(crate) fn preferred_ma_prefill(
     published.or(invited)
 }
 
-pub(crate) fn ma_choices(
-    published: Option<String>,
-    invited: Option<String>,
-) -> Vec<String> {
+pub(crate) fn ma_choices(published: Option<String>, invited: Option<String>) -> Vec<String> {
     let mut choices = Vec::new();
     for did in [published, invited].into_iter().flatten() {
         if !choices.contains(&did) {
@@ -224,18 +221,17 @@ pub(crate) async fn claim_and_discover_local_ma(
     if !should_continue_after_claim(&claim_result) {
         return ConnectMaOutcome::Unavailable { target: ma_base };
     }
-    let did = match rediscover_ma(&ma_base, config).await {
-        Ok(did) => did,
-        Err(_) => {
-            state.push_error(tf(
-                "msg-local-ma-unreachable",
-                &[
-                    ("url", &ma_base),
-                    ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
-                ],
-            ));
-            return ConnectMaOutcome::Unavailable { target: ma_base };
-        }
+    let did = if let Ok(did) = rediscover_ma(&ma_base, config).await {
+        did
+    } else {
+        state.push_error(tf(
+            "msg-local-ma-unreachable",
+            &[
+                ("url", &ma_base),
+                ("seconds", &(LOCAL_MA_HTTP_TIMEOUT_MS / 1_000).to_string()),
+            ],
+        ));
+        return ConnectMaOutcome::Unavailable { target: ma_base };
     };
     config.update(|cfg| {
         cfg.set(MA_CTX_DID, &did);
@@ -269,7 +265,8 @@ pub(crate) async fn connect_trusted_ma_on_startup(
                 &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
             )],
         ));
-        if let Err(e) = send_identity_publish_and_wait(&did, Some(did.clone())).await {
+        let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
+        if let Err(e) = send_identity_publish_and_wait(&did, Some(did.clone()), selected_z).await {
             log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
@@ -319,12 +316,14 @@ async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
 pub(crate) async fn send_identity_publish_and_wait(
     publisher: &str,
     trusted_ma: Option<String>,
+    selected_z: Option<String>,
 ) -> Result<(), String> {
     let mut rx = None;
     let mut registered_msg_id = None;
     let send_result = crate::transport::send_identity_publish_with_msg_id(
         publisher,
         trusted_ma.as_deref(),
+        selected_z.as_deref(),
         |msg_id| {
             registered_msg_id = Some(msg_id.clone());
             rx = Some(crate::state::AwaitingReply::register(msg_id));
@@ -392,7 +391,8 @@ pub(crate) async fn queue_profile_publish(
     // Step 1: Publish the DID document so the runtime can authenticate the
     // profile-store request and route its reply to our current endpoint.
     let trusted_ma = active_ma_did(&config.get_untracked());
-    if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma).await {
+    let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
+    if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma, selected_z).await {
         fail_profile_publish(state, cmd_id, error);
         return;
     }
@@ -625,10 +625,7 @@ mod tests {
     #[test]
     fn invited_runtime_is_used_without_published_runtime() {
         assert_eq!(
-            preferred_ma_prefill(
-                None,
-                Some("did:ma:invited".to_string()),
-            ),
+            preferred_ma_prefill(None, Some("did:ma:invited".to_string()),),
             Some("did:ma:invited".to_string())
         );
     }

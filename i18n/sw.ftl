@@ -145,7 +145,7 @@ runtime-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 
 # ── Vitenzi — udhibiti wa ufikiaji ────────────────────────────────────────
 acl-reset = .my.acl imewekwa upya (wazi kabisa)
-acl-persist-error = hitilafu ya kuhifadhi: { $e }
+err-persist = hitilafu ya kuhifadhi: { $e }
 acl-no-verb = hakuna kitenzi `{ $verb }` kwa .my.acl
 
 # ── Vitenzi — utambulisho ─────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  weka majibu ya 5 katika mazingira ya kikao
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
 help-topic-i18n = .help/i18n                   upendeleo wa lugha kwa utambulisho wako

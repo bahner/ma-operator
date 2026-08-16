@@ -339,6 +339,7 @@ fn scheme_val_to_cbor(v: &SchemeVal) -> ciborium::Value {
 pub async fn send_identity_publish_with_msg_id(
     publisher_did: &str,
     trusted_ma: Option<&str>,
+    selected_z: Option<&str>,
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
@@ -381,6 +382,7 @@ pub async fn send_identity_publish_with_msg_id(
         Some(lang) if !lang.is_empty() => ma_ext.extra("lang", Ipld::String(lang)),
         _ => ma_ext,
     };
+    let ma_ext = with_selected_z(ma_ext, selected_z);
     // Inject profile CID as a canonical IPLD link when the value is a valid
     // CID; otherwise keep the raw string to preserve backwards compatibility
     // with any previously stored non-CID values.
@@ -421,6 +423,13 @@ pub async fn send_identity_publish_with_msg_id(
     on_msg_id(msg_id.clone());
     send_message_on(&publisher_url, IPFS_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
+}
+
+fn with_selected_z(ma_ext: ma_core::MaExtension, selected_z: Option<&str>) -> ma_core::MaExtension {
+    match selected_z.and_then(crate::doc_link::parse_link_cid) {
+        Some(cid) => ma_ext.extra("z", Ipld::Link(cid)),
+        None => ma_ext,
+    }
 }
 
 /// Send arbitrary content to an IPFS publisher's `/ma/ipfs/0.0.1` endpoint for
@@ -948,6 +957,30 @@ mod tests {
             .build_document(ma_core::MaExtension::new().kind("agent"))
             .expect("document");
         assert!(document.validate().is_err());
+    }
+
+    #[test]
+    fn selected_z_is_published_only_when_it_is_a_cid() {
+        let bundle = SecretBundle::generate();
+        let cid = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
+        let document = bundle
+            .build_document(with_selected_z(
+                ma_core::MaExtension::new().kind("agent"),
+                Some(&format!("/ipfs/{cid}")),
+            ))
+            .expect("document");
+        assert_eq!(
+            crate::parser::verbs::doc_z_cid(&document),
+            Some(cid.to_string())
+        );
+
+        let document = bundle
+            .build_document(with_selected_z(
+                ma_core::MaExtension::new().kind("agent"),
+                Some("my password"),
+            ))
+            .expect("document");
+        assert_eq!(crate::parser::verbs::doc_z_cid(&document), None);
     }
 
     #[test]

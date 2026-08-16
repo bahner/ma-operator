@@ -1,4 +1,4 @@
-//! Generic link-value resolution for explicitly loaded `.my.*` documents.
+//! Generic link-value resolution for explicitly loaded documents.
 
 use crate::http::{fetch_cid_bytes, fetch_cid_text};
 use ma_core::CODEC_DAG_CBOR;
@@ -24,7 +24,7 @@ pub fn parse_link_cid(value: &str) -> Option<cid::Cid> {
 
 /// Resolve an explicitly requested document link.
 ///
-/// Startup uses this only for the explicit `?z=` bootstrap of an empty profile.
+/// Startup uses this to load the manifest selected by `.my.z`.
 pub async fn resolve_doc_link(value: &str) -> Result<ResolvedDocContent, String> {
     let Some(cid) = parse_link_cid(value) else {
         return Ok(ResolvedDocContent::Text(value.to_string()));

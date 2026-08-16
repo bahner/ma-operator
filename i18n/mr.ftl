@@ -145,7 +145,7 @@ runtime-no-verb = { $path } साठी `{ $verb }` क्रिया ना�
 
 # ── क्रिया — ACL ───────────────────────────────────────────────────────────
 acl-reset = .my.acl रीसेट केला (पूर्णपणे खुला)
-acl-persist-error = जतन त्रुटी: { $e }
+err-persist = जतन त्रुटी: { $e }
 acl-no-verb = .my.acl साठी `{ $verb }` क्रिया नाही
 
 # ── क्रिया — ओळख ──────────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  सत्र वातावरणात 5 उत्तरे ठेवा
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL दुव्याद्वारे zion उघडणे
 help-topic-i18n = .help/i18n                   तुमच्या ओळखीसाठी भाषा प्राधान्य

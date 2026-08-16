@@ -145,7 +145,7 @@ runtime-no-verb = geen werkwoord `{ $verb }` voor { $path }
 
 # ── Werkwoorden — toegangsbeheer ──────────────────────────────────────────
 acl-reset = .my.acl gereset (volledig open)
-acl-persist-error = opslagfout: { $e }
+err-persist = opslagfout: { $e }
 acl-no-verb = geen werkwoord `{ $verb }` voor .my.acl
 
 # ── Werkwoorden — identiteit ──────────────────────────────────────────────
@@ -373,7 +373,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  bewaar 5-antwoorden in de sessieomgeving
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
 help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
 help-url-msg =   ?msg=<did>                   vult in: @<did>!msg (tekstbericht)

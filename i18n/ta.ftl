@@ -145,7 +145,7 @@ runtime-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல
 
 # ── வினைச்சொற்கள் — ACL ──────────────────────────────────────────────────
 acl-reset = .my.acl மீட்டமைக்கப்பட்டது (முழுமையாக திறந்தது)
-acl-persist-error = சேமிப்பு பிழை: { $e }
+err-persist = சேமிப்பு பிழை: { $e }
 acl-no-verb = .my.acl க்கு `{ $verb }` வினைச்சொல் இல்லை
 
 # ── வினைச்சொற்கள் — அடையாளம் ──────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
 help-topic-i18n = .help/i18n                   உங்கள் அடையாளத்திற்கான மொழி விருப்பம்

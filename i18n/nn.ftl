@@ -145,7 +145,7 @@ runtime-no-verb = inkje verb `{ $verb }` for { $path }
 
 # ── Verb — tilgangskontroll ───────────────────────────────────────────────
 acl-reset = .my.acl tilbakestilt (heilt open)
-acl-persist-error = lagringsfeil: { $e }
+err-persist = lagringsfeil: { $e }
 acl-no-verb = inkje verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat =   (@actor#entity:verb arg...)  kall entitets-RPC frå Scheme og
 help-actor-head =   (@actor/path)                hent eksternt CRUD-innhald frå Scheme
 help-actor-tail =   (<bafy...>)                  inkluder og evaluer Scheme frå ein IPFS-CID
 help-actor-wc =   (define x (@actor:verb arg))  hald RPC-svar i sesjonsmiljøet
-help-actor-wc-l =   .my.z.scheme.ma!edit           rediger lagra Scheme-hjelparar for denne identiteten
+help-actor-wc-l =   .z.scheme.ma!edit           rediger lagra Scheme-hjelparar for denne identiteten
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Del ei lenkje som opnar zion med ferdig utfylt mottakar:
 help-url-msg =   ?msg=<did>                   fyller inn: @<did>!msg (tekstmelding)

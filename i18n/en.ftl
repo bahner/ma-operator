@@ -152,7 +152,7 @@ runtime-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
 acl-reset = .my.acl reset (fully open)
-acl-persist-error = persist error: { $e }
+err-persist = persist error: { $e }
 acl-no-verb = no verb `{ $verb }` for .my.acl
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
@@ -189,8 +189,6 @@ doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
 doc-cid-value = { $path }.cid = { $cid }
 doc-cid-not-set = { $path }.cid is not set
 doc-no-verb = no verb `{ $verb }` for { $path }
-doc-eval-manifest = { $path } is a manifest link, not executable — eval one of its .my.z.* children instead
-doc-link-fetch-failed = fetch { $path }: { $e } — retry with { $path }!fetch <cid>
 path-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Help text — headers ───────────────────────────────────────────────────
@@ -352,10 +350,6 @@ doc-publish-ipld-error = cannot publish-ipld: { $e }
 err-inbox-prune-persist = inbox prune persist: { $e }
 err-config-load = config load error: { $e }
 err-lang-persist = lang persist: { $e }
-err-zscheme-seed-persist = zscheme seed persist: { $e }
-err-zscheme-manifest-fetch = zscheme manifest fetch: { $e }
-err-zscheme-manifest-persist = zscheme manifest persist: { $e }
-err-zscheme-manifest-not-dag-cbor = .my.z.manifest is not a dag-cbor link — expected a manifest, not plain content
 err-history-parse = history parse error: { $e }
 err-history-load = history load error: { $e }
 err-history-count-invalid = history count must be a positive integer
@@ -415,7 +409,7 @@ help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme a
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l =   .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publishing your identity to the network
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────

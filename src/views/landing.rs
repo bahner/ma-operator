@@ -177,10 +177,8 @@ pub fn Landing() -> impl IntoView {
                     published_ma.clone(),
                     invited_ma,
                 ));
-                selected_ma = crate::parser::verbs::ma::preferred_ma_prefill(
-                    published_ma,
-                    selected_ma,
-                );
+                selected_ma =
+                    crate::parser::verbs::ma::preferred_ma_prefill(published_ma, selected_ma);
                 if !ma_input_edited.get_untracked() {
                     ma_input.set(selected_ma.unwrap_or_default());
                 }

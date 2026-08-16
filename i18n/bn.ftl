@@ -145,7 +145,7 @@ runtime-no-verb = { $path }-এর জন্য `{ $verb }` ক্রিয়�
 
 # ── ক্রিয়া — ACL ──────────────────────────────────────────────────────────
 acl-reset = .my.acl রিসেট করা হয়েছে (সম্পূর্ণ খোলা)
-acl-persist-error = সংরক্ষণ ত্রুটি: { $e }
+err-persist = সংরক্ষণ ত্রুটি: { $e }
 acl-no-verb = .my.acl-এর জন্য `{ $verb }` ক্রিয়া নেই
 
 # ── ক্রিয়া — পরিচয় ───────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  সেশন পরিবেশে 5 উত্তর রাখুন
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL লিঙ্কের মাধ্যমে zion খোলা
 help-topic-i18n = .help/i18n                   আপনার পরিচয়ের জন্য ভাষা পছন্দ

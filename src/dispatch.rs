@@ -967,7 +967,7 @@ mod tests {
         assert!(is_focus_shorthand_command("look"));
         assert!(is_focus_shorthand_command("look north"));
         assert!(!is_focus_shorthand_command("@ma#room:look"));
-        assert!(!is_focus_shorthand_command(".my.z.avatar"));
+        assert!(!is_focus_shorthand_command(".z.avatar"));
         assert!(!is_focus_shorthand_command("/local/path"));
         assert!(!is_focus_shorthand_command("(look)"));
         assert!(!is_focus_shorthand_command(""));
@@ -1095,7 +1095,7 @@ mod tests {
             );
         });
 
-        let cmd_id = state.push_command(".my.z.scheme!eval");
+        let cmd_id = state.push_command(".z.scheme!eval");
         attach_command_to_batch(&state, cmd_id, Some(42));
         state.batches.update(|batches| {
             batches

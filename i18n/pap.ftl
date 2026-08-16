@@ -145,7 +145,7 @@ runtime-no-verb = no tin verb `{ $verb }` pa { $path }
 
 # ── Verbs — ACL ───────────────────────────────────────────────────────────
 acl-reset = .my.acl rinisialisá (kompletamente habri)
-acl-persist-error = fayo di guardamentu: { $e }
+err-persist = fayo di guardamentu: { $e }
 acl-no-verb = no tin verb `{ $verb }` pa .my.acl
 
 # ── Verbs — identity ─────────────────────────────────────────────────────
@@ -364,7 +364,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  warda kontesta 5 den e ambiente di seshon
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    habri zion via un link URL
 help-topic-i18n = .help/i18n                   preferensia di idioma pa bo identidat

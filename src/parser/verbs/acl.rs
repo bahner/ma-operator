@@ -48,7 +48,7 @@ pub(super) fn handle_acl(
                 let state2 = state.clone();
                 leptos::task::spawn_local(async move {
                     if let Err(e) = crate::config::persist_config(&username, &cfg).await {
-                        state2.push_error(tf("acl-persist-error", &[("e", &e)]));
+                        state2.push_error(tf("err-persist", &[("e", &e)]));
                     }
                 });
                 state.push_command_ok(t("acl-reset"));

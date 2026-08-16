@@ -145,7 +145,7 @@ runtime-no-verb = { $path } కోసం `{ $verb }` క్రియ లేద�
 
 # ── క్రియలు — ACL ──────────────────────────────────────────────────────────
 acl-reset = .my.acl రీసెట్ చేయబడింది (పూర్తిగా తెరవబడింది)
-acl-persist-error = సేవ్ లోపం: { $e }
+err-persist = సేవ్ లోపం: { $e }
 acl-no-verb = .my.acl కోసం `{ $verb }` క్రియ లేదు
 
 # ── క్రియలు — గుర్తింపు ──────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
 help-topic-i18n = .help/i18n                   మీ గుర్తింపు కోసం భాష ప్రాధాన్యత

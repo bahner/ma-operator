@@ -151,7 +151,7 @@ runtime-no-verb = فعل `{ $verb }` برای { $path } وجود ندارد
 
 # ── فعل‌ها — ACL ─────────────────────────────────────────────────────────
 acl-reset = .my.acl بازنشانی شد (کاملاً باز)
-acl-persist-error = خطای ذخیره‌سازی: { $e }
+err-persist = خطای ذخیره‌سازی: { $e }
 acl-no-verb = فعل `{ $verb }` برای .my.acl وجود ندارد
 
 # ── فعل‌ها — زبان ────────────────────────────────────────────────────────
@@ -408,7 +408,7 @@ help-actor-cat =   (@actor#entity:verb arg...)  فراخوانی RPC موجود�
 help-actor-head =   (@actor/path)                واکشی محتوای CRUD دوردست از Scheme
 help-actor-tail =   (<bafy...>)                  include و ارزیابی Scheme از CID در IPFS
 help-actor-wc =   (define x (@actor:verb arg))  نگه داشتن پاسخ‌های RPC در محیط نشست
-help-actor-wc-l =   .my.z.scheme.ma!edit           ویرایش helperهای ذخیره‌شده Scheme برای این هویت
+help-actor-wc-l =   .z.scheme.ma!edit           ویرایش helperهای ذخیره‌شده Scheme برای این هویت
 # ── متن راهنما — انتشار ─────────────────────────────────────────────────
 help-topic-publish =   .help/publish                انتشار هویت شما در شبکه
 help-header-publish = ── انتشار هویت شما ────────────────────────────────────────────────────

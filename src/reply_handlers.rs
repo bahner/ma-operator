@@ -203,11 +203,13 @@ pub(crate) fn handle_profile_publish_reply(
             let state2 = state.clone();
             let cfg_snap = config.get_untracked();
             let trusted_ma = crate::parser::verbs::ma::active_ma_did(&cfg_snap);
+            let selected_z = cfg_snap.get(".my.z").map(str::to_string);
             leptos::task::spawn_local(async move {
                 let _ = persist_config(&username, &cfg_snap).await;
                 match crate::parser::verbs::ma::send_identity_publish_and_wait(
                     &publisher_did,
                     trusted_ma,
+                    selected_z,
                 )
                 .await
                 {

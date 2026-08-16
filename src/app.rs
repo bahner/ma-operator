@@ -85,7 +85,7 @@ pub fn App() -> impl IntoView {
     if let Some(ma) = url_ma() {
         state.startup_ma.set(Some(ma));
     }
-    // ?z=<manifest-cid> — seed an empty profile's complete z tree once.
+    // ?z=<manifest-cid> — select z only when the restored profile has no choice.
     if let Some(z) = url_z() {
         state.startup_z.set(Some(z));
     }

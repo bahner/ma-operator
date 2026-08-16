@@ -145,7 +145,7 @@ runtime-no-verb = intet verb `{ $verb }` for { $path }
 
 # ── Verb — adgangskontrol ─────────────────────────────────────────────────
 acl-reset = .my.acl nulstillet (fuldt åben)
-acl-persist-error = gemningsfejl: { $e }
+err-persist = gemningsfejl: { $e }
 acl-no-verb = intet verb `{ $verb }` for .my.acl
 
 # ── Verb — identitet ─────────────────────────────────────────────────────
@@ -380,7 +380,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  behold 5-svar i sessionsmiljøet
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL-parametre ───────────────────────────────────────────────────────────
 help-url-intro =   Del et link der åbner zion med forudfyldt modtager:
 help-url-msg =   ?msg=<did>                   udfylder: @<did>!msg (tekstbesked)

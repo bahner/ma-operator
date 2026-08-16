@@ -30,7 +30,7 @@ pub(super) fn handle_doc(
     match verb {
         "edit" => doc_edit(path, args, state, config, show_editor),
         "eval" => doc_eval(path, state, config, on_eval),
-        "publish" if path == ".my.z" => z_tree_publish(args, state, config),
+        "publish" if path == ".z" => z_tree_publish(args, state, config),
         "publish" => doc_publish(path, args, state, config),
         "publish-ipld" => doc_publish_ipld(path, args, state, config),
         "cid" => doc_cid(path, args, state, config),
@@ -39,7 +39,7 @@ pub(super) fn handle_doc(
     }
 }
 
-/// Publish the direct `.my.z.<name>` source leaves and their DAG-CBOR root.
+/// Publish the direct `.z.<name>` source leaves and their DAG-CBOR root.
 fn z_tree_publish(
     args: &[String],
     state: &AppState,
@@ -52,10 +52,10 @@ fn z_tree_publish(
     let publisher = resolve_bare_did(&args[0], &cfg)?;
     let parts = z_tree_parts(&cfg);
     if parts.is_empty() {
-        return Err(tf("doc-content-empty", &[("path", ".my.z")]));
+        return Err(tf("doc-content-empty", &[("path", ".z")]));
     }
 
-    let cmd_id = state.push_command(format!(".my.z!publish {}", args[0]));
+    let cmd_id = state.push_command(format!(".z!publish {}", args[0]));
     let state2 = state.clone();
     let username = state
         .session
@@ -66,7 +66,7 @@ fn z_tree_publish(
         match publish_z_tree(&publisher, parts).await {
             Ok(manifest_cid) => {
                 let manifest_ref = format!("/ipfs/{manifest_cid}");
-                config.update(|cfg| cfg.set(".my.z.manifest", &manifest_ref));
+                config.update(|cfg| cfg.set(".my.z", &manifest_ref));
                 let cfg = config.get_untracked();
                 if let Err(error) = crate::config::persist_config(&username, &cfg).await {
                     state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
@@ -76,14 +76,14 @@ fn z_tree_publish(
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Replied(String::new()));
                 state2.push_system(tf(
                     "msg-set",
-                    &[("path", ".my.z.manifest"), ("value", &manifest_ref)],
+                    &[("path", ".my.z"), ("value", &manifest_ref)],
                 ));
             }
             Err(error) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
                 state2.push_error(tf(
                     "doc-publish-failed",
-                    &[("path", ".my.z"), ("e", &format_publish_error(&error))],
+                    &[("path", ".z"), ("e", &format_publish_error(&error))],
                 ));
             }
         }
@@ -92,12 +92,12 @@ fn z_tree_publish(
 }
 
 fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
-    const PREFIX: &str = ".my.z.";
+    const PREFIX: &str = ".z.";
     cfg.list(PREFIX)
         .into_iter()
         .filter_map(|(path, value)| {
             let name = path.strip_prefix(PREFIX)?;
-            (!name.is_empty() && !name.contains('.') && name != "manifest" && !value.is_empty())
+            (!name.is_empty() && !name.contains('.') && !value.is_empty())
                 .then(|| (name.to_string(), value.to_string()))
         })
         .collect()
@@ -109,7 +109,7 @@ async fn publish_z_tree(
 ) -> Result<String, String> {
     let mut manifest = BTreeMap::new();
     for (name, source) in parts {
-        let path = format!(".my.z.{name}");
+        let path = format!(".z.{name}");
         let cid = match z_tree_source_cid(&source) {
             Some(cid) => match crate::doc_link::resolve_doc_link(&source)
                 .await
@@ -502,7 +502,7 @@ mod tests {
 
     #[test]
     fn local_sync_batch_delimiters_are_sequential_eval_control_lines() {
-        let source = ".batch!sync\n.my.z.stdlib!eval\n.batch\n";
+        let source = ".batch!sync\n.z.stdlib!eval\n.batch\n";
 
         assert!(needs_sequential_eval(source));
         assert!(is_sync_batch_delimiter(".batch!sync"));
@@ -513,13 +513,13 @@ mod tests {
     #[test]
     fn z_tree_parts_collects_direct_source_leaves_only() {
         let mut cfg = EgoConfig::new();
-        cfg.set(".my.z.stdlib", "(define x 1)");
+        cfg.set(".z.stdlib", "(define x 1)");
         cfg.set(
-            ".my.z.runtime",
+            ".z.runtime",
             "/ipfs/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy",
         );
-        cfg.set(".my.z.manifest", "/ipfs/bafyreimanifest");
-        cfg.set(".my.z.runtime.debug", "ignored");
+        cfg.set(".my.z", "/ipfs/bafyreimanifest");
+        cfg.set(".z.runtime.debug", "ignored");
 
         let parts = z_tree_parts(&cfg);
 

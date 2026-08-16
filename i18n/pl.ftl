@@ -145,7 +145,7 @@ runtime-no-verb = brak czasownika `{ $verb }` dla { $path }
 
 # ── Czasowniki — kontrola dostępu ────────────────────────────────────────
 acl-reset = .my.acl zresetowano (w pełni otwarte)
-acl-persist-error = błąd zapisu: { $e }
+err-persist = błąd zapisu: { $e }
 acl-no-verb = brak czasownika `{ $verb }` dla .my.acl
 
 # ── Czasowniki — tożsamość ────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  przechowuj odpowiedzi 5 w środowisku sesji
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    otwieranie ziona przez link URL
 help-topic-i18n = .help/i18n                   preferencje językowe dla Twojej tożsamości

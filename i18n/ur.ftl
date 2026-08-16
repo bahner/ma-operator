@@ -145,7 +145,7 @@ runtime-no-verb = { $path } کے لیے `{ $verb }` فعل نہیں
 
 # ── افعال — ACL ────────────────────────────────────────────────────────────
 acl-reset = .my.acl ری سیٹ کیا گیا (مکمل کھلا)
-acl-persist-error = محفوظ کرنے کی خرابی: { $e }
+err-persist = محفوظ کرنے کی خرابی: { $e }
 acl-no-verb = .my.acl کے لیے `{ $verb }` فعل نہیں
 
 # ── افعال — شناخت ─────────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  5 جوابات کو سیشن کے ماحول میں رکھیں
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    URL لنک کے ذریعے zion کھولنا
 help-topic-i18n = .help/i18n                   آپ کی شناخت کے لیے زبان کی ترجیح

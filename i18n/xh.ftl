@@ -145,7 +145,7 @@ runtime-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 
 # ── Izenzo — ACL ──────────────────────────────────────────────────────────
 acl-reset = i-.my.acl isetwe kabusha (ivuliwe ngokupheleleyo)
-acl-persist-error = impazamo yokugcina: { $e }
+err-persist = impazamo yokugcina: { $e }
 acl-no-verb = akukho senzo `{ $verb }` se-.my.acl
 
 # ── Izenzo — ubunjani ─────────────────────────────────────────────────────
@@ -378,7 +378,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  gcina iimpendulo ze-5 kwindawo yeseshoni
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    ukuvula zion ngosixokelelwano lwe-URL
 help-topic-i18n = .help/i18n                   ulwimi olukhethayo kwisazisi sakho

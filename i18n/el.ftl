@@ -145,7 +145,7 @@ runtime-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 
 # ── Ρήματα — έλεγχος πρόσβασης ───────────────────────────────────────────
 acl-reset = .my.acl επαναφέρθηκε (πλήρως ανοικτό)
-acl-persist-error = σφάλμα αποθήκευσης: { $e }
+err-persist = σφάλμα αποθήκευσης: { $e }
 acl-no-verb = δεν υπάρχει ρήμα `{ $verb }` για .my.acl
 
 # ── Ρήματα — ταυτότητα ────────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  κρατήστε 5 απαντήσεις στο περιβάλλον περιόδου λειτουργίας
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
 help-topic-i18n = .help/i18n                   γλωσσική προτίμηση για την ταυτότητά σας

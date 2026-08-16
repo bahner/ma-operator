@@ -145,7 +145,7 @@ runtime-no-verb = engin sögn `{ $verb }` fyrir { $path }
 
 # ── Sagnir — aðgangsstýring ───────────────────────────────────────────────
 acl-reset = .my.acl endurstillt (fullkomlega opið)
-acl-persist-error = vistunarvillu: { $e }
+err-persist = vistunarvillu: { $e }
 acl-no-verb = engin sögn `{ $verb }` fyrir .my.acl
 
 # ── Sagnir — auðkenni ────────────────────────────────────────────────────
@@ -371,7 +371,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  haltu 5 svörum í lotuumhverfinu
-help-actor-wc-l = .my.z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-topic-i18n = .help/i18n                   tungumálaval fyrir sjálfsmynd þína
