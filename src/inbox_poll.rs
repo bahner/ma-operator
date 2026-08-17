@@ -6,6 +6,7 @@
 
 use leptos::prelude::*;
 use ma_core::CRUD_PROTOCOL_ID;
+use ma_zscheme::SchemeVal;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
@@ -578,6 +579,7 @@ fn handle_hold_parent_proposal(
     let own_did = transport::get_sender_did().unwrap_or_default();
     let cfg = config.get_untracked();
     let pending = cfg.get(".my.ctx.hold-pending").unwrap_or("").to_string();
+    let confirming = cfg.get(".my.ctx.hold-confirming").unwrap_or("").to_string();
     let held = cfg.get(".my.ctx.hold").unwrap_or("").to_string();
     let hold_then = cfg.get(".my.ctx.hold-then").unwrap_or("").to_string();
     let queued = cfg.get(".my.ctx.hold-queued").unwrap_or("").to_string();
@@ -586,27 +588,36 @@ fn handle_hold_parent_proposal(
         .unwrap_or("")
         .to_string();
 
-    if !pending.is_empty() && pending == actor && claimed_parent == own_did {
+    if !pending.is_empty() && pending == actor && confirming != actor && claimed_parent == own_did {
         let ctx_val = cbor_to_scheme_val(ctx_value);
+        let proposer = incoming.from.clone();
+        config.update(|cfg| {
+            cfg.set(".my.ctx.hold-confirming", &actor);
+        });
+        spawn_persist_config(state, config);
+        dispatch_hold_confirmation(proposer, ctx_val);
+        return true;
+    }
+
+    if confirming == actor && claimed_parent == own_did {
         let proposer = incoming.from.clone();
         config.update(|cfg| {
             cfg.set(".my.ctx.hold", &actor);
             cfg.delete(".my.ctx.hold-pending");
+            cfg.delete(".my.ctx.hold-confirming");
             cfg.delete(".my.ctx.hold-then");
         });
         spawn_persist_config(state, config);
-        spawn_local(async move {
-            let _ = transport::send_rpc_vals(&proposer, "child", &[ctx_val]).await;
-            if !hold_then.is_empty() {
-                let _ = transport::send_rpc(&proposer, "set-parent", &[hold_then.as_str()]).await;
-            }
-        });
+        if !hold_then.is_empty() {
+            dispatch_hold_then(proposer, hold_then);
+        }
         return true;
     }
 
     if !held.is_empty() && held == actor && claimed_parent != own_did {
         config.update(|cfg| {
             cfg.delete(".my.ctx.hold");
+            cfg.delete(".my.ctx.hold-confirming");
             cfg.delete(".my.ctx.hold-queued");
             cfg.delete(".my.ctx.hold-queued-then");
             if !queued.is_empty() {
@@ -627,6 +638,26 @@ fn handle_hold_parent_proposal(
 
     false
 }
+
+#[cfg(target_arch = "wasm32")]
+fn dispatch_hold_confirmation(proposer: String, ctx: SchemeVal) {
+    spawn_local(async move {
+        let _ = transport::send_rpc_vals(&proposer, "child", &[ctx]).await;
+    });
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn dispatch_hold_confirmation(_proposer: String, _ctx: SchemeVal) {}
+
+#[cfg(target_arch = "wasm32")]
+fn dispatch_hold_then(proposer: String, target: String) {
+    spawn_local(async move {
+        let _ = transport::send_rpc(&proposer, "set-parent", &[target.as_str()]).await;
+    });
+}
+
+#[cfg(not(target_arch = "wasm32"))]
+fn dispatch_hold_then(_proposer: String, _target: String) {}
 
 #[cfg(target_arch = "wasm32")]
 fn dispatch_queued_hold(target: String) {
@@ -870,6 +901,47 @@ mod tests {
         assert_eq!(cfg.get(".my.ctx.hold-queued-then"), None);
         assert_eq!(cfg.get(".my.ctx.hold-pending"), Some("did:ma:book#thing"));
         assert_eq!(cfg.get(".my.ctx.hold-then"), Some("did:ma:inventory#bag"));
+    }
+
+    #[test]
+    fn hold_then_waits_for_the_committed_parent_announcement() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        crate::state::SESSION_SENDER_DID
+            .with(|did| *did.borrow_mut() = Some("did:ma:self".to_string()));
+        config.update(|cfg| {
+            cfg.set(".my.ctx.hold-pending", "did:ma:lamp#thing");
+            cfg.set(".my.ctx.hold-then", "did:ma:bag#container");
+        });
+
+        assert!(handle_hold_parent_proposal(
+            &parent_proposal("did:ma:lamp#thing", "did:ma:self"),
+            &state,
+            config,
+        ));
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(".my.ctx.hold"), None);
+        assert_eq!(cfg.get(".my.ctx.hold-pending"), Some("did:ma:lamp#thing"));
+        assert_eq!(
+            cfg.get(".my.ctx.hold-confirming"),
+            Some("did:ma:lamp#thing")
+        );
+        assert_eq!(cfg.get(".my.ctx.hold-then"), Some("did:ma:bag#container"));
+
+        assert!(handle_hold_parent_proposal(
+            &parent_proposal("did:ma:lamp#thing", "did:ma:self"),
+            &state,
+            config,
+        ));
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(".my.ctx.hold"), Some("did:ma:lamp#thing"));
+        assert_eq!(cfg.get(".my.ctx.hold-pending"), None);
+        assert_eq!(cfg.get(".my.ctx.hold-confirming"), None);
+        assert_eq!(cfg.get(".my.ctx.hold-then"), None);
+        crate::state::SESSION_SENDER_DID.with(|did| *did.borrow_mut() = None);
     }
 
     #[test]

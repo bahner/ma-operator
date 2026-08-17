@@ -853,6 +853,7 @@ acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
 ```
 .my.ctx.hold          the actor DID-URL zion is currently holding (parent of)
 .my.ctx.hold-pending  the actor DID-URL zion is waiting to become parent of
+.my.ctx.hold-confirming  the actor DID-URL whose :child confirmation is in flight
 .my.ctx.hold-then     optional follow-up target for take's second hop
 .my.ctx.hold-queued   one replacement actor to hold after automatic stow
 .my.ctx.hold-queued-then  optional follow-up target for that replacement
@@ -870,9 +871,11 @@ the room in `.my.ctx.hold-then` before Zion relays `:set-parent <room>`.
 `:parent <ctx>` addressed to our own DID and resolves the state machine:
 
 - If `ctx.actor` matches `.my.ctx.hold-pending` and `ctx.parent` is our own
-  DID, reply `:child <ctx>` to confirm, promote `hold-pending` to `hold`,
-  clear `hold-pending`/`hold-then`, and — if `hold-then` was set — immediately
-  fire a follow-up `:set-parent <hold-then>` to the now-held item.
+  DID, reply `:child <ctx>` and mark the actor as `hold-confirming`. The
+  actor's next matching `:parent` announcement is the asynchronous proof that
+  it processed the confirmation and committed our DID as parent. Only then
+  promote it to `hold`, clear pending state, and send any `:set-parent
+  <hold-then>` follow-up.
 - If `ctx.actor` matches `.my.ctx.hold` and `ctx.parent` is no longer our own
   DID (a departure re-announcement to a new parent), clear `.my.ctx.hold`.
 - Otherwise the message is not a hold proposal; fall through to normal
