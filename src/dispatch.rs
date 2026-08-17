@@ -89,9 +89,13 @@ fn expire_pending_requests(state: &AppState) {
         m.iter()
             .filter_map(|(msg_id, tr)| {
                 let timeout_ms = f64::from(
-                    tr.batch_id
-                        .and_then(|bid| batch_timeouts.get(&bid).copied())
-                        .unwrap_or(DEFAULT_TIMEOUT_MS),
+                    if let PendingKind::ProfilePublish { timeout_ms, .. } = &tr.kind {
+                        *timeout_ms
+                    } else {
+                        tr.batch_id
+                            .and_then(|bid| batch_timeouts.get(&bid).copied())
+                            .unwrap_or(DEFAULT_TIMEOUT_MS)
+                    },
                 );
                 if now - tr.sent_at_ms > timeout_ms {
                     log::debug!(

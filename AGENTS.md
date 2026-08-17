@@ -740,6 +740,9 @@ never written out again.
 .config.poll_interval_ms    inbox poll interval (default 500)
 ```
 
+`.my.config.ma.timeout` is the maximum `.ma` publication wait in seconds
+(default `120`). `.ma` prints the effective duration before publishing.
+
 `.my.i18n` — BCP-47 language tag for this profile (e.g. `nb`, `zh-Hans`).
 Auto-seeded from `navigator.language` on first login if absent.
 Changing it (`.my.i18n: sv`) takes effect immediately and persists.

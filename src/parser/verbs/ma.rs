@@ -12,7 +12,8 @@ use ma_core::DidDocumentResolver;
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
-pub(crate) const IDENTITY_PUBLISH_TIMEOUT_MS: u32 = 60_000;
+const DEFAULT_MA_TIMEOUT_SECS: u32 = 120;
+const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
 const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000, 8_000];
 const MA_CTX_DID: &str = ".ma.ctx.did";
 const MA_CTX_URL: &str = ".ma.ctx.url";
@@ -70,6 +71,14 @@ pub(super) fn handle_ma(
     let cfg = config.get_untracked();
     let trusted_ma = active_ma_did(&cfg)
         .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
+    let timeout_secs = ma_timeout_secs(&cfg);
+    state.push_system(format!(
+        ".ma: {}",
+        tf(
+            "msg-identity-first-publish",
+            &[("seconds", &timeout_secs.to_string())],
+        )
+    ));
     let state2 = state.clone();
     leptos::task::spawn_local(async move {
         publish_with_trusted_ma(trusted_ma, config, &state2).await;
@@ -83,6 +92,17 @@ async fn publish_with_trusted_ma(
     state: &AppState,
 ) {
     queue_profile_publish(trusted_ma, config, state, None, true, true).await;
+}
+
+pub(crate) fn ma_timeout_secs(cfg: &EgoConfig) -> u32 {
+    cfg.get(MA_TIMEOUT_CONFIG)
+        .and_then(|value| value.parse::<u32>().ok())
+        .filter(|seconds| *seconds > 0)
+        .unwrap_or(DEFAULT_MA_TIMEOUT_SECS)
+}
+
+pub(crate) fn ma_timeout_ms(cfg: &EgoConfig) -> u32 {
+    ma_timeout_secs(cfg).saturating_mul(1_000)
 }
 
 fn set_trusted_runtime(
@@ -262,11 +282,18 @@ pub(crate) async fn connect_trusted_ma_on_startup(
             "msg-identity-first-publish",
             &[(
                 "seconds",
-                &(IDENTITY_PUBLISH_TIMEOUT_MS / 1_000).to_string(),
+                &ma_timeout_secs(&config.get_untracked()).to_string(),
             )],
         ));
         let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
-        if let Err(e) = send_identity_publish_and_wait(&did, Some(did.clone()), selected_z).await {
+        if let Err(e) = send_identity_publish_and_wait(
+            &did,
+            Some(did.clone()),
+            selected_z,
+            ma_timeout_ms(&config.get_untracked()),
+        )
+        .await
+        {
             log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
         }
     }
@@ -317,6 +344,7 @@ pub(crate) async fn send_identity_publish_and_wait(
     publisher: &str,
     trusted_ma: Option<String>,
     selected_z: Option<String>,
+    timeout_ms: u32,
 ) -> Result<(), String> {
     let mut rx = None;
     let mut registered_msg_id = None;
@@ -341,7 +369,7 @@ pub(crate) async fn send_identity_publish_and_wait(
         reply = rx.fuse() => reply
             .map_err(|_| "identity publish reply was cancelled".to_string())
             .and_then(|result| result.map(|_| ())),
-        () = gloo_timers::future::TimeoutFuture::new(IDENTITY_PUBLISH_TIMEOUT_MS).fuse() => Err("identity publish timed out".to_string()),
+        () = gloo_timers::future::TimeoutFuture::new(timeout_ms).fuse() => Err("identity publish timed out".to_string()),
     }
 }
 
@@ -440,9 +468,13 @@ pub(crate) async fn queue_profile_publish(
     };
     // Step 1: Publish the DID document so the runtime can authenticate the
     // profile-store request and route its reply to our current endpoint.
-    let trusted_ma = active_ma_did(&config.get_untracked());
-    let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
-    if let Err(error) = send_identity_publish_and_wait(&publisher, trusted_ma, selected_z).await {
+    let cfg = config.get_untracked();
+    let trusted_ma = active_ma_did(&cfg);
+    let selected_z = cfg.get(".my.z").map(str::to_string);
+    let timeout_ms = ma_timeout_ms(&cfg);
+    if let Err(error) =
+        send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, timeout_ms).await
+    {
         fail_profile_publish(state, cmd_id, error);
         return;
     }
@@ -482,6 +514,7 @@ pub(crate) async fn queue_profile_publish(
                 cmd_id,
                 reenter_saved_ctx,
                 verify_environment: publish_z,
+                timeout_ms,
             },
             None,
         ),
@@ -694,6 +727,30 @@ mod tests {
             preferred_ma_prefill(None, Some("did:ma:invited".to_string()),),
             Some("did:ma:invited".to_string())
         );
+    }
+
+    #[test]
+    fn ma_timeout_defaults_to_two_minutes() {
+        assert_eq!(ma_timeout_secs(&EgoConfig::default()), 120);
+    }
+
+    #[test]
+    fn ma_timeout_reads_positive_seconds_from_config() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(MA_TIMEOUT_CONFIG, "180");
+
+        assert_eq!(ma_timeout_secs(&cfg), 180);
+        assert_eq!(ma_timeout_ms(&cfg), 180_000);
+    }
+
+    #[test]
+    fn ma_timeout_rejects_invalid_values() {
+        let mut cfg = EgoConfig::default();
+        cfg.set(MA_TIMEOUT_CONFIG, "0");
+        assert_eq!(ma_timeout_secs(&cfg), 120);
+
+        cfg.set(MA_TIMEOUT_CONFIG, "not-a-number");
+        assert_eq!(ma_timeout_secs(&cfg), 120);
     }
 
     #[test]

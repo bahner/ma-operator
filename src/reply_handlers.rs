@@ -171,6 +171,7 @@ pub(crate) fn handle_profile_publish_reply(
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
     verify_environment: bool,
+    timeout_ms: u32,
     incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
@@ -214,6 +215,7 @@ pub(crate) fn handle_profile_publish_reply(
                     &publisher_did,
                     trusted_ma,
                     selected_z.clone(),
+                    timeout_ms,
                 )
                 .await
                 {
