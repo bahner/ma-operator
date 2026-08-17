@@ -14,6 +14,13 @@
 - **Never add special-case expansion, storage, or dispatch behaviour for
   `.z.avatar`, `.zscheme`, or `.z.scheme`.** They use the same Scheme
   expansion and CRUD semantics as every other local configuration path.
+- **Never hardcode lambda-ma, avatar, duckie, container, room, or other
+  play-time actor verbs or state machines in Zion.** In particular, Zion must
+  not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
+  `:put`, or any similar world-operation verb as product policy. Zion's role
+  is generic transport, persistent local data, and typed event delivery to
+  the active `.z.scheme`; all world interpretation, transfer sequencing, and
+  actor calls belong exclusively in zscheme.
 
 ---
 
@@ -851,46 +858,16 @@ holding it: a single-slot pointer to whatever actor DID-URL zion currently
 acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
 
 ```
-.my.ctx.hold          the actor DID-URL zion is currently holding (parent of)
-.my.ctx.hold-pending  the actor DID-URL zion is waiting to become parent of
-.my.ctx.hold-confirming  the actor DID-URL whose :child confirmation is in flight
-.my.ctx.hold-then     optional follow-up target for take's second hop
+.my.ctx.hold          the actor DID-URL zscheme is currently holding (parent of)
+.my.ctx.hold-pending  the actor DID-URL zscheme is waiting to become parent of
+.my.ctx.hold-then     optional zscheme follow-up target for take's second hop
 .my.ctx.hold-queued   one replacement actor to hold after automatic stow
 .my.ctx.hold-queued-then  optional follow-up target for that replacement
 ```
 
-avatar.zscheme's `hold`/`take`/`take-from` send `:hold` to the resolved item
-and set `.my.ctx.hold-pending` (`take` additionally sets
-`.my.ctx.hold-then` to the caller's own inventory, so confirmation can
-immediately relay `:set-parent` and land the item there). Bare `drop` acts on
-whatever `.my.ctx.hold` currently holds. `drop <name>` also resolves inventory
-children; because the avatar is not their current parent, it uses `:hold` with
-the room in `.my.ctx.hold-then` before Zion relays `:set-parent <room>`.
-
-`handle_hold_parent_proposal` in `src/inbox_poll.rs` recognises an unsolicited
-`:parent <ctx>` addressed to our own DID and resolves the state machine:
-
-- If `ctx.actor` matches `.my.ctx.hold-pending` and `ctx.parent` is our own
-  DID, reply `:child <ctx>` and mark the actor as `hold-confirming`. The
-  actor's next matching `:parent` announcement is the asynchronous proof that
-  it processed the confirmation and committed our DID as parent. Only then
-  promote it to `hold`, clear pending state, and send any `:set-parent
-  <hold-then>` follow-up.
-- If `ctx.actor` matches `.my.ctx.hold` and `ctx.parent` is no longer our own
-  DID (a departure re-announcement to a new parent), clear `.my.ctx.hold`.
-- Otherwise the message is not a hold proposal; fall through to normal
-  unsolicited-RPC handling.
-
-Both branches always return `true` (swallowed) — an unsolicited `:parent` is
-never displayed to the user directly; the visible outcome is a `:print` event
-from the actor's own authoritative state change (lambda-ma's RPC-vs-print
-rule), not this technical confirm/clear plumbing.
-
-When an avatar requests another item while it is already holding one,
-`avatar.zscheme` queues the replacement and sends its currently held item to
-the avatar's existing ordinary inventory. On that held item's departure
-re-announcement, `handle_hold_parent_proposal` clears `hold`, promotes the
-queued target to `hold-pending`, and starts its ordinary `:hold` request. This
-is avatar-client sequencing only: it does not change container behaviour or
-introduce an inventory kind.
+avatar.zscheme owns the complete hold state machine. It handles generic
+`:parent <ctx>` events, replies `:child`, advances `hold`/`hold-pending`, and
+sends any ordinary `:hold` or `:set-parent` follow-up itself. Zion only
+delivers the typed event to zscheme; it contains no lambda-ma transfer verbs
+or container policy.
 
