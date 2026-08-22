@@ -146,11 +146,13 @@ fn dispatch_reply(
             timeout_ms,
         } => {
             handle_profile_publish_reply(
-                publisher_did,
-                cmd_id,
-                reenter_saved_ctx,
-                verify_environment,
-                timeout_ms,
+                crate::reply_handlers::ProfilePublishRequest {
+                    publisher_did,
+                    cmd_id,
+                    reenter_saved_ctx,
+                    verify_environment,
+                    timeout_ms,
+                },
                 &incoming,
                 state,
                 config,

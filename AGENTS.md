@@ -14,16 +14,15 @@
 - **Never add special-case expansion, storage, or dispatch behaviour for
   `.z.avatar`, `.zscheme`, or `.z.scheme`.** They use the same Scheme
   expansion and CRUD semantics as every other local configuration path.
-- **Never hardcode lambda-ma, avatar, duckie, container, room, or other
-  play-time actor verbs or state machines in Zion.** In particular, Zion must
-  not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
-  `:put`, or any similar world-operation verb as product policy. Zion's role
-  is generic transport, persistent local data, and typed event delivery to
-  the active `.z.scheme`; all world interpretation, transfer sequencing, and
-  actor calls belong exclusively in zscheme.
+**Never hardcode lambda-ma, avatar, duckie, container, room, or other
+play-time actor verbs or state machines in Zion.** In particular, Zion must
+not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
+`:put`, or any similar world-operation verb as product policy. Zion's role
+is generic transport, persistent local data, and typed event delivery to the
+active `.z.scheme`; all world interpretation, transfer sequencing, and
+actor calls belong exclusively in zscheme.
 
 ---
-
 ## ⚠ REJECTED IDEA — Remote zscheme environment loading
 
 **DO NOT implement this feature. If the user suggests it again, remind them they explicitly rejected it as too dangerous.**
@@ -31,7 +30,7 @@
 The idea was: when `.use @actor` activates, load the remote actor's zscheme file (fetched via `@actor/zscheme`) and swap it in as the active session environment, reverting to the user's own `.my.zscheme` on deactivate.
 
 **Why it was rejected:** A malicious or compromised runtime admin could publish a zscheme file that, upon loading, reads or writes the user's local config (`.my.aliases.*`, `.my.inbox.*`, `.my.identity.*`, etc.) or exfiltrates data by sending it to an attacker-controlled actor. Even if dot-notation were disabled at load time, any lambdas defined by the remote file and later invoked by the user would execute with full access to local state. There is no safe sandboxing boundary available here. The attack surface is too large and the blast radius is unacceptable.
-
+---
 The explicit `?z=<manifest-cid>` onboarding bootstrap is distinct from this
 rejected feature. It is a one-time trust decision encoded by the URL author,
 accepted only when the profile has no `.my.z` manifest selection. Zion first
@@ -41,12 +40,17 @@ entry, atomically replaces `.z.*`, and uses the ordinary `.z.scheme!eval`
 startup path. Seed failure
 does not block login, `ma`, or `enter`.
 
----
 
 `zion` is a browser-based actor workstation compiled to WASM.
 Each tab is one `did:ma:` identity. There is no backend — all state
 lives in IndexedDB and all networking goes over iroh QUIC transport
 provided by `ma-core`.
+
+When handling node ctx data, preserve the actor model's single authoritative
+`children` ctx collection. Zion MUST NOT create or persist parallel child
+lists split by kind, lifecycle/state, inventory, occupancy, or presentation.
+Any client-side view or filter must be derived from that one collection; node
+parentage and ctx updates must continue to use the authoritative collection.
 
 ---
 
@@ -149,9 +153,8 @@ Makefile
 - [x] Reactive UI language — landing page rerenders on profile switch / `.my.i18n` change
 - [x] `ma.type = "agent"` and `ma.lang` in published DID documents
 - [x] Embedded Scheme evaluator — `(…)` expressions in any command line
-- [x] `hold` object-transfer state machine (`.my.ctx.hold*`, see below) —
-      confirms/clears lambda-ma `:set-parent` proposals for avatar.zscheme's
-      `hold`/`take`/`drop`/`put`/`take-from`
+- [x] actor transfer events — typed parent/child ctx messages are delivered to
+  zscheme, which performs the protocol-specific acknowledgement
 - [x] `.enter @runtime` default-room discovery — a bare-runtime `.enter`
       queries `#house`'s `:did-ctx?` for our own DID and resumes direct room
       entry against the discovered `parent` room; a runtime with no recorded
@@ -755,8 +758,8 @@ Auto-seeded from `navigator.language` on first login if absent.
 Changing it (`.my.i18n: sv`) takes effect immediately and persists.
 Also included in the published DID document as `ma.lang`.
 
-`.my.ctx.hold` / `.my.ctx.hold-pending` / `.my.ctx.hold-then` — see
-"Hold — client-side object-transfer state" below.
+Transfer commands use the actor-provided ctx and parent/child handshake; Zion
+does not store transfer state.
 
 ---
 
@@ -847,27 +850,11 @@ the document `.content` path). Takes effect on the next poll tick.
 
 ---
 
-## Hold — client-side object-transfer state
+## Transfer protocol
 
-lambda-ma's actors (thing/container/agent) take no name argument for
-transfer — they accept only `:set-parent <target-parent-did-url> [ctx]` sent
-directly to the object, confirmed via the ordinary `/ma/node/0.0.1`
-`:parent`/`:child` handshake (ma-spec `runtime/ma-lambda-ma-v1.md` section 6).
-`hold` is zion's client-side answer to who to confirm as, and when to stop
-holding it: a single-slot pointer to whatever actor DID-URL zion currently
-acts as parent for, kept in `EgoConfig`, never itself sent on the wire.
-
-```
-.my.ctx.hold          the actor DID-URL zscheme is currently holding (parent of)
-.my.ctx.hold-pending  the actor DID-URL zscheme is waiting to become parent of
-.my.ctx.hold-then     optional zscheme follow-up target for take's second hop
-.my.ctx.hold-queued   one replacement actor to hold after automatic stow
-.my.ctx.hold-queued-then  optional follow-up target for that replacement
-```
-
-avatar.zscheme owns the complete hold state machine. It handles generic
-`:parent <ctx>` events, replies `:child`, advances `hold`/`hold-pending`, and
-sends any ordinary `:hold` or `:set-parent` follow-up itself. Zion only
-delivers the typed event to zscheme; it contains no lambda-ma transfer verbs
-or container policy.
+Transfer commands use actor-provided ctx values and the ordinary
+`:parent`/`:child` handshake. Zion stores no hold, pending, queued, or
+follow-up transfer state and does not implement transfer policy. Zscheme uses
+the ctx received with each event when acknowledging the actor; `:set-parent`
+requests carry the target parent and optional ctx required by the actor.
 

@@ -73,10 +73,10 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {sender_did}");
+    // Cache DID documents for the session lifetime; retry hard failures after 60 s.
     let resolver = Arc::new(
         session_resolver()
-            .with_base_cooldown(Duration::ZERO)
-            .with_cache_ttls(Duration::ZERO, Duration::from_secs(2)),
+            .with_cache_ttls(Duration::from_secs(86400), Duration::from_secs(60)),
     );
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
@@ -106,8 +106,6 @@ pub async fn connect(
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
-    // Keep one resolver for configuration, but do not positive-cache DID docs:
-    // remote runtimes may restart with a new iroh endpoint after OOM/redeploy.
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())

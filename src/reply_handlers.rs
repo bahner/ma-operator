@@ -165,19 +165,23 @@ pub(crate) fn handle_root_enter_reply(
 
 // ── Profile publish ────────────────────────────────────────────────────────
 
+pub(crate) struct ProfilePublishRequest {
+    pub(crate) publisher_did: String,
+    pub(crate) cmd_id: Option<u64>,
+    pub(crate) reenter_saved_ctx: bool,
+    pub(crate) verify_environment: bool,
+    pub(crate) timeout_ms: u32,
+}
+
 /// Profile-publish reply: the encrypted blob CID is now stored — republish DID doc.
 pub(crate) fn handle_profile_publish_reply(
-    publisher_did: String,
-    cmd_id: Option<u64>,
-    reenter_saved_ctx: bool,
-    verify_environment: bool,
-    timeout_ms: u32,
+    request: ProfilePublishRequest,
     incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) {
     if incoming.is_error {
-        fail_cmd(state, cmd_id, incoming.display.clone());
+        fail_cmd(state, request.cmd_id, incoming.display.clone());
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -208,27 +212,27 @@ pub(crate) fn handle_profile_publish_reply(
             let selected_z = cfg_snap.get(".my.z").map(str::to_string);
             leptos::task::spawn_local(async move {
                 if let Err(error) = persist_config(&username, &cfg_snap).await {
-                    fail_cmd(&state2, cmd_id, error);
+                    fail_cmd(&state2, request.cmd_id, error);
                     return;
                 }
                 if let Err(error) = crate::parser::verbs::ma::send_identity_publish_and_wait(
-                    &publisher_did,
+                    &request.publisher_did,
                     trusted_ma,
                     selected_z.clone(),
-                    timeout_ms,
+                    request.timeout_ms,
                 )
                 .await
                 {
-                    fail_cmd(&state2, cmd_id, error);
+                    fail_cmd(&state2, request.cmd_id, error);
                     return;
                 }
-                if verify_environment {
+                if request.verify_environment {
                     let Some(own_did) = state2
                         .session
                         .get_untracked()
                         .map(|session| session.sender_did)
                     else {
-                        fail_cmd(&state2, cmd_id, t("msg-not-logged-in"));
+                        fail_cmd(&state2, request.cmd_id, t("msg-not-logged-in"));
                         return;
                     };
                     let Some(z_cid) = selected_z
@@ -238,7 +242,7 @@ pub(crate) fn handle_profile_publish_reply(
                     else {
                         fail_cmd(
                             &state2,
-                            cmd_id,
+                            request.cmd_id,
                             "published z manifest CID is missing".to_string(),
                         );
                         return;
@@ -248,21 +252,21 @@ pub(crate) fn handle_profile_publish_reply(
                     )
                     .await
                     {
-                        fail_cmd(&state2, cmd_id, error);
+                        fail_cmd(&state2, request.cmd_id, error);
                         return;
                     }
                 }
-                if let Some(id) = cmd_id {
+                if let Some(id) = request.cmd_id {
                     state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
                 } else {
                     state2.push_output("間");
                 }
-                if reenter_saved_ctx {
+                if request.reenter_saved_ctx {
                     crate::startup::queue_saved_context_reentry(&state2, config);
                 }
             });
         }
-        Err(e) => fail_cmd_decode(state, cmd_id, &e),
+        Err(e) => fail_cmd_decode(state, request.cmd_id, &e),
     }
 }
 
