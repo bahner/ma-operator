@@ -381,6 +381,7 @@ fn decode_client_event(
         ":say" | ":emote" | ":dig" | ":fill" => {
             args.len() == 2 && event_ctx(&args[0]) && cbor_text(&args[1]).is_some()
         }
+        ":ctx" => args.len() == 1 && ctx_alist(&args[0]),
         _ => false,
     };
     valid.then(|| {
@@ -397,6 +398,19 @@ fn event_ctx(value: &ciborium::Value) -> bool {
     };
     ["did", "actor"].into_iter().any(|identity| {
         map_text(entries, identity).is_some_and(|value| value.starts_with("did:ma:"))
+    })
+}
+
+/// Validate a direct-room-ctx alist: an array of [key, value] pairs containing `:room`.
+fn ctx_alist(value: &ciborium::Value) -> bool {
+    let ciborium::Value::Array(entries) = value else {
+        return false;
+    };
+    entries.iter().any(|e| {
+        let ciborium::Value::Array(pair) = e else {
+            return false;
+        };
+        pair.len() == 2 && cbor_text(&pair[0]) == Some(":room")
     })
 }
 
