@@ -347,11 +347,11 @@ fn term_head(items: &[ciborium::Value]) -> Option<&str> {
 
 fn handle_client_term_array(
     items: Vec<ciborium::Value>,
-    _incoming: &IncomingMessage,
+    incoming: &IncomingMessage,
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    let Some((event, args)) = decode_client_event(&items) else {
+    let Some((event, args)) = decode_client_event(&items, &incoming.from) else {
         return false;
     };
     if !crate::scheme::has_event_handler() {
@@ -368,6 +368,7 @@ fn handle_client_term_array(
 
 fn decode_client_event(
     items: &[ciborium::Value],
+    sender: &str,
 ) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
     let head = term_head(items)?;
     let args = &items[1..];
@@ -379,7 +380,7 @@ fn decode_client_event(
         ":say" | ":emote" | ":dig" | ":fill" => {
             args.len() == 2 && event_ctx(&args[0]) && cbor_text(&args[1]).is_some()
         }
-        ":ctx" => args.len() == 1 && ctx_alist(&args[0]),
+        ":ctx" => args.len() == 1 && ctx_alist_from_sender(&args[0], sender),
         _ => false,
     };
     valid.then(|| {
@@ -399,8 +400,12 @@ fn event_ctx(value: &ciborium::Value) -> bool {
     })
 }
 
-/// Validate a direct-room-ctx alist: an array of [key, value] pairs containing `:room`.
-fn ctx_alist(value: &ciborium::Value) -> bool {
+/// Validate a direct-room-ctx alist and confirm the sender is the room.
+///
+/// A `:ctx` event is only valid when:
+/// - the payload is an array of `[key, value]` pairs that includes a `":room"` entry, and
+/// - the `":room"` value equals `sender` (i.e. the room sent its own ctx, not someone else's).
+fn ctx_alist_from_sender(value: &ciborium::Value, sender: &str) -> bool {
     let ciborium::Value::Array(entries) = value else {
         return false;
     };
@@ -408,7 +413,9 @@ fn ctx_alist(value: &ciborium::Value) -> bool {
         let ciborium::Value::Array(pair) = e else {
             return false;
         };
-        pair.len() == 2 && cbor_text(&pair[0]) == Some(":room")
+        pair.len() == 2
+            && cbor_text(&pair[0]) == Some(":room")
+            && cbor_text(&pair[1]) == Some(sender)
     })
 }
 
@@ -760,7 +767,7 @@ mod tests {
         for (event, args) in cases {
             let mut term = vec![ciborium::Value::Text(event.to_string())];
             term.extend(args);
-            let (decoded_event, decoded_args) = decode_client_event(&term).expect("valid event");
+            let (decoded_event, decoded_args) = decode_client_event(&term, "did:ma:k51room").expect("valid event");
             assert_eq!(decoded_event, event);
             assert!(!decoded_args.is_empty());
         }
@@ -768,21 +775,59 @@ mod tests {
 
     #[test]
     fn malformed_client_events_are_rejected() {
-        assert!(decode_client_event(&[
-            ciborium::Value::Text(":say".to_string()),
-            event_ctx_value(),
-        ])
+        assert!(decode_client_event(
+            &[
+                ciborium::Value::Text(":say".to_string()),
+                event_ctx_value(),
+            ],
+            "did:ma:k51room",
+        )
         .is_none());
-        assert!(decode_client_event(&[
-            ciborium::Value::Text(":arrive".to_string()),
-            ciborium::Value::Text("did:ma:alice".to_string()),
-        ])
+        assert!(decode_client_event(
+            &[
+                ciborium::Value::Text(":arrive".to_string()),
+                ciborium::Value::Text("did:ma:alice".to_string()),
+            ],
+            "did:ma:k51room",
+        )
         .is_none());
-        assert!(decode_client_event(&[
-            ciborium::Value::Text(":unknown".to_string()),
-            ciborium::Value::Text("anything".to_string()),
-        ])
+        assert!(decode_client_event(
+            &[
+                ciborium::Value::Text(":unknown".to_string()),
+                ciborium::Value::Text("anything".to_string()),
+            ],
+            "did:ma:k51room",
+        )
         .is_none());
+    }
+
+    #[test]
+    fn ctx_event_requires_sender_matches_room_field() {
+        let room_did = "did:ma:k51runtime#room";
+        let ctx_alist = ciborium::Value::Array(vec![
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":kind".to_string()),
+                ciborium::Value::Text("agent".to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":room".to_string()),
+                ciborium::Value::Text(room_did.to_string()),
+            ]),
+            ciborium::Value::Array(vec![
+                ciborium::Value::Text(":nick".to_string()),
+                ciborium::Value::Text("alice".to_string()),
+            ]),
+        ]);
+        let term = vec![
+            ciborium::Value::Text(":ctx".to_string()),
+            ctx_alist.clone(),
+        ];
+        // Accepted when sender == :room value.
+        assert!(decode_client_event(&term, room_did).is_some());
+        // Rejected when sender is a different actor.
+        assert!(decode_client_event(&term, "did:ma:k51runtime#root").is_none());
+        // Rejected when sender is the avatar's bare DID (not a room).
+        assert!(decode_client_event(&term, "did:ma:k51avatar").is_none());
     }
 
     #[test]
