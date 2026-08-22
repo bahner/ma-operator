@@ -142,7 +142,6 @@ fn dispatch_reply(
             publisher_did,
             cmd_id,
             reenter_saved_ctx,
-            verify_environment,
             timeout_ms,
         } => {
             handle_profile_publish_reply(
@@ -150,7 +149,6 @@ fn dispatch_reply(
                     publisher_did,
                     cmd_id,
                     reenter_saved_ctx,
-                    verify_environment,
                     timeout_ms,
                 },
                 &incoming,

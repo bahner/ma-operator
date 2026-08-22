@@ -383,54 +383,6 @@ pub(crate) fn published_self_matches(doc: &ma_core::Document, own_did: &str) -> 
     Ok(())
 }
 
-pub(crate) fn published_environment_matches(
-    doc: &ma_core::Document,
-    own_did: &str,
-    profile_cid: &str,
-    z_cid: &str,
-) -> Result<(), String> {
-    published_self_matches(doc, own_did)?;
-    let published_profile = crate::parser::verbs::doc_profile_cid(doc)
-        .ok_or_else(|| "resolved DID document has no ma.profile link".to_string())?;
-    if published_profile != profile_cid {
-        return Err(format!(
-            "resolved DID document profile {published_profile} does not match {profile_cid}"
-        ));
-    }
-    let published_z = crate::parser::verbs::doc_z_cid(doc)
-        .ok_or_else(|| "resolved DID document has no ma.z link".to_string())?;
-    if published_z != z_cid {
-        return Err(format!(
-            "resolved DID document z manifest {published_z} does not match {z_cid}"
-        ));
-    }
-    Ok(())
-}
-
-pub(crate) async fn verify_environment_publication(
-    own_did: &str,
-    profile_cid: &str,
-    z_cid: &str,
-) -> Result<(), String> {
-    let resolver = crate::state::SESSION_RESOLVER
-        .with(|r| r.borrow().clone())
-        .ok_or_else(|| "DID resolver is not available".to_string())?;
-    let mut last_error = "DID document was not resolved".to_string();
-    for (attempt, delay_ms) in SELF_PUBLISH_VERIFY_DELAYS_MS.iter().enumerate() {
-        match resolver.resolve(own_did).await {
-            Ok(doc) => match published_environment_matches(&doc, own_did, profile_cid, z_cid) {
-                Ok(()) => return Ok(()),
-                Err(error) => last_error = error,
-            },
-            Err(error) => last_error = error.to_string(),
-        }
-        if attempt + 1 < SELF_PUBLISH_VERIFY_DELAYS_MS.len() {
-            gloo_timers::future::TimeoutFuture::new(*delay_ms).await;
-        }
-    }
-    Err(last_error)
-}
-
 pub(crate) async fn verify_self_publication(own_did: &str) -> Result<(), String> {
     let resolver = crate::state::SESSION_RESOLVER
         .with(|r| r.borrow().clone())
@@ -513,7 +465,6 @@ pub(crate) async fn queue_profile_publish(
                 publisher_did: publisher,
                 cmd_id,
                 reenter_saved_ctx,
-                verify_environment: publish_z,
                 timeout_ms,
             },
             None,

@@ -14,7 +14,7 @@ use crate::{
     config::{persist_config, EgoConfig},
     core::CommandStatus,
     http::fetch_path_bytes,
-    i18n::{t, tf},
+    i18n::tf,
     messages::{cid_bytes_to_editor_text, decode_crud_content, IncomingMessage},
     state::{AppState, OutboxTask},
     views::editor::{EditorContext, EditorMode},
@@ -169,7 +169,7 @@ pub(crate) struct ProfilePublishRequest {
     pub(crate) publisher_did: String,
     pub(crate) cmd_id: Option<u64>,
     pub(crate) reenter_saved_ctx: bool,
-    pub(crate) verify_environment: bool,
+
     pub(crate) timeout_ms: u32,
 }
 
@@ -225,36 +225,6 @@ pub(crate) fn handle_profile_publish_reply(
                 {
                     fail_cmd(&state2, request.cmd_id, error);
                     return;
-                }
-                if request.verify_environment {
-                    let Some(own_did) = state2
-                        .session
-                        .get_untracked()
-                        .map(|session| session.sender_did)
-                    else {
-                        fail_cmd(&state2, request.cmd_id, t("msg-not-logged-in"));
-                        return;
-                    };
-                    let Some(z_cid) = selected_z
-                        .as_deref()
-                        .and_then(crate::doc_link::parse_link_cid)
-                        .map(|cid| cid.to_string())
-                    else {
-                        fail_cmd(
-                            &state2,
-                            request.cmd_id,
-                            "published z manifest CID is missing".to_string(),
-                        );
-                        return;
-                    };
-                    if let Err(error) = crate::parser::verbs::ma::verify_environment_publication(
-                        &own_did, &cid_str, &z_cid,
-                    )
-                    .await
-                    {
-                        fail_cmd(&state2, request.cmd_id, error);
-                        return;
-                    }
                 }
                 if let Some(id) = request.cmd_id {
                     state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));

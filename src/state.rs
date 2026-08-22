@@ -117,7 +117,6 @@ pub enum PendingKind {
         publisher_did: String,
         cmd_id: Option<u64>,
         reenter_saved_ctx: bool,
-        verify_environment: bool,
         timeout_ms: u32,
     },
     /// Root `:enter?` reply for a bare-runtime `.enter` should resume direct
