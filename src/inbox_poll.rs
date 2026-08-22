@@ -767,7 +767,8 @@ mod tests {
         for (event, args) in cases {
             let mut term = vec![ciborium::Value::Text(event.to_string())];
             term.extend(args);
-            let (decoded_event, decoded_args) = decode_client_event(&term, "did:ma:k51room").expect("valid event");
+            let (decoded_event, decoded_args) =
+                decode_client_event(&term, "did:ma:k51room").expect("valid event");
             assert_eq!(decoded_event, event);
             assert!(!decoded_args.is_empty());
         }
@@ -776,10 +777,7 @@ mod tests {
     #[test]
     fn malformed_client_events_are_rejected() {
         assert!(decode_client_event(
-            &[
-                ciborium::Value::Text(":say".to_string()),
-                event_ctx_value(),
-            ],
+            &[ciborium::Value::Text(":say".to_string()), event_ctx_value(),],
             "did:ma:k51room",
         )
         .is_none());
@@ -818,10 +816,7 @@ mod tests {
                 ciborium::Value::Text("alice".to_string()),
             ]),
         ]);
-        let term = vec![
-            ciborium::Value::Text(":ctx".to_string()),
-            ctx_alist.clone(),
-        ];
+        let term = vec![ciborium::Value::Text(":ctx".to_string()), ctx_alist.clone()];
         // Accepted when sender == :room value.
         assert!(decode_client_event(&term, room_did).is_some());
         // Rejected when sender is a different actor.

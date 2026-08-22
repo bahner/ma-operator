@@ -1,9 +1,8 @@
 /// iroh transport layer — wraps `ma_core::MaEndpoint` for use in WASM.
 use ma_core::{
-    generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint,
-    resolve_endpoint_for_protocol, Did, DidDocumentResolver, EncryptionKey, IpfsGatewayResolver,
-    Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID,
-    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
+    generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
+    EncryptionKey, IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
+    CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
     MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
@@ -73,11 +72,9 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {sender_did}");
-    // Cache DID documents for the session lifetime; retry hard failures after 60 s.
-    let resolver = Arc::new(
-        session_resolver()
-            .with_cache_ttls(Duration::from_secs(86400), Duration::from_secs(60)),
-    );
+    // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
+    let resolver =
+        Arc::new(session_resolver().with_cache_ttls(Duration::from_secs(86400), Duration::ZERO));
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;
@@ -758,27 +755,6 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
         .into(),
     );
     log::debug!("[send] → {target_did} [{protocol}]");
-    match resolver.resolve(target_did).await {
-        Ok(doc) => {
-            let services = doc
-                .ma
-                .as_ref()
-                .and_then(|ma| ma.get("services").ok().flatten())
-                .and_then(|services| serde_json::to_value(services).ok());
-            let endpoint = resolve_endpoint_for_protocol(services.as_ref(), protocol);
-            web_sys::console::info_1(
-                &format!(
-                    "[send] resolved msg_id={} endpoint={endpoint:?} target={target_did} protocol={protocol}",
-                    msg.id
-                )
-                .into(),
-            );
-            log::debug!(
-                "[send] resolved target={target_did} protocol={protocol} endpoint={endpoint:?} services={services:?}"
-            );
-        }
-        Err(e) => log::warn!("[send] resolve failed for {target_did}: {e}"),
-    }
     let mut outbox = with_send_timeout("outbox open", async {
         ep.outbox(resolver.as_ref(), target_did, protocol)
             .await
