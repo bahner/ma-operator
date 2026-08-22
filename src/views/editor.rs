@@ -921,7 +921,8 @@ async fn do_kind_publish(
             return;
         }
     };
-    match crate::transport::send_ipfs_store(&target, cbor_bytes, "application/vnd.ipld.dag-cbor")
+    let publisher = actor_runtime_did(&target).to_string();
+    match crate::transport::send_ipfs_store(&publisher, cbor_bytes, "application/vnd.ipld.dag-cbor")
         .await
     {
         Ok(msg_id) => {
