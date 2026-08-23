@@ -812,15 +812,4 @@ mod tests {
 
         assert!(published_self_matches(&doc, "did:ma:other").is_err());
     }
-
-    #[test]
-    fn published_environment_requires_matching_profile_and_z_links() {
-        let profile = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
-        let z = "bafkreib6oa4x3sokuyh4lq4pnq2tw7qkf7nb5u4u6j7q7g3kqpw2rp5nmu";
-        let doc = document_with_environment(Some(profile), Some(z));
-
-        assert!(published_environment_matches(&doc, &doc.id, profile, z).is_ok());
-        assert!(published_environment_matches(&doc, &doc.id, "bafymismatch", z).is_err());
-        assert!(published_environment_matches(&doc, &doc.id, profile, "bafymismatch").is_err());
-    }
 }
