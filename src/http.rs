@@ -88,14 +88,14 @@ fn utf8_body(body: &[u8]) -> Result<String, String> {
 
 /// Fetch raw bytes for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    session_gateway_pool()
+    session_gateway_pool()?
         .fetch_bytes(&format!("/ipfs/{cid}"), None)
         .await
 }
 
 /// Fetch text for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    session_gateway_pool()
+    session_gateway_pool()?
         .fetch(&format!("/ipfs/{cid}"), None, utf8_body)
         .await
 }
@@ -104,7 +104,7 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 /// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
 /// blocks so zion, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let pool = session_gateway_pool();
+    let pool = session_gateway_pool()?;
     let mut errors = Vec::new();
     for arg in fetch_path_bytes_args(path) {
         match pool.fetch_bytes(&arg, None).await {
@@ -119,7 +119,7 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    session_gateway_pool().fetch(&arg, None, utf8_body).await
+    session_gateway_pool()?.fetch(&arg, None, utf8_body).await
 }
 
 fn fetch_path_bytes_args(path: &str) -> Vec<String> {

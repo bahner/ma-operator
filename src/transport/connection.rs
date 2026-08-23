@@ -7,6 +7,7 @@ use ma_core::{
     MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
 };
 use ma_zscheme::SchemeVal;
+use serde::{Deserialize, Serialize};
 
 use crate::i18n::tf;
 use crate::messages::{format_crud_reply, format_incoming, format_rpc_reply, IncomingMessage};
@@ -28,6 +29,18 @@ pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
+pub const PUBLIC_GATEWAY_URLS: [&str; 2] = ["https://dweb.link/", "https://4everland.io/"];
+const IPFS_GATEWAYS_PREF_KEY: &str = "zion_ipfs_gateways";
+const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
+
+#[derive(Clone, Debug, Serialize, Deserialize)]
+pub struct GatewayPreferences {
+    pub dweb_link: bool,
+    pub four_everland: bool,
+    pub localhost: bool,
+    pub custom_enabled: bool,
+    pub custom_url: String,
+}
 
 fn is_local_web_origin(origin: &str) -> bool {
     origin.starts_with("http://localhost:")
@@ -35,28 +48,133 @@ fn is_local_web_origin(origin: &str) -> bool {
         || origin.starts_with("http://[::1]:")
 }
 
-pub(crate) fn should_use_public_gateway() -> bool {
+fn current_origin_is_local() -> bool {
     let Some(window) = web_sys::window() else {
         return false;
     };
     let origin = window.location().origin().unwrap_or_default();
-    !origin.is_empty() && origin.starts_with("https://") && !is_local_web_origin(&origin)
+    is_local_web_origin(&origin)
 }
 
-/// Returns the IPFS gateway pool honouring zion's gateway policy.
-/// On HTTPS pages the local gateway is included only when the user has opted in.
-pub fn session_gateway_pool() -> ma_core::GatewayPool {
-    let use_local = !should_use_public_gateway() || SESSION_LOCAL_IPFS.with(|f| *f.borrow());
-    if use_local {
-        ma_core::GatewayPool::default()
-    } else {
-        ma_core::GatewayPool::public_default()
+pub(crate) fn normalise_gateway_url(input: &str) -> Option<String> {
+    let trimmed = input.trim();
+    if trimmed.is_empty() || !(trimmed.starts_with("http://") || trimmed.starts_with("https://")) {
+        return None;
+    }
+    let mut url = trimmed.to_string();
+    if !url.ends_with('/') {
+        url.push('/');
+    }
+    Some(url)
+}
+
+pub(crate) fn is_local_gateway_url(url: &str) -> bool {
+    let lower = url.to_ascii_lowercase();
+    lower.contains("localhost") || lower.contains("127.0.0.1") || lower.contains("[::1]")
+}
+
+fn default_gateway_preferences() -> GatewayPreferences {
+    let local = current_origin_is_local();
+    GatewayPreferences {
+        dweb_link: true,
+        four_everland: true,
+        localhost: local,
+        custom_enabled: false,
+        custom_url: String::new(),
     }
 }
 
-fn session_resolver() -> IpfsGatewayResolver {
-    // Always try local gateway first (browsers allow localhost from HTTPS pages).
-    IpfsGatewayResolver::default()
+fn gateway_storage() -> Option<web_sys::Storage> {
+    web_sys::window().and_then(|w| w.local_storage().ok().flatten())
+}
+
+fn preference_from_legacy(url: &str) -> Option<GatewayPreferences> {
+    let url = normalise_gateway_url(url)?;
+    let mut prefs = GatewayPreferences {
+        dweb_link: false,
+        four_everland: false,
+        localhost: false,
+        custom_enabled: false,
+        custom_url: String::new(),
+    };
+    if url.eq_ignore_ascii_case(PUBLIC_GATEWAY_URLS[0]) {
+        prefs.dweb_link = true;
+    } else if url.eq_ignore_ascii_case(PUBLIC_GATEWAY_URLS[1]) {
+        prefs.four_everland = true;
+    } else if url.eq_ignore_ascii_case(LOCAL_GATEWAY_URL) {
+        prefs.localhost = true;
+    } else {
+        prefs.custom_enabled = true;
+        prefs.custom_url = url;
+    }
+    Some(prefs)
+}
+
+pub fn load_gateway_preferences() -> GatewayPreferences {
+    let Some(storage) = gateway_storage() else {
+        return default_gateway_preferences();
+    };
+    if let Ok(Some(json)) = storage.get_item(IPFS_GATEWAYS_PREF_KEY) {
+        if let Ok(prefs) = serde_json::from_str::<GatewayPreferences>(&json) {
+            return prefs;
+        }
+    }
+    if let Ok(Some(legacy)) = storage.get_item(LEGACY_IPFS_GATEWAY_PREF_KEY) {
+        if let Some(prefs) = preference_from_legacy(&legacy) {
+            return prefs;
+        }
+    }
+    default_gateway_preferences()
+}
+
+pub fn save_gateway_preferences(prefs: &GatewayPreferences) {
+    if let Some(storage) = gateway_storage() {
+        if let Ok(json) = serde_json::to_string(prefs) {
+            let _ = storage.set_item(IPFS_GATEWAYS_PREF_KEY, &json);
+        }
+    }
+    SESSION_LOCAL_IPFS.with(|flag| {
+        *flag.borrow_mut() = effective_gateway_urls(prefs)
+            .iter()
+            .any(|url| is_local_gateway_url(url));
+    });
+}
+
+pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
+    let mut urls = Vec::new();
+    if prefs.localhost {
+        urls.push(LOCAL_GATEWAY_URL.to_string());
+    }
+    if prefs.custom_enabled {
+        if let Some(url) = normalise_gateway_url(&prefs.custom_url) {
+            if !urls
+                .iter()
+                .any(|existing| existing.eq_ignore_ascii_case(&url))
+            {
+                urls.push(url);
+            }
+        }
+    }
+    if prefs.dweb_link {
+        urls.push(PUBLIC_GATEWAY_URLS[0].to_string());
+    }
+    if prefs.four_everland {
+        urls.push(PUBLIC_GATEWAY_URLS[1].to_string());
+    }
+    urls
+}
+
+pub fn session_gateway_urls() -> Vec<String> {
+    effective_gateway_urls(&load_gateway_preferences())
+}
+
+/// Returns the IPFS gateway pool honouring zion's exact gateway policy.
+pub fn session_gateway_pool() -> Result<ma_core::GatewayPool, String> {
+    ma_core::GatewayPool::from_gateways(session_gateway_urls()).map_err(|error| error.to_string())
+}
+
+pub(crate) fn session_resolver() -> Result<IpfsGatewayResolver, String> {
+    session_gateway_pool().map(IpfsGatewayResolver::from)
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
@@ -74,7 +192,7 @@ pub async fn connect(
     info!("Connecting with sender DID: {sender_did}");
     // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
     let resolver =
-        Arc::new(session_resolver().with_cache_ttls(Duration::from_secs(86400), Duration::ZERO));
+        Arc::new(session_resolver()?.with_cache_ttls(Duration::from_secs(86400), Duration::ZERO));
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;
@@ -955,6 +1073,37 @@ mod tests {
             ))
             .expect("document");
         assert_eq!(crate::parser::verbs::doc_z_cid(&document), None);
+    }
+
+    #[test]
+    fn gateway_preferences_keep_public_fallbacks_with_localhost() {
+        let urls = effective_gateway_urls(&GatewayPreferences {
+            dweb_link: true,
+            four_everland: true,
+            localhost: true,
+            custom_enabled: false,
+            custom_url: String::new(),
+        });
+        assert_eq!(
+            urls,
+            [
+                "http://127.0.0.1:8080/".to_string(),
+                "https://dweb.link/".to_string(),
+                "https://4everland.io/".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn gateway_preferences_include_only_enabled_custom_gateway() {
+        let urls = effective_gateway_urls(&GatewayPreferences {
+            dweb_link: false,
+            four_everland: false,
+            localhost: false,
+            custom_enabled: true,
+            custom_url: " http://localhost:8881 ".to_string(),
+        });
+        assert_eq!(urls, ["http://localhost:8881/".to_string()]);
     }
 
     #[test]

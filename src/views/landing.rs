@@ -12,29 +12,14 @@ use crate::{
         save_config, save_identity, storage::load_config, unlock_identity_migrating,
     },
     profile_crypto,
-    state::{AppState, SessionState, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY},
+    state::{AppState, SessionState, SESSION_PROFILE_KEY},
+    transport::connection::{
+        load_gateway_preferences, save_gateway_preferences, GatewayPreferences, LOCAL_GATEWAY_URL,
+        PUBLIC_GATEWAY_URLS,
+    },
 };
 
 const LAST_DID_KEY: &str = "zion_last_did";
-const IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
-
-fn load_ipfs_gateway_pref() -> String {
-    web_sys::window()
-        .and_then(|w| w.local_storage().ok().flatten())
-        .and_then(|s| s.get_item(IPFS_GATEWAY_PREF_KEY).ok().flatten())
-        .filter(|s| !s.is_empty())
-        .unwrap_or_else(|| crate::transport::connection::LOCAL_GATEWAY_URL.to_string())
-}
-
-fn save_ipfs_gateway_pref(url: &str) {
-    let _ = web_sys::window()
-        .and_then(|w| w.local_storage().ok().flatten())
-        .map(|s| s.set_item(IPFS_GATEWAY_PREF_KEY, url));
-}
-
-fn is_local_gateway(url: &str) -> bool {
-    url.contains("localhost") || url.contains("127.0.0.1")
-}
 
 fn save_last_did(did: &str) {
     let _ = web_sys::window()
@@ -81,9 +66,13 @@ pub fn Landing() -> impl IntoView {
     let confirm_password = RwSignal::new(String::new());
     let status = RwSignal::new(String::new());
     let error = RwSignal::new(String::new());
-    let initial_gateway = load_ipfs_gateway_pref();
-    let gateway_input = RwSignal::new(initial_gateway.clone());
-    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = is_local_gateway(&initial_gateway));
+    let initial_gateway_prefs = load_gateway_preferences();
+    save_gateway_preferences(&initial_gateway_prefs);
+    let gateway_dweb_link = RwSignal::new(initial_gateway_prefs.dweb_link);
+    let gateway_four_everland = RwSignal::new(initial_gateway_prefs.four_everland);
+    let gateway_localhost = RwSignal::new(initial_gateway_prefs.localhost);
+    let gateway_custom_enabled = RwSignal::new(initial_gateway_prefs.custom_enabled);
+    let gateway_custom_url = RwSignal::new(initial_gateway_prefs.custom_url.clone());
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
     // Export mode: rendered QR SVG of the encrypted profile.
@@ -104,6 +93,17 @@ pub fn Landing() -> impl IntoView {
         invited_ma.clone(),
     ));
     let ma_input_edited = RwSignal::new(false);
+
+    Effect::new(move |_| {
+        let prefs = GatewayPreferences {
+            dweb_link: gateway_dweb_link.get(),
+            four_everland: gateway_four_everland.get(),
+            localhost: gateway_localhost.get(),
+            custom_enabled: gateway_custom_enabled.get(),
+            custom_url: gateway_custom_url.get(),
+        };
+        save_gateway_preferences(&prefs);
+    });
 
     // Background music.
     Effect::new(move |_| {
@@ -155,7 +155,9 @@ pub fn Landing() -> impl IntoView {
                 }
             }
             use ma_core::DidDocumentResolver;
-            let resolver = ma_core::IpfsGatewayResolver::default();
+            let Ok(resolver) = crate::transport::connection::session_resolver() else {
+                return;
+            };
             if let Ok(doc) = resolver.resolve(&did).await {
                 if did_input.get_untracked().trim() != did {
                     return;
@@ -370,7 +372,14 @@ pub fn Landing() -> impl IntoView {
                         // profile and repopulate the local cache.
                         status.set(t("status-fetching-profile"));
                         use ma_core::DidDocumentResolver;
-                        let resolver = ma_core::IpfsGatewayResolver::default();
+                        let resolver = match crate::transport::connection::session_resolver() {
+                            Ok(resolver) => resolver,
+                            Err(e) => {
+                                status.set(String::new());
+                                error.set(e);
+                                return;
+                            }
+                        };
                         let full_did = format!("did:ma:{uname}");
                         match resolver.resolve(&full_did).await {
                             Ok(doc) => {
@@ -714,46 +723,84 @@ pub fn Landing() -> impl IntoView {
                 <Show when=move || mode.get() == Mode::Config>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-gateway") }}</label>
-                        <input
-                            type="text"
-                            list="gw-opts"
-                            prop:value=move || gateway_input.get()
-                            on:focus=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
-                                { input.set_value(""); }
-                            }
-                            on:blur=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|t| t.dyn_into::<HtmlInputElement>().ok())
-                                {
-                                    if input.value().is_empty() {
-                                        input.set_value(&gateway_input.get_untracked());
+                        <div class="gateway-list">
+                            <label class="gateway-option">
+                                <input
+                                    type="checkbox"
+                                    prop:checked=move || gateway_dweb_link.get()
+                                    on:change=move |ev| {
+                                        if let Some(input) = ev.target()
+                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                        {
+                                            gateway_dweb_link.set(input.checked());
+                                        }
                                     }
-                                }
-                            }
-                            on:input=move |ev| {
-                                if let Some(input) = ev.target()
-                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                {
-                                    let v = input.value();
-                                    SESSION_LOCAL_IPFS.with(|f| *f.borrow_mut() = is_local_gateway(&v));
-                                    save_ipfs_gateway_pref(&v);
-                                    gateway_input.set(v);
-                                }
-                            }
-                        />
+                                />
+                                <span>{PUBLIC_GATEWAY_URLS[0]}</span>
+                            </label>
+                            <label class="gateway-option">
+                                <input
+                                    type="checkbox"
+                                    prop:checked=move || gateway_four_everland.get()
+                                    on:change=move |ev| {
+                                        if let Some(input) = ev.target()
+                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                        {
+                                            gateway_four_everland.set(input.checked());
+                                        }
+                                    }
+                                />
+                                <span>{PUBLIC_GATEWAY_URLS[1]}</span>
+                            </label>
+                            <label class="gateway-option">
+                                <input
+                                    type="checkbox"
+                                    prop:checked=move || gateway_localhost.get()
+                                    on:change=move |ev| {
+                                        if let Some(input) = ev.target()
+                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                        {
+                                            gateway_localhost.set(input.checked());
+                                        }
+                                    }
+                                />
+                                <span>{LOCAL_GATEWAY_URL}</span>
+                            </label>
+                            <div class="gateway-option gateway-custom">
+                                <label>
+                                    <input
+                                        type="checkbox"
+                                        prop:checked=move || gateway_custom_enabled.get()
+                                        on:change=move |ev| {
+                                            if let Some(input) = ev.target()
+                                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                            {
+                                                gateway_custom_enabled.set(input.checked());
+                                            }
+                                        }
+                                    />
+                                    <span>{move || { let _ = lang.get(); t("label-gateway") }}</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    prop:value=move || gateway_custom_url.get()
+                                    placeholder="http://localhost:8881/"
+                                    on:input=move |ev| {
+                                        if let Some(input) = ev.target()
+                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                        {
+                                            gateway_custom_url.set(input.value());
+                                        }
+                                    }
+                                />
+                            </div>
+                        </div>
                     </div>
                 </Show>
 
-                // ── Always-present datalists (must be in DOM for list= attr) ──
+                // ── Always-present datalist (must be in DOM for list= attr) ──
                 <datalist id="ma-opts">
                     {move || ma_choices.get().into_iter().map(|v| view! { <option value=v /> }).collect_view()}
-                </datalist>
-                <datalist id="gw-opts">
-                    <option value="http://127.0.0.1:8080/" />
-                    <option value="https://dweb.link/" />
-                    <option value="https://ipfs.io/" />
                 </datalist>
 
                 // ── DID field ─────────────────────────────────────────────

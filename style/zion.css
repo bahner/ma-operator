@@ -152,6 +152,43 @@ html, body {
     color: #333;
 }
 
+.gateway-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.55rem;
+}
+
+.gateway-option {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--colour-text);
+    font-size: 0.9rem;
+    overflow-wrap: anywhere;
+}
+
+.gateway-option input[type="checkbox"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--colour-text);
+    flex: 0 0 auto;
+}
+
+.gateway-custom {
+    align-items: stretch;
+    flex-direction: column;
+}
+
+.gateway-custom label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--colour-text);
+    font-size: 0.9rem;
+    letter-spacing: 0;
+    text-transform: none;
+}
+
 .form-row select.runtime-select {
     background: var(--colour-bg);
     border: 1px solid var(--colour-dimmed);
