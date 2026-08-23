@@ -517,19 +517,21 @@ pub(crate) async fn startup_connect(
         Ok(()) => {
             let endpoint_id = transport::get_endpoint_id().unwrap_or_default();
             state.push_system(format!("{} — {}", t("msg-iroh-ready"), endpoint_id));
-            startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
-            load_selected_z(&state, config, &username, startup_z).await;
-            queue_startup_zscheme(&state, config);
             let startup_enter = state.startup_enter.get_untracked();
             let ma_outcome = startup_local_ma(
                 state.clone(),
                 config,
                 username.clone(),
-                sender_did,
+                sender_did.clone(),
                 startup_ma,
                 startup_enter,
             )
             .await;
+            if should_queue_startup_enter(&ma_outcome) {
+                startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
+                load_selected_z(&state, config, &username, startup_z).await;
+                queue_startup_zscheme(&state, config);
+            }
             if should_queue_startup_enter(&ma_outcome) {
                 let discovered_runtime_did = match &ma_outcome {
                     ConnectMaOutcome::Ready { did } => Some(did.as_str()),

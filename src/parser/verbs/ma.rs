@@ -294,7 +294,8 @@ pub(crate) async fn connect_trusted_ma_on_startup(
         )
         .await
         {
-            log::warn!("[ma] fallback identity pre-publish failed before ping: {e}");
+            log::error!("[ma] identity publication failed before runtime ping: {e}");
+            return ConnectMaOutcome::Unavailable { target: did };
         }
     }
     if let Err(error) = ping_runtime(state, &did).await {
