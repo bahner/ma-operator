@@ -668,7 +668,7 @@ fn finish_batch(batch_id: u64, state: &AppState, had_error: bool) {
     let status = if had_error {
         CommandStatus::Error(String::new())
     } else {
-        CommandStatus::Done
+        CommandStatus::Replied(String::new())
     };
     state.entries.with_untracked(|v| {
         for entry in v {

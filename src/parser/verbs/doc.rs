@@ -250,7 +250,7 @@ fn doc_eval(
         }
         .await;
         match result {
-            Ok(()) => state2.resolve_command_by_id(cmd_id, CommandStatus::Done),
+            Ok(()) => state2.resolve_command_by_id(cmd_id, CommandStatus::Replied(String::new())),
             Err(error) => {
                 state2.resolve_command_by_id(cmd_id, CommandStatus::Error(error.clone()));
                 state2.push_error(format!("{path2}!eval: {error}"));
