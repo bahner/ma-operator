@@ -72,6 +72,7 @@ pub(super) fn handle_ma(
     let trusted_ma = active_ma_did(&cfg)
         .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
     let timeout_secs = ma_timeout_secs(&cfg);
+    state.push_system(tf("msg-trusted-ma-searching", &[("did", &trusted_ma)]));
     state.push_system(format!(
         ".ma: {}",
         tf(
@@ -91,6 +92,11 @@ async fn publish_with_trusted_ma(
     config: RwSignal<EgoConfig>,
     state: &AppState,
 ) {
+    if let Err(error) = resolve_trusted_ma(&trusted_ma).await {
+        log::warn!("[ma] trusted MA discovery failed for {trusted_ma}: {error}");
+        state.push_error(t("msg-trusted-ma-not-discovered"));
+        return;
+    }
     queue_profile_publish(trusted_ma, config, state, None, true, true).await;
 }
 
@@ -277,7 +283,13 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     did: String,
     own_did: &str,
 ) -> ConnectMaOutcome {
-    if verify_self_publication(own_did).await.is_err() {
+    state.push_system(tf("msg-trusted-ma-searching", &[("did", &did)]));
+    if let Err(error) = resolve_trusted_ma(&did).await {
+        log::warn!("[ma] trusted MA discovery failed for {did}: {error}");
+        state.push_error(t("msg-trusted-ma-not-discovered"));
+        return ConnectMaOutcome::Unavailable { target: did };
+    }
+    if is_new {
         state.push_system(tf(
             "msg-identity-first-publish",
             &[(
@@ -309,6 +321,14 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     let cfg = config.get_untracked();
     let _ = crate::config::persist_config(username, &cfg).await;
     ConnectMaOutcome::Ready { did }
+}
+
+async fn resolve_trusted_ma(did: &str) -> Result<(), String> {
+    let resolver = transport::session_resolver()?;
+    let document = ma_core::DidDocumentResolver::resolve(&resolver, did)
+        .await
+        .map_err(|error| error.to_string())?;
+    published_self_matches(&document, did)
 }
 
 async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
@@ -382,26 +402,6 @@ pub(crate) fn published_self_matches(doc: &ma_core::Document, own_did: &str) -> 
         ));
     }
     Ok(())
-}
-
-pub(crate) async fn verify_self_publication(own_did: &str) -> Result<(), String> {
-    let resolver = crate::state::SESSION_RESOLVER
-        .with(|r| r.borrow().clone())
-        .ok_or_else(|| "DID resolver is not available".to_string())?;
-    let mut last_error = "DID document was not resolved".to_string();
-    for (attempt, delay_ms) in SELF_PUBLISH_VERIFY_DELAYS_MS.iter().enumerate() {
-        match resolver.resolve(own_did).await {
-            Ok(doc) => match published_self_matches(&doc, own_did) {
-                Ok(()) => return Ok(()),
-                Err(e) => last_error = e,
-            },
-            Err(e) => last_error = e.to_string(),
-        }
-        if attempt + 1 < SELF_PUBLISH_VERIFY_DELAYS_MS.len() {
-            gloo_timers::future::TimeoutFuture::new(*delay_ms).await;
-        }
-    }
-    Err(last_error)
 }
 
 /// Optionally publish `.z`, build and upload the profile blob, then queue the

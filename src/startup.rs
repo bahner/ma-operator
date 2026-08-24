@@ -94,18 +94,12 @@ pub(crate) async fn startup_local_ma(
         };
     }
     let selected_did = fallback_did.expect("checked above");
-    config.update(|cfg| {
-        cfg.set(".ma.ctx.did", &selected_did);
-        cfg.set(".my.aliases.ma", &selected_did);
-    });
-    let cfg = config.get_untracked();
-    let _ = persist_config(&username, &cfg).await;
     crate::parser::verbs::ma::connect_trusted_ma_on_startup(
         &state,
         config,
         &username,
         selected_did,
-        &sender_did,
+        is_new,
     )
     .await
 }
