@@ -52,6 +52,7 @@ use leptos::prelude::ArcRwSignal;
 #[derive(Clone, Debug, PartialEq)]
 pub struct SessionState {
     pub username: String,
+    pub is_new: bool,
     pub iroh_key: [u8; 32],
     pub ipns_secret_key: [u8; 32],
     pub did_signing_key: [u8; 32],

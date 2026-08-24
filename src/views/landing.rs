@@ -34,6 +34,17 @@ fn load_last_did() -> Option<String> {
         .filter(|s| !s.is_empty())
 }
 
+async fn verify_existing_identity(did: &str) -> Result<(), String> {
+    use ma_core::DidDocumentResolver;
+
+    let resolver = crate::transport::connection::session_resolver()?;
+    let document = resolver
+        .resolve(did)
+        .await
+        .map_err(|error| error.to_string())?;
+    crate::parser::verbs::ma::published_self_matches(&document, did)
+}
+
 /// Derive the `IndexedDB` storage key from a DID.
 fn username_from_did(did: &str) -> String {
     did.strip_prefix("did:ma:").unwrap_or(did).to_string()
@@ -203,6 +214,7 @@ pub fn Landing() -> impl IntoView {
         id: crate::identity::UnlockedIdentity,
         uname: String,
         pass: String,
+        is_new: bool,
         state: AppState,
     ) {
         let profile_key = profile_crypto::derive_key(&pass);
@@ -210,6 +222,7 @@ pub fn Landing() -> impl IntoView {
         save_last_did(&id.sender_did);
         state.session.set(Some(SessionState {
             username: uname,
+            is_new,
             iroh_key: id.iroh_key,
             ipns_secret_key: id.ipns_secret_key,
             did_signing_key: id.did_signing_key,
@@ -267,7 +280,7 @@ pub fn Landing() -> impl IntoView {
                                                 Ok(()) => {
                                                     status.set(String::new());
                                                     did_input.set(new_did);
-                                                    finish_login(id, uname, pass, state2);
+                                                    finish_login(id, uname, pass, true, state2);
                                                 }
                                                 Err(e) => {
                                                     status.set(String::new());
@@ -320,7 +333,11 @@ pub fn Landing() -> impl IntoView {
                                     if let Some(cfg_json) = cfg_opt {
                                         let _ = save_config(&uname, &cfg_json).await;
                                     }
-                                    finish_login(id, uname, pass, state2);
+                                    if let Err(e) = verify_existing_identity(&id.sender_did).await {
+                                        error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                        return;
+                                    }
+                                    finish_login(id, uname, pass, false, state2);
                                 }
                                 Err(e) => error.set(e),
                             }
@@ -356,7 +373,12 @@ pub fn Landing() -> impl IntoView {
                                     }
                                 }
                                 status.set(String::new());
-                                finish_login(id, uname, pass, state2);
+                                if let Err(e) = verify_existing_identity(&id.sender_did).await {
+                                    status.set(String::new());
+                                    error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                    return;
+                                }
+                                finish_login(id, uname, pass, false, state2);
                             }
                             Err(e) => {
                                 status.set(String::new());
@@ -449,7 +471,9 @@ pub fn Landing() -> impl IntoView {
                                                             let _ = save_config(&pname, &cfg).await;
                                                         }
                                                         status.set(String::new());
-                                                        finish_login(id, pname, pass, state2);
+                                                        finish_login(
+                                                            id, pname, pass, false, state2,
+                                                        );
                                                     }
                                                     Err(e) => {
                                                         status.set(String::new());

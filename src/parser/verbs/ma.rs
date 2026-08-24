@@ -8,13 +8,11 @@ use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
-use ma_core::DidDocumentResolver;
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
 const DEFAULT_MA_TIMEOUT_SECS: u32 = 120;
 const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
-const SELF_PUBLISH_VERIFY_DELAYS_MS: &[u32] = &[500, 1_000, 2_000, 3_000, 5_000, 8_000];
 const MA_CTX_DID: &str = ".ma.ctx.did";
 const MA_CTX_URL: &str = ".ma.ctx.url";
 
@@ -281,7 +279,7 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     config: RwSignal<EgoConfig>,
     username: &str,
     did: String,
-    own_did: &str,
+    is_new: bool,
 ) -> ConnectMaOutcome {
     state.push_system(tf("msg-trusted-ma-searching", &[("did", &did)]));
     if let Err(error) = resolve_trusted_ma(&did).await {

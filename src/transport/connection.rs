@@ -192,7 +192,7 @@ pub async fn connect(
     info!("Connecting with sender DID: {sender_did}");
     // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
     let resolver =
-        Arc::new(session_resolver()?.with_cache_ttls(Duration::from_secs(86400), Duration::ZERO));
+        Arc::new(session_resolver()?.with_cache_ttls(Duration::from_hours(24), Duration::ZERO));
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;

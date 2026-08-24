@@ -1,12 +1,10 @@
 //! Session startup helpers: config loading, history, iroh connect, DID sync.
 
 use leptos::prelude::*;
-use ma_core::DidDocumentResolver;
 use std::collections::BTreeMap;
 
 use crate::{
     config::{persist_config, restore_config, EgoConfig},
-    http::fetch_cid_bytes,
     i18n::{t, tf},
     identity::storage::load_history,
     parser::verbs::ma::ConnectMaOutcome,
@@ -14,74 +12,11 @@ use crate::{
     transport,
 };
 
-pub(crate) async fn startup_profile_exists(
-    doc: ma_core::Document,
-    username: String,
-    state: AppState,
-    config: RwSignal<EgoConfig>,
-) {
-    let remote_cid = match crate::parser::verbs::doc_profile_cid(&doc) {
-        Some(c) => c,
-        None => return, // No ma.agent — nothing to merge.
-    };
-    let local_cid = crate::state::SESSION_AGENT_CID.with(|c| c.borrow().clone());
-    if local_cid.as_deref() == Some(remote_cid.as_str()) {
-        return; // Already up to date — silent.
-    }
-    let cbor_bytes = match fetch_cid_bytes(&remote_cid).await {
-        Ok(b) => b,
-        Err(_) => return,
-    };
-    // Temporary backward compatibility: during migration we still accept
-    // legacy plaintext DAG-CBOR profile blobs if decryption fails.
-    // Remove after 2026-08-20.
-    let decoded = crate::state::SESSION_PROFILE_KEY
-        .with(|k| k.borrow().as_ref().copied())
-        .and_then(|key| crate::profile_crypto::decrypt_with_key(&cbor_bytes, &key).ok())
-        .unwrap_or(cbor_bytes);
-    let profile_val: serde_json::Value = match serde_ipld_dagcbor::from_slice(&decoded) {
-        Ok(v) => v,
-        Err(_) => return,
-    };
-    // Guard: only merge if the DID document is strictly newer than the last time
-    // this device published. This prevents IPNS propagation lag from overwriting
-    // freshly-published local state — after a publish the DID can still resolve
-    // to the previous document for some time, causing a spurious merge that
-    // restores deleted aliases.
-    // If `.my.profile.published_at` is absent (old install, first publish) we
-    // fall through and merge to stay backward-compatible.
-    let doc_updated_at = doc.updated_at.as_str();
-    let local_published_at = config
-        .get_untracked()
-        .get(EgoConfig::PROFILE_PUBLISHED_AT_KEY)
-        .map(std::string::ToString::to_string);
-    if let Some(ref local) = local_published_at {
-        if doc_updated_at <= local.as_str() {
-            // DID doc is same age or older — remote blob is stale (IPNS lag).
-            return;
-        }
-    }
-    crate::state::SESSION_AGENT_CID.with(|c| *c.borrow_mut() = Some(remote_cid.clone()));
-    let n = config
-        .try_update(|cfg| {
-            let merged = cfg.merge_from_nested_profile(&profile_val);
-            if merged.is_ok() {
-                cfg.set(EgoConfig::PROFILE_CID_KEY, &remote_cid);
-            }
-            merged
-        })
-        .and_then(std::result::Result::ok)
-        .map_or(0, |(count, _)| count);
-    state.push_system(tf("profile-fetch-done", &[("n", &n.to_string())]));
-    let cfg = config.get_untracked();
-    let _ = persist_config(&username, &cfg).await;
-}
-
 pub(crate) async fn startup_local_ma(
     state: AppState,
     config: RwSignal<EgoConfig>,
     username: String,
-    sender_did: String,
+    is_new: bool,
     startup_ma: Option<String>,
     startup_enter: Option<String>,
 ) -> ConnectMaOutcome {
@@ -106,29 +41,6 @@ pub(crate) async fn startup_local_ma(
 
 fn select_startup_ma(field: Option<String>) -> Option<String> {
     field.filter(|did| crate::parser::verbs::is_bare_ma_did(did))
-}
-
-pub(crate) async fn startup_did_sync(
-    own_did: String,
-    username: String,
-    state: AppState,
-    config: RwSignal<EgoConfig>,
-) {
-    let resolver = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone());
-    let Some(resolver) = resolver else { return };
-    if let Ok(doc) = (*resolver).resolve(&own_did).await {
-        let published_z = crate::parser::verbs::doc_z_cid(&doc);
-        startup_profile_exists(doc, username.clone(), state, config).await;
-        if config.get_untracked().get(".my.z").is_none() {
-            if let Some(cid) = published_z {
-                config.update(|cfg| cfg.set(".my.z", format!("/ipfs/{cid}")));
-                let cfg = config.get_untracked();
-                if let Err(error) = persist_config(&username, &cfg).await {
-                    log::warn!("[startup] failed to persist ma.z selection: {error}");
-                }
-            }
-        }
-    }
 }
 
 pub(crate) async fn startup_load_config(
@@ -516,13 +428,12 @@ pub(crate) async fn startup_connect(
                 state.clone(),
                 config,
                 username.clone(),
-                sender_did.clone(),
+                sess.is_new,
                 startup_ma,
                 startup_enter,
             )
             .await;
             if should_queue_startup_enter(&ma_outcome) {
-                startup_did_sync(sender_did.clone(), username.clone(), state.clone(), config).await;
                 load_selected_z(&state, config, &username, startup_z).await;
                 queue_startup_zscheme(&state, config);
             }
