@@ -142,13 +142,20 @@ fn validate_z_manifest(
 fn validate_z_source(path: &str, source: String) -> Result<String, String> {
     if path == ".z.scheme" {
         if source.trim().is_empty() {
-            return Err("z manifest 'scheme' source is empty".to_string());
+            return Err("z scheme source is empty".to_string());
         }
         if !source.ends_with('\n') {
-            return Err("z manifest 'scheme' source must end with a newline".to_string());
+            return Err("z scheme source must end with a newline".to_string());
         }
     }
     Ok(source)
+}
+
+fn single_z_scheme_source(source: String) -> Result<Vec<(String, String)>, String> {
+    Ok(vec![(
+        ".z.scheme".to_string(),
+        validate_z_source(".z.scheme", source)?,
+    )])
 }
 
 async fn load_z_tree(seed: &str) -> Result<Vec<(String, String)>, String> {
@@ -157,8 +164,8 @@ async fn load_z_tree(seed: &str) -> Result<Vec<(String, String)>, String> {
     }
     let manifest = match crate::doc_link::resolve_doc_link(seed).await? {
         crate::doc_link::ResolvedDocContent::Manifest(manifest) => manifest,
-        crate::doc_link::ResolvedDocContent::Text(_) => {
-            return Err("z CID is not a DAG-CBOR manifest".to_string());
+        crate::doc_link::ResolvedDocContent::Text(source) => {
+            return single_z_scheme_source(source);
         }
     };
     let entries = validate_z_manifest(manifest)?;
@@ -480,8 +487,8 @@ mod tests {
     use super::{
         apply_standard_runtime_alias, normalise_z_reference, normalize_startup_enter,
         queue_startup_context, queue_startup_zscheme, select_startup_ma,
-        should_queue_startup_enter, standard_runtime_enter, startup_ctx_enter, validate_z_manifest,
-        validate_z_source,
+        should_queue_startup_enter, single_z_scheme_source, standard_runtime_enter,
+        startup_ctx_enter, validate_z_manifest, validate_z_source,
     };
     use crate::parser::verbs::ma::ConnectMaOutcome;
     use crate::{config::EgoConfig, state::AppState};
@@ -555,6 +562,15 @@ mod tests {
             validate_z_source(".z.example", "notes".to_string()).unwrap(),
             "notes"
         );
+    }
+
+    #[test]
+    fn direct_z_source_seed_imports_as_scheme_source() {
+        assert_eq!(
+            single_z_scheme_source("(define x 1)\n".to_string()).unwrap(),
+            vec![(".z.scheme".to_string(), "(define x 1)\n".to_string())]
+        );
+        assert!(single_z_scheme_source("(define x 1)".to_string()).is_err());
     }
 
     #[test]
