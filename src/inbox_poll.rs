@@ -197,8 +197,12 @@ fn dispatch_reply(
             }
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
             if incoming.is_error {
-                if let Some(reason) = text_opt.as_deref() {
-                    maybe_queue_ctx_recovery(reason, cmd_id, state, config);
+                let is_from_room = config
+                    .get_untracked()
+                    .get(".my.ctx.room")
+                    .is_some_and(|room| !room.is_empty() && incoming.from == room);
+                if is_from_room {
+                    maybe_queue_ctx_recovery(cmd_id, state, config);
                 }
             }
             state.resolve_command_by_id(cmd_id, status);
@@ -426,16 +430,7 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
     }
 }
 
-fn maybe_queue_ctx_recovery(
-    reason: &str,
-    cmd_id: u64,
-    state: &AppState,
-    config: RwSignal<EgoConfig>,
-) {
-    let lower = reason.to_ascii_lowercase();
-    if !lower.contains("unknown entity fragment") {
-        return;
-    }
+fn maybe_queue_ctx_recovery(cmd_id: u64, state: &AppState, config: RwSignal<EgoConfig>) {
     if state.entries.with_untracked(|entries| {
         entries.iter().any(|entry| {
             matches!(entry, crate::core::Entry::Command(command)
@@ -1465,12 +1460,7 @@ mod tests {
         state.input_queue.set(VecDeque::new());
         let cmd_id = state.push_command("look");
 
-        maybe_queue_ctx_recovery(
-            &format!("unknown entity fragment: {missing_room}"),
-            cmd_id,
-            &state,
-            config,
-        );
+        maybe_queue_ctx_recovery(cmd_id, &state, config);
 
         let queued: Vec<String> = state.input_queue.get_untracked().into_iter().collect();
         assert!(queued
@@ -1479,12 +1469,7 @@ mod tests {
         assert!(!queued.iter().any(|line| line.contains(missing_room)));
 
         state.input_queue.update(std::collections::VecDeque::clear);
-        maybe_queue_ctx_recovery(
-            &format!("unknown entity fragment: {missing_room}"),
-            cmd_id,
-            &state,
-            config,
-        );
+        maybe_queue_ctx_recovery(cmd_id, &state, config);
         assert!(state.input_queue.get_untracked().is_empty());
     }
 
@@ -1499,7 +1484,7 @@ mod tests {
         });
         let cmd_id = state.push_command(".enter foo@did:ma:k51runtime");
 
-        maybe_queue_ctx_recovery("unknown entity fragment: root", cmd_id, &state, config);
+        maybe_queue_ctx_recovery(cmd_id, &state, config);
 
         assert!(state.input_queue.get_untracked().is_empty());
         assert!(state.ctx_recovery_runtime.get_untracked().is_none());
