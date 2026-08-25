@@ -410,7 +410,7 @@ help-actor-cat =   (@actor#entity:verb arg...)  فراخوانی RPC موجود�
 help-actor-head =   (@actor/path)                واکشی محتوای CRUD دوردست از Scheme
 help-actor-tail =   (<bafy...>)                  include و ارزیابی Scheme از CID در IPFS
 help-actor-wc =   (define x (@actor:verb arg))  نگه داشتن پاسخ‌های RPC در محیط نشست
-help-actor-wc-l =   .z.scheme.ma!edit           ویرایش helperهای ذخیره‌شده Scheme برای این هویت
+help-actor-wc-l =   .z.scheme!edit           ویرایش helperهای ذخیره‌شده Scheme برای این هویت
 # ── متن راهنما — انتشار ─────────────────────────────────────────────────
 help-topic-publish =   .help/publish                انتشار هویت شما در شبکه
 help-header-publish = ── انتشار هویت شما ────────────────────────────────────────────────────

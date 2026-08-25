@@ -382,7 +382,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  在會話環境中保留 5 回复
-help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
 help-url-msg =   ?msg=<did>                   預填：@<did>!msg（文字訊息）

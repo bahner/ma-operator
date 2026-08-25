@@ -375,7 +375,7 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  5 応答をセッション環境に保持する
-help-actor-wc-l = .z.scheme.ma!edit           edit saved Scheme helpers for this identity
+help-actor-wc-l = .z.scheme!edit           edit saved Scheme helpers for this identity
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
