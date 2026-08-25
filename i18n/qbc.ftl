@@ -382,7 +382,6 @@ help-actor-cat =   (@actor#entity:verb arg...)  call entity RPC from Scheme and 
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and eval Scheme from IPFS CID
 help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in session env
-help-actor-wc-l =   .z.scheme!edit           edit saved Scheme helpers fo dis selfmang
 
 help-topic-url =   .help/url                    open zion tru URL peng
 help-topic-i18n =   .help/i18n                   lang choice fo yer selfmang

@@ -380,7 +380,6 @@ help-actor-cat =   (@actor#entity:verb arg...)  kall entitets-RPC frå Scheme og
 help-actor-head =   (@actor/path)                hent eksternt CRUD-innhald frå Scheme
 help-actor-tail =   (<bafy...>)                  inkluder og evaluer Scheme frå ein IPFS-CID
 help-actor-wc =   (define x (@actor:verb arg))  hald RPC-svar i sesjonsmiljøet
-help-actor-wc-l =   .z.scheme!edit           rediger lagra Scheme-hjelparar for denne identiteten
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Del ei lenkje som opnar zion med ferdig utfylt mottakar:
 help-url-msg =   ?msg=<did>                   fyller inn: @<did>!msg (tekstmelding)

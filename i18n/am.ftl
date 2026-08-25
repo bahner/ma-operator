@@ -380,7 +380,6 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                የርቀት CRUD ይዘትን ከ31 ያግኙ
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
-help-actor-wc-l = .z.scheme!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
 help-topic-i18n = .help/i18n                   ለማንነትዎ የቋንቋ ምርጫ

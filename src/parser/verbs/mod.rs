@@ -7,7 +7,6 @@ mod doc;
 mod identity;
 mod inbox;
 pub(crate) mod ma;
-mod scheme;
 
 use crate::config::EgoConfig;
 use crate::i18n::tf;
@@ -116,9 +115,6 @@ pub fn dispatch_meta(
         return Ok(());
     }
 
-    if path == ".z.scheme" || path.starts_with(".z.scheme.") {
-        return scheme::handle_scheme(path, verb, args, state, config, show_editor, on_eval);
-    }
     if path == ".my.inbox" || path.starts_with(".my.inbox.") {
         return inbox::handle_inbox(path, verb, args, state, config, show_editor, on_eval);
     }
@@ -243,5 +239,25 @@ mod tests {
             doc_z_cid(&document_with_z(Ipld::String("private source".to_string()))),
             None
         );
+    }
+
+    #[test]
+    fn z_scheme_save_is_not_a_special_verb() {
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        let result = dispatch_meta(
+            ".z.scheme",
+            "save",
+            &[],
+            &state,
+            config,
+            show_editor,
+            on_eval,
+        );
+
+        assert!(result.is_err());
     }
 }

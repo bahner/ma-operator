@@ -373,7 +373,6 @@ help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg))  obdrži odgovore 5 v okolju seje
-help-actor-wc-l = .z.scheme!edit           edit saved Scheme helpers for this identity
 
 help-topic-url =   .help/url                    odpiranje zion prek URL povezave
 help-topic-i18n = .help/i18n                   nastavitev jezika za vašo identiteto

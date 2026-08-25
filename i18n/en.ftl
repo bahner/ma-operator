@@ -411,7 +411,6 @@ help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme a
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
-help-actor-wc-l =   .z.scheme!edit           edit saved Scheme helpers for this identity
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publishing your identity to the network
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────
