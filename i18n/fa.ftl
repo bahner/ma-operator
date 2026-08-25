@@ -202,6 +202,16 @@ help-header-documents = ── اسناد (.my.doc.*) ────────�
 help-header-i18n = ── زبان ───────────────────────────────────────────────────────────────────
 help-header-ma = ── 間-space ─────────────────────────────────────────────────────────────────
 help-header-ma-entry = ── ورود به 間-space ────────────────────────────────────────────────────
+
+# -- Help text -- z and my
+help-header-z = ── .z و .my ──────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       محتوای عمومی یا قابل انتشار؛ اسرار را اینجا ذخیره نکنید
+help-z-scheme =   .z.scheme                  اسکریپت Scheme که در راه‌اندازی بارگذاری و ارزیابی می‌شود
+help-z-control =   .z.scheme                 شما خودتان محتوای اسکریپت راه‌اندازی را کنترل می‌کنید
+help-z-private =   .my.*                     پیکربندی محلی خصوصی؛ Scheme می‌تواند اینجا هم ذخیره شود
+help-z-choice =   .z.* / .my.*               از .z.* برای Scheme عمومی و .my.* برای Scheme خصوصی استفاده کنید
+
+# -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
@@ -223,6 +233,7 @@ help-topic-my =   .help/my                     پیکربندی شخصی — .my
 help-topic-inbox =   .help/inbox                  صندوق ورودی — .my.inbox.*
 help-topic-doc =   .help/doc                    فعل‌های محتوا — !edit، !eval، !publish، !fetch، !cid
 help-topic-actor =   .help/actor                  actor دوردست — CRUD، موجودیت‌ها، عملیات CID
+help-topic-z =   .help/z                      محتوای عمومی و خصوصی Scheme
 help-topic-zscheme =   .help/zscheme               عبارت‌های Scheme درون‌خطی و سندها
 help-topic-url =   .help/url                    باز کردن zion با پیوند URL
 help-topic-i18n =   .help/i18n                   ترجیح زبان برای هویت شما
@@ -427,6 +438,8 @@ batch-step-timeout = مهلت گام batch پایان یافت
 batch-done = Batch در { $secs } ثانیه کامل شد — { $steps } گام
 batch-done-error = Batch با خطا در { $secs } ثانیه پایان یافت — { $steps } گام
 msg-timeout = مهلت پیام پایان یافت (در ۶۰ ثانیه پاسخی نیامد)
+msg-outbox-open-timeout = عامل { $target } در دسترس نیست — اتصال پس از { $ms }ms به پایان رسید
+msg-outbox-send-timeout = ارسال به { $target } پس از { $ms }ms به پایان رسید — ممکن است اتصال قطع شده باشد
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        اجرای فرمان‌ها به صورت موازی
 
 

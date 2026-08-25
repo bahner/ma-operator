@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     వ్యక్తిగత confi
 help-topic-inbox =   .help/inbox                  ఇన్‌బాక్స్
 help-topic-doc =   .help/doc                    పత్రాలు
 help-topic-actor =   .help/actor                  దూర actor
+help-topic-z =   .help/z                      పబ్లిక్ మరియు ప్రైవేట్ Scheme కంటెంట్
 help-topic-zscheme =   .help/zscheme               ఇన్‌లైన్ Scheme వ్యక్తీకరణలు మరియు పత్రాలు
 help-unknown-topic =   .help/{ $topic }: తెలియని విషయం
 
@@ -413,6 +414,8 @@ batch-step-timeout = బ్యాచ్ దశ సమయం ముగిసి�
 batch-done = batch { $secs }sలో పూర్తయింది — { $steps } దశలు
 batch-done-error = batch లోపాలతో { $secs }sలో పూర్తయింది — { $steps } దశలు
 msg-timeout = సందేశం గడువు ముగిసింది (60sలో ప్రత్యుత్తరం లేదు)
+msg-outbox-open-timeout = నటుడు { $target } అందుబాటులో లేడు — { $ms }ms తర్వాత కనెక్షన్ గడువు ముగిసింది
+msg-outbox-send-timeout = { $target }కి పంపడం { $ms }ms తర్వాత గడువు ముగిసింది — కనెక్షన్ తెగిపోయి ఉండవచ్చు
 err-unknown-command = తెలియని ఆదేశం: { $path }
 err-read-only-path = { $path } చదవడానికి మాత్రమే
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch పత్రాన్ని సమాంతరంగా అమలు చేయి
@@ -427,6 +430,14 @@ scheme-not-a-cid = చెల్లని CID: { $value }
 label-runtime = మా
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = హెచ్చరిక: మీ IPNS ప్రైవేట్ కీ గుర్తింపు ప్రచురణ కోసం ఈ రన్‌టైమ్‌కు పంపబడుతుంది. మీరు పూర్తిగా విశ్వసించే రన్‌టైమ్‌ మాత్రమే ఉపయోగించండి.
+
+# -- Help text -- z and my
+help-header-z = ── .z మరియు .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       పొతు లేదా ప్రకటించత్తకు అనువు కంటెంట్; ఇక్కడ రహస్యాలను నిల్వ చేయకండి
+help-z-scheme =   .z.scheme                  ప్రారంభంలో లోడ్ చేసి మూల్యాంకనం చేయబడే Scheme స్క్రిప్ట్
+help-z-control =   .z.scheme                 ప్రారంభ స్క్రిప్ట్ కంటెంట్ను మీరే నియంత్రిస్తారు
+help-z-private =   .my.*                     ప్రైవేట్ లోకల్ కాన్ఫిగరేషన్; Scheme ఇక్కడ కూడా నిల్వ చేయవచ్చు
+help-z-choice =   .z.* / .my.*               పొతు Schemeకు .z.* మరియు ప్రైవేట్ Schemeకు .my.* ఉపయోగించండి
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

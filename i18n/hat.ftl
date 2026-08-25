@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     konfig pèsonèl
 help-topic-inbox =   .help/inbox                  bwat resepsyon
 help-topic-doc =   .help/doc                    dokiman
 help-topic-actor =   .help/actor                  aktè adistans
+help-topic-z =   .help/z                      kontni Scheme piblik é prive
 help-topic-zscheme =   .help/zscheme               ekspresyon Scheme anliy ak dokiman
 help-unknown-topic =   .help/{ $topic }: sijè enkoni
 
@@ -399,6 +400,8 @@ batch-step-timeout = etap pakèt kwonometre soti
 batch-done = Batch fini an { $secs }s — { $steps } etap
 batch-done-error = Batch fini ak erè an { $secs }s — { $steps } etap
 msg-timeout = Mesaj la ekspire (pa gen repons nan 60s)
+msg-outbox-open-timeout = aktè { $target } pa ka jwenn — koneksyon an ekspire apre { $ms }ms
+msg-outbox-send-timeout = voye bay { $target } ekspire apre { $ms }ms — koneksyon an ka gen tan koupe
 err-unknown-command = kòmand enkoni: { $path }
 err-read-only-path = { $path } se lekti sèlman
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evalye dokiman bouyon an paralèl
@@ -413,6 +416,14 @@ scheme-not-a-cid = CID ki valab: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Avètisman: Kle prive IPNS ou a ap voye nan sèvis runtime sa a pou pibliye idantite ou. Sèlman itilize yon runtime ou fè konfyans nèt.
+
+# -- Help text -- z and my
+help-header-z = ── .z ak .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       kontni piblik oswa ka pibliye; pa estoke sekrè la a
+help-z-control =   .z.scheme                 ou kontwole kontni script komansman an ou menm
+help-z-scheme =   .z.scheme                  script Scheme a chaje e evalye lè l komansman an
+help-z-private =   .my.*                     konfigurasyon lokal privé; Scheme ka estoke la a tou
+help-z-choice =   .z.* / .my.*               sevi ak .z.* pou Scheme piblik e .my.* pou Scheme privé
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

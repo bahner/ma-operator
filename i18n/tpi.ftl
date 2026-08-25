@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     config bilong mi
 help-topic-inbox =   .help/inbox                  bokis mesij
 help-topic-doc =   .help/doc                    ol dokumen
 help-topic-actor =   .help/actor                  actor longwe
+help-topic-z =   .help/z                      pablik na privat Scheme konten
 help-topic-zscheme =   .help/zscheme               Scheme tok insait long lain na docs
 help-unknown-topic =   .help/{ $topic }: topik i no save
 
@@ -399,6 +400,8 @@ batch-step-timeout = batch step taim aut
 batch-done = Batch don finish for { $secs }s — { $steps } steps
 batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
+msg-outbox-open-timeout = actor { $target } i no inap kamap — konekshen i taim aut bihain long { $ms }ms
+msg-outbox-send-timeout = salim i go long { $target } i taim aut bihain long { $ms }ms — ating konekshen i bin bagarap
 err-unknown-command = komand i no save: { $path }
 err-read-only-path = { $path } em bilong rit tasol
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
@@ -413,6 +416,14 @@ scheme-not-a-cid = Dispela CID i no stret: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Woning: Praivit ki bilong IPNS bilong yu bai i go long runtime ia bilong publisim aideniti. Usum tasol runtime yu trastim tru.
+
+# -- Help text -- z and my
+help-header-z = ── .z na .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       pasin bilong olgeta o ol samting yumi ken printim; no save haitim ol hait samting long hia
+help-z-scheme =   .z.scheme                  Scheme skript em ol i bringim na skelim long taim bilong statim
+help-z-control =   .z.scheme                 yu yet yu bosim ol samting bilong skript bilong statim
+help-z-private =   .my.*                     praivet lokal konfiguresen; Scheme em i ken stap long hia tu
+help-z-choice =   .z.* / .my.*               usim .z.* long Scheme bilong olgeta na .my.* long praivet Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

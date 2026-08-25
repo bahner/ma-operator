@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     개인 config
 help-topic-inbox =   .help/inbox                  받은편지함
 help-topic-doc =   .help/doc                    문서
 help-topic-actor =   .help/actor                  원격 actor
+help-topic-z =   .help/z                      공개 및 비공개 Scheme 콘텐츠
 help-topic-zscheme =   .help/zscheme               인라인 Scheme 식과 문서
 help-topic-url =   .help/url                    URL 링크로 zion 열기
 help-topic-i18n = .help/i18n                   귀하의 신원에 대한 언어 기본 설정
@@ -412,6 +413,8 @@ batch-step-timeout = 일괄 단계 시간이 초과되었습니다.
 batch-done = batch 완료: { $secs }s — { $steps } 단계
 batch-done-error = batch가 오류와 함께 완료됨: { $secs }s — { $steps } 단계
 msg-timeout = 메시지 시간 초과(60s 동안 응답 없음)
+msg-outbox-open-timeout = 액터 { $target }에 도달할 수 없음 — { $ms }ms 후 연결이 시간 초과됨
+msg-outbox-send-timeout = { $target }으로 보내기가 { $ms }ms 후 시간 초과됨 — 연결이 끓어졌을 수 있음
 err-unknown-command = 알 수 없는 명령: { $path }
 err-read-only-path = { $path }은(는) 읽기 전용입니다
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        스크래치 문서를 병렬 평가
@@ -426,6 +429,14 @@ scheme-not-a-cid = 유효하지 않은 CID: { $value }
 label-runtime = 마
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = 경고: 귀하의 IPNS 개인 키가 신원 게시를 위해 이 런타임으로 전송됩니다. 완전히 신뢰하는 런타임만 사용하십시오.
+
+# -- Help text -- z and my
+help-header-z = ── .z와 .my ──────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       공개 또는 게시 가능한 콘텐츠; 여기에 비밀을 저장하지 마세요
+help-z-scheme =   .z.scheme                  시작 시 로드되고 평가되는 Scheme 스크립트
+help-z-control =   .z.scheme                 시작 스크립트의 내용은 여러분이 직접 제어합니다
+help-z-private =   .my.*                     비공개 로컬 구성; Scheme도 여기에 저장할 수 있습니다
+help-z-choice =   .z.* / .my.*               공개 Scheme에는 .z.*를, 비공개 Scheme에는 .my.*를 사용하세요
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

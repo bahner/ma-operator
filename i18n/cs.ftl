@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     osobní konfigurace
 help-topic-inbox =   .help/inbox                  schránka
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  vzdálený actor
+help-topic-z =   .help/z                      veřejný a soukromý obsah Scheme
 help-topic-zscheme =   .help/zscheme               vložené výrazy Scheme a dokumentace
 help-unknown-topic =   .help/{ $topic }: neznámé téma
 
@@ -406,6 +407,8 @@ batch-step-timeout = vypršel časový limit dávkového kroku
 batch-done = Dávka dokončena za { $secs }s — { $steps } kroků
 batch-done-error = Dávka skončila s chybami za { $secs }s — { $steps } kroků
 msg-timeout = Zprávě vypršel čas (žádná odpověď za 60s)
+msg-outbox-open-timeout = aktér { $target } je nedostupný — spojení vypršelo po { $ms }ms
+msg-outbox-send-timeout = odeslání na { $target } vypršelo po { $ms }ms — spojení mohlo být přerušeno
 err-unknown-command = neznámý příkaz: { $path }
 err-read-only-path = { $path } je pouze pro čtení
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        vyhodnotit pracovní dokument paralelně
@@ -422,6 +425,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Varování: Váš soukromý klíč IPNS bude odeslán do tohoto běhového prostředí za účelem publikování identity. Používejte pouze běhové prostředí, kterému plně důvěřujete.
 
 # -- Help text -- zscheme
+help-header-z = ── .z a .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       veřejný nebo publikovatelný obsah; neukládejte sem tajemství
+help-z-scheme =   .z.scheme                  skript Scheme načtený a vyhodnocený při spuštění
+help-z-control =   .z.scheme                 obsah spouštěcího skriptu ovládáte sami
+help-z-private =   .my.*                     soukromá místní konfigurace; Scheme lze uložit i sem
+help-z-choice =   .z.* / .my.*               .z.* používejte pro veřejný Scheme a .my.* pro soukromý Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme vyhodnocuje výrazy Scheme vložené do příkazů zion a před odesláním vloží výsledek do řádku.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vložený příklad; odešle "say 7 + 5 = 12"

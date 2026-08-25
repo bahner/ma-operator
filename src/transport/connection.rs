@@ -845,7 +845,7 @@ fn is_transport_error(e: &str) -> bool {
 }
 
 async fn with_send_timeout<T>(
-    label: &str,
+    timeout_msg: String,
     future: impl std::future::Future<Output = Result<T, String>>,
 ) -> Result<T, String> {
     let op = future.fuse();
@@ -853,7 +853,7 @@ async fn with_send_timeout<T>(
     futures::pin_mut!(op, timeout);
     futures::select! {
         result = op => result,
-        () = timeout => Err(format!("{label} timed out after {SEND_TIMEOUT_MS}ms")),
+        () = timeout => Err(timeout_msg),
     }
 }
 
@@ -873,7 +873,9 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
         .into(),
     );
     log::debug!("[send] → {target_did} [{protocol}]");
-    let mut outbox = with_send_timeout("outbox open", async {
+    let ms = SEND_TIMEOUT_MS.to_string();
+    let open_timeout_msg = tf("msg-outbox-open-timeout", &[("target", target_did), ("ms", &ms)]);
+    let mut outbox = with_send_timeout(open_timeout_msg, async {
         ep.outbox(resolver.as_ref(), target_did, protocol)
             .await
             .map_err(|e| {
@@ -884,7 +886,8 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
     .await?;
 
     log::debug!("try_send_once: outbox ready, sending msg id={}", msg.id);
-    let result = with_send_timeout("outbox send", async {
+    let send_timeout_msg = tf("msg-outbox-send-timeout", &[("target", target_did), ("ms", &ms)]);
+    let result = with_send_timeout(send_timeout_msg, async {
         outbox.send(msg).await.map_err(|e| {
             log::warn!("try_send_once: send failed for {target_did}: {e}");
             e.to_string()

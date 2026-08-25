@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     henkilökohtainen config
 help-topic-inbox =   .help/inbox                  saapuneet
 help-topic-doc =   .help/doc                    dokumentit
 help-topic-actor =   .help/actor                  etä-actor
+help-topic-z =   .help/z                      avalik ja privaatne Scheme-sisu
 help-topic-zscheme =   .help/zscheme               reasisesed Scheme-avaldised ja dokumentatsioon
 help-unknown-topic =   .help/{ $topic }: tuntematon aihe
 
@@ -406,6 +407,8 @@ batch-step-timeout = partii samm aegus
 batch-done = Erä valmis { $secs }s ajassa — { $steps } vaihetta
 batch-done-error = Erä päättyi virheisiin { $secs }s ajassa — { $steps } vaihetta
 msg-timeout = Viestin aika loppui (ei vastausta 60s aikana)
+msg-outbox-open-timeout = tegutseja { $target } ei ole kättesaadav — ühendus aegus { $ms }ms järel
+msg-outbox-send-timeout = saatmine sihtkohta { $target } aegus { $ms }ms järel — ühendus võis katkeda
 err-unknown-command = tundmatu käsk: { $path }
 err-read-only-path = { $path } on kirjutuskaitstud
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        arvioi luonnosdokumentti rinnakkain
@@ -420,6 +423,14 @@ scheme-not-a-cid = Vigane CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Hoiatus: Teie IPNS privaatvõti saadetakse sellesse käitusruumi identiteedi avaldamiseks. Kasutage ainult käitusruumi, millele täielikult usaldate.
+
+# -- Help text -- z and my
+help-header-z = ── .z ja .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       avalik või avaldatav sisu; ärge säilitage saladusi siin
+help-z-scheme =   .z.scheme                  käivitamisel laaditud ja hinnatud Scheme-skript
+help-z-control =   .z.scheme                 teie kontrollite käivitusskripti sisu ise
+help-z-private =   .my.*                     privaatne kohalik konfiguratsioon; Scheme saab salvestada ka siin
+help-z-choice =   .z.* / .my.*               kasutage .z.* avaliku Scheme jaoks ja .my.* privaatse Scheme jaoks
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

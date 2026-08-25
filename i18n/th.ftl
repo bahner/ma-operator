@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config ส่วนตัว
 help-topic-inbox =   .help/inbox                  กล่องขาเข้า
 help-topic-doc =   .help/doc                    เอกสาร
 help-topic-actor =   .help/actor                  actor ระยะไกล
+help-topic-z =   .help/z                      เนื้อหา Scheme สาธารณะและส่วนตัว
 help-topic-zscheme =   .help/zscheme               นิพจน์ Scheme แบบแทรกในบรรทัดและเอกสาร
 help-unknown-topic =   .help/{ $topic }: หัวข้อที่ไม่รู้จัก
 
@@ -413,6 +414,8 @@ batch-step-timeout = ขั้นตอนแบทช์หมดเวลา
 batch-done = batch เสร็จใน { $secs }s — { $steps } ขั้นตอน
 batch-done-error = batch เสร็จพร้อมข้อผิดพลาดใน { $secs }s — { $steps } ขั้นตอน
 msg-timeout = ข้อความหมดเวลา (ไม่มีคำตอบใน 60s)
+msg-outbox-open-timeout = ไม่สามารถเข้าถึงนักแสดง { $target } ได้ — การเชื่อมต่อหมดเวลาหลังจาก { $ms }ms
+msg-outbox-send-timeout = การส่งไปยัง { $target } หมดเวลาหลังจาก { $ms }ms — การเชื่อมต่ออาจหลุดไปแล้ว
 err-unknown-command = คำสั่งที่ไม่รู้จัก: { $path }
 err-read-only-path = { $path } เป็นแบบอ่านอย่างเดียว
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ประเมินเอกสาร scratch แบบขนาน
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID ไม่ถูกต้อง: { $value }
 label-runtime = มา
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = คำเตือน: กุญแจส่วนตัว IPNS ของคุณจะถูกส่งไปยังรันไทม์นี้เพื่อเผยแพร่ข้อมูลประจำตัว ใช้เฉพาะรันไทม์ที่คุณไว้วางใจอย่างเต็มที่เท่านั้น
+
+# -- Help text -- z and my
+help-header-z = ── .z และ .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       เนื้อหาสาธารณะหรือเผยแพร่ได้; อย่าเก็บความลับที่นี่
+help-z-scheme =   .z.scheme                  สคริปต์ Scheme ที่โหลดและประเมินเมื่อเริ่มต้น
+help-z-control =   .z.scheme                 คุณควบคุมเนื้อหาของสคริปต์เริ่มต้นเอง
+help-z-private =   .my.*                     การกำหนดค่าภายในส่วนตัว; Scheme สามารถเก็บที่นี่ได้เช่นกัน
+help-z-choice =   .z.* / .my.*               ใช้ .z.* สำหรับ Scheme สาธารณะ และ .my.* สำหรับ Scheme ส่วนตัว
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     kişisel config
 help-topic-inbox =   .help/inbox                  gelen kutusu
 help-topic-doc =   .help/doc                    belgeler
 help-topic-actor =   .help/actor                  uzak actor
+help-topic-z =   .help/z                      genel ve özel Scheme içeriği
 help-topic-zscheme =   .help/zscheme               satır içi Scheme ifadeleri ve belgeler
 help-topic-url =   .help/url                    zion'u bir URL bağlantısıyla aç
 help-topic-i18n = .help/i18n                   kimliğiniz için dil tercihi
@@ -412,6 +413,8 @@ batch-step-timeout = toplu adım zaman aşımına uğradı
 batch-done = Batch { $secs }s içinde bitti — { $steps } adım
 batch-done-error = Batch hatalarla { $secs }s içinde bitti — { $steps } adım
 msg-timeout = Mesaj zaman aşımına uğradı (60s içinde yanıt yok)
+msg-outbox-open-timeout = { $target } aktörüne ulaşılamıyor — bağlantı { $ms }ms sonra zaman aşımına uğradı
+msg-outbox-send-timeout = { $target } hedefine gönderim { $ms }ms sonra zaman aşımına uğradı — bağlantı kopmuş olabilir
 err-unknown-command = bilinmeyen komut: { $path }
 err-read-only-path = { $path } salt okunur
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        taslak belgeyi paralel değerlendir
@@ -426,6 +429,14 @@ scheme-not-a-cid = Geçersiz CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Uyarı: IPNS özel anahtarınız kimlik yayımlama için bu çalışma ortamına gönderilecektir. Yalnızca tamamen güvendiğiniz bir çalışma ortamı kullanın.
+
+# -- Help text -- z and my
+help-header-z = ── .z ve .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       herkese açık veya yayınlanabilir içerik; burada sırlar saklamayın
+help-z-scheme =   .z.scheme                  başlangıçta yüklenen ve değerlendirilen Scheme betiği
+help-z-control =   .z.scheme                 başlatıcı betiğin içeriğini siz kontrol edersiniz
+help-z-private =   .my.*                     özel yerel yapılandırma; Scheme burada da saklanabilir
+help-z-choice =   .z.* / .my.*               herkese açık Scheme için .z.* ve özel Scheme için .my.* kullanın
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

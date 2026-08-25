@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config cá nhân
 help-topic-inbox =   .help/inbox                  hộp thư đến
 help-topic-doc =   .help/doc                    tài liệu
 help-topic-actor =   .help/actor                  actor từ xa
+help-topic-z =   .help/z                      nội dung Scheme công khai và riêng tư
 help-topic-zscheme =   .help/zscheme               biểu thức Scheme nội tuyến và tài liệu
 help-unknown-topic =   .help/{ $topic }: chủ đề không xác định
 
@@ -413,6 +414,8 @@ batch-step-timeout = bước hàng loạt đã hết thời gian
 batch-done = Batch hoàn tất trong { $secs }s — { $steps } bước
 batch-done-error = Batch hoàn tất với lỗi trong { $secs }s — { $steps } bước
 msg-timeout = Tin nhắn hết thời gian chờ (không có trả lời trong 60s)
+msg-outbox-open-timeout = không thể kết nối tới tác tử { $target } — kết nối hết thời gian chờ sau { $ms }ms
+msg-outbox-send-timeout = gửi đến { $target } hết thời gian chờ sau { $ms }ms — kết nối có thể đã bị ngắt
 err-unknown-command = lệnh không xác định: { $path }
 err-read-only-path = { $path } chỉ đọc
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        đánh giá tài liệu nháp song song
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID không hợp lệ: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Cảnh báo: Khóa riêng tư IPNS của bạn sẽ được gửi đến môi trường chạy này để xuất bản danh tính. Chỉ sử dụng môi trường chạy mà bạn hoàn toàn tin tưởng.
+
+# -- Help text -- z and my
+help-header-z = ── .z và .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       nội dung công khai hoặc có thể xuất bản; đừng lưu bí mật ở đây
+help-z-scheme =   .z.scheme                  tập lệnh Scheme được tải và đánh giá khi khởi động
+help-z-control =   .z.scheme                 bạn tự kiểm soát nội dung của tập lệnh khởi động
+help-z-private =   .my.*                     cấu hình cục bộ riêng tư; Scheme có thể được lưu ở đây
+help-z-choice =   .z.* / .my.*               dùng .z.* cho Scheme công khai và .my.* cho Scheme riêng tư
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     personal setup
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    document dem
 help-topic-actor =   .help/actor                  far actor
+help-topic-z =   .help/z                      public and private Scheme konten
 help-topic-zscheme =   .help/zscheme               Scheme expression inside line and docs
 help-unknown-topic =   .help/{ $topic }: topic wey no sabi
 
@@ -399,6 +400,8 @@ batch-step-timeout = batch step timed out
 batch-done = Batch don finish for { $secs }s — { $steps } steps
 batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
+msg-outbox-open-timeout = actor { $target } no dey reach — connection don time out afta { $ms }ms
+msg-outbox-send-timeout = sendin to { $target } don time out afta { $ms }ms — connection fit don drop
 err-unknown-command = no sabi command: { $path }
 err-read-only-path = { $path } na read-only
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
@@ -413,6 +416,14 @@ scheme-not-a-cid = Dis CID no valid: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Warning: Yur IPNS private key go send go dis runtime to publish yur identity. Only use runtime wey you trust kpata kpata.
+
+# -- Help text -- z and my
+help-header-z = ── .z and .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       public or publishable konten; make yu no store secret for here
+help-z-scheme =   .z.scheme                  di Scheme script wey dem load and run wen yu start
+help-z-control =   .z.scheme                 na you control wetin dey inside di startup script yuseff
+help-z-private =   .my.*                     private local config; Scheme fit store here too
+help-z-choice =   .z.* / .my.*               use .z.* for public Scheme and .my.* for private Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

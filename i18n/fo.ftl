@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     personlig config
 help-topic-inbox =   .help/inbox                  indbakke
 help-topic-doc =   .help/doc                    dokumenter
 help-topic-actor =   .help/actor                  fjern actor
+help-topic-z =   .help/z                      alment og privat Scheme-innhald
 help-topic-zscheme =   .help/zscheme               innfeld Scheme-úttrykk og skjalfesting
 help-unknown-topic =   .help/{ $topic }: ukendt emne
 
@@ -406,6 +407,8 @@ batch-step-timeout = hópstig tíðaravmarkað
 batch-done = Batch færdig på { $secs }s — { $steps } trin
 batch-done-error = Batch færdig med fejl på { $secs }s — { $steps } trin
 msg-timeout = Beskeden fik timeout (intet svar på 60s)
+msg-outbox-open-timeout = gerðarmaðurin { $target } verður ikki náaður — samband fækk timeout eftir { $ms }ms
+msg-outbox-send-timeout = sending til { $target } fekk timeout eftir { $ms }ms — sambandið kann vera dottíð
 err-unknown-command = ókend kommando: { $path }
 err-read-only-path = { $path } er bert lesandi
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluer kladdedokument parallelt
@@ -420,6 +423,14 @@ scheme-not-a-cid = Ógilt CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Áminning: Tín privati IPNS-lykil verður sendur til hetta keyrsluumhvørvi til at birta kennsl. Nýt bert eitt keyrsluumhvørvi tú fulliga treystir.
+
+# -- Help text -- z and my
+help-header-z = ── .z og .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       álmánligt ella útgevandi innihald; goym ikki loyndumál her
+help-z-scheme =   .z.scheme                  Scheme-handritinum, sum verur loðað og mett við byrjan
+help-z-control =   .z.scheme                 tú stjórnar sjálvur innihaldinum í byrjanarhandritinum
+help-z-private =   .my.*                     privat lokal samansøting; Scheme kann eisini goymt her
+help-z-choice =   .z.* / .my.*               nýt .z.* til álmánnan Scheme og .my.* til privatan Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

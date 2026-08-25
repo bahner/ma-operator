@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     persnal config
 help-topic-inbox =   .help/inbox                  inbox box
 help-topic-doc =   .help/doc                    dokyument dem
 help-topic-actor =   .help/actor                  far actor
+help-topic-z =   .help/z                      pɔblik ɛn prayvit Scheme kɔntin
 help-topic-zscheme =   .help/zscheme               Scheme ɛkspreshɔn insay layn ɛn dɔkyumɛnt
 help-unknown-topic =   .help/{ $topic }: topic no sabi
 
@@ -399,6 +400,8 @@ batch-step-timeout = batch step timed out
 batch-done = Batch don finish for { $secs }s — { $steps } steps
 batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
+msg-outbox-open-timeout = di actor { $target } no dey reach — di connection don time out afta { $ms }ms
+msg-outbox-send-timeout = di sendin to { $target } don time out afta { $ms }ms — di connection fit don drop
 err-unknown-command = no sabi koman: { $path }
 err-read-only-path = { $path } na for rid nomo
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
@@ -413,6 +416,14 @@ scheme-not-a-cid = Dat no bin valid CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Wanin: Yu IPNS praivet ki go sen go dis runtime fo pablish yu adentiti. Yon-li yuz wan runtime we yu trit im.
+
+# -- Help text -- z and my
+help-header-z = ── .z ɛn .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       pɔblik ɔ we yu go pɔblish; nɔ stoa sikrit de
+help-z-scheme =   .z.scheme                  di Scheme skript we lod ɛn ron we yu stat
+help-z-control =   .z.scheme                 yu yusɛf kɔntrol wetin de insay di stat skript
+help-z-private =   .my.*                     prayvit lokal kɔnfig; Scheme kin stoa de bak
+help-z-choice =   .z.* / .my.*               yuz .z.* fɔ pɔblik Scheme ɛn .my.* fɔ prayvit Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

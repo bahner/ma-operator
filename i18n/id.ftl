@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config pribadi
 help-topic-inbox =   .help/inbox                  kotak masuk
 help-topic-doc =   .help/doc                    dokumen
 help-topic-actor =   .help/actor                  actor jarak jauh
+help-topic-z =   .help/z                      konten Scheme publik dan pribadi
 help-topic-zscheme =   .help/zscheme               ekspresi Scheme sebaris dan dokumentasi
 help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
@@ -413,6 +414,8 @@ batch-step-timeout = langkah batch habis waktunya
 batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
 batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
 msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+msg-outbox-open-timeout = aktor { $target } tidak dapat dijangkau — koneksi habis waktu setelah { $ms }ms
+msg-outbox-send-timeout = pengiriman ke { $target } habis waktu setelah { $ms }ms — koneksi mungkin terputus
 err-unknown-command = perintah tidak dikenal: { $path }
 err-read-only-path = { $path } hanya-baca
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID tidak valid: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Peringatan: Kunci privat IPNS Anda akan dikirim ke runtime ini untuk penerbitan identitas. Gunakan hanya runtime yang sepenuhnya Anda percayai.
+
+# -- Help text -- z and my
+help-header-z = ── .z dan .my ───────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       konten publik atau dapat dipublikasikan; jangan simpan rahasia di sini
+help-z-scheme =   .z.scheme                  skrip Scheme yang dimuat dan dievaluasi saat startup
+help-z-control =   .z.scheme                 Anda sendiri yang mengontrol isi skrip startup
+help-z-private =   .my.*                     konfigurasi lokal pribadi; Scheme dapat disimpan di sini juga
+help-z-choice =   .z.* / .my.*               gunakan .z.* untuk Scheme publik dan .my.* untuk Scheme pribadi
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

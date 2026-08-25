@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     config personal
 help-topic-inbox =   .help/inbox                  bandeja de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
+help-topic-z =   .help/z                      publika kaj privata Scheme-enhavo
 help-topic-zscheme =   .help/zscheme               enliniaj Scheme-esprimoj kaj dokumentaro
 help-topic-url =   .help/url                    malfermi zion per URL-ligilo
 help-topic-i18n = .help/i18n                   lingvoprefero por via identeco
@@ -397,7 +398,9 @@ batch-step-timeout = batpaŝo elĉerpita
 
 batch-done = Lote completado en { $secs }s — { $steps } pasos
 batch-done-error = Lote terminado con errores en { $secs }s — { $steps } pasos
-msg-timeout = Mensaje agotado (sin respuesta en 60s)
+msg-timeout = Mesaĝo eltempiĝis (neniu respondo post 60s)
+msg-outbox-open-timeout = la aktoro { $target } estas neatingebla — la konekto eltempiĝis post { $ms }ms
+msg-outbox-send-timeout = la sendo al { $target } eltempiĝis post { $ms }ms — la konekto eble rompiĝis
 err-unknown-command = nekonata komando: { $path }
 err-read-only-path = { $path } estas nurlega
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluar documento temporal en paralelo
@@ -412,6 +415,14 @@ scheme-not-a-cid = Nevalida CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Averto: Via IPNS privata ŝlosilo estos sendita al ĉi tiu rultempa servilo por identeca eldonado. Uzu nur ruлtempa servilon, kiun vi plene fidas.
+
+# -- Help text -- z and my
+help-header-z = ── .z kaj .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       publika aŭ publikebla enhavo; ne konservu sekretojn ĉi tie
+help-z-scheme =   .z.scheme                  la Scheme-skripto ŝargita kaj taksita dum startigo
+help-z-control =   .z.scheme                 vi mem regas la enhavon de la startiga skripto
+help-z-private =   .my.*                     privata loka agordo; Scheme povas esti konservita ĉi tie ankaŭ
+help-z-choice =   .z.* / .my.*               uzu .z.* por publika Scheme kaj .my.* por privata Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

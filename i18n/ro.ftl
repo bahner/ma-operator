@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     config personal
 help-topic-inbox =   .help/inbox                  mesaje primite
 help-topic-doc =   .help/doc                    documente
 help-topic-actor =   .help/actor                  actor la distanță
+help-topic-z =   .help/z                      conținut Scheme public și privat
 help-topic-zscheme =   .help/zscheme               expresii Scheme inline și documentație
 help-unknown-topic =   .help/{ $topic }: subiect necunoscut
 
@@ -406,6 +407,8 @@ batch-step-timeout = pasul lotului a expirat
 batch-done = Batch terminat în { $secs }s — { $steps } pași
 batch-done-error = Batch terminat cu erori în { $secs }s — { $steps } pași
 msg-timeout = Mesaj expirat (niciun răspuns în 60s)
+msg-outbox-open-timeout = actorul { $target } este inaccesibil — conexiunea a expirat după { $ms }ms
+msg-outbox-send-timeout = trimiterea către { $target } a expirat după { $ms }ms — conexiunea s-ar putea sa fi căzut
 err-unknown-command = comandă necunoscută: { $path }
 err-read-only-path = { $path } este doar pentru citire
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluează documentul temporar în paralel
@@ -422,6 +425,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Avertisment: Cheia ta privată IPNS va fi trimisă la acest mediu de execuție pentru publicarea identității. Folosește doar un mediu de execuție în care ai deplină încredere.
 
 # -- Help text -- zscheme
+help-header-z = ── .z și .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       conținut public sau publicabil; nu stoca secrete aici
+help-z-scheme =   .z.scheme                  scriptul Scheme încărcat și evaluat la pornire
+help-z-control =   .z.scheme                 tu controlezi conținutul scriptului de pornire
+help-z-private =   .my.*                     configurație locală privată; Scheme poate fi stocat și aici
+help-z-choice =   .z.* / .my.*               folosește .z.* pentru Scheme public și .my.* pentru Scheme privat
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme evaluează expresiile Scheme incluse în comenzile zion și inserează rezultatul în linie înainte de trimitere.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemplu inline; trimite "say 7 + 5 = 12"

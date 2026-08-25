@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-z =   .help/z                      àkóónú Scheme gbogbogbò àti àdáni
 help-topic-zscheme =   .help/zscheme               àwọn ìfihàn Scheme inú ila àti ìwé ìtọ́nisọ́nà
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
@@ -412,7 +413,9 @@ batch-step-timeout = ipele igbese akoko jade
 
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
-msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+msg-timeout = Àkókò i̩fi̩sé ẹbá tún pọ (ọ̀ sí ịdáhún ní́nú 60s)
+msg-outbox-open-timeout = a kò le dé olúwò { $target } — ásàpọ sàpọ ná ẹbá tún pọ lẹ́yin { $ms }ms
+msg-outbox-send-timeout = ífiṣẹ́ sí { $target } ẹbá tún pọ lẹ́yin { $ms }ms — ásàpọ le tú̀
 err-unknown-command = àṣẹ tí a kò mọ̀: { $path }
 err-read-only-path = { $path } jẹ́ fún kíkà nìkan
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
@@ -427,6 +430,15 @@ scheme-not-a-cid = CID tó tọ kọ: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Ìkìlọ̀: Kọ́kọ́rọ́ ìkọ̀kọ̀ IPNS rẹ yóò rán sí runtime yìí fún ìtẹ̀jáde ìdánimọ̀. Lò nìkan runtime tí o ní ìgbẹ́kẹ̀lé pátápátá sí.
+
+# -- Help text -- z and my
+
+help-header-z = ── .z ati .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       akoonu gbogboogbo tabi tó le ṣe àtẹjade; maṣe fi aṣírí pàmọ́ síbí
+help-z-scheme =   .z.scheme                  iwe Scheme ti a gbe jade ti a si ṣe idanwo nigba ibẹrẹ
+help-z-control =   .z.scheme                 iwọ funrara rẹ ni o nṣakoso akoonu iwe ibẹrẹ
+help-z-private =   .my.*                     eto ibilekun ti ara ẹni; Scheme le wa ni ipamọ nibi paapaa
+help-z-choice =   .z.* / .my.*               lo .z.* fun Scheme gbogboogbo ati .my.* fun Scheme ti ara ẹni
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

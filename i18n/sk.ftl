@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     osobní konfigurace
 help-topic-inbox =   .help/inbox                  schránka
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  vzdálený actor
+help-topic-z =   .help/z                      verejný a súkromný obsah Scheme
 help-topic-zscheme =   .help/zscheme               vložené výrazy Scheme a dokumentácia
 help-unknown-topic =   .help/{ $topic }: neznámé téma
 
@@ -406,6 +407,8 @@ batch-step-timeout = časový limit dávkového kroku vypršal
 batch-done = Dávka dokončena za { $secs }s — { $steps } kroků
 batch-done-error = Dávka skončila s chybami za { $secs }s — { $steps } kroků
 msg-timeout = Zprávě vypršel čas (žádná odpověď za 60s)
+msg-outbox-open-timeout = aktér { $target } je nedostupný — spojenie vypršalo po { $ms }ms
+msg-outbox-send-timeout = odoslanie na { $target } vypršalo po { $ms }ms — spojenie mohlo byť prerušené
 err-unknown-command = neznámy príkaz: { $path }
 err-read-only-path = { $path } je iba na čítanie
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        vyhodnotit pracovní dokument paralelně
@@ -420,6 +423,14 @@ scheme-not-a-cid = Neplatný CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Upozornenie: Váš súkromný kľúč IPNS bude odoslaný do tohto runtime prostredia na publikovanie identity. Používajte iba runtime prostredie, ktorému plne dôverujete.
+
+# -- Help text -- z and my
+help-header-z = ── .z a .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       verejný alebo publikovateľný obsah; tu neuchovajte tajomstvá
+help-z-scheme =   .z.scheme                  skript Scheme načítaný a vyhodnocovaný pri štarte
+help-z-control =   .z.scheme                 obsah štartovacieho skriptu kontrolujete sami
+help-z-private =   .my.*                     súkromná lokálna konfigurácia; Scheme možno ukladať aj tu
+help-z-choice =   .z.* / .my.*               použite .z.* pre verejný Scheme a .my.* pre súkromný Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

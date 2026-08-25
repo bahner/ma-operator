@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-z =   .help/z                      abubuwan Scheme na jama'a da na sirri
 help-topic-zscheme =   .help/zscheme               magangan Scheme a cikin layi da takardu
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
@@ -412,7 +413,9 @@ batch-step-timeout = mataki mataki ya ƙare
 
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
-msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+msg-timeout = Saǧon ya ǧare lokaci (babu amsa cikin 60s)
+msg-outbox-open-timeout = wakili { $target } ba a iya isa gare shi ba — haɗi ya ƙare lokaci bayan { $ms }ms
+msg-outbox-send-timeout = aikawa zuwa { $target } ya ǧare lokaci bayan { $ms }ms — wataƙila haɗin ya yanke
 err-unknown-command = umarni da ba a sani ba: { $path }
 err-read-only-path = { $path } na karantawa kawai ne
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
@@ -427,6 +430,14 @@ scheme-not-a-cid = Ba ingantaccen CID ba: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Gargaɗi: Makullin IPNS ɗin ku na sirri zai aika zuwa wannan runtime don wallafa shaida. Yi amfani da runtime da kuka amince da shi gaba ɗaya ne kaɗai.
+
+# -- Help text -- z and my
+help-header-z = ── .z da .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       abubuwan jama'a ko wanda za a buga; kar a adana asiri a nan
+help-z-scheme =   .z.scheme                  rubutun Scheme da ake lodawa kuma ana kimanta a lokacin farawa
+help-z-control =   .z.scheme                 kai kanka kana sarrafa abubuwan cikin rubutun farawa
+help-z-private =   .my.*                     sanyi na gida na sirri; ana iya adana Scheme a nan ma
+help-z-choice =   .z.* / .my.*               yi amfani da .z.* don Scheme na jama'a da .my.* don Scheme na sirri
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

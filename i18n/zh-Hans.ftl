@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     个人 config
 help-topic-inbox =   .help/inbox                  收件箱
 help-topic-doc =   .help/doc                    文档
 help-topic-actor =   .help/actor                  远程 actor
+help-topic-z =   .help/z                      公开和私有的 Scheme 内容
 help-topic-zscheme =   .help/zscheme               内联 Scheme 表达式和文档
 help-topic-url =   .help/url                    通过 URL 链接打开 zion
 help-topic-i18n = .help/i18n                   您身份的语言偏好
@@ -412,6 +413,8 @@ batch-step-timeout = 批处理步骤超时
 batch-done = batch 已完成，用时 { $secs }s — { $steps } 步
 batch-done-error = batch 已完成但有错误，用时 { $secs }s — { $steps } 步
 msg-timeout = 消息超时（60s 内无回复）
+msg-outbox-open-timeout = 无法联系到行动方 { $target } — 连接在 { $ms }ms 后超时
+msg-outbox-send-timeout = 发送给 { $target } 在 { $ms }ms 后超时 — 连接可能已断开
 err-unknown-command = 未知命令：{ $path }
 err-read-only-path = { $path } 为只读
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        并行执行临时文档
@@ -426,6 +429,14 @@ scheme-not-a-cid = 无效的 CID：{ $value }
 label-runtime = 马
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = 警告：您的IPNS私钥将被发送到此运行时用于身份发布。请仅使用您完全信任的运行时。
+
+# -- Help text -- z and my
+help-header-z = ── .z 与 .my ───────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       公共或可发布的内容；请勿在此存储机密
+help-z-scheme =   .z.scheme                  启动时加载并求值的 Scheme 脚本
+help-z-control =   .z.scheme                 您自己控制启动脚本的内容
+help-z-private =   .my.*                     私有本地配置；Scheme 也可存储于此
+help-z-choice =   .z.* / .my.*               公共 Scheme 使用 .z.*，私有 Scheme 使用 .my.*
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

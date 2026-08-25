@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     config pribadi
 help-topic-inbox =   .help/inbox                  kotak masuk
 help-topic-doc =   .help/doc                    dokumen
 help-topic-actor =   .help/actor                  actor jarak jauh
+help-topic-z =   .help/z                      maudhui ya Scheme ya umma na ya faragha
 help-topic-zscheme =   .help/zscheme               semi za Scheme ndani ya mstari na nyaraka
 help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
@@ -405,7 +406,9 @@ batch-step-timeout = hatua ya kundi imeisha muda
 
 batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
 batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
-msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+msg-timeout = Ujumbe umeisha muda (hakuna jibu ndani ya 60s)
+msg-outbox-open-timeout = mtendaji { $target } hafikiki — muunganisho umeisha muda baada ya { $ms }ms
+msg-outbox-send-timeout = kutuma kwa { $target } kumeisha muda baada ya { $ms }ms — muunganisho huenda umekatika
 err-unknown-command = amri isiyojulikana: { $path }
 err-read-only-path = { $path } ni ya kusoma tu
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
@@ -420,6 +423,14 @@ scheme-not-a-cid = CID si sahihi: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Onyo: Ufunguo wako wa siri wa IPNS utatumwa kwa runtime hii kwa ajili ya kuchapisha utambulisho. Tumia runtime unayoiamini kabisa tu.
+
+# -- Help text -- z and my
+help-header-z = ── .z na .my ─────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       maudhui ya umma au yanayoweza kuchapishwa; usihifadhi siri hapa
+help-z-scheme =   .z.scheme                  hati ya Scheme iliyopakiwa na kutathminiwa wakati wa kuanzisha
+help-z-control =   .z.scheme                 wewe mwenyewe unadhibiti maudhui ya hati ya kuanzisha
+help-z-private =   .my.*                     usanidi wa ndani wa kibinafsi; Scheme inaweza kuhifadhiwa hapa pia
+help-z-choice =   .z.* / .my.*               tumia .z.* kwa Scheme ya umma na .my.* kwa Scheme ya kibinafsi
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

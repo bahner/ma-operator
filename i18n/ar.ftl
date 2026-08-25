@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     الإعداد الشخصي
 help-topic-inbox =   .help/inbox                  الوارد
 help-topic-doc =   .help/doc                    المستندات
 help-topic-actor =   .help/actor                  ممثل بعيد
+help-topic-z =   .help/z                      محتوى Scheme العام والخاص
 help-topic-zscheme =   .help/zscheme               تعابير Scheme المضمنة والوثائق
 help-topic-url =   .help/url                    فتح zion عبر رابط URL
 help-topic-i18n =   .help/i18n                   language preference for your identity
@@ -412,6 +413,8 @@ batch-step-timeout = batch step timed out
 batch-done = اكتملت الدفعة في { $secs }ث — { $steps } خطوات
 batch-done-error = اكتملت الدفعة مع أخطاء في { $secs }ث — { $steps } خطوات
 msg-timeout = انتهت مهلة الرسالة (لا رد خلال 60ث)
+msg-outbox-open-timeout = الفاعل { $target } غير قابل للوصول — انتهت مهلة الاتصال بعد { $ms }ms
+msg-outbox-send-timeout = انتهت مهلة الإرسال إلى { $target } بعد { $ms }ms — ربما انقطع الاتصال
 err-unknown-command = أمر غير معروف: { $path }
 err-read-only-path = { $path } للقراءة فقط
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        قيّم مستند المسودة (بالتوازي)
@@ -426,6 +429,14 @@ scheme-not-a-cid = CID غير صالح: { $value }
 label-runtime = ما
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = تحذير: سيتم إرسال مفتاحك الخاص IPNS إلى بيئة التشغيل هذه لنشر هويتك. استخدم فقط بيئة تشغيل تثق بها تمامًا.
+
+# -- Help text -- z and my
+help-header-z = ── .z و .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       محتوى عام أو قابل للنشر؛ لا تخزن الأسرار هنا
+help-z-scheme =   .z.scheme                  نص Scheme محمّل ومُقيّم عند بدء التشغيل
+help-z-control =   .z.scheme                 أنت تتحكم في محتوى نص بدء التشغيل بنفسك
+help-z-private =   .my.*                     تكوين محلي خاص؛ يمكن تخزين Scheme هنا أيضًا
+help-z-choice =   .z.* / .my.*               استخدم .z.* لـ Scheme العام و .my.* لـ Scheme الخاص
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

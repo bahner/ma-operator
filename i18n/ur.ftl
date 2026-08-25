@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     الإعداد الشخصي
 help-topic-inbox =   .help/inbox                  الوارد
 help-topic-doc =   .help/doc                    المستندات
 help-topic-actor =   .help/actor                  ممثل بعيد
+help-topic-z =   .help/z                      عوامی اور نجی Scheme مواد
 help-topic-zscheme =   .help/zscheme               اِن لائن Scheme اظہارات اور دستاویزات
 help-unknown-topic =   .help/{ $topic }: موضوع غير معروف
 
@@ -412,7 +413,9 @@ batch-step-timeout = بیچ کا مرحلہ ختم ہو گیا۔
 
 batch-done = اكتملت الدفعة في { $secs }ث — { $steps } خطوات
 batch-done-error = اكتملت الدفعة مع أخطاء في { $secs }ث — { $steps } خطوات
-msg-timeout = انتهت مهلة الرسالة (لا رد خلال 60ث)
+msg-timeout = پیغام کا وقت ختم ہوگیا (60s میں کوئی جواب نہیںں)
+msg-outbox-open-timeout = فنکار { $target } تک رسائی ناممکن ہے — کنیکشن { $ms }ms کے بعد وقت ختم ہوگیا
+msg-outbox-send-timeout = { $target } کو بھیجنا { $ms }ms کے بعد وقت ختم ہوگیا — کنیکشن منقطع ہو سکتا ہے
 err-unknown-command = نامعلوم کمانڈ: { $path }
 err-read-only-path = { $path } صرف پڑھنے کے لیے ہے
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        قيّم مستند المسودة (بالتوازي)
@@ -427,6 +430,14 @@ scheme-not-a-cid = غیر معتبر CID: { $value }
 label-runtime = ما
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = انتباہ: آپ کی IPNS نجی کلید شناخت کی اشاعت کے لیے اس رن ٹائم کو بھیجی جائے گی۔ صرف ایسے رن ٹائم کا استعمال کریں جس پر آپ مکمل بھروسہ کریں۔
+
+# -- Help text -- z and my
+help-header-z = ── .z اور .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       عوامی یا شائع ہونے قابل مواد; یہاں راز ذخیرہ نہ کریں
+help-z-scheme =   .z.scheme                  Scheme سکرپٹ جو شروع میں لوڈ اور جانچی جاتی ہے
+help-z-control =   .z.scheme                 شروعی سکرپٹ کے مواد کو آپ خود کنٹرول کرتے ہیں
+help-z-private =   .my.*                     ذاتی مقامی تشکیل; Scheme یہاں بھی ذخیرہ کیا جا سکتا ہے
+help-z-choice =   .z.* / .my.*               عوامی Scheme کے لیے .z.* اور ذاتی Scheme کے لیے .my.* استعمال کریں
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     személyes config
 help-topic-inbox =   .help/inbox                  bejövő
 help-topic-doc =   .help/doc                    dokumentumok
 help-topic-actor =   .help/actor                  távoli actor
+help-topic-z =   .help/z                      nyilvános és privát Scheme-tartalom
 help-topic-zscheme =   .help/zscheme               beágyazott Scheme-kifejezések és dokumentáció
 help-unknown-topic =   .help/{ $topic }: ismeretlen téma
 
@@ -406,6 +407,8 @@ batch-step-timeout = köteglépés időtúllépés
 batch-done = Batch kész { $secs }s alatt — { $steps } lépés
 batch-done-error = Batch hibákkal fejeződött be { $secs }s alatt — { $steps } lépés
 msg-timeout = Az üzenet időtúllépett (nincs válasz 60s alatt)
+msg-outbox-open-timeout = a(z) { $target } szereplő elérhetetlen — a kapcsolat időtúllépte { $ms }ms után
+msg-outbox-send-timeout = a(z) { $target } címzettnek történő küldés időtúllépte { $ms }ms után — lehet, hogy megszakadt a kapcsolat
 err-unknown-command = ismeretlen parancs: { $path }
 err-read-only-path = { $path } csak olvasható
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        vázlatdokumentum párhuzamos kiértékelése
@@ -420,6 +423,14 @@ scheme-not-a-cid = Érvénytelen CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Figyelmeztetés: Az IPNS titkos kulcsod elküldésre kerül erre a futtatókörnyezetre az identitás publikálásához. Csak olyan futtatókörnyezetet használj, amelynek teljesen megbízol.
+
+# -- Help text -- z and my
+help-header-z = ── .z és .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       nyilvános vagy publikálható tartalom; ne tároljon itt titkokat
+help-z-scheme =   .z.scheme                  a Scheme szkript, amelyet betöltéskor futtat
+help-z-control =   .z.scheme                 Ön maga irányítja az indítószkript tartalmát
+help-z-private =   .my.*                     személyes helyi konfiguráció; Scheme itt is tárolható
+help-z-choice =   .z.* / .my.*               használja a .z.*-ot nyilvános Scheme-hez és a .my.*-ot magán Scheme-hez
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

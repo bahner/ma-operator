@@ -354,6 +354,7 @@ help-topic-my =   .help/my                     personleg config
 help-topic-inbox =   .help/inbox                  innboks
 help-topic-doc =   .help/doc                    dokument
 help-topic-actor =   .help/actor                  ekstern actor
+help-topic-z =   .help/z                      offentleg og privat Scheme-innhald
 help-topic-zscheme =   .help/zscheme               Scheme-uttrykk i kommandoar og dokumentasjon
 help-topic-url =   .help/url                    opne zion via ei URL-lenkje
 help-topic-i18n =   .help/i18n                   språkval for identiteten din
@@ -412,6 +413,8 @@ batch-step-timeout = batch-steg tidsavbrote
 batch-done = Batch ferdig på { $secs }s — { $steps } steg
 batch-done-error = Batch ferdig med feil på { $secs }s — { $steps } steg
 msg-timeout = Meldinga fekk tidsavbrot (ingen svar på 60s)
+msg-outbox-open-timeout = aktøren { $target } er ikkje tilgjengeleg — sambandet fekk tidsavbrot etter { $ms }ms
+msg-outbox-send-timeout = sending til { $target } fekk tidsavbrot etter { $ms }ms — sambandet kan ha falle ut
 err-unknown-command = ukjend kommando: { $path }
 err-read-only-path = { $path } er skriveverna
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluer kladdedokument parallelt
@@ -428,6 +431,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Åtvaring: Den private IPNS-nøkkelen din vil bli send til dette køyretidsmiljøet for identitetspublisering. Bruk berre eit køyretidsmiljø du stolar fullt og heilt på.
 
 # -- Help text -- zscheme
+help-header-z = ── .z og .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       offentleg eller publiserbart innhald; ikkje lagre løyndommar her
+help-z-scheme =   .z.scheme                  Scheme-skriptet som blir lasta inn og evaluert ved oppstart
+help-z-control =   .z.scheme                 du styrer sjølv innhaldet i oppstartsskriptet
+help-z-private =   .my.*                     privat lokal konfigurasjon; Scheme kan òg lagrast her
+help-z-choice =   .z.* / .my.*               bruk .z.* for offentleg Scheme og .my.* for privat Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme evaluerer Scheme-uttrykk som er skrivne inn i zion-kommandoar, og flettar resultatet inn i linja før ho blir send.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    døme i linja; sender "say 7 + 5 = 12"

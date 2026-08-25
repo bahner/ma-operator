@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     osobna config
 help-topic-inbox =   .help/inbox                  ulazna pošta
 help-topic-doc =   .help/doc                    dokumenti
 help-topic-actor =   .help/actor                  udaljeni actor
+help-topic-z =   .help/z                      javna in zasebna vsebina Scheme
 help-topic-zscheme =   .help/zscheme               vstavljeni izrazi Scheme in dokumentacija
 help-unknown-topic =   .help/{ $topic }: nepoznata tema
 
@@ -406,6 +407,8 @@ batch-step-timeout = paketni korak je potekel
 batch-done = Batch završen za { $secs }s — { $steps } koraka
 batch-done-error = Batch završen s pogreškama za { $secs }s — { $steps } koraka
 msg-timeout = Poruka je istekla (nema odgovora u 60s)
+msg-outbox-open-timeout = akter { $target } ni dosegljiv — povezava je potekla po { $ms }ms
+msg-outbox-send-timeout = pošiljanje na { $target } je poteklo po { $ms }ms — povezava je morda prekinjena
 err-unknown-command = neznan ukaz: { $path }
 err-read-only-path = { $path } je samo za branje
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluiraj privremeni dokument paralelno
@@ -420,6 +423,14 @@ scheme-not-a-cid = Neveljaven CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Opozorilo: Vaš zasebni ključ IPNS bo poslan v to izvajalno okolje za objavo identitete. Uporabljajte samo izvajalno okolje, ki mu popolnoma zaupate.
+
+# -- Help text -- z and my
+help-header-z = ── .z in .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       javna ali objavljena vsebina; tukaj ne shranjujte skrivnosti
+help-z-scheme =   .z.scheme                  skript Scheme, ki se naloži in ovrednosti ob zagonu
+help-z-control =   .z.scheme                 vsebino zagonskega skripta nadzorujete sami
+help-z-private =   .my.*                     zasebna lokalna konfiguracija; Scheme se lahko shrani tudi tukaj
+help-z-choice =   .z.* / .my.*               uporabite .z.* za javni Scheme in .my.* za zasebni Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

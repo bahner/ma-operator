@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     persnal config
 help-topic-inbox =   .help/inbox                  inbox box
 help-topic-doc =   .help/doc                    dakiment dem
 help-topic-actor =   .help/actor                  far actor
+help-topic-z =   .help/z                      poblik an praivet Scheme konten
 help-topic-zscheme =   .help/zscheme               Scheme ekspreshan ina line an docs
 help-unknown-topic =   .help/{ $topic }: taapik no nuo
 
@@ -399,6 +400,8 @@ batch-step-timeout = etap pakèt kwonometre soti
 batch-done = Batch don inna { $secs }s — { $steps } step
 batch-done-error = Batch don wid error inna { $secs }s — { $steps } step
 msg-timeout = Message taim out (no reply inna 60s)
+msg-outbox-open-timeout = actor { $target } cyaan reach — di connection taim out afta { $ms }ms
+msg-outbox-send-timeout = sendin to { $target } taim out afta { $ms }ms — di connection might a drop
 err-unknown-command = komaan no nuo: { $path }
 err-read-only-path = { $path } a onggl fi riid
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        eval scratch dakiment parallel
@@ -413,6 +416,14 @@ scheme-not-a-cid = No valid CID dis: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Warnin: Yuh IPNS privit key a go sen to dis runtime fi publish yuh identity. Only use a runtime yu fully trust.
+
+# -- Help text -- z and my
+help-header-z = ── .z an .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       poblik ar poblishan konten; no stuo no siikrit ya
+help-z-scheme =   .z.scheme                  di Scheme skrip we luod an ron wen staat op
+help-z-control =   .z.scheme                 yu kantruol di staat-op skrip konten yuself
+help-z-private =   .my.*                     praivet luokal kanfig; Scheme kin stuo ya tu
+help-z-choice =   .z.* / .my.*               yuuz .z.* fi poblik Scheme an .my.* fi praivet Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-z =   .help/z                      qabiyyee Scheme uummataa fi dhuunfaa
 help-topic-zscheme =   .help/zscheme               ibsa Scheme sarara keessa jiru fi galmee
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
@@ -412,7 +413,9 @@ batch-step-timeout = batch step timed out
 
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
-msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+msg-timeout = Ergaan yeroon isaa dabreera (deebiin 60s keessatti hin argamne)
+msg-outbox-open-timeout = hojjetaan { $target } hin argamne — walqunnamtichi { $ms }ms booda yeroon isaa dabreera
+msg-outbox-send-timeout = ergaan gara { $target } { $ms }ms booda yeroon isaa dabreera — walqunnamtichi cite ta'uu danda'a
 err-unknown-command = ajaja hin beekamne: { $path }
 err-read-only-path = { $path } dubbisuu qofa
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID sirrii miti: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Gorgorsiisa: Furtuun IPNS dhuunfaa keessan runtime kanaatti ergama eenyummaa maxxansuu. Fuula runtime amannu qofa fayyadamaa.
+
+# -- Help text -- z and my
+help-header-z = ── .z fi .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       qabiyyee uummataa ykn maxxanfamuu danda'u; iccitii asitti hin kuusinu
+help-z-scheme =   .z.scheme                  barreeffama Scheme yeroo jalqabaa fe'amee madaalamu
+help-z-control =   .z.scheme                 qabiyyee barreeffama jalqabaa ofumaan to'atta
+help-z-private =   .my.*                     qindaa'ina naannoo dhuunfaa; Scheme asittis kuufamuu ni danda'a
+help-z-choice =   .z.* / .my.*               .z.* Scheme uummaataaf fi .my.* Scheme dhuunfaaf fayyadami
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

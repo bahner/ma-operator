@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     config pessoal
 help-topic-inbox =   .help/inbox                  caixa de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
+help-topic-z =   .help/z                      kontéudu Scheme públiku y privadu
 help-topic-zscheme =   .help/zscheme               ekspreson Scheme na linha y dokumentason
 help-unknown-topic =   .help/{ $topic }: tópico desconhecido
 
@@ -399,6 +400,8 @@ batch-step-timeout = a etapa do lote expirou
 batch-done = Lote concluído em { $secs }s — { $steps } passos
 batch-done-error = Lote concluído com erros em { $secs }s — { $steps } passos
 msg-timeout = Mensagem expirou (sem resposta em 60s)
+msg-outbox-open-timeout = atur { $target } ka ta alkansável — konexáu expirá dopu { $ms }ms
+msg-outbox-send-timeout = enviu pa { $target } expirá dopu { $ms }ms — konexáu pode ten kaba é
 err-unknown-command = kumandu diskonxedu: { $path }
 err-read-only-path = { $path } é só pa letura
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        avaliar documento rascunho em paralelo
@@ -413,6 +416,14 @@ scheme-not-a-cid = CID ka ta válidu: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Avisu: Bu xave privadu IPNS di bu la ser mandadu pa kel runtime li pa pabliká identidadi. So uza un runtime ku bu kunfia di txeu.
+
+# -- Help text -- z and my
+help-header-z = ── .z y .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       konteudu publiku o publikavel; ka gardadu sigredu li
+help-z-scheme =   .z.scheme                  skript Scheme ki ta karga y avalia na inisiu
+help-z-control =   .z.scheme                 bo kontrola konteudu di skript di inisiu bu kabesa
+help-z-private =   .my.*                     konfigurasaun lokal privadu; Scheme po ta garda li tanbe
+help-z-choice =   .z.* / .my.*               uza .z.* pa Scheme publiku y .my.* pa Scheme privadu
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

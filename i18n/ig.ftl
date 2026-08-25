@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config pribadi
 help-topic-inbox =   .help/inbox                  kotak masuk
 help-topic-doc =   .help/doc                    dokumen
 help-topic-actor =   .help/actor                  actor jarak jauh
+help-topic-z =   .help/z                      ọdịnaya Scheme ọha na nke nzuzo
 help-topic-zscheme =   .help/zscheme               okwu Scheme n’ime ahịrị na akwụkwọ
 help-unknown-topic =   .help/{ $topic }: topik tidak dikenal
 
@@ -413,6 +414,8 @@ batch-step-timeout = Oge nkwụsị nke ogbe agwụla
 batch-done = Batch selesai dalam { $secs }d — { $steps } langkah
 batch-done-error = Batch selesai dengan kesalahan dalam { $secs }d — { $steps } langkah
 msg-timeout = Pesan habis waktu (tidak ada balasan dalam 60d)
+msg-outbox-open-timeout = onye ozi { $target } enweghi ike iru — njikota kwụsịrị mgbe { $ms }ms gasịrị
+msg-outbox-send-timeout = izipu ozi na { $target } kwụsịrị mgbe { $ms }ms gasịrị — ma eleghi anya njikota ahụ akwụsịla
 err-unknown-command = iwu a na-amaghị: { $path }
 err-read-only-path = { $path } bụ naanị ọgụgụ
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluasi dokumen coretan secara paralel
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID na-adịghị mma: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Ịdọ aka ná ntị: Igodo nzuzo IPNS gị ga-aziga runtime a maka nkwupụta njirimara. Jiri naanị runtime i kwere n'ezi obi nke ọma.
+
+# -- Help text -- z and my
+help-header-z = ── .z na .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       ọdịnaya ọhaneze ma ọ bụ nke a ga-ebipụta; echekwala ihe nzuzo ebe a
+help-z-scheme =   .z.scheme                  script Scheme a na-ebupụta ma nyochaa n'oge mmalite
+help-z-control =   .z.scheme                 ọ bụ gị na-achịkwa ọdịnaya script mmalite n'onwe gị
+help-z-private =   .my.*                     nhazi mpaghara nke onwe; enwere ike ichekwa Scheme ebe a
+help-z-choice =   .z.* / .my.*               jiri .z.* maka Scheme ọhaneze na .my.* maka Scheme nke onwe
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

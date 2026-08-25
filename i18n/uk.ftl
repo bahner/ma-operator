@@ -220,6 +220,7 @@ help-topic-my =   .help/my                     особиста конфігур
 help-topic-inbox =   .help/inbox                  вхідні — .my.inbox.*
 help-topic-doc =   .help/doc                    документи — !edit, !eval, !publish, !fetch, !cid
 help-topic-actor =   .help/actor                  віддалений актор — CRUD, об'єкти, CID
+help-topic-z =   .help/z                      публічний і приватний вміст Scheme
 help-topic-zscheme =   .help/zscheme               вбудовані вирази Scheme і документація
 help-topic-url =   .help/url                    відкрити zion через URL
 help-topic-i18n = .help/i18n                   мовні переваги для вашої особистості
@@ -420,6 +421,8 @@ batch-step-timeout = час очікування кроку пакету вич�
 batch-done = Пакет виконано за { $secs }с — { $steps } кроків
 batch-done-error = Пакет завершено з помилками за { $secs }с — { $steps } кроків
 msg-timeout = Час очікування повідомлення вичерпано (немає відповіді протягом 60 с)
+msg-outbox-open-timeout = актор { $target } недосяжний — з'єднання вичерпало після { $ms }мс
+msg-outbox-send-timeout = надсилання до { $target } вичерпало після { $ms }мс — з'єднання могло розірватися
 err-unknown-command = невідома команда: { $path }
 err-read-only-path = { $path } лише для читання
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        виконати команди паралельно
@@ -428,6 +431,14 @@ help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        викона
 scheme-cid-fetch-error = Не вдалося отримати CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Недійсний CID: { $value }
+
+# -- Help text -- z and my
+help-header-z = ── .z та .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       публічний або придатний до публікації вміст; не зберігайте тут секрети
+help-z-scheme =   .z.scheme                  скрипт Scheme, який завантажується і виконується при запуску
+help-z-control =   .z.scheme                 ви самі контролюєте вміст скрипта запуску
+help-z-private =   .my.*                     приватна локальна конфігурація; Scheme може зберігатися і тут
+help-z-choice =   .z.* / .my.*               використовуйте .z.* для публічного Scheme і .my.* для приватного Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

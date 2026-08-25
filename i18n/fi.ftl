@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     henkilökohtainen config
 help-topic-inbox =   .help/inbox                  saapuneet
 help-topic-doc =   .help/doc                    dokumentit
 help-topic-actor =   .help/actor                  etä-actor
+help-topic-z =   .help/z                      julkinen ja yksityinen Scheme-sisältö
 help-topic-zscheme =   .help/zscheme               rivinsisäiset Scheme-lausekkeet ja dokumentaatio
 help-unknown-topic =   .help/{ $topic }: tuntematon aihe
 
@@ -406,6 +407,8 @@ batch-step-timeout = erävaihe aikakatkaistiin
 batch-done = Erä valmis { $secs }s ajassa — { $steps } vaihetta
 batch-done-error = Erä päättyi virheisiin { $secs }s ajassa — { $steps } vaihetta
 msg-timeout = Viestin aika loppui (ei vastausta 60s aikana)
+msg-outbox-open-timeout = toimija { $target } ei ole tavoitettavissa — yhteys aikakatkaistiin { $ms }ms jälkeen
+msg-outbox-send-timeout = lähetys kohteeseen { $target } aikakatkaistiin { $ms }ms jälkeen — yhteys on saattanut katketa
 err-unknown-command = tuntematon komento: { $path }
 err-read-only-path = { $path } on vain luettavissa
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        arvioi luonnosdokumentti rinnakkain
@@ -422,6 +425,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Varoitus: IPNS-yksityisavaimesi lähetetään tälle suorituspalvelulle henkilöllisyytesi julkaisemiseen. Käytä vain suorituspalvelua, johon luotat täysin.
 
 # -- Help text -- zscheme
+help-header-z = ── .z ja .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       julkista tai julkaistavaa sisältöä; älä tallenna salaisuuksia tänne
+help-z-scheme =   .z.scheme                  Scheme-komentosarja, joka ladataan ja suoritetaan käynnistyksen yhteydessä
+help-z-control =   .z.scheme                 sinä hallitset käynnistyskomentosarjan sisältöä
+help-z-private =   .my.*                     yksityinen paikallinen määritys; myös Schemea voi tallentaa tänne
+help-z-choice =   .z.* / .my.*               käytä .z.* julkiseen Schemeen ja .my.* yksityiseen Schemeen
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme arvioi zion-komentoihin upotetut Scheme-lausekkeet ja liittää tuloksen riville ennen lähettämistä.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    rivinsisäinen esimerkki; lähettää "say 7 + 5 = 12"

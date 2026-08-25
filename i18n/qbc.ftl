@@ -358,6 +358,7 @@ help-topic-my =   .help/my                     own config
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    docu dem
 help-topic-actor =   .help/actor                  far actor
+help-topic-z =   .help/z                      public unte private Scheme konten
 help-topic-zscheme =   .help/zscheme               Scheme komang insid line unte docs
 help-unknown-topic =   .help/{ $topic }: topic na du sabe
 
@@ -415,6 +416,8 @@ batch-step-timeout = a etapa do lote expirou
 batch-done = Batch don finish for { $secs }s — { $steps } steps
 batch-done-error = Batch finish with errors for { $secs }s — { $steps } steps
 msg-timeout = Message time don pass (no reply for 60s)
+msg-outbox-open-timeout = actor { $target } fout beltalowda no ka rich um — connection taim owt aftaa { $ms }ms
+msg-outbox-send-timeout = sendin go { $target } taim owt aftaa { $ms }ms — di connection maybe drop
 err-unknown-command = komang na du sabe: { $path }
 err-read-only-path = { $path } pensa read-only
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        run scratch document parallel
@@ -429,6 +432,14 @@ scheme-not-a-cid = Dat na proper CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Belte wok: Da IPNS priv-key du senye go na dis runtime fo pashang identity. Kowl yuse runtime du fulding trust, walowda.
+
+# -- Help text -- z and my
+help-header-z = ── .z unte .my ──────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       public o publishable konten; no stash secret ere fo bera
+help-z-scheme =   .z.scheme                  di Scheme script im load unte run fo startup
+help-z-control =   .z.scheme                 yu kontrol wetin de inside di startup script yusef
+help-z-private =   .my.*                     private local config; Scheme fit stash ere too
+help-z-choice =   .z.* / .my.*               yus .z.* fo public Scheme unte .my.* fo private Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

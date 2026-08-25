@@ -350,6 +350,7 @@ help-topic-inbox =   .help/inbox                  skrzynka odbiorcza
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  zdalny actor
 help-topic-zscheme =   .help/zscheme               įterptos Scheme išraiškos ir dokumentacija
+help-topic-z =   .help/z                      viešas ir privatus Scheme turinys
 help-unknown-topic =   .help/{ $topic }: nieznany temat
 
 # -- Help actor section
@@ -406,6 +407,8 @@ batch-step-timeout = partijos veiksmas baigėsi
 batch-done = Batch ukończony w { $secs }s — { $steps } kroków
 batch-done-error = Batch zakończony z błędami w { $secs }s — { $steps } kroków
 msg-timeout = Wiadomość wygasła (brak odpowiedzi przez 60s)
+msg-outbox-open-timeout = veikėjas { $target } yra nepasiekiamas — ryšys baigėsi po { $ms }ms
+msg-outbox-send-timeout = siųstant { $target } ryšys baigėsi po { $ms }ms — ryšys galėjo nutrūkti
 err-unknown-command = nežinoma komanda: { $path }
 err-read-only-path = { $path } yra tik skaitomas
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        oceń dokument roboczy równolegle
@@ -420,6 +423,14 @@ scheme-not-a-cid = Netinkamas CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Įspėjimas: Jūsų IPNS privatus raktas bus išsiųstas į šią vykdymo aplinką tapatybei paskelbti. Naudokite tik vykdymo aplinką, kuriai visiškai pasitikite.
+
+# -- Help text -- z and my
+help-header-z = ── .z ir .my ──────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       viešas arba skelbtinas turinys; nesaugokite čia paslapčių
+help-z-scheme =   .z.scheme                  Scheme skriptas, įkeliamas ir vertinamas paleidimo metu
+help-z-control =   .z.scheme                 jūs patys kontroliuojate paleidimo skripto turinį
+help-z-private =   .my.*                     privati vietinė konfigūracija; Scheme taip pat gali būti saugoma čia
+help-z-choice =   .z.* / .my.*               naudokite .z.* viešam Scheme ir .my.* privačiam Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

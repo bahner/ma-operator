@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config personnelle
 help-topic-inbox =   .help/inbox                  boîte de réception
 help-topic-doc =   .help/doc                    binndanɗe
 help-topic-actor =   .help/actor                  acteur distant
+help-topic-z =   .help/z                      ko wonde e yimɓe fof walla ko cuuɗii e Scheme
 help-topic-zscheme =   .help/zscheme               konngol Scheme e nder gorol e ɗereeji
 help-unknown-topic =   .help/{ $topic }: sujet inconnu
 
@@ -413,6 +414,8 @@ batch-step-timeout = batch step timmi
 batch-done = Batch terminé en { $secs }s — { $steps } étapes
 batch-done-error = Batch terminé avec erreurs en { $secs }s — { $steps } étapes
 msg-timeout = Message expiré (aucune réponse en 60s)
+msg-outbox-open-timeout = actor { $target } o alaa yiytoowo — jokkondiral ngal fottii koñ { $ms }ms
+msg-outbox-send-timeout = nulol e { $target } fottii koñ { $ms }ms — jokkondiral ngal waawi taƴude
 err-unknown-command = yamiroore anndaaka: { $path }
 err-read-only-path = { $path } ko janngorde tan
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        évaluer le document brouillon en parallèle
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID ɓurɗo fewdo: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Tiitoore: Furdu maa IPNS e innde maa waɗete e ɗoo runtime ngam winndude dewgal maa. Huutoro tan runtime mo njinnaaɗaa haa timmi.
+
+# -- Help text -- z and my
+help-header-z = ── .z e .my ─────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       loowdi gowdi maa winnditaandi; hoto mooftinde cuuɗe ɗoo
+help-z-scheme =   .z.scheme                  bitorde Scheme nde loowteema e ndee faamnaama nde fuɗɗiima
+help-z-control =   .z.scheme                 aan hoɗata loowdi bitorde fuɗɗorde ndee
+help-z-private =   .my.*                     teeltorde nokkuure cuuɗi; Scheme ena waawi moofteede ɗoo kadi
+help-z-choice =   .z.* / .my.*               huutoro .z.* ngam Scheme gowdi e .my.* ngam Scheme cuuɗi
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

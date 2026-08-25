@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     личная config
 help-topic-inbox =   .help/inbox                  входящие
 help-topic-doc =   .help/doc                    документы
 help-topic-actor =   .help/actor                  удалённый actor
+help-topic-z =   .help/z                      общедоступное и личное содержимое Scheme
 help-topic-zscheme =   .help/zscheme               встроенные выражения Scheme и документация
 help-topic-url =   .help/url                    открыть zion по URL-ссылке
 help-topic-i18n = .help/i18n                   языковые предпочтения для вашей личности
@@ -412,6 +413,8 @@ batch-step-timeout = Время ожидания пакетного шага и�
 batch-done = Batch завершён за { $secs }s — { $steps } шагов
 batch-done-error = Batch завершён с ошибками за { $secs }s — { $steps } шагов
 msg-timeout = Сообщение истекло (нет ответа за 60s)
+msg-outbox-open-timeout = актёр { $target } недоступен — время ожидания соединения истекло через { $ms }мс
+msg-outbox-send-timeout = отправка к { $target } истекла через { $ms }мс — соединение, возможно, разорвалось
 err-unknown-command = неизвестная команда: { $path }
 err-read-only-path = { $path } доступен только для чтения
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        выполнить черновой документ параллельно
@@ -426,6 +429,14 @@ scheme-not-a-cid = Неверный CID: { $value }
 label-runtime = ма
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Предупреждение: Ваш закрытый ключ IPNS будет отправлен в эту среду выполнения для публикации удостоверения личности. Используйте только среду выполнения, которой полностью доверяете.
+
+# -- Help text -- z and my
+help-header-z = ── .z и .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       общедоступное или публикуемое содержимое; не храните здесь секреты
+help-z-scheme =   .z.scheme                  скрипт Scheme, загружаемый и выполняемый при запуске
+help-z-control =   .z.scheme                 вы сами контролируете содержимое скрипта запуска
+help-z-private =   .my.*                     личная локальная конфигурация; Scheme может храниться и здесь
+help-z-choice =   .z.* / .my.*               используйте .z.* для общедоступного Scheme и .my.* для личного Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

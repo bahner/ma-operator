@@ -344,6 +344,7 @@ help-topic-my =   .help/my                     personal settings
 help-topic-inbox =   .help/inbox                  message box
 help-topic-doc =   .help/doc                    dakiment dem
 help-topic-actor =   .help/actor                  far actor
+help-topic-z =   .help/z                      public an private Scheme ting
 help-topic-zscheme =   .help/zscheme               Scheme talk ina line an docs
 help-unknown-topic =   .help/{ $topic }: topic no known
 
@@ -401,6 +402,8 @@ batch-step-timeout = etap pakèt kwonometre soti
 batch-done = Batch don inna { $secs }s — { $steps } step
 batch-done-error = Batch don wid error inna { $secs }s — { $steps } step
 msg-timeout = Message taim out (no reply inna 60s)
+msg-outbox-open-timeout = actor { $target } no deh reach — connection time out afta { $ms }ms
+msg-outbox-send-timeout = sendin to { $target } time out afta { $ms }ms — di connection may drop
 err-unknown-command = command no known: { $path }
 err-read-only-path = { $path } a read-only
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        eval scratch dakiment parallel
@@ -415,6 +418,14 @@ scheme-not-a-cid = No real CID dis: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Watchout: Yuh IPNS private key ago sen to dis runtime fi publish yuh livity. Only use a runtime yuh fully trust, Iyah.
+
+# -- Help text -- z and my
+help-header-z = ── .z an .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       public or publishable content; nuh store no secret ya
+help-z-scheme =   .z.scheme                  di Scheme script load an run when start
+help-z-control =   .z.scheme                 yuh control di startup script yuself
+help-z-private =   .my.*                     private local config; Scheme can stay ya too
+help-z-choice =   .z.* / .my.*               use .z.* fi public Scheme an .my.* fi private Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

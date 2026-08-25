@@ -342,6 +342,7 @@ help-topic-my =   .help/my                     config pessoal
 help-topic-inbox =   .help/inbox                  caixa de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
+help-topic-z =   .help/z                      kontenido Scheme públiko i privá
 help-topic-zscheme =   .help/zscheme               ekspreshon Scheme den liña i dokumentashon
 help-unknown-topic =   .help/{ $topic }: tópico desconhecido
 
@@ -399,6 +400,8 @@ batch-step-timeout = e paso di lote a kaba di tempu
 batch-done = Lote concluído em { $secs }s — { $steps } passos
 batch-done-error = Lote concluído com erros em { $secs }s — { $steps } passos
 msg-timeout = Mensagem expirou (sem resposta em 60s)
+msg-outbox-open-timeout = e aktor { $target } no ta alkansabel — e konekshon a kaduku despues di { $ms }ms
+msg-outbox-send-timeout = e wenta pa { $target } a kaduku despues di { $ms }ms — e konekshon podisir a kibra
 err-unknown-command = komando deskonosí: { $path }
 err-read-only-path = { $path } ta solamente pa lesa
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        avaliar documento rascunho em paralelo
@@ -413,6 +416,14 @@ scheme-not-a-cid = CID no ta válido: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Aviso: Bo yabi privá IPNS lo wordo manda na e runtime aki pa pública identidad. Sòlamente uza un runtime ku bo konfía tur-tur.
+
+# -- Help text -- z and my
+help-header-z = ── .z i .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       kontenido públiko òf publikabel; no warda sekretnan aki
+help-z-scheme =   .z.scheme                  e skript Scheme ku ta karga i evaluá na inisio
+help-z-control =   .z.scheme                 bo mes ta kontrolá e kontenido di e skript di inisio
+help-z-private =   .my.*                     konfigurashon lokal privá; Scheme por keda warda aki tambe
+help-z-choice =   .z.* / .my.*               usa .z.* pa Scheme públiko i .my.* pa Scheme privá
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

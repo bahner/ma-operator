@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     個人 config
 help-topic-inbox =   .help/inbox                  受信箱
 help-topic-doc =   .help/doc                    文書
 help-topic-actor =   .help/actor                  リモート actor
+help-topic-z =   .help/z                      公開および非公開の Scheme コンテンツ
 help-topic-zscheme =   .help/zscheme               インライン Scheme 式とドキュメント
 help-topic-url =   .help/url                    URLリンクからzionを開く
 help-topic-i18n = .help/i18n                   自分のアイデンティティに合わせた言語設定
@@ -405,6 +406,8 @@ batch-step-timeout = バッチステップがタイムアウトしました
 batch-done = batch 完了: { $secs }s — { $steps } ステップ
 batch-done-error = batch はエラー付きで完了: { $secs }s — { $steps } ステップ
 msg-timeout = メッセージがタイムアウトしました (60s 応答なし)
+msg-outbox-open-timeout = アクター { $target } に到達できません — 接続が { $ms }ms 後にタイムアウトしました
+msg-outbox-send-timeout = { $target } への送信が { $ms }ms 後にタイムアウトしました — 接続が切断された可能性があります
 err-unknown-command = 不明なコマンド: { $path }
 err-read-only-path = { $path } は読み取り専用です
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        スクラッチ文書を並列評価
@@ -419,6 +422,14 @@ scheme-not-a-cid = 有効な CID ではありません: { $value }
 label-runtime = マ
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = 警告：あなたのIPNSプライベートキーはこのランタイムにアイデンティティを公開するために送信されます。完全に信頼するランタイムのみを使用してください。
+
+# -- Help text -- z and my
+help-header-z = ── .z と .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       公開または公開可能なコンテンツ。ここに秘密を保存しないでください
+help-z-scheme =   .z.scheme                  起動時に読み込まれ評価される Scheme スクリプト
+help-z-control =   .z.scheme                 起動スクリプトの内容は自分で制御します
+help-z-private =   .my.*                     プライベートなローカル設定。Scheme をここに保存することもできます
+help-z-choice =   .z.* / .my.*               公開 Scheme には .z.* を、非公開 Scheme には .my.* を使用してください
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     лична config
 help-topic-inbox =   .help/inbox                  входяща кутия
 help-topic-doc =   .help/doc                    документи
 help-topic-actor =   .help/actor                  отдалечен actor
+help-topic-z =   .help/z                      публично и частно Scheme съдържание
 help-topic-zscheme =   .help/zscheme               вградени Scheme изрази и документация
 help-unknown-topic =   .help/{ $topic }: непозната тема
 
@@ -406,6 +407,8 @@ batch-step-timeout = пакетната стъпка изтече
 batch-done = Batch завърши за { $secs }s — { $steps } стъпки
 batch-done-error = Batch завърши с грешки за { $secs }s — { $steps } стъпки
 msg-timeout = Съобщението изтече (няма отговор за 60s)
+msg-outbox-open-timeout = Участникът { $target } е недостъпен — връзката изтече след { $ms }ms
+msg-outbox-send-timeout = Изпращането до { $target } изтече след { $ms }ms — връзката може да е прекъсната
 err-unknown-command = непозната команда: { $path }
 err-read-only-path = { $path } е само за четене
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        изпълни временен документ (паралелно)
@@ -420,6 +423,14 @@ scheme-not-a-cid = Невалиден CID: { $value }
 label-runtime = ма
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Предупреждение: Вашият частен IPNS ключ ще бъде изпратен към тази среда за изпълнение за публикуване на самоличност. Използвайте само среда за изпълнение, на която напълно се доверявате.
+
+# -- Help text -- z and my
+help-header-z = ── .z и .my ─────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       обществено или публикуемо съдържание; не съхранявайте тайни тук
+help-z-scheme =   .z.scheme                  Scheme скрипт, зареден и оценен при стартиране
+help-z-control =   .z.scheme                 вие сами контролирате съдържанието на стартовия скрипт
+help-z-private =   .my.*                     частна локална конфигурация; Scheme може да се съхранява и тук
+help-z-choice =   .z.* / .my.*               използвайте .z.* за публичен Scheme и .my.* за частен Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

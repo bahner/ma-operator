@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-z =   .help/z                      ይፋዊ እና የግል የScheme ይዘት
 help-topic-zscheme =   .help/zscheme               የScheme መግለጫዎች በመስመር ውስጥ እና ሰነዶች
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
@@ -413,6 +414,8 @@ batch-step-timeout = የምድብ እርምጃ ጊዜው አልፎበታል።
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+msg-outbox-open-timeout = ተዋናይ { $target } ሊደረስ አይችልም — ግንኙነቱ ከ { $ms }ms በኋላ ጊዜው አልፏል
+msg-outbox-send-timeout = ወደ { $target } መላክ ከ { $ms }ms በኋላ ጊዜው አልፏል — ግንኙነቱ ተቋርጦ ሊሆን ይችላል
 err-unknown-command = ያልታወቀ ትእዛዝ፦ { $path }
 err-read-only-path = { $path } ለንባብ ብቻ ነው
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
@@ -427,6 +430,14 @@ scheme-not-a-cid = የሚሰራ CID አይደለም፡ { $value }
 label-runtime = ማ
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = ማስጠንቀቂያ፡ የእርስዎ IPNS የግል ቁልፍ ለማንነት ህትመት ወደ ይህ runtime ይላካል። ሙሉ በሙሉ የሚያምኑትን runtime ብቻ ይጠቀሙ።
+
+# -- Help text -- z and my
+help-header-z = ── .z እና .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       ይፋዊ ወይም ሊታተም የሚችል ይዘት፤ ምስጢሮችን እዚህ አያስቀምጡ
+help-z-scheme =   .z.scheme                  በመጀመሪያ ላይ የሚጫንና የሚገመገም የScheme ስክሪፕት
+help-z-control =   .z.scheme                 የመጀመሪያ ስክሪፕቱን ይዘት እርስዎ ራስዎ ይቆጣጠራሉ
+help-z-private =   .my.*                     የግል የአካባቢ ቅንብር፤ Scheme እዚህም ሊያከማች ይችላል
+help-z-choice =   .z.* / .my.*               ለይፋዊ Scheme .z.*፣ ለግል Scheme .my.* ይጠቀሙ
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

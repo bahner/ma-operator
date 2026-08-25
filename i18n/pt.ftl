@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     config pessoal
 help-topic-inbox =   .help/inbox                  caixa de entrada
 help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
+help-topic-z =   .help/z                      conteúdo Scheme público e privado
 help-topic-zscheme =   .help/zscheme               expressões Scheme embutidas e documentação
 help-topic-url =   .help/url                    abrir zion via um link URL
 help-topic-i18n = .help/i18n                   preferência de idioma para sua identidade
@@ -405,6 +406,8 @@ batch-step-timeout = a etapa do lote expirou
 batch-done = Lote concluído em { $secs }s — { $steps } passos
 batch-done-error = Lote concluído com erros em { $secs }s — { $steps } passos
 msg-timeout = Mensagem expirou (sem resposta em 60s)
+msg-outbox-open-timeout = o ator { $target } está inalcançável — a conexão expirou após { $ms }ms
+msg-outbox-send-timeout = o envio para { $target } expirou após { $ms }ms — a conexão pode ter caído
 err-unknown-command = comando desconhecido: { $path }
 err-read-only-path = { $path } é somente leitura
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        avaliar documento rascunho em paralelo
@@ -421,6 +424,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Aviso: A sua chave privada IPNS será enviada a este ambiente de execução para publicar a sua identidade. Use apenas um ambiente de execução em que confie totalmente.
 
 # -- Help text -- zscheme
+help-header-z = ── .z e .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       conteúdo público ou publicável; não guarde segredos aqui
+help-z-scheme =   .z.scheme                  o script Scheme carregado e avaliado no arranque
+help-z-control =   .z.scheme                 você controla o conteúdo do script de arranque
+help-z-private =   .my.*                     configuração local privada; também pode guardar Scheme aqui
+help-z-choice =   .z.* / .my.*               use .z.* para Scheme público e .my.* para Scheme privado
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme avalia expressões Scheme embutidas em comandos zion e insere o resultado na linha antes de a enviar.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemplo embutido; envia "say 7 + 5 = 12"

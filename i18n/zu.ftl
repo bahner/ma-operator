@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config yomuntu siqu
 help-topic-inbox =   .help/inbox                  ibhokisi lokungenayo
 help-topic-doc =   .help/doc                    amadokhumenti
 help-topic-actor =   .help/actor                  actor ekude
+help-topic-z =   .help/z                      okuqukethwe kwe-Scheme okusesidlangalaleni nokuyimfihlo
 help-topic-zscheme =   .help/zscheme               izisho ze-Scheme emgqeni namadokhumenti
 help-unknown-topic =   .help/{ $topic }: isihloko esingaziwa
 
@@ -413,6 +414,8 @@ batch-step-timeout = Isinyathelo seqoqo siphelelwe yisikhathi
 batch-done = I-batch iphelile ngo-{ $secs }s — { $steps } izinyathelo
 batch-done-error = I-batch iphelile ngamaphutha ngo-{ $secs }s — { $steps } izinyathelo
 msg-timeout = Umlayezo uphelelwe isikhathi (akukho mpendulo ku-60s)
+msg-outbox-open-timeout = umlingisi { $target } akafinyeleleki — uxhumano luphelelwe isikhathi emva kwe { $ms }ms
+msg-outbox-send-timeout = ukuthumela ku { $target } kuphelelwe isikhathi emva kwe { $ms }ms — uxhumano kungenzeka lwaqhawuka
 err-unknown-command = umyalo ongaziwa: { $path }
 err-read-only-path = { $path } ifundeka kuphela
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        hlola idokhumenti ye-scratch ngokuhambisana
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID ayilungile: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Isexwayiso: Ikhiye yakho yimfihlo ye-IPNS iyothumelwa ku-runtime ukuze ishicilelwe isinakiso. Sebenzisa kuphela i-runtime oyethembayo ngokugcwele.
+
+# -- Help text -- z and my
+help-header-z = ── .z no .my ───────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       okuqukethwe komphakathi noma okungashicilelwa; ungagcini izimfihlo lapha
+help-z-scheme =   .z.scheme                  iskripthi se-Scheme esilayishwa futhi sihlolwe ekuqaleni
+help-z-control =   .z.scheme                 wena uqobo lwakho ulawula okuqukethwe kweskripthi sokuqala
+help-z-private =   .my.*                     ukumisa kwendawo yangasese; i-Scheme ingagcinwa lapha futhi
+help-z-choice =   .z.* / .my.*               sebenzisa .z.* ye-Scheme yomphakathi ne-.my.* ye-Scheme yangasese
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

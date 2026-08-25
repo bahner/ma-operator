@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     προσωπική config
 help-topic-inbox =   .help/inbox                  εισερχόμενα
 help-topic-doc =   .help/doc                    έγγραφα
 help-topic-actor =   .help/actor                  απομακρυσμένος actor
+help-topic-z =   .help/z                      δημόσιο και ιδιωτικό περιεχόμενο Scheme
 help-topic-zscheme =   .help/zscheme               ενσωματωμένες εκφράσεις Scheme και τεκμηρίωση
 help-unknown-topic =   .help/{ $topic }: άγνωστο θέμα
 
@@ -406,6 +407,8 @@ batch-step-timeout = Λήξη χρονικού ορίου του βήματος 
 batch-done = Το batch ολοκληρώθηκε σε { $secs }s — { $steps } βήματα
 batch-done-error = Το batch ολοκληρώθηκε με σφάλματα σε { $secs }s — { $steps } βήματα
 msg-timeout = Το μήνυμα έληξε (καμία απάντηση σε 60s)
+msg-outbox-open-timeout = Ο ενεργός { $target } είναι μη προσβάσιμος — η σύνδεση έληξε μετά από { $ms }ms
+msg-outbox-send-timeout = Η αποστολή προς { $target } έληξε μετά από { $ms }ms — η σύνδεση μπορεί να διακόπηκε
 err-unknown-command = άγνωστη εντολή: { $path }
 err-read-only-path = το { $path } είναι μόνο για ανάγνωση
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        εκτέλεση πρόχειρου εγγράφου παράλληλα
@@ -420,6 +423,14 @@ scheme-not-a-cid = Μη έγκυρο CID: { $value }
 label-runtime = μα
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Προειδοποίηση: Το ιδιωτικό κλειδί IPNS σας θα σταλεί σε αυτό το περιβάλλον εκτέλεσης για τη δημοσίευση ταυτότητας. Χρησιμοποιείτε μόνο ένα περιβάλλον εκτέλεσης που εμπιστεύεστε πλήρως.
+
+# -- Help text -- z and my
+help-header-z = ── .z και .my ──────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       δημόσιο ή δημοσιεύσιμο περιεχόμενο· μην αποθηκεύετε μυστικά εδώ
+help-z-scheme =   .z.scheme                  σενάριο Scheme που φορτώνεται και αξιολογείται κατά την εκκίνηση
+help-z-control =   .z.scheme                 εσείς ελέγχετε το περιεχόμενο του σεναρίου εκκίνησης
+help-z-private =   .my.*                     ιδιωτική τοπική διαμόρφωση· η Scheme μπορεί να αποθηκευτεί και εδώ
+help-z-choice =   .z.* / .my.*               χρησιμοποιήστε .z.* για δημόσια Scheme και .my.* για ιδιωτική Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

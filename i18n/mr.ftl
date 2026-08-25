@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     निजी config
 help-topic-inbox =   .help/inbox                  इनबॉक्स
 help-topic-doc =   .help/doc                    दस्तावेज़
 help-topic-actor =   .help/actor                  दूरस्थ actor
+help-topic-z =   .help/z                      सार्वजनिक आणि खाजगी Scheme मजकूर
 help-topic-zscheme =   .help/zscheme               इनलाइन Scheme अभिव्यक्ती आणि दस्तऐवज
 help-unknown-topic =   .help/{ $topic }: अज्ञात विषय
 
@@ -412,7 +413,9 @@ batch-step-timeout = बॅच चरण कालबाह्य झाले
 
 batch-done = batch { $secs }s में पूरा — { $steps } चरण
 batch-done-error = batch त्रुटियों के साथ { $secs }s में पूरा — { $steps } चरण
-msg-timeout = संदेश समयसीमा पार (60s में कोई उत्तर नहीं)
+msg-timeout = संदेश समयसीमा पार (60s मध्ये कोणतेही उत्तर नाही)
+msg-outbox-open-timeout = अभिनेता { $target } पोहोचण्यापलीकडे नाही — { $ms }ms नंतर कनेक्शनची वेळ संपली
+msg-outbox-send-timeout = { $target } ला पाठवण्याची वेळ { $ms }ms नंतर संपली — कनेक्शन खंडित झाले असू शकेल
 err-unknown-command = अज्ञात आदेश: { $path }
 err-read-only-path = { $path } फक्त-वाचनीय आहे
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch दस्तावेज़ समानांतर चलाएँ
@@ -427,6 +430,14 @@ scheme-not-a-cid = अवैध CID: { $value }
 label-runtime = मा
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = सावधान: आपली IPNS खाजगी किल्ली ओळख प्रकाशनासाठी या रनटाइमला पाठवली जाईल. फक्त अशा रनटाइमचा वापर करा ज्यावर तुमचा पूर्ण विश्वास आहे.
+
+# -- Help text -- z and my
+help-header-z = ── .z आणि .my ──────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       सार्वजनिक किंवा प्रकाशनयोग्य सामग्री; येथे गुपिते साठवू नका
+help-z-scheme =   .z.scheme                  प्रारंभावर लोड आणि मूल्यांकन केलेली Scheme स्क्रिप्ट
+help-z-control =   .z.scheme                 प्रारंभ स्क्रिप्टची सामग्री तुम्ही स्वतः नियंत्रित करता
+help-z-private =   .my.*                     खाजगी स्थानिक कॉन्फिगरेशन; Scheme येथे देखील साठवता येते
+help-z-choice =   .z.* / .my.*               सार्वजनिक Scheme साठी .z.* आणि खाजगी Scheme साठी .my.* वापरा
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

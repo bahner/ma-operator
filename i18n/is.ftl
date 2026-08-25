@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     personlig config
 help-topic-inbox =   .help/inbox                  indbakke
 help-topic-doc =   .help/doc                    dokumenter
 help-topic-actor =   .help/actor                  fjern actor
+help-topic-z =   .help/z                      opinbert og einka Scheme-efni
 help-topic-zscheme =   .help/zscheme               innfelld Scheme-segð og skjölun
 help-unknown-topic =   .help/{ $topic }: ukendt emne
 
@@ -406,6 +407,8 @@ batch-step-timeout = lotuskref rann út
 batch-done = Batch færdig på { $secs }s — { $steps } trin
 batch-done-error = Batch færdig med fejl på { $secs }s — { $steps } trin
 msg-timeout = Beskeden fik timeout (intet svar på 60s)
+msg-outbox-open-timeout = ekki næst í { $target } — tengingin rann út á tíma eftir { $ms }ms
+msg-outbox-send-timeout = sending til { $target } rann út á tíma eftir { $ms }ms — tengingin gæti hafa rofnað
 err-unknown-command = óþekkt skipun: { $path }
 err-read-only-path = { $path } er aðeins til lestrar
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        evaluer kladdedokument parallelt
@@ -420,6 +423,14 @@ scheme-not-a-cid = Ógilt CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Viðvörun: Einkalykill IPNS þinn verður sendur á þennan keyrslutengil til útgáfu á auðkenningu. Notaðu eingöngu keyrslutengil sem þú treystir að fullu.
+
+# -- Help text -- z and my
+help-header-z = ── .z og .my ────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       opinbert eða birtanlegt efni; geymið ekki leyniráð hér
+help-z-scheme =   .z.scheme                  Scheme-handritinu sem höndluð er og metið við rásingu
+help-z-control =   .z.scheme                 þú stjórnar innihaldi rásingarhandritsins sjálfur
+help-z-private =   .my.*                     einka staðbundin stillingar; Scheme getur einnig geymt hér
+help-z-choice =   .z.* / .my.*               notaðu .z.* fyrir opinbert Scheme og .my.* fyrir einka Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

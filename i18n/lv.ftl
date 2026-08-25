@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     osobista config
 help-topic-inbox =   .help/inbox                  skrzynka odbiorcza
 help-topic-doc =   .help/doc                    dokumenty
 help-topic-actor =   .help/actor                  zdalny actor
+help-topic-z =   .help/z                      publisks un privāts Scheme saturs
 help-topic-zscheme =   .help/zscheme               iekļautas Scheme izteiksmes un dokumentācija
 help-unknown-topic =   .help/{ $topic }: nieznany temat
 
@@ -406,6 +407,8 @@ batch-step-timeout = partijas darbības noildze
 batch-done = Batch ukończony w { $secs }s — { $steps } kroków
 batch-done-error = Batch zakończony z błędami w { $secs }s — { $steps } kroków
 msg-timeout = Wiadomość wygasła (brak odpowiedzi przez 60s)
+msg-outbox-open-timeout = aktieris { $target } nav sasniedzams — savienojumam beidzās laiks pēc { $ms }ms
+msg-outbox-send-timeout = sūtīšanai uz { $target } beidzās laiks pēc { $ms }ms — iespējams, savienojums tika pārtraukts
 err-unknown-command = nezināma komanda: { $path }
 err-read-only-path = { $path } ir tikai lasāms
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        oceń dokument roboczy równolegle
@@ -420,6 +423,14 @@ scheme-not-a-cid = Nederīgs CID: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Brīdinājums: Jūsu IPNS privātā atslēga tiks nosūtīta uz šo izpildes vidi identitātes publicēšanai. Izmantojiet tikai izpildes vidi, kurai pilnībā uzticaties.
+
+# -- Help text -- z and my
+help-header-z = ── .z un .my ──────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       publisks vai publiskejams saturs; neglabājiet šeit noslēpumus
+help-z-scheme =   .z.scheme                  Scheme skripts, kas tiek ielādēts un novērtēts palaišanas laikā
+help-z-control =   .z.scheme                 jūs pats kontrolējat palaišanas skripta saturu
+help-z-private =   .my.*                     privāta lokālā konfigurācija; Scheme var glabāt arī šeit
+help-z-choice =   .z.* / .my.*               izmantojiet .z.* publiskam Scheme un .my.* privātam Scheme
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

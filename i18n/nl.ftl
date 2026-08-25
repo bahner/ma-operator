@@ -349,6 +349,7 @@ help-topic-my =   .help/my                     persoonlijke config
 help-topic-inbox =   .help/inbox                  postvak
 help-topic-doc =   .help/doc                    documenten
 help-topic-actor =   .help/actor                  externe actor
+help-topic-z =   .help/z                      openbare en privé-Scheme-inhoud
 help-topic-zscheme =   .help/zscheme               inline Scheme-expressies en documentatie
 help-topic-url =   .help/url                    zion openen via een URL-link
 help-topic-i18n = .help/i18n                   taalvoorkeur voor uw identiteit
@@ -405,6 +406,8 @@ batch-step-timeout = Er is een time-out opgetreden in de batchstap
 batch-done = Batch klaar in { $secs }s — { $steps } stappen
 batch-done-error = Batch klaar met fouten in { $secs }s — { $steps } stappen
 msg-timeout = Bericht verlopen (geen antwoord in 60s)
+msg-outbox-open-timeout = acteur { $target } is onbereikbaar — verbinding verliep na { $ms }ms
+msg-outbox-send-timeout = verzenden naar { $target } verliep na { $ms }ms — de verbinding kan zijn weggevallen
 err-unknown-command = onbekende opdracht: { $path }
 err-read-only-path = { $path } is alleen-lezen
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        klad-document parallel evalueren
@@ -421,6 +424,12 @@ label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Waarschuwing: Je privé IPNS-sleutel wordt naar deze uitvoeringsomgeving gestuurd voor identiteitspublicatie. Gebruik alleen een uitvoeringsomgeving die je volledig vertrouwt.
 
 # -- Help text -- zscheme
+help-header-z = ── .z en .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       openbare of publiceerbare inhoud; bewaar hier geen geheimen
+help-z-scheme =   .z.scheme                  het Scheme-script dat bij het opstarten wordt geladen en geëvalueerd
+help-z-control =   .z.scheme                 jij bepaalt zelf de inhoud van het opstartscript
+help-z-private =   .my.*                     privé lokale configuratie; Scheme kan hier ook worden opgeslagen
+help-z-choice =   .z.* / .my.*               gebruik .z.* voor openbare Scheme en .my.* voor privé-Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-zscheme-intro = zscheme evalueert Scheme-expressies die in zion-opdrachten zijn ingebed en voegt het resultaat vóór verzending in de regel in.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline voorbeeld; verzendt "say 7 + 5 = 12"

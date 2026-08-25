@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     የግል config
 help-topic-inbox =   .help/inbox                  ገቢ መልዕክት
 help-topic-doc =   .help/doc                    ሰነዶች
 help-topic-actor =   .help/actor                  ርቀት actor
+help-topic-z =   .help/z                      nuxurka Scheme ee guud iyo gaarka ah
 help-topic-zscheme =   .help/zscheme               weedho Scheme oo safka ku jira iyo dukumenti
 help-unknown-topic =   .help/{ $topic }: ያልታወቀ ርዕስ
 
@@ -412,7 +413,9 @@ batch-step-timeout = Dufcaddii tillaabada waqtigeedu dhammaaday
 
 batch-done = Batch በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
 batch-done-error = Batch ከስህተቶች ጋር በ{ $secs }s ተጠናቋል — { $steps } ደረጃዎች
-msg-timeout = መልዕክቱ ጊዜው አልፏል (በ60s ምላሽ የለም)
+msg-timeout = Fariinta waqtigeedu wuu dhaafay (jawaab lama helin 60s)
+msg-outbox-open-timeout = jilaha { $target } lama gaari karo — xiriirku wuxuu waqtigiisu dhaafay { $ms }ms ka dib
+msg-outbox-send-timeout = dirista { $target } waqtigeedu wuu dhaafay { $ms }ms ka dib — xiriirka waa laga yaabaa inuu go'ay
 err-unknown-command = amar aan la aqoon: { $path }
 err-read-only-path = { $path } waa akhris-kaliya
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        ጊዜያዊ ሰነድ ገምግም (በትይዩ)
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID aan saxnayn: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Digniin: Furahaada sirta ah ee IPNS waxaa loo diri doonaa runtime-kan si lagu daabaco aqoonsiga. Waxaad isticmaali kartaa oo keliya runtime aad si buuxda u aaminsan tahay.
+
+# -- Help text -- z and my
+help-header-z = ── .z iyo .my ───────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       waxyaabaha dadweynaha ama la daabaci karo; ha kaydsan sir halkan
+help-z-scheme =   .z.scheme                  qoraalka Scheme ee la soo dejiyey oo la qiimeeyey marka la bilowdo
+help-z-control =   .z.scheme                 adiga ayaa awood u leh waxyaabaha ku jira qoraalka bilowga
+help-z-private =   .my.*                     habaynta maxaliga ah ee gaarka ah; Scheme waxaa lagu kaydin karaa halkan sidoo kale
+help-z-choice =   .z.* / .my.*               isticmaal .z.* Scheme dadweynaha iyo .my.* Scheme gaarka ah
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

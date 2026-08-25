@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     निजी config
 help-topic-inbox =   .help/inbox                  इनबॉक्स
 help-topic-doc =   .help/doc                    दस्तावेज़
 help-topic-actor =   .help/actor                  दूरस्थ actor
+help-topic-z =   .help/z                      সর্বজনীন ও ব্যক্তিগত Scheme বিষয়বস্তু
 help-topic-zscheme =   .help/zscheme               ইনলাইন Scheme এক্সপ্রেশন ও নথি
 help-unknown-topic =   .help/{ $topic }: अज्ञात विषय
 
@@ -413,6 +414,8 @@ batch-step-timeout = ব্যাচ ধাপ সময় শেষ
 batch-done = batch { $secs }s में पूरा — { $steps } चरण
 batch-done-error = batch त्रुटियों के साथ { $secs }s में पूरा — { $steps } चरण
 msg-timeout = संदेश समयसीमा पार (60s में कोई उत्तर नहीं)
+msg-outbox-open-timeout = অভিনেতা { $target } নাগালের বাইরে — { $ms }ms পরে সংযোগের সময় শেষ হয়েছে
+msg-outbox-send-timeout = { $target }-এ পাঠানো { $ms }ms পরে সময়সীমা শেষ হয়েছে — সংযোগ বিচ্ছিন্ন হতে পারে
 err-unknown-command = অজানা কমান্ড: { $path }
 err-read-only-path = { $path } শুধু-পাঠযোগ্য
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch दस्तावेज़ समानांतर चलाएँ
@@ -427,6 +430,14 @@ scheme-not-a-cid = বৈধ CID নয়: { $value }
 label-runtime = মা
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = সতর্কতা: পরিচয় প্রকাশের জন্য আপনার IPNS ব্যক্তিগত কী এই রানটাইমে পাঠানো হবে। শুধুমাত্র এমন রানটাইম ব্যবহার করুন যার উপর আপনি সম্পূর্ণ বিশ্বাস রাখেন।
+
+# -- Help text -- z and my
+help-header-z = ── .z এবং .my ──────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       সর্বজনীন বা প্রকাশযোগ্য বিষয়বস্তু; এখানে গোপনীয়তা সংরক্ষণ করবেন না
+help-z-scheme =   .z.scheme                  Scheme স্ক্রিপ্ট যা স্টার্টআপে লোড এবং মূল্যায়ন করা হয়
+help-z-control =   .z.scheme                 স্টার্টআপ স্ক্রিপ্টের বিষয়বস্তু আপনি নিজেই নিয়ন্ত্রণ করেন
+help-z-private =   .my.*                     ব্যক্তিগত স্থানীয় কনফিগারেশন; Scheme এখানেও সংরক্ষণ করা যেতে পারে
+help-z-choice =   .z.* / .my.*               সর্বজনীন Scheme এর জন্য .z.* এবং ব্যক্তিগত Scheme এর জন্য .my.* ব্যবহার করুন
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

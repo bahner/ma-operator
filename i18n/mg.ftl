@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     config personnelle
 help-topic-inbox =   .help/inbox                  boîte de réception
 help-topic-doc =   .help/doc                    antontan-taratasy
 help-topic-actor =   .help/actor                  acteur distant
+help-topic-z =   .help/z                      votoatin'ny Scheme ho an'ny daholobe sy manokana
 help-topic-zscheme =   .help/zscheme               fanehoana Scheme anaty andalana sy tahiry
 help-unknown-topic =   .help/{ $topic }: sujet inconnu
 
@@ -413,6 +414,8 @@ batch-step-timeout = lany ny dingana batch
 batch-done = Batch terminé en { $secs }s — { $steps } étapes
 batch-done-error = Batch terminé avec erreurs en { $secs }s — { $steps } étapes
 msg-timeout = Message expiré (aucune réponse en 60s)
+msg-outbox-open-timeout = tsy tratra ny mpandray anjara { $target } — nifarana ny fotoana nifandraisana taorian'ny { $ms }ms
+msg-outbox-send-timeout = nifarana ny fotoana nandefasana ho an'ny { $target } taorian'ny { $ms }ms — mety ho tapaka ny fifandraisana
 err-unknown-command = baiko tsy fantatra: { $path }
 err-read-only-path = { $path } dia vakiana fotsiny
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        évaluer le document brouillon en parallèle
@@ -427,6 +430,14 @@ scheme-not-a-cid = CID tsy mety: { $value }
 label-runtime = 間
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = Fampitandremana: Ny fanalahidinao tsiambaratelon'ny IPNS hateriny amin'ity runtime ity hamoaham-pankamantatra. Ampiasao fotsiny runtime izay itokianao tanteraka.
+
+# -- Help text -- z and my
+help-header-z = ── .z sy .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       atiny ho an'ny daholobe na azo avoaka; aza mitahiry tsiambaratelo eto
+help-z-scheme =   .z.scheme                  script Scheme izay ampidirina sy tombanana amin'ny fanombohana
+help-z-control =   .z.scheme                 ianao mihitsy no mifehy ny votoatin'ny script fanombohana
+help-z-private =   .my.*                     fanamboarana an-toerana manokana; Scheme dia azo tehirizina eto ihany koa
+help-z-choice =   .z.* / .my.*               ampio .z.* ho an'ny Scheme ho an'ny daholobe ary .my.* ho an'ny Scheme manokana
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────

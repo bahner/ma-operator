@@ -356,6 +356,7 @@ help-topic-my =   .help/my                     தனிப்பட்ட confi
 help-topic-inbox =   .help/inbox                  உள்வரவு
 help-topic-doc =   .help/doc                    ஆவணங்கள்
 help-topic-actor =   .help/actor                  தொலை actor
+help-topic-z =   .help/z                      பொது மற்றும் தனிப்பட்ட Scheme உள்ளடக்கம்
 help-topic-zscheme =   .help/zscheme               வரிக்குள் Scheme வெளிப்பாடுகள் மற்றும் ஆவணங்கள்
 help-unknown-topic =   .help/{ $topic }: தெரியாத தலைப்பு
 
@@ -413,6 +414,8 @@ batch-step-timeout = தொகுதி படி நேரம் முடி�
 batch-done = batch { $secs }s-ல் முடிந்தது — { $steps } படிகள்
 batch-done-error = batch பிழைகளுடன் { $secs }s-ல் முடிந்தது — { $steps } படிகள்
 msg-timeout = செய்தி நேரம் முடிந்தது (60s-ல் பதில் இல்லை)
+msg-outbox-open-timeout = நடிகர் { $target } எட்ட முடியவில்லை — { $ms }ms க்குப் பிறகு இணைப்பு நேரம் முடிந்தது
+msg-outbox-send-timeout = { $target }-க்கு அனுப்புவது { $ms }ms க்குப் பிறகு நேரம் முடிந்தது — இணைப்பு துணிக்கப்பட்டிருக்கலாம
 err-unknown-command = தெரியாத கட்டளை: { $path }
 err-read-only-path = { $path } வாசிக்க மட்டும்
 help-cmd-batch-async =   .batch!async [timeout=60s] / .batch        scratch ஆவணத்தை இணையாக மதிப்பிடு
@@ -427,6 +430,15 @@ scheme-not-a-cid = செல்லுபடியாகாத CID: { $value }
 label-runtime = மா
 label-runtime-placeholder = did:ma:...
 warning-remote-runtime = எச்சரிக்கை: உங்கள் IPNS தனியார் விசை அடையாளத்தை வெளியிட இந்த இயக்க நேர சேவைக்கு அனுப்பப்படும். நீங்கள் முழுமையாக நம்பும் இயக்க நேர சேவையை மட்டுமே பயன்படுத்துங்கள்.
+
+# -- Help text -- z and my
+
+help-header-z = ── .z மற்றும் .my ────────────────────────────────────────────────────────────────────────
+help-z-public =   .z.*                       பொது அல்லது வெளியிடத்தக்க தகுந்த பொருள்; இங்கே இரகசியங்களை சேமிக்க வேண்டாம்
+help-z-scheme =   .z.scheme                  தொடங்கும்போது ஏற்றப்பட்டு மூல்யமிடப்படும் Scheme ஸ்க்ரிப்ட்
+help-z-control =   .z.scheme                 தொடங்கு ஸ்க்ரிப்டின் பொருளடக்கத்தை நீங்களே கட்டுப்படுத்துகிறீர்கள்
+help-z-private =   .my.*                     தனிப்பட்ட உள்ளூர் அமைப்பு; Scheme இங்கும் சேமிக்கப்படலாம்
+help-z-choice =   .z.* / .my.*               பொது Schemeக்கு .z.* மற்றும் தனிப்பட்ட Schemeக்கு .my.* பயன்படுத்தவும்
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
