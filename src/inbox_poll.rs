@@ -59,6 +59,7 @@ fn route_incoming(
     if handle_inbox_message(&incoming, state, config) {
         return;
     }
+    auto_pong(&incoming, state);
     if handle_client_term(&incoming, state, config) {
         return;
     }
@@ -323,7 +324,11 @@ pub(crate) fn root_enter_reply(content: &[u8]) -> Option<String> {
     (parent.starts_with("did:ma:") && parent.contains('#')).then(|| parent.to_string())
 }
 
-/// Handle unsolicited actor-authored client terms. Returns true when handled.
+/// Forward unsolicited actor-authored client terms to zscheme. Returns true
+/// when handled.
+///
+/// Zion does not decide which verbs are interesting: every term reaches
+/// `on-event`, and events.zscheme ignores the ones it does not want.
 fn handle_client_term(
     incoming: &IncomingMessage,
     state: &AppState,
@@ -339,26 +344,24 @@ fn handle_client_term(
     else {
         return false;
     };
-    match term {
-        ciborium::Value::Array(items) => handle_client_term_array(items, state, config),
-        _ => false,
-    }
+    let Some((event, args)) = decode_client_event(&term) else {
+        return false;
+    };
+    forward_client_event(event, args, state, config)
 }
 
 fn term_head(items: &[ciborium::Value]) -> Option<&str> {
     items.first().and_then(cbor_text)
 }
 
-fn handle_client_term_array(
-    items: Vec<ciborium::Value>,
+fn forward_client_event(
+    event: String,
+    args: Vec<crate::scheme::SchemeVal>,
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    let Some((event, args)) = decode_client_event(&items) else {
-        return false;
-    };
     if !crate::scheme::has_event_handler() {
-        return true;
+        return false;
     }
     let state = state.clone();
     spawn_local(async move {
@@ -369,34 +372,17 @@ fn handle_client_term_array(
     true
 }
 
-fn decode_client_event(items: &[ciborium::Value]) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
-    let head = term_head(items)?;
-    let args = &items[1..];
-    let valid = match head {
-        ":print" => args.len() == 1 && cbor_text(&args[0]).is_some(),
-        ":arrive" | ":leave" | ":take" | ":drop" | ":parent" => {
-            args.len() == 1 && event_ctx(&args[0])
-        }
-        ":say" | ":emote" | ":dig" | ":fill" => {
-            args.len() == 2 && event_ctx(&args[0]) && cbor_text(&args[1]).is_some()
-        }
-        _ => false,
-    };
-    valid.then(|| {
-        (
-            head.to_string(),
-            args.iter().map(cbor_to_scheme_val).collect(),
-        )
-    })
-}
-
-fn event_ctx(value: &ciborium::Value) -> bool {
-    let ciborium::Value::Map(entries) = value else {
-        return false;
-    };
-    ["did", "actor"].into_iter().any(|identity| {
-        map_text(entries, identity).is_some_and(|value| value.starts_with("did:ma:"))
-    })
+/// Structural decode only: a bare `:verb` atom, or an array headed by one.
+/// Argument shapes are zscheme's business, not Rust's.
+fn decode_client_event(term: &ciborium::Value) -> Option<(String, Vec<crate::scheme::SchemeVal>)> {
+    match term {
+        ciborium::Value::Text(atom) => Some((atom.clone(), Vec::new())),
+        ciborium::Value::Array(items) => Some((
+            term_head(items)?.to_string(),
+            items[1..].iter().map(cbor_to_scheme_val).collect(),
+        )),
+        _ => None,
+    }
 }
 
 fn cbor_text(value: &ciborium::Value) -> Option<&str> {
@@ -535,7 +521,31 @@ fn handle_inbox_message(
     true
 }
 
-/// Auto-pong :ping; silently drop all other unsolicited RPC. Returns true when handled.
+/// Answer transport-level `:ping` as a side effect, whatever consumes the term
+/// afterwards. Liveness is ma-core protocol, not world policy.
+fn auto_pong(incoming: &IncomingMessage, state: &AppState) {
+    if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
+        return;
+    }
+    let Ok(ciborium::Value::Text(atom)) =
+        ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
+    else {
+        return;
+    };
+    if atom != ":ping" {
+        return;
+    }
+    let target = incoming.from.clone();
+    let reply_to_id = incoming.message_id.clone();
+    state.outbox_queue.update(|q| {
+        q.push_back(OutboxTask::RpcPong {
+            target,
+            reply_to_id,
+        });
+    });
+}
+
+/// Drop unsolicited RPC that no event handler claimed. Returns true when handled.
 fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool {
     if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
         return false;
@@ -543,20 +553,6 @@ fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool
     // Room events are broadcast unsolicited RPC — let them through to display.
     if incoming.content_type == "application/vnd.ma.room.event" {
         return false;
-    }
-    if let Ok(ciborium::Value::Text(atom)) =
-        ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
-    {
-        if atom == ":ping" {
-            let pong_target = incoming.from.clone();
-            let pong_reply_to = incoming.message_id.clone();
-            _state.outbox_queue.update(|q| {
-                q.push_back(OutboxTask::RpcPong {
-                    target: pong_target,
-                    reply_to_id: pong_reply_to,
-                });
-            });
-        }
     }
     // Drop all unsolicited RPC including unknown verbs and loopback echoes.
     true
@@ -739,37 +735,37 @@ mod tests {
             let mut term = vec![ciborium::Value::Text(event.to_string())];
             term.extend(args);
             let (decoded_event, decoded_args) =
-                decode_client_event(&term).expect("valid event");
+                decode_client_event(&ciborium::Value::Array(term)).expect("valid event");
             assert_eq!(decoded_event, event);
             assert!(!decoded_args.is_empty());
         }
     }
 
     #[test]
-    fn malformed_client_events_are_rejected() {
-        assert!(decode_client_event(
-            &[ciborium::Value::Text(":say".to_string()), event_ctx_value(),],
-        )
+    fn unknown_verbs_and_bare_atoms_are_forwarded() {
+        let (event, args) = decode_client_event(&ciborium::Value::Array(vec![
+            ciborium::Value::Text(":unknown".to_string()),
+            ciborium::Value::Text("anything".to_string()),
+        ]))
+        .expect("unknown verbs are zscheme's business");
+        assert_eq!(event, ":unknown");
+        assert_eq!(args.len(), 1);
+
+        let (event, args) =
+            decode_client_event(&ciborium::Value::Text(":roll-call-child".to_string()))
+                .expect("bare atom is a verb with no arguments");
+        assert_eq!(event, ":roll-call-child");
+        assert!(args.is_empty());
+    }
+
+    #[test]
+    fn non_verb_terms_are_rejected() {
+        assert!(decode_client_event(&ciborium::Value::Array(vec![
+            ciborium::Value::Integer(1.into()),
+        ]))
         .is_none());
-        assert!(decode_client_event(
-            &[
-                ciborium::Value::Text(":arrive".to_string()),
-                ciborium::Value::Text("did:ma:alice".to_string()),
-            ],
-        )
-        .is_none());
-        assert!(decode_client_event(
-            &[
-                ciborium::Value::Text(":unknown".to_string()),
-                ciborium::Value::Text("anything".to_string()),
-            ],
-        )
-        .is_none());
-        assert!(decode_client_event(&[
-            ciborium::Value::Text(":ctx".to_string()),
-            ciborium::Value::Array(vec![]),
-        ])
-        .is_none());
+        assert!(decode_client_event(&ciborium::Value::Array(vec![])).is_none());
+        assert!(decode_client_event(&ciborium::Value::Integer(1.into())).is_none());
     }
 
     #[test]
