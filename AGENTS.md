@@ -21,6 +21,15 @@ not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
 is generic transport, persistent local data, and typed event delivery to the
 active `.z.scheme`; all world interpretation, transfer sequencing, and
 actor calls belong exclusively in zscheme.
+**Never filter inbound verbs in Rust.** Every unsolicited RPC term is
+forwarded to `on-event`; deciding which verbs are interesting, and validating
+their argument shapes, is `events.zscheme`'s job. `decode_client_event` in
+`src/inbox_poll.rs` performs structural decoding only — a bare `:verb` atom,
+or an array headed by one — and never inspects the verb name. A hardcoded
+whitelist there is a bug: it makes a verb unanswerable no matter what zscheme
+does, and it was exactly why bare-DID avatars could not answer `:roll-call-child`
+and were pruned as tombstones. `:ping` keeps its transport-level pong because
+liveness is ma-core protocol, not world policy.
 
 ---
 ## ⚠ REJECTED IDEA — Remote zscheme environment loading
