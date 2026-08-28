@@ -117,10 +117,7 @@ async fn fetch_profile_from_ipfs(
             {
                 cbor
             } else {
-                return Err(ProfileFetchError::Rejected(tf(
-                    "error-wrong-passphrase",
-                    &[("e", &decrypt_error)],
-                )));
+                return Err(ProfileFetchError::Rejected(decrypt_error));
             }
         }
     };

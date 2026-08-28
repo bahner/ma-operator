@@ -31,12 +31,12 @@ pub fn derive_key(passphrase: &str) -> [u8; 32] {
 pub fn encrypt_with_key(plaintext: &[u8], key: &[u8; 32]) -> Result<Vec<u8>, String> {
     let mut nonce_bytes = [0u8; 24];
     fill_random(&mut nonce_bytes).map_err(|e| format!("{e}"))?;
-    let nonce = XNonce::from_slice(&nonce_bytes);
+    let nonce = XNonce::from(nonce_bytes);
     let cipher = XChaCha20Poly1305::new_from_slice(key).map_err(|e| format!("{e}"))?;
     let mut out = nonce_bytes.to_vec();
     let ciphertext = cipher
         .encrypt(
-            nonce,
+            &nonce,
             Payload {
                 msg: plaintext,
                 aad: AAD,
@@ -52,11 +52,11 @@ pub fn decrypt_with_key(blob: &[u8], key: &[u8; 32]) -> Result<Vec<u8>, String> 
     if blob.len() < 25 {
         return Err("profile blob too short".to_string());
     }
-    let nonce = XNonce::from_slice(&blob[..24]);
+    let nonce = XNonce::try_from(&blob[..24]).map_err(|e| format!("{e}"))?;
     let cipher = XChaCha20Poly1305::new_from_slice(key).map_err(|e| format!("{e}"))?;
     cipher
         .decrypt(
-            nonce,
+            &nonce,
             Payload {
                 msg: &blob[24..],
                 aad: AAD,
