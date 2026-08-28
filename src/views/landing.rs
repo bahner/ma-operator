@@ -103,9 +103,27 @@ async fn fetch_profile_from_ipfs(
         .map_err(ProfileFetchError::Unavailable)?;
 
     let profile_key = profile_crypto::derive_key(pass);
-    let plain = profile_crypto::decrypt_with_key(&cbor, &profile_key).map_err(|error| {
-        ProfileFetchError::Rejected(tf("error-wrong-passphrase", &[("e", &error)]))
-    })?;
+    // Legacy profiles published before blob encryption are plaintext DAG-CBOR
+    // on IPFS. Accept them so existing identities can still log in; the
+    // embedded identity bundle is passphrase-encrypted, so the passphrase is
+    // still validated by the unlock step below. This fallback is permanent:
+    // legacy blobs are immutable content-addressed objects that never
+    // disappear from IPFS on their own.
+    let plain = match profile_crypto::decrypt_with_key(&cbor, &profile_key) {
+        Ok(plain) => plain,
+        Err(decrypt_error) => {
+            if serde_ipld_dagcbor::from_slice::<serde_json::Value>(&cbor)
+                .is_ok_and(|val| val.get("identity").is_some())
+            {
+                cbor
+            } else {
+                return Err(ProfileFetchError::Rejected(tf(
+                    "error-wrong-passphrase",
+                    &[("e", &decrypt_error)],
+                )));
+            }
+        }
+    };
 
     let profile_val: serde_json::Value =
         serde_ipld_dagcbor::from_slice(&plain).map_err(|error| {
@@ -538,7 +556,9 @@ pub fn Landing() -> impl IntoView {
                                     &[(
                                         "e",
                                         &format!(
-                                            "{cause} — and no usable local copy ({local_err})"
+                                            "{cause} — and no usable local copy ({local_err}). \
+                                             If you run your own IPFS node, enable the local gateway \
+                                             in the Config tab."
                                         ),
                                     )],
                                 ));
