@@ -181,6 +181,12 @@ pub(crate) fn handle_profile_publish_reply(
     config: RwSignal<EgoConfig>,
 ) {
     if incoming.is_error {
+        if crate::state::apply_profile_rollback() {
+            state.push_error(format!(
+                "{} — passphrase change rolled back",
+                incoming.display
+            ));
+        }
         fail_cmd(state, request.cmd_id, incoming.display.clone());
         return;
     }
@@ -212,6 +218,7 @@ pub(crate) fn handle_profile_publish_reply(
             let selected_z = cfg_snap.get(".my.z").map(str::to_string);
             leptos::task::spawn_local(async move {
                 if let Err(error) = persist_config(&username, &cfg_snap).await {
+                    crate::state::apply_profile_rollback();
                     fail_cmd(&state2, request.cmd_id, error);
                     return;
                 }
@@ -223,9 +230,13 @@ pub(crate) fn handle_profile_publish_reply(
                 )
                 .await
                 {
+                    crate::state::apply_profile_rollback();
                     fail_cmd(&state2, request.cmd_id, error);
                     return;
                 }
+                // The profile blob and the DID document are now published with
+                // the current passphrase — a pending `.keymaker` rollback is moot.
+                crate::state::clear_profile_rollback();
                 if let Some(id) = request.cmd_id {
                     state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
                 } else {
@@ -236,7 +247,10 @@ pub(crate) fn handle_profile_publish_reply(
                 }
             });
         }
-        Err(e) => fail_cmd_decode(state, request.cmd_id, &e),
+        Err(e) => {
+            crate::state::apply_profile_rollback();
+            fail_cmd_decode(state, request.cmd_id, &e);
+        }
     }
 }
 

@@ -4,7 +4,7 @@ use leptos::prelude::*;
 use std::collections::BTreeMap;
 
 use crate::{
-    config::{persist_config, restore_config, EgoConfig},
+    config::{persist_config, EgoConfig},
     i18n::{t, tf},
     identity::storage::load_history,
     parser::verbs::ma::ConnectMaOutcome,
@@ -49,36 +49,36 @@ pub(crate) async fn startup_load_config(
     username: String,
     sender_did: String,
 ) {
-    match restore_config(&username).await {
-        Ok(mut cfg) => {
-            // Read-only session-derived field; never persisted
-            // intentionally, but harmless if it leaks: it is
-            // re-injected on every login.
-            cfg.set(".my.identity.did", &sender_did);
-            // Seed auto-publish with default "true" if not already set.
-            if cfg.get(".my.identity.auto-publish").is_none() {
-                cfg.set(".my.identity.auto-publish", "true");
-            }
-            // Prune inbox entries that expired since last session.
-            let now = js_sys::Date::now() / 1000.0;
-            let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
-            crate::eval::apply_config_to_dom(&cfg);
-            // Persisted ctx is an enter intent, not confirmed focus. Root will
-            // repair and return the authoritative ctx after startup connect.
-            state.focus_actor.set(None);
-            // Apply log level from config if set.
-            if let Some(level) = cfg.get(".my.config.log.level") {
-                crate::apply_log_level(level);
-            }
-            if pruned > 0 {
-                if let Err(e) = persist_config(&username, &cfg).await {
-                    state.push_error(tf("err-inbox-prune-persist", &[("e", &e)]));
-                }
-            }
-            config.set(cfg);
-        }
-        Err(e) => state.push_error(tf("err-config-load", &[("e", &e)])),
+    // The config signal is populated by the login path (fetched from IPFS,
+    // or restored from the local cache when IPFS was unavailable). Finalise
+    // it here: session-derived fields, defaults, pruning, DOM.
+    let mut cfg = config.get_untracked();
+    cfg.set_defaults();
+    // Read-only session-derived field; never persisted
+    // intentionally, but harmless if it leaks: it is
+    // re-injected on every login.
+    cfg.set(".my.identity.did", &sender_did);
+    // Seed auto-publish with default "true" if not already set.
+    if cfg.get(".my.identity.auto-publish").is_none() {
+        cfg.set(".my.identity.auto-publish", "true");
     }
+    // Prune inbox entries that expired since last session.
+    let now = js_sys::Date::now() / 1000.0;
+    let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);
+    crate::eval::apply_config_to_dom(&cfg);
+    // Persisted ctx is an enter intent, not confirmed focus. Root will
+    // repair and return the authoritative ctx after startup connect.
+    state.focus_actor.set(None);
+    // Apply log level from config if set.
+    if let Some(level) = cfg.get(".my.config.log.level") {
+        crate::apply_log_level(level);
+    }
+    if pruned > 0 {
+        if let Err(e) = persist_config(&username, &cfg).await {
+            state.push_error(tf("err-inbox-prune-persist", &[("e", &e)]));
+        }
+    }
+    config.set(cfg);
     if let Some(profile_cid) = config
         .get_untracked()
         .get(EgoConfig::PROFILE_CID_KEY)

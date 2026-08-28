@@ -241,6 +241,9 @@ pub fn disconnect() {
     SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
+    // A pending `.keymaker` rollback is moot after logout: the next login
+    // overwrites the local cache from IPFS anyway.
+    crate::state::clear_profile_rollback();
 }
 
 pub fn is_connected() -> bool {
@@ -874,7 +877,10 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
     );
     log::debug!("[send] → {target_did} [{protocol}]");
     let ms = SEND_TIMEOUT_MS.to_string();
-    let open_timeout_msg = tf("msg-outbox-open-timeout", &[("target", target_did), ("ms", &ms)]);
+    let open_timeout_msg = tf(
+        "msg-outbox-open-timeout",
+        &[("target", target_did), ("ms", &ms)],
+    );
     let mut outbox = with_send_timeout(open_timeout_msg, async {
         ep.outbox(resolver.as_ref(), target_did, protocol)
             .await
@@ -886,7 +892,10 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
     .await?;
 
     log::debug!("try_send_once: outbox ready, sending msg id={}", msg.id);
-    let send_timeout_msg = tf("msg-outbox-send-timeout", &[("target", target_did), ("ms", &ms)]);
+    let send_timeout_msg = tf(
+        "msg-outbox-send-timeout",
+        &[("target", target_did), ("ms", &ms)],
+    );
     let result = with_send_timeout(send_timeout_msg, async {
         outbox.send(msg).await.map_err(|e| {
             log::warn!("try_send_once: send failed for {target_did}: {e}");

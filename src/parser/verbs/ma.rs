@@ -502,7 +502,14 @@ fn fail_profile_publish(state: &AppState, cmd_id: Option<u64>, error: String) {
     if let Some(id) = cmd_id {
         state.resolve_command_by_id(id, crate::core::CommandStatus::Error(error.clone()));
     }
-    state.push_error(tf("profile-publish-failed", &[("e", &error)]));
+    if crate::state::apply_profile_rollback() {
+        state.push_error(tf(
+            "profile-publish-failed",
+            &[("e", &format!("{error} — passphrase change rolled back"))],
+        ));
+    } else {
+        state.push_error(tf("profile-publish-failed", &[("e", &error)]));
+    }
 }
 
 pub(crate) async fn rediscover_ma(

@@ -760,10 +760,12 @@ mod tests {
 
     #[test]
     fn non_verb_terms_are_rejected() {
-        assert!(decode_client_event(&ciborium::Value::Array(vec![
-            ciborium::Value::Integer(1.into()),
-        ]))
-        .is_none());
+        assert!(
+            decode_client_event(&ciborium::Value::Array(vec![ciborium::Value::Integer(
+                1.into()
+            ),]))
+            .is_none()
+        );
         assert!(decode_client_event(&ciborium::Value::Array(vec![])).is_none());
         assert!(decode_client_event(&ciborium::Value::Integer(1.into())).is_none());
     }

@@ -754,3 +754,47 @@ thread_local! {
     /// Persisted in localStorage; not cleared on disconnect.
     pub static SESSION_LOCAL_IPFS: RefCell<bool> = const { RefCell::new(false) };
 }
+
+// ── Passphrase-change rollback ────────────────────────────────────────────
+
+/// Pending local re-encryption that must be reverted if a `.keymaker`
+/// republish fails. Keeps the local identity cache and the online profile
+/// encrypted with the same passphrase (lockstep), so a failed republish can
+/// never leave the two copies drifting apart.
+pub struct ProfileRollback {
+    pub username: String,
+    pub old_export_json: String,
+    pub old_profile_key: Option<[u8; 32]>,
+}
+
+thread_local! {
+    static PENDING_PROFILE_ROLLBACK: RefCell<Option<ProfileRollback>> = const { RefCell::new(None) };
+}
+
+pub fn arm_profile_rollback(rollback: ProfileRollback) {
+    PENDING_PROFILE_ROLLBACK.with(|r| *r.borrow_mut() = Some(rollback));
+}
+
+pub fn clear_profile_rollback() {
+    PENDING_PROFILE_ROLLBACK.with(|r| *r.borrow_mut() = None);
+}
+
+/// Revert the local identity cache and profile key to the pre-`.keymaker`
+/// state. Returns `true` when a rollback was pending and was applied.
+pub fn apply_profile_rollback() -> bool {
+    let rollback = PENDING_PROFILE_ROLLBACK.with(|r| r.borrow_mut().take());
+    let Some(rollback) = rollback else {
+        return false;
+    };
+    if let Some(key) = rollback.old_profile_key {
+        SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = Some(key));
+    }
+    leptos::task::spawn_local(async move {
+        if let Err(e) =
+            crate::identity::save_identity(&rollback.username, &rollback.old_export_json).await
+        {
+            web_sys::console::error_1(&format!("profile rollback failed: {e}").into());
+        }
+    });
+    true
+}

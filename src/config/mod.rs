@@ -33,7 +33,7 @@ impl EgoConfig {
         cfg
     }
 
-    fn set_defaults(&mut self) {
+    pub(crate) fn set_defaults(&mut self) {
         let defaults = [
             (".my.config.colour.text", "#00ff41"),
             (".my.config.colour.dimmed", "#008f11"),

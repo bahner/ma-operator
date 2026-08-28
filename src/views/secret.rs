@@ -57,50 +57,76 @@ pub fn SecretModal(state: AppState) -> impl IntoView {
                 return;
             };
 
+            // A passphrase change is only valid when the profile can be
+            // republished with it; otherwise the local cache and the online
+            // profile would drift apart. Require a trusted runtime up front.
+            if crate::parser::verbs::ma::active_ma_did(&config.get_untracked()).is_none() {
+                error.set(t("profile-no-ma"));
+                return;
+            }
+            let old_profile_key = SESSION_PROFILE_KEY.with(|k| *k.borrow());
+
             busy.set(true);
             error.set(String::new());
             let state = state.clone();
             leptos::task::spawn_local(async move {
-                let result = match load_identity(&session.username).await {
-                    Ok(Some(stored)) => {
-                        match change_passphrase(
-                            &stored.export_json,
-                            &old_passphrase,
-                            &next_passphrase,
-                        ) {
-                            Ok(changed) => save_identity(&session.username, &changed).await,
-                            Err(cause) => Err(tf("error-wrong-passphrase", &[("e", &cause)])),
-                        }
+                let stored = match load_identity(&session.username).await {
+                    Ok(Some(stored)) => stored,
+                    Ok(None) => {
+                        clear();
+                        error.set(tf(
+                            "error-identity-not-found",
+                            &[("name", &session.username)],
+                        ));
+                        return;
                     }
-                    Ok(None) => Err(tf(
-                        "error-identity-not-found",
-                        &[("name", &session.username)],
-                    )),
-                    Err(cause) => Err(cause),
+                    Err(cause) => {
+                        clear();
+                        error.set(cause);
+                        return;
+                    }
                 };
-
-                clear();
-                match result {
-                    Ok(()) => {
-                        SESSION_PROFILE_KEY.with(|key| {
-                            *key.borrow_mut() = Some(profile_crypto::derive_key(&next_passphrase));
-                        });
-                        show.set(false);
-                        state.push_command_ok(".keymaker");
-                        if let Some(publisher) =
-                            crate::parser::verbs::ma::active_ma_did(&config.get_untracked())
-                        {
-                            let state = state.clone();
-                            leptos::task::spawn_local(async move {
-                                crate::parser::verbs::ma::queue_profile_publish(
-                                    publisher, config, &state, None, false, false,
-                                )
-                                .await;
-                            });
+                let changed =
+                    match change_passphrase(&stored.export_json, &old_passphrase, &next_passphrase)
+                    {
+                        Ok(changed) => changed,
+                        Err(cause) => {
+                            clear();
+                            error.set(tf("error-wrong-passphrase", &[("e", &cause)]));
+                            return;
                         }
-                    }
-                    Err(cause) => error.set(cause),
+                    };
+                if let Err(cause) = save_identity(&session.username, &changed).await {
+                    clear();
+                    error.set(cause);
+                    return;
                 }
+
+                // Commit the new profile key and arm a rollback so a failed
+                // republish reverts the local cache to the old passphrase,
+                // keeping the two copies in lockstep.
+                SESSION_PROFILE_KEY.with(|key| {
+                    *key.borrow_mut() = Some(profile_crypto::derive_key(&next_passphrase));
+                });
+                crate::state::arm_profile_rollback(crate::state::ProfileRollback {
+                    username: session.username.clone(),
+                    old_export_json: stored.export_json,
+                    old_profile_key,
+                });
+                if let Some(publisher) =
+                    crate::parser::verbs::ma::active_ma_did(&config.get_untracked())
+                {
+                    let state = state.clone();
+                    leptos::task::spawn_local(async move {
+                        crate::parser::verbs::ma::queue_profile_publish(
+                            publisher, config, &state, None, false, false,
+                        )
+                        .await;
+                    });
+                }
+                clear();
+                show.set(false);
+                state.push_command_ok(".keymaker");
             });
         }
     };

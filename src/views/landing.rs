@@ -5,7 +5,7 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 
 use crate::{
-    config::EgoConfig,
+    config::{restore_config, EgoConfig},
     i18n::{t, tf},
     identity::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
@@ -45,6 +45,124 @@ async fn verify_existing_identity(did: &str) -> Result<(), String> {
     crate::parser::verbs::ma::published_self_matches(&document, did)
 }
 
+// ── Profile sources: IPFS (authoritative) + local cache (fallback) ────────
+
+/// A profile obtained from IPFS (authoritative) or the local cache (fallback).
+struct FetchedProfile {
+    id: crate::identity::UnlockedIdentity,
+    /// The encrypted identity export JSON to cache locally.
+    id_json: String,
+    /// Re-encrypted export with a canonical timestamp, if migration was needed.
+    migrated: Option<String>,
+    /// Merged profile config.
+    cfg: EgoConfig,
+    /// `ma.lang` from the resolved DID document, if present.
+    lang: Option<String>,
+}
+
+enum ProfileFetchError {
+    /// IPFS could not supply the profile (resolve/fetch failure or no `ma.profile`).
+    Unavailable(String),
+    /// The passphrase or profile was rejected — never fall back to the cache.
+    Rejected(String),
+}
+
+/// Resolve the DID document, fetch the encrypted profile blob and decrypt it
+/// with the passphrase. This is the authoritative source; the local cache is
+/// only overwritten from its result.
+async fn fetch_profile_from_ipfs(
+    full_did: &str,
+    pass: &str,
+) -> Result<FetchedProfile, ProfileFetchError> {
+    use ma_core::DidDocumentResolver;
+
+    let resolver =
+        crate::transport::connection::session_resolver().map_err(ProfileFetchError::Rejected)?;
+
+    let doc = resolver
+        .resolve(full_did)
+        .await
+        .map_err(|error| ProfileFetchError::Unavailable(error.to_string()))?;
+
+    crate::parser::verbs::ma::published_self_matches(&doc, full_did)
+        .map_err(ProfileFetchError::Rejected)?;
+
+    let lang = match &doc.ma {
+        Some(ma_core::Ipld::Map(map)) => match map.get("lang") {
+            Some(ma_core::Ipld::String(lang)) => Some(lang.clone()),
+            _ => None,
+        },
+        _ => None,
+    };
+
+    let profile_cid = crate::parser::verbs::doc_profile_cid(&doc)
+        .ok_or_else(|| ProfileFetchError::Unavailable(t("profile-no-cid-in-doc")))?;
+
+    let cbor = crate::http::fetch_cid_bytes(&profile_cid)
+        .await
+        .map_err(ProfileFetchError::Unavailable)?;
+
+    let profile_key = profile_crypto::derive_key(pass);
+    let plain = profile_crypto::decrypt_with_key(&cbor, &profile_key).map_err(|error| {
+        ProfileFetchError::Rejected(tf("error-wrong-passphrase", &[("e", &error)]))
+    })?;
+
+    let profile_val: serde_json::Value =
+        serde_ipld_dagcbor::from_slice(&plain).map_err(|error| {
+            ProfileFetchError::Rejected(tf("error-profile-fetch", &[("e", &error.to_string())]))
+        })?;
+
+    let id_json = match profile_val.get("identity") {
+        Some(serde_json::Value::String(value)) => value.clone(),
+        Some(other) => serde_json::to_string(other).map_err(|error| {
+            ProfileFetchError::Rejected(tf("error-profile-fetch", &[("e", &error.to_string())]))
+        })?,
+        None => {
+            return Err(ProfileFetchError::Rejected(tf(
+                "error-profile-fetch",
+                &[("e", "profile missing 'identity' field")],
+            )))
+        }
+    };
+
+    let mut cfg = EgoConfig::new();
+    cfg.merge_from_nested_profile(&profile_val)
+        .map_err(ProfileFetchError::Rejected)?;
+
+    let (id, migrated) = unlock_identity_migrating(&id_json, pass).map_err(|error| {
+        ProfileFetchError::Rejected(tf("error-wrong-passphrase", &[("e", &error)]))
+    })?;
+
+    Ok(FetchedProfile {
+        id,
+        id_json,
+        migrated,
+        cfg,
+        lang,
+    })
+}
+
+/// Fallback when IPFS cannot supply the profile: unlock the locally cached
+/// identity and restore the cached config. Coherent with the online copy
+/// because passphrase changes republish atomically (see `.keymaker`).
+async fn restore_profile_from_local(uname: &str, pass: &str) -> Result<FetchedProfile, String> {
+    let stored = load_identity(uname)
+        .await?
+        .ok_or_else(|| "no local identity cache".to_string())?;
+    let (id, migrated) = unlock_identity_migrating(&stored.export_json, pass)?;
+    if let Some(migrated) = migrated.as_deref() {
+        save_identity(uname, migrated).await?;
+    }
+    let cfg = restore_config(uname).await?;
+    Ok(FetchedProfile {
+        id,
+        id_json: stored.export_json,
+        migrated,
+        cfg,
+        lang: None,
+    })
+}
+
 /// Derive the `IndexedDB` storage key from a DID.
 fn username_from_did(did: &str) -> String {
     did.strip_prefix("did:ma:").unwrap_or(did).to_string()
@@ -68,6 +186,7 @@ enum Mode {
 #[component]
 pub fn Landing() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
+    let config = use_context::<RwSignal<EgoConfig>>().expect("EgoConfig missing");
     let lang = state.lang;
 
     let mode = RwSignal::new(Mode::Login);
@@ -280,6 +399,7 @@ pub fn Landing() -> impl IntoView {
                                                 Ok(()) => {
                                                     status.set(String::new());
                                                     did_input.set(new_did);
+                                                    config.set(cfg);
                                                     finish_login(id, uname, pass, true, state2);
                                                 }
                                                 Err(e) => {
@@ -330,13 +450,19 @@ pub fn Landing() -> impl IntoView {
                                 .await
                             {
                                 Ok(()) => {
-                                    if let Some(cfg_json) = cfg_opt {
-                                        let _ = save_config(&uname, &cfg_json).await;
+                                    if let Some(cfg_json) = cfg_opt.as_ref() {
+                                        let _ = save_config(&uname, cfg_json).await;
                                     }
                                     if let Err(e) = verify_existing_identity(&id.sender_did).await {
                                         error.set(tf("error-profile-fetch", &[("e", &e)]));
                                         return;
                                     }
+                                    let cfg = match cfg_opt {
+                                        Some(json) => EgoConfig::from_json(&json)
+                                            .unwrap_or_else(|_| EgoConfig::new()),
+                                        None => EgoConfig::new(),
+                                    };
+                                    config.set(cfg);
                                     finish_login(id, uname, pass, false, state2);
                                 }
                                 Err(e) => error.set(e),
@@ -358,151 +484,70 @@ pub fn Landing() -> impl IntoView {
                 return;
             }
             let uname = username_from_did(&did);
-            status.set(t("status-unlocking"));
+            let full_did = format!("did:ma:{uname}");
+            status.set(t("status-fetching-profile"));
             let state2 = state.clone();
             spawn_local(async move {
-                match load_identity(&uname).await {
-                    Ok(Some(stored)) => {
-                        match unlock_identity_migrating(&stored.export_json, &pass) {
-                            Ok((id, migrated)) => {
-                                if let Some(migrated) = migrated {
-                                    if let Err(e) = save_identity(&uname, &migrated).await {
-                                        status.set(String::new());
-                                        error.set(e);
-                                        return;
-                                    }
-                                }
-                                status.set(String::new());
-                                if let Err(e) = verify_existing_identity(&id.sender_did).await {
+                match fetch_profile_from_ipfs(&full_did, &pass).await {
+                    Ok(fetched) => {
+                        // Apply language from DID document if present.
+                        if let Some(lang) = fetched.lang {
+                            if crate::i18n::init(&lang).await {
+                                state2.lang.set(crate::i18n::lang());
+                            }
+                        }
+                        // Overwrite the local cache with the authoritative copy.
+                        let export = fetched.migrated.as_deref().unwrap_or(&fetched.id_json);
+                        if let Err(e) = save_identity(&uname, export).await {
+                            status.set(String::new());
+                            error.set(e);
+                            return;
+                        }
+                        match fetched.cfg.to_json() {
+                            Ok(json) => {
+                                if let Err(e) = save_config(&uname, &json).await {
                                     status.set(String::new());
-                                    error.set(tf("error-profile-fetch", &[("e", &e)]));
+                                    error.set(e);
                                     return;
                                 }
-                                finish_login(id, uname, pass, false, state2);
                             }
-                            Err(e) => {
-                                status.set(String::new());
-                                error.set(tf("error-wrong-passphrase", &[("e", &e)]));
-                            }
-                        }
-                    }
-                    local_result => {
-                        if let Err(e) = local_result {
-                            log::warn!("[login] local identity cache unavailable: {e}");
-                        }
-                        // Not available from IndexedDB — resolve the published
-                        // profile and repopulate the local cache.
-                        status.set(t("status-fetching-profile"));
-                        use ma_core::DidDocumentResolver;
-                        let resolver = match crate::transport::connection::session_resolver() {
-                            Ok(resolver) => resolver,
                             Err(e) => {
                                 status.set(String::new());
                                 error.set(e);
                                 return;
                             }
-                        };
-                        let full_did = format!("did:ma:{uname}");
-                        match resolver.resolve(&full_did).await {
-                            Ok(doc) => {
-                                // Apply language from DID document if present.
-                                if let Some(ma_core::Ipld::Map(ref ma)) = doc.ma {
-                                    if let Some(ma_core::Ipld::String(lang)) = ma.get("lang") {
-                                        if crate::i18n::init(lang).await {
-                                            state2.lang.set(crate::i18n::lang());
-                                        }
-                                    }
-                                }
-                                if let Some(profile_cid) =
-                                    crate::parser::verbs::doc_profile_cid(&doc)
-                                {
-                                    match crate::http::fetch_cid_bytes(&profile_cid).await {
-                                        Ok(cbor) => {
-                                            let profile_key = profile_crypto::derive_key(&pass);
-                                            // Temporary backward compatibility: during migration
-                                            // we still accept legacy plaintext DAG-CBOR profile
-                                            // blobs if decryption fails.
-                                            // Remove after 2026-08-20.
-                                            let decoded = match profile_crypto::decrypt_with_key(
-                                                &cbor,
-                                                &profile_key,
-                                            ) {
-                                                Ok(plain) => plain,
-                                                Err(_) => cbor.clone(),
-                                            };
-                                            // Decode DAG-CBOR → nested profile.
-                                            let parsed_opt = serde_ipld_dagcbor::from_slice::<
-                                                serde_json::Value,
-                                            >(
-                                                &decoded
-                                            )
-                                            .ok()
-                                            .and_then(|profile_val| {
-                                                let username = profile_val
-                                                    .get("username")?
-                                                    .as_str()?
-                                                    .to_string();
-                                                let id_json = match profile_val.get("identity")? {
-                                                    serde_json::Value::String(s) => s.clone(),
-                                                    other => serde_json::to_string(other).ok()?,
-                                                };
-                                                let cfg_json = {
-                                                    let mut tmp = EgoConfig::new();
-                                                    tmp.merge_from_nested_profile(&profile_val)
-                                                        .ok()?;
-                                                    tmp.to_json().ok()
-                                                };
-                                                Some((username, id_json, cfg_json))
-                                            });
-                                            if let Some((pname, id_json, cfg_opt)) = parsed_opt {
-                                                match unlock_identity_migrating(&id_json, &pass) {
-                                                    Ok((id, migrated)) => {
-                                                        if let Err(e) = save_identity(
-                                                            &pname,
-                                                            migrated.as_deref().unwrap_or(&id_json),
-                                                        )
-                                                        .await
-                                                        {
-                                                            status.set(String::new());
-                                                            error.set(e);
-                                                            return;
-                                                        }
-                                                        if let Some(cfg) = cfg_opt {
-                                                            let _ = save_config(&pname, &cfg).await;
-                                                        }
-                                                        status.set(String::new());
-                                                        finish_login(
-                                                            id, pname, pass, false, state2,
-                                                        );
-                                                    }
-                                                    Err(e) => {
-                                                        status.set(String::new());
-                                                        error.set(tf(
-                                                            "error-wrong-passphrase",
-                                                            &[("e", &e)],
-                                                        ));
-                                                    }
-                                                }
-                                            } else {
-                                                status.set(String::new());
-                                                error.set(t("profile-no-cid-in-doc"));
-                                            }
-                                        }
-                                        Err(e) => {
-                                            status.set(String::new());
-                                            error.set(tf("error-profile-fetch", &[("e", &e)]));
-                                        }
-                                    }
-                                } else {
-                                    status.set(String::new());
-                                    error.set(t("profile-no-cid-in-doc"));
-                                }
-                            }
-                            Err(e) => {
+                        }
+                        config.set(fetched.cfg);
+                        status.set(String::new());
+                        finish_login(fetched.id, uname, pass, false, state2);
+                    }
+                    Err(ProfileFetchError::Unavailable(cause)) => {
+                        // IPFS could not supply the profile — restore the local cache.
+                        match restore_profile_from_local(&uname, &pass).await {
+                            Ok(fetched) => {
+                                config.set(fetched.cfg);
                                 status.set(String::new());
-                                error.set(tf("error-profile-fetch", &[("e", &e.to_string())]));
+                                state2
+                                    .push_system(tf("login-restored-from-cache", &[("e", &cause)]));
+                                finish_login(fetched.id, uname, pass, false, state2);
+                            }
+                            Err(local_err) => {
+                                status.set(String::new());
+                                error.set(tf(
+                                    "error-profile-fetch",
+                                    &[(
+                                        "e",
+                                        &format!(
+                                            "{cause} — and no usable local copy ({local_err})"
+                                        ),
+                                    )],
+                                ));
                             }
                         }
+                    }
+                    Err(ProfileFetchError::Rejected(cause)) => {
+                        status.set(String::new());
+                        error.set(cause);
                     }
                 }
             });
