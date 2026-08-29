@@ -103,24 +103,11 @@ async fn fetch_profile_from_ipfs(
         .map_err(ProfileFetchError::Unavailable)?;
 
     let profile_key = profile_crypto::derive_key(pass);
-    // Legacy profiles published before blob encryption are plaintext DAG-CBOR
-    // on IPFS. Accept them so existing identities can still log in; the
-    // embedded identity bundle is passphrase-encrypted, so the passphrase is
-    // still validated by the unlock step below. This fallback is permanent:
-    // legacy blobs are immutable content-addressed objects that never
-    // disappear from IPFS on their own.
-    let plain = match profile_crypto::decrypt_with_key(&cbor, &profile_key) {
-        Ok(plain) => plain,
-        Err(decrypt_error) => {
-            if serde_ipld_dagcbor::from_slice::<serde_json::Value>(&cbor)
-                .is_ok_and(|val| val.get("identity").is_some())
-            {
-                cbor
-            } else {
-                return Err(ProfileFetchError::Rejected(decrypt_error));
-            }
-        }
-    };
+    // Profiles are always encrypted. There is deliberately no plaintext or
+    // legacy fallback: a non-encrypted profile is treated as corrupt data and
+    // rejected, so un-encrypted profiles can never slip through by accident.
+    let plain = profile_crypto::decrypt_with_key(&cbor, &profile_key)
+        .map_err(ProfileFetchError::Rejected)?;
 
     let profile_val: serde_json::Value =
         serde_ipld_dagcbor::from_slice(&plain).map_err(|error| {
@@ -284,9 +271,15 @@ pub fn Landing() -> impl IntoView {
         let uname = username_from_did(&did);
         let state2 = state_lang.clone();
         let invited_ma = invited_ma_for_lookup.clone();
-        spawn_local(async move {
+        // Scoped to this effect's owner: the lookup is cancelled when the
+        // landing page unmounts (e.g. the user logs in), so it never touches
+        // disposed signals. try_* reads guard against a stale wake-up anyway.
+        leptos::task::spawn_local_scoped_with_cancellation(async move {
             gloo_timers::future::TimeoutFuture::new(250).await;
-            if did_input.get_untracked().trim() != did {
+            let Some(did_now) = did_input.try_get_untracked() else {
+                return;
+            };
+            if did_now.trim() != did {
                 return;
             }
             let mut selected_ma = invited_ma.clone();
@@ -304,18 +297,21 @@ pub fn Landing() -> impl IntoView {
                 return;
             };
             if let Ok(doc) = resolver.resolve(&did).await {
-                if did_input.get_untracked().trim() != did {
+                let Some(did_now) = did_input.try_get_untracked() else {
+                    return;
+                };
+                if did_now.trim() != did {
                     return;
                 }
                 let published_ma = crate::parser::verbs::doc_trusted_ma(&doc);
-                ma_choices.set(crate::parser::verbs::ma::ma_choices(
+                ma_choices.try_set(crate::parser::verbs::ma::ma_choices(
                     published_ma.clone(),
                     invited_ma,
                 ));
                 selected_ma =
                     crate::parser::verbs::ma::preferred_ma_prefill(published_ma, selected_ma);
-                if !ma_input_edited.get_untracked() {
-                    ma_input.set(selected_ma.unwrap_or_default());
+                if !ma_input_edited.try_get_untracked().unwrap_or(true) {
+                    ma_input.try_set(selected_ma.unwrap_or_default());
                 }
             }
         });

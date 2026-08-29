@@ -119,7 +119,7 @@ pub fn SecretModal(state: AppState) -> impl IntoView {
                     let state = state.clone();
                     leptos::task::spawn_local(async move {
                         crate::parser::verbs::ma::queue_profile_publish(
-                            publisher, config, &state, None, false, false,
+                            publisher, config, &state, None, false, false, false,
                         )
                         .await;
                     });

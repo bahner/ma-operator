@@ -24,6 +24,19 @@ use crate::{
     views::editor::EditorContext,
 };
 
+/// Clear the session and session-scoped config. Shared by the `.logout`
+/// command and the logout-after-publish completion path.
+pub(crate) fn perform_logout(state: &AppState, config: RwSignal<EgoConfig>) {
+    transport::disconnect();
+    crate::scheme::reset_session_env();
+    state.secret_dialog.set(false);
+    config.update(|cfg| {
+        cfg.delete_subtree(".ma");
+        cfg.delete(".my.aliases.ma");
+    });
+    state.session.set(None);
+}
+
 fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
     const PREFIX: &str = ".my.aliases.";
     if !path.starts_with(PREFIX) {
@@ -224,14 +237,27 @@ fn eval_control(
     // ── Control commands ──────────────────────────────────────────────────
     match path {
         ".logout" => {
-            transport::disconnect();
-            crate::scheme::reset_session_env();
-            state.secret_dialog.set(false);
-            config.update(|cfg| {
-                cfg.delete_subtree(".ma");
-                cfg.delete(".my.aliases.ma");
-            });
-            state.session.set(None);
+            // Save the full profile (`.my` blob + `.z` + DID document) before
+            // logging out when a trusted runtime is available; otherwise just
+            // clear the session.
+            let cfg = config.get_untracked();
+            if let Some(publisher) = crate::parser::verbs::ma::active_ma_did(&cfg) {
+                let state2 = state.clone();
+                spawn_local(async move {
+                    crate::parser::verbs::ma::queue_profile_publish(
+                        publisher,
+                        config,
+                        &state2,
+                        None,
+                        false,
+                        true,
+                        true,
+                    )
+                    .await;
+                });
+            } else {
+                perform_logout(state, config);
+            }
         }
         ".clear" => {
             state.entries.set(vec![]);

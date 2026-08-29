@@ -45,6 +45,30 @@ pub async fn post_json_text_timeout(
     Ok(HttpTextResponse { status, body })
 }
 
+/// Probe a URL with a raw browser `fetch` and report how the browser treated
+/// it, bypassing ma-core/reqwest so the underlying rejection reason survives.
+///
+/// `no_cors` sets fetch mode `no-cors`: a resolved no-cors fetch (opaque
+/// response) means the network path works, so any cors-mode failure is CORS
+/// policy; a rejected no-cors fetch means the network/DNS path itself is
+/// broken. Used by `.ma!gateway-test`.
+pub async fn probe_fetch(url: &str, no_cors: bool, timeout_ms: u32) -> String {
+    let mode_label = if no_cors { "no-cors" } else { "cors" };
+    let opts = web_sys::RequestInit::new();
+    opts.set_method("GET");
+    if no_cors {
+        opts.set_mode(web_sys::RequestMode::NoCors);
+    }
+    match fetch_with_timeout(url, &opts, timeout_ms).await {
+        Ok(resp) => format!(
+            "{mode_label}: resolved status={} type={:?}",
+            resp.status(),
+            resp.type_()
+        ),
+        Err(e) => format!("{mode_label}: rejected: {e}"),
+    }
+}
+
 async fn fetch_with_timeout(
     url: &str,
     opts: &web_sys::RequestInit,

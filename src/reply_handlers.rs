@@ -171,6 +171,7 @@ pub(crate) struct ProfilePublishRequest {
     pub(crate) reenter_saved_ctx: bool,
 
     pub(crate) timeout_ms: u32,
+    pub(crate) logout_after: bool,
 }
 
 /// Profile-publish reply: the encrypted blob CID is now stored — republish DID doc.
@@ -188,6 +189,9 @@ pub(crate) fn handle_profile_publish_reply(
             ));
         }
         fail_cmd(state, request.cmd_id, incoming.display.clone());
+        if request.logout_after {
+            crate::eval::perform_logout(state, config);
+        }
         return;
     }
     match crate::messages::extract_ok_text(&incoming.content) {
@@ -217,39 +221,51 @@ pub(crate) fn handle_profile_publish_reply(
             let trusted_ma = crate::parser::verbs::ma::active_ma_did(&cfg_snap);
             let selected_z = cfg_snap.get(".my.z").map(str::to_string);
             leptos::task::spawn_local(async move {
-                if let Err(error) = persist_config(&username, &cfg_snap).await {
-                    crate::state::apply_profile_rollback();
-                    fail_cmd(&state2, request.cmd_id, error);
-                    return;
+                let publisher_did = request.publisher_did.clone();
+                let timeout_ms = request.timeout_ms;
+                let result: Result<(), String> = (async {
+                    persist_config(&username, &cfg_snap).await?;
+                    crate::parser::verbs::ma::send_identity_publish_and_wait(
+                        &publisher_did,
+                        trusted_ma,
+                        selected_z.clone(),
+                        timeout_ms,
+                    )
+                    .await
+                })
+                .await;
+
+                match result {
+                    Ok(()) => {
+                        // The profile blob and the DID document are now
+                        // published with the current passphrase — a pending
+                        // `.keymaker` rollback is moot.
+                        crate::state::clear_profile_rollback();
+                        if let Some(id) = request.cmd_id {
+                            state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
+                        } else {
+                            state2.push_output("間");
+                        }
+                        if request.reenter_saved_ctx {
+                            crate::startup::queue_saved_context_reentry(&state2, config);
+                        }
+                    }
+                    Err(error) => {
+                        crate::state::apply_profile_rollback();
+                        fail_cmd(&state2, request.cmd_id, error);
+                    }
                 }
-                if let Err(error) = crate::parser::verbs::ma::send_identity_publish_and_wait(
-                    &request.publisher_did,
-                    trusted_ma,
-                    selected_z.clone(),
-                    request.timeout_ms,
-                )
-                .await
-                {
-                    crate::state::apply_profile_rollback();
-                    fail_cmd(&state2, request.cmd_id, error);
-                    return;
-                }
-                // The profile blob and the DID document are now published with
-                // the current passphrase — a pending `.keymaker` rollback is moot.
-                crate::state::clear_profile_rollback();
-                if let Some(id) = request.cmd_id {
-                    state2.resolve_command_by_id(id, CommandStatus::Replied(String::new()));
-                } else {
-                    state2.push_output("間");
-                }
-                if request.reenter_saved_ctx {
-                    crate::startup::queue_saved_context_reentry(&state2, config);
+                if request.logout_after {
+                    crate::eval::perform_logout(&state2, config);
                 }
             });
         }
         Err(e) => {
             crate::state::apply_profile_rollback();
             fail_cmd_decode(state, request.cmd_id, &e);
+            if request.logout_after {
+                crate::eval::perform_logout(state, config);
+            }
         }
     }
 }

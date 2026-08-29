@@ -144,6 +144,7 @@ fn dispatch_reply(
             cmd_id,
             reenter_saved_ctx,
             timeout_ms,
+            logout_after,
         } => {
             handle_profile_publish_reply(
                 crate::reply_handlers::ProfilePublishRequest {
@@ -151,6 +152,7 @@ fn dispatch_reply(
                     cmd_id,
                     reenter_saved_ctx,
                     timeout_ms,
+                    logout_after,
                 },
                 &incoming,
                 state,

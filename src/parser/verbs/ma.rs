@@ -62,6 +62,7 @@ pub(super) fn handle_ma(
     match verb {
         "set" => return set_trusted_runtime(args, state, config),
         "claim" => return claim_trusted_runtime(args, state, config),
+        "gateway-test" => return handle_gateway_test(args, state, config),
         "publish" => {}
         _ => return Err(tf("runtime-no-verb", &[("verb", verb), ("path", path)])),
     }
@@ -95,7 +96,7 @@ async fn publish_with_trusted_ma(
         state.push_error(t("msg-trusted-ma-not-discovered"));
         return;
     }
-    queue_profile_publish(trusted_ma, config, state, None, true, true).await;
+    queue_profile_publish(trusted_ma, config, state, None, true, true, false).await;
 }
 
 pub(crate) fn ma_timeout_secs(cfg: &EgoConfig) -> u32 {
@@ -134,6 +135,72 @@ fn set_trusted_runtime(
     });
     state.push_system(format!("ma: {did}"));
     Ok(())
+}
+
+/// Diagnostic: probe each enabled gateway with a raw browser `fetch` in both
+/// cors and no-cors modes. Distinguishes CORS policy failures from network/
+/// DNS failures without needing `DevTools`. Arg: optional bare DID (or alias)
+/// to probe; defaults to the session's own DID.
+fn handle_gateway_test(
+    args: &[String],
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+) -> Result<(), String> {
+    let did = if args.is_empty() {
+        crate::transport::get_sender_did().ok_or_else(|| "not logged in".to_string())?
+    } else {
+        resolve_bare_did(&args[0], &config.get_untracked())?
+    };
+    let key = did
+        .strip_prefix("did:ma:")
+        .filter(|key| !key.is_empty())
+        .ok_or_else(|| format!("{did} is not a bare did:ma DID"))?
+        .to_string();
+    let urls = crate::transport::connection::session_gateway_urls();
+    if urls.is_empty() {
+        return Err("no gateways enabled".to_string());
+    }
+    state.push_system(format!(
+        "gateway test for {did} — {} gateway{}",
+        urls.len(),
+        if urls.len() == 1 { "" } else { "s" }
+    ));
+    let state2 = state.clone();
+    leptos::task::spawn_local(async move {
+        for base in urls {
+            let subdomain = gateway_test_url(&base, &key);
+            state2.push_system(format!("→ {subdomain}"));
+            let cors = crate::http::probe_fetch(&subdomain, false, 6_000).await;
+            state2.push_system(format!("  {cors}"));
+            let no_cors = crate::http::probe_fetch(&subdomain, true, 6_000).await;
+            state2.push_system(format!("  {no_cors}"));
+            let path = format!("{base}ipns/{key}");
+            if path != subdomain {
+                let path_cors = crate::http::probe_fetch(&path, false, 6_000).await;
+                state2.push_system(format!("  path {path} → {path_cors}"));
+            }
+        }
+    });
+    Ok(())
+}
+
+/// Subdomain form for domain gateways (as ma-core's `gateway_url_for_path`
+/// does); path form for localhost/IP gateways. Diagnostic-only mirror.
+fn gateway_test_url(base: &str, key: &str) -> String {
+    let scheme = if base.starts_with("https://") {
+        "https"
+    } else {
+        "http"
+    };
+    let rest = base
+        .strip_prefix("https://")
+        .or_else(|| base.strip_prefix("http://"))
+        .unwrap_or(base);
+    let host = rest.split(['/', '?', '#']).next().unwrap_or(rest);
+    if host == "localhost" || host.parse::<std::net::IpAddr>().is_ok() {
+        return format!("{base}ipns/{key}");
+    }
+    format!("{scheme}://{key}.ipns.{host}/")
 }
 
 fn claim_trusted_runtime(
@@ -412,9 +479,10 @@ pub(crate) async fn queue_profile_publish(
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
     publish_z: bool,
+    logout_after: bool,
 ) {
     let Some(username) = state.session.get_untracked().map(|s| s.username.clone()) else {
-        fail_profile_publish(state, cmd_id, t("msg-not-logged-in"));
+        fail_profile_publish(state, config, cmd_id, t("msg-not-logged-in"), logout_after);
         return;
     };
     // Step 1: Publish the DID document so the runtime can authenticate the
@@ -426,13 +494,19 @@ pub(crate) async fn queue_profile_publish(
     if let Err(error) =
         send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, timeout_ms).await
     {
-        fail_profile_publish(state, cmd_id, error);
+        fail_profile_publish(state, config, cmd_id, error, logout_after);
         return;
     }
     if publish_z {
         let parts = crate::parser::verbs::doc::z_tree_parts(&config.get_untracked());
         if parts.is_empty() {
-            fail_profile_publish(state, cmd_id, tf("doc-content-empty", &[("path", ".z")]));
+            fail_profile_publish(
+                state,
+                config,
+                cmd_id,
+                tf("doc-content-empty", &[("path", ".z")]),
+                logout_after,
+            );
             return;
         }
         if let Err(error) = crate::parser::verbs::doc::publish_z_tree_and_select(
@@ -440,14 +514,14 @@ pub(crate) async fn queue_profile_publish(
         )
         .await
         {
-            fail_profile_publish(state, cmd_id, error);
+            fail_profile_publish(state, config, cmd_id, error, logout_after);
             return;
         }
     }
     let encrypted_profile = match build_encrypted_profile(&username, config).await {
         Ok(profile) => profile,
         Err(error) => {
-            fail_profile_publish(state, cmd_id, error);
+            fail_profile_publish(state, config, cmd_id, error, logout_after);
             return;
         }
     };
@@ -465,10 +539,11 @@ pub(crate) async fn queue_profile_publish(
                 cmd_id,
                 reenter_saved_ctx,
                 timeout_ms,
+                logout_after,
             },
             None,
         ),
-        Err(error) => fail_profile_publish(state, cmd_id, error),
+        Err(error) => fail_profile_publish(state, config, cmd_id, error, logout_after),
     }
 }
 
@@ -498,7 +573,13 @@ async fn build_encrypted_profile(
     crate::profile_crypto::encrypt_with_key(&profile_bytes, &profile_key)
 }
 
-fn fail_profile_publish(state: &AppState, cmd_id: Option<u64>, error: String) {
+fn fail_profile_publish(
+    state: &AppState,
+    config: RwSignal<EgoConfig>,
+    cmd_id: Option<u64>,
+    error: String,
+    logout_after: bool,
+) {
     if let Some(id) = cmd_id {
         state.resolve_command_by_id(id, crate::core::CommandStatus::Error(error.clone()));
     }
@@ -509,6 +590,9 @@ fn fail_profile_publish(state: &AppState, cmd_id: Option<u64>, error: String) {
         ));
     } else {
         state.push_error(tf("profile-publish-failed", &[("e", &error)]));
+    }
+    if logout_after {
+        crate::eval::perform_logout(state, config);
     }
 }
 

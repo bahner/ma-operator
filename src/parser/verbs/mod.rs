@@ -32,8 +32,7 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     }
 }
 
-/// Extract the `ma.z` manifest CID string for parser and transport tests.
-#[cfg(test)]
+/// Extract the `ma.z` manifest CID string from a resolved DID document.
 pub(crate) fn doc_z_cid(doc: &ma_core::Document) -> Option<String> {
     match &doc.ma {
         Some(Ipld::Map(map)) => match map.get("z") {

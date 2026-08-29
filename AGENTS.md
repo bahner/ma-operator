@@ -489,6 +489,22 @@ Four 32-byte keys per identity, stored in `SecretBundle`:
 `did_encryption_key` must always be included in `SessionState` —
 it is needed to decrypt incoming messages.
 
+### Profile blob — always encrypted
+
+The published profile blob (`.ma` / `.keymaker` publish) bundles the encrypted
+`SecretBundle` export together with the `.my.*` config. The whole blob is
+encrypted again with a passphrase-derived key (`src/profile_crypto.rs`):
+
+- KDF: PBKDF2-HMAC-SHA256, fixed salt `zion-profile-v1`, 50 000 rounds
+- Cipher: XChaCha20-Poly1305 (24-byte nonce prepended)
+
+The profile blob **must always be encrypted**. There is deliberately **no**
+plaintext or legacy fallback in the login path (`fetch_profile_from_ipfs`): a
+profile that does not decrypt is rejected as corrupt data, never silently
+accepted as a plaintext blob. This is stricter than earlier releases, which
+briefly accepted un-encrypted blobs for migration. Do not reintroduce a
+plaintext fallback — un-encrypted profiles must never be treated as valid.
+
 ---
 
 ## `.ma` — trusted runtime control

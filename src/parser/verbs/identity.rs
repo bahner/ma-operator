@@ -64,6 +64,7 @@ pub(super) fn handle_identity(
                 Some(cmd_id),
                 false,
                 false,
+                false,
             )
             .await;
         });

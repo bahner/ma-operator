@@ -188,17 +188,34 @@ fn normalise_z_reference(value: &str) -> Option<String> {
     crate::doc_link::parse_link_cid(value).map(|cid| format!("/ipfs/{cid}"))
 }
 
+/// Resolve our own published DID `ma.z` manifest CID, if present. This is the
+/// last saved z selection; the live `.my.z` profile value always wins over it.
+async fn resolve_did_z(sender_did: &str) -> Option<String> {
+    let resolver = transport::session_resolver().ok()?;
+    let document = ma_core::DidDocumentResolver::resolve(&resolver, sender_did)
+        .await
+        .ok()?;
+    crate::parser::verbs::doc_z_cid(&document)
+}
+
 async fn load_selected_z(
     state: &AppState,
     config: RwSignal<EgoConfig>,
     username: &str,
+    sender_did: &str,
     startup_z: Option<String>,
 ) {
     let mut current = config.get_untracked();
     if current.get(".my.z").is_none() {
-        if let Some(seed) = startup_z {
+        // No live selection yet: fall back to the last published DID `ma.z`,
+        // then to the one-time `?z=` onboarding seed.
+        let seed = match resolve_did_z(sender_did).await {
+            Some(seed) => Some(seed),
+            None => startup_z,
+        };
+        if let Some(seed) = seed {
             let Some(seed) = normalise_z_reference(&seed) else {
-                let detail = "z seed: z URL parameter is not a CID";
+                let detail = "z seed: value is not a CID";
                 state.push_error(tf("error-profile-fetch", &[("e", detail)]));
                 return;
             };
@@ -441,7 +458,7 @@ pub(crate) async fn startup_connect(
             )
             .await;
             if should_queue_startup_enter(&ma_outcome) {
-                load_selected_z(&state, config, &username, startup_z).await;
+                load_selected_z(&state, config, &username, &sender_did, startup_z).await;
                 queue_startup_zscheme(&state, config);
             }
             if should_queue_startup_enter(&ma_outcome) {

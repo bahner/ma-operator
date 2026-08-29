@@ -119,6 +119,7 @@ pub enum PendingKind {
         cmd_id: Option<u64>,
         reenter_saved_ctx: bool,
         timeout_ms: u32,
+        logout_after: bool,
     },
     /// Root `:enter?` reply for a bare-runtime `.enter` should resume direct
     /// room entry against the discovered `parent` room DID-URL.

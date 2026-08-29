@@ -451,10 +451,16 @@ impl EgoConfig {
     }
 
     fn migrate_legacy_z_tree(&mut self) {
-        let selected = self
+        // Legacy profiles stored the z manifest under `.my.z.manifest` and the
+        // z sources under `.my.z.<name>`. Current format stores the selection
+        // at the `.my.z` leaf and sources under `.z.<name>`. Move any legacy
+        // children and keep whichever selection leaf exists — never drop an
+        // already-migrated `.my.z` leaf.
+        let legacy_selected = self
             .tree
             .remove(".my.z.manifest")
             .filter(|value| !value.trim().is_empty());
+        let current_selected = self.tree.get(".my.z").cloned();
         let sources: Vec<(String, String)> = self
             .tree
             .iter()
@@ -467,7 +473,7 @@ impl EgoConfig {
         for (path, source) in sources {
             self.tree.entry(path).or_insert(source);
         }
-        if let Some(selected) = selected {
+        if let Some(selected) = legacy_selected.or(current_selected) {
             self.tree.insert(".my.z".to_string(), selected);
         }
     }
@@ -999,6 +1005,23 @@ mod tests {
 
         assert_eq!(cfg.get(".my.z"), Some("/ipfs/bafyreimanifest"));
         assert_eq!(cfg.get(".z.scheme"), Some("(define x 1)\n"));
+        assert!(!cfg.has_children(".my.z"));
+    }
+
+    #[test]
+    fn current_z_selection_survives_profile_merge() {
+        let mut cfg = bare();
+        let profile = serde_json::json!({
+            "username": "alice",
+            "my": {
+                "z": "/ipfs/bafyreimanifest"
+            }
+        });
+
+        cfg.merge_from_nested_profile(&profile)
+            .expect("profile merge");
+
+        assert_eq!(cfg.get(".my.z"), Some("/ipfs/bafyreimanifest"));
         assert!(!cfg.has_children(".my.z"));
     }
 
