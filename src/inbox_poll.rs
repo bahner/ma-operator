@@ -199,14 +199,10 @@ fn dispatch_reply(
                 return;
             }
             let (status, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
-            if incoming.is_error {
-                let is_from_room = config
-                    .get_untracked()
-                    .get(".my.ctx.room")
-                    .is_some_and(|room| !room.is_empty() && incoming.from == room);
-                if is_from_room {
-                    maybe_queue_ctx_recovery(cmd_id, state, config);
-                }
+            if incoming.is_error
+                && stale_ctx_error(&incoming, text_opt.as_deref(), &config.get_untracked())
+            {
+                maybe_queue_ctx_recovery(cmd_id, state, config);
             }
             state.resolve_command_by_id(cmd_id, status);
             if let Some(text) = text_opt {
@@ -392,6 +388,40 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
         ciborium::Value::Text(text) => Some(text),
         _ => None,
     }
+}
+
+/// Whether an error reply genuinely indicates a stale room context.
+///
+/// The runtime answers `unknown entity fragment: <name>` when a fragment no
+/// longer resolves — that is the only signal that our cached room target is
+/// gone. Ordinary room errors (authorisation, state, usage) are not staleness:
+/// treating every room error as one navigated users back into the room on each
+/// failed `roll-call`/`owner`/state command.
+fn stale_ctx_error(incoming: &IncomingMessage, text: Option<&str>, cfg: &EgoConfig) -> bool {
+    let Some(text) = text else {
+        return false;
+    };
+    if !text
+        .to_ascii_lowercase()
+        .contains("unknown entity fragment")
+    {
+        return false;
+    }
+    // The unknown-fragment reply is authored by the runtime (bare DID or its
+    // `#root`), not by the room itself. Restrict to our own ctx sphere so an
+    // unrelated actor's fragment error never triggers a recovery re-enter.
+    let room = cfg
+        .get(".my.ctx.room")
+        .map(str::trim)
+        .filter(|r| !r.is_empty());
+    let runtime = cfg
+        .get(".my.ctx.runtime")
+        .map(str::trim)
+        .filter(|r| !r.is_empty());
+    let root = runtime.map(|r| format!("{r}#root"));
+    room == Some(incoming.from.as_str())
+        || runtime == Some(incoming.from.as_str())
+        || root.as_deref() == Some(incoming.from.as_str())
 }
 
 fn maybe_queue_ctx_recovery(cmd_id: u64, state: &AppState, config: RwSignal<EgoConfig>) {
@@ -1286,6 +1316,110 @@ mod tests {
             second_status,
             Some(crate::core::CommandStatus::Replied(String::new()))
         );
+    }
+
+    #[test]
+    fn ordinary_room_error_does_not_trigger_recovery() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let room = "did:ma:k51runtime#construct";
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| {
+            cfg.set(".my.ctx.use", "true");
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.room", room);
+            cfg.set(".my.ctx.nick", "bahner");
+        });
+        let show_editor = RwSignal::new(None);
+        let cmd_id = state.push_command("@ma#construct:roll-call end");
+        let msg_id = "request-1".to_string();
+        state.pending_requests.update(|m| {
+            m.insert(
+                msg_id.clone(),
+                crate::state::TrackedRequest {
+                    kind: PendingKind::Simple { cmd_id },
+                    batch_id: None,
+                    sent_at_ms: 0.0,
+                },
+            );
+        });
+
+        let mut reply = incoming(room, "no roll-call active");
+        reply.reply_to = Some(msg_id);
+        reply.is_error = true;
+        ciborium::ser::into_writer(
+            &ciborium::Value::Array(vec![
+                ciborium::Value::Text(":error".to_string()),
+                ciborium::Value::Text("no roll-call active".to_string()),
+            ]),
+            &mut reply.content,
+        )
+        .unwrap();
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            "no roll-call active".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        assert!(state.input_queue.get_untracked().is_empty());
+        assert!(state.ctx_recovery_runtime.get_untracked().is_none());
+    }
+
+    #[test]
+    fn unknown_fragment_error_from_runtime_triggers_recovery() {
+        let _runtime = leptos::prelude::Owner::new();
+        let state = AppState::new();
+        let config = RwSignal::new(EgoConfig::default());
+        config.update(|cfg| {
+            cfg.set(".my.ctx.use", "true");
+            cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
+            cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+            cfg.set(".my.ctx.nick", "bahner");
+        });
+        let show_editor = RwSignal::new(None);
+        let cmd_id = state.push_command("@ma#construct:look");
+        let msg_id = "request-1".to_string();
+        state.pending_requests.update(|m| {
+            m.insert(
+                msg_id.clone(),
+                crate::state::TrackedRequest {
+                    kind: PendingKind::Simple { cmd_id },
+                    batch_id: None,
+                    sent_at_ms: 0.0,
+                },
+            );
+        });
+
+        // The runtime (bare DID) answers when the fragment no longer resolves.
+        let mut reply = incoming("did:ma:k51runtime", "unknown entity fragment: construct");
+        reply.reply_to = Some(msg_id);
+        reply.is_error = true;
+        ciborium::ser::into_writer(
+            &ciborium::Value::Array(vec![
+                ciborium::Value::Text(":error".to_string()),
+                ciborium::Value::Text("unknown entity fragment: construct".to_string()),
+            ]),
+            &mut reply.content,
+        )
+        .unwrap();
+
+        dispatch_reply(
+            "request-1",
+            reply,
+            "unknown entity fragment: construct".to_string(),
+            &state,
+            config,
+            show_editor,
+        );
+
+        let queued: Vec<String> = state.input_queue.get_untracked().into_iter().collect();
+        assert!(queued
+            .iter()
+            .any(|line| line == ".enter bahner@did:ma:k51runtime"));
     }
 
     #[test]
