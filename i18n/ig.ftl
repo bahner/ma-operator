@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = Ebipụtara DID site na 間 mpaghara ({ $url })
 msg-identity-publication-propagating = Mbipụta njirimara ka na-agbasa; entry egbuola oge: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Ọchụchọ MA a tụkwasịrị obi nwere ike iwe ruo sekọnd { $seconds }.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = A na-ebipụta njirimara. Nke a nwere ike iwe ruo sekọnd { $seconds }.
 msg-ma-connecting-matrix = na-agbalị ijikọ gị na 間trix

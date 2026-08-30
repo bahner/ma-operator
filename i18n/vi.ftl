@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID được xuất bản qua 間 cục bộ ({ $url })
 msg-identity-publication-propagating = Việc công bố danh tính vẫn đang lan truyền; entry bị trì hoãn: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Tra cứu MA đáng tin cậy có thể mất tới { $seconds } giây.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Đang công bố danh tính. Việc này có thể mất tới { $seconds } giây.
 msg-ma-connecting-matrix = đang cố kết nối bạn vào 間trix

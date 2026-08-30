@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID paskelbtas per vietinį 間 ({ $url })
 msg-identity-publication-propagating = Tapatybės publikavimas dar sklinda; entry atidėtas: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Patikimo MA paieška gali užtrukti iki { $seconds } sekundžių.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Tapatybė publikuojama. Tai gali užtrukti iki { $seconds } sekundžių.
 msg-ma-connecting-matrix = bandoma prijungti jus prie 間trix

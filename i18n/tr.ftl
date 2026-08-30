@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID yerel 間 ({ $url }) aracılığıyla yayımlandı
 msg-identity-publication-propagating = Kimlik yayını hâlâ yayılıyor; entry gecikti: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Güvenilir MA araması { $seconds } saniyeye kadar sürebilir.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Kimlik yayımlanıyor. Bu { $seconds } saniyeye kadar sürebilir.
 msg-ma-connecting-matrix = seni 間trix'e bağlamaya çalışıyor

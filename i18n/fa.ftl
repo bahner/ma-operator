@@ -60,6 +60,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID از راه 間 محلی منتشر شد ({ $url })
 msg-identity-publication-propagating = انتشار هویت هنوز در حال پخش شدن است؛ ورود به تعویق افتاد: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = جستجوی MA مورد اعتماد ممکن است تا { $seconds } ثانیه طول بکشد.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = هویت منتشر می‌شود. این کار ممکن است تا { $seconds } ثانیه طول بکشد.
 msg-ma-connecting-matrix = در حال وصل کردن شما به 間trix

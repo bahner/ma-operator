@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID gepubliceerd via lokale 間 ({ $url })
 msg-identity-publication-propagating = De identiteitspublicatie wordt nog verspreid; entry is vertraagd: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Het opzoeken van de vertrouwde MA kan tot { $seconds } seconden duren.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Identiteit wordt gepubliceerd. Dit kan tot { $seconds } seconden duren.
 msg-ma-connecting-matrix = probeert je met de 間trix te verbinden

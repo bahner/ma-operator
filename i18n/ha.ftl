@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = An buga DID ta hanyar 間 na gida ({ $url })
 msg-identity-publication-propagating = Buga shaidar kai har yanzu yana yaduwa; entry ta jinkirta: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Neman MA amintacce na iya ɗaukar har zuwa daƙiƙa { $seconds }.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Ana buga shaidar kai. Wannan na iya ɗaukar har zuwa daƙiƙa { $seconds }.
 msg-ma-connecting-matrix = ana ƙoƙarin haɗa ka da 間trix

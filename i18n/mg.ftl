@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = Navoaka ny DID amin'alalan'ny 間 eo an-toerana ({ $url })
 msg-identity-publication-propagating = Mbola miparitaka ny famoahana ny identity; nahemotra ny entry: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Fikarohana MA itokisana. Mety haharitra hatramin'ny { $seconds } segondra izany.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Mamoaka identity. Mety haharitra hatramin'ny { $seconds } segondra izany.
 msg-ma-connecting-matrix = manandrana mampifandray anao amin'ny 間trix

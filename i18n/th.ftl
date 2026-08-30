@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ถูกเผยแพร่ผ่าน 間 ในเครื่อง ({ $url })
 msg-identity-publication-propagating = การเผยแพร่ตัวตนยังอยู่ระหว่างกระจาย; entry ถูกเลื่อนออกไป: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = การค้นหา MA ที่เชื่อถือได้อาจใช้เวลาสูงสุด { $seconds } วินาที
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = กำลังเผยแพร่ตัวตน อาจใช้เวลาสูงสุด { $seconds } วินาที
 msg-ma-connecting-matrix = กำลังพยายามเชื่อมต่อคุณกับ 間trix

@@ -58,6 +58,7 @@ msg-auto-published = DID offentliggjort via lokal 間 ({ $url })
 msg-identity-publication-propagating = Identitetspubliceringen udbredes stadig; entry er udsat: { $e }
 msg-identity-first-publish = Publicerer identiteten. Dette kan tage op til { $seconds } sekunder.
 msg-trusted-ma-searching = Søger efter betroet MA ({ $did })
+msg-trusted-ma-lookup-wait = Et opslag efter betroet MA kan tage op til { $seconds } sekunder.
 msg-trusted-ma-not-discovered = Betroet MA blev ikke fundet. Opslaget kan være mislykket midlertidigt. Prøv `.ma` igen.
 msg-ma-connecting-matrix = forsøger at forbinde dig til 間trix
 msg-ma-checking-url = 間: { $url }

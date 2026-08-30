@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID i bin publishim long local 間 ({ $url })
 msg-identity-publication-propagating = Identity publish i wok long go yet; entry i wet yet: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Painim trusted MA inap kisim inap { $seconds } seken.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Wok long publishim identity. Dispela inap kisim inap { $seconds } seken.
 msg-ma-connecting-matrix = traim long konektim yu long 間trix

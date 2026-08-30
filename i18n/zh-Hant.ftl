@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 已透過本地 間 ({ $url }) 發布
 msg-identity-publication-propagating = 身分發布仍在傳播；entry 已延遲：{ $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = 可信 MA 搜尋最多可能需要 { $seconds } 秒。
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = 正在發布身分。這最多可能需要 { $seconds } 秒。
 msg-ma-connecting-matrix = 正在嘗試將你連線到 間trix

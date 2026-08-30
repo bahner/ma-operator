@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID birt í gegnum staðbundið 間 ({ $url })
 msg-identity-publication-propagating = Útgáfa auðkennisins er enn að breiðast út; entry seinkar: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Leit að traustum MA getur tekið allt að { $seconds } sekúndur.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Birti auðkenni. Þetta getur tekið allt að { $seconds } sekúndur.
 msg-ma-connecting-matrix = reyni að tengja þig við 間trix

@@ -8,9 +8,14 @@ use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
+use web_time::{Duration, Instant};
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
+/// Pause between trusted-MA lookup attempts while retrying within the
+/// configured publish-timeout budget. Short enough to make progress, long
+/// enough to let a cold public-gateway IPNS lookup warm up server-side.
+const TRUSTED_MA_RETRY_DELAY_MS: u32 = 2_000;
 const DEFAULT_MA_TIMEOUT_SECS: u32 = 120;
 const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
 const MA_CTX_DID: &str = ".ma.ctx.did";
@@ -72,6 +77,10 @@ pub(super) fn handle_ma(
         .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
     let timeout_secs = ma_timeout_secs(&cfg);
     state.push_system(tf("msg-trusted-ma-searching", &[("did", &trusted_ma)]));
+    state.push_system(tf(
+        "msg-trusted-ma-lookup-wait",
+        &[("seconds", &timeout_secs.to_string())],
+    ));
     state.push_system(format!(
         ".ma: {}",
         tf(
@@ -91,7 +100,8 @@ async fn publish_with_trusted_ma(
     config: RwSignal<EgoConfig>,
     state: &AppState,
 ) {
-    if let Err(error) = resolve_trusted_ma(&trusted_ma).await {
+    let timeout_ms = ma_timeout_ms(&config.get_untracked());
+    if let Err(error) = resolve_trusted_ma(&trusted_ma, timeout_ms).await {
         log::warn!("[ma] trusted MA discovery failed for {trusted_ma}: {error}");
         state.push_error(t("msg-trusted-ma-not-discovered"));
         return;
@@ -348,8 +358,13 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     did: String,
     is_new: bool,
 ) -> ConnectMaOutcome {
+    let timeout_ms = ma_timeout_ms(&config.get_untracked());
     state.push_system(tf("msg-trusted-ma-searching", &[("did", &did)]));
-    if let Err(error) = resolve_trusted_ma(&did).await {
+    state.push_system(tf(
+        "msg-trusted-ma-lookup-wait",
+        &[("seconds", &(timeout_ms / 1_000).to_string())],
+    ));
+    if let Err(error) = resolve_trusted_ma(&did, timeout_ms).await {
         log::warn!("[ma] trusted MA discovery failed for {did}: {error}");
         state.push_error(t("msg-trusted-ma-not-discovered"));
         return ConnectMaOutcome::Unavailable { target: did };
@@ -357,19 +372,11 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     if is_new {
         state.push_system(tf(
             "msg-identity-first-publish",
-            &[(
-                "seconds",
-                &ma_timeout_secs(&config.get_untracked()).to_string(),
-            )],
+            &[("seconds", &(timeout_ms / 1_000).to_string())],
         ));
         let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
-        if let Err(e) = send_identity_publish_and_wait(
-            &did,
-            Some(did.clone()),
-            selected_z,
-            ma_timeout_ms(&config.get_untracked()),
-        )
-        .await
+        if let Err(e) =
+            send_identity_publish_and_wait(&did, Some(did.clone()), selected_z, timeout_ms).await
         {
             log::error!("[ma] identity publication failed before runtime ping: {e}");
             return ConnectMaOutcome::Unavailable { target: did };
@@ -388,12 +395,23 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     ConnectMaOutcome::Ready { did }
 }
 
-async fn resolve_trusted_ma(did: &str) -> Result<(), String> {
+/// Look up the trusted MA's DID document, retrying within `timeout_ms` so a
+/// cold public-gateway IPNS lookup gets time to warm up. Uses the shared
+/// session resolver so a successful lookup warms the cache the ping and
+/// identity-publish send paths resolve from.
+async fn resolve_trusted_ma(did: &str, timeout_ms: u32) -> Result<(), String> {
     let resolver = transport::session_resolver()?;
-    let document = ma_core::DidDocumentResolver::resolve(&resolver, did)
-        .await
-        .map_err(|error| error.to_string())?;
-    published_self_matches(&document, did)
+    let deadline = Instant::now() + Duration::from_millis(u64::from(timeout_ms));
+    loop {
+        match ma_core::DidDocumentResolver::resolve(resolver.as_ref(), did).await {
+            Ok(document) => return published_self_matches(&document, did),
+            Err(error) if Instant::now() < deadline => {
+                log::warn!("[ma] trusted MA lookup for {did} failed, retrying: {error}");
+                gloo_timers::future::TimeoutFuture::new(TRUSTED_MA_RETRY_DELAY_MS).await;
+            }
+            Err(error) => return Err(error.to_string()),
+        }
+    }
 }
 
 async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {

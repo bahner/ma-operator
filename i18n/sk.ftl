@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID zverejnené cez lokálne 間 ({ $url })
 msg-identity-publication-propagating = Publikovanie identity sa stále šíri; vstup je odložený: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Vyhľadávanie dôveryhodného MA môže trvať až { $seconds } sekúnd.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Identita sa publikuje. Môže to trvať až { $seconds } sekúnd.
 msg-ma-connecting-matrix = pokúšam sa ťa pripojiť k 間trixu

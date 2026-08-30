@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID hollitaama e nder 間 ({ $url })
 msg-identity-publication-propagating = Jaɓɓingol innde ngol ena woni e saraade tawo; naatgol leeltinaama: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Ɗaɓɓaande MA hoolaande waawi ɓamde haa sekund { $seconds }.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Ena jaɓɓina innde ndee. Ɗum waawi ɓamde haa sekund { $seconds }.
 msg-ma-connecting-matrix = amin etagol maa e 間trix

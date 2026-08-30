@@ -397,6 +397,10 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
 /// gone. Ordinary room errors (authorisation, state, usage) are not staleness:
 /// treating every room error as one navigated users back into the room on each
 /// failed `roll-call`/`owner`/state command.
+// root is the #root actor reference for the runtime; room is the cached
+// room ctx. They are semantically distinct — the similar spelling is a
+// coincidence, not confusable naming — so the lint is suppressed here.
+#[allow(clippy::similar_names)]
 fn stale_ctx_error(incoming: &IncomingMessage, text: Option<&str>, cfg: &EgoConfig) -> bool {
     let Some(text) = text else {
         return false;

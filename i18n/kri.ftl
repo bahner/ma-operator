@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID don pablish tru local 間 ({ $url })
 msg-identity-publication-propagating = Di identity publish stil de spread; entry don delay: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Luk-op fɔ di trusted MA fit tek up to { $seconds } sekond.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = De publish identity. Dis fit tek up to { $seconds } sekond.
 msg-ma-connecting-matrix = de tray fo konekt yu go di 間trix

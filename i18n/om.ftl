@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID 間 naannoo ({ $url }) tiin maxxanfame
 msg-identity-publication-propagating = Maxxansi eenyummaa ammallee babal’achaa jira; entry harkifateera: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Barbaaddaan MA amanamaa hanga sekondii { $seconds } fudhachuu danda'a.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Eenyummaa maxxansaa jira. Kun hanga sekondii { $seconds } fudhachuu danda'a.
 msg-ma-connecting-matrix = gara 間trix si hidhuu yaalama

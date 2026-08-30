@@ -60,6 +60,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID опубліковано через локальний 間 ({ $url })
 msg-identity-publication-propagating = Публікація ідентичності ще поширюється; вхід відкладено: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Пошук довіреного MA може тривати до { $seconds } секунд.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Ідентичність публікується. Це може тривати до { $seconds } секунд.
 msg-ma-connecting-matrix = намагаємося підключити вас до 間trix

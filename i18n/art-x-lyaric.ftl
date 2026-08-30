@@ -59,6 +59,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID published through I-an-I local 間 ({ $url })
 msg-identity-publication-propagating = Di identity publish still a spread out; entry hold back: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = A search fi trusted MA can tek up to { $seconds } seconds.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = A publish identity. Dis can tek up to { $seconds } seconds.
 msg-ma-connecting-matrix = I-an-I a try connect yuh to di 間trix

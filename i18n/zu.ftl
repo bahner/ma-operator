@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = I-DID ishicilelwe nge-間 yendawo ({ $url })
 msg-identity-publication-propagating = Ukushicilelwa kobunikazi kusasabalala; entry ibambezelekile: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Ukubheka kwe-MA ethembekile kungathatha kufike kumasekhondi angu-{ $seconds }.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Kushicilelwa ubunikazi. Lokhu kungathatha kufike kumasekhondi angu-{ $seconds }.
 msg-ma-connecting-matrix = sizama ukukuxhuma ku-間trix

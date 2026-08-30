@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID pibliye via 間 lokal ({ $url })
 msg-identity-publication-propagating = Piblikasyon idantite a toujou ap pwopaje; entry an reta: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Rechèch MA konfye a ka pran jiska { $seconds } segonn.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Ap pibliye idantite a. Sa ka pran jiska { $seconds } segonn.
 msg-ma-connecting-matrix = ap eseye konekte ou ak 間trix la

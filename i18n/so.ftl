@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID lagu daabacay 間 maxalliga ({ $url })
 msg-identity-publication-propagating = Daabacaadda aqoonsigu wali way faafaysaa; entry waa dib u dhacay: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Raadinta MA la aamini karo waxay qaadan kartaa ilaa { $seconds } ilbiriqsi.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Aqoonsiga ayaa la daabacayaa. Tani waxay qaadan kartaa ilaa { $seconds } ilbiriqsi.
 msg-ma-connecting-matrix = waxaan isku dayeynaa inaan kugu xirno 間trix

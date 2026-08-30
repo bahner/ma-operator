@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID közzétéve helyi 間-n keresztül ({ $url })
 msg-identity-publication-propagating = Az identitás közzététele még terjed; az entry késik: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = A megbízható MA keresése akár { $seconds } másodpercig is eltarthat.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Az identitás közzététele folyamatban. Ez akár { $seconds } másodpercig is eltarthat.
 msg-ma-connecting-matrix = megpróbálunk csatlakoztatni a 間trixhoz

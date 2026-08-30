@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID உள்ளூர் 間 ({ $url }) வழியாக வெளியிடப்பட்டது
 msg-identity-publication-propagating = அடையாள வெளியீடு இன்னும் பரவி வருகிறது; entry தாமதமாகிறது: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = நம்பகமான MA தேடல் அதிகபட்சம் { $seconds } விநாடிகள் ஆகலாம்.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = அடையாளம் வெளியிடப்படுகிறது. இது அதிகபட்சம் { $seconds } விநாடிகள் ஆகலாம்.
 msg-ma-connecting-matrix = உங்களை 間trix உடன் இணைக்க முயல்கிறது

@@ -192,7 +192,7 @@ fn normalise_z_reference(value: &str) -> Option<String> {
 /// last saved z selection; the live `.my.z` profile value always wins over it.
 async fn resolve_did_z(sender_did: &str) -> Option<String> {
     let resolver = transport::session_resolver().ok()?;
-    let document = ma_core::DidDocumentResolver::resolve(&resolver, sender_did)
+    let document = ma_core::DidDocumentResolver::resolve(resolver.as_ref(), sender_did)
         .await
         .ok()?;
     crate::parser::verbs::doc_z_cid(&document)

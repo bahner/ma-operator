@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID ti jẹ atejade nipasẹ 間 agbegbe ({ $url })
 msg-identity-publication-propagating = Ìtẹ̀jáde ìdánimọ̀ ṣì ń tàn ká; entry ti pẹ́: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Ìwádi MA tí a gbẹ́kẹ̀lé lè gba tó { $seconds } ìṣẹ́jú-aaya.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = A ń tẹ ìdánimọ̀ jáde. Èyí lè gba tó { $seconds } ìṣẹ́jú-aaya.
 msg-ma-connecting-matrix = a ń gbìyànjú láti so ọ mọ́ 間trix

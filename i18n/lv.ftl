@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID publicēts caur lokālo 間 ({ $url })
 msg-identity-publication-propagating = Identitātes publicēšana vēl izplatās; entry ir aizkavēts: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = Uzticamā MA meklēšana var aizņemt līdz { $seconds } sekundēm.
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = Identitāte tiek publicēta. Tas var aizņemt līdz { $seconds } sekundēm.
 msg-ma-connecting-matrix = mēģinām savienot tevi ar 間trix

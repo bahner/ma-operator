@@ -138,6 +138,9 @@ pub fn save_gateway_preferences(prefs: &GatewayPreferences) {
             .iter()
             .any(|url| is_local_gateway_url(url));
     });
+    // The gateway set changed — rebuild the shared resolver lazily so the
+    // next resolution uses the new preferences.
+    SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
 }
 
 pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
@@ -168,13 +171,25 @@ pub fn session_gateway_urls() -> Vec<String> {
     effective_gateway_urls(&load_gateway_preferences())
 }
 
-/// Returns the IPFS gateway pool honouring zion's exact gateway policy.
-pub fn session_gateway_pool() -> Result<ma_core::GatewayPool, String> {
-    ma_core::GatewayPool::from_gateways(session_gateway_urls()).map_err(|error| error.to_string())
-}
-
-pub(crate) fn session_resolver() -> Result<IpfsGatewayResolver, String> {
-    session_gateway_pool().map(IpfsGatewayResolver::from)
+/// The single session-scoped gateway resolver, shared by every resolution
+/// path so DID document caches and per-gateway health are reused. Built
+/// lazily from the current gateway preferences on first use and invalidated
+/// by `save_gateway_preferences` when those preferences change. The
+/// per-request timeout is raised to the pool's total deadline (12 s) so a
+/// cold gateway gets the full window before the next one is raced.
+pub(crate) fn session_resolver() -> Result<Arc<IpfsGatewayResolver>, String> {
+    if let Some(resolver) = SESSION_RESOLVER.with(|r| r.borrow().clone()) {
+        return Ok(resolver);
+    }
+    let pool = ma_core::GatewayPool::from_gateways(session_gateway_urls())
+        .map_err(|error| error.to_string())?;
+    let resolver = Arc::new(
+        IpfsGatewayResolver::from(pool)
+            .with_cache_ttls(Duration::from_hours(24), Duration::ZERO)
+            .with_request_timeout(Duration::from_secs(12)),
+    );
+    SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver.clone()));
+    Ok(resolver)
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
@@ -191,8 +206,7 @@ pub async fn connect(
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {sender_did}");
     // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
-    let resolver =
-        Arc::new(session_resolver()?.with_cache_ttls(Duration::from_hours(24), Duration::ZERO));
+    let resolver = session_resolver()?;
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;

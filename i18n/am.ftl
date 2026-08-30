@@ -57,6 +57,7 @@ msg-iroh-failed = iroh: { $e }
 msg-auto-published = DID በአካባቢ 間 ({ $url }) አማካኝነት ታትሟል
 msg-identity-publication-propagating = የመታወቂያ ህትመት አሁንም እየተሰራጨ ነው; entry ተዘግዷል: { $e }
 msg-trusted-ma-searching = Searching for trusted MA ({ $did })
+msg-trusted-ma-lookup-wait = የታመነ MA ፍለጋ እስከ { $seconds } ሰከንዶች ሊወስድ ይችላል።
 msg-trusted-ma-not-discovered = Trusted MA was not discovered. The lookup may have failed temporarily. Please try `.ma` again.
 msg-identity-first-publish = መታወቂያን እያተምን ነው። ይህ እስከ { $seconds } ሰከንዶች ሊወስድ ይችላል።
 msg-ma-connecting-matrix = ወደ 間trix ልናገናኝዎ እየሞከርን ነው
