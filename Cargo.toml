@@ -16,7 +16,7 @@ leptos = { version = "0.8", features = ["csr"] }
 bytes = "1"
 futures = { version = "0.3", default-features = false, features = ["std"] }
 ma-core = { version = "^0.14.13", default-features = false, features = ["config", "iroh", "acl"] }
-ma-zscheme = "0.5"
+ma-zscheme = "0.6"
 wasm-bindgen = "0.2"
 wasm-bindgen-futures = "0.4"
 web-sys = { version = "0.3", features = [

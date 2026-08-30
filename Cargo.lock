@@ -2016,9 +2016,9 @@ dependencies = [
 
 [[package]]
 name = "indexmap"
-version = "2.14.0"
+version = "2.14.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d466e9454f08e4a911e14806c24e16fba1b4c121d1ea474396f396069cf949d9"
+checksum = "07aa2048142242915a31d35844fb311e0e53fcca590c3a0a40dcf1b841fa09eb"
 dependencies = [
  "equivalent",
  "hashbrown 0.17.1",
@@ -2692,9 +2692,9 @@ dependencies = [
 
 [[package]]
 name = "ma-zscheme"
-version = "0.5.3"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "535971445b1488ab77d53669cbef5e8917f829d78d00a4a1d4859a0ffbb19c06"
+checksum = "039f6520e476ce299980e6358de4ddaae139ae31e6e567d0dc75b06f864d5614"
 dependencies = [
  "futures",
 ]
