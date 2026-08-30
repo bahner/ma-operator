@@ -165,10 +165,10 @@ Makefile
 - [x] actor transfer events — typed parent/child ctx messages are delivered to
   zscheme, which performs the protocol-specific acknowledgement
 - [x] `.enter @runtime` default-room discovery — a bare-runtime `.enter`
-      queries `#house`'s `:did-ctx?` for our own DID and resumes direct room
-      entry against the discovered `parent` room; a runtime with no recorded
-      ctx yet fails with an actionable message (there is no protocol-level
-      default room)
+      asks `#root`'s `:enter?`, which always replies with a ctx naming a room
+      to enter, defaulting to the configured `start` room; a runtime with no
+      `start` room configured fails with an actionable message (there is no
+      protocol-level default room)
 
 ## Pending / not yet implemented
 
