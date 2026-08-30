@@ -198,7 +198,7 @@ as raw Scheme source. `dispatch::handle_focus_shorthand` runs, in order:
    literal positional arguments via a synthetic AST (the same trick
    `call_event` uses), never re-parsed as Scheme source. So bare words are
    never looked up as symbols and never need quoting: `put lamp in kiste`,
-   `forge lamp named Brass Lamp in Wardrobe`.
+   `forge lamp named Brass Lamp`.
 
 Unquoted words get the same literal-recognition `eval_atom` gives real Scheme
 atoms: `i64`/`f64` numbers, `#t`/`true`/`#f`/`false`, `nil`/`()`, else a plain
