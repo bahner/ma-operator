@@ -621,12 +621,12 @@ mod tests {
     fn startup_ctx_enter_reestablishes_nick_runtime_room_intent() {
         let mut cfg = EgoConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-        cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
         cfg.set(".my.ctx.nick", "klaim");
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
         assert_eq!(
             startup_ctx_enter(&cfg),
-            Some("klaim@did:ma:k51runtime#construct".to_string())
+            Some("klaim@did:ma:k51runtime#concourse".to_string())
         );
     }
 
@@ -634,11 +634,11 @@ mod tests {
     fn startup_ctx_enter_reestablishes_unaliased_room_without_double_at() {
         let mut cfg = EgoConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-        cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
         cfg.set(".my.ctx.nick", "klaim");
         assert_eq!(
             startup_ctx_enter(&cfg),
-            Some("klaim@did:ma:k51runtime#construct".to_string())
+            Some("klaim@did:ma:k51runtime#concourse".to_string())
         );
     }
 
@@ -646,7 +646,7 @@ mod tests {
     fn startup_ctx_enter_requires_a_room_in_the_saved_runtime() {
         let mut cfg = EgoConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-        cfg.set(".my.ctx.room", "did:ma:k51other#construct");
+        cfg.set(".my.ctx.room", "did:ma:k51other#concourse");
         cfg.set(".my.ctx.nick", "bad nick");
         assert_eq!(startup_ctx_enter(&cfg), None);
     }
@@ -658,7 +658,7 @@ mod tests {
         let config = leptos::prelude::RwSignal::new(EgoConfig::new());
         config.update_untracked(|cfg| {
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-            cfg.set(".my.ctx.room", "did:ma:k51other#construct");
+            cfg.set(".my.ctx.room", "did:ma:k51other#concourse");
         });
 
         queue_startup_context(&state, config, Some("did:ma:k51runtime"));

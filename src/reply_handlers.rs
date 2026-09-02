@@ -130,7 +130,7 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
 /// Root `:enter?` reply for a bare-runtime `.enter`: resume direct room
 /// entry against the room root named. If root's reply cannot be parsed (e.g.
 /// an older root without this verb), fall back to the bootstrap default
-/// room, `#construct` (every lambda-ma world creates it — see lambda-ma's
+/// room, `#concourse` (every lambda-ma world creates it — see lambda-ma's
 /// README.md).
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn handle_root_enter_reply(
@@ -144,7 +144,7 @@ pub(crate) fn handle_root_enter_reply(
     config: RwSignal<EgoConfig>,
 ) {
     let room_actor = crate::inbox_poll::root_enter_reply(&incoming.content)
-        .unwrap_or_else(|| format!("{entry_runtime}#construct"));
+        .unwrap_or_else(|| format!("{entry_runtime}#concourse"));
     let state2 = state.clone();
     let cancel_epoch = state.cancel_epoch();
     spawn_local(async move {

@@ -861,7 +861,7 @@ mod tests {
         ))
         .expect("reply handler loads");
 
-        let cmd_id = state.push_command("@sky#construct:look");
+        let cmd_id = state.push_command("@sky#concourse:look");
         state.pending_requests.update(|requests| {
             requests.insert(
                 "request-1".to_string(),
@@ -884,7 +884,7 @@ mod tests {
             &mut content,
         )
         .unwrap();
-        let mut reply = incoming("did:ma:sky#construct", "RAW STRUCTURED REPLY");
+        let mut reply = incoming("did:ma:sky#concourse", "RAW STRUCTURED REPLY");
         reply.reply_to = Some("request-1".to_string());
         reply.content = content;
 
@@ -1009,7 +1009,7 @@ mod tests {
             ciborium::Value::Map(vec![
                 (
                     ciborium::Value::Text("parent".to_string()),
-                    ciborium::Value::Text("did:ma:k51runtime#construct".to_string()),
+                    ciborium::Value::Text("did:ma:k51runtime#concourse".to_string()),
                 ),
                 (
                     ciborium::Value::Text("rev".to_string()),
@@ -1021,7 +1021,7 @@ mod tests {
         ciborium::ser::into_writer(&ok, &mut content).unwrap();
         assert_eq!(
             root_enter_reply(&content).as_deref(),
-            Some("did:ma:k51runtime#construct")
+            Some("did:ma:k51runtime#concourse")
         );
 
         let error = ciborium::Value::Array(vec![
@@ -1251,7 +1251,7 @@ mod tests {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::default());
-        let room = "did:ma:k51target#construct";
+        let room = "did:ma:k51target#concourse";
         let cmd_id = state.push_command(format!(".enter {room}"));
         state.pending_enter.set(Some(crate::state::PendingEnter {
             cmd_id: Some(cmd_id),
@@ -1326,7 +1326,7 @@ mod tests {
     fn ordinary_room_error_does_not_trigger_recovery() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let room = "did:ma:k51runtime#construct";
+        let room = "did:ma:k51runtime#concourse";
         let config = RwSignal::new(EgoConfig::default());
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
@@ -1335,7 +1335,7 @@ mod tests {
             cfg.set(".my.ctx.nick", "bahner");
         });
         let show_editor = RwSignal::new(None);
-        let cmd_id = state.push_command("@ma#construct:roll-call end");
+        let cmd_id = state.push_command("@ma#concourse:roll-call end");
         let msg_id = "request-1".to_string();
         state.pending_requests.update(|m| {
             m.insert(
@@ -1381,11 +1381,11 @@ mod tests {
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-            cfg.set(".my.ctx.room", "did:ma:k51runtime#construct");
+            cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
             cfg.set(".my.ctx.nick", "bahner");
         });
         let show_editor = RwSignal::new(None);
-        let cmd_id = state.push_command("@ma#construct:look");
+        let cmd_id = state.push_command("@ma#concourse:look");
         let msg_id = "request-1".to_string();
         state.pending_requests.update(|m| {
             m.insert(
@@ -1399,13 +1399,13 @@ mod tests {
         });
 
         // The runtime (bare DID) answers when the fragment no longer resolves.
-        let mut reply = incoming("did:ma:k51runtime", "unknown entity fragment: construct");
+        let mut reply = incoming("did:ma:k51runtime", "unknown entity fragment: concourse");
         reply.reply_to = Some(msg_id);
         reply.is_error = true;
         ciborium::ser::into_writer(
             &ciborium::Value::Array(vec![
                 ciborium::Value::Text(":error".to_string()),
-                ciborium::Value::Text("unknown entity fragment: construct".to_string()),
+                ciborium::Value::Text("unknown entity fragment: concourse".to_string()),
             ]),
             &mut reply.content,
         )
@@ -1414,7 +1414,7 @@ mod tests {
         dispatch_reply(
             "request-1",
             reply,
-            "unknown entity fragment: construct".to_string(),
+            "unknown entity fragment: concourse".to_string(),
             &state,
             config,
             show_editor,

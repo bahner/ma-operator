@@ -223,12 +223,14 @@ rephrase. `look <object>` uses that same candidate pool and renders the resolved
 ctx locally. Do not add per-verb object resolution in Zion.
 
 Zion is a client, not part of any runtime. Runtime-local short forms such as
-`#construct` or bare entity fragments must never be stored in zion context,
+`#concourse` or bare entity fragments must never be stored in zion context,
 accepted as focus targets, or sent on the wire. They are valid only inside one
 runtime's own internal implementation. Any actor target crossing the zion/runtime
 boundary must be a full DID or DID-URL (`did:ma:...` / `did:ma:...#fragment`).
 If root sends focus context such as `.my.ctx.room`, that value must already be a
 full DID-URL for a room actor.
+
+`#concourse` is the conventional entry/`start` room fragment (previously `#construct`); it is distinct from `Construct`, the empty-room display name owned by the runtime world profile. Do not confuse or conflate the two.
 
 ---
 

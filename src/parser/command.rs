@@ -646,11 +646,11 @@ mod tests {
         let cfg = EgoConfig::new();
 
         assert_eq!(
-            parse(".enter Pondus@did:ma:runtime#construct", &cfg),
+            parse(".enter Pondus@did:ma:runtime#concourse", &cfg),
             Ok(Command::DotCommand {
                 path: ".enter".to_string(),
                 op: DotOp::Get,
-                args: vec!["Pondus@did:ma:runtime#construct".to_string()],
+                args: vec!["Pondus@did:ma:runtime#concourse".to_string()],
             })
         );
     }
@@ -995,13 +995,13 @@ mod tests {
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
         );
 
-        let cmd = parse("@sky#construct!edit", &cfg).expect("command should parse");
+        let cmd = parse("@sky#concourse!edit", &cfg).expect("command should parse");
 
         assert_eq!(
             cmd,
             Command::ActorMessage {
                 target:
-                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#construct"
+                    "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3#concourse"
                         .to_string(),
                 verb: Some("behaviour".to_string()),
                 meta: Some("edit".to_string()),

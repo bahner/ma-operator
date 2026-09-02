@@ -490,7 +490,7 @@ pub(crate) async fn enter_room(
 
 /// Ask `#root` for a room to enter (`root.ma`'s `:enter?`). Root always
 /// replies with a ctx naming a room, defaulting to the configured `start`
-/// room; `handle_root_enter_reply` falls back to `#construct` client-side
+/// room; `handle_root_enter_reply` falls back to `#concourse` client-side
 /// only if root's reply cannot be parsed (e.g. an older root without this
 /// verb).
 async fn discover_and_enter_room(
@@ -1113,8 +1113,8 @@ mod tests {
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
 
         assert_eq!(
-            enter_target_display("did:ma:k51runtime#construct", Some("Pondus"), &cfg),
-            "Pondus@ma#construct"
+            enter_target_display("did:ma:k51runtime#concourse", Some("Pondus"), &cfg),
+            "Pondus@ma#concourse"
         );
     }
 
