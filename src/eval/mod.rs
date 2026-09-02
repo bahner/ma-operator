@@ -245,13 +245,7 @@ fn eval_control(
                 let state2 = state.clone();
                 spawn_local(async move {
                     crate::parser::verbs::ma::queue_profile_publish(
-                        publisher,
-                        config,
-                        &state2,
-                        None,
-                        false,
-                        true,
-                        true,
+                        publisher, config, &state2, None, false, true, true,
                     )
                     .await;
                 });

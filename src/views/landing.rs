@@ -886,11 +886,17 @@ pub fn Landing() -> impl IntoView {
                 </datalist>
 
                 // ── DID field ─────────────────────────────────────────────
+                // The DID is the account name for password storage:
+                // autocomplete="username" lets Brave save and autofill it
+                // alongside the passphrase on any browser. The change handler
+                // mirrors on:input because autofill engines may fire only
+                // `change`, and the reactive value must stay in sync.
                 <Show when=move || mode.get() != Mode::Config && (mode.get() != Mode::New || !did_input.get().trim().is_empty())>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); format!("{}:", t("label-did")) }}</label>
                         <input
                             type="text"
+                            autocomplete="username"
                             prop:value=move || did_input.get()
                             prop:readOnly=move || mode.get() == Mode::New
                             placeholder="did:ma:..."
@@ -901,12 +907,22 @@ pub fn Landing() -> impl IntoView {
                                     did_input.set(input.value());
                                 }
                             }
+                            on:change=move |ev| {
+                                if let Some(input) = ev.target()
+                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                {
+                                    did_input.set(input.value());
+                                }
+                            }
                         />
                     </div>
+                    // The trusted runtime is resolved from the profile after
+                    // login, so it must never become a saved username (off).
                     <div class="form-row">
                         <label>"ma:"</label>
                         <input
                             type="text"
+                            autocomplete="off"
                             list="ma-opts"
                             prop:value=move || ma_input.get()
                             placeholder="did:ma:..."
@@ -945,6 +961,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-nick") }}</label>
                         <input
                             type="text"
+                            autocomplete="off"
                             prop:value=move || nick.get()
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
@@ -1020,6 +1037,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
                         <input
                             type="password"
+                            autocomplete=move || if mode.get() == Mode::New { "new-password" } else { "current-password" }
                             placeholder=move || { let _ = lang.get(); t("passphrase-placeholder") }
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
@@ -1038,6 +1056,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-confirm-passphrase") }}</label>
                         <input
                             type="password"
+                            autocomplete="new-password"
                             placeholder=move || { let _ = lang.get(); t("passphrase-placeholder") }
                             on:input=move |ev| {
                                 if let Some(input) = ev.target()
