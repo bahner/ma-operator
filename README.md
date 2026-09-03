@@ -1,4 +1,4 @@
-# ego — your actor workstation
+# zion — you're operator and this is your tool
 
 You are browsing the web right now with an identity that belongs to someone else.
 Your browser vendor, your platform, your search engine — they all know who you are,
