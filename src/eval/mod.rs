@@ -553,9 +553,11 @@ fn enter_target_display(
 
 fn enter_no_args(state: &AppState, config: RwSignal<EgoConfig>) {
     let cfg = config.get_untracked();
-    // Re-enter existing ctx if present.
-    if cfg.get(".my.ctx.runtime").is_some_and(|r| !r.is_empty()) {
-        apply_ctx_focus(&cfg, state);
+    // Re-enter the saved room (or runtime) so presence is re-established: a
+    // bare `.enter` after `.leave` must send a fresh `:enter`, not merely
+    // restore the prompt. Prefer `.my.ctx.room` when set.
+    if let Some(target) = saved_enter_target(&cfg) {
+        eval_enter(&[target], state, config);
         return;
     }
     // Fall back to .my.config.ctx default.
@@ -566,6 +568,17 @@ fn enter_no_args(state: &AppState, config: RwSignal<EgoConfig>) {
     state.push_error(
         "no context to enter; use .enter @runtime[#room] or set .my.config.ctx".to_string(),
     );
+}
+
+/// The address a bare `.enter` re-enters: the saved room DID-URL when present,
+/// otherwise the bare runtime (re-discovery via `#root`). Returns `None` when
+/// no saved ctx exists.
+fn saved_enter_target(cfg: &EgoConfig) -> Option<String> {
+    cfg.get(".my.ctx.room")
+        .filter(|room| !room.is_empty())
+        .or_else(|| cfg.get(".my.ctx.runtime"))
+        .filter(|target| !target.is_empty())
+        .map(|target| format!("@{target}"))
 }
 
 fn handle_leave(state: &AppState, config: RwSignal<EgoConfig>) {
@@ -942,7 +955,7 @@ mod tests {
     use super::{
         apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_ctx_kind,
         enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
-        validate_alias_set,
+        saved_enter_target, validate_alias_set,
     };
     use crate::{config::EgoConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal, Set};
@@ -1193,18 +1206,20 @@ mod tests {
     }
 
     #[test]
-    fn enter_without_args_with_saved_ctx_restores_prompt() {
+    fn saved_enter_target_prefers_room_then_runtime() {
         let mut cfg = EgoConfig::default();
+        assert_eq!(saved_enter_target(&cfg), None);
+
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
-        cfg.set(".my.ctx.nick", "avatar");
-        let config = RwSignal::new(cfg);
-        let state = AppState::new();
-
-        enter_no_args(&state, config);
-
         assert_eq!(
-            state.focus_actor.get_untracked().unwrap().prompt,
-            "avatar@did:ma:k51runtime"
+            saved_enter_target(&cfg),
+            Some("@did:ma:k51runtime".to_string())
+        );
+
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
+        assert_eq!(
+            saved_enter_target(&cfg),
+            Some("@did:ma:k51runtime#concourse".to_string())
         );
     }
 
