@@ -619,7 +619,9 @@ impl AppState {
     /// Expire scheme senders that have waited longer than `timeout_ms`.
     /// Each expired waiter is told `Err("timeout")` before its sender is
     /// dropped, so the evaluator can distinguish a timeout from cancellation.
-    pub fn expire_scheme_senders(&self, timeout_ms: f64) {
+    /// Returns `true` when any waiter expired (a signal that the transport may
+    /// have gone stale and should be reconnected).
+    pub fn expire_scheme_senders(&self, timeout_ms: f64) -> bool {
         let now = js_sys::Date::now();
         let expired: Vec<String> = SCHEME_SENDERS.with(|m| {
             m.borrow()
@@ -628,11 +630,13 @@ impl AppState {
                 .map(|(id, _)| id.clone())
                 .collect()
         });
+        let any_expired = !expired.is_empty();
         for id in expired {
             if let Some((sender, _)) = SCHEME_SENDERS.with(|m| m.borrow_mut().remove(&id)) {
                 let _ = sender.send(Err("timeout".to_string()));
             }
         }
+        any_expired
     }
 
     // ── Incoming messages ────────────────────────────────────────────────

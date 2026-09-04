@@ -521,7 +521,8 @@ fn handle_inbox_message(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    if incoming.message_type != ma_core::MESSAGE_TYPE_MESSAGE
+    if incoming.reply_to.is_some()
+        || incoming.message_type != ma_core::MESSAGE_TYPE_MESSAGE
         || incoming.content_type == ma_core::CONTENT_TYPE_TERM
     {
         return false;

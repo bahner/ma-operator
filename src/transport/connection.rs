@@ -23,6 +23,11 @@ use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
 const SEND_TIMEOUT_MS: u32 = 10_000;
+/// Locale-independent marker prefixing a send-side timeout. `with_send_timeout`
+/// prepends this so `is_transport_error` can classify the failure without
+/// matching translated prose; it is stripped again before any error reaches
+/// the user.
+const SEND_TIMEOUT_MARKER: &str = "send-timeout";
 pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 
 use log::info;
@@ -828,11 +833,21 @@ pub async fn reconnect() -> Result<(), String> {
 }
 
 fn is_transport_error(e: &str) -> bool {
-    e.contains("connect failed")
+    e.starts_with(SEND_TIMEOUT_MARKER)
+        || e.contains("connect failed")
         || e.contains("timed out")
         || e.contains("transport error")
         || e.contains("open_bi failed")
         || e.contains("ConnectionClosed")
+}
+
+/// Remove the internal `SEND_TIMEOUT_MARKER` prefix so only the localised
+/// timeout message is shown to the user.
+fn strip_send_timeout_marker(error: String) -> String {
+    match error.strip_prefix(SEND_TIMEOUT_MARKER) {
+        Some(rest) => rest.strip_prefix(": ").unwrap_or(rest).to_string(),
+        None => error,
+    }
 }
 
 async fn with_send_timeout<T>(
@@ -844,7 +859,7 @@ async fn with_send_timeout<T>(
     futures::pin_mut!(op, timeout);
     futures::select! {
         result = op => result,
-        () = timeout => Err(timeout_msg),
+        () = timeout => Err(format!("{SEND_TIMEOUT_MARKER}: {timeout_msg}")),
     }
 }
 
@@ -912,9 +927,11 @@ async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Resu
                 .await
                 .map_err(|re| format!("reconnect failed: {re}"))?;
         }
-        Err(e) => return Err(e),
+        Err(e) => return Err(strip_send_timeout_marker(e)),
     }
-    try_send_once(target_did, protocol, &msg).await
+    try_send_once(target_did, protocol, &msg)
+        .await
+        .map_err(strip_send_timeout_marker)
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.

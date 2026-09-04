@@ -135,8 +135,15 @@ fn expire_pending_requests(state: &AppState) {
         });
     }
     // Also expire stuck Scheme call senders so awaiting evaluator tasks can
-    // return (:timeout) rather than blocking forever.
-    state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS));
+    // return (:timeout) rather than blocking forever. Their replies are just
+    // as likely to have been lost to a stale transport, so reconnect then too.
+    if state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS)) && !should_reconnect {
+        leptos::task::spawn_local(async move {
+            if let Err(e) = transport::reconnect().await {
+                log::warn!("[transport] reconnect after scheme timeout failed: {e}");
+            }
+        });
+    }
 }
 
 fn expire_pending_enter(state: &AppState, now: f64) {
