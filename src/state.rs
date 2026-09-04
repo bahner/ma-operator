@@ -617,8 +617,8 @@ impl AppState {
     }
 
     /// Expire scheme senders that have waited longer than `timeout_ms`.
-    /// Dropping the sender causes the awaiting `receiver.await` to return `Err(_)`
-    /// which the evaluator maps to `(:timeout)`.
+    /// Each expired waiter is told `Err("timeout")` before its sender is
+    /// dropped, so the evaluator can distinguish a timeout from cancellation.
     pub fn expire_scheme_senders(&self, timeout_ms: f64) {
         let now = js_sys::Date::now();
         let expired: Vec<String> = SCHEME_SENDERS.with(|m| {
@@ -629,8 +629,9 @@ impl AppState {
                 .collect()
         });
         for id in expired {
-            // Dropping the sender unblocks the awaiting evaluator task.
-            SCHEME_SENDERS.with(|m| m.borrow_mut().remove(&id));
+            if let Some((sender, _)) = SCHEME_SENDERS.with(|m| m.borrow_mut().remove(&id)) {
+                let _ = sender.send(Err("timeout".to_string()));
+            }
         }
     }
 
