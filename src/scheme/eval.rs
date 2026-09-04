@@ -239,7 +239,7 @@ impl SchemeCtx for EvalCtx {
         })
     }
 
-    fn send_rpc<'a>(
+    fn send_actor<'a>(
         &'a self,
         target: &'a str,
         verb: &'a str,
