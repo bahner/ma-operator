@@ -560,7 +560,7 @@ fn open_editor_from_yaml_cbor(
 // ── CRUD confirm ───────────────────────────────────────────────────────────
 
 /// Display a CRUD GET value. Data replies are raw CBOR or YAML rather than
-/// RPC `[:ok, value]` tuples, so they must not pass through the RPC classifier.
+/// `[:ok, value]` tuples, so they must not pass through the term classifier.
 pub(crate) fn handle_crud_get_reply(
     cmd_id: u64,
     incoming: &IncomingMessage,
@@ -710,7 +710,7 @@ pub(crate) fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
 
 /// Decode a raw CBOR reply payload into a `SchemeVal`, unwrapping the
 /// `[:ok, payload]` envelope. Used by `inbox_poll::dispatch_reply` for
-/// Scheme-initiated RPC calls so the evaluator receives structured values.
+/// Scheme-initiated calls so the evaluator receives structured values.
 pub(crate) fn cbor_reply_to_scheme_val(
     content: &[u8],
     is_error: bool,

@@ -16,7 +16,7 @@
 ///   @alias/path!edit     → `RemoteCrud::Edit`
 ///   @alias!msg [body]    → `ActorLocalCommand` (local zion text message command)
 ///   @alias#entity!edit   → `ActorMessage` `:behaviour!edit` meta workflow
-///   @alias[:verb] [body] → `ActorMessage`  (remote method / RPC)
+///   @alias[:verb] [body] → `ActorMessage`  (remote method)
 ///   @did:ma:<id>[:verb]  → `ActorMessage`
 ///   did:ma:<id>[:verb]   → `ActorMessage`  (bare DID from expansion)
 ///   \@literal text       → `PlainText`
@@ -198,7 +198,7 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     }
 
     // Local actor command: `@actor!msg text` chooses a zion-side workflow.
-    // It is not a remote method call; `:` remains remote RPC.
+    // It is not a remote method call; `:` remains a remote method.
     if let Some((raw_target, command)) = split_local_actor_command(head_stripped) {
         if raw_target.is_empty() || command.is_empty() {
             return Err(format!("invalid actor command: @{head_stripped}"));
@@ -271,7 +271,7 @@ fn split_actor_verb_meta(verb: Option<String>) -> Result<(Option<String>, Option
         return Ok((Some(verb), None));
     };
     if verb.is_empty() || meta.is_empty() {
-        return Err(format!("invalid actor RPC meta syntax: {verb}!{meta}"));
+        return Err(format!("invalid actor meta syntax: {verb}!{meta}"));
     }
     Ok((Some(verb.to_string()), Some(meta.to_string())))
 }

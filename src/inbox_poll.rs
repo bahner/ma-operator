@@ -84,7 +84,7 @@ fn dispatch_reply(
     config: RwSignal<EgoConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
-    // Scheme-initiated RPC: route the reply directly to the waiting evaluator.
+    // Scheme-initiated call: route the reply directly to the waiting evaluator.
     if let Some(sender) = state.take_scheme_sender(msg_id) {
         let result = cbor_reply_to_scheme_val(&incoming.content, incoming.is_error, &display);
         let _ = sender.send(result);
@@ -575,7 +575,7 @@ fn auto_pong(incoming: &IncomingMessage, state: &AppState) {
     });
 }
 
-/// Drop unsolicited RPC that no event handler claimed. Returns true when handled.
+/// Drop an unsolicited actor term that no event handler claimed. Returns true when handled.
 fn handle_unsolicited_term(incoming: &IncomingMessage, _state: &AppState) -> bool {
     if incoming.reply_to.is_some() || incoming.content_type != ma_core::CONTENT_TYPE_TERM {
         return false;

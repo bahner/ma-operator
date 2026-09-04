@@ -17,8 +17,8 @@ fn url_ma() -> Option<String> {
 /// pre-filled terminal input string, or `None` if absent.
 ///
 /// - `?msg=<did>`   → `@<did>!msg `    (plain text message command)
-/// - `?say=<did>`   → `@<did>:say `    (actor RPC method)
-/// - `?emote=<did>` → `@<did>:emote `  (actor RPC method)
+/// - `?say=<did>`   → `@<did>:say `    (actor method)
+/// - `?emote=<did>` → `@<did>:emote `  (actor method)
 fn url_prefill() -> Option<String> {
     let window = web_sys::window()?;
     let search = window.location().search().ok()?;

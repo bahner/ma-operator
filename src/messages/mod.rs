@@ -12,7 +12,7 @@ use ma_core::{
 ///
 /// Flow: YAML → `serde_json::Value` (via `serde_yaml`) → DAG-CBOR bytes
 /// (via `serde_ipld_dagcbor`).  The resulting bytes can be sent directly
-/// to the runtime's `:entities.<name>:edit` RPC verb, which will
+/// to the runtime's `:entities.<name>:edit` actor verb, which will
 /// `dag_put` them and register the entity.
 ///
 /// Returns an error if the YAML does not parse to an object/map — bare
@@ -184,7 +184,7 @@ pub struct IncomingMessage {
     pub is_error: bool,
 }
 
-/// Format an RPC reply payload (CBOR) for compact display.
+/// Format an actor term reply payload (CBOR) for compact display.
 ///
 /// Returns `(display, is_error)`.
 pub fn format_term_reply(body: &[u8]) -> (String, bool) {

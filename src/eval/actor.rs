@@ -378,8 +378,8 @@ fn is_creatable_crud_path(path: &str) -> bool {
 
 /// Route a verb to the right transport call.
 ///
-/// Only handles pure RPC (fragment-addressed targets or bare-atom verbs).
-/// Remote CRUD is handled by `eval_remote_crud` via `Command::RemoteCrud`.
+/// Only handles pure actor messages (fragment-addressed targets or bare-atom
+/// verbs). Remote CRUD is handled by `eval_remote_crud` via `Command::RemoteCrud`.
 async fn dispatch_verb_to_transport(
     v: &str,
     target: &str,

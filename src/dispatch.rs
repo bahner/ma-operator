@@ -134,7 +134,7 @@ fn expire_pending_requests(state: &AppState) {
             }
         });
     }
-    // Also expire stuck Scheme RPC senders so awaiting evaluator tasks can
+    // Also expire stuck Scheme call senders so awaiting evaluator tasks can
     // return (:timeout) rather than blocking forever.
     state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS));
 }

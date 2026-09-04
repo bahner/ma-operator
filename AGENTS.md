@@ -21,7 +21,7 @@ not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
 is generic transport, persistent local data, and typed event delivery to the
 active `.z.scheme`; all world interpretation, transfer sequencing, and
 actor calls belong exclusively in zscheme.
-**Never filter inbound verbs in Rust.** Every unsolicited RPC term is
+**Never filter inbound verbs in Rust.** Every unsolicited actor term is
 forwarded to `on-event`; deciding which verbs are interesting, and validating
 their argument shapes, is `events.zscheme`'s job. `decode_client_event` in
 `src/inbox_poll.rs` performs structural decoding only — a bare `:verb` atom,
@@ -97,7 +97,7 @@ src/
   messages/
     mod.rs              — IncomingMessage, build_message helpers
   parser/
-    mod.rs              — top-level parse: DotOp | Send | Rpc | Escape
+    mod.rs              — top-level parse: DotOp | Send | ActorMessage | Escape
     alias.rs            — alias expansion + \@ escape
     command.rs          — DotOp parser (get / set / delete / meta-verb); bare DID actor support
     verbs/              — dispatch_meta: all .path!verb implementations
@@ -109,7 +109,7 @@ src/
   transport/
     mod.rs              — re-exports
     connection.rs       — connect/disconnect, inbox poll loop,
-                          send_message, send_rpc, send_text_reply
+                          send_message, send_actor_message, send_text_reply
   views/
     mod.rs
     landing.rs          — identity creation, bundle import/export, login
@@ -151,9 +151,9 @@ Makefile
 - [x] `.my.doc.*` — edit / eval / publish / fetch / cid verbs
 - [x] `.config.*` — full CRUD configuration tree
 - [x] Editor — CodeMirror 6, modes: Standard / View / Reply
-- [x] Transport — iroh QUIC connect, inbox + RPC poll loop (500 ms)
+- [x] Transport — iroh QUIC connect, inbox poll loop (500 ms)
 - [x] Send text message (`@target body`)
-- [x] Send RPC verb (`@target!verb [args]`)
+- [x] Send actor verb (`@target!verb [args]`)
 - [x] Send reply (`.my.inbox.N!reply [body]`)
 - [x] Lazy DID / CID traversal (`.my.inbox.N.sender.created_at`)
 - [x] `doc_cache` — in-memory JSON cache for traversal results
@@ -248,12 +248,12 @@ then dispatched through the normal parser.
 | `(#.my.aliases.sky)` | dot-path get — returns the config value |
 | `(#.my.config.k: "v")` | dot-path set — writes config, returns nil |
 | `(#.my.path!verb …)` | side-effect verb — queued to input_queue, returns nil |
-| `(@ma#room:look)` | actor RPC — sends, awaits reply string |
+| `(@ma#room:look)` | actor call — sends, awaits reply string |
 | `(did:ma:abc#room:enter ticket)` | same, DID directly in function position |
 
 The head character determines dispatch:
 - starts with `#.` → ma dot-command (synchronous)
-- starts with `@` or evaluates to a `did:` string → ma actor message (async RPC)
+- starts with `@` or evaluates to a `did:` string → ma actor message (async call)
 - anything else → standard Scheme form or lambda call
 
 Local paths in Scheme source use `#.my.path` syntax. Zion's terminal dot
@@ -610,13 +610,12 @@ on nested reactive closures).
 
 ## Transport — `transport/connection.rs`
 
-- `connect(endpoint_id)` — dials peer, registers `INBOX_PROTOCOL_ID` +
-  `RPC_PROTOCOL_ID`, starts 500 ms poll loop via `gloo_timers`.
-- Poll loop drains both `SESSION_INBOX` and `SESSION_RPC_INBOX`.
+- `connect(endpoint_id)` — dials peer, registers `INBOX_PROTOCOL_ID`, starts 500 ms poll loop via `gloo_timers`.
+- Poll loop drains `SESSION_INBOX`.
 - Incoming messages call `state.ingest_mailbox_message(msg, config)`.
 - `send_message(target_did, content_type, body)` — encrypts + sends on
   `INBOX_PROTOCOL_ID`.
-- `send_rpc(target_did, verb, args)` — sends on `RPC_PROTOCOL_ID`.
+- `send_actor_message(target_did, verb, args)` — sends on `INBOX_PROTOCOL_ID`.
 - `send_text_reply(target_did, body, reply_to_id)` — sends text reply with
   `reply_to` field set.
 - `send_identity_publish(publisher_did)` — builds and signs the DID document via
@@ -625,7 +624,7 @@ on nested reactive closures).
   The `ma:` extension always includes:
   - `ma.type = "agent"` (via `MaExtension::kind("agent")`)
   - `ma.lang = <lang>` — from `SESSION_LANG`, only if set
-  - `ma.services` — iroh transport strings for inbox + RPC
+  - `ma.services` — iroh transport strings for inbox
 
 ---
 
@@ -828,7 +827,7 @@ is delivered to the terminal.
 ### ma-core integration
 
 ```rust
-use ma_core::{check_cap, AclMap, CAP_INBOX, CAP_RPC};
+use ma_core::{check_cap, AclMap, CAP_INBOX};
 ```
 
 Load and check:
@@ -846,7 +845,7 @@ pub fn check_ego_acl(cfg: &EgoConfig, from: &str, cap: &str) -> bool {
 }
 ```
 
-`open_acl()` returns `{"*": [inbox, rpc]}` (fully open).
+`open_acl()` returns `{"*": [inbox]}` (fully open).
 
 ### Poll-loop gate
 
@@ -854,11 +853,7 @@ In `views/terminal.rs`, before delivering an incoming message:
 
 ```rust
 if incoming.reply_to.is_none() {
-    let cap = if incoming.message_type == MESSAGE_TYPE_MESSAGE {
-        CAP_INBOX
-    } else {
-        CAP_RPC
-    };
+    let cap = CAP_INBOX;
     if !check_ego_acl(&cfg, &incoming.from, cap) {
         // push a "blocked" system entry and continue
         continue;

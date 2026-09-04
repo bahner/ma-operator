@@ -22,7 +22,7 @@ pub(super) fn handle_acl(
                 let cfg = config.get_untracked();
                 let current = cfg
                     .get(crate::acl::ACL_KEY)
-                    .unwrap_or("\"*\": [inbox, rpc]\n")
+                    .unwrap_or("\"*\": [inbox]\n")
                     .to_string();
                 show_editor.set(Some(
                     EditorContext::new(".my.acl", current)
