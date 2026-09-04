@@ -186,9 +186,7 @@ impl SchemeCtx for EvalCtx {
             match receiver.await {
                 Ok(Ok(val)) => Ok(val),
                 Ok(Err(e)) => Err(SchemeErr::MaError(e)),
-                Err(_) => Err(SchemeErr::MaError(
-                    "RPC reply channel cancelled".to_string(),
-                )),
+                Err(_) => Err(SchemeErr::MaError("reply channel cancelled".to_string())),
             }
         })
     }
@@ -236,9 +234,7 @@ impl SchemeCtx for EvalCtx {
             match receiver.await {
                 Ok(Ok(val)) => Ok(val),
                 Ok(Err(e)) => Err(SchemeErr::MaError(e)),
-                Err(_) => Err(SchemeErr::MaError(
-                    "RPC reply channel cancelled".to_string(),
-                )),
+                Err(_) => Err(SchemeErr::MaError("reply channel cancelled".to_string())),
             }
         })
     }

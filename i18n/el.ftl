@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Ο χρόνος εκτέλεσης/πρόσθετο απέρριψε το αίτημα. επιθεωρήστε τον λόγο και δοκιμάστε ξανά μετά τη διόρθωση της οντότητας/χρόνου εκτέλεσης
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = επιθεωρήστε τα αρχεία καταγραφής χρόνου εκτέλεσης για λεπτομερή αιτία και δοκιμάστε ξανά
-doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
-doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης RPC
+doc-store-sent = αίτημα αποθήκευσης εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης
+doc-ipld-store-sent = αίτημα αποθήκευσης IPLD εστάλη ({ $id }) → { $publisher }; το CID θα φτάσει μέσω απάντησης
 doc-fetch-done = { $cid } ανακτήθηκε → { $path } (δεν εκτελέστηκε)
 doc-fetch-failed = ανάκτηση { $cid }: { $e }
 doc-fetch-usage = χρήση: .my.doc.<όνομα>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       εκτέλεση πρόχειρ�
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         εκτέλεση πρόχειρου εγγράφου γραμμή-γραμμή
 
 help-msg-echo =   @alias                       εμφάνιση επιλυμένου DID/DID-URL (δεν αποστέλλεται μήνυμα)
-help-msg-send =   @alias!msg body / @alias:verb args           αποστολή μηνύματος / RPC σε ηθοποιό
+help-msg-send = @alias!msg body @alias:verb args αποστολή μηνύματος σε ηθοποιό
 help-msg-fragment =   @alias#fragment:verb body  αποστολή σε ψευδώνυμο με ρητό τμήμα DID
 help-msg-escape =   \@name                       κυριολεκτικό @name (χωρίς αναζήτηση ψευδωνύμου)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Σφάλμα επεξεργασίας CBOR: { $e }
 err-popup-blocked = Το αναδυόμενο παράθυρο αποκλείστηκε από τον περιηγητή
 status-publishing = δημοσίευση
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = σφάλμα
-rpc-error-detail = σφάλμα: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = σφάλμα
+term-error-detail = σφάλμα: { $detail }
 msg-new-message = ← [{ $from }] νέο μήνυμα — { $count } στα εισερχόμενα
 msg-chat = { $sender } λέει { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = το προφίλ δεν βρέθηκε: { $name }
 
 # -- Help topics index
 help-header-topics = -- θέματα -- πληκτρολογήστε .help/<topic> για λεπτομέρειες
-help-topic-msg =   .help/msg                    μηνύματα
+help-topic-msg = .help/msg μηνύματα
 help-topic-ma = .help/ma                     間-χώρος, δημοσίευση και είσοδος
 help-topic-path = .help/path                   τοπική γραμματική με τελείες
 help-topic-my =   .help/my                     προσωπική config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     ορισμός τιμής
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              επεξεργασία ACL
 help-actor-fragment =   @actor#entity                αποστολή στο plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC στο plugin
+help-actor-fragment-verb = @actor#entity:verb [args] στο plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  κρατήστε 5 απαντήσεις στο περιβάλλον περιόδου λειτουργίας
+help-actor-wc = (define x (@actor:verb arg)) κρατήστε 5 απαντήσεις στο περιβάλλον περιόδου λειτουργίας
 
 help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
 help-topic-i18n = .help/i18n                   γλωσσική προτίμηση για την ταυτότητά σας

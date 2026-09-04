@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = रनटाइम/प्लगइनने विनंती नाकारली; कारण तपासा आणि घटक/रनटाइम निश्चित केल्यानंतर पुन्हा प्रयत्न करा
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = तपशीलवार कारणासाठी रनटाइम लॉगची तपासणी करा आणि पुन्हा प्रयत्न करा
-doc-store-sent = संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
-doc-ipld-store-sent = IPLD संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID RPC उत्तरामार्फत येईल
+doc-store-sent = संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID उत्तरामार्फत येईल
+doc-ipld-store-sent = IPLD संग्रह विनंती पाठवली ({ $id }) → { $publisher }; CID उत्तरामार्फत येईल
 doc-fetch-done = { $cid } आणले → { $path } (चालवले नाही)
 doc-fetch-failed = आणा { $cid }: { $e }
 doc-fetch-usage = वापर: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch द�
 
 # ── मदत — संदेशन ──────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       सोडवलेला DID/DID-URL दाखवा (संदेश पाठवला जात नाही)
-help-msg-send =   @alias!msg body / @alias:verb args           अभिनेत्याला संदेश / RPC पाठवा
+help-msg-send = @alias!msg body @alias:verb args अभिनेत्याला संदेश पाठवा
 help-msg-fragment =   @alias#fragment:verb body  स्पष्ट DID तुकड्यासह पाठवा
 help-msg-escape =   \@name                       शब्दशः @name (कोणता टोपणनाव शोध नाही)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR संपादन त्रुटी: { $e }
 err-popup-blocked = ब्राउझरने पॉपअप अवरोधित केले
 status-publishing = प्रकाशित करत आहे
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = त्रुटी
-rpc-error-detail = त्रुटी: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = त्रुटी
+term-error-detail = त्रुटी: { $detail }
 msg-new-message = ← [{ $from }] नवीन संदेश — { $count } इनबॉक्समध्ये
 msg-chat = { $sender } म्हणतो { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = प्रोफाइल सापडले नाही: {
 
 # -- Help topics index
 help-header-topics = -- विषय -- विवरण के लिए .help/<topic> लिखें
-help-topic-msg =   .help/msg                    संदेश
+help-topic-msg = .help/msg संदेश
 help-topic-ma = .help/ma                     間-स्पेस, प्रकाशन आणि प्रवेश
 help-topic-path = .help/path                   स्थानिक डॉट-पाथ व्याकरण
 help-topic-my =   .help/my                     निजी config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config मान से�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL संपादित करें
 help-actor-fragment =   @actor#entity                plugin को भेजें
-help-actor-fragment-verb =   @actor#entity:verb [args]    plugin को RPC
+help-actor-fragment-verb = @actor#entity:verb [args] plugin को
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  सत्र वातावरणात 5 उत्तरे ठेवा
+help-actor-wc = (define x (@actor:verb arg)) सत्र वातावरणात 5 उत्तरे ठेवा
 
 help-topic-url =   .help/url                    URL दुव्याद्वारे zion उघडणे
 help-topic-i18n = .help/i18n                   तुमच्या ओळखीसाठी भाषा प्राधान्य

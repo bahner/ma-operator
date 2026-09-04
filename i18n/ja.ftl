@@ -175,8 +175,8 @@ doc-publish-hint-acl = 発行者の運用者に ACL であなたの DID を許�
 doc-publish-hint-runtime = ランタイム/プラグインが要求を拒否しました。理由を確認し、エンティティ/ランタイム修正後に再試行してください
 doc-publish-hint-ipfs = ローカル Kubo/IPFS の状態と発行者ランタイムの状態を確認してください
 doc-publish-hint-unknown = 詳細な原因をランタイムログで確認して再試行してください
-doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
-doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は RPC レスポンスで届きます
+doc-store-sent = 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は レスポンスで届きます
+doc-ipld-store-sent = IPLD 保存リクエストを送信しました ({ $id }) → { $publisher }。CID は レスポンスで届きます
 doc-fetch-done = { $cid } を取得しました → { $path } (実行されていません)
 doc-fetch-failed = { $cid } の取得エラー: { $e }
 doc-fetch-usage = 使用方法: .my.doc.<名前>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       スクラッチ文書を並列�
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         スクラッチ文書を行ごとに評価
 
 help-msg-echo =   @alias                       解決済み DID/DID-URL を表示 (メッセージは送信されません)
-help-msg-send =   @alias!msg body / @alias:verb args           アクターにメッセージ / RPC を送信
+help-msg-send = @alias!msg body @alias:verb args アクターにメッセージ を送信
 help-msg-fragment =   @alias#fragment:verb body  明示的な DID フラグメント付きエイリアスに送信
 help-msg-escape =   \@name                       リテラル @name (エイリアス検索なし)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR編集エラー: { $e }
 err-popup-blocked = ブラウザによりポップアップがブロックされました
 status-publishing = 公開中
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = エラー
-rpc-error-detail = エラー: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = エラー
+term-error-detail = エラー: { $detail }
 msg-new-message = ← [{ $from }] 新しいメッセージ — 受信トレイに { $count } 件
 msg-chat = { $sender }「{ $body }」
 
@@ -344,7 +344,7 @@ profiles-not-found = プロフィールが見つかりません: { $name }
 
 # -- Help topics index
 help-header-topics = -- トピック -- 詳細は .help/<topic> と入力
-help-topic-msg =   .help/msg                    メッセージ
+help-topic-msg = .help/msg メッセージ
 help-topic-ma = .help/ma                     間-スペース、公開、およびエントリ
 help-topic-path = .help/path                   ローカルドットパス文法
 help-topic-my =   .help/my                     個人 config
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     config 値を設定
 help-actor-acl = @actor/acl                   4を取得
 help-actor-acl-edit =   @actor/acl!edit              ACL を編集
 help-actor-fragment =   @actor#entity                plugin に送信
-help-actor-fragment-verb =   @actor#entity:verb [args]    plugin への RPC
+help-actor-fragment-verb = @actor#entity:verb [args] plugin への
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  5 応答をセッション環境に保持する
+help-actor-wc = (define x (@actor:verb arg)) 5 応答をセッション環境に保持する
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
 help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）

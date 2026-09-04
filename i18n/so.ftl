@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Runtime/plugin ayaa diiday codsiga; kormeer sababta oo isku day dib u hagaajinta goobta/waqtiga runtu tahay
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = baadh diiwaanka runtime sababta faahfaahsan oo dib u tijaabi
-doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
-doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta RPC
+doc-store-sent = codsiga kaydinta la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta
+doc-ipld-store-sent = codsiga kaydinta IPLD la diray ({ $id }) → { $publisher }; CID waxay ku imaanaysaa jawaabta
 doc-fetch-done = { $cid } la soo qaatay → { $path } (lama socodsiin)
 doc-fetch-failed = qaadashada { $cid }: { $e }
 doc-fetch-usage = isticmaalka: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ 
 
 # ── Gargaarku — farriin diridda ───────────────────────────────────────────
 help-msg-echo =   @alias                       muuji DID/DID-URL la xaliyay (farriin lama diro)
-help-msg-send =   @alias!msg body / @alias:verb args           dir farriin / RPC u sheegto actor
+help-msg-send = @alias!msg body @alias:verb args dir farriin u sheegto actor
 help-msg-fragment =   @alias#fragment:verb body  dir xidhmad leh DID fragment cad
 help-msg-escape =   \@name                       @name dhab ah (raadinta magaca kale ma jirto)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Khalad tafatirka CBOR: { $e }
 err-popup-blocked = Daaqadda pop-up waxaa xidday daaweynaha
 status-publishing = daabacaad
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = khalad
-rpc-error-detail = khalad: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = khalad
+term-error-detail = khalad: { $detail }
 msg-new-message = ← [{ $from }] fariin cusub — { $count } sanduuqa
 msg-chat = { $sender } yiri { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = liiska lama helin: { $name }
 
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
-help-topic-msg =   .help/msg                    መልዕክት
+help-topic-msg = .help/msg መልዕክት
 help-topic-ma = .help/ma                     間-meel, daabacaad, iyo gelid
 help-topic-path = .help/path                   naxwaha dhibco-dariiqa maxaliga ah
 help-topic-my =   .help/my                     የግል config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ወደ plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  Ku hay jawaabaha 5 ee jawiga fadhiga
+help-actor-wc = (define x (@actor:verb arg)) Ku hay jawaabaha 5 ee jawiga fadhiga
 
 help-topic-url =   .help/url                    furista zion adeegsiga xiriirka URL
 help-topic-i18n = .help/i18n                   doorashada luqadda ee aqoonsigaaga

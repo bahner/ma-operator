@@ -175,8 +175,8 @@ doc-publish-hint-acl = peça ao operador do publicador para permitir seu DID na 
 doc-publish-hint-runtime = o runtime/plugin rejeitou a solicitação; inspecione o motivo e tente novamente após corrigir entidade/runtime
 doc-publish-hint-ipfs = verifique a saúde local do Kubo/IPFS e o status do runtime publicador
 doc-publish-hint-unknown = consulte os logs do runtime para a causa detalhada e tente novamente
-doc-store-sent = pedido de armazenamento enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
-doc-ipld-store-sent = pedido de armazenamento IPLD enviado ({ $id }) → { $publisher }; CID chegará por resposta RPC
+doc-store-sent = pedido de armazenamento enviado ({ $id }) → { $publisher }; CID chegará por resposta
+doc-ipld-store-sent = pedido de armazenamento IPLD enviado ({ $id }) → { $publisher }; CID chegará por resposta
 doc-fetch-done = { $cid } obtido → { $path } (não executado)
 doc-fetch-failed = obtenção { $cid }: { $e }
 doc-fetch-usage = utilização: .my.doc.<nome>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       avaliar documento rascunho em pa
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         avaliar documento rascunho linha por linha
 
 help-msg-echo =   @alias                       mostrar DID/DID-URL resolvido (nenhuma mensagem enviada)
-help-msg-send =   @alias!msg body / @alias:verb args           enviar mensagem / RPC para ator
+help-msg-send = @alias!msg body @alias:verb args enviar mensagem para ator
 help-msg-fragment =   @alias#fragment:verb body  enviar para alias com fragmento DID explícito
 help-msg-escape =   \@name                       @name literal (sem pesquisa de alias)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Erro de edição CBOR: { $e }
 err-popup-blocked = Pop-up bloqueado pelo navegador
 status-publishing = publicando
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = erro
-rpc-error-detail = erro: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = erro
+term-error-detail = erro: { $detail }
 msg-new-message = ← [{ $from }] nova mensagem — { $count } na caixa de entrada
 msg-chat = { $sender } diz { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = perfil não encontrado: { $name }
 
 # -- Help topics index
 help-header-topics = -- tópicos -- digite .help/<topic> para detalhes
-help-topic-msg =   .help/msg                    mensagens
+help-topic-msg = .help/msg mensagens
 help-topic-ma = .help/ma                     間-espaço, publicação e entrada
 help-topic-path = .help/path                   gramática de caminho de ponto local
 help-topic-my =   .help/my                     config pessoal
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     definir valor de config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar ao plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ao plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ao plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  mantenha as respostas 5 no ambiente da sessão
+help-actor-wc = (define x (@actor:verb arg)) mantenha as respostas 5 no ambiente da sessão
 help-header-url = ── parâmetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Partilha um link que abre zion com o destinatário pré-preenchido:
 help-url-msg =   ?msg=<did>                   pré-preenche: @<did>!msg (mensagem de texto)

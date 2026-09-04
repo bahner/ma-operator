@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin-ul a respins cererea; inspectați motivul și reîncercați după repararea entității/execuției
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspectați jurnalele de rulare pentru cauze detaliate și reîncercați
-doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
-doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns RPC
+doc-store-sent = cerere de stocare trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns
+doc-ipld-store-sent = cerere de stocare IPLD trimisă ({ $id }) → { $publisher }; CID va sosi prin răspuns
 doc-fetch-done = { $cid } obținut → { $path } (neexecutat)
 doc-fetch-failed = obținere { $cid }: { $e }
 doc-fetch-usage = utilizare: .my.doc.<nume>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       evaluează documentul temporar �
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluează documentul temporar linie cu linie
 
 help-msg-echo =   @alias                       afișează DID/DID-URL rezolvat (nu se trimite mesaj)
-help-msg-send =   @alias!msg body / @alias:verb args           trimite mesaj / RPC actorului
+help-msg-send = @alias!msg body @alias:verb args trimite mesaj actorului
 help-msg-fragment =   @alias#fragment:verb body  trimite la alias cu fragment DID explicit
 help-msg-escape =   \@name                       @name literal (fără căutare alias)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Eroare de editare CBOR: { $e }
 err-popup-blocked = Fereastra pop-up a fost blocată de browser
 status-publishing = publicare
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = eroare
-rpc-error-detail = eroare: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = eroare
+term-error-detail = eroare: { $detail }
 msg-new-message = ← [{ $from }] mesaj nou — { $count } în inbox
 msg-chat = { $sender } spune { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profilul nu a fost găsit: { $name }
 
 # -- Help topics index
 help-header-topics = -- subiecte -- tastați .help/<topic> pentru detalii
-help-topic-msg =   .help/msg                    mesaje
+help-topic-msg = .help/msg mesaje
 help-topic-ma = .help/ma                     間-spațiu, publicare și intrare
 help-topic-path = .help/path                   gramatica locală a căii punctelor
 help-topic-my =   .help/my                     config personal
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     setează valoarea config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editează ACL
 help-actor-fragment =   @actor#entity                trimite la plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC la plugin
+help-actor-fragment-verb = @actor#entity:verb [args] la plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  păstrați răspunsurile 5 în mediul de sesiune
+help-actor-wc = (define x (@actor:verb arg)) păstrați răspunsurile 5 în mediul de sesiune
 
 help-topic-url =   .help/url                    deschiderea zion printr-un link URL
 help-topic-i18n = .help/i18n                   preferința de limbă pentru identitatea dvs

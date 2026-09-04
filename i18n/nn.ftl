@@ -175,8 +175,8 @@ doc-publish-hint-acl = be utgjevaroperatøren tillate DID-en din i ACL
 doc-publish-hint-runtime = køyretida/pluginen avviste førespurnaden; les årsaka og prøv igjen etter å ha retta entitet/køyretid
 doc-publish-hint-ipfs = sjekk lokal Kubo/IPFS-helse og status for utgjevarkøyretida
 doc-publish-hint-unknown = sjå i køyretidsloggane etter detaljert årsak og prøv igjen
-doc-store-sent = lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
-doc-ipld-store-sent = IPLD-lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via RPC-svar
+doc-store-sent = lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via -svar
+doc-ipld-store-sent = IPLD-lagringsførespurnad sendt ({ $id }) → { $publisher }; CID kjem via -svar
 doc-fetch-done = henta { $cid } → { $path } (ikkje køyrd)
 doc-fetch-failed = henting { $cid }: { $e }
 doc-fetch-usage = bruk: .my.doc.<namn>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladd
 
 # ── Hjelptekst — meldingar ────────────────────────────────────────────────
 help-msg-echo =   @alias                       vis løyst DID/DID-URL (inkje melding sendt)
-help-msg-send =   @alias!msg body / @alias:verb args           send melding / RPC til aktør
+help-msg-send = @alias!msg body @alias:verb args send melding til aktør
 help-msg-fragment =   @alias#fragment:verb body  send til alias med eksplisitt DID-fragment
 help-msg-escape =   \@name                       bokstaveleg @name (ingen alias-søk)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR-redigeringsfeil: { $e }
 err-popup-blocked = Nettlesar blokkerte sprettoppvindauget
 status-publishing = publiserer
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = feil
-rpc-error-detail = feil: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = feil
+term-error-detail = feil: { $detail }
 msg-new-message = ← [{ $from }] ny melding — { $count } i innboksen
 msg-chat = { $sender } seier { $body }
 
@@ -349,7 +349,7 @@ profiles-not-found = fann ikkje profil: { $name }
 
 # -- Help topics index
 help-header-topics = -- emne -- skriv .help/<topic> for detaljar
-help-topic-msg =   .help/msg                    meldingar
+help-topic-msg = .help/msg meldingar
 help-topic-ma =   .help/ma                     間-rom, publisering og inngang
 help-topic-path =   .help/path                   lokal dot-path-grammatikk
 help-topic-my =   .help/my                     personleg config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     set config-verdi
 help-actor-acl =   @actor/acl                   hent ACL
 help-actor-acl-edit =   @actor/acl!edit              rediger ACL
 help-actor-fragment =   @actor#entity                send til plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC til plugin
+help-actor-fragment-verb = @actor#entity:verb [args] til plugin
 help-header-cid-ops = ── Scheme-aktørkall ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  kall entitets-RPC frå Scheme og vent på svar
+help-actor-cat = (@actor#entity:verb arg...) kall entitets- frå Scheme og vent på svar
 help-actor-head =   (@actor/path)                hent eksternt CRUD-innhald frå Scheme
 help-actor-tail =   (<bafy...>)                  inkluder og evaluer Scheme frå ein IPFS-CID
-help-actor-wc =   (define x (@actor:verb arg))  hald RPC-svar i sesjonsmiljøet
+help-actor-wc = (define x (@actor:verb arg)) hald -svar i sesjonsmiljøet
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Del ei lenkje som opnar zion med ferdig utfylt mottakar:
 help-url-msg =   ?msg=<did>                   fyller inn: @<did>!msg (tekstmelding)

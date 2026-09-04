@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = رن ٹائم/پلگ ان نے درخواست کو مسترد کر دیا؛ وجہ کا معائنہ کریں اور ہستی/رن ٹائم کو ٹھیک کرنے کے بعد دوبارہ کوشش کریں۔
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = تفصیلی وجہ کے لیے رن ٹائم لاگ کا معائنہ کریں اور دوبارہ کوشش کریں۔
-doc-store-sent = ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID RPC جواب کے ذریعے آئے گا
-doc-ipld-store-sent = IPLD ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID RPC جواب کے ذریعے آئے گا
+doc-store-sent = ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID جواب کے ذریعے آئے گا
+doc-ipld-store-sent = IPLD ذخیرہ کرنے کی درخواست بھیجی گئی ({ $id }) → { $publisher }؛ CID جواب کے ذریعے آئے گا
 doc-fetch-done = { $cid } حاصل کیا → { $path } (چلایا نہیں گیا)
 doc-fetch-failed = حاصل کریں { $cid }: { $e }
 doc-fetch-usage = استعمال: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مس
 
 # ── مدد — پیغام رسانی ─────────────────────────────────────────────────────
 help-msg-echo =   @alias                       حل شدہ DID/DID-URL دکھائیں (کوئی پیغام نہیں بھیجا جاتا)
-help-msg-send =   @alias!msg body / @alias:verb args           اداکار کو پیغام / RPC بھیجیں
+help-msg-send = @alias!msg body @alias:verb args اداکار کو پیغام بھیجیں
 help-msg-fragment =   @alias#fragment:verb body  واضح DID فریگمنٹ کے ساتھ بھیجیں
 help-msg-escape =   \@name                       لفظی @name (عرفی نام تلاش نہیں)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR ترمیم خرابی: { $e }
 err-popup-blocked = براؤزر نے پاپ اپ روک لیا
 status-publishing = شائع ہو رہا ہے
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = خطا
-rpc-error-detail = خطا: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = خطا
+term-error-detail = خطا: { $detail }
 msg-new-message = ← [{ $from }] نئی پیغام — { $count } ان باکس میں
 msg-chat = { $sender } کہتا ہے { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = پروفائل نہیں ملی: { $name }
 
 # -- Help topics index
 help-header-topics = -- المواضيع -- اكتب .help/<topic> للتفاصيل
-help-topic-msg =   .help/msg                    المراسلة
+help-topic-msg = .help/msg المراسلة
 help-topic-ma = .help/ma                     間-اسپیس، اشاعت، اور اندراج
 help-topic-path = .help/path                   مقامی ڈاٹ پاتھ گرامر
 help-topic-my =   .help/my                     الإعداد الشخصي
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     عيّن قيمة الإ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              حرّر ACL
 help-actor-fragment =   @actor#entity                أرسل إلى الإضافة
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC إلى الإضافة
+help-actor-fragment-verb = @actor#entity:verb [args] إلى الإضافة
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  5 جوابات کو سیشن کے ماحول میں رکھیں
+help-actor-wc = (define x (@actor:verb arg)) 5 جوابات کو سیشن کے ماحول میں رکھیں
 
 help-topic-url =   .help/url                    URL لنک کے ذریعے zion کھولنا
 help-topic-i18n = .help/i18n                   آپ کی شناخت کے لیے زبان کی ترجیح

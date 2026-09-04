@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = isikhathi sokusebenza/i-plugin inqabe isicelo; hlola isizathu bese uzama futhi ngemva kokulungisa ibhizinisi/isikhathi sokusebenza
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = hlola amalogi esikhathi sokusebenza ukuze uthole imbangela enemininingwane bese uzama futhi
-doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
-doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge-RPC reply
+doc-store-sent = isicelo sokugcina sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge- reply
+doc-ipld-store-sent = isicelo sokugcina se-IPLD sithunyelwe ({ $id }) → { $publisher }; i-CID iyofika nge- reply
 doc-fetch-done = u{ $cid } ulandwe → u{ $path } (akuqalisiwe)
 doc-fetch-failed = ukulanda u{ $cid }: { $e }
 doc-fetch-usage = ukusetshenziswa: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         hlola idokhum
 
 # ── Usizo — ukuthumela ────────────────────────────────────────────────────
 help-msg-echo =   @alias                       bonisa i-DID/DID-URL exazululiwe (akuthunyelwa mlayezo)
-help-msg-send =   @alias!msg body / @alias:verb args           thumela imiyalezo / RPC ku-actor
+help-msg-send = @alias!msg body @alias:verb args thumela imiyalezo ku-actor
 help-msg-fragment =   @alias#fragment:verb body  thumela nge-DID fragment ecacile
 help-msg-escape =   \@name                       @name ngqo (akukho ukusesha isidlaliso)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Iphutha lokuhlela i-CBOR: { $e }
 err-popup-blocked = Isiphequluli sivimbe isaziso esinye
 status-publishing = ikhishwa
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = iphutha
-rpc-error-detail = iphutha: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = iphutha
+term-error-detail = iphutha: { $detail }
 msg-new-message = ← [{ $from }] umlayezo omutsha — { $count } ebhokisini
 msg-chat = { $sender } uthi { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = iprofile ayitholakali: { $name }
 
 # -- Help topics index
 help-header-topics = -- izihloko -- thayipha .help/<topic> ukuze uthole imininingwane
-help-topic-msg =   .help/msg                    imiyalezo
+help-topic-msg = .help/msg imiyalezo
 help-topic-ma = .help/ma                     間-isikhala, ukushicilela, nokungena
 help-topic-path = .help/path                   uhlelo lolimi lwendawo yamachashazi
 help-topic-my =   .help/my                     config yomuntu siqu
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     setha inani le-config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              hlela i-ACL
 help-actor-fragment =   @actor#entity                thumela ku-plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ku-plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ku-plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  gcina izimpendulo ze-5 endaweni yeseshini
+help-actor-wc = (define x (@actor:verb arg)) gcina izimpendulo ze-5 endaweni yeseshini
 
 help-topic-url =   .help/url                    ukuvula zion ngesixhokelelwano se-URL
 help-topic-i18n = .help/i18n                   ulimi oluncamelayo ngobuwena

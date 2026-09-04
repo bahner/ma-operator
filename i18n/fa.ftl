@@ -184,8 +184,8 @@ doc-publish-hint-acl = از گرداننده ناشر بخواهید DID شما 
 doc-publish-hint-runtime = runtime یا افزونه درخواست را رد کرد؛ دلیل را بررسی کنید و پس از اصلاح موجودیت/runtime دوباره بکوشید
 doc-publish-hint-ipfs = سلامت Kubo/IPFS محلی و وضعیت runtime ناشر را بررسی کنید
 doc-publish-hint-unknown = برای علت دقیق‌تر گزارش‌های runtime را بررسی کنید و دوباره بکوشید
-doc-store-sent = درخواست ذخیره‌سازی فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ RPC خواهد رسید
-doc-ipld-store-sent = درخواست ذخیره‌سازی IPLD فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ RPC خواهد رسید
+doc-store-sent = درخواست ذخیره‌سازی فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ خواهد رسید
+doc-ipld-store-sent = درخواست ذخیره‌سازی IPLD فرستاده شد ({ $id }) → { $publisher }؛ CID از راه پاسخ خواهد رسید
 doc-fetch-done = { $cid } واکشی شد → { $path } (اجرا نشد)
 doc-fetch-failed = واکشی { $cid }: { $e }
 doc-fetch-usage = کاربرد: .my.doc.<name>!fetch /ipfs/<cid>
@@ -228,7 +228,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         اجرای ف
 
 # ── متن راهنما — فهرست موضوع‌ها ─────────────────────────────────────────
 help-header-topics = ── موضوع‌ها — برای جزئیات .help/<topic> را تایپ کنید ─────────────────────
-help-topic-msg =   .help/msg                    پیام‌رسانی — @actor، فرستادن، RPC
+help-topic-msg = .help/msg پیام‌رسانی — @actor، فرستادن،
 help-topic-ma =   .help/ma                     間-space، انتشار، و ورود
 help-topic-path =   .help/path                   دستور زبان dot-path محلی
 help-topic-my =   .help/my                     پیکربندی شخصی — .my.*، نام‌های مستعار، هویت
@@ -243,7 +243,7 @@ help-unknown-topic =   .help/{ $topic }: موضوع ناشناخته — برا�
 
 # ── متن راهنما — پیام‌رسانی ─────────────────────────────────────────────
 help-msg-echo =   @alias                       DID/DID-URL حل‌شده را نشان بده (پیامی فرستاده نمی‌شود)
-help-msg-send =   @alias!msg body / @alias:verb args           پیام / RPC به actor بفرست
+help-msg-send = @alias!msg body @alias:verb args پیام به actor بفرست
 help-msg-fragment =   @alias#fragment:verb body  به نام مستعار با fragment صریح DID بفرست
 help-msg-escape =   \@name                       متن لفظی @name (بدون جست‌وجوی نام مستعار)
 
@@ -342,9 +342,9 @@ room-leave = * { $name } اتاق را ترک می‌کند.
 room-drop  = * { $name } { $thing } را می‌اندازد.
 room-take  = * { $name } { $thing } را برمی‌دارد.
 
-# ── نمایش پاسخ RPC ──────────────────────────────────────────────────────
-rpc-error = خطا
-rpc-error-detail = خطا: { $detail }
+# ── نمایش پاسخ ──────────────────────────────────────────────────────
+term-error = خطا
+term-error-detail = خطا: { $detail }
 
 # ── خطاهای ویرایش ───────────────────────────────────────────────────────
 err-edit-decode-failed = رمزگشایی ویرایش ناموفق بود: { $e }
@@ -417,12 +417,12 @@ help-actor-config-set =   @actor/config/<key>: val     تنظیم مقدار پ�
 help-actor-acl =   @actor/acl                   گرفتن ACL
 help-actor-acl-edit =   @actor/acl!edit              ویرایش ACL در ویرایشگر
 help-actor-fragment =   @actor#entity                فرستادن به افزونه موجودیت
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC به فعل افزونه موجودیت
+help-actor-fragment-verb = @actor#entity:verb [args] به فعل افزونه موجودیت
 help-header-cid-ops = ── فراخوانی‌های Scheme actor ─────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  فراخوانی RPC موجودیت از Scheme و انتظار برای پاسخ
+help-actor-cat = (@actor#entity:verb arg...) فراخوانی موجودیت از Scheme و انتظار برای پاسخ
 help-actor-head =   (@actor/path)                واکشی محتوای CRUD دوردست از Scheme
 help-actor-tail =   (<bafy...>)                  include و ارزیابی Scheme از CID در IPFS
-help-actor-wc =   (define x (@actor:verb arg))  نگه داشتن پاسخ‌های RPC در محیط نشست
+help-actor-wc = (define x (@actor:verb arg)) نگه داشتن پاسخ‌های در محیط نشست
 # ── متن راهنما — انتشار ─────────────────────────────────────────────────
 help-topic-publish =   .help/publish                انتشار هویت شما در شبکه
 help-header-publish = ── انتشار هویت شما ────────────────────────────────────────────────────

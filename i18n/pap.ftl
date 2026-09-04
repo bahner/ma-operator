@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin a rechasá e petishon; inspekshoná e motibu i bolbe purba despues di drecha entidat/tempu di ehekushon
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspekshoná e registronan di tempu di ehekushon pa kousa detayá i purba di nobo
-doc-store-sent = petishon di almacenamentu mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
-doc-ipld-store-sent = petishon di almacenamentu IPLD mandá ({ $id }) → { $publisher }; CID lo yega via respuesta RPC
+doc-store-sent = petishon di almacenamentu mandá ({ $id }) → { $publisher }; CID lo yega via respuesta
+doc-ipld-store-sent = petishon di almacenamentu IPLD mandá ({ $id }) → { $publisher }; CID lo yega via respuesta
 doc-fetch-done = bishitá { $cid } → { $path } (no ehekulá)
 doc-fetch-failed = bishitá { $cid }: { $e }
 doc-fetch-usage = uso: .my.doc.<nòmber>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-logout =   .logout                      sali
 help-cmd-batch =   .batch                       avaliar documento rascunho em paralelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         avaliar documento rascunho linha por linha
 help-msg-echo =   @alias                       mustra DID/DID-URL resolví (no ta manda mensahe)
-help-msg-send =   @alias!msg body / @alias:verb args           mandá mensahe / RPC na aktor
+help-msg-send = @alias!msg body @alias:verb args mandá mensahe na aktor
 help-msg-fragment =   @alias#fragment:verb body  mandá na alias ku fragmento DID eksplísito
 help-msg-escape =   \@name                       @name literal (ningun búskeda di alias)
 help-config-get =   .path                        haña valor di fòlya of lista subarber
@@ -292,9 +292,9 @@ err-edit-cbor = Error di edishan CBOR: { $e }
 err-popup-blocked = Popup blokea pa browser
 status-publishing = ta publica
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = fout
-rpc-error-detail = fout: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = fout
+term-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] mesashi nobo — { $count } den inbox
 msg-chat = { $sender } bisa { $body }
 
@@ -337,7 +337,7 @@ profiles-not-found = perfil no a haña: { $name }
 
 # -- Help topics index
 help-header-topics = -- tópicos -- digite .help/<topic> para detalhes
-help-topic-msg =   .help/msg                    mensagens
+help-topic-msg = .help/msg mensagens
 help-topic-ma = .help/ma                     間-espasio, publikashon, i entrada
 help-topic-path = .help/path                   gramátika lokal di trayekto di punto
 help-topic-my =   .help/my                     config pessoal
@@ -363,12 +363,12 @@ help-actor-config-set =   @actor/config/<key>: val     definir valor de config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar ao plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ao plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ao plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  warda kontesta 5 den e ambiente di seshon
+help-actor-wc = (define x (@actor:verb arg)) warda kontesta 5 den e ambiente di seshon
 
 help-topic-url =   .help/url                    habri zion via un link URL
 help-topic-i18n = .help/i18n                   preferensia di idioma pa bo identidat

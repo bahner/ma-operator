@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin elutasította a kérést; ellenőrizze az okot, és próbálja újra az entitás/futásidő javítása után
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ellenőrizze a futásidejű naplókat a részletes okokért, és próbálkozzon újra
-doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
-doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID RPC válaszban érkezik
+doc-store-sent = tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID válaszban érkezik
+doc-ipld-store-sent = IPLD tárolási kérelem elküldve ({ $id }) → { $publisher }; a CID válaszban érkezik
 doc-fetch-done = { $cid } letöltve → { $path } (nem futtatva)
 doc-fetch-failed = letöltés { $cid }: { $e }
 doc-fetch-usage = használat: .my.doc.<név>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       vázlatdokumentum párhuzamos ki
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vázlatdokumentum soronkénti kiértékelése
 
 help-msg-echo =   @alias                       feloldott DID/DID-URL megjelenítése (nincs üzenetküldés)
-help-msg-send =   @alias!msg body / @alias:verb args           üzenet / RPC küldése szereplőnek
+help-msg-send = @alias!msg body @alias:verb args üzenet küldése szereplőnek
 help-msg-fragment =   @alias#fragment:verb body  küldés álnévnek explicit DID-töredékkel
 help-msg-escape =   \@name                       szó szerinti @name (alias keresés nélkül)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR szerkesztési hiba: { $e }
 err-popup-blocked = A böngésző blokkolta a felugró ablakot
 status-publishing = közzététel
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = hiba
-rpc-error-detail = hiba: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = hiba
+term-error-detail = hiba: { $detail }
 msg-new-message = ← [{ $from }] új üzenet — { $count } a beérkező levelekben
 msg-chat = { $sender } mondja { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = a profil nem található: { $name }
 
 # -- Help topics index
 help-header-topics = -- témák -- részletekhez írd be: .help/<topic>
-help-topic-msg =   .help/msg                    üzenetek
+help-topic-msg = .help/msg üzenetek
 help-topic-ma = .help/ma                     間-tér, közzététel és bejegyzés
 help-topic-path = .help/path                   helyi pont-útvonal nyelvtan
 help-topic-my =   .help/my                     személyes config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     config érték beállít�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL szerkesztése
 help-actor-fragment =   @actor#entity                küldés pluginnek
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginnek
+help-actor-fragment-verb = @actor#entity:verb [args] pluginnek
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  tartsa a 5 válaszokat a munkamenet környezetben
+help-actor-wc = (define x (@actor:verb arg)) tartsa a 5 válaszokat a munkamenet környezetben
 
 help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
 help-topic-i18n = .help/i18n                   identitásod nyelvi preferenciája

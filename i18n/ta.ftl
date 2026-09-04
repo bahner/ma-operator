@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = இயக்க நேரம்/சொருகி கோரிக்கையை நிராகரித்தது; காரணத்தை சரிபார்த்து, நிறுவனம்/இயக்க நேரத்தை சரிசெய்த பிறகு மீண்டும் முயற்சிக்கவும்
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = விரிவான காரணத்திற்காக இயக்க நேர பதிவுகளை ஆய்வு செய்து மீண்டும் முயற்சிக்கவும்
-doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
-doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID RPC பதில் வழியாக வரும்
+doc-store-sent = சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID பதில் வழியாக வரும்
+doc-ipld-store-sent = IPLD சேமிப்பு கோரிக்கை அனுப்பப்பட்டது ({ $id }) → { $publisher }; CID பதில் வழியாக வரும்
 doc-fetch-done = { $cid } பெறப்பட்டது → { $path } (இயக்கப்படவில்லை)
 doc-fetch-failed = பெறு { $cid }: { $e }
 doc-fetch-usage = பயன்பாடு: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch ஆ�
 
 # ── உதவி — செய்தியிடல் ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       தீர்க்கப்பட்ட DID/DID-URL காட்டு (செய்தி அனுப்பப்படாது)
-help-msg-send =   @alias!msg body / @alias:verb args           நடிகருக்கு செய்தி / RPC அனுப்பவும்
+help-msg-send = @alias!msg body @alias:verb args நடிகருக்கு செய்தி அனுப்பவும்
 help-msg-fragment =   @alias#fragment:verb body  வெளிப்படையான DID துண்டுடன் அனுப்பவும்
 help-msg-escape =   \@name                       நேரடி @name (புனைப்பெயர் தேடல் இல்லை)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR திருத்தல் பிழை: { $e }
 err-popup-blocked = உலாவி பாப்அப்பை தடுத்தது
 status-publishing = வெளியிடுகிறது
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = பிழை
-rpc-error-detail = பிழை: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = பிழை
+term-error-detail = பிழை: { $detail }
 msg-new-message = ← [{ $from }] புதிய செய்தி — { $count } இன்பாக்ஸில்
 msg-chat = { $sender } சொல்கிறார் { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = சுயவிவரம் கிடைக்கவில�
 
 # -- Help topics index
 help-header-topics = -- தலைப்புகள் -- விவரங்களுக்கு .help/<topic> தட்டச்சிடவும்
-help-topic-msg =   .help/msg                    செய்திகள்
+help-topic-msg = .help/msg செய்திகள்
 help-topic-ma = .help/ma                     間-இடம், வெளியீடு மற்றும் நுழைவு
 help-topic-path = .help/path                   உள்ளூர் புள்ளி-பாதை இலக்கணம்
 help-topic-my =   .help/my                     தனிப்பட்ட config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config மதிப்ப
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL திருத்து
 help-actor-fragment =   @actor#entity                plugin-க்கு அனுப்பு
-help-actor-fragment-verb =   @actor#entity:verb [args]    plugin-க்கு RPC
+help-actor-fragment-verb = @actor#entity:verb [args] plugin-க்கு
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
+help-actor-wc = (define x (@actor:verb arg)) அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
 
 help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
 help-topic-i18n = .help/i18n                   உங்கள் அடையாளத்திற்கான மொழி விருப்பம்

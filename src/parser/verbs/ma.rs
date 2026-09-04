@@ -646,10 +646,6 @@ pub(crate) async fn rediscover_ma(
         .get("ipfs_requests")
         .and_then(serde_json::Value::as_u64)
         .unwrap_or(0);
-    let rpc_requests = json
-        .get("rpc_requests")
-        .and_then(serde_json::Value::as_u64)
-        .unwrap_or(0);
     let started_at = json
         .get("started_at")
         .and_then(serde_json::Value::as_u64)
@@ -686,7 +682,6 @@ pub(crate) async fn rediscover_ma(
         }
         cfg.set(".ma.ctx.ipfs_publisher", ipfs_publisher.to_string());
         cfg.set(".ma.ctx.ipfs_requests", ipfs_requests.to_string());
-        cfg.set(".ma.ctx.rpc_requests", rpc_requests.to_string());
         cfg.set(".ma.ctx.started_at", started_at.to_string());
         cfg.set(".ma.ctx.uptime_secs", uptime_secs.to_string());
         if !runtime_cid.is_empty() {

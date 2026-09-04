@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = wakati wa kukimbia/programu-jalizi imekataa ombi; kagua sababu na ujaribu tena baada ya kurekebisha huluki/muda wa utekelezaji
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = kagua kumbukumbu za wakati wa utekelezaji kwa sababu za kina na ujaribu tena
-doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
-doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la RPC
+doc-store-sent = ombi la kuhifadhi limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la
+doc-ipld-store-sent = ombi la kuhifadhi IPLD limetumwa ({ $id }) → { $publisher }; CID itafika kupitia jibu la
 doc-fetch-done = { $cid } imepatikana → { $path } (haijatekelezwa)
 doc-fetch-failed = kupata { $cid }: { $e }
 doc-fetch-usage = matumizi: .my.doc.<jina>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       evaluasi dokumen coretan secara 
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi dokumen coretan baris demi baris
 
 help-msg-echo =   @alias                       onyesha DID/DID-URL iliyotatuliwa (hakuna ujumbe unaotumwa)
-help-msg-send =   @alias!msg body / @alias:verb args           tuma ujumbe / RPC kwa muigizaji
+help-msg-send = @alias!msg body @alias:verb args tuma ujumbe kwa muigizaji
 help-msg-fragment =   @alias#fragment:verb body  tuma kwa jina la kubadilisha lenye kipande cha DID wazi
 help-msg-escape =   \@name                       @name halisi (bila utafutaji wa jina la kubadilisha)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Kosa la kuhariri CBOR: { $e }
 err-popup-blocked = Kivinjari kimezuia dirisha la popup
 status-publishing = inachapisha
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = hitilafu
-rpc-error-detail = hitilafu: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = hitilafu
+term-error-detail = hitilafu: { $detail }
 msg-new-message = ← [{ $from }] ujumbe mpya — { $count } kwenye kisanduku
 msg-chat = { $sender } anasema { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profaili haikupatikana: { $name }
 
 # -- Help topics index
 help-header-topics = -- topik -- ketik .help/<topic> untuk detail
-help-topic-msg =   .help/msg                    pesan
+help-topic-msg = .help/msg pesan
 help-topic-ma = .help/ma                     間-nafasi, uchapishaji, na kuingia
 help-topic-path = .help/path                   sarufi ya njia ya nukta
 help-topic-my =   .help/my                     config pribadi
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     atur nilai config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              hariri ACL
 help-actor-fragment =   @actor#entity                kirim ke plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ke plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  weka majibu ya 5 katika mazingira ya kikao
+help-actor-wc = (define x (@actor:verb arg)) weka majibu ya 5 katika mazingira ya kikao
 
 help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
 help-topic-i18n = .help/i18n                   upendeleo wa lugha kwa utambulisho wako

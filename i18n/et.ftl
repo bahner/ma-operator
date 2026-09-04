@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = käitusaeg/plugin lükkas taotluse tagasi; kontrollige põhjust ja proovige pärast olemi/käitusaja parandamist uuesti
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = kontrollige käitusaja logisid üksikasjaliku põhjuse leidmiseks ja proovige uuesti
-doc-store-sent = salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
-doc-ipld-store-sent = IPLD-salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub RPC-vastuse kaudu
+doc-store-sent = salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub -vastuse kaudu
+doc-ipld-store-sent = IPLD-salvestustaotlus saadetud ({ $id }) → { $publisher }; CID saabub -vastuse kaudu
 doc-fetch-done = toodi { $cid } → { $path } (pole käivitatud)
 doc-fetch-failed = toomine { $cid }: { $e }
 doc-fetch-usage = kasutus: .my.doc.<nimi>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakk
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         arvioi luonnosdokumentti riveittäin
 
 help-msg-echo =   @alias                       kuva lahendatud DID/DID-URL (ühtegi sõnumit pole saadetud)
-help-msg-send =   @alias!msg body / @alias:verb args           saada sõnum / RPC osalejale
+help-msg-send = @alias!msg body @alias:verb args saada sõnum osalejale
 help-msg-fragment =   @alias#fragment:verb body  saada aliasele selge DID-fragmendiga
 help-msg-escape =   \@name                       sõnasõnaline @name (aliast ei otsita)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR redigeerimise viga: { $e }
 err-popup-blocked = Brauser blokeeris hüpikakna
 status-publishing = avaldamine
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = viga
-rpc-error-detail = viga: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = viga
+term-error-detail = viga: { $detail }
 msg-new-message = ← [{ $from }] uus sõnum — { $count } postkastis
 msg-chat = { $sender } ütleb { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profiili ei leitud: { $name }
 
 # -- Help topics index
 help-header-topics = -- aiheet -- kirjoita .help/<topic> saadaksesi tiedot
-help-topic-msg =   .help/msg                    viestit
+help-topic-msg = .help/msg viestit
 help-topic-ma = .help/ma                     間-ruum, avaldamine ja sisestamine
 help-topic-path = .help/path                   kohalik dot-path grammatika
 help-topic-my =   .help/my                     henkilökohtainen config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     aseta config-arvo
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              muokkaa ACL:ää
 help-actor-fragment =   @actor#entity                lähetä pluginille
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginille
+help-actor-fragment-verb = @actor#entity:verb [args] pluginille
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  hoia 5 vastuseid seansikeskkonnas
+help-actor-wc = (define x (@actor:verb arg)) hoia 5 vastuseid seansikeskkonnas
 
 help-topic-url =   .help/url                    zion'i avamine URL-lingi kaudu
 help-topic-i18n = .help/i18n                   keele eelistus teie identiteedile

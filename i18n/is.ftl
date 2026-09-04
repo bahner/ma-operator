@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin hafnaði beiðninni; skoðaðu ástæðuna og reyndu aftur eftir að eining/keyrslutími hefur verið lagaður
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = skoðaðu runtime logs fyrir nákvæmar orsakir og reyndu aftur
-doc-store-sent = geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
-doc-ipld-store-sent = IPLD-geymslugrein send ({ $id }) → { $publisher }; CID kemur með RPC-svari
+doc-store-sent = geymslugrein send ({ $id }) → { $publisher }; CID kemur með -svari
+doc-ipld-store-sent = IPLD-geymslugrein send ({ $id }) → { $publisher }; CID kemur með -svari
 doc-fetch-done = sótti { $cid } → { $path } (ekki keyrt)
 doc-fetch-failed = sókn { $cid }: { $e }
 doc-fetch-usage = notkun: .my.doc.<nafn>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       evaluer kladdedokument parallelt
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluer kladdedokument linje for linje
 
 help-msg-echo =   @alias                       sýna leyst DID/DID-URL (engin skilaboð send)
-help-msg-send =   @alias!msg body / @alias:verb args           senda skilaboð / RPC til leikara
+help-msg-send = @alias!msg body @alias:verb args senda skilaboð til leikara
 help-msg-fragment =   @alias#fragment:verb body  senda til samnefnis með skýrum DID-broti
 help-msg-escape =   \@name                       bókstaflegur @name (engin samnefnileit)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR-breytingarvilla: { $e }
 err-popup-blocked = Vafrinn lokaði á sprettiglugga
 status-publishing = gefur út
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = villa
-rpc-error-detail = villa: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = villa
+term-error-detail = villa: { $detail }
 msg-new-message = ← [{ $from }] ný skilaboð — { $count } í pósthólfi
 msg-chat = { $sender } segir { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = notandaprófíll finnst ekki: { $name }
 
 # -- Help topics index
 help-header-topics = -- emner -- skriv .help/<topic> for detaljer
-help-topic-msg =   .help/msg                    beskeder
+help-topic-msg = .help/msg beskeder
 help-topic-ma = .help/ma                     間-rými, útgáfa og innganga
 help-topic-path = .help/path                   staðbundin punktabrautarmálfræði
 help-topic-my =   .help/my                     personlig config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     sæt config-værdi
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              rediger ACL
 help-actor-fragment =   @actor#entity                send til plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC til plugin
+help-actor-fragment-verb = @actor#entity:verb [args] til plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  haltu 5 svörum í lotuumhverfinu
+help-actor-wc = (define x (@actor:verb arg)) haltu 5 svörum í lotuumhverfinu
 
 help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
 help-topic-i18n = .help/i18n                   tungumálaval fyrir sjálfsmynd þína

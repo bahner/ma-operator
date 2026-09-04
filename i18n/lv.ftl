@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = izpildlaiks/spraudnis noraidīja pieprasījumu; pārbaudiet iemeslu un pēc entītijas/izpildlaika noteikšanas mēģiniet vēlreiz
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = pārbaudiet izpildlaika žurnālus, lai uzzinātu detalizētu iemeslu, un mēģiniet vēlreiz
-doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
-doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur RPC atbildi
+doc-store-sent = saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur atbildi
+doc-ipld-store-sent = IPLD-saglabāšanas pieprasījums nosūtīts ({ $id }) → { $publisher }; CID pienāks caur atbildi
 doc-fetch-done = ielādēja { $cid } → { $path } (nav izpildīts)
 doc-fetch-failed = ielāde { $cid }: { $e }
 doc-fetch-usage = lietošana: .my.doc.<nosaukums>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       oceń dokument roboczy równoleg
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
 
 help-msg-echo =   @alias                       parādīt atrisināto DID/DID-URL (ziņa netiek sūtīta)
-help-msg-send =   @alias!msg body / @alias:verb args           nosūtīt ziņojumu / RPC dalībniekam
+help-msg-send = @alias!msg body @alias:verb args nosūtīt ziņojumu dalībniekam
 help-msg-fragment =   @alias#fragment:verb body  nosūtīt aizstājvārdam ar skaidru DID fragmentu
 help-msg-escape =   \@name                       burtiski @name (nav aizstājvārda meklēšanas)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR rediģēšanas kļūda: { $e }
 err-popup-blocked = Uznirstošais logs ir bloķēts pārlūkprogrammā
 status-publishing = publicēšana
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = kļūda
-rpc-error-detail = kļūda: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = kļūda
+term-error-detail = kļūda: { $detail }
 msg-new-message = ← [{ $from }] jauna ziņa — { $count } iesūtnē
 msg-chat = { $sender } saka { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profils nav atrasts: { $name }
 
 # -- Help topics index
 help-header-topics = -- tematy -- wpisz .help/<topic>, aby zobaczyć szczegóły
-help-topic-msg =   .help/msg                    wiadomości
+help-topic-msg = .help/msg wiadomości
 help-topic-ma = .help/ma                     間-telpa, publicēšana un ieraksts
 help-topic-path = .help/path                   vietējā dot-path gramatika
 help-topic-my =   .help/my                     osobista config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     ustaw wartość config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edytuj ACL
 help-actor-fragment =   @actor#entity                wyślij do pluginu
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
+help-actor-fragment-verb = @actor#entity:verb [args] do pluginu
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  saglabāt 5 atbildes sesijas vidē
+help-actor-wc = (define x (@actor:verb arg)) saglabāt 5 atbildes sesijas vidē
 
 help-topic-url =   .help/url                    zion atvēršana, izmantojot URL saiti
 help-topic-i18n = .help/i18n                   valodas izvēle jūsu identitātei

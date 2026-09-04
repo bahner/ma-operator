@@ -177,8 +177,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
-doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
-doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit RPC bek-showxa
+doc-store-sent = hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit bek-showxa
+doc-ipld-store-sent = IPLD hol kolowda sendowt ({ $id }) → { $publisher }; CID gonya kom wit bek-showxa
 doc-fetch-done = { $cid } fech finyish → { $path } (na du-im)
 doc-fetch-failed = feching { $cid }: { $e }
 doc-fetch-usage = showxa: .my.doc.<name>!fetch /ipfs/<cid>
@@ -210,7 +210,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch d
 
 # ── Halp — showxa ─────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       lit resolved DID/DID-URL (na send message)
-help-msg-send =   @alias!msg body / @alias:verb args           showxa message / RPC fo actor
+help-msg-send = @alias!msg body @alias:verb args showxa message fo actor
 help-msg-fragment =   @alias#fragment:verb body  showxa wit DID fragment cler
 help-msg-escape =   \@name                       @name leshi (na du alias)
 
@@ -308,9 +308,9 @@ err-edit-cbor = edit CBOR error: { $e }
 err-popup-blocked = popup block by browser
 status-publishing = publishin
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = keng ando gonya
-rpc-error-detail = fot: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = keng ando gonya
+term-error-detail = fot: { $detail }
 msg-new-message = ← [{ $from }] nyú mesej — { $count } in de boks
 msg-chat = { $sender } sa { $body }
 
@@ -353,7 +353,7 @@ profiles-not-found = profil no found: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> fo detail
-help-topic-msg =   .help/msg                    message-talk
+help-topic-msg = .help/msg message-talk
 help-topic-ma =   .help/ma                     間-space, publish, enter
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     own config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     put config value
 help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              change ACL
 help-actor-fragment =   @actor#entity                send go plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
+help-actor-fragment-verb = @actor#entity:verb [args] go plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call entity RPC from Scheme and wait fo reply
+help-actor-cat = (@actor#entity:verb arg...) call entity from Scheme and wait fo reply
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and eval Scheme from IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in session env
+help-actor-wc = (define x (@actor:verb arg)) keep replies in session env
 
 help-topic-url =   .help/url                    open zion tru URL peng
 help-topic-i18n =   .help/i18n                   lang choice fo yer selfmang

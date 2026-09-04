@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin odmietol požiadavku; skontrolujte dôvod a skúste to znova po oprave entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = skontrolujte protokoly runtime pre podrobnú príčinu a skúste to znova
-doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
-doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi RPC
+doc-store-sent = žiadosť o uloženie odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi
+doc-ipld-store-sent = žiadosť o uloženie IPLD odoslaná ({ $id }) → { $publisher }; CID príde v odpovedi
 doc-fetch-done = { $cid } načítané → { $path } (nespustené)
 doc-fetch-failed = načítanie { $cid }: { $e }
 doc-fetch-usage = použitie: .my.doc.<názov>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       vyhodnotit pracovní dokument pa
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         vyhodnotit pracovní dokument po řádcích
 
 help-msg-echo =   @alias                       zobraziť vyriešený DID/DID-URL (správa sa neodošle)
-help-msg-send =   @alias!msg body / @alias:verb args           odoslať správu / RPC aktérovi
+help-msg-send = @alias!msg body @alias:verb args odoslať správu aktérovi
 help-msg-fragment =   @alias#fragment:verb body  odoslať na alias s explicitným fragmentom DID
 help-msg-escape =   \@name                       doslovné @name (bez vyhľadávania aliasov)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Chyba úpravy CBOR: { $e }
 err-popup-blocked = Prehliadač zablokoval vyskakovacie okno
 status-publishing = publikovanie
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = chyba
-rpc-error-detail = chyba: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = chyba
+term-error-detail = chyba: { $detail }
 msg-new-message = ← [{ $from }] nová správa — { $count } v doručenej pošte
 msg-chat = { $sender } hovorí { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profil sa nenašiel: { $name }
 
 # -- Help topics index
 help-header-topics = -- témata -- pro podrobnosti napište .help/<topic>
-help-topic-msg =   .help/msg                    zprávy
+help-topic-msg = .help/msg zprávy
 help-topic-ma = .help/ma                     間-priestor, publikovanie a vstup
 help-topic-path = .help/path                   lokálna bodková gramatika
 help-topic-my =   .help/my                     osobní konfigurace
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     nastavit hodnotu konfigur
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              upravit ACL
 help-actor-fragment =   @actor#entity                odeslat do pluginu
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
+help-actor-fragment-verb = @actor#entity:verb [args] do pluginu
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  uchovávať odpovede 5 v prostredí relácie
+help-actor-wc = (define x (@actor:verb arg)) uchovávať odpovede 5 v prostredí relácie
 
 help-topic-url =   .help/url                    otvorenie zion cez URL odkaz
 help-topic-i18n = .help/i18n                   jazykové preferencie pre vašu identitu

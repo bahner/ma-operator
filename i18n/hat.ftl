@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin te rejte demann lan; enspekte rezon an epi eseye refè apre ranje antite / ègzekutabl
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = enspekte mòso bwa pou egzekite kòz detaye epi eseye eseye ankò
-doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
-doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons RPC
+doc-store-sent = demann depo voye ({ $id }) → { $publisher }; CID ap rive via repons
+doc-ipld-store-sent = demann depo IPLD voye ({ $id }) → { $publisher }; CID ap rive via repons
 doc-fetch-done = chèche { $cid } → { $path } (pa egzekite)
 doc-fetch-failed = chèche { $cid }: { $e }
 doc-fetch-usage = itilizasyon: .my.doc.<non>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-logout =   .logout                      dekonekte
 help-cmd-batch =   .batch                       eval scratch document (parallel)
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch document line-by-line (sequential)
 help-msg-echo =   @alias                       montre DID/DID-URL rezoud la (pa voye mesaj)
-help-msg-send =   @alias!msg body / @alias:verb args           voye mesaj / RPC bay aktè
+help-msg-send = @alias!msg body @alias:verb args voye mesaj bay aktè
 help-msg-fragment =   @alias#fragment:verb body  voye ba alias avèk fragman DID eksplisit
 help-msg-escape =   \@name                       @name literal (pa chèche alias)
 help-config-get =   .path                        jwenn valè fèy oswa liste souabre
@@ -292,9 +292,9 @@ err-edit-cbor = Erè edisyon CBOR: { $e }
 err-popup-blocked = Popup bloke pa navigatè
 status-publishing = ap pibliye
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = erè
-rpc-error-detail = erè: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = erè
+term-error-detail = erè: { $detail }
 msg-new-message = ← [{ $from }] nouvo mesaj — { $count } nan bwat resepsyon
 msg-chat = { $sender } di { $body }
 
@@ -337,7 +337,7 @@ profiles-not-found = pwofil pa jwenn: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for details
-help-topic-msg =   .help/msg                    mesaj
+help-topic-msg = .help/msg mesaj
 help-topic-ma = .help/ma                     間-espas, pibliye, ak antre
 help-topic-path = .help/path                   gramè lokal dot-chemen
 help-topic-my =   .help/my                     konfig pèsonèl
@@ -363,12 +363,12 @@ help-actor-config-set =   @actor/config/<key>: val     mete valè config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              modifye ACL
 help-actor-fragment =   @actor#entity                voye bay plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC bay plugin
+help-actor-fragment-verb = @actor#entity:verb [args] bay plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  kenbe repons 5 nan anviwònman sesyon an
+help-actor-wc = (define x (@actor:verb arg)) kenbe repons 5 nan anviwònman sesyon an
 
 help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
 help-topic-i18n = .help/i18n                   preferans lang pou idantite w

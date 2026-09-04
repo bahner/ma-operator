@@ -34,7 +34,7 @@ impl AwaitingReply {
     }
 }
 
-/// (sender, `sent_at_ms`) for Scheme RPC reply channels.
+/// (sender, `sent_at_ms`) for Scheme reply channels.
 type SchemeSender = (oneshot::Sender<Result<SchemeVal, String>>, f64);
 
 thread_local! {
@@ -111,7 +111,7 @@ pub enum PendingKind {
         protocol_id: String,
         cmd_id: Option<u64>,
     },
-    /// IPFS-store reply should set an actor's own behaviour via RPC.
+    /// IPFS-store reply should set an actor's own behaviour via an actor message.
     IpfsActorBehaviour { target: String, cmd_id: Option<u64> },
     /// IPFS-store reply (profile blob) should trigger DID doc republish.
     ProfilePublish {
@@ -594,9 +594,9 @@ impl AppState {
         result
     }
 
-    // ── Scheme RPC helpers ────────────────────────────────────────────────
+    // ── Scheme reply helpers ───────────────────────────────────────────────
 
-    /// Register a oneshot sender for a Scheme-initiated RPC reply.
+    /// Register a oneshot sender for a Scheme-initiated reply.
     pub fn register_scheme_sender(
         &self,
         msg_id: String,

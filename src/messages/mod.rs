@@ -192,7 +192,7 @@ pub fn format_term_reply(body: &[u8]) -> (String, bool) {
         Ok(CborValue::Text(atom)) => {
             let is_err = atom == ":error";
             if is_err {
-                (t("rpc-error"), true)
+                (t("term-error"), true)
             } else {
                 (atom, false)
             }
@@ -221,9 +221,9 @@ pub fn format_term_reply(body: &[u8]) -> (String, bool) {
                 let is_err = head == ":error";
                 let display = if is_err {
                     if rest.is_empty() {
-                        t("rpc-error")
+                        t("term-error")
                     } else {
-                        tf("rpc-error-detail", &[("detail", &rest.join(" "))])
+                        tf("term-error-detail", &[("detail", &rest.join(" "))])
                     }
                 } else if rest.is_empty() {
                     head
@@ -273,7 +273,7 @@ mod tests {
         let (display, is_error) = format_term_reply(&body);
         assert!(is_error);
         // t() returns the key name in test context (no translations loaded).
-        assert_eq!(display, "rpc-error-detail");
+        assert_eq!(display, "term-error-detail");
     }
 
     #[test]
@@ -285,7 +285,7 @@ mod tests {
         let (display, is_error) = format_term_reply(&body);
         assert!(is_error);
         // t() returns the key name in test context (no translations loaded).
-        assert_eq!(display, "rpc-error");
+        assert_eq!(display, "term-error");
     }
 
     #[test]
@@ -306,7 +306,7 @@ mod tests {
     }
 
     #[test]
-    fn formats_raw_crud_list_without_rpc_head() {
+    fn formats_raw_crud_list_without_term_head() {
         let mut body = Vec::new();
         ciborium::ser::into_writer(
             &CborValue::Array(vec![

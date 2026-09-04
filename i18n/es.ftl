@@ -175,8 +175,8 @@ doc-publish-hint-acl = pide al operador del publicador que permita tu DID en la 
 doc-publish-hint-runtime = el runtime/plugin rechazó la solicitud; revisa la razón y reintenta tras corregir entidad/runtime
 doc-publish-hint-ipfs = comprueba la salud local de Kubo/IPFS y el estado del runtime publicador
 doc-publish-hint-unknown = revisa los registros del runtime para ver la causa detallada y reintenta
-doc-store-sent = solicitud de almacenamiento enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
-doc-ipld-store-sent = solicitud de almacenamiento IPLD enviada ({ $id }) → { $publisher }; CID llegará por respuesta RPC
+doc-store-sent = solicitud de almacenamiento enviada ({ $id }) → { $publisher }; CID llegará por respuesta
+doc-ipld-store-sent = solicitud de almacenamiento IPLD enviada ({ $id }) → { $publisher }; CID llegará por respuesta
 doc-fetch-done = { $cid } obtenido → { $path } (no ejecutado)
 doc-fetch-failed = obtención { $cid }: { $e }
 doc-fetch-usage = uso: .my.doc.<nombre>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       evaluar documento temporal en pa
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluar documento temporal línea por línea
 
 help-msg-echo =   @alias                       mostrar DID/DID-URL resuelto (no se envía ningún mensaje)
-help-msg-send =   @alias!msg body / @alias:verb args           enviar mensaje / RPC a actor
+help-msg-send = @alias!msg body @alias:verb args enviar mensaje a actor
 help-msg-fragment =   @alias#fragment:verb body  enviar al alias con fragmento DID explícito
 help-msg-escape =   \@name                       @name literal (sin búsqueda de alias)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Error de edición CBOR: { $e }
 err-popup-blocked = Ventana emergente bloqueada por el navegador
 status-publishing = publicando
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = error
-rpc-error-detail = error: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = error
+term-error-detail = error: { $detail }
 msg-new-message = ← [{ $from }] nuevo mensaje — { $count } en bandeja de entrada
 msg-chat = { $sender } dice { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = perfil no encontrado: { $name }
 
 # -- Help topics index
 help-header-topics = -- temas -- escribe .help/<topic> para detalles
-help-topic-msg =   .help/msg                    mensajería
+help-topic-msg = .help/msg mensajería
 help-topic-ma = .help/ma                     間-espacio, publicación y entrada
 help-topic-path = .help/path                   gramática de ruta de puntos local
 help-topic-my =   .help/my                     config personal
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     establecer valor de confi
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar al plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC al plugin
+help-actor-fragment-verb = @actor#entity:verb [args] al plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  mantener las respuestas 5 en el entorno de sesión
+help-actor-wc = (define x (@actor:verb arg)) mantener las respuestas 5 en el entorno de sesión
 help-header-url = ── parámetros de URL ───────────────────────────────────────────────────────
 help-url-intro =   Comparte un enlace que abre zion con un destinatario ya rellenado:
 help-url-msg =   ?msg=<did>                   rellena: @<did>!msg (mensaje de texto)

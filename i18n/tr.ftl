@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = çalışma zamanı/eklenti isteği reddetti; nedenini inceleyin ve varlığı/çalışma zamanını düzelttikten sonra yeniden deneyin
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ayrıntılı neden için çalışma zamanı günlüklerini inceleyin ve yeniden deneyin
-doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
-doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID RPC yanıtıyla gelecek
+doc-store-sent = depolama isteği gönderildi ({ $id }) → { $publisher }; CID yanıtıyla gelecek
+doc-ipld-store-sent = IPLD depolama isteği gönderildi ({ $id }) → { $publisher }; CID yanıtıyla gelecek
 doc-fetch-done = { $cid } getirildi → { $path } (çalıştırılmadı)
 doc-fetch-failed = getirme { $cid }: { $e }
 doc-fetch-usage = kullanım: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         taslak belgey
 
 # ── Yardım — mesajlaşma ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       çözümlenen DID/DID-URL göster (mesaj gönderilmez)
-help-msg-send =   @alias!msg body / @alias:verb args           aktöre mesaj / RPC gönder
+help-msg-send = @alias!msg body @alias:verb args aktöre mesaj gönder
 help-msg-fragment =   @alias#fragment:verb body  açık DID parçasıyla gönder
 help-msg-escape =   \@name                       değişmez @name (takma ad araması yok)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR düzenleme hatası: { $e }
 err-popup-blocked = Tarayıcı açılır pencereyi engelledi
 status-publishing = yayınlanıyor
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = hata
-rpc-error-detail = hata: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = hata
+term-error-detail = hata: { $detail }
 msg-new-message = ← [{ $from }] yeni mesaj — { $count } gelen kutusunda
 msg-chat = { $sender } diyor { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profil bulunamadı: { $name }
 
 # -- Help topics index
 help-header-topics = -- konular -- ayrıntılar için .help/<topic> yazın
-help-topic-msg =   .help/msg                    mesajlaşma
+help-topic-msg = .help/msg mesajlaşma
 help-topic-ma = .help/ma                     間-boşluk, yayınlama ve giriş
 help-topic-path = .help/path                   yerel nokta yolu dilbilgisi
 help-topic-my =   .help/my                     kişisel config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     config değerini ayarla
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL düzenle
 help-actor-fragment =   @actor#entity                plugine gönder
-help-actor-fragment-verb =   @actor#entity:verb [args]    plugine RPC
+help-actor-fragment-verb = @actor#entity:verb [args] plugine
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  5 yanıtlarını oturum ortamında tut
+help-actor-wc = (define x (@actor:verb arg)) 5 yanıtlarını oturum ortamında tut
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
 help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
 help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)

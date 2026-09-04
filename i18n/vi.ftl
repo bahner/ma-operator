@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = thời gian chạy/plugin từ chối yêu cầu; kiểm tra lý do và thử lại sau khi sửa thực thể/thời gian chạy
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = kiểm tra nhật ký thời gian chạy để biết nguyên nhân chi tiết và thử lại
-doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
-doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời RPC
+doc-store-sent = đã gửi yêu cầu lưu trữ ({ $id }) → { $publisher }; CID sẽ đến qua trả lời
+doc-ipld-store-sent = đã gửi yêu cầu lưu trữ IPLD ({ $id }) → { $publisher }; CID sẽ đến qua trả lời
 doc-fetch-done = đã tải { $cid } → { $path } (chưa chạy)
 doc-fetch-failed = tải { $cid }: { $e }
 doc-fetch-usage = cách dùng: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         đánh giá t
 
 # ── Trợ giúp — nhắn tin ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       hiển thị DID/DID-URL đã phân giải (không gửi tin nhắn)
-help-msg-send =   @alias!msg body / @alias:verb args           gửi tin nhắn / RPC tới diễn viên
+help-msg-send = @alias!msg body @alias:verb args gửi tin nhắn tới diễn viên
 help-msg-fragment =   @alias#fragment:verb body  gửi với phân mảnh DID rõ ràng
 help-msg-escape =   \@name                       @name theo nghĩa đen (không tra bí danh)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Lỗi chỉnh sửa CBOR: { $e }
 err-popup-blocked = Trình duyệt đã chặn cửa sổ bật lên
 status-publishing = đang xuất bản
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = lỗi
-rpc-error-detail = lỗi: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = lỗi
+term-error-detail = lỗi: { $detail }
 msg-new-message = ← [{ $from }] tin nhắn mới — { $count } trong hộp thư
 msg-chat = { $sender } nói { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = không tìm thấy hồ sơ: { $name }
 
 # -- Help topics index
 help-header-topics = -- chủ đề -- nhập .help/<topic> để xem chi tiết
-help-topic-msg =   .help/msg                    nhắn tin
+help-topic-msg = .help/msg nhắn tin
 help-topic-ma = .help/ma                     間-không gian, xuất bản và nhập cảnh
 help-topic-path = .help/path                   ngữ pháp đường dẫn chấm cục bộ
 help-topic-my =   .help/my                     config cá nhân
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     đặt giá trị config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              sửa ACL
 help-actor-fragment =   @actor#entity                gửi tới plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC tới plugin
+help-actor-fragment-verb = @actor#entity:verb [args] tới plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  giữ các câu trả lời 5 trong môi trường phiên
+help-actor-wc = (define x (@actor:verb arg)) giữ các câu trả lời 5 trong môi trường phiên
 
 help-topic-url =   .help/url                    mở zion thông qua liên kết URL
 help-topic-i18n = .help/i18n                   ưu tiên ngôn ngữ cho danh tính của bạn

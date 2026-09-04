@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = среда выполнения/плагин отклонил запрос; проверьте причину и повторите попытку после исправления объекта/среды выполнения.
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = проверьте журналы времени выполнения для подробной причины и повторите попытку.
-doc-store-sent = запрос хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
-doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через RPC ответ
+doc-store-sent = запрос хранения отправлен ({ $id }) → { $publisher }; CID придёт через ответ
+doc-ipld-store-sent = запрос IPLD хранения отправлен ({ $id }) → { $publisher }; CID придёт через ответ
 doc-fetch-done = загружено { $cid } → { $path } (не выполнено)
 doc-fetch-failed = загрузка { $cid }: { $e }
 doc-fetch-usage = использование: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         выполн�
 
 # ── Справка — сообщения ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       показать разрешённый DID/DID-URL (сообщение не отправляется)
-help-msg-send =   @alias!msg body / @alias:verb args           отправить сообщение / RPC актору
+help-msg-send = @alias!msg body @alias:verb args отправить сообщение актору
 help-msg-fragment =   @alias#fragment:verb body  отправить с явным фрагментом DID
 help-msg-escape =   \@name                       буквальный @name (без поиска псевдонима)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Ошибка редактирования CBOR: { $e }
 err-popup-blocked = Всплывающее окно заблокировано браузером
 status-publishing = публикуется
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = ошибка
-rpc-error-detail = ошибка: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = ошибка
+term-error-detail = ошибка: { $detail }
 msg-new-message = ← [{ $from }] новое сообщение — { $count } во входящих
 msg-chat = { $sender } говорит { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = профиль не найден: { $name }
 
 # -- Help topics index
 help-header-topics = -- темы -- введите .help/<topic> для подробностей
-help-topic-msg =   .help/msg                    сообщения
+help-topic-msg = .help/msg сообщения
 help-topic-ma = .help/ma                     間-пространство, публикация и вход
 help-topic-path = .help/path                   локальная грамматика точечного пути
 help-topic-my =   .help/my                     личная config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     задать значен
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редактировать ACL
 help-actor-fragment =   @actor#entity                отправить в plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC в plugin
+help-actor-fragment-verb = @actor#entity:verb [args] в plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  сохранять ответы 5 в среде сеанса
+help-actor-wc = (define x (@actor:verb arg)) сохранять ответы 5 в среде сеанса
 help-header-url = ── параметры URL ───────────────────────────────────────────────────────────
 help-url-intro =   Поделись ссылкой, открывающей zion с заранее заполненным получателем:
 help-url-msg =   ?msg=<did>                   предзаполняет: @<did>!msg (текстовое сообщение)

@@ -175,8 +175,8 @@ doc-publish-hint-acl = poproś operatora publikującego o dopuszczenie twojego D
 doc-publish-hint-runtime = runtime/plugin odrzucił żądanie; sprawdź powód i ponów po naprawie encji/runtime
 doc-publish-hint-ipfs = sprawdź lokalny stan Kubo/IPFS i status runtime publikującego
 doc-publish-hint-unknown = sprawdź logi runtime, aby poznać szczegółową przyczynę, i spróbuj ponownie
-doc-store-sent = żądanie przechowywania wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
-doc-ipld-store-sent = żądanie przechowywania IPLD wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi RPC
+doc-store-sent = żądanie przechowywania wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi
+doc-ipld-store-sent = żądanie przechowywania IPLD wysłane ({ $id }) → { $publisher }; CID nadejdzie w odpowiedzi
 doc-fetch-done = { $cid } pobrano → { $path } (nie uruchomiono)
 doc-fetch-failed = pobieranie { $cid }: { $e }
 doc-fetch-usage = użycie: .my.doc.<nazwa>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       oceń dokument roboczy równoleg
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         oceń dokument roboczy linia po linii
 
 help-msg-echo =   @alias                       pokaż rozwiązany DID/DID-URL (nie wysyła wiadomości)
-help-msg-send =   @alias!msg body / @alias:verb args           wyślij wiadomość / RPC do aktora
+help-msg-send = @alias!msg body @alias:verb args wyślij wiadomość do aktora
 help-msg-fragment =   @alias#fragment:verb body  wyślij do aliasu z jawnym fragmentem DID
 help-msg-escape =   \@name                       literalne @name (bez wyszukiwania aliasów)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Błąd edycji CBOR: { $e }
 err-popup-blocked = Przeglądarka zablokowała wyskakujące okno
 status-publishing = publikowanie
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = błąd
-rpc-error-detail = błąd: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = błąd
+term-error-detail = błąd: { $detail }
 msg-new-message = ← [{ $from }] nowa wiadomość — { $count } w skrzynce odbiorczej
 msg-chat = { $sender } mówi { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profil nie znaleziony: { $name }
 
 # -- Help topics index
 help-header-topics = -- tematy -- wpisz .help/<topic>, aby zobaczyć szczegóły
-help-topic-msg =   .help/msg                    wiadomości
+help-topic-msg = .help/msg wiadomości
 help-topic-ma = .help/ma                     間-przestrzeń, publikacja i wpis
 help-topic-path = .help/path                   lokalna gramatyka kropkowa
 help-topic-my =   .help/my                     osobista config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     ustaw wartość config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edytuj ACL
 help-actor-fragment =   @actor#entity                wyślij do pluginu
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC do pluginu
+help-actor-fragment-verb = @actor#entity:verb [args] do pluginu
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  przechowuj odpowiedzi 5 w środowisku sesji
+help-actor-wc = (define x (@actor:verb arg)) przechowuj odpowiedzi 5 w środowisku sesji
 
 help-topic-url =   .help/url                    otwieranie ziona przez link URL
 help-topic-i18n = .help/i18n                   preferencje językowe dla Twojej tożsamości

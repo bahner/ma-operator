@@ -182,8 +182,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = середовище виконання/плагін відхилив запит; перевірте причину та повторіть спробу після виправлення сутності/середовища виконання
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = перевірте журнали виконання для детальної інформації про причину та повторіть спробу
-doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
-doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь RPC
+doc-store-sent = запит збереження надіслано ({ $id }) → { $publisher }; CID надійде через відповідь
+doc-ipld-store-sent = запит збереження IPLD надіслано ({ $id }) → { $publisher }; CID надійде через відповідь
 doc-fetch-done = завантажено { $cid } → { $path } (не виконано)
 doc-fetch-failed = завантаження { $cid }: { $e }
 doc-fetch-usage = використання: .my.doc.<name>!fetch /ipfs/<cid>
@@ -215,7 +215,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         викона�
 
 # ── Довідка — теми ────────────────────────────────────────────────────────
 help-header-topics = ── теми — введіть .help/<тема> для деталей ─────────────────────────────────
-help-topic-msg =   .help/msg                    повідомлення — @actor, надсилання, RPC
+help-topic-msg = .help/msg повідомлення — @actor, надсилання,
 help-topic-ma = .help/ma                     間-простір, видавництво та вступ
 help-topic-path =   .help/path                   синтаксис локального шляху
 help-topic-my =   .help/my                     особиста конфігурація
@@ -230,7 +230,7 @@ help-unknown-topic =   .help/{ $topic }: невідома тема — спро�
 
 # ── Довідка — повідомлення ────────────────────────────────────────────────
 help-msg-echo =   @alias                       показати розв’язаний DID/DID-URL (повідомлення не надсилається)
-help-msg-send =   @alias!msg body / @alias:verb args           надіслати повідомлення / RPC актору
+help-msg-send = @alias!msg body @alias:verb args надіслати повідомлення актору
 help-msg-fragment =   @alias#fragment:verb body  надіслати з явним фрагментом DID
 help-msg-escape =   \@name                       буквальний @name (без пошуку псевдоніму)
 
@@ -324,9 +324,9 @@ room-leave = * { $name } виходить з кімнати.
 room-drop  = * { $name } кидає { $thing }.
 room-take  = * { $name } підбирає { $thing }.
 
-# ── Відображення відповіді RPC ────────────────────────────────────────────
-rpc-error = помилка
-rpc-error-detail = помилка: { $detail }
+# ── Відображення відповіді ────────────────────────────────────────────
+term-error = помилка
+term-error-detail = помилка: { $detail }
 
 # ── Помилки редагування ───────────────────────────────────────────────────
 err-edit-decode-failed = помилка декодування при редагуванні: { $e }
@@ -399,12 +399,12 @@ help-actor-config-set =   @actor/config/<key>: val     встановити зн
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редагувати ACL в редакторі
 help-actor-fragment =   @actor#entity                надіслати до плагіну об'єкту
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC до дієслова плагіну
+help-actor-fragment-verb = @actor#entity:verb [args] до дієслова плагіну
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  зберігати відповіді 5 у середовищі сеансу
+help-actor-wc = (define x (@actor:verb arg)) зберігати відповіді 5 у середовищі сеансу
 
 # ── Довідка — публікація ──────────────────────────────────────────────────
 help-topic-publish =   .help/publish                публікація особистості в мережі

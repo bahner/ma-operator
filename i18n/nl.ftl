@@ -175,8 +175,8 @@ doc-publish-hint-acl = vraag de publisher-operator om je DID in ACL toe te staan
 doc-publish-hint-runtime = runtime/plugin heeft het verzoek geweigerd; bekijk de reden en probeer opnieuw na correctie van entiteit/runtime
 doc-publish-hint-ipfs = controleer lokale Kubo/IPFS-gezondheid en status van de publisher-runtime
 doc-publish-hint-unknown = bekijk runtime-logs voor de gedetailleerde oorzaak en probeer opnieuw
-doc-store-sent = opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
-doc-ipld-store-sent = IPLD-opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via RPC-antwoord
+doc-store-sent = opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via -antwoord
+doc-ipld-store-sent = IPLD-opslagverzoek verzonden ({ $id }) → { $publisher }; CID komt via -antwoord
 doc-fetch-done = { $cid } opgehaald → { $path } (niet uitgevoerd)
 doc-fetch-failed = ophalen { $cid }: { $e }
 doc-fetch-usage = gebruik: .my.doc.<naam>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       klad-document parallel evalueren
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         klad-document regel voor regel evalueren
 
 help-msg-echo =   @alias                       opgeloste DID/DID-URL weergeven (geen bericht verzonden)
-help-msg-send =   @alias!msg body / @alias:verb args           bericht / RPC sturen naar actor
+help-msg-send = @alias!msg body @alias:verb args bericht sturen naar actor
 help-msg-fragment =   @alias#fragment:verb body  sturen naar alias met expliciet DID-fragment
 help-msg-escape =   \@name                       letterlijke @name (geen aliaszoekactie)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR-bewerkingsfout: { $e }
 err-popup-blocked = Pop-up geblokkeerd door browser
 status-publishing = publiceert
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = fout
-rpc-error-detail = fout: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = fout
+term-error-detail = fout: { $detail }
 msg-new-message = ← [{ $from }] nieuw bericht — { $count } in inbox
 msg-chat = { $sender } zegt { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profiel niet gevonden: { $name }
 
 # -- Help topics index
 help-header-topics = -- onderwerpen -- typ .help/<topic> voor details
-help-topic-msg =   .help/msg                    berichten
+help-topic-msg = .help/msg berichten
 help-topic-ma = .help/ma                     間-ruimte, publicatie en invoer
 help-topic-path = .help/path                   lokale grammatica met puntpaden
 help-topic-my =   .help/my                     persoonlijke config
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     configwaarde instellen
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL bewerken
 help-actor-fragment =   @actor#entity                naar plugin sturen
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC naar plugin
+help-actor-fragment-verb = @actor#entity:verb [args] naar plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  bewaar 5-antwoorden in de sessieomgeving
+help-actor-wc = (define x (@actor:verb arg)) bewaar 5-antwoorden in de sessieomgeving
 help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
 help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
 help-url-msg =   ?msg=<did>                   vult in: @<did>!msg (tekstbericht)

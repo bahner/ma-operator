@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
-doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
-doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد RPC
+doc-store-sent = تم إرسال طلب التخزين ({ $id }) → { $publisher }؛ سيصل CID عبر رد
+doc-ipld-store-sent = تم إرسال طلب تخزين IPLD ({ $id }) → { $publisher }؛ سيصل CID عبر رد
 doc-fetch-done = تم جلب { $cid } → { $path } (لم يُنفَّذ)
 doc-fetch-failed = جلب { $cid }: { $e }
 doc-fetch-usage = الاستخدام: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         قيّم مس
 
 # ── المساعدة — المراسلة ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       اعرض DID/DID-URL المحلول (لا تُرسل رسالة)
-help-msg-send =   @alias!msg body / @alias:verb args           إرسال رسالة / RPC إلى ممثل
+help-msg-send = @alias!msg body @alias:verb args إرسال رسالة إلى ممثل
 help-msg-fragment =   @alias#fragment:verb body  إرسال مع مقطع DID صريح
 help-msg-escape =   \@name                       @name حرفياً (بلا بحث عن اسم مستعار)
 
@@ -306,9 +306,9 @@ err-edit-cbor = خطأ تعديل CBOR: { $e }
 err-popup-blocked = النوافذ المنبثقة محجوبة من المتصفح
 status-publishing = يُنشر
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = خطأ
-rpc-error-detail = خطأ: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = خطأ
+term-error-detail = خطأ: { $detail }
 msg-new-message = ← [{ $from }] رسالة جديدة — { $count } في البريد الوارد
 msg-chat = { $sender } يقول { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = الملف الشخصي غير موجود: { $name }
 
 # -- Help topics index
 help-header-topics = -- المواضيع -- اكتب .help/<topic> للتفاصيل
-help-topic-msg =   .help/msg                    المراسلة
+help-topic-msg = .help/msg المراسلة
 help-topic-ma = .help/ma                     間-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     الإعداد الشخصي
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     عيّن قيمة الإ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              حرّر ACL
 help-actor-fragment =   @actor#entity                أرسل إلى الإضافة
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC إلى الإضافة
+help-actor-fragment-verb = @actor#entity:verb [args] إلى الإضافة
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  keep 5 replies in the session environment
+help-actor-wc = (define x (@actor:verb arg)) keep 5 replies in the session environment
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
 help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
 help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did>!msg (رسالة نصية)

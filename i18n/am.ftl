@@ -175,8 +175,8 @@ doc-publish-hint-acl = በ48 ውስጥ የእርስዎን DID እንዲፈቅድ
 doc-publish-hint-runtime = Runtime/plugin ጥያቄውን ውድቅ አደረገው; ምክንያቱን ይመርምሩ እና ህጋዊውን / የአሂድ ጊዜን ካስተካከሉ በኋላ እንደገና ይሞክሩ
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ለዝርዝር ምክንያት የሩጫ ጊዜ መዝገቦችን ይፈትሹ እና እንደገና ይሞክሩ
-doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
-doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ RPC ምላሽ ይደርሳል
+doc-store-sent = የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ ምላሽ ይደርሳል
+doc-ipld-store-sent = IPLD የማስቀመጥ ጥያቄ ተልኳል ({ $id }) → { $publisher }; CID በ ምላሽ ይደርሳል
 doc-fetch-done = { $cid } ተሰብስቧል → { $path } (አልተሰራም)
 doc-fetch-failed = { $cid } ማምጣት: { $e }
 doc-fetch-usage = አጠቃቀም: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ 
 
 # ── እርዳታ — መልዕክት ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       የተፈታ DID/DID-URL አሳይ (መልዕክት አይላክም)
-help-msg-send =   @alias!msg body / @alias:verb args           ወደ ተዋናይ መልዕክት / RPC ይላኩ
+help-msg-send = @alias!msg body @alias:verb args ወደ ተዋናይ መልዕክት ይላኩ
 help-msg-fragment =   @alias#fragment:verb body  ግልጽ DID fragment ባለው ቅፅል ስም ይላኩ
 help-msg-escape =   \@name                       ቃል @name (ቅፅል ስም ፍለጋ የለም)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR ማረሚያ ስህተት፡ { $e }
 err-popup-blocked = ፖፕ-አፕ በአሳሽ ታግዷል
 status-publishing = እያሳተሙ
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = ስህተት
-rpc-error-detail = ስህተት: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = ስህተት
+term-error-detail = ስህተት: { $detail }
 msg-new-message = ← [{ $from }] አዲስ መልዕክት — { $count } ወደ ሳጥን ደረሰ
 msg-chat = { $sender } ይላል { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = ፕሮፋይል አልተገኘም: { $name }
 
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
-help-topic-msg =   .help/msg                    መልዕክት
+help-topic-msg = .help/msg መልዕክት
 help-topic-ma = .help/ma                     間-ቦታ፣ ማተም እና መግባት
 help-topic-path = .help/path                   የአካባቢ ነጥብ-መንገድ ሰዋሰው
 help-topic-my =   .help/my                     የግል config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ወደ plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                የርቀት CRUD ይዘትን ከ31 ያግኙ
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
+help-actor-wc = (define x (@actor:verb arg)) የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
 
 help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
 help-topic-i18n = .help/i18n                   ለማንነትዎ የቋንቋ ምርጫ

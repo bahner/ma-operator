@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
-doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
-doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii RPC dhaan dhufa
+doc-store-sent = gaaffiin kuusaa ergame ({ $id }) → { $publisher }; CID deebii dhaan dhufa
+doc-ipld-store-sent = gaaffiin kuusaa IPLD ergame ({ $id }) → { $publisher }; CID deebii dhaan dhufa
 doc-fetch-done = { $cid } fiddame → { $path } (raawwatamuu dide)
 doc-fetch-failed = { $cid } fiduu: { $e }
 doc-fetch-usage = fayyadamuu: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ 
 
 # ── Gargaarsa — ergaa erguuf ──────────────────────────────────────────────
 help-msg-echo =   @alias                       DID/DID-URL furame agarsiisi (ergaan hin ergamu)
-help-msg-send =   @alias!msg body / @alias:verb args           ergaa / RPC ergaan seera taphataan
+help-msg-send = @alias!msg body @alias:verb args ergaa ergaan seera taphataan
 help-msg-fragment =   @alias#fragment:verb body  fragment DID ifaa wajjin ergi
 help-msg-escape =   \@name                       @name dhugaa (moggaasni hin barbaadamu)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Dogoggora gulaala CBOR: { $e }
 err-popup-blocked = Popup daldhaame birauzaraan
 status-publishing = maxxansuu
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = dogoggora
-rpc-error-detail = dogoggora: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = dogoggora
+term-error-detail = dogoggora: { $detail }
 msg-new-message = ← [{ $from }] ergaa haaraa — { $count } sanduuqa
 msg-chat = { $sender } jedha { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profaayilii hin argamne: { $name }
 
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
-help-topic-msg =   .help/msg                    መልዕክት
+help-topic-msg = .help/msg መልዕክት
 help-topic-ma = .help/ma                     間-space, publishing, and entry
 help-topic-path = .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     የግል config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ወደ plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc = (define x (@actor:verb arg)) keep replies in the session environment
 
 help-topic-url =   .help/url                    zion URL link tiin banuu
 help-topic-i18n = .help/i18n                   language preference for your identity

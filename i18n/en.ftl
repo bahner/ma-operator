@@ -185,8 +185,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
-doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
-doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via RPC reply
+doc-store-sent = store request sent ({ $id }) → { $publisher }; CID will arrive via reply
+doc-ipld-store-sent = IPLD store request sent ({ $id }) → { $publisher }; CID will arrive via reply
 doc-fetch-done = fetched { $cid } → { $path } (not executed)
 doc-fetch-failed = fetch { $cid }: { $e }
 doc-fetch-usage = usage: .my.doc.<name>!fetch /ipfs/<cid>
@@ -219,7 +219,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run commands 
 
 # ── Help text — topics index ──────────────────────────────────────────────
 help-header-topics = ── topics — type .help/<topic> for details ────────────────────────────────
-help-topic-msg =   .help/msg                    messaging — @actor, send, RPC
+help-topic-msg =   .help/msg                    messaging — @actor, send
 help-topic-ma =   .help/ma                     間-space, publishing, and entry
 help-topic-path =   .help/path                   local dot-path grammar
 help-topic-my =   .help/my                     personal config — .my.*, aliases, identity
@@ -234,7 +234,7 @@ help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
 
 # ── Help text — messaging ─────────────────────────────────────────────────
 help-msg-echo =   @alias                       show resolved DID/DID-URL (no message sent)
-help-msg-send =   @alias!msg body / @alias:verb args           send message / RPC to actor
+help-msg-send =   @alias!msg body / @alias:verb args           send message to actor
 help-msg-fragment =   @alias#fragment:verb body  send to alias with explicit DID fragment
 help-msg-escape =   \@name                       literal @name (no alias lookup)
 
@@ -339,9 +339,9 @@ room-leave = * { $name } leaves the room.
 room-drop  = * { $name } drops { $thing }.
 room-take  = * { $name } picks up { $thing }.
 
-# ── RPC reply display ─────────────────────────────────────────────────────
-rpc-error = error
-rpc-error-detail = error: { $detail }
+# ── reply display ─────────────────────────────────────────────────────
+term-error = error
+term-error-detail = error: { $detail }
 
 # ── Edit errors ───────────────────────────────────────────────────────────
 err-edit-decode-failed = edit decode failed: { $e }
@@ -414,12 +414,12 @@ help-actor-config-set =   @actor/config/<key>: val     set runtime config value
 help-actor-acl =   @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              edit ACL in editor
 help-actor-fragment =   @actor#entity                send to entity plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC to entity plugin verb
+help-actor-fragment-verb =   @actor#entity:verb [args]    call entity plugin verb
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat =   (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat =   (@actor#entity:verb arg...)  call an entity from Scheme and await its reply
 help-actor-head =   (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail =   (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc =   (define x (@actor:verb arg))  keep RPC replies in the session environment
+help-actor-wc =   (define x (@actor:verb arg))  keep replies in the session environment
 # ── Help text — publishing ────────────────────────────────────────────────
 help-topic-publish =   .help/publish                publishing your identity to the network
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────

@@ -175,8 +175,8 @@ doc-publish-hint-acl = bitte den Publisher-Betreiber, deine DID in der ACL zu er
 doc-publish-hint-runtime = Laufzeit/Plugin hat die Anfrage abgelehnt; prüfe den Grund und versuche es nach Korrektur von Entität/Laufzeit erneut
 doc-publish-hint-ipfs = prüfe lokalen Kubo/IPFS-Zustand und den Status der Publisher-Laufzeit
 doc-publish-hint-unknown = prüfe die Laufzeit-Logs auf die genaue Ursache und versuche es erneut
-doc-store-sent = Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per RPC-Antwort
-doc-ipld-store-sent = IPLD-Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per RPC-Antwort
+doc-store-sent = Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per -Antwort
+doc-ipld-store-sent = IPLD-Speicheranfrage gesendet ({ $id }) → { $publisher }; CID kommt per -Antwort
 doc-fetch-done = { $cid } abgerufen → { $path } (nicht ausgeführt)
 doc-fetch-failed = Abruf { $cid }: { $e }
 doc-fetch-usage = Verwendung: .my.doc.<name>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       Scratch-Dokument parallel auswer
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         Scratch-Dokument zeilenweise auswerten
 
 help-msg-echo =   @alias                       aufgelöste DID/DID-URL anzeigen (keine Nachricht gesendet)
-help-msg-send =   @alias!msg body / @alias:verb args           Nachricht / RPC an Akteur senden
+help-msg-send = @alias!msg body @alias:verb args Nachricht an Akteur senden
 help-msg-fragment =   @alias#fragment:verb body  an Alias mit explizitem DID-Fragment senden
 help-msg-escape =   \@name                       wörtliches @name (keine Alias-Suche)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR-Bearbeitungsfehler: { $e }
 err-popup-blocked = Popup vom Browser blockiert
 status-publishing = veröffentlicht
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = Fehler
-rpc-error-detail = Fehler: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = Fehler
+term-error-detail = Fehler: { $detail }
 msg-new-message = ← [{ $from }] neue Nachricht — { $count } im Posteingang
 msg-chat = { $sender } sagt { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = Profil nicht gefunden: { $name }
 
 # -- Help topics index
 help-header-topics = -- Themen -- .help/<topic> für Details eingeben
-help-topic-msg =   .help/msg                    Nachrichten
+help-topic-msg = .help/msg Nachrichten
 help-topic-ma = .help/ma                     間-Raum, Veröffentlichung und Eintrag
 help-topic-path = .help/path                   Lokale Punkt-Pfad-Grammatik
 help-topic-my =   .help/my                     persönliche Konfiguration
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     Konfigurationswert setzen
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL bearbeiten
 help-actor-fragment =   @actor#entity                an Plugin senden
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC an Plugin
+help-actor-fragment-verb = @actor#entity:verb [args] an Plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  Behalten Sie 5-Antworten in der Sitzungsumgebung bei
+help-actor-wc = (define x (@actor:verb arg)) Behalten Sie 5-Antworten in der Sitzungsumgebung bei
 help-header-url = ── URL-Parameter ───────────────────────────────────────────────────────────
 help-url-intro =   Link teilen, der zion mit vorausgefülltem Empfänger öffnet:
 help-url-msg =   ?msg=<did>                   vorausfüllen: @<did>!msg (Textnachricht)

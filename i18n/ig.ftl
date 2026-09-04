@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Oge ojiri gaa/ngwa mgbakwunye jụrụ arịrịọ ahụ; nyochaa ihe kpatara ya wee nwaa mgbe edozichara ihe / oge ojiri gaa
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = lelee ndekọ oge ojiri gaa maka ihe kpatara ya wee nwaa ọzọ
-doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
-doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi RPC
+doc-store-sent = ezitela arịrịọ echekwa ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi
+doc-ipld-store-sent = ezitela arịrịọ echekwa IPLD ({ $id }) → { $publisher }; CID ga-abịa site na ọzaghachi
 doc-fetch-done = enwetara { $cid } → { $path } (arụghị ọrụ)
 doc-fetch-failed = ịnweta { $cid }: { $e }
 doc-fetch-usage = ojiji: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi doku
 
 # ── Enyemaka — ịziga ozi ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       gosi DID/DID-URL e dozierela (ezigaghị ozi)
-help-msg-send =   @alias!msg body / @alias:verb args           ziga ozi / RPC na onye na-eme ihe
+help-msg-send = @alias!msg body @alias:verb args ziga ozi na onye na-eme ihe
 help-msg-fragment =   @alias#fragment:verb body  ziga na nchọkwa nwere fragment DID ọkụkọ
 help-msg-escape =   \@name                       @name n'okwu n'okwu (ọ chọghị nchọkwa)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Njehie mmezi CBOR: { $e }
 err-popup-blocked = Browser egbochi popup
 status-publishing = nkwupụta
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = njehie
-rpc-error-detail = njehie: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = njehie
+term-error-detail = njehie: { $detail }
 msg-new-message = ← [{ $from }] ozi ọhụrụ — { $count } n'igbe ozi
 msg-chat = { $sender } si { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profaịlụ ahụghị: { $name }
 
 # -- Help topics index
 help-header-topics = -- topik -- ketik .help/<topic> untuk detail
-help-topic-msg =   .help/msg                    pesan
+help-topic-msg = .help/msg pesan
 help-topic-ma = .help/ma                     間-oghere, mbipụta na ntinye
 help-topic-path = .help/path                   Ụtọasụsụ ntụpọ-ụzọ mpaghara
 help-topic-my =   .help/my                     config pribadi
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     atur nilai config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              dezie ACL
 help-actor-fragment =   @actor#entity                kirim ke plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ke plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  debe nzaghachi 5 na gburugburu nnọkọ
+help-actor-wc = (define x (@actor:verb arg)) debe nzaghachi 5 na gburugburu nnọkọ
 
 help-topic-url =   .help/url                    mepee zion site na njikọ URL
 help-topic-i18n = .help/i18n                   mmasị asụsụ maka njirimara gị

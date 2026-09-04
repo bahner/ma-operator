@@ -213,7 +213,7 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
     }
 
     if let Some(bang) = head_stripped.find('!') {
-        if !has_actor_rpc_delimiter_before_bang(head_stripped, bang) {
+        if !has_actor_delimiter_before_bang(head_stripped, bang) {
             return Err(format!(
                 "unknown actor command: !{}",
                 &head_stripped[bang + 1..]
@@ -238,7 +238,7 @@ fn actor_fragment_edit_target(head: &str) -> Option<&str> {
     let bang = raw_target.len();
     if raw_target.contains('#')
         && !raw_target.ends_with('#')
-        && !has_actor_rpc_delimiter_before_bang(head, bang)
+        && !has_actor_delimiter_before_bang(head, bang)
     {
         Some(raw_target)
     } else {
@@ -248,14 +248,14 @@ fn actor_fragment_edit_target(head: &str) -> Option<&str> {
 
 fn split_local_actor_command(head: &str) -> Option<(&str, &str)> {
     let bang = head.find('!')?;
-    if has_actor_rpc_delimiter_before_bang(head, bang) {
+    if has_actor_delimiter_before_bang(head, bang) {
         return None;
     }
     let command = &head[bang + 1..];
     matches!(command, "msg" | "message" | "text").then_some((&head[..bang], command))
 }
 
-fn has_actor_rpc_delimiter_before_bang(head: &str, bang: usize) -> bool {
+fn has_actor_delimiter_before_bang(head: &str, bang: usize) -> bool {
     if head.starts_with("did:") {
         head[..bang].chars().filter(|ch| *ch == ':').count() >= 3
     } else {

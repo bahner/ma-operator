@@ -175,8 +175,8 @@ doc-publish-hint-acl = be utgivaroperatören tillåta din DID i ACL
 doc-publish-hint-runtime = körmiljön/pluginen avvisade begäran; läs orsaken och försök igen efter att entitet/körmiljö har rättats
 doc-publish-hint-ipfs = kontrollera lokal Kubo/IPFS-hälsa och status för utgivarens körmiljö
 doc-publish-hint-unknown = granska körmiljöloggarna för detaljerad orsak och försök igen
-doc-store-sent = lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
-doc-ipld-store-sent = IPLD-lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via RPC-svar
+doc-store-sent = lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via -svar
+doc-ipld-store-sent = IPLD-lagringsförfrågan skickad ({ $id }) → { $publisher }; CID anländer via -svar
 doc-fetch-done = hämtade { $cid } → { $path } (ej utförd)
 doc-fetch-failed = hämtning { $cid }: { $e }
 doc-fetch-usage = användning: .my.doc.<namn>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         utvärdera kl
 
 # ── Hjälptext — meddelanden ───────────────────────────────────────────────
 help-msg-echo =   @alias                       visa löst DID/DID-URL (inget meddelande skickas)
-help-msg-send =   @alias!msg body / @alias:verb args           skicka meddelande / RPC till aktör
+help-msg-send = @alias!msg body @alias:verb args skicka meddelande till aktör
 help-msg-fragment =   @alias#fragment:verb body  skicka till alias med explicit DID-fragment
 help-msg-escape =   \@name                       bokstavlig @name (ingen alias-sökning)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR-redigeringsfel: { $e }
 err-popup-blocked = Webbläsaren blockerade popup-fönstret
 status-publishing = publicerar
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = fel
-rpc-error-detail = fel: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = fel
+term-error-detail = fel: { $detail }
 msg-new-message = ← [{ $from }] nytt meddelande — { $count } i inkorgen
 msg-chat = { $sender } säger { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profil hittades inte: { $name }
 
 # -- Help topics index
 help-header-topics = -- ämnen -- skriv .help/<topic> för detaljer
-help-topic-msg =   .help/msg                    meddelanden
+help-topic-msg = .help/msg meddelanden
 help-topic-ma = .help/ma                     間-utrymme, publicering och inträde
 help-topic-path = .help/path                   lokal prickvägsgrammatik
 help-topic-my =   .help/my                     personlig config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     ställ in config-värde
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              redigera ACL
 help-actor-fragment =   @actor#entity                skicka till plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC till plugin
+help-actor-fragment-verb = @actor#entity:verb [args] till plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  behålla 5-svar i sessionsmiljön
+help-actor-wc = (define x (@actor:verb arg)) behålla 5-svar i sessionsmiljön
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
 help-url-intro =   Dela en länk som öppnar zion med förifylld mottagare:
 help-url-msg =   ?msg=<did>                   fyller i: @<did>!msg (textmeddelande)

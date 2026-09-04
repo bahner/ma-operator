@@ -338,7 +338,7 @@ pub async fn send_live_dial(target_did: &str, body: &str) -> Result<String, Stri
     Ok(msg_id)
 }
 
-/// Send an RPC message. Returns the dispatched `Message.id` on success.
+/// Send an actor message. Returns the dispatched `Message.id` on success.
 pub async fn send_actor_message(
     target_did: &str,
     verb: &str,
@@ -347,7 +347,7 @@ pub async fn send_actor_message(
     send_actor_message_with_msg_id(target_did, verb, args, |_| {}).await
 }
 
-/// Send an RPC message and expose its `Message.id` before network dispatch.
+/// Send an actor message and expose its `Message.id` before network dispatch.
 pub async fn send_actor_message_with_msg_id(
     target_did: &str,
     verb: &str,
@@ -391,7 +391,7 @@ pub async fn send_actor_message_with_msg_id(
     Ok(msg_id)
 }
 
-/// Send an RPC message with `SchemeVal` arguments, preserving list/map
+/// Send an actor message with `SchemeVal` arguments, preserving list/map
 /// structure in the CBOR encoding. Returns the dispatched `Message.id`.
 pub async fn send_actor_message_vals(
     target_did: &str,
@@ -401,7 +401,7 @@ pub async fn send_actor_message_vals(
     send_actor_message_vals_with_msg_id(target_did, verb, args, |_| {}).await
 }
 
-/// Send an RPC message with `SchemeVal` arguments and expose its `Message.id`
+/// Send an actor message with `SchemeVal` arguments and expose its `Message.id`
 /// before network dispatch.
 pub async fn send_actor_message_vals_with_msg_id(
     target_did: &str,
@@ -1106,9 +1106,9 @@ mod tests {
     #[test]
     fn actor_url_constructs_and_preserves_absolute_actor_addresses() {
         let did = format!("did:ma:{}", ma_core::ipns_from_secret([9; 32]).unwrap());
-        assert_eq!(actor_url(&did, "rpc").unwrap(), format!("{did}#rpc"));
-        let rpc_url = format!("{did}#rpc");
-        assert_eq!(actor_url(&rpc_url, "rpc").unwrap(), rpc_url);
+        assert_eq!(actor_url(&did, "inbox").unwrap(), format!("{did}#inbox"));
+        let inbox_url = format!("{did}#inbox");
+        assert_eq!(actor_url(&inbox_url, "inbox").unwrap(), inbox_url);
     }
 
     #[test]

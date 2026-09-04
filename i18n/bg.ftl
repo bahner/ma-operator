@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin отхвърли заявката; проверете причината и опитайте отново след коригиране на обекта/времето за изпълнение
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = проверете регистрационните файлове по време на изпълнение за подробна причина и опитайте отново
-doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
-doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора RPC
+doc-store-sent = заявка за съхранение изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора
+doc-ipld-store-sent = заявка за съхранение IPLD изпратена ({ $id }) → { $publisher }; CID ще пристигне в отговора
 doc-fetch-done = { $cid } е извлечен → { $path } (не е изпълнено)
 doc-fetch-failed = извличане { $cid }: { $e }
 doc-fetch-usage = употреба: .my.doc.<име>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       изпълни временен 
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         изпълни временен документ ред по ред
 
 help-msg-echo =   @alias                       покажи разрешения DID/DID-URL (не се изпраща съобщение)
-help-msg-send =   @alias!msg body / @alias:verb args           изпраща съобщение / RPC на актьор
+help-msg-send = @alias!msg body @alias:verb args изпраща съобщение на актьор
 help-msg-fragment =   @alias#fragment:verb body  изпраща до псевдоним с явен DID фрагмент
 help-msg-escape =   \@name                       буквален @name (без търсене на псевдоним)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Грешка при редактиране на CBOR: { $e }
 err-popup-blocked = Изскачащият прозорец е блокиран от браузъра
 status-publishing = публикуване
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = грешка
-rpc-error-detail = грешка: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = грешка
+term-error-detail = грешка: { $detail }
 msg-new-message = ← [{ $from }] ново съобщение — { $count } в пощата
 msg-chat = { $sender } казва { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = профилът не е намерен: { $name }
 
 # -- Help topics index
 help-header-topics = -- теми -- въведете .help/<topic> за подробности
-help-topic-msg =   .help/msg                    съобщения
+help-topic-msg = .help/msg съобщения
 help-topic-ma = .help/ma                     間-пространство, публикуване и влизане
 help-topic-path = .help/path                   локална граматика на точков път
 help-topic-my =   .help/my                     лична config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     задай стойнос
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              редактирай ACL
 help-actor-fragment =   @actor#entity                изпрати към plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC към plugin
+help-actor-fragment-verb = @actor#entity:verb [args] към plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  запазва 5 отговорите в средата на сесията
+help-actor-wc = (define x (@actor:verb arg)) запазва 5 отговорите в средата на сесията
 
 help-topic-url =   .help/url                    отваряне на zion чрез URL връзка
 help-topic-i18n = .help/i18n                   езикови предпочитания за вашата идентичност

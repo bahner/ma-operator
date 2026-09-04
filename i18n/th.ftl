@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = รันไทม์/ปลั๊กอินปฏิเสธคำขอ ตรวจสอบเหตุผลและลองอีกครั้งหลังจากแก้ไขเอนทิตี/รันไทม์แล้ว
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ตรวจสอบบันทึกรันไทม์เพื่อดูสาเหตุโดยละเอียดแล้วลองอีกครั้ง
-doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
-doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง RPC reply
+doc-store-sent = ส่งคำขอเก็บข้อมูลแล้ว ({ $id }) → { $publisher }; CID จะมาทาง reply
+doc-ipld-store-sent = ส่งคำขอเก็บข้อมูล IPLD แล้ว ({ $id }) → { $publisher }; CID จะมาทาง reply
 doc-fetch-done = ดึง { $cid } แล้ว → { $path } (ยังไม่รัน)
 doc-fetch-failed = ดึง { $cid }: { $e }
 doc-fetch-usage = การใช้งาน: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ประเ�
 
 # ── ช่วยเหลือ — การส่งข้อความ ───────────────────────────────────────────
 help-msg-echo =   @alias                       แสดง DID/DID-URL ที่แก้แล้ว (ไม่ส่งข้อความ)
-help-msg-send =   @alias!msg body / @alias:verb args           ส่งข้อความ / RPC ไปยัง actor
+help-msg-send = @alias!msg body @alias:verb args ส่งข้อความ ไปยัง actor
 help-msg-fragment =   @alias#fragment:verb body  ส่งพร้อม DID fragment ที่ระบุ
 help-msg-escape =   \@name                       @name ตามตัวอักษร (ไม่ค้นหานามแฝง)
 
@@ -306,9 +306,9 @@ err-edit-cbor = ข้อผิดพลาดการแก้ไข CBOR: { $
 err-popup-blocked = เบราว์เซอร์บล็อกป็อปอัป
 status-publishing = กำลังเผยแพร่
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = ข้อผิดพลาด
-rpc-error-detail = ข้อผิดพลาด: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = ข้อผิดพลาด
+term-error-detail = ข้อผิดพลาด: { $detail }
 msg-new-message = ← [{ $from }] ข้อความใหม่ — { $count } ในกล่องขาเข้า
 msg-chat = { $sender } พูดว่า { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = ไม่พบโปรไฟล์: { $name }
 
 # -- Help topics index
 help-header-topics = -- หัวข้อ -- พิมพ์ .help/<topic> เพื่อดูรายละเอียด
-help-topic-msg =   .help/msg                    ข้อความ
+help-topic-msg = .help/msg ข้อความ
 help-topic-ma = .help/ma                     間-ช่องว่าง การเผยแพร่ และรายการ
 help-topic-path = .help/path                   ไวยากรณ์จุดเส้นทางท้องถิ่น
 help-topic-my =   .help/my                     config ส่วนตัว
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     ตั้งค่า con
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              แก้ไข ACL
 help-actor-fragment =   @actor#entity                ส่งไปยัง plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ไปยัง plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ไปยัง plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  ให้ 5 ตอบกลับในสภาพแวดล้อมเซสชัน
+help-actor-wc = (define x (@actor:verb arg)) ให้ 5 ตอบกลับในสภาพแวดล้อมเซสชัน
 
 help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
 help-topic-i18n = .help/i18n                   การตั้งค่าภาษาสำหรับตัวตนของคุณ

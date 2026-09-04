@@ -842,7 +842,7 @@ mod tests {
     }
 
     #[test]
-    fn explicit_rpc_reply_bypasses_avatar_reply_handler() {
+    fn explicit_reply_bypasses_avatar_reply_handler() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let config = RwSignal::new(EgoConfig::default());
@@ -925,7 +925,7 @@ mod tests {
             &mut content,
         )
         .unwrap();
-        let mut reply = incoming("did:ma:runtime#root", "WRONG RPC DISPLAY");
+        let mut reply = incoming("did:ma:runtime#root", "WRONG DISPLAY");
         reply.service = CRUD_PROTOCOL_ID.to_string();
         reply.reply_to = Some("request-1".to_string());
         reply.content_type = ma_core::CONTENT_TYPE_TERM_CBOR.to_string();
@@ -934,7 +934,7 @@ mod tests {
         dispatch_reply(
             "request-1",
             reply,
-            "WRONG RPC DISPLAY".to_string(),
+            "WRONG DISPLAY".to_string(),
             &state,
             config,
             show_editor,
@@ -946,7 +946,7 @@ mod tests {
                 matches!(entry, Entry::Incoming(record)
                 if record.display.contains("duckie")
                     && record.display.contains("house")
-                    && !record.display.contains("WRONG RPC DISPLAY"))
+                    && !record.display.contains("WRONG DISPLAY"))
             })));
     }
 

@@ -175,8 +175,8 @@ doc-publish-hint-acl = demandez à l’opérateur du publieur d’autoriser votr
 doc-publish-hint-runtime = le runtime/plugin a rejeté la requête ; examinez la raison et réessayez après correction de l’entité/runtime
 doc-publish-hint-ipfs = vérifiez l’état local de Kubo/IPFS et le statut du runtime publieur
 doc-publish-hint-unknown = consultez les journaux du runtime pour la cause détaillée et réessayez
-doc-store-sent = demande de stockage envoyée ({ $id }) → { $publisher } ; CID arrivera via réponse RPC
-doc-ipld-store-sent = demande de stockage IPLD envoyée ({ $id }) → { $publisher } ; CID arrivera via réponse RPC
+doc-store-sent = demande de stockage envoyée ({ $id }) → { $publisher } ; CID arrivera via réponse
+doc-ipld-store-sent = demande de stockage IPLD envoyée ({ $id }) → { $publisher } ; CID arrivera via réponse
 doc-fetch-done = { $cid } récupéré → { $path } (non exécuté)
 doc-fetch-failed = récupération { $cid } : { $e }
 doc-fetch-usage = utilisation : .my.doc.<nom>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       évaluer le document brouillon e
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le document brouillon ligne par ligne
 
 help-msg-echo =   @alias                       afficher le DID/DID-URL résolu (aucun message envoyé)
-help-msg-send =   @alias!msg body / @alias:verb args           envoyer un message / RPC à un acteur
+help-msg-send = @alias!msg body @alias:verb args envoyer un message à un acteur
 help-msg-fragment =   @alias#fragment:verb body  envoyer à l'alias avec un fragment DID explicite
 help-msg-escape =   \@name                       @name littéral (pas de recherche d'alias)
 
@@ -299,9 +299,9 @@ err-edit-cbor = Erreur d'édition CBOR : { $e }
 err-popup-blocked = Fenêtre contextuelle bloquée par le navigateur
 status-publishing = publication
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = erreur
-rpc-error-detail = erreur: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = erreur
+term-error-detail = erreur: { $detail }
 msg-new-message = ← [{ $from }] nouveau message — { $count } dans la boîte de réception
 msg-chat = { $sender } dit { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profil introuvable : { $name }
 
 # -- Help topics index
 help-header-topics = -- sujets -- tapez .help/<topic> pour les détails
-help-topic-msg =   .help/msg                    messagerie
+help-topic-msg = .help/msg messagerie
 help-topic-ma = .help/ma                     間-espace, publication et entrée
 help-topic-path = .help/path                   grammaire locale du chemin des points
 help-topic-my =   .help/my                     config personnelle
@@ -372,12 +372,12 @@ help-actor-config-set =   @actor/config/<key>: val     définir la valeur de con
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              modifier ACL
 help-actor-fragment =   @actor#entity                envoyer au plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC vers le plugin
+help-actor-fragment-verb = @actor#entity:verb [args] vers le plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  conserver les réponses 5 dans l'environnement de session
+help-actor-wc = (define x (@actor:verb arg)) conserver les réponses 5 dans l'environnement de session
 help-header-url = ── paramètres URL ──────────────────────────────────────────────────────────
 help-url-intro =   Partage un lien qui ouvre zion avec un destinataire pré-rempli :
 help-url-msg =   ?msg=<did>                   pré-remplit : @<did>!msg (message texte)

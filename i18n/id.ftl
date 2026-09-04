@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin menolak permintaan; periksa alasannya dan coba lagi setelah memperbaiki entitas/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = periksa log waktu proses untuk mengetahui penyebab detailnya dan coba lagi
-doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
-doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan RPC
+doc-store-sent = permintaan penyimpanan terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan
+doc-ipld-store-sent = permintaan penyimpanan IPLD terkirim ({ $id }) → { $publisher }; CID akan tiba melalui balasan
 doc-fetch-done = mengambil { $cid } → { $path } (tidak dijalankan)
 doc-fetch-failed = pengambilan { $cid }: { $e }
 doc-fetch-usage = penggunaan: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluasi doku
 
 # ── Bantuan — pesan ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       tampilkan DID/DID-URL yang diselesaikan (tidak mengirim pesan)
-help-msg-send =   @alias!msg body / @alias:verb args           kirim pesan / RPC ke aktor
+help-msg-send = @alias!msg body @alias:verb args kirim pesan ke aktor
 help-msg-fragment =   @alias#fragment:verb body  kirim ke alias dengan fragmen DID eksplisit
 help-msg-escape =   \@name                       literal @name (tidak ada pencarian alias)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Kesalahan edit CBOR: { $e }
 err-popup-blocked = Popup diblokir oleh browser
 status-publishing = mempublikasikan
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = kesalahan
-rpc-error-detail = kesalahan: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = kesalahan
+term-error-detail = kesalahan: { $detail }
 msg-new-message = ← [{ $from }] pesan baru — { $count } di kotak masuk
 msg-chat = { $sender } bilang { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profil tidak ditemukan: { $name }
 
 # -- Help topics index
 help-header-topics = -- topik -- ketik .help/<topic> untuk detail
-help-topic-msg =   .help/msg                    pesan
+help-topic-msg = .help/msg pesan
 help-topic-ma = .help/ma                     間-ruang, penerbitan, dan entri
 help-topic-path = .help/path                   tata bahasa jalur titik lokal
 help-topic-my =   .help/my                     config pribadi
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     atur nilai config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              sunting ACL
 help-actor-fragment =   @actor#entity                kirim ke plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ke plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ke plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  simpan balasan 5 di lingkungan sesi
+help-actor-wc = (define x (@actor:verb arg)) simpan balasan 5 di lingkungan sesi
 
 help-topic-url =   .help/url                    membuka zion melalui tautan URL
 help-topic-i18n = .help/i18n                   preferensi bahasa untuk identitas Anda

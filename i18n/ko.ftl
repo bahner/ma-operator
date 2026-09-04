@@ -175,8 +175,8 @@ doc-publish-hint-acl = 게시자 운영자에게 ACL에서 당신의 DID를 허�
 doc-publish-hint-runtime = 런타임/플러그인이 요청을 거부했습니다. 이유를 확인하고 엔티티/런타임을 수정한 뒤 다시 시도하세요
 doc-publish-hint-ipfs = 로컬 Kubo/IPFS 상태와 게시자 런타임 상태를 확인하세요
 doc-publish-hint-unknown = 자세한 원인을 런타임 로그에서 확인하고 다시 시도하세요
-doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
-doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 RPC 응답으로 도착합니다
+doc-store-sent = 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 응답으로 도착합니다
+doc-ipld-store-sent = IPLD 저장 요청 전송됨 ({ $id }) → { $publisher }; CID는 응답으로 도착합니다
 doc-fetch-done = { $cid } 가져옴 → { $path } (실행되지 않음)
 doc-fetch-failed = 가져오기 { $cid }: { $e }
 doc-fetch-usage = 사용법: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         스크래치 
 
 # ── 도움말 — 메시징 ───────────────────────────────────────────────────────
 help-msg-echo =   @alias                       확인된 DID/DID-URL 표시 (메시지는 전송되지 않음)
-help-msg-send =   @alias!msg body / @alias:verb args           액터에게 메시지 / RPC 전송
+help-msg-send = @alias!msg body @alias:verb args 액터에게 메시지 전송
 help-msg-fragment =   @alias#fragment:verb body  명시적 DID 프래그먼트로 전송
 help-msg-escape =   \@name                       리터럴 @name (별칭 조회 없음)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR 편집 오류: { $e }
 err-popup-blocked = 팝업이 브라우저에 의해 차단됨
 status-publishing = 게시 중
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = 오류
-rpc-error-detail = 오류: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = 오류
+term-error-detail = 오류: { $detail }
 msg-new-message = ← [{ $from }] 새 메시지 — 받은 편지함에 { $count } 개
 msg-chat = { $sender } 말한다 { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = 프로필을 찾을 수 없음: { $name }
 
 # -- Help topics index
 help-header-topics = -- 주제 -- 자세한 내용은 .help/<topic> 입력
-help-topic-msg =   .help/msg                    메시지
+help-topic-msg = .help/msg 메시지
 help-topic-ma = .help/ma                     間-공간, 게시 및 항목
 help-topic-path = .help/path                   로컬 도트 경로 문법
 help-topic-my =   .help/my                     개인 config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     config 값 설정
 help-actor-acl = @actor/acl                   4를 얻으세요
 help-actor-acl-edit =   @actor/acl!edit              ACL 편집
 help-actor-fragment =   @actor#entity                plugin으로 전송
-help-actor-fragment-verb =   @actor#entity:verb [args]    plugin으로 RPC
+help-actor-fragment-verb = @actor#entity:verb [args] plugin으로
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  24에서 엔터티 15를 호출하고 응답을 기다립니다.
+help-actor-cat = (@actor#entity:verb arg...) 24에서 엔터티 15를 호출하고 응답을 기다립니다.
 help-actor-head = (@actor/path)                31에서 원격 CRUD 콘텐츠 가져오기
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  세션 환경에서 5 응답 유지
+help-actor-wc = (define x (@actor:verb arg)) 세션 환경에서 5 응답 유지
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
 help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)

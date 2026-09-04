@@ -24,7 +24,7 @@ const HUD_COLOURS: &[&str] = &[
 ];
 
 const ENTITY_FRAGMENTS: &[&str] = &[
-    "#fortune", "#ping", "#root", "#sign", "#enc", "#chat", "#rpc", "#ipfs", "#store", "#fetch",
+    "#fortune", "#ping", "#root", "#sign", "#enc", "#chat", "#ipfs", "#store", "#fetch",
     "#publish", "#inbox", "#key", "#doc", "#node", "#emit", "#recv", "#auth", "#hash", "#seed",
 ];
 

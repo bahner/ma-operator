@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = Nolavin'ny runtime/plugin ny fangatahana; diniho ny antony ary andramo indray aorian'ny fanamboarana ny entity / runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = jereo ny diarin'ny fotoam-pivoriana mba hahitana antony amin'ny antsipiriany ary andramo indray
-doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
-doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana RPC
+doc-store-sent = fangatahana fitahirizana nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana
+doc-ipld-store-sent = fangatahana fitahirizana IPLD nalefa ({ $id }) → { $publisher }; CID ho tonga amin'ny valim-pitoriana
 doc-fetch-done = voaaka { $cid } → { $path } (tsy naosina)
 doc-fetch-failed = fetching { $cid }: { $e }
 doc-fetch-usage = fampiasana: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         évaluer le d
 
 # ── Fanampiana — hafatra ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       asehoy DID/DID-URL voavaha (tsy misy hafatra alefa)
-help-msg-send =   @alias!msg body / @alias:verb args           alefa hafatra / RPC any amin'ny mpilalao
+help-msg-send = @alias!msg body @alias:verb args alefa hafatra any amin'ny mpilalao
 help-msg-fragment =   @alias#fragment:verb body  alefa misy DID fragment mazava
 help-msg-escape =   \@name                       @name ara-bakiteny (tsy mikaroka anarana fanampiny)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Hadisoana CBOR fanavaozana: { $e }
 err-popup-blocked = Voasakan'ny navigateur ny popup
 status-publishing = mamoaka
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = hadisoana
-rpc-error-detail = hadisoana: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = hadisoana
+term-error-detail = hadisoana: { $detail }
 msg-new-message = ← [{ $from }] hafatra vaovao — { $count } ao amin'ny boaty
 msg-chat = { $sender } milaza { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = tsy hita ny profily: { $name }
 
 # -- Help topics index
 help-header-topics = -- sujets -- tapez .help/<topic> pour les détails
-help-topic-msg =   .help/msg                    messagerie
+help-topic-msg = .help/msg messagerie
 help-topic-ma = .help/ma                     間-space, famoahana ary fidirana
 help-topic-path = .help/path                   fitsipi-pitenenana teboka-dalana eo an-toerana
 help-topic-my =   .help/my                     config personnelle
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     définir la valeur de con
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              modifier ACL
 help-actor-fragment =   @actor#entity                envoyer au plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC vers le plugin
+help-actor-fragment-verb = @actor#entity:verb [args] vers le plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  mitazona valiny 5 ao amin'ny tontolon'ny session
+help-actor-wc = (define x (@actor:verb arg)) mitazona valiny 5 ao amin'ny tontolon'ny session
 
 help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
 help-topic-i18n = .help/i18n                   safidin'ny fiteny amin'ny maha-ianao anao

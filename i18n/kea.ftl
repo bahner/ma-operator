@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin rejected the request; inspect the reason and retry after fixing entity/runtime
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspect runtime logs for detailed cause and retry
-doc-store-sent = pedidu di armazenamentu mandadu ({ $id }) → { $publisher }; CID ta xiga via risposta RPC
-doc-ipld-store-sent = pedidu di armazenamentu IPLD mandadu ({ $id }) → { $publisher }; CID ta xiga via risposta RPC
+doc-store-sent = pedidu di armazenamentu mandadu ({ $id }) → { $publisher }; CID ta xiga via risposta
+doc-ipld-store-sent = pedidu di armazenamentu IPLD mandadu ({ $id }) → { $publisher }; CID ta xiga via risposta
 doc-fetch-done = buskadu { $cid } → { $path } (ka eziutadu)
 doc-fetch-failed = buská { $cid }: { $e }
 doc-fetch-usage = uzajen: .my.doc.<nomi>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-logout =   .logout                      sai
 help-cmd-batch =   .batch                       avaliar documento rascunho em paralelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         avaliar documento rascunho linha por linha
 help-msg-echo =   @alias                       mostra DID/DID-URL rezolvidu (nen mensagem mandadu)
-help-msg-send =   @alias!msg body / @alias:verb args           manda mensajen / RPC pa atór
+help-msg-send = @alias!msg body @alias:verb args manda mensajen pa atór
 help-msg-fragment =   @alias#fragment:verb body  manda pa alias ku fragmentu DID eplísitu
 help-msg-escape =   \@name                       @name literal (ka prókura alias)
 help-config-get =   .path                        panha valór di fólha o lista sób-árvori
@@ -292,9 +292,9 @@ err-edit-cbor = Erru di edisom CBOR: { $e }
 err-popup-blocked = Popup blokedu pa navegador
 status-publishing = ta publika
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = érru
-rpc-error-detail = érru: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = érru
+term-error-detail = érru: { $detail }
 msg-new-message = ← [{ $from }] mensajen novu — { $count } na kaixa di entrada
 msg-chat = { $sender } fala { $body }
 
@@ -337,7 +337,7 @@ profiles-not-found = profil ka atxadu: { $name }
 
 # -- Help topics index
 help-header-topics = -- tópicos -- digite .help/<topic> para detalhes
-help-topic-msg =   .help/msg                    mensagens
+help-topic-msg = .help/msg mensagens
 help-topic-ma = .help/ma                     間-espaço, publicação e entrada
 help-topic-path = .help/path                   gramática de caminho de ponto local
 help-topic-my =   .help/my                     config pessoal
@@ -363,12 +363,12 @@ help-actor-config-set =   @actor/config/<key>: val     definir valor de config
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar ao plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ao plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ao plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  mantenha as respostas 5 no ambiente da sessão
+help-actor-wc = (define x (@actor:verb arg)) mantenha as respostas 5 no ambiente da sessão
 
 help-topic-url =   .help/url                    abri zion via un ligason URL
 help-topic-i18n = .help/i18n                   preferência de idioma para sua identidadi

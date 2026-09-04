@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = asiko isise/ohun itanna kọ ibeere naa; ṣayẹwo idi naa ki o tun gbiyanju lẹhin titunṣe nkan / akoko asiko
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = ṣayẹwo awọn igbasilẹ akoko ṣiṣe fun idi alaye ati tun gbiyanju
-doc-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
-doc-ipld-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú IPLD ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn RPC
+doc-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn
+doc-ipld-store-sent = a ránṣẹ́ ìbéèrè ìtọ́jú IPLD ({ $id }) → { $publisher }; CID yóò dé nípasẹ̀ ìdáhùn
 doc-fetch-done = a gba { $cid } → { $path } (a kò ṣe)
 doc-fetch-failed = gbígba { $cid }: { $e }
 doc-fetch-usage = lílo: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         ጊዜያዊ 
 
 # ── Ìrànlọ́wọ́ — fíránṣẹ́ ──────────────────────────────────────────────────
 help-msg-echo =   @alias                       ṣàfihàn DID/DID-URL tí a túmọ̀ (a kò fi ifiranṣẹ ranṣẹ)
-help-msg-send =   @alias!msg body / @alias:verb args           ránsẹ́ / RPC sí onísẹ̀
+help-msg-send = @alias!msg body @alias:verb args ránsẹ́ sí onísẹ̀
 help-msg-fragment =   @alias#fragment:verb body  ránsẹ́ sí àpèlé pẹ̀lú fragment DID àfihàn
 help-msg-escape =   \@name                       @name gangan (kò sí ìwádìí àpèlé)
 
@@ -306,9 +306,9 @@ err-edit-cbor = Aṣiṣe ṣatunṣe CBOR: { $e }
 err-popup-blocked = Aṣàwákiri dina ferese afihan
 status-publishing = n gbejade
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = àṣìṣe
-rpc-error-detail = àṣìṣe: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = àṣìṣe
+term-error-detail = àṣìṣe: { $detail }
 msg-new-message = ← [{ $from }] ifiranṣẹ tuntun — { $count } ninu apo
 msg-chat = { $sender } sọ { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = profaili { $name } ko ri: { $name }
 
 # -- Help topics index
 help-header-topics = -- ርዕሶች -- ዝርዝር ለማየት .help/<topic> ይተይቡ
-help-topic-msg =   .help/msg                    መልዕክት
+help-topic-msg = .help/msg መልዕክት
 help-topic-ma = .help/ma                     間-aaye, titẹjade, ati titẹsi
 help-topic-path = .help/path                   Gírámọ aami-ọna agbegbe
 help-topic-my =   .help/my                     የግል config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config እሴት አዘ�
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL አርትዕ
 help-actor-fragment =   @actor#entity                ወደ plugin ላክ
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC ወደ plugin
+help-actor-fragment-verb = @actor#entity:verb [args] ወደ plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  pa 5 idahun ni ayika igba
+help-actor-wc = (define x (@actor:verb arg)) pa 5 idahun ni ayika igba
 
 help-topic-url =   .help/url                    ṣii zion nipasẹ asopọ URL
 help-topic-i18n = .help/i18n                   ààyò ede fun idanimọ rẹ

@@ -175,8 +175,8 @@ doc-publish-hint-acl = 48లో మీ DIDని అనుమతించమన�
 doc-publish-hint-runtime = రన్‌టైమ్/ప్లగ్ఇన్ అభ్యర్థనను తిరస్కరించింది; కారణాన్ని పరిశీలించి, ఎంటిటీ/రన్‌టైమ్‌ని పరిష్కరించిన తర్వాత మళ్లీ ప్రయత్నించండి
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = వివరణాత్మక కారణం కోసం రన్‌టైమ్ లాగ్‌లను తనిఖీ చేసి, మళ్లీ ప్రయత్నించండి
-doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
-doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID RPC జవాబు ద్వారా వస్తుంది
+doc-store-sent = స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID జవాబు ద్వారా వస్తుంది
+doc-ipld-store-sent = IPLD స్టోర్ అభ్యర్థన పంపబడింది ({ $id }) → { $publisher }; CID జవాబు ద్వారా వస్తుంది
 doc-fetch-done = { $cid } తెచ్చబడింది → { $path } (అమలు చేయలేదు)
 doc-fetch-failed = పొందు { $cid }: { $e }
 doc-fetch-usage = వాడకం: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         scratch ప�
 
 # ── సహాయం — సందేశం ────────────────────────────────────────────────────────
 help-msg-echo =   @alias                       పరిష్కరించిన DID/DID-URL చూపించు (సందేశం పంపబడదు)
-help-msg-send =   @alias!msg body / @alias:verb args           నటుడికి సందేశం / RPC పంపండి
+help-msg-send = @alias!msg body @alias:verb args నటుడికి సందేశం పంపండి
 help-msg-fragment =   @alias#fragment:verb body  స్పష్టమైన DID ఫ్రాగ్మెంట్‌తో పంపండి
 help-msg-escape =   \@name                       అక్షరార్థ @name (మారుపేరు శోధన లేదు)
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR సవరణ లోపం: { $e }
 err-popup-blocked = బ్రౌజర్ పాప్‌అప్‌ను బ్లాక్ చేసింది
 status-publishing = ప్రచురిస్తోంది
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = లోపం
-rpc-error-detail = లోపం: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = లోపం
+term-error-detail = లోపం: { $detail }
 msg-new-message = ← [{ $from }] కొత్త సందేశం — { $count } ఇన్‌బాక్స్‌లో
 msg-chat = { $sender } అంటారు { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = ప్రొఫైల్ కనుగొనబడలేద�
 
 # -- Help topics index
 help-header-topics = -- విషయాలు -- వివరాలకు .help/<topic> టైప్ చేయండి
-help-topic-msg =   .help/msg                    సందేశాలు
+help-topic-msg = .help/msg సందేశాలు
 help-topic-ma = .help/ma                     間-స్పేస్, పబ్లిషింగ్ మరియు ఎంట్రీ
 help-topic-path = .help/path                   స్థానిక డాట్-పాత్ వ్యాకరణం
 help-topic-my =   .help/my                     వ్యక్తిగత config
@@ -377,12 +377,12 @@ help-actor-config-set =   @actor/config/<key>: val     config విలువన
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              ACL సవరించు
 help-actor-fragment =   @actor#entity                pluginకు పంపు
-help-actor-fragment-verb =   @actor#entity:verb [args]    pluginకు RPC
+help-actor-fragment-verb = @actor#entity:verb [args] pluginకు
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
+help-actor-wc = (define x (@actor:verb arg)) సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
 
 help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
 help-topic-i18n = .help/i18n                   మీ గుర్తింపు కోసం భాష ప్రాధాన్యత

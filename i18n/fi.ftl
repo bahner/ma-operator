@@ -175,8 +175,8 @@ doc-publish-hint-acl = pyydä julkaisijan operaattoria sallimaan DID:si ACL:ssä
 doc-publish-hint-runtime = ajonaika/plugin hylkäsi pyynnön; tarkista syy ja yritä uudelleen entiteetin/ajonajan korjauksen jälkeen
 doc-publish-hint-ipfs = tarkista paikallisen Kubo/IPFS:n tila ja julkaisijan ajonajan tila
 doc-publish-hint-unknown = tarkista ajonaikalokit tarkempaa syytä varten ja yritä uudelleen
-doc-store-sent = tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
-doc-ipld-store-sent = IPLD-tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu RPC-vastauksen kautta
+doc-store-sent = tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu -vastauksen kautta
+doc-ipld-store-sent = IPLD-tallennuspyyntö lähetetty ({ $id }) → { $publisher }; CID saapuu -vastauksen kautta
 doc-fetch-done = haettiin { $cid } → { $path } (ei suoritettu)
 doc-fetch-failed = haku { $cid }: { $e }
 doc-fetch-usage = käyttö: .my.doc.<nimi>!fetch /ipfs/<cid>
@@ -206,7 +206,7 @@ help-cmd-batch =   .batch                       arvioi luonnosdokumentti rinnakk
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         arvioi luonnosdokumentti riveittäin
 
 help-msg-echo =   @alias                       näytä ratkaistu DID/DID-URL (ei viestiä lähetetty)
-help-msg-send =   @alias!msg body / @alias:verb args           lähetä viesti / RPC toimijalle
+help-msg-send = @alias!msg body @alias:verb args lähetä viesti toimijalle
 help-msg-fragment =   @alias#fragment:verb body  lähetä aliakselle eksplisiittisellä DID-fragmentilla
 help-msg-escape =   \@name                       kirjaimellinen @name (ei aliashakua)
 
@@ -299,9 +299,9 @@ err-edit-cbor = CBOR-muokkausvirhe: { $e }
 err-popup-blocked = Ponnahdusikkuna estetty selaimelta
 status-publishing = julkaistaan
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = virhe
-rpc-error-detail = virhe: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = virhe
+term-error-detail = virhe: { $detail }
 msg-new-message = ← [{ $from }] uusi viesti — { $count } saapuneissa
 msg-chat = { $sender } sanoo { $body }
 
@@ -344,7 +344,7 @@ profiles-not-found = profiilia ei löydy: { $name }
 
 # -- Help topics index
 help-header-topics = -- aiheet -- kirjoita .help/<topic> saadaksesi tiedot
-help-topic-msg =   .help/msg                    viestit
+help-topic-msg = .help/msg viestit
 help-topic-ma = .help/ma                     間-avaruus, julkaisu ja merkintä
 help-topic-path = .help/path                   paikallinen pistepolun kielioppi
 help-topic-my =   .help/my                     henkilökohtainen config
@@ -370,12 +370,12 @@ help-actor-config-set =   @actor/config/<key>: val     aseta config-arvo
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              muokkaa ACL:ää
 help-actor-fragment =   @actor#entity                lähetä pluginille
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC pluginille
+help-actor-fragment-verb = @actor#entity:verb [args] pluginille
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  säilyttää 5-vastaukset istuntoympäristössä
+help-actor-wc = (define x (@actor:verb arg)) säilyttää 5-vastaukset istuntoympäristössä
 
 help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
 help-topic-i18n = .help/i18n                   kieliasetus identiteettiäsi varten

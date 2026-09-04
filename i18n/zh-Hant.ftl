@@ -175,8 +175,8 @@ doc-publish-hint-acl = 請發布者操作員在 ACL 中允許你的 DID
 doc-publish-hint-runtime = 執行階段/外掛拒絕了請求；檢查原因並修正實體/執行階段後重試
 doc-publish-hint-ipfs = 檢查本機 Kubo/IPFS 健康狀態和發布者執行階段狀態
 doc-publish-hint-unknown = 查看執行階段記錄以取得詳細原因，然後重試
-doc-store-sent = 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
-doc-ipld-store-sent = IPLD 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 RPC 回覆到達
+doc-store-sent = 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 回覆到達
+doc-ipld-store-sent = IPLD 儲存請求已傳送（{ $id }）→ { $publisher }；CID 將透過 回覆到達
 doc-fetch-done = 已擷取 { $cid } → { $path }（未執行）
 doc-fetch-failed = 擷取 { $cid }: { $e }
 doc-fetch-usage = 用法: .my.doc.<name>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         逐行執行�
 
 # ── 說明文字 — 訊息傳遞 ───────────────────────────────────────────────────
 help-msg-echo =   @alias                       顯示已解析的 DID/DID-URL（不傳送訊息）
-help-msg-send =   @alias!msg body / @alias:verb args           傳送訊息 / RPC 給角色
+help-msg-send = @alias!msg body @alias:verb args 傳送訊息 給角色
 help-msg-fragment =   @alias#fragment:verb body  傳送到帶顯式 DID 片段的別名
 help-msg-escape =   \@name                       字面 @name（不查找別名）
 
@@ -306,9 +306,9 @@ err-edit-cbor = CBOR 編輯錯誤：{ $e }
 err-popup-blocked = 瀏覽器封鎖了彈出視窗
 status-publishing = 發布中
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = 錯誤
-rpc-error-detail = 錯誤: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = 錯誤
+term-error-detail = 錯誤: { $detail }
 msg-new-message = ← [{ $from }] 新訊息 — 收件匣中 { $count } 則
 msg-chat = { $sender } 說 { $body }
 
@@ -351,7 +351,7 @@ profiles-not-found = 找不到個人資料: { $name }
 
 # -- Help topics index
 help-header-topics = -- 主題 -- 輸入 .help/<topic> 查看詳細資訊
-help-topic-msg =   .help/msg                    訊息
+help-topic-msg = .help/msg 訊息
 help-topic-ma = .help/ma                     間-空間、發布、入口
 help-topic-path = .help/path                   局部點路徑語法
 help-topic-my =   .help/my                     個人 config
@@ -379,12 +379,12 @@ help-actor-config-set =   @actor/config/<key>: val     設定 config 值
 help-actor-acl = @actor/acl                   得到4
 help-actor-acl-edit =   @actor/acl!edit              編輯 ACL
 help-actor-fragment =   @actor#entity                傳送到 plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC 到 plugin
+help-actor-fragment-verb = @actor#entity:verb [args] 到 plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  在會話環境中保留 5 回复
+help-actor-wc = (define x (@actor:verb arg)) 在會話環境中保留 5 回复
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
 help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
 help-url-msg =   ?msg=<did>                   預填：@<did>!msg（文字訊息）

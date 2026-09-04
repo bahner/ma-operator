@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = rultempo/kromaĵo malakceptis la peton; inspektu la kialon kaj reprovu post fiksado de ento/rultempo
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = inspektu rultempajn protokolojn por detala kaŭzo kaj reprovu
-doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
-doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per RPC-respondo
+doc-store-sent = stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per -respondo
+doc-ipld-store-sent = IPLD-stoka peto sendita ({ $id }) → { $publisher }; CID alvenos per -respondo
 doc-fetch-done = elŝutita { $cid } → { $path } (ne efektivigita)
 doc-fetch-failed = elŝuti { $cid }: { $e }
 doc-fetch-usage = uzado: .my.doc.<nomo>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-logout =   .logout                      elsaluti
 help-cmd-batch =   .batch                       evaluar documento temporal en paralelo
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         evaluar documento temporal línea por línea
 help-msg-echo =   @alias                       montri solvitajn DID/DID-URL (neniu mesaĝo sendita)
-help-msg-send =   @alias!msg body / @alias:verb args           sendi mesaĝon / RPC al aktoro
+help-msg-send = @alias!msg body @alias:verb args sendi mesaĝon al aktoro
 help-msg-fragment =   @alias#fragment:verb body  sendi al alias kun eksplicita DID-fragmento
 help-msg-escape =   \@name                       laŭvorta @name (neniu alias-serĉo)
 help-config-get =   .path                        akiri folian valoron aŭ listi subarbon
@@ -292,9 +292,9 @@ err-edit-cbor = CBOR-redaktado eraro: { $e }
 err-popup-blocked = Fenestro blokita de retumilo
 status-publishing = eldonas
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = eraro
-rpc-error-detail = eraro: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = eraro
+term-error-detail = eraro: { $detail }
 msg-new-message = ← [{ $from }] nova mesaĝo — { $count } en ricevujo
 msg-chat = { $sender } diras { $body }
 
@@ -337,7 +337,7 @@ profiles-not-found = profilo ne trovita: { $name }
 
 # -- Help topics index
 help-header-topics = -- temas -- escribe .help/<topic> para detalles
-help-topic-msg =   .help/msg                    mensajería
+help-topic-msg = .help/msg mensajería
 help-topic-ma = .help/ma                     間-spaco, eldonado kaj eniro
 help-topic-path = .help/path                   loka punkto-voja gramatiko
 help-topic-my =   .help/my                     config personal
@@ -365,12 +365,12 @@ help-actor-config-set =   @actor/config/<key>: val     establecer valor de confi
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editar ACL
 help-actor-fragment =   @actor#entity                enviar al plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC al plugin
+help-actor-fragment-verb = @actor#entity:verb [args] al plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  konservu 5 respondojn en la seanca medio
+help-actor-wc = (define x (@actor:verb arg)) konservu 5 respondojn en la seanca medio
 help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
 help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
 help-url-msg =   ?msg=<did>                   antaŭplenigas: @<did>!msg (teksta mesaĝo)

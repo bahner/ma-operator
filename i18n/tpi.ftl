@@ -175,8 +175,8 @@ doc-publish-hint-acl = ask the publisher operator to allow your DID in ACL
 doc-publish-hint-runtime = runtime/plugin i sakim askim; sekim as na traim gen bihain long stretim entiti/rantaim
 doc-publish-hint-ipfs = check local Kubo/IPFS health and publisher runtime status
 doc-publish-hint-unknown = sekim ol 'runtime' log bilong painimaut as bilong en na traim gen
-doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
-doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long RPC bekim
+doc-store-sent = stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long bekim
+doc-ipld-store-sent = IPLD stoa rikwest i bin salim ({ $id }) → { $publisher }; CID bai kam long bekim
 doc-fetch-done = kisim { $cid } → { $path } (i noران)
 doc-fetch-failed = kisim { $cid }: { $e }
 doc-fetch-usage = yusim olsem: .my.doc.<nem>!fetch /ipfs/<cid>
@@ -208,7 +208,7 @@ help-cmd-logout =   .logout                      autim
 help-cmd-batch =   .batch                       run scratch document parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         run scratch document line by line
 help-msg-echo =   @alias                       soim resolved DID/DID-URL (no salim mesij)
-help-msg-send =   @alias!msg body / @alias:verb args           salim mesej / RPC i go long aktor
+help-msg-send = @alias!msg body @alias:verb args salim mesej i go long aktor
 help-msg-fragment =   @alias#fragment:verb body  salim i go long alias wantaim DID fragment
 help-msg-escape =   \@name                       stret @name (noh lukim alias)
 help-config-get =   .path                        kisim lif valu o soim sabpatri
@@ -292,9 +292,9 @@ err-edit-cbor = edit CBOR ero: { $e }
 err-popup-blocked = browser i blokim popup
 status-publishing = i publishim
 
-# ── RPC / redigering ─────────────────────────────────────────────────────
-rpc-error = rong
-rpc-error-detail = rong: { $detail }
+# ── redigering ─────────────────────────────────────────────────────
+term-error = rong
+term-error-detail = rong: { $detail }
 msg-new-message = ← [{ $from }] nupela tok — { $count } long bokis bilong yu
 msg-chat = { $sender } i tok { $body }
 
@@ -337,7 +337,7 @@ profiles-not-found = profil i no stap: { $name }
 
 # -- Help topics index
 help-header-topics = -- topics -- type .help/<topic> for detail
-help-topic-msg =   .help/msg                    tok-mesij
+help-topic-msg = .help/msg tok-mesij
 help-topic-ma = .help/ma                     間-spes, pablising, na entri
 help-topic-path = .help/path                   lokol dot-pat grama
 help-topic-my =   .help/my                     config bilong mi
@@ -363,12 +363,12 @@ help-actor-config-set =   @actor/config/<key>: val     putim config value
 help-actor-acl = @actor/acl                   get ACL
 help-actor-acl-edit =   @actor/acl!edit              editim ACL
 help-actor-fragment =   @actor#entity                send go plugin
-help-actor-fragment-verb =   @actor#entity:verb [args]    RPC go plugin
+help-actor-fragment-verb = @actor#entity:verb [args] go plugin
 help-header-cid-ops = ── Scheme actor calls ───────────────────────────────────────────────────
-help-actor-cat = (@actor#entity:verb arg...)  call an entity RPC from Scheme and await its reply
+help-actor-cat = (@actor#entity:verb arg...) call an entity from Scheme and await its reply
 help-actor-head = (@actor/path)                fetch remote CRUD content from Scheme
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
-help-actor-wc = (define x (@actor:verb arg))  holim 5 bekim insait long sesen envairomen
+help-actor-wc = (define x (@actor:verb arg)) holim 5 bekim insait long sesen envairomen
 
 help-topic-url =   .help/url                    opim zion long URL link
 help-topic-i18n = .help/i18n                   tokples yu laikim long aidentiti bilong yu
