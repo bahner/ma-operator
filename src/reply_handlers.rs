@@ -98,7 +98,8 @@ pub(crate) fn handle_ipfs_actor_behaviour_reply(
             let ipfs_ref = ipfs_ref_from_store_reply(&cid);
             let state2 = state.clone();
             spawn_local(async move {
-                match crate::transport::send_rpc(&target, "behaviour", &[&ipfs_ref]).await {
+                match crate::transport::send_actor_message(&target, "behaviour", &[&ipfs_ref]).await
+                {
                     Ok(msg_id) => {
                         if let Some(id) = cmd_id {
                             state2.bind_message_id(id, msg_id);
@@ -778,9 +779,9 @@ mod tests {
         .expect("encode test CBOR");
 
         IncomingMessage {
-            service: ma_core::RPC_PROTOCOL_ID.to_string(),
+            service: ma_core::INBOX_PROTOCOL_ID.to_string(),
             message_id: "reply-1".to_string(),
-            message_type: "application/vnd.ma.rpc.reply".to_string(),
+            message_type: ma_core::MESSAGE_TYPE_MESSAGE.to_string(),
             from: "did:ma:test-runtime".to_string(),
             to: "did:ma:test-user".to_string(),
             reply_to: Some("request-1".to_string()),

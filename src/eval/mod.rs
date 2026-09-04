@@ -466,11 +466,11 @@ pub(crate) async fn enter_room(
     let send_result = match enter_kind {
         None => {
             let enter_args = did_enter_args(effective_nick, inventory);
-            transport::send_rpc(room_actor, "enter", &enter_args).await
+            transport::send_actor_message(room_actor, "enter", &enter_args).await
         }
         Some(kind) => {
             let enter_args = build_enter_ctx(state, effective_nick, kind, &cfg);
-            transport::send_rpc_vals(room_actor, "enter", &[enter_args]).await
+            transport::send_actor_message_vals(room_actor, "enter", &[enter_args]).await
         }
     };
     if state.was_cancelled_since(cancel_epoch) {
@@ -507,7 +507,7 @@ async fn discover_and_enter_room(
         .cmd_to_batch
         .with_untracked(|m| m.get(&cmd_id).copied());
     let mut registered_msg_id: Option<String> = None;
-    let send_result = transport::send_rpc_with_msg_id(&root, "enter?", &[], |msg_id| {
+    let send_result = transport::send_actor_message_with_msg_id(&root, "enter?", &[], |msg_id| {
         registered_msg_id = Some(msg_id.clone());
         state.register_pending(
             msg_id,
@@ -591,7 +591,7 @@ fn handle_leave(state: &AppState, config: RwSignal<EgoConfig>) {
     if let Some(target) = target {
         let state2 = state.clone();
         spawn_local(async move {
-            let _ = crate::transport::send_rpc(&target, "leave", &[]).await;
+            let _ = crate::transport::send_actor_message(&target, "leave", &[]).await;
             state2.push_system(t("msg-left"));
         });
     }

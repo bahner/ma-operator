@@ -82,7 +82,7 @@ pub fn decode_crud_content(content_type: &str, bytes: &[u8]) -> Result<String, S
 
 /// Format a message received on the CRUD service.
 pub fn format_crud_reply(content_type: &str, body: &[u8]) -> (String, bool) {
-    let (error_display, is_error) = format_rpc_reply(body);
+    let (error_display, is_error) = format_term_reply(body);
     if is_error {
         return (error_display, true);
     }
@@ -187,7 +187,7 @@ pub struct IncomingMessage {
 /// Format an RPC reply payload (CBOR) for compact display.
 ///
 /// Returns `(display, is_error)`.
-pub fn format_rpc_reply(body: &[u8]) -> (String, bool) {
+pub fn format_term_reply(body: &[u8]) -> (String, bool) {
     match ciborium::de::from_reader::<CborValue, _>(body) {
         Ok(CborValue::Text(atom)) => {
             let is_err = atom == ":error";
@@ -270,7 +270,7 @@ mod tests {
         )
         .expect("encode cbor");
 
-        let (display, is_error) = format_rpc_reply(&body);
+        let (display, is_error) = format_term_reply(&body);
         assert!(is_error);
         // t() returns the key name in test context (no translations loaded).
         assert_eq!(display, "rpc-error-detail");
@@ -282,7 +282,7 @@ mod tests {
         ciborium::ser::into_writer(&CborValue::Text(":error".to_string()), &mut body)
             .expect("encode cbor");
 
-        let (display, is_error) = format_rpc_reply(&body);
+        let (display, is_error) = format_term_reply(&body);
         assert!(is_error);
         // t() returns the key name in test context (no translations loaded).
         assert_eq!(display, "rpc-error");
@@ -300,7 +300,7 @@ mod tests {
         )
         .expect("encode cbor");
 
-        let (display, is_error) = format_rpc_reply(&body);
+        let (display, is_error) = format_term_reply(&body);
         assert!(!is_error);
         assert_eq!(display, "owners");
     }

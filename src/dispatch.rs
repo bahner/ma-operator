@@ -705,8 +705,8 @@ fn dispatch_eval_line(
 
     match parse(line, &cfg) {
         Ok(cmd) => {
-            if let ActorRpcMetaDispatch::Handled(result) =
-                dispatch_actor_rpc_meta(&cmd, line, state, show_editor, batch_id)
+            if let ActorMetaDispatch::Handled(result) =
+                dispatch_actor_meta(&cmd, line, state, show_editor, batch_id)
             {
                 return result;
             }
@@ -756,43 +756,43 @@ fn dispatch_eval_line(
     }
 }
 
-fn dispatch_actor_rpc_meta(
+fn dispatch_actor_meta(
     cmd: &Command,
     line: &str,
     state: &AppState,
     show_editor: RwSignal<Option<EditorContext>>,
     batch_id: Option<u64>,
-) -> ActorRpcMetaDispatch {
-    match actor_rpc_meta_action(cmd) {
-        Some(ActorRpcMetaAction::BehaviourEdit { target }) => {
+) -> ActorMetaDispatch {
+    match actor_meta_action(cmd) {
+        Some(ActorMetaAction::BehaviourEdit { target }) => {
             let cmd_id = open_actor_behaviour_editor(target, line, state, show_editor);
             attach_command_to_batch(state, cmd_id, batch_id);
-            ActorRpcMetaDispatch::Handled(Some(cmd_id))
+            ActorMetaDispatch::Handled(Some(cmd_id))
         }
-        Some(ActorRpcMetaAction::Unsupported { meta }) => {
+        Some(ActorMetaAction::Unsupported { meta }) => {
             state.push_error(format!("'{line}': unsupported local actor meta: !{meta}"));
-            ActorRpcMetaDispatch::Handled(None)
+            ActorMetaDispatch::Handled(None)
         }
-        Some(ActorRpcMetaAction::Rejected { reason }) => {
+        Some(ActorMetaAction::Rejected { reason }) => {
             state.push_error(format!("'{line}': {reason}"));
-            ActorRpcMetaDispatch::Handled(None)
+            ActorMetaDispatch::Handled(None)
         }
-        None => ActorRpcMetaDispatch::NotMeta,
+        None => ActorMetaDispatch::NotMeta,
     }
 }
 
-enum ActorRpcMetaDispatch {
+enum ActorMetaDispatch {
     NotMeta,
     Handled(Option<u64>),
 }
 
-enum ActorRpcMetaAction<'a> {
+enum ActorMetaAction<'a> {
     BehaviourEdit { target: &'a str },
     Unsupported { meta: &'a str },
     Rejected { reason: &'static str },
 }
 
-fn actor_rpc_meta_action(cmd: &Command) -> Option<ActorRpcMetaAction<'_>> {
+fn actor_meta_action(cmd: &Command) -> Option<ActorMetaAction<'_>> {
     let Command::ActorMessage {
         target,
         verb: Some(verb),
@@ -805,19 +805,19 @@ fn actor_rpc_meta_action(cmd: &Command) -> Option<ActorRpcMetaAction<'_>> {
 
     if verb == "behaviour" && meta == "edit" {
         if !body.trim().is_empty() {
-            return Some(ActorRpcMetaAction::Rejected {
+            return Some(ActorMetaAction::Rejected {
                 reason: "behaviour editor does not accept arguments",
             });
         }
         if !target.contains('#') {
-            return Some(ActorRpcMetaAction::Rejected {
+            return Some(ActorMetaAction::Rejected {
                 reason: "behaviour editor requires an actor target",
             });
         }
-        return Some(ActorRpcMetaAction::BehaviourEdit { target });
+        return Some(ActorMetaAction::BehaviourEdit { target });
     }
 
-    Some(ActorRpcMetaAction::Unsupported { meta })
+    Some(ActorMetaAction::Unsupported { meta })
 }
 
 fn attach_command_to_batch(state: &AppState, cmd_id: u64, batch_id: Option<u64>) {
@@ -868,7 +868,7 @@ fn open_actor_behaviour_editor(
 
 async fn fetch_actor_behaviour_source(target: &str) -> Result<String, String> {
     let mut rx = None;
-    transport::send_rpc_with_msg_id(target, "behaviour", &[], |msg_id| {
+    transport::send_actor_message_with_msg_id(target, "behaviour", &[], |msg_id| {
         rx = Some(AwaitingReply::register(msg_id));
     })
     .await?;

@@ -965,7 +965,7 @@ mod tests {
     }
 
     #[test]
-    fn parses_fragment_target_with_actor_rpc_meta() {
+    fn parses_fragment_target_with_actor_meta() {
         let mut cfg = EgoConfig::new();
         cfg.set(
             ".my.aliases.sky",

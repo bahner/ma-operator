@@ -236,7 +236,7 @@ pub enum OutboxTask {
         cancel_epoch: u64,
     },
     /// Auto-pong reply to an incoming `:ping`.
-    RpcPong { target: String, reply_to_id: String },
+    Pong { target: String, reply_to_id: String },
 }
 
 // ── App state (reactive) ───────────────────────────────────────────────────
@@ -730,7 +730,6 @@ thread_local! {
     pub static SESSION_IROH_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
     pub static SESSION_IPNS_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
     pub static SESSION_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
-    pub static SESSION_RPC_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
     pub static SESSION_CRUD_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
     pub static SESSION_LIVE_INBOX: RefCell<Option<Inbox<Message>>> = const { RefCell::new(None) };
     pub static SESSION_SIGNING_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };

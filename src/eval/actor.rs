@@ -94,11 +94,11 @@ pub(crate) async fn execute_outbox_task(
             cancel_epoch,
         } => run_crud_set_task(target_did, crud_path, value, cmd_id, cancel_epoch, state).await,
 
-        OutboxTask::RpcPong {
+        OutboxTask::Pong {
             target,
             reply_to_id,
         } => {
-            let _ = transport::send_rpc_pong(&target, &reply_to_id).await;
+            let _ = transport::send_pong(&target, &reply_to_id).await;
         }
     }
 }
@@ -143,13 +143,17 @@ async fn run_actor_local_task(
             Ok(args) => {
                 let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
                 let bind_state = state.clone();
-                let result =
-                    transport::send_rpc_with_msg_id(&target, other, &arg_refs, move |msg_id| {
+                let result = transport::send_actor_message_with_msg_id(
+                    &target,
+                    other,
+                    &arg_refs,
+                    move |msg_id| {
                         if !bind_state.was_cancelled_since(cancel_epoch) {
                             bind_state.bind_message_id(cmd_id, msg_id);
                         }
-                    })
-                    .await;
+                    },
+                )
+                .await;
                 if result.is_ok() {
                     None
                 } else {
@@ -389,10 +393,11 @@ async fn dispatch_verb_to_transport(
         Ok(args) => {
             let arg_refs: Vec<&str> = args.iter().map(String::as_str).collect();
             let bind_state = state.clone();
-            let result = transport::send_rpc_with_msg_id(target, v, &arg_refs, move |msg_id| {
-                bind_state.bind_message_id(cmd_id, msg_id);
-            })
-            .await;
+            let result =
+                transport::send_actor_message_with_msg_id(target, v, &arg_refs, move |msg_id| {
+                    bind_state.bind_message_id(cmd_id, msg_id);
+                })
+                .await;
             if result.is_ok() {
                 None
             } else {

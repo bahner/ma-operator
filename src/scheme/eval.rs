@@ -167,7 +167,7 @@ impl SchemeCtx for EvalCtx {
             let state = self.state.clone();
             let registered_id = Rc::new(RefCell::new(None));
             let registered_id_for_send = registered_id.clone();
-            if let Err(error) = crate::transport::send_rpc_vals_with_msg_id(
+            if let Err(error) = crate::transport::send_actor_message_vals_with_msg_id(
                 &target,
                 &verb_str,
                 &scheme_args,
@@ -217,7 +217,7 @@ impl SchemeCtx for EvalCtx {
             let state = self.state.clone();
             let registered_id = Rc::new(RefCell::new(None));
             let registered_id_for_send = registered_id.clone();
-            if let Err(error) = crate::transport::send_rpc_vals_with_msg_id(
+            if let Err(error) = crate::transport::send_actor_message_vals_with_msg_id(
                 &target,
                 &verb_str,
                 args,
@@ -252,7 +252,9 @@ impl SchemeCtx for EvalCtx {
         let target = target.to_string();
         let verb = verb.to_string();
         let args: Vec<SchemeVal> = args.to_vec();
-        Box::pin(async move { crate::transport::send_rpc_vals(&target, &verb, &args).await })
+        Box::pin(
+            async move { crate::transport::send_actor_message_vals(&target, &verb, &args).await },
+        )
     }
 
     fn send_text<'a>(

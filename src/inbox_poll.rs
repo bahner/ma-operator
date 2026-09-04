@@ -37,7 +37,6 @@ pub async fn run_inbox_poll(
         }
         for incoming in transport::drain_inbox()
             .into_iter()
-            .chain(transport::drain_rpc_inbox())
             .chain(transport::drain_crud_inbox())
             .chain(transport::drain_live_inbox())
         {
@@ -63,7 +62,7 @@ fn route_incoming(
     if handle_client_term(&incoming, state, config) {
         return;
     }
-    if handle_unsolicited_rpc(&incoming, state) {
+    if handle_unsolicited_term(&incoming, state) {
         return;
     }
     if loopback_suppress(&incoming) {
@@ -96,7 +95,7 @@ fn dispatch_reply(
         return;
     }
 
-    // One-shot RPC from `send_rpc_and_wait`: route reply to the oneshot channel.
+    // One-shot actor call: route reply to the oneshot channel.
     if let Some(sender) = crate::state::AwaitingReply::take(msg_id) {
         let (_, text_opt) = classify_reply(&incoming.content, incoming.is_error, &display);
         let cfg = config.get_untracked();
@@ -332,10 +331,7 @@ fn handle_client_term(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    if incoming.reply_to.is_some()
-        || incoming.message_type != ma_core::MESSAGE_TYPE_RPC
-        || incoming.content_type != ma_core::CONTENT_TYPE_TERM
-    {
+    if incoming.reply_to.is_some() || incoming.content_type != ma_core::CONTENT_TYPE_TERM {
         return false;
     }
     let Ok(term) = ciborium::de::from_reader::<ciborium::Value, _>(&mut &incoming.content[..])
@@ -509,11 +505,7 @@ fn acl_gate(incoming: &IncomingMessage, state: &AppState, config: RwSignal<EgoCo
     if incoming.reply_to.is_some() {
         return true; // replies are never filtered
     }
-    let cap = if incoming.message_type == ma_core::MESSAGE_TYPE_MESSAGE {
-        crate::acl::CAP_INBOX
-    } else {
-        crate::acl::CAP_RPC
-    };
+    let cap = crate::acl::CAP_INBOX;
     let cfg = config.get_untracked();
     if crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
         return true;
@@ -529,7 +521,9 @@ fn handle_inbox_message(
     state: &AppState,
     config: RwSignal<EgoConfig>,
 ) -> bool {
-    if incoming.message_type != ma_core::MESSAGE_TYPE_MESSAGE {
+    if incoming.message_type != ma_core::MESSAGE_TYPE_MESSAGE
+        || incoming.content_type == ma_core::CONTENT_TYPE_TERM
+    {
         return false;
     }
     let from_display = display_sender(incoming, config);
@@ -560,7 +554,7 @@ fn handle_inbox_message(
 /// Answer transport-level `:ping` as a side effect, whatever consumes the term
 /// afterwards. Liveness is ma-core protocol, not world policy.
 fn auto_pong(incoming: &IncomingMessage, state: &AppState) {
-    if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
+    if incoming.reply_to.is_some() || incoming.content_type != ma_core::CONTENT_TYPE_TERM {
         return;
     }
     let Ok(ciborium::Value::Text(atom)) =
@@ -574,7 +568,7 @@ fn auto_pong(incoming: &IncomingMessage, state: &AppState) {
     let target = incoming.from.clone();
     let reply_to_id = incoming.message_id.clone();
     state.outbox_queue.update(|q| {
-        q.push_back(OutboxTask::RpcPong {
+        q.push_back(OutboxTask::Pong {
             target,
             reply_to_id,
         });
@@ -582,15 +576,15 @@ fn auto_pong(incoming: &IncomingMessage, state: &AppState) {
 }
 
 /// Drop unsolicited RPC that no event handler claimed. Returns true when handled.
-fn handle_unsolicited_rpc(incoming: &IncomingMessage, _state: &AppState) -> bool {
-    if incoming.reply_to.is_some() || incoming.message_type != ma_core::MESSAGE_TYPE_RPC {
+fn handle_unsolicited_term(incoming: &IncomingMessage, _state: &AppState) -> bool {
+    if incoming.reply_to.is_some() || incoming.content_type != ma_core::CONTENT_TYPE_TERM {
         return false;
     }
-    // Room events are broadcast unsolicited RPC — let them through to display.
+    // Room events are broadcast unsolicited actor terms — let them through to display.
     if incoming.content_type == "application/vnd.ma.room.event" {
         return false;
     }
-    // Drop all unsolicited RPC including unknown verbs and loopback echoes.
+    // Drop all unsolicited actor terms including unknown verbs and loopback echoes.
     true
 }
 
@@ -649,9 +643,9 @@ mod tests {
 
     fn incoming(from: &str, display: &str) -> IncomingMessage {
         IncomingMessage {
-            service: ma_core::RPC_PROTOCOL_ID.to_string(),
+            service: ma_core::INBOX_PROTOCOL_ID.to_string(),
             message_id: "msg".to_string(),
-            message_type: ma_core::MESSAGE_TYPE_RPC.to_string(),
+            message_type: ma_core::MESSAGE_TYPE_MESSAGE.to_string(),
             from: from.to_string(),
             to: "did:ma:self".to_string(),
             reply_to: None,

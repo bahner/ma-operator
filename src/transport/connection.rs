@@ -3,19 +3,18 @@ use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
     EncryptionKey, IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
     CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
-    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE, MESSAGE_TYPE_RPC,
-    MESSAGE_TYPE_RPC_REPLY, RPC_PROTOCOL_ID,
+    MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
 };
 use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 
 use crate::i18n::tf;
-use crate::messages::{format_crud_reply, format_incoming, format_rpc_reply, IncomingMessage};
+use crate::messages::{format_crud_reply, format_incoming, format_term_reply, IncomingMessage};
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
     SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LIVE_INBOX,
-    SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_RPC_INBOX,
-    SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_SENDER_DID,
+    SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -216,7 +215,6 @@ pub async fn connect(
         .await
         .map_err(|e| e.to_string())?;
     let inbox = endpoint.service(INBOX_PROTOCOL_ID);
-    let rpc_inbox = endpoint.service(RPC_PROTOCOL_ID);
     let crud_inbox = endpoint.service(CRUD_PROTOCOL_ID);
     let live_inbox = endpoint.service(LIVE_PROTOCOL_ID);
     let ep: Rc<dyn ma_core::MaEndpoint> = Rc::from(endpoint);
@@ -228,7 +226,6 @@ pub async fn connect(
     SESSION_IROH_KEY.with(|k| *k.borrow_mut() = Some(iroh_key));
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = Some(ipns_secret_key));
     SESSION_INBOX.with(|i| *i.borrow_mut() = Some(inbox));
-    SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = Some(rpc_inbox));
     SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = Some(crud_inbox));
     SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = Some(live_inbox));
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = Some(did_signing_key));
@@ -245,7 +242,6 @@ pub fn disconnect() {
     SESSION_IROH_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_INBOX.with(|i| *i.borrow_mut() = None);
-    SESSION_RPC_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = None);
@@ -343,12 +339,16 @@ pub async fn send_live_dial(target_did: &str, body: &str) -> Result<String, Stri
 }
 
 /// Send an RPC message. Returns the dispatched `Message.id` on success.
-pub async fn send_rpc(target_did: &str, verb: &str, args: &[&str]) -> Result<String, String> {
-    send_rpc_with_msg_id(target_did, verb, args, |_| {}).await
+pub async fn send_actor_message(
+    target_did: &str,
+    verb: &str,
+    args: &[&str],
+) -> Result<String, String> {
+    send_actor_message_with_msg_id(target_did, verb, args, |_| {}).await
 }
 
 /// Send an RPC message and expose its `Message.id` before network dispatch.
-pub async fn send_rpc_with_msg_id(
+pub async fn send_actor_message_with_msg_id(
     target_did: &str,
     verb: &str,
     args: &[&str],
@@ -379,7 +379,7 @@ pub async fn send_rpc_with_msg_id(
     let msg = Message::new(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_RPC,
+        MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TERM,
         &body,
         &signing_key,
@@ -387,23 +387,23 @@ pub async fn send_rpc_with_msg_id(
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
     on_msg_id(msg_id.clone());
-    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
 
 /// Send an RPC message with `SchemeVal` arguments, preserving list/map
 /// structure in the CBOR encoding. Returns the dispatched `Message.id`.
-pub async fn send_rpc_vals(
+pub async fn send_actor_message_vals(
     target_did: &str,
     verb: &str,
     args: &[SchemeVal],
 ) -> Result<String, String> {
-    send_rpc_vals_with_msg_id(target_did, verb, args, |_| {}).await
+    send_actor_message_vals_with_msg_id(target_did, verb, args, |_| {}).await
 }
 
 /// Send an RPC message with `SchemeVal` arguments and expose its `Message.id`
 /// before network dispatch.
-pub async fn send_rpc_vals_with_msg_id(
+pub async fn send_actor_message_vals_with_msg_id(
     target_did: &str,
     verb: &str,
     args: &[SchemeVal],
@@ -434,7 +434,7 @@ pub async fn send_rpc_vals_with_msg_id(
     let msg = Message::new(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_RPC,
+        MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TERM,
         &body,
         &signing_key,
@@ -442,7 +442,7 @@ pub async fn send_rpc_vals_with_msg_id(
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
     on_msg_id(msg_id.clone());
-    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
 }
 
@@ -498,7 +498,7 @@ pub async fn send_identity_publish_with_msg_id(
     bundle.created_at = created_at;
 
     // Build document with endpoint services so the DID doc advertises
-    // INBOX_PROTOCOL_ID and RPC_PROTOCOL_ID for reply delivery.
+    // INBOX_PROTOCOL_ID for reply delivery.
     let ma_ext = ENDPOINT
         .with(|e| e.borrow().as_ref().map(|ep| ep.ma_extension()))
         .unwrap_or_default()
@@ -564,7 +564,7 @@ fn with_selected_z(ma_ext: ma_core::MaExtension, selected_z: Option<&str>) -> ma
 
 /// Send arbitrary content to an IPFS publisher's `/ma/ipfs/0.0.1` endpoint for
 /// storage. Returns the dispatched `Message.id` on success; the CID arrives
-/// later via an RPC reply keyed on that id.
+/// later via a reply keyed on that id.
 pub async fn send_ipfs_store(
     publisher_did: &str,
     content: Vec<u8>,
@@ -623,7 +623,7 @@ pub async fn send_text_reply(
 
 /// Send a `:pong` reply to a peer that sent `:ping`.
 /// `reply_to_id` is the `Message.id` of the incoming `:ping`.
-pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String, String> {
+pub async fn send_pong(target_did: &str, reply_to_id: &str) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
     let mut pong = Vec::new();
     ciborium::ser::into_writer(&ciborium::Value::Text(":pong".to_string()), &mut pong)
@@ -631,7 +631,7 @@ pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String
     let msg = Message::new_reply(
         &sender_did,
         target_did,
-        MESSAGE_TYPE_RPC_REPLY,
+        MESSAGE_TYPE_MESSAGE,
         CONTENT_TYPE_TERM,
         &pong,
         reply_to_id,
@@ -639,34 +639,8 @@ pub async fn send_rpc_pong(target_did: &str, reply_to_id: &str) -> Result<String
     )
     .map_err(|e| e.to_string())?;
     let msg_id = msg.id.clone();
-    send_message_on(target_did, RPC_PROTOCOL_ID, msg).await?;
+    send_message_on(target_did, INBOX_PROTOCOL_ID, msg).await?;
     Ok(msg_id)
-}
-
-/// Drain pending RPC-inbox messages (`:pong` replies etc.), same decoding as inbox.
-pub fn drain_rpc_inbox() -> Vec<IncomingMessage> {
-    let now = (js_sys::Date::now() / 1000.0) as u64;
-    SESSION_RPC_INBOX.with(|i| {
-        i.borrow_mut()
-            .as_mut()
-            .map(|inbox| {
-                inbox
-                    .drain(now)
-                    .into_iter()
-                    .map(|msg| {
-                        log::debug!(
-                            "[rpc-inbox] drain id={} reply_to={:?} from={} type={}",
-                            msg.id,
-                            msg.reply_to,
-                            msg.from,
-                            msg.message_type
-                        );
-                        decode_incoming(msg, RPC_PROTOCOL_ID)
-                    })
-                    .collect()
-            })
-            .unwrap_or_default()
-    })
 }
 
 /// Drain pending CRUD-inbox reply messages.
@@ -1007,42 +981,39 @@ fn decode_room_event(payload: Vec<u8>) -> String {
 fn decode_incoming(msg: Message, service: &str) -> IncomingMessage {
     let (display, is_error) = if msg.content_type == "application/vnd.ma.room.event" {
         (decode_room_event(msg.payload()), false)
+    } else if service == CRUD_PROTOCOL_ID {
+        let (term, err) = format_crud_reply(&msg.content_type, &msg.payload());
+        (format!("\u{2190} {} {}", msg.from, term), err)
+    } else if msg.content_type == CONTENT_TYPE_TERM {
+        // Actor term (a bare `:verb` or a `[:verb, …]` tuple reply).
+        let (term, err) = format_term_reply(&msg.payload());
+        (format!("\u{2190} {} {}", msg.from, term), err)
     } else {
-        match service {
-            RPC_PROTOCOL_ID => {
-                let (term, err) = format_rpc_reply(&msg.payload());
-                (format!("\u{2190} {} {}", msg.from, term), err)
+        match msg.message_type.as_str() {
+            MESSAGE_TYPE_CHAT => {
+                let bytes = msg.payload();
+                let body = String::from_utf8_lossy(&bytes);
+                (
+                    tf("msg-chat", &[("sender", &msg.from), ("body", &body)]),
+                    false,
+                )
             }
-            CRUD_PROTOCOL_ID => {
-                let (term, err) = format_crud_reply(&msg.content_type, &msg.payload());
-                (format!("\u{2190} {} {}", msg.from, term), err)
+            MESSAGE_TYPE_EMOTE => {
+                let bytes = msg.payload();
+                let body = String::from_utf8_lossy(&bytes);
+                (format!("* {} {}", msg.from, body), false)
             }
-            _ => match msg.message_type.as_str() {
-                MESSAGE_TYPE_CHAT => {
-                    let bytes = msg.payload();
-                    let body = String::from_utf8_lossy(&bytes);
-                    (
-                        tf("msg-chat", &[("sender", &msg.from), ("body", &body)]),
-                        false,
-                    )
-                }
-                MESSAGE_TYPE_EMOTE => {
-                    let bytes = msg.payload();
-                    let body = String::from_utf8_lossy(&bytes);
-                    (format!("* {} {}", msg.from, body), false)
-                }
-                _ => {
-                    let bytes = msg.payload();
-                    (
-                        format_incoming(
-                            &msg.from,
-                            &msg.content_type,
-                            &String::from_utf8_lossy(&bytes),
-                        ),
-                        false,
-                    )
-                }
-            },
+            _ => {
+                let bytes = msg.payload();
+                (
+                    format_incoming(
+                        &msg.from,
+                        &msg.content_type,
+                        &String::from_utf8_lossy(&bytes),
+                    ),
+                    false,
+                )
+            }
         }
     };
     let payload = msg.payload();

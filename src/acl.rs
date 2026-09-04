@@ -1,18 +1,17 @@
+pub use ma_core::CAP_INBOX;
 /// Ego client-side transport ACL.
 ///
 /// A single [`ma_core::AclMap`] is stored at [`ACL_KEY`] inside the identity
 /// config (`EgoConfig`) as a YAML string.  Before any incoming message is
-/// delivered to the UI the poll loop checks two capabilities:
+/// delivered to the UI the poll loop checks one capability:
 ///
 /// - [`CAP_INBOX`] — may deliver messages via `/ma/inbox/0.0.1`
-/// - [`CAP_RPC`]   — may send unsolicited RPC calls via `/ma/rpc/0.0.1`
 ///
-/// Replies to outgoing RPCs are **never filtered** regardless of sender.
+/// Replies to outgoing messages are **never filtered** regardless of sender.
 ///
 /// If `.my.acl` is absent or unparseable, the ACL defaults to fully open
-/// (`"*": [inbox, rpc]`).
+/// (`"*": [inbox]`).
 use ma_core::{check_cap, AclMap, CapabilityEntry};
-pub use ma_core::{CAP_INBOX, CAP_RPC};
 
 use crate::config::EgoConfig;
 
@@ -27,10 +26,10 @@ pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
         .unwrap_or_else(open_acl)
 }
 
-/// A fully-open ACL: every caller may use inbox **and** rpc.
+/// A fully-open ACL: every caller may use inbox.
 pub fn open_acl() -> AclMap {
     let caps = CapabilityEntry::Allow(
-        [CAP_INBOX, CAP_RPC]
+        [CAP_INBOX]
             .iter()
             .map(std::string::ToString::to_string)
             .collect(),
@@ -62,14 +61,12 @@ mod tests {
     fn empty_cfg_defaults_to_open_acl() {
         let cfg = EgoConfig::default();
         assert!(check_ego_acl(&cfg, "did:ma:stranger", CAP_INBOX));
-        assert!(check_ego_acl(&cfg, "did:ma:stranger", CAP_RPC));
     }
 
     #[test]
-    fn open_acl_allows_inbox_and_rpc() {
+    fn open_acl_allows_inbox() {
         let acl = open_acl();
         assert!(check_cap(&acl, "did:ma:anyone", CAP_INBOX).is_ok());
-        assert!(check_cap(&acl, "did:ma:anyone", CAP_RPC).is_ok());
     }
 
     // ── explicit YAML ACL ─────────────────────────────────────────────────
@@ -79,7 +76,6 @@ mod tests {
         let yaml = format!("\"did:ma:alice\": [{CAP_INBOX}]\n");
         let cfg = cfg_with_acl(&yaml);
         assert!(check_ego_acl(&cfg, "did:ma:alice", CAP_INBOX));
-        assert!(!check_ego_acl(&cfg, "did:ma:alice", CAP_RPC));
     }
 
     #[test]
