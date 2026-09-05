@@ -112,7 +112,6 @@ fn expire_pending_requests(state: &AppState) {
             })
             .collect()
     });
-    let should_reconnect = !expired.is_empty();
     for (msg_id, kind) in expired {
         // Remove first so inbox_poll can't also resolve it.
         state
@@ -127,23 +126,11 @@ fn expire_pending_requests(state: &AppState) {
             log::debug!("[pending] silently dropped expired entry msg_id={msg_id} (no cmd_id)");
         }
     }
-    if should_reconnect {
-        leptos::task::spawn_local(async move {
-            if let Err(e) = transport::reconnect().await {
-                log::warn!("[transport] reconnect after pending timeout failed: {e}");
-            }
-        });
-    }
-    // Also expire stuck Scheme call senders so awaiting evaluator tasks can
-    // return (:timeout) rather than blocking forever. Their replies are just
-    // as likely to have been lost to a stale transport, so reconnect then too.
-    if state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS)) && !should_reconnect {
-        leptos::task::spawn_local(async move {
-            if let Err(e) = transport::reconnect().await {
-                log::warn!("[transport] reconnect after scheme timeout failed: {e}");
-            }
-        });
-    }
+    // Expire stuck Scheme call senders so awaiting evaluator tasks can return
+    // (:timeout) rather than blocking forever. A lost reply is a message-level
+    // problem, not a transport one: the next send re-resolves the peer through
+    // ma-core, so no endpoint rebuild is needed here.
+    state.expire_scheme_senders(f64::from(DEFAULT_TIMEOUT_MS));
 }
 
 fn expire_pending_enter(state: &AppState, now: f64) {
@@ -164,11 +151,6 @@ fn expire_pending_enter(state: &AppState, now: f64) {
             state.push_error(t("msg-timeout"));
         }
     }
-    leptos::task::spawn_local(async move {
-        if let Err(e) = transport::reconnect().await {
-            log::warn!("[transport] reconnect after pending enter timeout failed: {e}");
-        }
-    });
 }
 
 // ── Per-line handler ───────────────────────────────────────────────────────

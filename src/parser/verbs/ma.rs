@@ -341,11 +341,6 @@ pub(crate) async fn claim_and_discover_local_ma(
     });
     state.push_system(tf("discover-success", &[("url", &ma_base)]));
     state.push_system(tf("discover-did-line", &[("did", &did)]));
-    if let Err(error) = transport::reconnect().await {
-        web_sys::console::warn_1(
-            &format!("[transport] reconnect after ma discovery failed: {error}").into(),
-        );
-    }
     let cfg = config.get_untracked();
     let _ = crate::config::persist_config(&username, &cfg).await;
     ConnectMaOutcome::Ready { did }

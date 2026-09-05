@@ -17,16 +17,12 @@ use crate::state::{
     SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
-use std::cell::Cell;
 use std::rc::Rc;
 use std::sync::Arc;
 use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
 const SEND_TIMEOUT_MS: u32 = 10_000;
-/// Upper bound on a single endpoint (re)build, so a stuck iroh `bind`/`online`
-/// can never leave an awaited reconnect hanging forever.
-const CONNECT_TIMEOUT_MS: u32 = 20_000;
 /// Locale-independent marker prefixing a send-side timeout. `with_send_timeout`
 /// prepends this so `is_transport_error` can classify the failure without
 /// matching translated prose; it is stripped again before any error reaches
@@ -247,9 +243,12 @@ pub async fn connect(
 }
 
 pub fn disconnect() {
-    teardown_transport();
+    ENDPOINT.with(|e| *e.borrow_mut() = None);
     SESSION_IROH_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_IPNS_KEY.with(|k| *k.borrow_mut() = None);
+    SESSION_INBOX.with(|i| *i.borrow_mut() = None);
+    SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = None);
+    SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = None);
     SESSION_SIGNING_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
@@ -799,92 +798,6 @@ pub async fn send_crud_delete_with_msg_id(
     Ok(msg_id)
 }
 
-thread_local! {
-    /// True while an endpoint rebuild is in flight. Guards against concurrent
-    /// `connect()` calls that would bind a second iroh endpoint (same node id)
-    /// before the previous one has been torn down.
-    static RECONNECTING: Cell<bool> = const { Cell::new(false) };
-}
-
-/// Resets the reconnect guard on drop so a panicked rebuild can never leave
-/// every later reconnect waiting forever.
-struct ReconnectGuard;
-
-impl Drop for ReconnectGuard {
-    fn drop(&mut self) {
-        RECONNECTING.with(|r| r.set(false));
-    }
-}
-
-/// Clear the live endpoint and its inboxes without touching the session keys.
-///
-/// Dropping the endpoint `Rc` here (rather than merely overwriting it) lets the
-/// previous iroh endpoint be torn down once in-flight sends release their own
-/// clones, instead of leaving two live endpoints with the same node id.
-fn teardown_transport() {
-    ENDPOINT.with(|e| *e.borrow_mut() = None);
-    SESSION_INBOX.with(|i| *i.borrow_mut() = None);
-    SESSION_CRUD_INBOX.with(|i| *i.borrow_mut() = None);
-    SESSION_LIVE_INBOX.with(|i| *i.borrow_mut() = None);
-}
-
-/// Re-establish the iroh endpoint using the current session keys.
-/// Clears any cached iroh connections that may have gone stale or black-holed.
-pub async fn reconnect() -> Result<(), String> {
-    // Coalesce concurrent reconnect requests. On the single-threaded WASM
-    // runtime a second simultaneous `connect()` would bind a fresh iroh endpoint
-    // (same node id) while the previous one is still alive — the split-brain
-    // state that keeps connections stale — and race on the session inboxes.
-    if RECONNECTING.with(|r| r.get()) {
-        while RECONNECTING.with(|r| r.get()) {
-            gloo_timers::future::TimeoutFuture::new(20).await;
-        }
-        return Ok(());
-    }
-    RECONNECTING.with(|r| r.set(true));
-    let _reset = ReconnectGuard;
-
-    let iroh_key = SESSION_IROH_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let ipns_key = SESSION_IPNS_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let signing_key = SESSION_SIGNING_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let enc_key = SESSION_ENCRYPTION_KEY
-        .with(|k| *k.borrow())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let sender_did = SESSION_SENDER_DID
-        .with(|d| d.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-    let created_at = SESSION_CREATED_AT
-        .with(|c| c.borrow().clone())
-        .ok_or_else(|| "not logged in".to_string())?;
-
-    log::warn!("[transport] stale connection — reconnecting iroh endpoint");
-    // Tear down the stale endpoint before binding a fresh one. Rebuilding while
-    // the old endpoint is still live is the root cause of stale/black-holed
-    // connections: iroh cannot have two endpoints with the same node id.
-    teardown_transport();
-    let op = connect(
-        iroh_key,
-        ipns_key,
-        signing_key,
-        enc_key,
-        sender_did,
-        created_at,
-    )
-    .fuse();
-    let timeout = gloo_timers::future::TimeoutFuture::new(CONNECT_TIMEOUT_MS).fuse();
-    futures::pin_mut!(op, timeout);
-    futures::select! {
-        result = op => result,
-        () = timeout => Err("endpoint reconnect timed out".to_string()),
-    }
-}
-
 fn is_transport_error(e: &str) -> bool {
     e.starts_with(SEND_TIMEOUT_MARKER)
         || e.contains("connect failed")
@@ -973,18 +886,19 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
 
 async fn send_message_on(target_did: &str, protocol: &str, msg: Message) -> Result<(), String> {
     match try_send_once(target_did, protocol, &msg).await {
-        Ok(()) => return Ok(()),
+        Ok(()) => Ok(()),
+        // A transport error usually means the peer's connection went stale
+        // (reboot, NAT change, etc.). ma-core re-resolves the DID and evicts/
+        // reconnects the stale connection on the next attempt, so a single
+        // retry is enough — rebuilding our own endpoint here would be wrong.
         Err(e) if is_transport_error(&e) => {
-            log::warn!("[transport] send failed ({e}), reconnecting and retrying");
-            reconnect()
+            log::warn!("[transport] send failed ({e}), retrying once");
+            try_send_once(target_did, protocol, &msg)
                 .await
-                .map_err(|re| format!("reconnect failed: {re}"))?;
+                .map_err(strip_send_timeout_marker)
         }
-        Err(e) => return Err(strip_send_timeout_marker(e)),
+        Err(e) => Err(strip_send_timeout_marker(e)),
     }
-    try_send_once(target_did, protocol, &msg)
-        .await
-        .map_err(strip_send_timeout_marker)
 }
 
 /// Drain pending inbox messages, decoding each into an `IncomingMessage`.
