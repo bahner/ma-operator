@@ -1,4 +1,4 @@
-# zion — Tiếng Việt
+# operator — Tiếng Việt
 lang-name = Tiếng Việt
 label-nick = biệt danh
 new-identity-nick-help = Chọn một biệt danh cho 間-space. Đây chỉ là biệt danh và bạn có thể đổi bất cứ lúc nào.
@@ -22,7 +22,7 @@ btn-new-endpoint = điểm cuối mới
 btn-import-profile = nhập hồ sơ
 btn-show-qr = hiển thị QR
 btn-scan-qr = quét QR
-qr-scan-hint = Hướng camera vào mã QR hồ sơ zion.
+qr-scan-hint = Hướng camera vào mã QR hồ sơ operator.
 qr-error-camera = không có camera: { $e }
 qr-error-too-large = hồ sơ quá lớn cho mã QR
 passphrase-warning = Mất cụm mật khẩu = mất danh tính. Không thể khôi phục.
@@ -48,7 +48,7 @@ error-profile-no-username = hồ sơ không chứa tên người dùng
 error-profile-no-identity = danh tính '{ $name }' không tìm thấy — nhập danh tính trước
 
 # ── Thông báo hệ thống terminal ───────────────────────────────────────────
-msg-logged-in = zion v{ $version } — đã đăng nhập với tư cách { $username }
+msg-logged-in = operator v{ $version } — đã đăng nhập với tư cách { $username }
 msg-type-help = Nhập .help để xem danh sách lệnh.
 msg-getting-started = Hãy thử: say Hello world, look, .help hoặc help.
 msg-connecting = đang kết nối tới iroh...
@@ -186,7 +186,7 @@ doc-no-verb = không có động từ `{ $verb }` cho { $path }
 path-no-verb = không có động từ `{ $verb }` cho { $path }
 
 # ── Trợ giúp — tiêu đề ───────────────────────────────────────────────────
-help-header-zion = ── lệnh zion ─────────────────────────────────────────────────────────────
+help-header-operator = ── lệnh operator ─────────────────────────────────────────────────────────────
 help-header-messaging = ── nhắn tin ──────────────────────────────────────────────────────────────
 help-header-config = ── cú pháp cấu hình cục bộ ─────────────────────────────────────────────
 help-header-common = ── đường dẫn thông dụng ────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── tiến vào 間-không gian ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Trợ giúp — lệnh zion ─────────────────────────────────────────────────
+# ── Trợ giúp — lệnh operator ─────────────────────────────────────────────────
 help-cmd-help =   .help                        văn bản này
 help-cmd-clear =   .clear                       xóa terminal
 help-cmd-panic =   .panic                       phương án cuối cùng — dùng khi gặp sự cố
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              xóa tài liệu
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n lưu trữ tùy chọn ngôn ngữ gắn liền với danh tính của bạn.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               liệt kê các mã ngôn ngữ có sẵn
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) giữ các câu trả lời 5 trong môi trường phiên
 
-help-topic-url =   .help/url                    mở zion thông qua liên kết URL
+help-topic-url =   .help/url                    mở operator thông qua liên kết URL
 help-topic-i18n = .help/i18n                   ưu tiên ngôn ngữ cho danh tính của bạn
 help-header-url = ── tham số URL ──────────────────────────────────────────────────────────────────
-help-url-intro =   Chia sẻ một liên kết mở zion với người nhận đã được điền sẵn:
+help-url-intro =   Chia sẻ một liên kết mở operator với người nhận đã được điền sẵn:
 help-url-msg =   ?msg=<did>                   điền sẵn: @<did>!msg (tin nhắn thông thường)
 help-url-say =   ?say=<did>                   điền sẵn: @<did>!say (động từ say)
 help-url-emote =   ?emote=<did>                 điền sẵn: @<did>!emote (động từ emote)
@@ -399,7 +399,7 @@ help-url-note =   Ô nhập đã được điền sẵn nhưng chưa gửi — n
 help-topic-publish =   .help/publish                xuất bản danh tính của bạn lên mạng
 help-header-publish = ── xuất bản danh tính ───────────────────────────────────────────────────────
 help-publish-intro = Xuất bản giúp danh tính của bạn được tìm thấy trên mạng. Người khác có thể tra cứu DID của bạn để liên lạc.
-help-publish-ma = Để xuất bản, bạn cần cài đặt 間 (runtime cục bộ). Nó kết nối ego với IPFS/IPNS thay mặt bạn.
+help-publish-ma = Để xuất bản, bạn cần cài đặt 間 (runtime cục bộ). Nó kết nối operator với IPFS/IPNS thay mặt bạn.
 help-publish-steps = Các bước: chạy '.ma: claim [port]' để phát hiện ma cục bộ, sau đó '.my.identity!publish @ma'.
 help-publish-without = Không xuất bản thì người khác không thể liên lạc với bạn — dù biết DID của bạn, họ không thể phân giải endpoint của bạn.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               dùng .z.* cho Scheme công khai v�
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme đánh giá các biểu thức Scheme được nhúng trong lệnh zion và chèn kết quả vào dòng trước khi gửi.
+help-zscheme-intro = zscheme đánh giá các biểu thức Scheme được nhúng trong lệnh operator và chèn kết quả vào dòng trước khi gửi.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ví dụ nội tuyến; gửi "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             các định nghĩa tồn tại trong phiên đăng nhập hiện tại
 help-zscheme-doc = Tài liệu: https://github.com/bahner/rust-ma-zscheme

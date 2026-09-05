@@ -8,7 +8,7 @@
 use leptos::prelude::*;
 
 use crate::{
-    config::EgoConfig,
+    config::OperatorConfig,
     core::CommandStatus,
     eval::{actor_send::execute_outbox_task, eval},
     http::fetch_path_bytes,
@@ -28,7 +28,7 @@ const TICK_MS: u32 = 50;
 
 pub async fn run_dispatch_loop(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -176,7 +176,7 @@ fn expire_pending_enter(state: &AppState, now: f64) {
 fn handle_input_line(
     line: String,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -281,7 +281,7 @@ fn save_line_to_history(line: &str, state: &AppState) {
 async fn handle_scheme_expansion(
     line: String,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
     cancel_epoch: u64,
@@ -322,7 +322,7 @@ async fn handle_scheme_expansion(
 async fn handle_focus_shorthand(
     line: String,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     cancel_epoch: u64,
 ) {
     let expanded = match crate::scheme::expand(&line, state, config).await {
@@ -460,7 +460,7 @@ fn open_batch(line: &str, state: &AppState) {
 fn close_batch(
     batch_id: u64,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -516,7 +516,7 @@ fn close_batch(
 
 fn advance_sync_batches(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -570,7 +570,7 @@ fn advance_sync_batches(
 fn advance_sync_batch_step(
     batch_id: u64,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -703,7 +703,7 @@ fn finish_batch(batch_id: u64, state: &AppState, had_error: bool) {
 fn dispatch_eval_line(
     line: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
     batch_id: Option<u64>,

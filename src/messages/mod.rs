@@ -94,7 +94,7 @@ pub fn format_crud_reply(content_type: &str, body: &[u8]) -> (String, bool) {
 
 /// Decode bytes fetched for a root CID into editor text using the CID's codec.
 ///
-/// Public gateways should be treated as byte transport. The CID tells zion how
+/// Public gateways should be treated as byte transport. The CID tells operator how
 /// to interpret those bytes: DAG-CBOR/CBOR become YAML, JSON codecs become YAML,
 /// and raw blocks are displayed as UTF-8 text.
 pub fn cid_bytes_to_editor_text(cid: &str, bytes: &[u8]) -> Result<String, String> {

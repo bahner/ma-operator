@@ -1,4 +1,4 @@
-# zion — Português
+# operator — Português
 lang-name = Português
 label-nick = alcunha
 new-identity-nick-help = Escolha uma alcunha para 間-space. É apenas uma alcunha e pode alterá-la quando quiser.
@@ -22,7 +22,7 @@ btn-new-endpoint = novo endpoint
 btn-import-profile = importar perfil
 btn-show-qr = mostrar QR
 btn-scan-qr = ler QR
-qr-scan-hint = Aponte a câmara para um código QR de perfil zion.
+qr-scan-hint = Aponte a câmara para um código QR de perfil operator.
 qr-error-camera = câmara indisponível: { $e }
 qr-error-too-large = perfil demasiado grande para um código QR
 passphrase-warning = Frase de acesso perdida = identidade perdida. Não existe recuperação.
@@ -48,7 +48,7 @@ error-profile-no-username = o perfil não contém um nome de utilizador
 error-profile-no-identity = identidade '{ $name }' não encontrada — importe a identidade primeiro
 
 # ── Mensagens do sistema do terminal ─────────────────────────────────────
-msg-logged-in = zion v{ $version } — sessão iniciada como { $username }
+msg-logged-in = operator v{ $version } — sessão iniciada como { $username }
 msg-type-help = Escreva .help para obter uma lista de comandos.
 msg-getting-started = Experimente: say Hello world, look, .help ou help.
 msg-connecting = a ligar ao iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publicação { $path }: { $e }
 doc-publish-ipld-failed = publicação IPLD { $path }: { $e }
 doc-publish-error-detail = publicação falhou [{ $code }]: { $err }
 doc-publish-error-hint = Dica: { $hint }
-doc-publish-hint-session = entre novamente para que ego possa acessar suas chaves de identidade
+doc-publish-hint-session = entre novamente para que operator possa acessar suas chaves de identidade
 doc-publish-hint-target = use um DID de publicador válido ou um alias que resolva para did:ma:<ipns> sem fragmento
 doc-publish-hint-network = verifique se o runtime 間 e o IPFS estão acessíveis e tente novamente
 doc-publish-hint-resolve = verifique se o documento DID do publicador foi publicado e contém um endpoint acessível
@@ -186,7 +186,7 @@ doc-no-verb = nenhum verbo `{ $verb }` para { $path }
 path-no-verb = nenhum verbo `{ $verb }` para { $path }
 
 # ── Texto de ajuda — cabeçalhos ───────────────────────────────────────────
-help-header-zion = ── comandos zion ──────────────────────────────────────────────────────────
+help-header-operator = ── comandos operator ──────────────────────────────────────────────────────────
 help-header-messaging = ── mensagens ─────────────────────────────────────────────────────────────
 help-header-config = ── gramática de configuração local ──────────────────────────────────────
 help-header-common = ── caminhos comuns ───────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nome>:              eliminar documento
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n armazena a preferência de idioma vinculada à sua identidade.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               listar códigos de idioma disponíveis
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -353,7 +353,7 @@ help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
 help-topic-z =   .help/z                      conteúdo Scheme público e privado
 help-topic-zscheme =   .help/zscheme               expressões Scheme embutidas e documentação
-help-topic-url =   .help/url                    abrir zion via um link URL
+help-topic-url =   .help/url                    abrir operator via um link URL
 help-topic-i18n = .help/i18n                   preferência de idioma para sua identidade
 help-unknown-topic =   .help/{ $topic }: tópico desconhecido
 
@@ -379,7 +379,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) mantenha as respostas 5 no ambiente da sessão
 help-header-url = ── parâmetros de URL ───────────────────────────────────────────────────────
-help-url-intro =   Partilha um link que abre zion com o destinatário pré-preenchido:
+help-url-intro =   Partilha um link que abre operator com o destinatário pré-preenchido:
 help-url-msg =   ?msg=<did>                   pré-preenche: @<did>!msg (mensagem de texto)
 help-url-say =   ?say=<did>                   pré-preenche: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 pré-preenche: @<did>!emote (verbo emote)
@@ -391,7 +391,7 @@ help-url-note =   O campo é pré-preenchido mas não enviado — prime Enter pa
 help-topic-publish =   .help/publish                publicar a sua identidade na rede
 help-header-publish = ── publicar identidade ──────────────────────────────────────────────────────
 help-publish-intro = Publicar torna a sua identidade encontrável na rede. Outros podem pesquisar o seu DID para o contactar.
-help-publish-ma = Para publicar, precisa de 間 (runtime local) instalado. Liga ego ao IPFS/IPNS em seu nome.
+help-publish-ma = Para publicar, precisa de 間 (runtime local) instalado. Liga operator ao IPFS/IPNS em seu nome.
 help-publish-steps = Passos: execute '.ma: claim [port]' para detetar o seu 間 local, depois '.my.identity!publish @ma'.
 help-publish-without = Sem publicar, outros não conseguem contactá-lo — mesmo que conheçam o seu DID, não conseguem resolver o seu endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -433,7 +433,7 @@ help-z-control =   .z.scheme                 você controla o conteúdo do scrip
 help-z-private =   .my.*                     configuração local privada; também pode guardar Scheme aqui
 help-z-choice =   .z.* / .my.*               use .z.* para Scheme público e .my.* para Scheme privado
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme avalia expressões Scheme embutidas em comandos zion e insere o resultado na linha antes de a enviar.
+help-zscheme-intro = zscheme avalia expressões Scheme embutidas em comandos operator e insere o resultado na linha antes de a enviar.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemplo embutido; envia "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             as definições persistem durante a sessão de login atual
 help-zscheme-doc = Documentação: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::views::editor::EditorContext;
@@ -9,7 +9,7 @@ pub(super) fn handle_acl(
     verb: &str,
     _args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {

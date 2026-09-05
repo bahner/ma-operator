@@ -11,7 +11,7 @@ use ma_zscheme::SchemeVal;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
-    config::{persist_config, EgoConfig},
+    config::{persist_config, OperatorConfig},
     core::CommandStatus,
     http::fetch_path_bytes,
     i18n::tf,
@@ -142,7 +142,7 @@ pub(crate) fn handle_root_enter_reply(
     inventory: Option<String>,
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     let room_actor = crate::inbox_poll::root_enter_reply(&incoming.content)
         .unwrap_or_else(|| format!("{entry_runtime}#concourse"));
@@ -180,7 +180,7 @@ pub(crate) fn handle_profile_publish_reply(
     request: ProfilePublishRequest,
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     if incoming.is_error {
         if crate::state::apply_profile_rollback() {
@@ -206,8 +206,8 @@ pub(crate) fn handle_profile_publish_reply(
                 .as_string()
                 .unwrap_or_default();
             config.update(|c| {
-                c.set(EgoConfig::PROFILE_CID_KEY, &cid_str);
-                c.set(EgoConfig::PROFILE_PUBLISHED_AT_KEY, &now);
+                c.set(OperatorConfig::PROFILE_CID_KEY, &cid_str);
+                c.set(OperatorConfig::PROFILE_PUBLISHED_AT_KEY, &now);
             });
             let username = state
                 .session
@@ -279,7 +279,7 @@ pub(crate) fn handle_profile_publish_reply(
 #[derive(Clone, Copy)]
 pub(crate) struct ReplyContext<'a> {
     pub state: &'a AppState,
-    pub config: RwSignal<EgoConfig>,
+    pub config: RwSignal<OperatorConfig>,
     pub show_editor: RwSignal<Option<EditorContext>>,
 }
 
@@ -566,7 +566,7 @@ pub(crate) fn handle_crud_get_reply(
     incoming: &IncomingMessage,
     state: &AppState,
     display: &str,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     if incoming.is_error {
         let (status, text) = classify_reply(&incoming.content, true, display);
@@ -596,7 +596,7 @@ pub(crate) fn handle_crud_confirm(
     incoming: &IncomingMessage,
     state: &AppState,
     display: &str,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     let (status, push_opt) = classify_reply(&incoming.content, incoming.is_error, display);
     state.resolve_command_by_id(cmd_id, status);

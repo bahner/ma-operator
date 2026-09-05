@@ -3300,6 +3300,42 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7c87def4c32ab89d880effc9e097653c8da5d6ef28e6b539d313baaacfbafcbe"
 
 [[package]]
+name = "operator"
+version = "0.1.0"
+dependencies = [
+ "base64 0.23.1",
+ "bytes",
+ "chacha20poly1305",
+ "ciborium",
+ "cid",
+ "console_error_panic_hook",
+ "console_log",
+ "env_logger",
+ "futures",
+ "futures-channel",
+ "getrandom 0.4.3",
+ "gloo-timers 0.4.0",
+ "js-sys",
+ "leptos",
+ "log",
+ "ma-core",
+ "ma-zscheme",
+ "pbkdf2",
+ "qrcode",
+ "rqrr",
+ "serde",
+ "serde_ipld_dagcbor",
+ "serde_json",
+ "serde_yaml",
+ "sha2 0.11.0",
+ "time",
+ "wasm-bindgen",
+ "wasm-bindgen-futures",
+ "web-sys",
+ "web-time",
+]
+
+[[package]]
 name = "option-ext"
 version = "0.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5842,42 +5878,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 3.0.5",
-]
-
-[[package]]
-name = "zion"
-version = "0.1.0"
-dependencies = [
- "base64 0.23.1",
- "bytes",
- "chacha20poly1305",
- "ciborium",
- "cid",
- "console_error_panic_hook",
- "console_log",
- "env_logger",
- "futures",
- "futures-channel",
- "getrandom 0.4.3",
- "gloo-timers 0.4.0",
- "js-sys",
- "leptos",
- "log",
- "ma-core",
- "ma-zscheme",
- "pbkdf2",
- "qrcode",
- "rqrr",
- "serde",
- "serde_ipld_dagcbor",
- "serde_json",
- "serde_yaml",
- "sha2 0.11.0",
- "time",
- "wasm-bindgen",
- "wasm-bindgen-futures",
- "web-sys",
- "web-time",
 ]
 
 [[package]]

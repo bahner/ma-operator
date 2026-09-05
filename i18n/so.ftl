@@ -1,4 +1,4 @@
-# zion — Soomaaliga
+# operator — Soomaaliga
 lang-name = Soomaali
 label-nick = naanays
 new-identity-nick-help = Dooro naanays loogu talagalay 間-space. Waa naanays keliya, waadna beddeli kartaa goor kasta.
@@ -22,7 +22,7 @@ btn-new-endpoint = xidid cusub
 btn-import-profile = keen xogta shakhsiga
 btn-show-qr = muuji QR
 btn-scan-qr = iskaan QR
-qr-scan-hint = Kamaradda ku toosi koodhka QR ee xogta shakhsiga zion.
+qr-scan-hint = Kamaradda ku toosi koodhka QR ee xogta shakhsiga operator.
 qr-error-camera = kamarad lama helayo: { $e }
 qr-error-too-large = xogta shakhsigu aad bay u weyn tahay koodhka QR
 passphrase-warning = Luminta ereyga sirta = luminta aqoonsigu. Soo noqosho ma jirto.
@@ -48,7 +48,7 @@ error-profile-no-username = xogta shakhsiga kuma jirto magac isticmaale
 error-profile-no-identity = aqoonsiga '{ $name }' lama helin — marka hore keen aqoonsiga
 
 # ── Fariimaha nidaamka terminal ───────────────────────────────────────────
-msg-logged-in = zion v{ $version } — waad galeen ahaan { $username }
+msg-logged-in = operator v{ $version } — waad galeen ahaan { $username }
 msg-type-help = Qor .help si aad u hesho liiska amarka.
 msg-getting-started = Isku day: say Hello world, look, .help, ama help.
 msg-connecting = iroh lagula xidhanayo...
@@ -167,7 +167,7 @@ doc-publish-failed = daabacaadda { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = daabacaaddu way fashilantay [{ $code }]: { $err }
 doc-publish-error-hint = Tilmaan: { $hint }
-doc-publish-hint-session = mar kale gal si ego uu u galo furayaasha aqoonsigaga
+doc-publish-hint-session = mar kale gal si operator uu u galo furayaasha aqoonsigaga
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = xaqiiji in daabacaha DID dukumeentiga la daabacay oo ka kooban yahay barta dhamaadka la gaari karo
@@ -186,7 +186,7 @@ doc-no-verb = ficil `{ $verb }` { $path } ma jiro
 path-no-verb = ficil `{ $verb }` { $path } ma jiro
 
 # ── Gargaarku — cinwaanada ────────────────────────────────────────────────
-help-header-zion = ── amarka zion ────────────────────────────────────────────────────────────
+help-header-operator = ── amarka operator ────────────────────────────────────────────────────────────
 help-header-messaging = ── farriin diridda ───────────────────────────────────────────────────────
 help-header-config = ── naxwaha dejinta deegaanka ─────────────────────────────────────────────
 help-header-common = ── wadooyinka caadiga ah ─────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ─ gelitaanka 間-space ──────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Gargaarku — amarka zion ───────────────────────────────────────────────
+# ── Gargaarku — amarka operator ───────────────────────────────────────────────
 help-cmd-help =   .help                        qoraalkan
 help-cmd-clear =   .clear                       nadiifi terminal
 help-cmd-panic =   .panic                       xallinta ugu dambeysa — isticmaal haddaad dhibaato ku jirto
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              tirtir dokumantigga
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n waxay kaydisaa doorashada luqadda ee ku xidhan aqoonsigaaga.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               qor kood luqadeed ee la heli karo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) Ku hay jawaabaha 5 ee jawiga fadhiga
 
-help-topic-url =   .help/url                    furista zion adeegsiga xiriirka URL
+help-topic-url =   .help/url                    furista operator adeegsiga xiriirka URL
 help-topic-i18n = .help/i18n                   doorashada luqadda ee aqoonsigaaga
 help-header-url = ── cabbirada URL ─────────────────────────────────────────────────────────────────
-help-url-intro =   La wadaag xiriir si loo furo zion oo leh qofka la xiriira ee hore loo buuxiyey:
+help-url-intro =   La wadaag xiriir si loo furo operator oo leh qofka la xiriira ee hore loo buuxiyey:
 help-url-msg =   ?msg=<did>                   hore u buuxi: @<did>!msg (fariin fudud)
 help-url-say =   ?say=<did>                   hore u buuxi: @<did>!say (fal say)
 help-url-emote =   ?emote=<did>                 hore u buuxi: @<did>!emote (fal emote)
@@ -399,7 +399,7 @@ help-url-note =   Gelinta waa la buuxiyey laakiin lama dirin — riix Enter si a
 help-topic-publish =   .help/publish                ku baahiso aqoonsikaaga shabakadda
 help-header-publish = ── baahinta aqoonsiga ───────────────────────────────────────────────────────
 help-publish-intro = Baahinta waxay aqoonsikaaga ka dhigtaa mid laga heli karo shabakadda. Dadka kaleba waxay raadsan karaan DID-kaaga si ay kugu soo dhawaadaan.
-help-publish-ma = Si aad u baahiso, waxaad u baahan tahay 間 (runtime gudaha ah) oo la rakibay. Waxay ego ku xidaa IPFS/IPNS adiga beddelkaada.
+help-publish-ma = Si aad u baahiso, waxaad u baahan tahay 間 (runtime gudaha ah) oo la rakibay. Waxay operator ku xidaa IPFS/IPNS adiga beddelkaada.
 help-publish-steps = Tallaabooyinka: orod '.ma: claim [port]' si aad u ogaato ma gudaha ah, ka dibna '.my.identity!publish @ma'.
 help-publish-without = La'aanta baahinta, dadka kale kuma gaadhi karaan — xitaa hadday garanayeen DID-kaaga, ma xallin karaan endpoint-kaaga.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               isticmaal .z.* Scheme dadweynaha iy
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme wuxuu qiimeeyaa weedhaha Scheme ee ku dhex jira amarada zion, kadibna natiijada ayuu safka ku daraa ka hor dirista.
+help-zscheme-intro = zscheme wuxuu qiimeeyaa weedhaha Scheme ee ku dhex jira amarada operator, kadibna natiijada ayuu safka ku daraa ka hor dirista.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    tusaale safka ku jira; wuxuu diraa "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             qeexitaannadu way sii jiraan inta lagu jiro fadhiga gelitaanka hadda
 help-zscheme-doc = Dukumenti: https://github.com/bahner/rust-ma-zscheme

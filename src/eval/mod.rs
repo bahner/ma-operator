@@ -14,7 +14,7 @@ use ma_zscheme::SchemeVal;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
-    config::{persist_config, EgoConfig},
+    config::{persist_config, OperatorConfig},
     core::CommandStatus,
     i18n::{msg_jobs_cancelled, t, tf},
     parser::command::{Command, DotOp},
@@ -26,7 +26,7 @@ use crate::{
 
 /// Clear the session and session-scoped config. Shared by the `.logout`
 /// command and the logout-after-publish completion path.
-pub(crate) fn perform_logout(state: &AppState, config: RwSignal<EgoConfig>) {
+pub(crate) fn perform_logout(state: &AppState, config: RwSignal<OperatorConfig>) {
     transport::disconnect();
     crate::scheme::reset_session_env();
     state.secret_dialog.set(false);
@@ -78,7 +78,7 @@ fn validate_alias_set(path: &str, value: &str) -> Result<(), String> {
     Ok(())
 }
 
-pub(crate) fn apply_config_to_dom(cfg: &EgoConfig) {
+pub(crate) fn apply_config_to_dom(cfg: &OperatorConfig) {
     let Some(window) = web_sys::window() else {
         return;
     };
@@ -174,7 +174,7 @@ pub(crate) fn eval(
     cmd: Command,
     raw: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -221,7 +221,7 @@ fn eval_control(
     op: DotOp,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -354,7 +354,7 @@ fn eval_control(
     }
 }
 
-fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+fn eval_enter(args: &[String], state: &AppState, config: RwSignal<OperatorConfig>) {
     let Some(raw) = args.first() else {
         enter_no_args(state, config);
         return;
@@ -449,7 +449,7 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
 #[allow(clippy::too_many_arguments)]
 pub(crate) async fn enter_room(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     cmd_id: u64,
     cancel_epoch: u64,
     entry_runtime: &str,
@@ -540,7 +540,7 @@ async fn discover_and_enter_room(
 fn enter_target_display(
     target_actor: &str,
     requested_nick: Option<&str>,
-    cfg: &EgoConfig,
+    cfg: &OperatorConfig,
 ) -> String {
     let actor = cfg
         .alias_display(target_actor)
@@ -551,7 +551,7 @@ fn enter_target_display(
     }
 }
 
-fn enter_no_args(state: &AppState, config: RwSignal<EgoConfig>) {
+fn enter_no_args(state: &AppState, config: RwSignal<OperatorConfig>) {
     let cfg = config.get_untracked();
     // Re-enter the saved room (or runtime) so presence is re-established: a
     // bare `.enter` after `.leave` must send a fresh `:enter`, not merely
@@ -573,7 +573,7 @@ fn enter_no_args(state: &AppState, config: RwSignal<EgoConfig>) {
 /// The address a bare `.enter` re-enters: the saved room DID-URL when present,
 /// otherwise the bare runtime (re-discovery via `#root`). Returns `None` when
 /// no saved ctx exists.
-fn saved_enter_target(cfg: &EgoConfig) -> Option<String> {
+fn saved_enter_target(cfg: &OperatorConfig) -> Option<String> {
     cfg.get(".my.ctx.room")
         .filter(|room| !room.is_empty())
         .or_else(|| cfg.get(".my.ctx.runtime"))
@@ -581,7 +581,7 @@ fn saved_enter_target(cfg: &EgoConfig) -> Option<String> {
         .map(|target| format!("@{target}"))
 }
 
-fn handle_leave(state: &AppState, config: RwSignal<EgoConfig>) {
+fn handle_leave(state: &AppState, config: RwSignal<OperatorConfig>) {
     let cfg = config.get_untracked();
     let target = cfg
         .get(".my.ctx.room")
@@ -607,7 +607,7 @@ fn did_enter_args<'a>(nick: Option<&'a str>, inventory: Option<&'a str>) -> Vec<
     }
 }
 
-fn configured_inventory(cfg: &EgoConfig) -> Option<&str> {
+fn configured_inventory(cfg: &OperatorConfig) -> Option<&str> {
     cfg.get(".my.ctx.inv").filter(|inventory| {
         inventory.split_once('#').is_some_and(|(did, fragment)| {
             did.starts_with("did:ma:")
@@ -622,7 +622,7 @@ fn build_enter_ctx(
     state: &AppState,
     requested_nick: Option<&str>,
     kind: &str,
-    cfg: &EgoConfig,
+    cfg: &OperatorConfig,
 ) -> SchemeVal {
     let username = state
         .session
@@ -707,7 +707,7 @@ fn eval_local(
     op: DotOp,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) {
@@ -739,7 +739,7 @@ fn handle_dot_set(
     value: String,
     username: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     let cfg = config.get_untracked();
     if let Err(e) = validate_dot_set(path, &value, &cfg) {
@@ -777,8 +777,8 @@ fn handle_dot_set(
     });
 }
 
-fn validate_dot_set(path: &str, value: &str, cfg: &EgoConfig) -> Result<(), String> {
-    if EgoConfig::is_read_only(path) {
+fn validate_dot_set(path: &str, value: &str, cfg: &OperatorConfig) -> Result<(), String> {
+    if OperatorConfig::is_read_only(path) {
         return Err(tf("msg-read-only", &[("path", path)]));
     }
     validate_alias_set(path, value)?;
@@ -791,8 +791,13 @@ fn validate_dot_set(path: &str, value: &str, cfg: &EgoConfig) -> Result<(), Stri
     Ok(())
 }
 
-fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSignal<EgoConfig>) {
-    if EgoConfig::is_read_only(path) {
+fn handle_dot_delete(
+    path: &str,
+    username: &str,
+    state: &AppState,
+    config: RwSignal<OperatorConfig>,
+) {
+    if OperatorConfig::is_read_only(path) {
         state.push_error(tf("msg-read-only", &[("path", path)]));
         return;
     }
@@ -817,7 +822,7 @@ fn handle_dot_delete(path: &str, username: &str, state: &AppState, config: RwSig
     });
 }
 
-fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<EgoConfig>) {
+fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSignal<OperatorConfig>) {
     let cfg = config.get_untracked();
     let filter = args.first().map(String::as_str);
     if let Some(list_path) = path.strip_suffix('.').filter(|path| !path.is_empty()) {
@@ -840,7 +845,7 @@ fn handle_dot_get(path: &str, args: &[String], state: &AppState, config: RwSigna
 
 fn show_children(
     path: &str,
-    cfg: &crate::config::EgoConfig,
+    cfg: &crate::config::OperatorConfig,
     state: &AppState,
     filter: Option<&str>,
 ) {
@@ -862,7 +867,7 @@ fn show_children(
 
 fn show_full_listing(
     path: &str,
-    cfg: &crate::config::EgoConfig,
+    cfg: &crate::config::OperatorConfig,
     state: &AppState,
     filter: Option<&str>,
 ) {
@@ -882,9 +887,9 @@ fn show_full_listing(
 /// the remaining sub-path if found.
 fn lazy_link_traverse(
     path: &str,
-    cfg: &crate::config::EgoConfig,
+    cfg: &crate::config::OperatorConfig,
     state: &AppState,
-    _config: RwSignal<EgoConfig>,
+    _config: RwSignal<OperatorConfig>,
 ) {
     if let Some((link, subpath)) = find_link_ancestor(path, cfg) {
         let state2 = state.clone();
@@ -898,7 +903,7 @@ fn lazy_link_traverse(
 }
 
 /// Return (`link_value`, `sub_path`) for the nearest ancestor that holds a DID/CID link.
-fn find_link_ancestor(path: &str, cfg: &crate::config::EgoConfig) -> Option<(String, String)> {
+fn find_link_ancestor(path: &str, cfg: &crate::config::OperatorConfig) -> Option<(String, String)> {
     let mut split_pos = path.len();
     while let Some(dot) = path[..split_pos].rfind('.') {
         split_pos = dot;
@@ -921,7 +926,7 @@ fn find_link_ancestor(path: &str, cfg: &crate::config::EgoConfig) -> Option<(Str
 /// Build and apply a `FocusMode` prompt from the current `.my.ctx.*` config values.
 ///
 /// Called after any write to `.my.ctx.*` and at login to restore the prompt.
-pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
+pub(crate) fn apply_ctx_focus(cfg: &OperatorConfig, state: &AppState) {
     let Some(runtime) = cfg.get(".my.ctx.runtime").filter(|s| !s.is_empty()) else {
         state.focus_actor.set(None);
         return;
@@ -931,7 +936,7 @@ pub(crate) fn apply_ctx_focus(cfg: &EgoConfig, state: &AppState) {
     }));
 }
 
-fn build_ctx_prompt(cfg: &EgoConfig, runtime: &str) -> String {
+fn build_ctx_prompt(cfg: &OperatorConfig, runtime: &str) -> String {
     let nick = cfg
         .get(".my.ctx.nick")
         .or_else(|| cfg.get(".my.ctx.alias"))
@@ -957,7 +962,7 @@ mod tests {
         enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
         saved_enter_target, validate_alias_set,
     };
-    use crate::{config::EgoConfig, core::Entry, state::AppState};
+    use crate::{config::OperatorConfig, core::Entry, state::AppState};
     use leptos::prelude::{GetUntracked, RwSignal, Set};
     use ma_zscheme::value::SchemeVal;
 
@@ -977,7 +982,7 @@ mod tests {
 
     #[test]
     fn subtree_listing_filters_names_and_trailing_dot_shows_values() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.alice", "did:ma:alice");
         cfg.set(".my.aliases.alice-smith", "did:ma:alice-smith");
         cfg.set(".my.aliases.sky", "did:ma:sky");
@@ -1109,7 +1114,7 @@ mod tests {
     #[test]
     fn build_enter_ctx_requires_direct_entry_kind() {
         let state = AppState::new();
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let SchemeVal::Map(thing_ctx) = build_enter_ctx(&state, Some("stone"), "thing", &cfg)
         else {
             panic!("expected ctx map");
@@ -1122,7 +1127,7 @@ mod tests {
 
     #[test]
     fn enter_target_display_uses_alias_without_changing_target() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
 
         assert_eq!(
@@ -1140,7 +1145,7 @@ mod tests {
 
     #[test]
     fn configured_inventory_requires_full_did_url() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.inv", "did:ma:k51source#inventory");
         assert_eq!(
             configured_inventory(&cfg),
@@ -1153,7 +1158,7 @@ mod tests {
 
     #[test]
     fn focus_prompt_prefixes_unaliased_runtime_did() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         let state = AppState::new();
@@ -1168,7 +1173,7 @@ mod tests {
 
     #[test]
     fn focus_prompt_keeps_aliased_runtime_display() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
@@ -1184,7 +1189,7 @@ mod tests {
 
     #[test]
     fn focus_prompt_updates_when_room_changes() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
@@ -1207,7 +1212,7 @@ mod tests {
 
     #[test]
     fn saved_enter_target_prefers_room_then_runtime() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         assert_eq!(saved_enter_target(&cfg), None);
 
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
@@ -1225,7 +1230,7 @@ mod tests {
 
     #[test]
     fn enter_without_args_without_saved_ctx_shows_error() {
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let state = AppState::new();
 
         enter_no_args(&state, config);
@@ -1240,7 +1245,7 @@ mod tests {
 
     #[test]
     fn enter_without_args_without_saved_ctx_is_silent() {
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let state = AppState::new();
 
         enter_no_args(&state, config);

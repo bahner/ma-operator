@@ -128,7 +128,7 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
 /// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
-/// blocks so zion, not the gateway, owns decoding.
+/// blocks so operator, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
     let resolver = session_resolver()?;
     let mut errors = Vec::new();

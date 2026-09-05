@@ -1,4 +1,4 @@
-# zion — Kiswahili
+# operator — Kiswahili
 lang-name = Kiswahili
 label-nick = jina la utani
 new-identity-nick-help = Chagua jina la utani kwa 間-space. Ni jina la utani tu, na unaweza kulibadilisha wakati wowote.
@@ -22,7 +22,7 @@ btn-new-endpoint = kituo kipya
 btn-import-profile = leta wasifu
 btn-show-qr = onyesha QR
 btn-scan-qr = skani QR
-qr-scan-hint = Elekeza kamera kwenye msimbo wa QR wa wasifu wa zion.
+qr-scan-hint = Elekeza kamera kwenye msimbo wa QR wa wasifu wa operator.
 qr-error-camera = kamera haipatikani: { $e }
 qr-error-too-large = wasifu ni mkubwa mno kwa msimbo wa QR
 passphrase-warning = Neno la siri lililopotea = utambulisho uliopotea. Hakuna urejeshaji unaowezekana.
@@ -48,7 +48,7 @@ error-profile-no-username = wasifu hauna jina la mtumiaji
 error-profile-no-identity = utambulisho '{ $name }' haukupatikana — leta utambulisho kwanza
 
 # ── Ujumbe wa mfumo wa terminal ───────────────────────────────────────────
-msg-logged-in = zion v{ $version } — umeingia kama { $username }
+msg-logged-in = operator v{ $version } — umeingia kama { $username }
 msg-type-help = Andika .help kupata orodha ya amri.
 msg-getting-started = Jaribu: say Hello world, look, .help, au help.
 msg-connecting = kuunganisha na iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = kuchapisha { $path }: { $e }
 doc-publish-ipld-failed = kuchapisha IPLD { $path }: { $e }
 doc-publish-error-detail = uchapishaji umeshindwa [{ $code }]: { $err }
 doc-publish-error-hint = Kidokezo: { $hint }
-doc-publish-hint-session = ingia tena ili ego iweze kufikia funguo zako za utambulisho
+doc-publish-hint-session = ingia tena ili operator iweze kufikia funguo zako za utambulisho
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = thibitisha kuwa hati ya DID ya mchapishaji imechapishwa na ina sehemu ya mwisho inayoweza kufikiwa
@@ -186,7 +186,7 @@ doc-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 path-no-verb = hakuna kitenzi `{ $verb }` kwa { $path }
 
 # ── Maandishi ya msaada — vichwa ──────────────────────────────────────────
-help-header-zion = ── amri za zion ───────────────────────────────────────────────────────────
+help-header-operator = ── amri za operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── ujumbe ────────────────────────────────────────────────────────────────
 help-header-config = ── sarufi ya usanidi wa ndani ─────────────────────────────────────────
 help-header-common = ── njia za kawaida ───────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<jina>:              futa hati
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n huhifadhi mapendeleo ya lugha yanayohusiana na utambulisho wako.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               orodhesha misimbo ya lugha inayopatikana
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) weka majibu ya 5 katika mazingira ya kikao
 
-help-topic-url =   .help/url                    kufungua zion kupitia kiungo cha URL
+help-topic-url =   .help/url                    kufungua operator kupitia kiungo cha URL
 help-topic-i18n = .help/i18n                   upendeleo wa lugha kwa utambulisho wako
 help-header-url = ── vigezo vya URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Shiriki kiungo kinachofungua zion na mpokeaji aliyewekwa mapema:
+help-url-intro =   Shiriki kiungo kinachofungua operator na mpokeaji aliyewekwa mapema:
 help-url-msg =   ?msg=<did>                   jaza mapema: @<did>!msg (ujumbe wa kawaida)
 help-url-say =   ?say=<did>                   jaza mapema: @<did>!say (kitenzi say)
 help-url-emote =   ?emote=<did>                 jaza mapema: @<did>!emote (kitenzi emote)
@@ -392,7 +392,7 @@ help-url-note =   Ingizo limejazwa mapema lakini halijatumwa — bonyeza Enter k
 help-topic-publish =   .help/publish                chapisha utambulisho wako kwenye mtandao
 help-header-publish = ── kuchapisha utambulisho ────────────────────────────────────────────────────
 help-publish-intro = Kuchapisha hufanya utambulisho wako upatikane kwenye mtandao. Wengine wanaweza kutafuta DID yako kukufikia.
-help-publish-ma = Ili kuchapisha, unahitaji 間 (runtime ya ndani) imewekwa. Inaunganisha ego na IPFS/IPNS kwa niaba yako.
+help-publish-ma = Ili kuchapisha, unahitaji 間 (runtime ya ndani) imewekwa. Inaunganisha operator na IPFS/IPNS kwa niaba yako.
 help-publish-steps = Hatua: endesha '.ma: claim [port]' kugundua ma ya ndani, kisha '.my.identity!publish @ma'.
 help-publish-without = Bila kuchapisha, wengine hawawezi kukufikia — hata kama wanajua DID yako, hawawezi kutatua endpoint yako.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               tumia .z.* kwa Scheme ya umma na .m
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme hutathmini semi za Scheme zilizowekwa ndani ya amri za zion na huingiza matokeo kwenye mstari kabla ya kutumwa.
+help-zscheme-intro = zscheme hutathmini semi za Scheme zilizowekwa ndani ya amri za operator na huingiza matokeo kwenye mstari kabla ya kutumwa.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    mfano ndani ya mstari; hutuma "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ufafanuzi hubaki kwa kipindi cha sasa cha kuingia
 help-zscheme-doc = Nyaraka: https://github.com/bahner/rust-ma-zscheme

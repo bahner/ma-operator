@@ -1,4 +1,4 @@
-# zion — Yorùbá
+# operator — Yorùbá
 lang-name = Yorùbá
 label-nick = orúkọ ìnagijẹ
 new-identity-nick-help = Yan orúkọ ìnagijẹ fún 間-space. Orúkọ ìnagijẹ lasan ni, o sì lè yí i padà nígbàkigbà.
@@ -22,7 +22,7 @@ btn-new-endpoint = ipari titun
 btn-import-profile = ko ọfọọfọ wọle
 btn-show-qr = fi QR hàn
 btn-scan-qr = ṣàyẹ̀wò QR
-qr-scan-hint = Tọ́ka kámẹ́rà sí kóòdù QR prófáìlì zion kan.
+qr-scan-hint = Tọ́ka kámẹ́rà sí kóòdù QR prófáìlì operator kan.
 qr-error-camera = kámẹ́rà kò sí: { $e }
 qr-error-too-large = prófáìlì tóbi jù fún kóòdù QR kan
 passphrase-warning = Pàdánù ọ̀rọ̀ àṣírí = pàdánù ìdánimọ̀. Kò sí ìpadàbọ̀.
@@ -48,7 +48,7 @@ error-profile-no-username = ọfọọfọ ko ni orukọ olumulo
 error-profile-no-identity = ẹrí-iní '{ $name }' ko ri — ko ẹrí-iní wọle ni akọkọ
 
 # ── Àwọn ìfiranṣẹ́ ètò terminal ──────────────────────────────────────────
-msg-logged-in = zion v{ $version } — a wọlé gẹ́gẹ́ bí { $username }
+msg-logged-in = operator v{ $version } — a wọlé gẹ́gẹ́ bí { $username }
 msg-type-help = Tẹ .help fún àtòjọ àwọn àṣẹ.
 msg-getting-started = Gbìyànjú: say Hello world, look, .help, tàbí help.
 msg-connecting = ìsopọ̀ mọ́ iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = ìtẹ jáde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ìtẹ̀jáde kùnà [{ $code }]: { $err }
 doc-publish-error-hint = Àbá: { $hint }
-doc-publish-hint-session = wọle lẹẹkansi ki ego le wọle si awọn bọtini idanimọ rẹ
+doc-publish-hint-session = wọle lẹẹkansi ki operator le wọle si awọn bọtini idanimọ rẹ
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = jẹrisi iwe-itumọ DID ti atẹjade ati pe o ni aaye ipari ti o le de ọdọ
@@ -186,7 +186,7 @@ doc-no-verb = kò sí ìgbésẹ̀ `{ $verb }` fún { $path }
 path-no-verb = kò sí ìgbésẹ̀ `{ $verb }` fún { $path }
 
 # ── Ìrànlọ́wọ́ — àwọn àkọlé ──────────────────────────────────────────────
-help-header-zion = ── àwọn àṣẹ zion ────────────────────────────────────────────────────────
+help-header-operator = ── àwọn àṣẹ operator ────────────────────────────────────────────────────────
 help-header-messaging = ── fíránṣẹ́ ─────────────────────────────────────────────────────────────
 help-header-config = ── gírámà ìtúpalẹ̀ ẹbí ────────────────────────────────────────────────
 help-header-common = ── àwọn ọ̀nà ti ó wọ́pọ̀ ─────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── titẹ 間-aaye ──────────────── ──────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Ìrànlọ́wọ́ — àwọn àṣẹ zion ────────────────────────────────────────────
+# ── Ìrànlọ́wọ́ — àwọn àṣẹ operator ────────────────────────────────────────────
 help-cmd-help =   .help                        ọ̀rọ̀ yìí
 help-cmd-clear =   .clear                       pa terminal mọ́
 help-cmd-panic =   .panic                       ọ̀nà ìgbẹ̀yìn — lò bí o bá rí ìṣòro
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              pa ìwé rẹ̀
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n tọju ayanfẹ ede ti o so mọ idanimọ rẹ.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               ṣe akojọ awọn koodu ede ti o wa
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) pa 5 idahun ni ayika igba
 
-help-topic-url =   .help/url                    ṣii zion nipasẹ asopọ URL
+help-topic-url =   .help/url                    ṣii operator nipasẹ asopọ URL
 help-topic-i18n = .help/i18n                   ààyò ede fun idanimọ rẹ
 help-header-url = ── awọn paramita URL ────────────────────────────────────────────────────────────
-help-url-intro =   Pin asopọ kan ti o ṣii zion pẹlu olugba tí a ti kọ siwaju:
+help-url-intro =   Pin asopọ kan ti o ṣii operator pẹlu olugba tí a ti kọ siwaju:
 help-url-msg =   ?msg=<did>                   kọ siwaju: @<did>!msg (ifiranṣẹ rọrun)
 help-url-say =   ?say=<did>                   kọ siwaju: @<did>!say (ọrọ-iṣe say)
 help-url-emote =   ?emote=<did>                 kọ siwaju: @<did>!emote (ọrọ-iṣe emote)
@@ -399,7 +399,7 @@ help-url-note =   Titẹ sii kọ siwaju ṣugbọn a ko firanṣẹ — tẹ En
 help-topic-publish =   .help/publish                tẹ ìdánimọ̀ rẹ jáde sórí nẹtiwọ́kì
 help-header-publish = ── títẹ ìdánimọ̀ jáde ───────────────────────────────────────────────────────
 help-publish-intro = Títẹ jáde mú kí ìdánimọ̀ rẹ lè rí lórí nẹtiwọ́kì. Àwọn mìíràn lè wà DID rẹ láti kan sí ọ.
-help-publish-ma = Láti tẹ jáde, o nílò 間 (runtime àdúgbò) tí a fi sórí. Ó so ego mọ IPFS/IPNS ní orúkọ rẹ.
+help-publish-ma = Láti tẹ jáde, o nílò 間 (runtime àdúgbò) tí a fi sórí. Ó so operator mọ IPFS/IPNS ní orúkọ rẹ.
 help-publish-steps = Àwọn ìgbésẹ̀: ṣe '.ma: claim [port]' láti rí ma àdúgbò, lẹ́hìn náà '.my.identity!publish @ma'.
 help-publish-without = Láìsí títẹ jáde, àwọn mìíràn kò lè de ọ — bí wọ́n bá mọ DID rẹ pàápàá, wọn kò lè yanjú endpoint rẹ.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -444,7 +444,7 @@ help-z-choice =   .z.* / .my.*               lo .z.* fun Scheme gbogboogbo ati .
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ń ṣe ìṣirò àwọn ìfihàn Scheme tí a fi sínú àwọn àṣẹ zion, ó sì fi èsì náà sínú ila kí a tó rán an.
+help-zscheme-intro = zscheme ń ṣe ìṣirò àwọn ìfihàn Scheme tí a fi sínú àwọn àṣẹ operator, ó sì fi èsì náà sínú ila kí a tó rán an.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    àpẹẹrẹ inú ila; ó rán "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             àwọn ìtumọ̀ máa ń dúró fún ìgbà ìwọlé lọwọlọwọ
 help-zscheme-doc = Ìwé ìtọ́nisọ́nà: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-# zion — Igbo
+# operator — Igbo
 lang-name = Igbo
 label-nick = aha otutu
 new-identity-nick-help = Họrọ aha otutu maka 間-space. Ọ bụ naanị aha otutu, ị nwere ike ịgbanwe ya mgbe ọ bụla.
@@ -22,7 +22,7 @@ btn-new-endpoint = ọnụ ụzọ ọhụrụ
 btn-import-profile = bubatuo profaịl
 btn-show-qr = gosi QR
 btn-scan-qr = nyọchaa QR
-qr-scan-hint = Tụziri igwefoto na koodu QR profaịl zion.
+qr-scan-hint = Tụziri igwefoto na koodu QR profaịl operator.
 qr-error-camera = igwefoto adịghị: { $e }
 qr-error-too-large = profaịl buru ibu karịa maka koodu QR
 passphrase-warning = Ịhapụ okwu nzuzo = ịhapụ njirimara. Ọ dịghị iweghachi.
@@ -48,7 +48,7 @@ error-profile-no-username = profaịl enweghị aha onye ọrụ
 error-profile-no-identity = identity '{ $name }' ahụghị — bubatuo identity nke mbụ
 
 # ── Ozi sistemụ terminal ──────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — abanyela dị ka { $username }
+msg-logged-in = operator v{ $version } — abanyela dị ka { $username }
 msg-type-help = Pịnye .help maka ndepụta iwu.
 msg-getting-started = Nwalee: say Hello world, look, .help, ma ọ bụ help.
 msg-connecting = na-ejikọ na iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = ịbipụta { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = mbipụta dara [{ $code }]: { $err }
 doc-publish-error-hint = Ndụmọdụ: { $hint }
-doc-publish-hint-session = banye ọzọ ka ego wee nweta igodo njirimara gị
+doc-publish-hint-session = banye ọzọ ka operator wee nweta igodo njirimara gị
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = gosi na ebipụtara akwụkwọ DID onye mbipụta ma nwee ebe njedebe enwere ike iru
@@ -186,7 +186,7 @@ doc-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 path-no-verb = enweghị ọrụ `{ $verb }` maka { $path }
 
 # ── Enyemaka — isi ────────────────────────────────────────────────────────
-help-header-zion = ── iwu zion ──────────────────────────────────────────────────────────────
+help-header-operator = ── iwu operator ──────────────────────────────────────────────────────────────
 help-header-messaging = ── ịziga ozi ─────────────────────────────────────────────────────────────
 help-header-config = ── nhazi grammar ebe obibi ──────────────────────────────────────────────
 help-header-common = ── ụzọ a na-ejikarị ─────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── na-abanye 間-ohere ─────────────── ────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Enyemaka — iwu zion ───────────────────────────────────────────────────
+# ── Enyemaka — iwu operator ───────────────────────────────────────────────────
 help-cmd-help =   .help                        ederede a
 help-cmd-clear =   .clear                       kpochaa terminal
 help-cmd-panic =   .panic                       ụzọ ikpeazụ — jiri ya mgbe ị nọ n'nsogbu
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              hichapụ akwụkwọ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n na-echekwa mmasị asụsụ jikọtara na njirimara gị.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               depụta koodu asụsụ dị
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) debe nzaghachi 5 na gburugburu nnọkọ
 
-help-topic-url =   .help/url                    mepee zion site na njikọ URL
+help-topic-url =   .help/url                    mepee operator site na njikọ URL
 help-topic-i18n = .help/i18n                   mmasị asụsụ maka njirimara gị
 help-header-url = ── ihe mmezi URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Kesaa njikọ imepee zion nwere onye nnata edebere:
+help-url-intro =   Kesaa njikọ imepee operator nwere onye nnata edebere:
 help-url-msg =   ?msg=<did>                   deeye tupu: @<did>!msg (ozi dị mfe)
 help-url-say =   ?say=<did>                   deeye tupu: @<did>!say (ngwa ọrụ say)
 help-url-emote =   ?emote=<did>                 deeye tupu: @<did>!emote (ngwa ọrụ emote)
@@ -399,7 +399,7 @@ help-url-note =   Ntinye edebere ọzọ ma ọ bụ na ezigheziela — pịa En
 help-topic-publish =   .help/publish                bipute njirimara gị na netwọk
 help-header-publish = ── ibiputa njirimara ─────────────────────────────────────────────────────────
 help-publish-intro = Ibibiputa na-eme ka a nọchie njirimara gị na netwọk. Ndị ọzọ nwere ike ịchọ DID gị iji kpọtụrụ gị.
-help-publish-ma = Iji bipute, ọ dị mkpa ịnwe 間 (runtime nke mpaghara) edepụtara. Ọ na-ejikọta ego na IPFS/IPNS n'aha gị.
+help-publish-ma = Iji bipute, ọ dị mkpa ịnwe 間 (runtime nke mpaghara) edepụtara. Ọ na-ejikọta operator na IPFS/IPNS n'aha gị.
 help-publish-steps = Usoro: bido '.ma: claim [port]' iji chọpụta ma nke mpaghara, wee mee '.my.identity!publish @ma'.
 help-publish-without = Na-enweghị ibiputa, ndị ọzọ enweghị ike iru gị — ọ bụrụn'ọ ha mata DID gị, ha enweghị ike idozi endpoint gị.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               jiri .z.* maka Scheme ọhaneze na 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme na-enyocha okwu Scheme etinyere n’iwu zion ma tinye nsonaazụ ya n’ahịrị tupu ezipu ya.
+help-zscheme-intro = zscheme na-enyocha okwu Scheme etinyere n’iwu operator ma tinye nsonaazụ ya n’ahịrị tupu ezipu ya.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    atụ n’ime ahịrị; na-eziga "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             nkọwa na-adịgide n’oge nnọkọ nbanye ugbu a
 help-zscheme-doc = Akwụkwọ: https://github.com/bahner/rust-ma-zscheme

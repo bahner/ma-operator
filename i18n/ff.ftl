@@ -1,4 +1,4 @@
-# zion — Pulaar / Fulfulde
+# operator — Pulaar / Fulfulde
 lang-name = Fulfulde
 label-nick = innde jamiroore
 new-identity-nick-help = Suɓo innde jamiroore ngam 間-space. Ko innde jamiroore tan, aɗa waawi waylude nde kala.
@@ -22,7 +22,7 @@ btn-new-endpoint = tele yimre
 btn-import-profile = naatnirgol profil
 btn-show-qr = hollu QR
 btn-scan-qr = yiylo QR
-qr-scan-hint = Fewtin kameraa e QR koodol profil zion.
+qr-scan-hint = Fewtin kameraa e QR koodol profil operator.
 qr-error-camera = kameraa alaa: { $e }
 qr-error-too-large = profil oo ɓurii mawnude wonande QR koodol
 passphrase-warning = Janfude daande sirlu = janfude ɗemngal. Taa ɗon rewaade.
@@ -48,7 +48,7 @@ error-profile-no-username = profil oo alaa innde joomiiɗo
 error-profile-no-identity = caaktoyɓe '{ $name }' alaa — naatni caaktoyɓe adande
 
 # ── Koɗe nii'am terminal ──────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — naatɗo ko { $username }
+msg-logged-in = operator v{ $version } — naatɗo ko { $username }
 msg-type-help = Winndita .help tawa hisɗaa dabaaji yimɓe.
 msg-getting-started = Eto: say Hello world, look, .help walla help.
 msg-connecting = wonde iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = yettinde { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = bayyingol woorii [{ $code }]: { $err }
 doc-publish-error-hint = Tinndinoore: { $hint }
-doc-publish-hint-session = log in kadi ngam ego waawa heɓde coktirgal maa
+doc-publish-hint-session = log in kadi ngam operator waawa heɓde coktirgal maa
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = hoolkiso winndannde DID bayyinoowo ndee yaltinaama kadi ina waɗi toɓɓere joofnirde yettotoonde
@@ -186,7 +186,7 @@ doc-no-verb = baɗe `{ $verb }` { $path } alaa
 path-no-verb = baɗe `{ $verb }` { $path } alaa
 
 # ── Ballal — kanngol ──────────────────────────────────────────────────────
-help-header-zion = ── dabaaji zion ────────────────────────────────────────────────────────────
+help-header-operator = ── dabaaji operator ────────────────────────────────────────────────────────────
 help-header-messaging = ── winnditaade ───────────────────────────────────────────────────────────
 help-header-config = ── naawre-daande tiiɗnde ──────────────────────────────────────────────────
 help-header-common = ── laabi caggal ──────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── naatde e 間- nokku ──────────────────────── ─────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Ballal — dabaaji zion ─────────────────────────────────────────────────
+# ── Ballal — dabaaji operator ─────────────────────────────────────────────────
 help-cmd-help =   .help                        deftere ndee
 help-cmd-clear =   .clear                       yaltina terminal
 help-cmd-panic =   .panic                       laawol ɓurno — faala e nder nafoore
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              yaltina takka
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ina moofta ɓural ɗemngal jokkondirngal e mbaydi maa.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               limtu kode ɗemɗe keɓaaɗe
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) jogaade jaabawuuli 5 e nder nokku jonnde
 
-help-topic-url =   .help/url                    udditde zion e nder togol URL
+help-topic-url =   .help/url                    udditde operator e nder togol URL
 help-topic-i18n = .help/i18n                   ɗemngal ɓurngal welde ngam anndinde ma
 help-header-url = ── kaaɗe URL ────────────────────────────────────────────────────────────────────
-help-url-intro =   Neltir togol udditde zion e jibinirde njemiraande:
+help-url-intro =   Neltir togol udditde operator e jibinirde njemiraande:
 help-url-msg =   ?msg=<did>                   ara-ɓulla: @<did>!msg (tiiɗnde yooltii)
 help-url-say =   ?say=<did>                   ara-ɓulla: @<did>!say (haala say)
 help-url-emote =   ?emote=<did>                 ara-ɓulla: @<did>!emote (haala emote)
@@ -399,7 +399,7 @@ help-url-note =   Ɓeydugol ɗum hollitii kono alaa ko neltaama — nannga Enter
 help-topic-publish =   .help/publish                jaatugol tigi maa to laawol
 help-header-publish = ── jaatugol tigi ────────────────────────────────────────────────────────────
 help-publish-intro = Jaatugol waɗa tigi maa woɗɗitaago dow laawol. Woɗɓe mbaawi yiylaade DID maa ngam tawtaade.
-help-publish-ma = Ngam jaatugol, a haani 間 (runtime laawol) sappidi. O hokkitoo ego e IPFS/IPNS ɗum faa maa.
+help-publish-ma = Ngam jaatugol, a haani 間 (runtime laawol) sappidi. O hokkitoo operator e IPFS/IPNS ɗum faa maa.
 help-publish-steps = Laaɓol: laato '.ma: claim [port]' ngam yiyde ma laawol, ɓe '.my.identity!publish @ma'.
 help-publish-without = Saa'i jaatugol alaa, woɗɓe ngalaa e nder naatgol — haa DID maa ngarataa, e nder endpoint maa ngalaa.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               huutoro .z.* ngam Scheme gowdi e .m
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ƴeewtata konngol Scheme gonngol e nder jamirooje zion, so ɓeyda njaltudi ndi e gorol hade ko neldaa.
+help-zscheme-intro = zscheme ƴeewtata konngol Scheme gonngol e nder jamirooje operator, so ɓeyda njaltudi ndi e gorol hade ko neldaa.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    yeru e nder gorol; nelda "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             cifagol ina heddii e oo naatgol jooni
 help-zscheme-doc = Ɗereeji: https://github.com/bahner/rust-ma-zscheme

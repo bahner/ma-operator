@@ -1,4 +1,4 @@
-# zion — አማርኛ
+# operator — አማርኛ
 lang-name = አማርኛ
 label-nick = ቅጽል ስም
 new-identity-nick-help = ለma-space ቅጽል ስም ይምረጡ። ቅጽል ስም ብቻ ነው፣ በማንኛውም ጊዜ መቀየር ይችላሉ።
@@ -22,7 +22,7 @@ btn-new-endpoint = አዲስ ነጥብ
 btn-import-profile = ፕሮፋይል አስመጣ
 btn-show-qr = QR አሳይ
 btn-scan-qr = QR ቃኝ
-qr-scan-hint = ካሜራውን ወደ zion ፕሮፋይል QR ኮድ ያመልክቱ።
+qr-scan-hint = ካሜራውን ወደ operator ፕሮፋይል QR ኮድ ያመልክቱ።
 qr-error-camera = ካሜራ አይገኝም: { $e }
 qr-error-too-large = ፕሮፋይሉ ለ QR ኮድ በጣም ትልቅ ነው
 passphrase-warning = ሚስጥራዊ ሐረጉን ማጣት = ማንነትን ማጣት። ምንም ማስታወሻ የለም።
@@ -48,7 +48,7 @@ error-profile-no-username = ፕሮፋይሉ ስም አይይዝም
 error-profile-no-identity = ማንነት '{ $name }' አልተገኘም — መጀመሪያ ማንነት ያስመጡ
 
 # ── የ terminal ስርዓት መልዕክቶች ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — እንደ { $username } ገብተዋል
+msg-logged-in = operator v{ $version } — እንደ { $username } ገብተዋል
 msg-type-help = የትዕዛዞች ዝርዝር ለማየት .help ይተይቡ።
 msg-getting-started = ለመጀመር ይሞክሩ፦ say Hello world, look, .help, ወይም help።
 msg-connecting = ወደ iroh እየተገናኘ...
@@ -186,7 +186,7 @@ doc-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 path-no-verb = ለ{ $path } `{ $verb }` ተግባር የለም
 
 # ── እርዳታ — ርዕሶች ─────────────────────────────────────────────────────────
-help-header-zion = ── zion ትዕዛዞች ─────────────────────────────────────────────────────────
+help-header-operator = ── operator ትዕዛዞች ─────────────────────────────────────────────────────────
 help-header-messaging = ── መልዕክት ──────────────────────────────────────────────────────────────
 help-header-config = ── የአካባቢ ቅርጸት ሰዋስው ─────────────────────────────────────────────────
 help-header-common = ── ተሎ ጥቅም ላይ የሚዋሉ ዱካዎች ──────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = 間-ቦታ በመግባት ላይ ──────────── ─────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── እርዳታ — zion ትዕዛዞች ──────────────────────────────────────────────────
+# ── እርዳታ — operator ትዕዛዞች ──────────────────────────────────────────────────
 help-cmd-help =   .help                        ይህ ጽሑፍ
 help-cmd-clear =   .clear                       terminal ያጽዱ
 help-cmd-panic =   .panic                       የመጨረሻ ምርጫ — ችግር ሲያጋጥምዎ ይጠቀሙ
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              ሰነዱን ሰርዝ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ከማንነትዎ ጋር የተያያዘውን የቋንቋ ምርጫ ያከማቻል።
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               የሚገኙ የቋንቋ ኮዶችን ይዘርዝሩ
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                የርቀት CRUD ይዘትን �
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) የ5 ምላሾችን በክፍለ-ጊዜው ውስጥ ያቆዩ
 
-help-topic-url =   .help/url                    zionን በURL አገናኝ ቁልፍ መክፈት
+help-topic-url =   .help/url                    operatorን በURL አገናኝ ቁልፍ መክፈት
 help-topic-i18n = .help/i18n                   ለማንነትዎ የቋንቋ ምርጫ
 help-header-url = ── የURL መለኪያዎች ───────────────────────────────────────────────────────────────────
-help-url-intro =   zionን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
+help-url-intro =   operatorን ሊከፍት የሚችል አገናኝ ያካፍሉ — ተቀባዩ አስቀድሞ ይሞላል:
 help-url-msg =   ?msg=<did>                   ቀልዱ ሞሉ: @<did>!msg (ቀላል መልዕክት)
 help-url-say =   ?say=<did>                   ቀልዱ ሞሉ: @<did>!say (say ቃሉ)
 help-url-emote =   ?emote=<did>                 ቀልዱ ሞሉ: @<did>!emote (emote ቃሉ)
@@ -399,7 +399,7 @@ help-url-note =   ግቤቱ አስቀድሞ ተሞልቷል ግን አልተላ�
 help-topic-publish =   .help/publish                ህሊናዎን ወደ ኔትወርክ ያሳትሙ
 help-header-publish = ── ህሊና ማሳተም ────────────────────────────────────────────────────────────────
 help-publish-intro = ማሳተም ህሊናዎን በኔትወርክ ላይ ሊፈለግ የሚችል ያደርጋል። ሌሎች DID ዎን ፈልገው ሊያገኙዎ ይችላሉ።
-help-publish-ma = ለማሳተም 間 (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። ego ን ከ IPFS/IPNS ጋር ይሳስራል።
+help-publish-ma = ለማሳተም 間 (አካባቢያዊ runtime) ተጭኖ መሆን አለበት። operator ን ከ IPFS/IPNS ጋር ይሳስራል።
 help-publish-steps = ደረጃዎች: አካባቢያዊ ma ለማግኘት '.ma: claim [port]' ያሂዱ፣ ከዚያም '.my.identity!publish @ma'።
 help-publish-without = ሳያሳትሙ ሌሎች ሊደርሱዎ አይችሉም — DID ዎን ቢያውቁም የርስዎን endpoint መፍታት አይችሉም።
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               ለይፋዊ Scheme .z.*፣ ለግ�
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme በzion ትእዛዞች ውስጥ የተካተቱ የScheme መግለጫዎችን ይገምግማል፣ ከመላኩም በፊት ውጤቱን በመስመሩ ውስጥ ያስገባል።
+help-zscheme-intro = zscheme በoperator ትእዛዞች ውስጥ የተካተቱ የScheme መግለጫዎችን ይገምግማል፣ ከመላኩም በፊት ውጤቱን በመስመሩ ውስጥ ያስገባል።
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    የመስመር ውስጥ ምሳሌ፤ "say 7 + 5 = 12" ይልካል
 help-zscheme-define =   (define x 12)             መግለጫዎች ለአሁኑ የመግቢያ ክፍለ ጊዜ ይቆያሉ
 help-zscheme-doc = ሰነድ: https://github.com/bahner/rust-ma-zscheme

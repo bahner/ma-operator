@@ -4,7 +4,7 @@ use leptos::prelude::*;
 use std::collections::BTreeMap;
 
 use crate::{
-    config::{persist_config, EgoConfig},
+    config::{persist_config, OperatorConfig},
     i18n::{t, tf},
     identity::storage::load_history,
     parser::verbs::ma::ConnectMaOutcome,
@@ -14,7 +14,7 @@ use crate::{
 
 pub(crate) async fn startup_local_ma(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     username: String,
     is_new: bool,
     startup_ma: Option<String>,
@@ -45,7 +45,7 @@ fn select_startup_ma(field: Option<String>) -> Option<String> {
 
 pub(crate) async fn startup_load_config(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     username: String,
     sender_did: String,
 ) {
@@ -81,7 +81,7 @@ pub(crate) async fn startup_load_config(
     config.set(cfg);
     if let Some(profile_cid) = config
         .get_untracked()
-        .get(EgoConfig::PROFILE_CID_KEY)
+        .get(OperatorConfig::PROFILE_CID_KEY)
         .filter(|cid| !cid.is_empty())
         .map(std::string::ToString::to_string)
     {
@@ -200,7 +200,7 @@ async fn resolve_did_z(sender_did: &str) -> Option<String> {
 
 async fn load_selected_z(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     username: &str,
     sender_did: &str,
     startup_z: Option<String>,
@@ -266,7 +266,7 @@ fn normalize_startup_enter(runtime: String) -> String {
     }
 }
 
-fn startup_ctx_enter(cfg: &EgoConfig) -> Option<String> {
+fn startup_ctx_enter(cfg: &OperatorConfig) -> Option<String> {
     // Auto-enter saved ctx if runtime is present — no .my.ctx.use flag needed.
     let runtime = cfg.get(".my.ctx.runtime")?.trim();
     if !runtime.starts_with("did:ma:") {
@@ -295,7 +295,7 @@ fn valid_enter_nick(nick: &str) -> bool {
     !nick.is_empty() && !nick.contains('@') && !nick.chars().any(char::is_whitespace)
 }
 
-fn standard_runtime_enter(cfg: &EgoConfig) -> Option<String> {
+fn standard_runtime_enter(cfg: &OperatorConfig) -> Option<String> {
     let nick = cfg.get(".my.ctx.nick")?.trim();
     if !valid_enter_nick(nick) || cfg.resolve_alias("ma").is_none() {
         return None;
@@ -303,7 +303,7 @@ fn standard_runtime_enter(cfg: &EgoConfig) -> Option<String> {
     Some(format!("{nick}@ma"))
 }
 
-fn apply_standard_runtime_alias(cfg: &mut EgoConfig, runtime_did: &str) -> bool {
+fn apply_standard_runtime_alias(cfg: &mut OperatorConfig, runtime_did: &str) -> bool {
     if cfg.get(".my.aliases.ma") != Some(runtime_did) {
         cfg.set(".my.aliases.ma", runtime_did);
         return true;
@@ -313,7 +313,7 @@ fn apply_standard_runtime_alias(cfg: &mut EgoConfig, runtime_did: &str) -> bool 
 
 async fn ensure_standard_runtime_alias(
     username: &str,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     runtime_did: &str,
 ) {
     let changed = config
@@ -328,7 +328,7 @@ async fn ensure_standard_runtime_alias(
 }
 
 fn startup_enter_publish_did(
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     startup_enter: Option<&str>,
 ) -> Option<String> {
     let raw = normalize_startup_enter(startup_enter?.to_string());
@@ -352,7 +352,7 @@ fn startup_enter_publish_did(
 
 fn queue_startup_context(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     discovered_runtime_did: Option<&str>,
 ) {
     let explicit = state
@@ -389,7 +389,10 @@ fn queue_startup_context(
     }
 }
 
-pub(crate) fn queue_saved_context_reentry(state: &AppState, config: RwSignal<EgoConfig>) -> bool {
+pub(crate) fn queue_saved_context_reentry(
+    state: &AppState,
+    config: RwSignal<OperatorConfig>,
+) -> bool {
     let cfg = config.get_untracked();
     let Some(runtime) = startup_ctx_enter(&cfg) else {
         return false;
@@ -421,7 +424,7 @@ pub(crate) async fn startup_load_history(state: AppState, username: String) {
 
 pub(crate) async fn startup_connect(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     sess: SessionState,
     startup_ma: Option<String>,
     startup_z: Option<String>,
@@ -481,7 +484,7 @@ pub(crate) async fn startup_connect(
     }
 }
 
-pub(crate) fn queue_startup_zscheme(state: &AppState, config: RwSignal<EgoConfig>) {
+pub(crate) fn queue_startup_zscheme(state: &AppState, config: RwSignal<OperatorConfig>) {
     let has_zscheme_source = config
         .get_untracked()
         .get(".z.scheme")
@@ -508,7 +511,7 @@ mod tests {
         startup_ctx_enter, validate_z_manifest, validate_z_source,
     };
     use crate::parser::verbs::ma::ConnectMaOutcome;
-    use crate::{config::EgoConfig, state::AppState};
+    use crate::{config::OperatorConfig, state::AppState};
     use leptos::prelude::{GetUntracked, UpdateUntracked};
     use std::collections::BTreeMap;
 
@@ -619,7 +622,7 @@ mod tests {
 
     #[test]
     fn startup_ctx_enter_reestablishes_nick_runtime_room_intent() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
         cfg.set(".my.ctx.nick", "klaim");
@@ -632,7 +635,7 @@ mod tests {
 
     #[test]
     fn startup_ctx_enter_reestablishes_unaliased_room_without_double_at() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#concourse");
         cfg.set(".my.ctx.nick", "klaim");
@@ -644,7 +647,7 @@ mod tests {
 
     #[test]
     fn startup_ctx_enter_requires_a_room_in_the_saved_runtime() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51other#concourse");
         cfg.set(".my.ctx.nick", "bad nick");
@@ -655,7 +658,7 @@ mod tests {
     fn active_invalid_saved_context_does_not_queue_runtime_entry() {
         let _owner = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        let config = leptos::prelude::RwSignal::new(OperatorConfig::new());
         config.update_untracked(|cfg| {
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
             cfg.set(".my.ctx.room", "did:ma:k51other#concourse");
@@ -668,7 +671,7 @@ mod tests {
 
     #[test]
     fn standard_runtime_alias_sets_ma_alias_only() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
 
         assert!(apply_standard_runtime_alias(&mut cfg, "did:ma:k51runtime"));
 
@@ -679,7 +682,7 @@ mod tests {
 
     #[test]
     fn standard_runtime_alias_preserves_existing_nick() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.ctx.nick", "klaim");
 
         assert!(apply_standard_runtime_alias(&mut cfg, "did:ma:k51runtime"));
@@ -693,7 +696,7 @@ mod tests {
     fn startup_zscheme_eval_precedes_startup_context() {
         let _owner = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        let config = leptos::prelude::RwSignal::new(OperatorConfig::new());
         config.update_untracked(|cfg| {
             cfg.set(".z.scheme", "(define x 1)");
             cfg.set(".my.ctx.nick", "klaim");
@@ -721,7 +724,7 @@ mod tests {
     fn empty_zscheme_source_does_not_enter_the_startup_batch() {
         let _owner = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = leptos::prelude::RwSignal::new(EgoConfig::new());
+        let config = leptos::prelude::RwSignal::new(OperatorConfig::new());
         config.update_untracked(|cfg| {
             cfg.set(".z.scheme", "   ");
         });

@@ -1,4 +1,4 @@
-# zion — اردو
+# operator — اردو
 lang-name = اردو
 label-nick = عرفی نام
 new-identity-nick-help = 間-space کے لیے عرفی نام منتخب کریں۔ یہ صرف عرفی نام ہے اور آپ اسے کسی بھی وقت بدل سکتے ہیں۔
@@ -22,7 +22,7 @@ btn-new-endpoint = نئی اینڈپوائنٹ
 btn-import-profile = پروفائل درآمد کریں
 btn-show-qr = QR دکھائیں
 btn-scan-qr = QR اسکین کریں
-qr-scan-hint = کیمرے کو zion پروفائل کے QR کوڈ کی طرف کریں۔
+qr-scan-hint = کیمرے کو operator پروفائل کے QR کوڈ کی طرف کریں۔
 qr-error-camera = کیمرہ دستیاب نہیں: { $e }
 qr-error-too-large = پروفائل QR کوڈ کے لیے بہت بڑا ہے
 passphrase-warning = پاس فریز کھونے کا مطلب شناخت کھونا ہے۔ کوئی بحالی ممکن نہیں۔
@@ -48,7 +48,7 @@ error-profile-no-username = پروفائل میں صارف نام نہیں ہے
 error-profile-no-identity = شناخت '{ $name }' نہیں ملی — پہلے شناخت درآمد کریں
 
 # ── ٹرمینل سسٹم پیغامات ──────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username } کے طور پر لاگ ان
+msg-logged-in = operator v{ $version } — { $username } کے طور پر لاگ ان
 msg-type-help = کمانڈ کی فہرست کے لیے .help ٹائپ کریں۔
 msg-getting-started = شروع کرنے کے لیے آزمائیں: say Hello world، look، .help، یا help۔
 msg-connecting = iroh سے منسلک ہو رہا ہے...
@@ -186,7 +186,7 @@ doc-no-verb = { $path } کے لیے `{ $verb }` فعل نہیں
 path-no-verb = { $path } کے لیے `{ $verb }` فعل نہیں
 
 # ── مدد — سرخیاں ──────────────────────────────────────────────────────────
-help-header-zion = ── zion کمانڈز ────────────────────────────────────────────────────────────
+help-header-operator = ── operator کمانڈز ────────────────────────────────────────────────────────────
 help-header-messaging = ── پیغام رسانی ────────────────────────────────────────────────────────────
 help-header-config = ── مقامی ترتیب کا قواعد ──────────────────────────────────────────────────
 help-header-common = ── عام راستے ─────────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 間-اسپیس میں داخل ہونا ───────────────────────────── ──────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── مدد — zion کمانڈز ──────────────────────────────────────────────────────
+# ── مدد — operator کمانڈز ──────────────────────────────────────────────────────
 help-cmd-help =   .help                        یہ متن
 help-cmd-clear =   .clear                       ٹرمینل صاف کریں
 help-cmd-panic =   .panic                       آخری چارہ — مسئلہ ہونے پر استعمال کریں
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              دستاویز حذف کریں
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n آپ کی شناخت سے منسلک زبان کی ترجیح کو اسٹور کرتا ہے۔
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               دستیاب زبان کے کوڈز کی فہرست بنائیں
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) 5 جوابات کو سیشن کے ماحول میں رکھیں
 
-help-topic-url =   .help/url                    URL لنک کے ذریعے zion کھولنا
+help-topic-url =   .help/url                    URL لنک کے ذریعے operator کھولنا
 help-topic-i18n = .help/i18n                   آپ کی شناخت کے لیے زبان کی ترجیح
 help-header-url = ── URL پیرامیٹرز ─────────────────────────────────────────────────────────────────
-help-url-intro =   ایک لنک شیئر کریں جو پہلے سے بھرے ہوئے وصول کنندہ کے ساتھ zion کھولے:
+help-url-intro =   ایک لنک شیئر کریں جو پہلے سے بھرے ہوئے وصول کنندہ کے ساتھ operator کھولے:
 help-url-msg =   ?msg=<did>                   پہلے سے بھرتا ہے: @<did>!msg (سادہ پیغام)
 help-url-say =   ?say=<did>                   پہلے سے بھرتا ہے: @<did>!say (say فعل)
 help-url-emote =   ?emote=<did>                 پہلے سے بھرتا ہے: @<did>!emote (emote فعل)
@@ -399,7 +399,7 @@ help-url-note =   ان پٹ پہلے سے بھرا ہوا ہے لیکن بھیج
 help-topic-publish =   .help/publish                نیٹ ورک پر اپنی شناخت شائع کریں
 help-header-publish = ── شناخت کی اشاعت ───────────────────────────────────────────────────────────
 help-publish-intro = اشاعت آپ کی شناخت کو نیٹ ورک پر قابلِ دریافت بناتی ہے۔ دوسرے آپ کا DID تلاش کر کے آپ سے رابطہ کر سکتے ہیں۔
-help-publish-ma = شائع کرنے کے لیے آپ کو 間 (مقامی رن ٹائم) نصب چاہیے۔ یہ آپ کی جانب سے ego کو IPFS/IPNS سے جوڑتا ہے۔
+help-publish-ma = شائع کرنے کے لیے آپ کو 間 (مقامی رن ٹائم) نصب چاہیے۔ یہ آپ کی جانب سے operator کو IPFS/IPNS سے جوڑتا ہے۔
 help-publish-steps = اقدامات: مقامی ma دریافت کرنے کے لیے '.ma: claim [port]' چلائیں، پھر '.my.identity!publish @ma'۔
 help-publish-without = اشاعت کے بغیر دوسرے آپ تک نہیں پہنچ سکتے — چاہے وہ آپ کا DID جانتے ہوں، وہ آپ کا endpoint حل نہیں کر سکتے۔
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               عوامی Scheme کے لیے .z.* 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme zion کمانڈز میں شامل Scheme اظہارات کو پرکھتا ہے اور بھیجنے سے پہلے نتیجہ اسی لائن میں جوڑ دیتا ہے۔
+help-zscheme-intro = zscheme operator کمانڈز میں شامل Scheme اظہارات کو پرکھتا ہے اور بھیجنے سے پہلے نتیجہ اسی لائن میں جوڑ دیتا ہے۔
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    اِن لائن مثال؛ "say 7 + 5 = 12" بھیجتا ہے
 help-zscheme-define =   (define x 12)             تعریفیں موجودہ لاگ اِن سیشن میں برقرار رہتی ہیں
 help-zscheme-doc = دستاویزات: https://github.com/bahner/rust-ma-zscheme

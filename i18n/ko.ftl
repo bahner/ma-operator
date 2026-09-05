@@ -1,4 +1,4 @@
-# zion — 한국어
+# operator — 한국어
 lang-name = 한국어
 label-nick = 별명
 new-identity-nick-help = 間-space에서 사용할 별명을 고르세요. 그냥 별명이며 언제든 바꿀 수 있습니다.
@@ -22,7 +22,7 @@ btn-new-endpoint = 새 엔드포인트
 btn-import-profile = 프로필 가져오기
 btn-show-qr = QR 보기
 btn-scan-qr = QR 스캔
-qr-scan-hint = 카메라를 zion 프로필 QR 코드에 맞추세요.
+qr-scan-hint = 카메라를 operator 프로필 QR 코드에 맞추세요.
 qr-error-camera = 카메라를 사용할 수 없음: { $e }
 qr-error-too-large = 프로필이 QR 코드에 담기에 너무 큽니다
 passphrase-warning = 암호문을 잃으면 신원을 잃습니다. 복구할 수 없습니다.
@@ -48,7 +48,7 @@ error-profile-no-username = 프로필에 사용자 이름이 없습니다
 error-profile-no-identity = 신원 '{ $name }' 을 찾을 수 없습니다 — 먼저 신원을 가져오세요
 
 # ── 터미널 시스템 메시지 ──────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username }(으)로 로그인됨
+msg-logged-in = operator v{ $version } — { $username }(으)로 로그인됨
 msg-type-help = 명령어 목록을 보려면 .help를 입력하세요.
 msg-getting-started = 시작하려면 say Hello world, look, .help 또는 help를 입력해 보세요.
 msg-connecting = iroh에 연결 중...
@@ -167,7 +167,7 @@ doc-publish-failed = 게시 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = 게시 실패 [{ $code }]: { $err }
 doc-publish-error-hint = 힌트: { $hint }
-doc-publish-hint-session = ego가 신원 키에 접근할 수 있도록 다시 로그인하세요
+doc-publish-hint-session = operator가 신원 키에 접근할 수 있도록 다시 로그인하세요
 doc-publish-hint-target = 유효한 게시자 DID 또는 bare did:ma:<ipns>로 해석되는 별칭을 사용하세요
 doc-publish-hint-network = 間 런타임과 IPFS에 접근 가능한지 확인하고 다시 시도하세요
 doc-publish-hint-resolve = 게시자의 DID 문서가 게시되어 있고 접근 가능한 엔드포인트를 포함하는지 확인하세요
@@ -186,7 +186,7 @@ doc-no-verb = { $path }에 `{ $verb }` 동사가 없음
 path-no-verb = { $path }에 `{ $verb }` 동사가 없음
 
 # ── 도움말 — 헤더 ─────────────────────────────────────────────────────────
-help-header-zion = ── zion 명령어 ───────────────────────────────────────────────────────────
+help-header-operator = ── operator 명령어 ───────────────────────────────────────────────────────────
 help-header-messaging = ── 메시징 ────────────────────────────────────────────────────────────────
 help-header-config = ── 로컬 설정 문법 ─────────────────────────────────────────────────────
 help-header-common = ── 공통 경로 ─────────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 사이공간 진입 ────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── 도움말 — zion 명령어 ──────────────────────────────────────────────────
+# ── 도움말 — operator 명령어 ──────────────────────────────────────────────────
 help-cmd-help =   .help                        이 텍스트
 help-cmd-clear =   .clear                       터미널 지우기
 help-cmd-panic =   .panic                       최후 수단 — 문제 발생 시 사용
@@ -360,7 +360,7 @@ help-topic-doc =   .help/doc                    문서
 help-topic-actor =   .help/actor                  원격 actor
 help-topic-z =   .help/z                      공개 및 비공개 Scheme 콘텐츠
 help-topic-zscheme =   .help/zscheme               인라인 Scheme 식과 문서
-help-topic-url =   .help/url                    URL 링크로 zion 열기
+help-topic-url =   .help/url                    URL 링크로 operator 열기
 help-topic-i18n = .help/i18n                   귀하의 신원에 대한 언어 기본 설정
 help-unknown-topic =   .help/{ $topic }: 알 수 없는 주제
 
@@ -386,7 +386,7 @@ help-actor-head = (@actor/path)                31에서 원격 CRUD 콘텐츠 �
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) 세션 환경에서 5 응답 유지
 help-header-url = ── URL 매개변수 ──────────────────────────────────────────────────────────────
-help-url-intro =   수신자가 미리 채워진 zion을 여는 링크를 공유하세요:
+help-url-intro =   수신자가 미리 채워진 operator을 여는 링크를 공유하세요:
 help-url-msg =   ?msg=<did>                   미리 채움: @<did>!msg (텍스트 메시지)
 help-url-say =   ?say=<did>                   미리 채움: @<did>!say (say 동사)
 help-url-emote =   ?emote=<did>                 미리 채움: @<did>!emote (emote 동사)
@@ -398,7 +398,7 @@ help-url-note =   입력란이 채워지지만 전송되지 않음 — Enter 키
 help-topic-publish =   .help/publish                네트워크에 신원 게시하기
 help-header-publish = ── 신원 게시 ─────────────────────────────────────────────────────────────────
 help-publish-intro = 게시하면 네트워크에서 신원을 찾을 수 있습니다. 다른 사람들이 DID를 검색하여 연락할 수 있습니다.
-help-publish-ma = 게시하려면 間(로컬 런타임)가 설치되어 있어야 합니다. ego를 IPFS/IPNS에 연결해줍니다.
+help-publish-ma = 게시하려면 間(로컬 런타임)가 설치되어 있어야 합니다. operator를 IPFS/IPNS에 연결해줍니다.
 help-publish-steps = 단계: '.ma: claim [port]'로 로컬 ma를 감지한 후 '.my.identity!publish @ma'를 실행하세요.
 help-publish-without = 게시하지 않으면 다른 사람들이 당신에게 연락할 수 없습니다 — DID를 알더라도 endpoint를 확인할 수 없습니다.
 profile-fetch-did-resolve-failed = 아직 게시되지 않았습니다. 먼저 28를 실행한 다음 프로필 67를 실행하세요.
@@ -442,7 +442,7 @@ help-z-choice =   .z.* / .my.*               공개 Scheme에는 .z.*를, 비공
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme은 zion 명령에 포함된 Scheme 식을 평가하고, 보내기 전에 그 결과를 줄 안에 삽입합니다.
+help-zscheme-intro = zscheme은 operator 명령에 포함된 Scheme 식을 평가하고, 보내기 전에 그 결과를 줄 안에 삽입합니다.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    인라인 예시; "say 7 + 5 = 12"를 보냅니다
 help-zscheme-define =   (define x 12)             정의는 현재 로그인 세션 동안 유지됩니다
 help-zscheme-doc = 문서: https://github.com/bahner/rust-ma-zscheme

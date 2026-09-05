@@ -2,7 +2,7 @@ use leptos::ev::SubmitEvent;
 use leptos::prelude::*;
 
 use crate::{
-    config::EgoConfig,
+    config::OperatorConfig,
     i18n::{t, tf},
     identity::{change_passphrase, load_identity, save_identity, validate_new_passphrase},
     profile_crypto,
@@ -11,7 +11,7 @@ use crate::{
 
 #[component]
 pub fn SecretModal(state: AppState) -> impl IntoView {
-    let config = use_context::<RwSignal<EgoConfig>>().expect("EgoConfig missing");
+    let config = use_context::<RwSignal<OperatorConfig>>().expect("OperatorConfig missing");
     let current = RwSignal::new(String::new());
     let new_passphrase = RwSignal::new(String::new());
     let confirmation = RwSignal::new(String::new());

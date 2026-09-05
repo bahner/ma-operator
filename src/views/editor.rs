@@ -3,7 +3,7 @@
 /// Driven by `RwSignal<Option<EditorContext>>`. When `Some`, renders a
 /// full-screen overlay with a CM6 editor and action buttons:
 ///
-/// - **Save** — persist the buffer to `EgoConfig`, keeping the editor open.
+/// - **Save** — persist the buffer to `OperatorConfig`, keeping the editor open.
 /// - **Eval** — run the _current buffer_ (not necessarily saved) line-by-
 ///   line through the terminal evaluator, then close the editor.
 /// - **Cancel** — close without saving.
@@ -15,7 +15,7 @@
 use leptos::prelude::*;
 use wasm_bindgen::prelude::*;
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
 use crate::state::{AppState, PendingKind};
@@ -70,7 +70,7 @@ pub enum EditorMode {
     /// Edit a raw config key: Save + Cancel, no eval.
     /// The editor content is written directly to `key` (not `<key>.content`).
     ConfigEdit {
-        /// The `EgoConfig` key to write on save, e.g. `".my.acl"`.
+        /// The `OperatorConfig` key to write on save, e.g. `".my.acl"`.
         key: String,
     },
     /// Edit the root transport ACL of a remote runtime: Publish + Cancel.
@@ -182,7 +182,7 @@ const EDITOR_EL_ID: &str = "ma-codemirror-host";
 /// Returns `None` if the field isn't a valid `@alias/path` or `@did:ma:…/path`
 /// reference (e.g. unknown alias, or no `/path` component) — callers should
 /// fall back to the original `EditorMode` captured when the editor opened.
-fn resolve_save_to(save_to: &str, config: &EgoConfig) -> Option<(String, String)> {
+fn resolve_save_to(save_to: &str, config: &OperatorConfig) -> Option<(String, String)> {
     let rest = save_to.trim().strip_prefix('@')?;
     let slash = rest.find('/')?;
     let (alias_or_did, path) = rest.split_at(slash);
@@ -202,7 +202,7 @@ fn resolve_save_to(save_to: &str, config: &EgoConfig) -> Option<(String, String)
 #[component]
 pub fn EditorModal(
     show: RwSignal<Option<EditorContext>>,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     /// Callback invoked when Eval is clicked; receives the buffer text.
     /// The caller is responsible for running it through the evaluator.
     on_eval: Callback<String>,

@@ -9,7 +9,7 @@ use ma_core::CRUD_PROTOCOL_ID;
 use wasm_bindgen_futures::spawn_local;
 
 use crate::{
-    config::{persist_config, EgoConfig},
+    config::{persist_config, OperatorConfig},
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
@@ -27,7 +27,7 @@ use crate::{
 
 pub async fn run_inbox_poll(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
     loop {
@@ -49,7 +49,7 @@ pub async fn run_inbox_poll(
 fn route_incoming(
     incoming: IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
     if !acl_gate(&incoming, state, config) {
@@ -81,7 +81,7 @@ fn dispatch_reply(
     incoming: IncomingMessage,
     display: String,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) {
     // Scheme-initiated call: route the reply directly to the waiting evaluator.
@@ -221,7 +221,7 @@ fn handle_did_entry_reply(
     msg_id: &str,
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> bool {
     let Some(entry) = did_entry_reply(&incoming.content) else {
         return false;
@@ -324,12 +324,12 @@ pub(crate) fn root_enter_reply(content: &[u8]) -> Option<String> {
 /// Forward unsolicited actor-authored client terms to zscheme. Returns true
 /// when handled.
 ///
-/// Zion does not decide which verbs are interesting: every term reaches
+/// Operator does not decide which verbs are interesting: every term reaches
 /// `on-event`, and events.zscheme ignores the ones it does not want.
 fn handle_client_term(
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> bool {
     if incoming.reply_to.is_some() || incoming.content_type != ma_core::CONTENT_TYPE_TERM {
         return false;
@@ -352,7 +352,7 @@ fn forward_client_event(
     event: String,
     args: Vec<crate::scheme::SchemeVal>,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> bool {
     if !crate::scheme::has_event_handler() {
         return false;
@@ -397,7 +397,7 @@ fn cbor_text(value: &ciborium::Value) -> Option<&str> {
 // room ctx. They are semantically distinct — the similar spelling is a
 // coincidence, not confusable naming — so the lint is suppressed here.
 #[allow(clippy::similar_names)]
-fn stale_ctx_error(incoming: &IncomingMessage, text: Option<&str>, cfg: &EgoConfig) -> bool {
+fn stale_ctx_error(incoming: &IncomingMessage, text: Option<&str>, cfg: &OperatorConfig) -> bool {
     let Some(text) = text else {
         return false;
     };
@@ -424,7 +424,7 @@ fn stale_ctx_error(incoming: &IncomingMessage, text: Option<&str>, cfg: &EgoConf
         || root.as_deref() == Some(incoming.from.as_str())
 }
 
-fn maybe_queue_ctx_recovery(cmd_id: u64, state: &AppState, config: RwSignal<EgoConfig>) {
+fn maybe_queue_ctx_recovery(cmd_id: u64, state: &AppState, config: RwSignal<OperatorConfig>) {
     if state.entries.with_untracked(|entries| {
         entries.iter().any(|entry| {
             matches!(entry, crate::core::Entry::Command(command)
@@ -501,13 +501,17 @@ fn normalize_enter_target(target: &str) -> String {
 // ── Per-message filters ────────────────────────────────────────────────────
 
 /// Returns false (and pushes a "blocked" message) when the ACL denies.
-fn acl_gate(incoming: &IncomingMessage, state: &AppState, config: RwSignal<EgoConfig>) -> bool {
+fn acl_gate(
+    incoming: &IncomingMessage,
+    state: &AppState,
+    config: RwSignal<OperatorConfig>,
+) -> bool {
     if incoming.reply_to.is_some() {
         return true; // replies are never filtered
     }
     let cap = crate::acl::CAP_INBOX;
     let cfg = config.get_untracked();
-    if crate::acl::check_ego_acl(&cfg, &incoming.from, cap) {
+    if crate::acl::check_operator_acl(&cfg, &incoming.from, cap) {
         return true;
     }
     let from_disp = alias_display(&cfg, &incoming.from);
@@ -519,7 +523,7 @@ fn acl_gate(incoming: &IncomingMessage, state: &AppState, config: RwSignal<EgoCo
 fn handle_inbox_message(
     incoming: &IncomingMessage,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> bool {
     if incoming.reply_to.is_some()
         || incoming.message_type != ma_core::MESSAGE_TYPE_MESSAGE
@@ -599,7 +603,7 @@ fn loopback_suppress(incoming: &IncomingMessage) -> bool {
 }
 
 /// Build the display string for an incoming message (alias substitution).
-fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
+fn format_display(incoming: &IncomingMessage, config: RwSignal<OperatorConfig>) -> String {
     let cfg = config.get_untracked();
     let mut display = cfg.substitute_display_dids(&incoming.display);
     if incoming.service == crate::transport::LIVE_PROTOCOL_ID {
@@ -623,13 +627,13 @@ fn format_display(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> St
 /// Format a `did:ma:<id>[#fragment]` DID-URL for display, substituting a
 /// known alias (`@alias` / `@alias#fragment`) when one exists, or falling
 /// back to the DID-URL unchanged. Shared by `acl_gate` and `display_sender`.
-fn alias_display(cfg: &EgoConfig, did_url: &str) -> String {
+fn alias_display(cfg: &OperatorConfig, did_url: &str) -> String {
     cfg.alias_display(did_url)
         .unwrap_or_else(|| did_url.to_string())
 }
 
 /// Alias-resolved sender string for display in inbox notifications.
-fn display_sender(incoming: &IncomingMessage, config: RwSignal<EgoConfig>) -> String {
+fn display_sender(incoming: &IncomingMessage, config: RwSignal<OperatorConfig>) -> String {
     let cfg = config.get_untracked();
     alias_display(&cfg, &incoming.from)
 }
@@ -676,7 +680,7 @@ mod tests {
     fn awaited_ok_reply_is_silent_success() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let show_editor = RwSignal::new(None);
         let receiver = crate::state::AwaitingReply::register("request-1".to_string());
         let mut reply = incoming("did:ma:runtime#root", ":ok");
@@ -704,7 +708,7 @@ mod tests {
     fn awaited_error_reply_is_propagated_silently() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let show_editor = RwSignal::new(None);
         let receiver = crate::state::AwaitingReply::register("request-1".to_string());
         let mut reply = incoming("did:ma:runtime#root", "publication refused");
@@ -804,7 +808,7 @@ mod tests {
     #[test]
     fn format_display_shortens_did_url_in_text() {
         let _runtime = leptos::prelude::Owner::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         config.update(|cfg| cfg.set(".my.aliases.sky", "did:ma:k51qzabc"));
         assert_eq!(
             format_display(
@@ -818,7 +822,7 @@ mod tests {
     #[test]
     fn format_display_prefers_exact_did_url_alias() {
         let _runtime = leptos::prelude::Owner::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         config.update(|cfg| {
             cfg.set(".my.aliases.sky", "did:ma:k51qzabc");
             cfg.set(".my.aliases.home", "did:ma:k51qzabc#room");
@@ -835,7 +839,7 @@ mod tests {
     #[test]
     fn format_display_marks_live_service_messages() {
         let _runtime = leptos::prelude::Owner::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let mut live = incoming("did:ma:room", "dial request");
         live.service = crate::transport::LIVE_PROTOCOL_ID.to_string();
 
@@ -846,7 +850,7 @@ mod tests {
     fn explicit_reply_bypasses_avatar_reply_handler() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let show_editor = RwSignal::new(None);
         crate::scheme::init_session_env();
         block_on(crate::scheme::load_content(
@@ -903,7 +907,7 @@ mod tests {
     fn crud_service_selects_structured_reply_decoding() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let show_editor = RwSignal::new(None);
         let cmd_id = state.push_command("@ma/entities");
         state.pending_requests.update(|requests| {
@@ -1043,7 +1047,7 @@ mod tests {
     fn matching_entry_reply_updates_focus_prompt() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
         let config = RwSignal::new(cfg);
         let room = "did:ma:k51runtime#garden";
@@ -1111,7 +1115,7 @@ mod tests {
     fn ctx_receipt_applies_flat_avatar_ctx_fields() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let payload = ciborium::Value::Array(vec![
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":kind".to_string()),
@@ -1148,7 +1152,7 @@ mod tests {
     fn duplicate_ctx_receipt_skips_focus_tail_and_text_updates() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let payload = ciborium::Value::Array(vec![
             ciborium::Value::Array(vec![
                 ciborium::Value::Text(":kind".to_string()),
@@ -1203,7 +1207,7 @@ mod tests {
     fn changed_ctx_receipt_updates_focus() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let payload = |nick: &str| {
             ciborium::Value::Array(vec![
                 ciborium::Value::Array(vec![
@@ -1245,7 +1249,7 @@ mod tests {
     fn ctx_receipt_resolves_matching_pending_enter_command() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let room = "did:ma:k51target#concourse";
         let cmd_id = state.push_command(format!(".enter {room}"));
         state.pending_enter.set(Some(crate::state::PendingEnter {
@@ -1322,7 +1326,7 @@ mod tests {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
         let room = "did:ma:k51runtime#concourse";
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
@@ -1372,7 +1376,7 @@ mod tests {
     fn unknown_fragment_error_from_runtime_triggers_recovery() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
@@ -1425,7 +1429,7 @@ mod tests {
     fn recovery_reenters_with_unqualified_runtime_on_unknown_fragment() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let missing_room = "NONEXISTENT_FRAGMENT_SENTINEL";
         config.update(|cfg| {
             cfg.set(".my.ctx.use", "true");
@@ -1453,7 +1457,7 @@ mod tests {
     fn recovery_does_not_retry_a_failed_enter() {
         let _runtime = leptos::prelude::Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         config.update(|cfg| {
             cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
             cfg.set(".my.ctx.nick", "foo");

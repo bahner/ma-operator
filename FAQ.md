@@ -1,8 +1,8 @@
-# Zion FAQ
+# Operator FAQ
 
 ## Why does a bare name not evaluate as Scheme?
 
-Zion shares one prompt between terminal commands and Scheme. A bare line such
+Operator shares one prompt between terminal commands and Scheme. A bare line such
 as `foo` is therefore terminal input, not a Scheme expression. Put Scheme in
 parentheses:
 
@@ -86,12 +86,12 @@ There must be a space between the primitive name and its argument:
 ## Why is successful `include` silent?
 
 `include`, `define`, `display`, and `newline` have effects but return `nil`.
-Zion deliberately suppresses successful `nil` output, so the terminal does not
+Operator deliberately suppresses successful `nil` output, so the terminal does not
 fill with `()` lines. Errors still appear in red.
 
 ## What does `.z.scheme!eval` do, and why can it take a moment?
 
-`.z.scheme!eval` runs the saved `.z.scheme` source as a normal Zion
+`.z.scheme!eval` runs the saved `.z.scheme` source as a normal Operator
 script. The command stays dark green while remote content is loading, turns bright
 green on success, and turns red with the bootstrap error on failure.
 
@@ -101,7 +101,7 @@ Giving `!eval` a content path combines fetch and eval explicitly:
 .z.foo!eval /ipfs/<cid>
 ```
 
-Zion fetches the source, persistently creates or replaces `.z.foo`, and then
+Operator fetches the source, persistently creates or replaces `.z.foo`, and then
 evaluates the stored value.  If fetching or persistence fails, evaluation does
 not start.  If evaluation fails, the newly fetched `.z.foo` remains saved.
 Use `.z.foo!fetch /ipfs/<cid>` to fetch and save without executing.

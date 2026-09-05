@@ -1,4 +1,4 @@
-# zion — Malagasy
+# operator — Malagasy
 lang-name = Malagasy
 label-nick = anaram-bositra
 new-identity-nick-help = Misafidiana anaram-bositra ho an'ny 間-space. Anaram-bositra fotsiny io ary azo ovaina na oviana na oviana.
@@ -22,7 +22,7 @@ btn-new-endpoint = fanombohana vaovao
 btn-import-profile = ampidira profily
 btn-show-qr = asehoy ny QR
 btn-scan-qr = jereo ny QR
-qr-scan-hint = Atodiho amin'ny kaody QR profily zion ny fakan-tsary.
+qr-scan-hint = Atodiho amin'ny kaody QR profily operator ny fakan-tsary.
 qr-error-camera = tsy misy fakan-tsary: { $e }
 qr-error-too-large = lehibe loatra ho an'ny kaody QR ny profily
 passphrase-warning = Very ny teny miafina = very ny mombamomba. Tsy misy famerenana.
@@ -48,7 +48,7 @@ error-profile-no-username = tsy misy anarana mpampiasa ao amin'ny profily
 error-profile-no-identity = ny mombamomba '{ $name }' tsy hita — ampidira mombamomba aloha
 
 # ── Hafatry ny rafitra terminal ────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — niditra amin'ny { $username }
+msg-logged-in = operator v{ $version } — niditra amin'ny { $username }
 msg-type-help = Soraty .help mba hahazo lisitry ny baiko.
 msg-getting-started = Andramo: say Hello world, look, .help, na help.
 msg-connecting = mampifandray amin'ny iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = famoahana { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = famoahana tsy nahomby [{ $code }]: { $err }
 doc-publish-error-hint = Torohevitra: { $hint }
-doc-publish-hint-session = midira indray mba ahafahan'i ego miditra amin'ny fanalahidin'ny mombamomba anao
+doc-publish-hint-session = midira indray mba ahafahan'i operator miditra amin'ny fanalahidin'ny mombamomba anao
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = manamarina fa navoaka ny antontan-taratasin'ny mpanonta DID ary misy teboka farany azo tratrarina
@@ -186,7 +186,7 @@ doc-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 path-no-verb = tsy misy fiasa `{ $verb }` ho an'ny { $path }
 
 # ── Fanampiana — lohateny ─────────────────────────────────────────────────
-help-header-zion = ── baiko zion ─────────────────────────────────────────────────────────────
+help-header-operator = ── baiko operator ─────────────────────────────────────────────────────────────
 help-header-messaging = ── hafatra ───────────────────────────────────────────────────────────────
 help-header-config = ── fitsipi-teny fikajiana toerana ────────────────────────────────────────
 help-header-common = ── lalan-kely mahazatra ──────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── miditra 間-space ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Fanampiana — baiko zion ───────────────────────────────────────────────
+# ── Fanampiana — baiko operator ───────────────────────────────────────────────
 help-cmd-help =   .help                        lahatsoratra ity
 help-cmd-clear =   .clear                       manadio terminal
 help-cmd-panic =   .panic                       fanalana farany — ampiasao raha ahitana olana
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              fafao antontan-taratasy
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n dia mitahiry ny safidin'ny fiteny mifamatotra amin'ny mombamomba anao.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               mitanisa kaody fiteny misy
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) mitazona valiny 5 ao amin'ny tontolon'ny session
 
-help-topic-url =   .help/url                    fanokafana zion amin'ny rohy URL
+help-topic-url =   .help/url                    fanokafana operator amin'ny rohy URL
 help-topic-i18n = .help/i18n                   safidin'ny fiteny amin'ny maha-ianao anao
 help-header-url = ── ampahany URL ─────────────────────────────────────────────────────────────────
-help-url-intro =   Zarao rohy hanokafana zion miaraka amin'ny mpandray efa voatondro:
+help-url-intro =   Zarao rohy hanokafana operator miaraka amin'ny mpandray efa voatondro:
 help-url-msg =   ?msg=<did>                   fenoina mialoha: @<did>!msg (hafatra tsotra)
 help-url-say =   ?say=<did>                   fenoina mialoha: @<did>!say (matoanteny say)
 help-url-emote =   ?emote=<did>                 fenoina mialoha: @<did>!emote (matoanteny emote)
@@ -399,7 +399,7 @@ help-url-note =   Fenoina mialoha ny sondrana fa tsy nalefa — tsindrio Enter h
 help-topic-publish =   .help/publish                famoahana ny mombamombao eo amin'ny tambajotra
 help-header-publish = ── famoahana mombamomba ─────────────────────────────────────────────────────
 help-publish-intro = Ny famoahana dia mahatonga ny mombamombao ho hita eo amin'ny tambajotra. Ny hafa dia afaka mitady ny DID-nao hahafantarany anao.
-help-publish-ma = Mba hamoahana, mila ny 間 (runtime eo an-toerana) natomboka. Mampifandray ny ego amin'ny IPFS/IPNS ho anao izany.
+help-publish-ma = Mba hamoahana, mila ny 間 (runtime eo an-toerana) natomboka. Mampifandray ny operator amin'ny IPFS/IPNS ho anao izany.
 help-publish-steps = Dingana: ampiasao '.ma: claim [port]' hikaroana ny ma eo an-toerana, ary '.my.identity!publish @ma'.
 help-publish-without = Raha tsy voavoaka, tsy afaka mahatratra anao ny hafa — na dia mahalala ny DID-nao aza izy ireo, tsy afaka mamaha ny endpoint-nao.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               ampio .z.* ho an'ny Scheme ho an'ny
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme manombana fanehoana Scheme tafiditra ao amin’ny baikon’i zion ary mampiditra ny valiny ao amin’ilay andalana alohan’ny handefasana azy.
+help-zscheme-intro = zscheme manombana fanehoana Scheme tafiditra ao amin’ny baikon’i operator ary mampiditra ny valiny ao amin’ilay andalana alohan’ny handefasana azy.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ohatra anaty andalana; mandefa "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             mitoetra mandritra ny fidirana ankehitriny ny famaritana
 help-zscheme-doc = Tahiry: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-//! Minimal i18n support for zion.
+//! Minimal i18n support for operator.
 //!
 //! FTL files are fetched on demand from `/i18n/<code>.ftl`, which are served
 //! as static assets by Trunk.  This keeps the WASM binary small regardless of

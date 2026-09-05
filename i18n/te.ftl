@@ -1,4 +1,4 @@
-# zion — తెలుగు
+# operator — తెలుగు
 lang-name = తెలుగు
 label-nick = ముద్దుపేరు
 new-identity-nick-help = 間-space కోసం ఒక ముద్దుపేరు ఎంచుకోండి. ఇది కేవలం ముద్దుపేరు మాత్రమే; ఎప్పుడైనా మార్చుకోవచ్చు.
@@ -22,7 +22,7 @@ btn-new-endpoint = కొత్త ముగింపు
 btn-import-profile = ప్రొఫైల్ దిగుమతి
 btn-show-qr = QR చూపించు
 btn-scan-qr = QR స్కాన్ చేయి
-qr-scan-hint = కెమెరాను zion ప్రొఫైల్ QR కోడ్ వైపు చూపండి.
+qr-scan-hint = కెమెరాను operator ప్రొఫైల్ QR కోడ్ వైపు చూపండి.
 qr-error-camera = కెమెరా అందుబాటులో లేదు: { $e }
 qr-error-too-large = QR కోడ్ కోసం ప్రొఫైల్ చాలా పెద్దది
 passphrase-warning = పాస్‌ఫ్రేజ్ పోయింది = గుర్తింపు పోయింది. పునరుద్ధరణ సాధ్యం కాదు.
@@ -48,7 +48,7 @@ error-profile-no-username = ప్రొఫైల్‌లో వినియో
 error-profile-no-identity = గుర్తింపు '{ $name }' కనుగొనబడలేదు — మొదట గుర్తింపు దిగుమతి చేయండి
 
 # ── టెర్మినల్ సిస్టమ్ సందేశాలు ─────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username } గా లాగిన్ అయ్యారు
+msg-logged-in = operator v{ $version } — { $username } గా లాగిన్ అయ్యారు
 msg-type-help = ఆదేశాల జాబితా కోసం .help అని టైప్ చేయండి.
 msg-getting-started = ప్రారంభించడానికి ప్రయత్నించండి: say Hello world, look, .help, లేదా help.
 msg-connecting = iroh కి కనెక్ట్ అవుతోంది...
@@ -186,7 +186,7 @@ doc-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 path-no-verb = { $path } కోసం `{ $verb }` క్రియ లేదు
 
 # ── సహాయం — శీర్షికలు ─────────────────────────────────────────────────────
-help-header-zion = ── zion ఆదేశాలు ─────────────────────────────────────────────────────────
+help-header-operator = ── operator ఆదేశాలు ─────────────────────────────────────────────────────────
 help-header-messaging = ── సందేశం ─────────────────────────────────────────────────────────────────
 help-header-config = ── స్థానిక కాన్ఫిగ్ వ్యాకరణం ──────────────────────────────────────────────
 help-header-common = ── సాధారణ మార్గాలు ──────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 間-స్పేస్‌లోకి ప్రవేశిస్తోంది ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── సహాయం — zion ఆదేశాలు ────────────────────────────────────────────────
+# ── సహాయం — operator ఆదేశాలు ────────────────────────────────────────────────
 help-cmd-help =   .help                        ఈ టెక్స్ట్
 help-cmd-clear =   .clear                       టెర్మినల్ క్లియర్ చేయండి
 help-cmd-panic =   .panic                       చివరి మార్గం — సమస్య వస్తే వాడండి
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              డాక్యుమెంట్ 
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n మీ గుర్తింపుతో ముడిపడి ఉన్న భాషా ప్రాధాన్యతను నిల్వ చేస్తుంది.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               అందుబాటులో ఉన్న భాషా కోడ్‌లను జాబితా చేయండి
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) సెషన్ వాతావరణంలో 5 ప్రత్యుత్తరాలను ఉంచండి
 
-help-topic-url =   .help/url                    URL లింక్ ద్వారా zion తెరవడం
+help-topic-url =   .help/url                    URL లింక్ ద్వారా operator తెరవడం
 help-topic-i18n = .help/i18n                   మీ గుర్తింపు కోసం భాష ప్రాధాన్యత
 help-header-url = ── URL పారామీటర్లు ──────────────────────────────────────────────────────────────
-help-url-intro =   ముందే నింపిన గ్రాహకుడితో zion తెరిచే లింక్ పంచుకోండి:
+help-url-intro =   ముందే నింపిన గ్రాహకుడితో operator తెరిచే లింక్ పంచుకోండి:
 help-url-msg =   ?msg=<did>                   ముందే నింపుతుంది: @<did>!msg (సాధారణ సందేశం)
 help-url-say =   ?say=<did>                   ముందే నింపుతుంది: @<did>!say (say క్రియ)
 help-url-emote =   ?emote=<did>                 ముందే నింపుతుంది: @<did>!emote (emote క్రియ)
@@ -399,7 +399,7 @@ help-url-note =   ఇన్‌పుట్ ముందే నింపబడి
 help-topic-publish =   .help/publish                నెట్‌వర్క్‌లో మీ గుర్తింపు ప్రచురించండి
 help-header-publish = ── గుర్తింపు ప్రచురణ ────────────────────────────────────────────────────────
 help-publish-intro = ప్రచురణ మీ గుర్తింపును నెట్‌వర్క్‌లో కనుగొనగలిగేలా చేస్తుంది. ఇతరులు మీ DID వెతికి మిమ్మల్ని చేరుకోవచ్చు.
-help-publish-ma = ప్రచురించడానికి 間 (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున ego ని IPFS/IPNS తో అనుసంధానిస్తుంది.
+help-publish-ma = ప్రచురించడానికి 間 (స్థానిక రన్‌టైమ్) ఇన్‌స్టాల్ అయి ఉండాలి. ఇది మీ తరపున operator ని IPFS/IPNS తో అనుసంధానిస్తుంది.
 help-publish-steps = దశలు: స్థానిక ma కనుగొనడానికి '.ma: claim [port]' అమలు చేయండి, తర్వాత '.my.identity!publish @ma'.
 help-publish-without = ప్రచురణ లేకుండా ఇతరులు మీకు చేరుకోలేరు — మీ DID తెలిసినా మీ endpoint పరిష్కరించలేరు.
 profile-fetch-did-resolve-failed = ఇంకా ప్రచురించబడలేదు — ముందుగా 28ని అమలు చేయండి, ఆపై మీ ప్రొఫైల్ 67ని అమలు చేయండి
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               పొతు Schemeకు .z.* మ�
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme zion ఆదేశాల్లో చొప్పించిన Scheme వ్యక్తీకరణలను మూల్యాంకనం చేసి, పంపే ముందు ఫలితాన్ని అదే పంక్తిలో చేర్చుతుంది.
+help-zscheme-intro = zscheme operator ఆదేశాల్లో చొప్పించిన Scheme వ్యక్తీకరణలను మూల్యాంకనం చేసి, పంపే ముందు ఫలితాన్ని అదే పంక్తిలో చేర్చుతుంది.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ఇన్‌లైన్ ఉదాహరణ; "say 7 + 5 = 12" పంపుతుంది
 help-zscheme-define =   (define x 12)             నిర్వచనలు ప్రస్తుత లాగిన్ సెషన్‌లో కొనసాగుతాయి
 help-zscheme-doc = పత్రాలు: https://github.com/bahner/rust-ma-zscheme

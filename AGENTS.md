@@ -15,9 +15,9 @@
   `.z.avatar`, `.zscheme`, or `.z.scheme`.** They use the same Scheme
   expansion and CRUD semantics as every other local configuration path.
 **Never hardcode lambda-ma, avatar, duckie, container, room, or other
-play-time actor verbs or state machines in Zion.** In particular, Zion must
+play-time actor verbs or state machines in Operator.** In particular, Operator must
 not send or sequence `:hold`, `:child`, `:set-parent`, `:claim`, `:drop`,
-`:put`, or any similar world-operation verb as product policy. Zion's role
+`:put`, or any similar world-operation verb as product policy. Operator's role
 is generic transport, persistent local data, and typed event delivery to the
 active `.z.scheme`; all world interpretation, transfer sequencing, and
 actor calls belong exclusively in zscheme.
@@ -42,7 +42,7 @@ The idea was: when `.use @actor` activates, load the remote actor's zscheme file
 ---
 The explicit `?z=<manifest-cid>` onboarding bootstrap is distinct from this
 rejected feature. It is a one-time trust decision encoded by the URL author,
-accepted only when the profile has no `.my.z` manifest selection. Zion first
+accepted only when the profile has no `.my.z` manifest selection. Operator first
 restores the encrypted profile, then falls back to DID `ma.z`, then to `?z=`.
 It fetches the DAG-CBOR manifest produced by `.z!publish`, requires a `scheme`
 entry, atomically replaces `.z.*`, and uses the ordinary `.z.scheme!eval`
@@ -50,13 +50,13 @@ startup path. Seed failure
 does not block login, `ma`, or `enter`.
 
 
-`zion` is a browser-based actor workstation compiled to WASM.
+`operator` is a browser-based actor workstation compiled to WASM.
 Each tab is one `did:ma:` identity. There is no backend — all state
 lives in IndexedDB and all networking goes over iroh QUIC transport
 provided by `ma-core`.
 
 When handling node ctx data, preserve the actor model's single authoritative
-`children` ctx collection. Zion MUST NOT create or persist parallel child
+`children` ctx collection. Operator MUST NOT create or persist parallel child
 lists split by kind, lifecycle/state, inventory, occupancy, or presentation.
 Any client-side view or filter must be derived from that one collection; node
 parentage and ctx updates must continue to use the authoritative collection.
@@ -70,7 +70,7 @@ parentage and ctx updates must continue to use the authoritative collection.
 | UI framework | Leptos 0.8 (CSR, signals) |
 | Language | Rust → `wasm32-unknown-unknown` |
 | Build tool | Trunk |
-| Persistent store | IndexedDB via `web-sys` (through `EgoConfig`) |
+| Persistent store | IndexedDB via `web-sys` (through `OperatorConfig`) |
 | Editor | CodeMirror 6 via CDN shim (`www/editor.js`) |
 | Transport | iroh QUIC (`ma-core` feature `iroh`) |
 | Identity | `did:ma:` — IPNS-rooted DIDs via `ma-core` |
@@ -86,7 +86,7 @@ src/
   app.rs                — top-level component; routes Landing ↔ Terminal
   state.rs              — AppState (RwSignal tree), ingest_mailbox_message
   config/
-    mod.rs              — EgoConfig: flat HashMap<String,String>, IndexedDB CRUD
+    mod.rs              — OperatorConfig: flat HashMap<String,String>, IndexedDB CRUD
   identity/
     mod.rs              — IdentityState, SessionState
     export.rs           — bundle export / import helpers
@@ -126,7 +126,7 @@ src/
 www/
   editor.js             — CodeMirror 6 shim; exposes window.maEditor
 style/
-  zion.css
+  operator.css
 lang/                   — Fluent (FTL) translation files; one per BCP-47 tag
   en.ftl                — canonical source; defines all keys
   lang/*.ftl            — all other supported locales
@@ -220,12 +220,12 @@ params)` boundary. It resolves against every room child category (`who`,
 `agents`, `things`, `exits`) and inventory contents; exactly one match is
 required, while ambiguity lists all candidate addresses for the user to
 rephrase. `look <object>` uses that same candidate pool and renders the resolved
-ctx locally. Do not add per-verb object resolution in Zion.
+ctx locally. Do not add per-verb object resolution in Operator.
 
-Zion is a client, not part of any runtime. Runtime-local short forms such as
-`#concourse` or bare entity fragments must never be stored in zion context,
+Operator is a client, not part of any runtime. Runtime-local short forms such as
+`#concourse` or bare entity fragments must never be stored in operator context,
 accepted as focus targets, or sent on the wire. They are valid only inside one
-runtime's own internal implementation. Any actor target crossing the zion/runtime
+runtime's own internal implementation. Any actor target crossing the operator/runtime
 boundary must be a full DID or DID-URL (`did:ma:...` / `did:ma:...#fragment`).
 If root sends focus context such as `.my.ctx.room`, that value must already be a
 full DID-URL for a room actor.
@@ -256,7 +256,7 @@ The head character determines dispatch:
 - starts with `@` or evaluates to a `did:` string → ma actor message (async call)
 - anything else → standard Scheme form or lambda call
 
-Local paths in Scheme source use `#.my.path` syntax. Zion's terminal dot
+Local paths in Scheme source use `#.my.path` syntax. Operator's terminal dot
 grammar remains unchanged: users type `.my.path` normally outside Scheme
 parentheses. Bare dot paths are rejected only as Scheme list heads. The
 evaluator strips `#` at the internal `SchemeCtx::eval_dot` boundary.
@@ -299,12 +299,12 @@ Never make a bare path, parenthesised path, local setter, or command splice
 fetch content implicitly. Bytes must not be stringified or spliced. Preserve
 bytes as CBOR byte strings in actor traffic. Implement host I/O through
 `SchemeCtx`; IPNS resolution must call the shared
-`ma_core::IpfsGatewayResolver`, not duplicate gateway logic in Zion.
+`ma_core::IpfsGatewayResolver`, not duplicate gateway logic in Operator.
 
 Consumers keep published semver dependencies. During unreleased multi-repo
 development, validate with temporary Cargo `--config patch.crates-io...`
 overrides; do not commit path dependencies or path-sourced lock entries.
-Zion requires published `ma-core` `^0.14.4` or newer.
+Operator requires published `ma-core` `^0.14.4` or newer.
 
 Identity exports with legacy fractional `created_at` values must be migrated to
 RFC 3339 UTC whole-second form before `SecretBundle::build_document`. Before
@@ -340,7 +340,7 @@ If no clause matches the error is re-raised.  `(#t …)` is the catch-all.
 
 Argument-free `.my.doc.<name>!eval` executes the source already stored at the
 target path.  With one content-path argument, for example
-`.z.foo!eval /ipfs/<cid>`, Zion first fetches and persistently replaces the
+`.z.foo!eval /ipfs/<cid>`, Operator first fetches and persistently replaces the
 target leaf exactly as `!fetch` does, then executes that newly stored source.
 A fetch or persistence failure leaves evaluation unstarted; an evaluation
 failure does not roll back the successfully stored source.
@@ -375,10 +375,10 @@ do not block the batch step counter.  They re-queue the expanded line into
 
 ---
 
-## Zion argument insertion
+## Operator argument insertion
 
-`<.path` is zion command syntax, not Scheme syntax. It is recognised only as an
-unquoted argument token in command parsing, reads the exact local `EgoConfig`
+`<.path` is operator command syntax, not Scheme syntax. It is recognised only as an
+unquoted argument token in command parsing, reads the exact local `OperatorConfig`
 leaf at `.path`, and inserts that value as one argv argument. The inserted text
 is not Scheme-evaluated and is not split on whitespace; newlines are preserved.
 
@@ -406,7 +406,7 @@ Missing paths and subtree paths are errors.
 | `.path!verb [args]` | side-effect / system operation |
 
 **Rules:**
-- Read-only keys enforced in `EgoConfig::is_read_only()`.
+- Read-only keys enforced in `OperatorConfig::is_read_only()`.
   Currently: anything under `.my.identity.*`.
 - A key cannot be both a leaf and a parent node simultaneously.
 - `:` is **only** a setter. Verbs always use `!`.
@@ -511,7 +511,7 @@ plaintext fallback — un-encrypted profiles must never be treated as valid.
 
 ## `.ma` — trusted runtime control
 
-Each identity selects one trusted runtime DID. Zion keeps the working value in
+Each identity selects one trusted runtime DID. Operator keeps the working value in
 `.ma.ctx.did` and `.my.aliases.ma`, and publishes it in the identity DID
 document as the string field `ma.ma`.
 
@@ -527,7 +527,7 @@ when the document has no trusted runtime and otherwise remains an alternative.
 
 Prerequisites for publish to work:
 1. [IPFS Desktop](https://docs.ipfs.tech/install/ipfs-desktop/) — provides Kubo
-2. `ma` runtime running — bridges zion → Kubo
+2. `ma` runtime running — bridges operator → Kubo
 
 ---
 
@@ -566,7 +566,7 @@ Verbs dispatched in `parser/verbs/mod.rs`:
 
 ## Documents — `.my.doc.*`
 
-Stored directly as leaf values in `EgoConfig`:
+Stored directly as leaf values in `OperatorConfig`:
 
 ```
 .my.doc.<name>       text body
@@ -664,7 +664,7 @@ The loader tries each candidate in order; falls back to `en` if none resolve.
 ### Language preference
 
 - `SESSION_LANG` thread-local holds the active code for the current session.
-- `.my.i18n` in `EgoConfig` persists the preference per profile.
+- `.my.i18n` in `OperatorConfig` persists the preference per profile.
 - On login: reads `.my.i18n`; if absent, seeds it from `navigator.language`
   and persists the config.
 - Profile click on landing page: reads `.my.i18n` from the profile's config
@@ -784,7 +784,7 @@ Auto-seeded from `navigator.language` on first login if absent.
 Changing it (`.my.i18n: sv`) takes effect immediately and persists.
 Also included in the published DID document as `ma.lang`.
 
-Transfer commands use the actor-provided ctx and parent/child handshake; Zion
+Transfer commands use the actor-provided ctx and parent/child handshake; Operator
 does not store transfer state.
 
 ---
@@ -820,7 +820,7 @@ make serve        # dist + python3 http.server on :8000
 
 ## Inbound ACL — `.my.acl`
 
-zion enforces a client-side inbound ACL stored at `.my.acl` in `EgoConfig`
+operator enforces a client-side inbound ACL stored at `.my.acl` in `OperatorConfig`
 (a plain YAML string). It is evaluated on every poll tick before a message
 is delivered to the terminal.
 
@@ -834,14 +834,14 @@ Load and check:
 
 ```rust
 // src/acl.rs
-pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
+pub fn load_operator_acl(cfg: &OperatorConfig) -> AclMap {
     cfg.get(ACL_KEY)
         .and_then(|s| serde_yaml::from_str(&s).ok())
         .unwrap_or_else(open_acl)
 }
 
-pub fn check_ego_acl(cfg: &EgoConfig, from: &str, cap: &str) -> bool {
-    check_cap(&load_ego_acl(cfg), from, cap)
+pub fn check_operator_acl(cfg: &OperatorConfig, from: &str, cap: &str) -> bool {
+    check_cap(&load_operator_acl(cfg), from, cap)
 }
 ```
 
@@ -854,7 +854,7 @@ In `views/terminal.rs`, before delivering an incoming message:
 ```rust
 if incoming.reply_to.is_none() {
     let cap = CAP_INBOX;
-    if !check_ego_acl(&cfg, &incoming.from, cap) {
+    if !check_operator_acl(&cfg, &incoming.from, cap) {
         // push a "blocked" system entry and continue
         continue;
     }
@@ -867,7 +867,7 @@ by message ID, not filtered by sender.
 ### Editing
 
 `.my.acl!edit` opens `EditorMode::ConfigEdit { key: ACL_KEY.to_string() }`
-in YAML mode. On save the value is written directly to `EgoConfig` (not via
+in YAML mode. On save the value is written directly to `OperatorConfig` (not via
 the document `.content` path). Takes effect on the next poll tick.
 
 ---
@@ -875,7 +875,7 @@ the document `.content` path). Takes effect on the next poll tick.
 ## Transfer protocol
 
 Transfer commands use actor-provided ctx values and the ordinary
-`:parent`/`:child` handshake. Zion stores no hold, pending, queued, or
+`:parent`/`:child` handshake. Operator stores no hold, pending, queued, or
 follow-up transfer state and does not implement transfer policy. Zscheme uses
 the ctx received with each event when acknowledging the actor; `:set-parent`
 requests carry the target parent and optional ctx required by the actor.

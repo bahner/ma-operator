@@ -1,5 +1,5 @@
 ; live.szcheme
-; Zion-local non-builtin live helpers.
+; Operator-local non-builtin live helpers.
 ; Load into your session/profile script and extend with your own sugar.
 ;
 ; Core state maps used by the helpers.

@@ -1,4 +1,4 @@
-# zion — Krio
+# operator — Krio
 lang-name = Krio
 label-nick = niknem
 new-identity-nick-help = Pik wan niknem for 間-space. Na jos niknem, yu kin chenj am eni taim.
@@ -22,7 +22,7 @@ btn-new-endpoint = nyu endpoint
 btn-import-profile = bring profayl kɔmɔt
 btn-show-qr = sho di QR
 btn-scan-qr = skan di QR
-qr-scan-hint = Point di kamera pan wan zion profayl QR kod.
+qr-scan-hint = Point di kamera pan wan operator profayl QR kod.
 qr-error-camera = kamera nɔ de: { $e }
 qr-error-too-large = di profayl big pas wetin QR kod ebul kya
 passphrase-warning = Lus passfraze = lus identity. Nor get no wei fi get am bak.
@@ -48,7 +48,7 @@ error-profile-no-username = di profayl nɔ gɛt yuzɔnem
 error-profile-no-identity = aydɛntɪti '{ $name }' nɔ fɔnd — bring aydɛntɪti kɔmɔt fɔs
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — login as { $username }
+msg-logged-in = operator v{ $version } — login as { $username }
 msg-type-help = Taip .help fi get list ɔf komand dem.
 msg-getting-started = Tray: say Hello world, look, .help, ɔ help.
 msg-connecting = de konect go iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = pɔblish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = pɔblish fail [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-session = log in again so operator can access your identity keys
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
@@ -190,7 +190,7 @@ lang-list-header = Lenggwij dem wey dey (set wit .my.i18n: <code>):
 
 err-lang-not-found = langwej nor fine: { $lang }
 
-help-header-zion = ── zion komand dem ────────────────────────────────────────────────────────
+help-header-operator = ── operator komand dem ────────────────────────────────────────────────────────
 help-header-messaging = ── mesej dem ──────────────────────────────────────────────────────────────
 help-header-config = ── lokal konfig gramma ────────────────────────────────────────────────────
 help-header-common = ── komon paf dem ──────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              dilet dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n stores the language preference tied to your identity.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) kip 5 riply dɛn na di sɛshɔn ɛnvayrɔmɛnt
 
-help-topic-url =   .help/url                    opin zion tru URL link
+help-topic-url =   .help/url                    opin operator tru URL link
 help-topic-i18n = .help/i18n                   language preference for your identity
 help-header-url = ── URL paramita dem ─────────────────────────────────────────────────────────────
-help-url-intro =   Shia wan link we go opin zion wit di pɔsin aredɛ put insɛd:
+help-url-intro =   Shia wan link we go opin operator wit di pɔsin aredɛ put insɛd:
 help-url-msg =   ?msg=<did>                   put bifo: @<did>!msg (simpul mɛsɛj)
 help-url-say =   ?say=<did>                   put bifo: @<did>!say (vɛb say)
 help-url-emote =   ?emote=<did>                 put bifo: @<did>!emote (vɛb emote)
@@ -385,7 +385,7 @@ help-url-note =   Di input put bifo bɛt na sɛn yet — prɛs Enter fɔ sɛn.
 help-topic-publish =   .help/publish                pɔblish yu ɔpsɛt ɔn di nɛtwɔk
 help-header-publish = ── pɔblish ɔpsɛt ────────────────────────────────────────────────────────────
 help-publish-intro = Pɔblishine mek yu ɔpsɛt fɔ fain ɔn di nɛtwɔk. Ɔda pipul kɛn luk yu DID fɔ rich yu.
-help-publish-ma = Fɔ pɔblish, yu nid 間 (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt ego wit IPFS/IPNS fɔ yu.
+help-publish-ma = Fɔ pɔblish, yu nid 間 (lɔkɔl rɔntaim) sɛt ɛp. I kɔnɛkt operator wit IPFS/IPNS fɔ yu.
 help-publish-steps = Stɛps: ron '.ma: claim [port]' fɔ faind lɔkɔl ma, den '.my.identity!publish @ma'.
 help-publish-without = Widaut pɔblishine, ɔda pipul kɛnnɔ rich yu — even if dɛn nɔ yu DID, dɛn kɛnnɔ sɔlv yu endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               yuz .z.* fɔ pɔblik Scheme ɛn .my
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme de evalyut Scheme ɛkspreshɔn we de insay zion kɔmand, ɛn i de put di rizɔlt insay di layn bifo i sɛn am.
+help-zscheme-intro = zscheme de evalyut Scheme ɛkspreshɔn we de insay operator kɔmand, ɛn i de put di rizɔlt insay di layn bifo i sɛn am.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insay-layn ɛgzampul; i sɛn "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             difinishɔn dem de stay fɔ dis login sɛshɔn
 help-zscheme-doc = Dɔkyumɛnt: https://github.com/bahner/rust-ma-zscheme

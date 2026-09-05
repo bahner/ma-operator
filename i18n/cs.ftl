@@ -1,4 +1,4 @@
-# zion — Čeština
+# operator — Čeština
 lang-name = Čeština
 label-nick = přezdívka
 new-identity-nick-help = Vyberte si přezdívku pro 間-space. Je to jen přezdívka a můžete ji kdykoli změnit.
@@ -22,7 +22,7 @@ btn-new-endpoint = nový koncový bod
 btn-import-profile = import profilu
 btn-show-qr = zobrazit QR
 btn-scan-qr = skenovat QR
-qr-scan-hint = Namiřte kameru na QR kód profilu zion.
+qr-scan-hint = Namiřte kameru na QR kód profilu operator.
 qr-error-camera = kamera není dostupná: { $e }
 qr-error-too-large = profil je pro QR kód příliš velký
 passphrase-warning = Ztracená přístupová fráze = ztracená identita. Obnova není možná.
@@ -48,7 +48,7 @@ error-profile-no-username = profil neobsahuje uživatelské jméno
 error-profile-no-identity = identita '{ $name }' nenalezena — nejprve importujte identitu
 
 # ── Systémové zprávy terminálu ────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — přihlášen jako { $username }
+msg-logged-in = operator v{ $version } — přihlášen jako { $username }
 msg-type-help = Napište .help pro seznam příkazů.
 msg-getting-started = Zkuste: say Hello world, look, .help nebo help.
 msg-connecting = připojování k iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publikování { $path }: { $e }
 doc-publish-ipld-failed = publikování IPLD { $path }: { $e }
 doc-publish-error-detail = publikování selhalo [{ $code }]: { $err }
 doc-publish-error-hint = Tip: { $hint }
-doc-publish-hint-session = přihlaste se znovu, aby ego mělo přístup k vašim klíčům identity
+doc-publish-hint-session = přihlaste se znovu, aby operator mělo přístup k vašim klíčům identity
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = ověřte, zda je dokument DID vydavatele publikován a obsahuje dosažitelný koncový bod
@@ -186,7 +186,7 @@ doc-no-verb = žádné sloveso `{ $verb }` pro { $path }
 path-no-verb = žádné sloveso `{ $verb }` pro { $path }
 
 # ── Text nápovědy — záhlaví ───────────────────────────────────────────────
-help-header-zion = ── příkazy zion ───────────────────────────────────────────────────────────
+help-header-operator = ── příkazy operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── zasílání zpráv ─────────────────────────────────────────────────────────
 help-header-config = ── lokální gramatika konfigurace ─────────────────────────────────────
 help-header-common = ── běžné cesty ───────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<název>:              smazat dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ukládá jazykové preference spojené s vaší identitou.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               seznam dostupných jazykových kódů
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) ponechat odpovědi 5 v prostředí relace
 
-help-topic-url =   .help/url                    otevření zion přes URL odkaz
+help-topic-url =   .help/url                    otevření operator přes URL odkaz
 help-topic-i18n = .help/i18n                   jazykové preference pro vaši identitu
 help-header-url = ── URL parametry ────────────────────────────────────────────────────────────────
-help-url-intro =   Sdílej odkaz, který otevře zion s předvyplněným příjemcem:
+help-url-intro =   Sdílej odkaz, který otevře operator s předvyplněným příjemcem:
 help-url-msg =   ?msg=<did>                   předvyplní: @<did>!msg (prostá zpráva)
 help-url-say =   ?say=<did>                   předvyplní: @<did>!say (sloveso say)
 help-url-emote =   ?emote=<did>                 předvyplní: @<did>!emote (sloveso emote)
@@ -392,7 +392,7 @@ help-url-note =   Vstup je předvyplněn, ale neodeslaný — stiskni Enter pro 
 help-topic-publish =   .help/publish                zveřejnit svou identitu v síti
 help-header-publish = ── zveřejnění identity ──────────────────────────────────────────────────────
 help-publish-intro = Zveřejnění učiní tvou identitu dohledatelnou v síti. Ostatní mohou vyhledat tvůj DID, aby tě kontaktovali.
-help-publish-ma = Pro zveřejnění potřebuješ nainstalované 間 (lokální runtime). Propojuje ego s IPFS/IPNS tvým jménem.
+help-publish-ma = Pro zveřejnění potřebuješ nainstalované 間 (lokální runtime). Propojuje operator s IPFS/IPNS tvým jménem.
 help-publish-steps = Kroky: spusť '.ma: claim [port]' pro detekci lokálního ma, poté '.my.identity!publish @ma'.
 help-publish-without = Bez zveřejnění tě ostatní nemohou kontaktovat — i když znají tvůj DID, nemohou rozlišit tvůj endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -434,7 +434,7 @@ help-z-control =   .z.scheme                 obsah spouštěcího skriptu ovlád
 help-z-private =   .my.*                     soukromá místní konfigurace; Scheme lze uložit i sem
 help-z-choice =   .z.* / .my.*               .z.* používejte pro veřejný Scheme a .my.* pro soukromý Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme vyhodnocuje výrazy Scheme vložené do příkazů zion a před odesláním vloží výsledek do řádku.
+help-zscheme-intro = zscheme vyhodnocuje výrazy Scheme vložené do příkazů operator a před odesláním vloží výsledek do řádku.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vložený příklad; odešle "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definice zůstávají pro aktuální přihlášenou relaci
 help-zscheme-doc = Dokumentace: https://github.com/bahner/rust-ma-zscheme

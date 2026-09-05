@@ -1,4 +1,4 @@
-# zion — Slovenščina
+# operator — Slovenščina
 lang-name = Slovenščina
 label-nick = vzdevek
 new-identity-nick-help = Izberite vzdevek za 間-space. To je samo vzdevek in ga lahko kadar koli spremenite.
@@ -22,7 +22,7 @@ btn-new-endpoint = nova končna točka
 btn-import-profile = uvozi profil
 btn-show-qr = prikaži QR
 btn-scan-qr = skeniraj QR
-qr-scan-hint = Usmerite kamero v QR kodo profila zion.
+qr-scan-hint = Usmerite kamero v QR kodo profila operator.
 qr-error-camera = kamera ni na voljo: { $e }
 qr-error-too-large = profil je prevelik za QR kodo
 passphrase-warning = Izgubljeno geslo-fraza = izgubljena identiteta. Obnova ni mogoča.
@@ -48,7 +48,7 @@ error-profile-no-username = profil ne vsebuje uporabniškega imena
 error-profile-no-identity = identiteta '{ $name }' ni bila najdena — najprej uvozite identiteto
 
 # ── Sistemska sporočila terminala ─────────────────────────────────────────
-msg-logged-in = zion v{ $version } — prijavljeni kot { $username }
+msg-logged-in = operator v{ $version } — prijavljeni kot { $username }
 msg-type-help = Vnesite .help za seznam ukazov.
 msg-getting-started = Poskusite: say Hello world, look, .help ali help.
 msg-connecting = vzpostavljanje povezave z iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = objavljanje { $path }: { $e }
 doc-publish-ipld-failed = objavljanje IPLD { $path }: { $e }
 doc-publish-error-detail = objava ni uspela [{ $code }]: { $err }
 doc-publish-error-hint = Namig: { $hint }
-doc-publish-hint-session = znova se prijavite, da bo lahko ego dostopal do vaših identifikacijskih ključev
+doc-publish-hint-session = znova se prijavite, da bo lahko operator dostopal do vaših identifikacijskih ključev
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = preverite, ali je dokument izdajatelja DID objavljen in vsebuje dosegljivo končno točko
@@ -186,7 +186,7 @@ doc-no-verb = ni glagola `{ $verb }` za { $path }
 path-no-verb = ni glagola `{ $verb }` za { $path }
 
 # ── Besedilo pomoči — glave ───────────────────────────────────────────────
-help-header-zion = ── ukazi zion ────────────────────────────────────────────────────────────
+help-header-operator = ── ukazi operator ────────────────────────────────────────────────────────────
 help-header-messaging = ── sporočanje ────────────────────────────────────────────────────────────
 help-header-config = ── lokalna slovnica konfiguracije ────────────────────────────────────
 help-header-common = ── pogoste poti ──────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<ime>:              izbriši dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n shrani jezikovne nastavitve, povezane z vašo identiteto.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               seznam razpoložljivih jezikovnih kod
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) obdrži odgovore 5 v okolju seje
 
-help-topic-url =   .help/url                    odpiranje zion prek URL povezave
+help-topic-url =   .help/url                    odpiranje operator prek URL povezave
 help-topic-i18n = .help/i18n                   nastavitev jezika za vašo identiteto
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
-help-url-intro =   Deli povezavo, ki odpre zion z vnaprej izpolnjenim prejemnikom:
+help-url-intro =   Deli povezavo, ki odpre operator z vnaprej izpolnjenim prejemnikom:
 help-url-msg =   ?msg=<did>                   vnaprej izpolni: @<did>!msg (navadno sporočilo)
 help-url-say =   ?say=<did>                   vnaprej izpolni: @<did>!say (glagol say)
 help-url-emote =   ?emote=<did>                 vnaprej izpolni: @<did>!emote (glagol emote)
@@ -392,7 +392,7 @@ help-url-note =   Vnosno polje je vnaprej izpolnjeno, a ni poslano — pritisni 
 help-topic-publish =   .help/publish                objava identitete v omrežju
 help-header-publish = ── objava identitete ────────────────────────────────────────────────────────
 help-publish-intro = Objava naredi tvojo identiteto vidno v omrežju. Drugi lahko poiščejo tvoj DID, da te dosežejo.
-help-publish-ma = Za objavo potrebuješ nameščen 間 (lokalno izvajalno okolje). Poveže ego z IPFS/IPNS v tvojem imenu.
+help-publish-ma = Za objavo potrebuješ nameščen 間 (lokalno izvajalno okolje). Poveže operator z IPFS/IPNS v tvojem imenu.
 help-publish-steps = Koraki: poženi '.ma: claim [port]' za zaznavo lokalnega ma, nato '.my.identity!publish @ma'.
 help-publish-without = Brez objave te drugi ne morejo doseči — čeprav poznajo tvoj DID, ne morejo razrešiti tvojega endpointa.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               uporabite .z.* za javni Scheme in .
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ovrednoti izraze Scheme, vstavljene v ukaze zion, in pred pošiljanjem vstavi rezultat v vrstico.
+help-zscheme-intro = zscheme ovrednoti izraze Scheme, vstavljene v ukaze operator, in pred pošiljanjem vstavi rezultat v vrstico.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vstavljeni primer; pošlje "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definicije ostanejo v trenutni prijavni seji
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme

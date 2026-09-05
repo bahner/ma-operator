@@ -1,4 +1,4 @@
-# zion — Kreyòl ayisyen
+# operator — Kreyòl ayisyen
 lang-name = Kreyòl ayisyen
 label-nick = tinon
 new-identity-nick-help = Chwazi yon tinon pou 間-space. Se sèlman yon tinon, epi ou ka chanje li nenpòt lè.
@@ -22,7 +22,7 @@ btn-new-endpoint = nouvo koneksyon
 btn-import-profile = enpòte pwofil
 btn-show-qr = montre QR
 btn-scan-qr = eskane QR
-qr-scan-hint = Pwente kamera a sou yon kòd QR pwofil zion.
+qr-scan-hint = Pwente kamera a sou yon kòd QR pwofil operator.
 qr-error-camera = kamera pa disponib: { $e }
 qr-error-too-large = pwofil la twò gwo pou yon kòd QR
 passphrase-warning = Pèdi mo sekrè = pèdi idantite. Pa gen rekiperasyon.
@@ -48,7 +48,7 @@ error-profile-no-username = pwofil la pa gen non itilizatè
 error-profile-no-identity = idantite '{ $name }' pa jwenn — enpòte idantite anvan
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — konekte kòm { $username }
+msg-logged-in = operator v{ $version } — konekte kòm { $username }
 msg-type-help = Tape .help pou yon lis kòmand.
 msg-getting-started = Eseye: say Hello world, look, .help, oswa help.
 msg-connecting = ap konekte nan iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = pibliye { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = piblikasyon echwe [{ $code }]: { $err }
 doc-publish-error-hint = Sijesyon: { $hint }
-doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle idantite w yo
+doc-publish-hint-session = konekte ankò pou operator ka jwenn aksè nan kle idantite w yo
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifye dokiman DID piblikatè a pibliye epi li gen yon pwen final ki ka jwenn
@@ -190,7 +190,7 @@ lang-list-header = Lang disponib yo (mete ak .my.i18n: <code>):
 
 err-lang-not-found = lang pa jwenn: { $lang }
 
-help-header-zion = ── kòmand zion ────────────────────────────────────────────────────────────
+help-header-operator = ── kòmand operator ────────────────────────────────────────────────────────────
 help-header-messaging = ── mesajri ────────────────────────────────────────────────────────────────
 help-header-config = ── gramè konfigirasyon lokal ──────────────────────────────────────────────
 help-header-common = ── chemen komen ───────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              efase dokiman
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak idantite w.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) kenbe repons 5 nan anviwònman sesyon an
 
-help-topic-url =   .help/url                    ouvri zion atravè yon lyen URL
+help-topic-url =   .help/url                    ouvri operator atravè yon lyen URL
 help-topic-i18n = .help/i18n                   preferans lang pou idantite w
 help-header-url = ── paramèt URL ──────────────────────────────────────────────────────────────────
-help-url-intro =   Pataje yon lyen ki ouvri zion ak yon destinatè ki ranpli davans:
+help-url-intro =   Pataje yon lyen ki ouvri operator ak yon destinatè ki ranpli davans:
 help-url-msg =   ?msg=<did>                   ranpli davans: @<did>!msg (mesaj senp)
 help-url-say =   ?say=<did>                   ranpli davans: @<did>!say (vèb say)
 help-url-emote =   ?emote=<did>                 ranpli davans: @<did>!emote (vèb emote)
@@ -385,7 +385,7 @@ help-url-note =   Champ nan ranpli davans men pa voye — peze Enter pou voye.
 help-topic-publish =   .help/publish                pibliye idantite ou sou rezo a
 help-header-publish = ── pibliye idantite ─────────────────────────────────────────────────────────
 help-publish-intro = Piblikasyon fè idantite ou jwenn sou rezo a. Lòt moun ka chèche DID ou pou kontakte ou.
-help-publish-ma = Pou pibliye, ou bezwen 間 (runtime lokal) enstale. Li konekte ego ak IPFS/IPNS nan non ou.
+help-publish-ma = Pou pibliye, ou bezwen 間 (runtime lokal) enstale. Li konekte operator ak IPFS/IPNS nan non ou.
 help-publish-steps = Etap: kouri '.ma: claim [port]' pou detekte 間 lokal, epi '.my.identity!publish @ma'.
 help-publish-without = San piblikasyon, lòt moun pa ka jwenn ou — menm si yo konnen DID ou, yo pa ka rezoud endpoint ou.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               sevi ak .z.* pou Scheme piblik e .m
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme evalye ekspresyon Scheme ki antre nan kòmand zion yo, epi li kole rezilta a nan liy lan anvan li voye l.
+help-zscheme-intro = zscheme evalye ekspresyon Scheme ki antre nan kòmand operator yo, epi li kole rezilta a nan liy lan anvan li voye l.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    egzanp anliy; li voye "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definisyon yo rete pou sesyon koneksyon aktyèl la
 help-zscheme-doc = Dokiman: https://github.com/bahner/rust-ma-zscheme

@@ -1,8 +1,8 @@
 pub use ma_core::CAP_INBOX;
-/// Ego client-side transport ACL.
+/// Operator client-side transport ACL.
 ///
 /// A single [`ma_core::AclMap`] is stored at [`ACL_KEY`] inside the identity
-/// config (`EgoConfig`) as a YAML string.  Before any incoming message is
+/// config (`OperatorConfig`) as a YAML string.  Before any incoming message is
 /// delivered to the UI the poll loop checks one capability:
 ///
 /// - [`CAP_INBOX`] — may deliver messages via `/ma/inbox/0.0.1`
@@ -13,14 +13,14 @@ pub use ma_core::CAP_INBOX;
 /// (`"*": [inbox]`).
 use ma_core::{check_cap, AclMap, CapabilityEntry};
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 
 /// Config key where the ACL YAML blob is stored.
 pub const ACL_KEY: &str = ".my.acl";
 
 /// Parse the ACL stored at `.my.acl`.  Falls back to a fully-open ACL on
 /// parse error or when the key is absent.
-pub fn load_ego_acl(cfg: &EgoConfig) -> AclMap {
+pub fn load_operator_acl(cfg: &OperatorConfig) -> AclMap {
     cfg.get(ACL_KEY)
         .and_then(|yaml| serde_yaml::from_str::<AclMap>(yaml).ok())
         .unwrap_or_else(open_acl)
@@ -39,28 +39,28 @@ pub fn open_acl() -> AclMap {
 
 /// Returns `true` when `from` holds `cap` according to the stored ACL.
 ///
-/// Uses only O(1) principal-entry lookups — no IPFS resolution. Ego has no
+/// Uses only O(1) principal-entry lookups — no IPFS resolution. Operator has no
 /// network access at ACL evaluation time.
-pub fn check_ego_acl(cfg: &EgoConfig, from: &str, cap: &str) -> bool {
-    check_cap(&load_ego_acl(cfg), from, cap).is_ok()
+pub fn check_operator_acl(cfg: &OperatorConfig, from: &str, cap: &str) -> bool {
+    check_cap(&load_operator_acl(cfg), from, cap).is_ok()
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn cfg_with_acl(yaml: &str) -> EgoConfig {
-        let mut cfg = EgoConfig::default();
+    fn cfg_with_acl(yaml: &str) -> OperatorConfig {
+        let mut cfg = OperatorConfig::default();
         cfg.set(ACL_KEY, yaml);
         cfg
     }
 
-    // ── open_acl / load_ego_acl defaults ─────────────────────────────────
+    // ── open_acl / load_operator_acl defaults ─────────────────────────────────
 
     #[test]
     fn empty_cfg_defaults_to_open_acl() {
-        let cfg = EgoConfig::default();
-        assert!(check_ego_acl(&cfg, "did:ma:stranger", CAP_INBOX));
+        let cfg = OperatorConfig::default();
+        assert!(check_operator_acl(&cfg, "did:ma:stranger", CAP_INBOX));
     }
 
     #[test]
@@ -75,7 +75,7 @@ mod tests {
     fn explicit_allow_inbox_only() {
         let yaml = format!("\"did:ma:alice\": [{CAP_INBOX}]\n");
         let cfg = cfg_with_acl(&yaml);
-        assert!(check_ego_acl(&cfg, "did:ma:alice", CAP_INBOX));
+        assert!(check_operator_acl(&cfg, "did:ma:alice", CAP_INBOX));
     }
 
     #[test]
@@ -93,6 +93,6 @@ mod tests {
     fn unparseable_acl_falls_back_to_open() {
         let cfg = cfg_with_acl("this is not valid yaml acl !!!");
         // Falls back to open_acl.
-        assert!(check_ego_acl(&cfg, "did:ma:anyone", CAP_INBOX));
+        assert!(check_operator_acl(&cfg, "did:ma:anyone", CAP_INBOX));
     }
 }

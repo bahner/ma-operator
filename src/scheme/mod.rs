@@ -6,7 +6,7 @@ pub mod value;
 pub use eval::{Ctx, EvalCtx};
 pub use ma_zscheme::{Env, SchemeVal};
 
-use crate::{config::EgoConfig, state::AppState};
+use crate::{config::OperatorConfig, state::AppState};
 use leptos::prelude::RwSignal;
 use std::rc::Rc;
 
@@ -34,7 +34,7 @@ pub async fn call_event(
     event: &str,
     args: Vec<SchemeVal>,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<SchemeVal, String> {
     let env = Env::extend(&get_env());
     env.define("__ma_event_args", SchemeVal::List(args));
@@ -129,7 +129,7 @@ pub(crate) fn has_incomplete_expression(line: &str) -> bool {
 pub async fn expand(
     line: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<String, String> {
     let ctx: Ctx = Rc::new(EvalCtx {
         state: state.clone(),
@@ -275,7 +275,7 @@ pub async fn call_shorthand(
     head: &str,
     args: Vec<(String, bool)>,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<SchemeVal, String> {
     let env = Env::extend(&get_env());
     let mut call = vec![parser::SchemeExpr::Atom(head.to_string())];
@@ -300,7 +300,7 @@ pub async fn call_shorthand(
 pub async fn eval_standalone(
     line: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<Option<SchemeVal>, String> {
     let tokens = parser::tokenize(line).map_err(|error| error.to_string())?;
     let (expr, next) = parser::parse_expr(&tokens, 0).map_err(|error| error.to_string())?;
@@ -322,7 +322,7 @@ pub async fn call_content(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<SchemeVal, String> {
     let env = get_env();
     let ctx: Ctx = Rc::new(EvalCtx {
@@ -340,7 +340,7 @@ pub async fn call_content(
 pub(crate) async fn load_content(
     content: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let env = get_env();
     let ctx: Ctx = Rc::new(EvalCtx {
@@ -419,7 +419,7 @@ async fn eval_span(span: &str, env: Env, ctx: Ctx) -> Result<SchemeVal, String> 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{config::EgoConfig, state::AppState};
+    use crate::{config::OperatorConfig, state::AppState};
     use futures::executor::block_on;
     use leptos::prelude::{Owner, RwSignal};
 
@@ -478,7 +478,7 @@ mod tests {
     fn load_content_defines_local_session_functions() {
         let _owner = Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
+        let config = RwSignal::new(OperatorConfig::new());
         init_session_env();
 
         block_on(load_content(
@@ -497,7 +497,7 @@ mod tests {
     fn standalone_expression_returns_its_value() {
         let _owner = Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
+        let config = RwSignal::new(OperatorConfig::new());
         init_session_env();
 
         let value = block_on(eval_standalone("(+ 20 22)", &state, config))
@@ -514,7 +514,7 @@ mod tests {
     fn call_event_passes_network_text_as_a_typed_value() {
         let _owner = Owner::new();
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::new());
+        let config = RwSignal::new(OperatorConfig::new());
         init_session_env();
 
         block_on(load_content(

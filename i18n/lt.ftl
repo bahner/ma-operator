@@ -1,4 +1,4 @@
-# zion — Lietuvių
+# operator — Lietuvių
 lang-name = Lietuvių
 label-nick = slapyvardis
 new-identity-nick-help = Pasirinkite slapyvardį 間-space. Tai tik slapyvardis, jį galėsite bet kada pakeisti.
@@ -22,7 +22,7 @@ btn-new-endpoint = naujas galas
 btn-import-profile = importuoti profilį
 btn-show-qr = rodyti QR
 btn-scan-qr = skenuoti QR
-qr-scan-hint = Nukreipkite kamerą į zion profilio QR kodą.
+qr-scan-hint = Nukreipkite kamerą į operator profilio QR kodą.
 qr-error-camera = kamera nepasiekiama: { $e }
 qr-error-too-large = profilis per didelis QR kodui
 passphrase-warning = Prarasta slaptažodžio frazė = prarasta tapatybė. Atkūrimas neįmanomas.
@@ -48,7 +48,7 @@ error-profile-no-username = profilis neturi vartotojo vardo
 error-profile-no-identity = tapatybė '{ $name }' nerasta — pirmiausia importuokite tapatybę
 
 # ── Terminalo sistemos pranešimai ─────────────────────────────────────────
-msg-logged-in = zion v{ $version } — prisijungta kaip { $username }
+msg-logged-in = operator v{ $version } — prisijungta kaip { $username }
 msg-type-help = Įveskite .help, kad gautumėte komandų sąrašą.
 msg-getting-started = Pabandykite: say Hello world, look, .help arba help.
 msg-connecting = jungiamasi prie iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publikavimas { $path }: { $e }
 doc-publish-ipld-failed = ipld publikavimas { $path }: { $e }
 doc-publish-error-detail = publikavimas nepavyko [{ $code }]: { $err }
 doc-publish-error-hint = Užuomina: { $hint }
-doc-publish-hint-session = prisijunkite dar kartą, kad ego galėtų pasiekti jūsų tapatybės raktus
+doc-publish-hint-session = prisijunkite dar kartą, kad operator galėtų pasiekti jūsų tapatybės raktus
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = patikrinkite, ar leidėjo DID dokumentas yra paskelbtas ir jame yra pasiekiamas galutinis taškas
@@ -186,7 +186,7 @@ doc-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 path-no-verb = { $path } nėra veiksmažodžio `{ $verb }`
 
 # ── Pagalbos tekstas — antraštės ──────────────────────────────────────────
-help-header-zion = ── zion komandos ──────────────────────────────────────────────────────────
+help-header-operator = ── operator komandos ──────────────────────────────────────────────────────────
 help-header-messaging = ── pranešimai ────────────────────────────────────────────────────────────
 help-header-config = ── vietinė konfigūracijos gramatika ──────────────────────────────────────
 help-header-common = ── dažni keliai ──────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<pavadinimas>:              ištrinti dokumentą
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n išsaugo kalbos nuostatas, susietas su jūsų tapatybe.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               galimų kalbų kodų sąrašas
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) laikykite 5 atsakymus seanso aplinkoje
 
-help-topic-url =   .help/url                    zion atidarymas per URL nuorodą
+help-topic-url =   .help/url                    operator atidarymas per URL nuorodą
 help-topic-i18n = .help/i18n                   jūsų tapatybės pirmenybė
 help-header-url = ── URL parametrai ───────────────────────────────────────────────────────────────
-help-url-intro =   Pasidalinkite nuoroda, kuri atidaro zion su iš anksto užpildytu gavėju:
+help-url-intro =   Pasidalinkite nuoroda, kuri atidaro operator su iš anksto užpildytu gavėju:
 help-url-msg =   ?msg=<did>                   iš anksto užpildo: @<did>!msg (paprastas pranešimas)
 help-url-say =   ?say=<did>                   iš anksto užpildo: @<did>!say (veiksmažodis say)
 help-url-emote =   ?emote=<did>                 iš anksto užpildo: @<did>!emote (veiksmažodis emote)
@@ -392,7 +392,7 @@ help-url-note =   Įvestis iš anksto užpildyta, bet nesiųsta — paspausk Ent
 help-topic-publish =   .help/publish                tapatybės paskelbimas tinkle
 help-header-publish = ── tapatybės paskelbimas ────────────────────────────────────────────────────
 help-publish-intro = Paskelbimas padaro tavo tapatybę randamą tinkle. Kiti gali ieškoti tavo DID, kad su tavimi susisiektų.
-help-publish-ma = Paskelbimui reikia įdiegto 間 (vietinė vykdymo aplinka). Ji sujungia ego su IPFS/IPNS tavo vardu.
+help-publish-ma = Paskelbimui reikia įdiegto 間 (vietinė vykdymo aplinka). Ji sujungia operator su IPFS/IPNS tavo vardu.
 help-publish-steps = Žingsniai: paleisk '.ma: claim [port]' vietiniam ma aptikti, tada '.my.identity!publish @ma'.
 help-publish-without = Be paskelbimo kiti negali tavęs pasiekti — net žinodami tavo DID, jie negali išspręsti tavo endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               naudokite .z.* viešam Scheme ir .m
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme įvertina į zion komandas įterptas Scheme išraiškas ir prieš siunčiant įrašo rezultatą į eilutę.
+help-zscheme-intro = zscheme įvertina į operator komandas įterptas Scheme išraiškas ir prieš siunčiant įrašo rezultatą į eilutę.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    įterptas pavyzdys; siunčia "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             apibrėžimai išlieka dabartinės prisijungimo sesijos metu
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme

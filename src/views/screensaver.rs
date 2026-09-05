@@ -103,7 +103,8 @@ struct Actor {
 #[component]
 pub fn Screensaver() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
-    let config = use_context::<RwSignal<crate::config::EgoConfig>>().expect("EgoConfig missing");
+    let config =
+        use_context::<RwSignal<crate::config::OperatorConfig>>().expect("OperatorConfig missing");
     let canvas_ref = NodeRef::<leptos::html::Canvas>::new();
 
     // Idle tracking
@@ -119,7 +120,7 @@ pub fn Screensaver() -> impl IntoView {
                 return;
             }
             let timeout = u32::try_from(
-                config.with_untracked(crate::config::EgoConfig::screensaver_timeout_secs),
+                config.with_untracked(crate::config::OperatorConfig::screensaver_timeout_secs),
             )
             .unwrap_or(u32::MAX);
             let now = now_secs();

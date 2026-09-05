@@ -1,4 +1,4 @@
-# zion — lang belta (Belter Creole)
+# operator — lang belta (Belter Creole)
 lang-name = Lang Belta
 label-nick = name
 new-identity-nick-help = Chosem xitim name fo 間-space. Im only name, im can change any time.
@@ -24,7 +24,7 @@ btn-new-endpoint = nyu boneway
 btn-import-profile = bringin profayel
 btn-show-qr = showim QR
 btn-scan-qr = skanim QR
-qr-scan-hint = Pointim da kamera na wan zion profayel QR kod, ke.
+qr-scan-hint = Pointim da kamera na wan operator profayel QR kod, ke.
 qr-error-camera = kamera na gut: { $e }
 qr-error-too-large = da profayel im tumang big fo wan QR kod
 passphrase-warning = Losh sekrit-lang = losh selfmang. Na du finyish wit nating.
@@ -50,7 +50,7 @@ error-profile-no-username = profayel na hesh mang-nim
 error-profile-no-identity = selfmang '{ $name }' na finyish wit — bringin selfmang fosh
 
 # ── Sistem koments terminal ────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — ingangé wit { $username }
+msg-logged-in = operator v{ $version } — ingangé wit { $username }
 msg-type-help = Showxa .help fo kowl komands.
 msg-getting-started = Try wa: say Hello world, look, .help, or help.
 msg-connecting = konekting to iroh...
@@ -169,7 +169,7 @@ doc-publish-failed = sendowt { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish hámfalla [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = faça login novamente para que o ego possa acessar suas chaves de selfmang
+doc-publish-hint-session = faça login novamente para que o operator possa acessar suas chaves de selfmang
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifique se o documento DID do editor foi sendowt e contém um endpoint acessível
@@ -188,7 +188,7 @@ doc-no-verb = na du `{ $verb }` fo { $path }
 path-no-verb = na du `{ $verb }` fo { $path }
 
 # ── Halp — gova ──────────────────────────────────────────────────────────
-help-header-zion = ── zion komands ────────────────────────────────────────────────────────────
+help-header-operator = ── operator komands ────────────────────────────────────────────────────────────
 help-header-messaging = ── showxa ───────────────────────────────────────────────────────────────
 help-header-config = ── konfig naxwe ──────────────────────────────────────────────────────────
 help-header-common = ── kowl paj du ──────────────────────────────────────────────────────────
@@ -199,7 +199,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── go inside 間-space ─────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Halp — zion komands ───────────────────────────────────────────────────
+# ── Halp — operator komands ───────────────────────────────────────────────────
 help-cmd-help =   .help                        dis lit-pej
 help-cmd-clear =   .clear                       kel terminal
 help-cmd-panic =   .panic                       owkwa keting — du wit problem
@@ -261,7 +261,7 @@ help-doc-del =   .my.doc.<name>:              na-du dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n keep lang choice fo dis selfmang.
-help-i18n-set =   .my.i18n: <code>             set which lang zion use fo dis selfmang
+help-i18n-set =   .my.i18n: <code>             set which lang operator use fo dis selfmang
 help-i18n-list =   .my.i18n!list               show all lang codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -386,10 +386,10 @@ help-actor-head =   (@actor/path)                fetch remote CRUD content from 
 help-actor-tail =   (<bafy...>)                  include and eval Scheme from IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) keep replies in session env
 
-help-topic-url =   .help/url                    open zion tru URL peng
+help-topic-url =   .help/url                    open operator tru URL peng
 help-topic-i18n =   .help/i18n                   lang choice fo yer selfmang
 help-header-url = ── URL pamitim ──────────────────────────────────────────────────────────────────
-help-url-intro =   Fo peng fo open zion wit belter wating already fill:
+help-url-intro =   Fo peng fo open operator wit belter wating already fill:
 help-url-msg =   ?msg=<did>                   fill befo: @<did>!msg (basic palabras)
 help-url-say =   ?say=<did>                   fill befo: @<did>!say (say verd)
 help-url-emote =   ?emote=<did>                 fill befo: @<did>!emote (emote verd)
@@ -401,7 +401,7 @@ help-url-note =   Di input fill but no sen — peng Enter fo sen.
 help-topic-publish =   .help/publish                pashang inyalowda setara to da ring
 help-header-publish = ── pashang setara ───────────────────────────────────────────────────────────
 help-publish-intro = Pashang da setara tube-kewe na la ring. Felota mang DID inyalowda setara fo da kontak.
-help-publish-ma = Fo pashang, 間 (local runtime) besh da gut. Im kang ego wit IPFS/IPNS fo inyalowda.
+help-publish-ma = Fo pashang, 間 (local runtime) besh da gut. Im kang operator wit IPFS/IPNS fo inyalowda.
 help-publish-steps = Stap: run '.ma: claim [port]' fo find local 間, den '.my.identity!publish @ma'.
 help-publish-without = Wit no pashang, felota no kang reach you — even si dem know you DID, dem no kang solve you endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -445,7 +445,7 @@ help-z-choice =   .z.* / .my.*               yus .z.* fo public Scheme unte .my.
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme du Scheme komang wey im insid zion komang, den splice result im da line bifo sendowt.
+help-zscheme-intro = zscheme du Scheme komang wey im insid operator komang, den splice result im da line bifo sendowt.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insid-line example; sendowt "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             define dem stay fo dis ingang session
 help-zscheme-doc = Doku: https://github.com/bahner/rust-ma-zscheme

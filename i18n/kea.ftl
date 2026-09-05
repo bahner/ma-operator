@@ -1,4 +1,4 @@
-# zion — Kriolu
+# operator — Kriolu
 lang-name = Kriolu
 label-nick = alcunha
 new-identity-nick-help = Skodji un alcunha pa 間-space. É só un alcunha y bu pode mudal kualker ora.
@@ -22,7 +22,7 @@ btn-new-endpoint = novu endpoint
 btn-import-profile = importa perfil
 btn-show-qr = mostra QR
 btn-scan-qr = skania QR
-qr-scan-hint = Ponta kamera pa un kódigu QR di perfil zion.
+qr-scan-hint = Ponta kamera pa un kódigu QR di perfil operator.
 qr-error-camera = kamera ka sta disponível: { $e }
 qr-error-too-large = perfil grandi dimas pa un kódigu QR
 passphrase-warning = Pèrdi frazi-pase = pèrdi identidadi. Ka ten rekuperason.
@@ -48,7 +48,7 @@ error-profile-no-username = perfil ka ten nómi di uzuáriu
 error-profile-no-identity = identidádi '{ $name }' ka atxádu — importa identidádi prímeru
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — logadu komo { $username }
+msg-logged-in = operator v{ $version } — logadu komo { $username }
 msg-type-help = Tipa .help pa lista di komandu.
 msg-getting-started = Tenta: say Hello world, look, .help, ô help.
 msg-connecting = konektandu a iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publiká { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikason falhadu [{ $code }]: { $err }
 doc-publish-error-hint = Dika: { $hint }
-doc-publish-hint-session = faça login novamente para que o ego possa acessar suas chaves de identidadi
+doc-publish-hint-session = faça login novamente para que o operator possa acessar suas chaves de identidadi
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifique se o documento DID do editor foi publicado e contém um endpoint acessível
@@ -190,7 +190,7 @@ lang-list-header = Lingua disponivel (.my.i18n: <code> pa pô):
 
 err-lang-not-found = lingua ka atxadu: { $lang }
 
-help-header-zion = ── komandus di zion ───────────────────────────────────────────────────────
+help-header-operator = ── komandus di operator ───────────────────────────────────────────────────────
 help-header-messaging = ── mensajen ───────────────────────────────────────────────────────────────
 help-header-config = ── gramatika di konfigurason lokal ────────────────────────────────────────
 help-header-common = ── kaminhos komuns ────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              apaga dokumentu
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n armazena a preferência de idioma vinculada à sua identidadi.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               listar códigos de idioma disponíveis
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) mantenha as respostas 5 no ambiente da sessão
 
-help-topic-url =   .help/url                    abri zion via un ligason URL
+help-topic-url =   .help/url                    abri operator via un ligason URL
 help-topic-i18n = .help/i18n                   preferência de idioma para sua identidadi
 help-header-url = ── parametru URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Partilha un ligason ki abri zion ku un destinatáriu ia metidu:
+help-url-intro =   Partilha un ligason ki abri operator ku un destinatáriu ia metidu:
 help-url-msg =   ?msg=<did>                   mete antis: @<did>!msg (mensaji simples)
 help-url-say =   ?say=<did>                   mete antis: @<did>!say (verbu say)
 help-url-emote =   ?emote=<did>                 mete antis: @<did>!emote (verbu emote)
@@ -385,7 +385,7 @@ help-url-note =   Entrada sta metida ma ka manda ainda — preme Enter pa manda.
 help-topic-publish =   .help/publish                publika bo idantidadi na rede
 help-header-publish = ── publika idantidadi ───────────────────────────────────────────────────────
 help-publish-intro = Publikason fazi bo idantidadi atxável na rede. Otus podi txuba bo DID pa kontakta ku bu.
-help-publish-ma = Pa publika, bu ta prexisa 間 (runtime lokal) instaladu. El liga ego ku IPFS/IPNS na bo nomi.
+help-publish-ma = Pa publika, bu ta prexisa 間 (runtime lokal) instaladu. El liga operator ku IPFS/IPNS na bo nomi.
 help-publish-steps = Passu: kori '.ma: claim [port]' pa diteta 間 lokal, dipus '.my.identity!publish @ma'.
 help-publish-without = Sin publikason, otus ka pa konsigi atingi bu — mes ki es sabi bo DID, es ka pa rezolvi bo endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               uza .z.* pa Scheme publiku y .my.* 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme avalia ekspreson Scheme dentu di komandus zion y poi resultado na linha antis di manda.
+help-zscheme-intro = zscheme avalia ekspreson Scheme dentu di komandus operator y poi resultado na linha antis di manda.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    izemplu na linha; manda "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definison ta fika na seson atual di login
 help-zscheme-doc = Dokumentason: https://github.com/bahner/rust-ma-zscheme

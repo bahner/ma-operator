@@ -1,4 +1,4 @@
-# zion — தமிழ்
+# operator — தமிழ்
 lang-name = தமிழ்
 label-nick = செல்லப்பெயர்
 new-identity-nick-help = 間-space க்கான செல்லப்பெயரைத் தேர்வுசெய்க. அது ஒரு செல்லப்பெயர் மட்டுமே; எப்போது வேண்டுமானாலும் மாற்றலாம்.
@@ -22,7 +22,7 @@ btn-new-endpoint = புதிய இறுதிப்புள்ளி
 btn-import-profile = சுயவிவரம் இறக்கு
 btn-show-qr = QR காட்டு
 btn-scan-qr = QR ஸ்கேன் செய்
-qr-scan-hint = கேமராவை zion சுயவிவர QR குறியீட்டின் பக்கம் திருப்புங்கள்.
+qr-scan-hint = கேமராவை operator சுயவிவர QR குறியீட்டின் பக்கம் திருப்புங்கள்.
 qr-error-camera = கேமரா கிடைக்கவில்லை: { $e }
 qr-error-too-large = QR குறியீட்டுக்கு சுயவிவரம் மிகப் பெரியது
 passphrase-warning = கடவுச்சொற்றொடர் தொலைந்தால் அடையாளம் தொலையும். மீட்பு இல்லை.
@@ -48,7 +48,7 @@ error-profile-no-username = சுயவிவரத்தில் பயனர
 error-profile-no-identity = அடையாளம் '{ $name }' கண்டுபிடிக்கவில்லை — முதலில் அடையாளம் இறக்குங்கள்
 
 # ── முனையம் கணினி செய்திகள் ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username } ஆக உள்நுழைந்தீர்கள்
+msg-logged-in = operator v{ $version } — { $username } ஆக உள்நுழைந்தீர்கள்
 msg-type-help = கட்டளைகளின் பட்டியலுக்கு .help தட்டச்சு செய்யவும்.
 msg-getting-started = தொடங்க முயலுங்கள்: say Hello world, look, .help, அல்லது help.
 msg-connecting = iroh உடன் இணைக்கப்படுகிறது...
@@ -186,7 +186,7 @@ doc-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் 
 path-no-verb = { $path } க்கு `{ $verb }` வினைச்சொல் இல்லை
 
 # ── உதவி — தலைப்புகள் ─────────────────────────────────────────────────────
-help-header-zion = ── zion கட்டளைகள் ───────────────────────────────────────────────────────
+help-header-operator = ── operator கட்டளைகள் ───────────────────────────────────────────────────────
 help-header-messaging = ── செய்தியிடல் ──────────────────────────────────────────────────────────
 help-header-config = ── உள்ளூர் அமைவு இலக்கணம் ────────────────────────────────────────────────
 help-header-common = ── பொதுவான பாதைகள் ──────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 間-வெளியில் நுழைகிறது ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── உதவி — zion கட்டளைகள் ────────────────────────────────────────────────
+# ── உதவி — operator கட்டளைகள் ────────────────────────────────────────────────
 help-cmd-help =   .help                        இந்த உரை
 help-cmd-clear =   .clear                       முனையம் அழிக்கவும்
 help-cmd-panic =   .panic                       கடைசி வழி — சிக்கலில் பயன்படுத்தவும்
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              ஆவணம் நீக்கவ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n உங்கள் அடையாளத்துடன் இணைக்கப்பட்ட மொழி விருப்பத்தை சேமிக்கிறது.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               கிடைக்கக்கூடிய மொழி குறியீடுகளை பட்டியலிடுங்கள்
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) அமர்வு சூழலில் 5 பதில்களை வைத்திருங்கள்
 
-help-topic-url =   .help/url                    URL இணைப்பு வழியாக zion திறக்க
+help-topic-url =   .help/url                    URL இணைப்பு வழியாக operator திறக்க
 help-topic-i18n = .help/i18n                   உங்கள் அடையாளத்திற்கான மொழி விருப்பம்
 help-header-url = ── URL அளவுருக்கள் ───────────────────────────────────────────────────────────────
-help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் zion திறக்கும் இணைப்பை பகிரவும்:
+help-url-intro =   முன்னரே நிரப்பப்பட்ட பெறுநருடன் operator திறக்கும் இணைப்பை பகிரவும்:
 help-url-msg =   ?msg=<did>                   முன்னரே நிரப்புகிறது: @<did>!msg (எளிய செய்தி)
 help-url-say =   ?say=<did>                   முன்னரே நிரப்புகிறது: @<did>!say (say வினை)
 help-url-emote =   ?emote=<did>                 முன்னரே நிரப்புகிறது: @<did>!emote (emote வினை)
@@ -399,7 +399,7 @@ help-url-note =   உள்ளீடு முன்னரே நிரப்ப
 help-topic-publish =   .help/publish                நெட்வொர்க்கில் உங்கள் அடையாளத்தை வெளியிடுங்கள்
 help-header-publish = ── அடையாள வெளியீடு ──────────────────────────────────────────────────────────
 help-publish-intro = வெளியீடு உங்கள் அடையாளத்தை நெட்வொர்க்கில் கண்டறியக்கூடியதாக செய்கிறது. மற்றவர்கள் உங்கள் DID தேடி உங்களை அடையலாம்.
-help-publish-ma = வெளியிட 間 (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக ego ஐ IPFS/IPNS உடன் இணைக்கிறது.
+help-publish-ma = வெளியிட 間 (உள்ளூர் இயக்க நேரம்) நிறுவப்பட்டிருக்க வேண்டும். அது உங்களுக்காக operator ஐ IPFS/IPNS உடன் இணைக்கிறது.
 help-publish-steps = படிகள்: உள்ளூர் ma கண்டறிய '.ma: claim [port]' இயக்கவும், பின்னர் '.my.identity!publish @ma'.
 help-publish-without = வெளியிடாமல் இருந்தால் மற்றவர்கள் உங்களை அடைய முடியாது — DID தெரிந்தாலும் உங்கள் endpoint ஐ கண்டறிய இயலாது.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -444,7 +444,7 @@ help-z-choice =   .z.* / .my.*               பொது Schemeக்கு .z.
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme zion கட்டளைகளில் உள்ள Scheme வெளிப்பாடுகளை மதிப்பிட்டு, அனுப்புவதற்கு முன் முடிவை அந்த வரிக்குள் சேர்க்கிறது.
+help-zscheme-intro = zscheme operator கட்டளைகளில் உள்ள Scheme வெளிப்பாடுகளை மதிப்பிட்டு, அனுப்புவதற்கு முன் முடிவை அந்த வரிக்குள் சேர்க்கிறது.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    வரிக்குள் எடுத்துக்காட்டு; "say 7 + 5 = 12" அனுப்பும்
 help-zscheme-define =   (define x 12)             வரையறைகள் தற்போதைய உள்நுழைவு அமர்வில் தொடரும்
 help-zscheme-doc = ஆவணங்கள்: https://github.com/bahner/rust-ma-zscheme

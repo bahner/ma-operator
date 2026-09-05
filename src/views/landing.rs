@@ -5,7 +5,7 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::{FileReader, HtmlInputElement, KeyboardEvent, MouseEvent};
 
 use crate::{
-    config::{restore_config, EgoConfig},
+    config::{restore_config, OperatorConfig},
     i18n::{t, tf},
     identity::{
         create_identity_did_named, export_for_download, import_from_bytes, load_identity,
@@ -55,7 +55,7 @@ struct FetchedProfile {
     /// Re-encrypted export with a canonical timestamp, if migration was needed.
     migrated: Option<String>,
     /// Merged profile config.
-    cfg: EgoConfig,
+    cfg: OperatorConfig,
     /// `ma.lang` from the resolved DID document, if present.
     lang: Option<String>,
 }
@@ -127,7 +127,7 @@ async fn fetch_profile_from_ipfs(
         }
     };
 
-    let mut cfg = EgoConfig::new();
+    let mut cfg = OperatorConfig::new();
     cfg.merge_from_nested_profile(&profile_val)
         .map_err(ProfileFetchError::Rejected)?;
 
@@ -188,7 +188,7 @@ enum Mode {
 #[component]
 pub fn Landing() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
-    let config = use_context::<RwSignal<EgoConfig>>().expect("EgoConfig missing");
+    let config = use_context::<RwSignal<OperatorConfig>>().expect("OperatorConfig missing");
     let lang = state.lang;
 
     let mode = RwSignal::new(Mode::Login);
@@ -284,7 +284,7 @@ pub fn Landing() -> impl IntoView {
             }
             let mut selected_ma = invited_ma.clone();
             if let Ok(Some(cfg_json)) = crate::identity::storage::load_config(&uname).await {
-                if let Ok(cfg) = crate::config::EgoConfig::from_json(&cfg_json) {
+                if let Ok(cfg) = crate::config::OperatorConfig::from_json(&cfg_json) {
                     if let Some(lang_tag) = cfg.get(".my.i18n") {
                         if crate::i18n::init(lang_tag).await {
                             state2.lang.set(crate::i18n::lang());
@@ -402,7 +402,7 @@ pub fn Landing() -> impl IntoView {
                             let uname = username_from_did(&new_did);
                             match save_identity(&uname, &export_json).await {
                                 Ok(()) => {
-                                    let mut cfg = EgoConfig::new();
+                                    let mut cfg = OperatorConfig::new();
                                     cfg.set(".my.ctx.nick", &chosen_nick);
                                     match cfg.to_json() {
                                         Ok(cfg_json) => {
@@ -469,9 +469,9 @@ pub fn Landing() -> impl IntoView {
                                         return;
                                     }
                                     let cfg = match cfg_opt {
-                                        Some(json) => EgoConfig::from_json(&json)
-                                            .unwrap_or_else(|_| EgoConfig::new()),
-                                        None => EgoConfig::new(),
+                                        Some(json) => OperatorConfig::from_json(&json)
+                                            .unwrap_or_else(|_| OperatorConfig::new()),
+                                        None => OperatorConfig::new(),
                                     };
                                     config.set(cfg);
                                     finish_login(id, uname, pass, false, state2);
@@ -581,7 +581,7 @@ pub fn Landing() -> impl IntoView {
                     let cfg_json = load_config(&uname).await.ok().flatten();
                     let json =
                         export_for_download(&stored.export_json, &uname, cfg_json.as_deref());
-                    trigger_download(&format!("{uname}.zion.json"), &json);
+                    trigger_download(&format!("{uname}.operator.json"), &json);
                 }
                 Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
                 Err(e) => error.set(e),
@@ -628,7 +628,7 @@ pub fn Landing() -> impl IntoView {
         }
     };
 
-    // ── Export as QR: keys-only profile (no EgoConfig), same encryption ──
+    // ── Export as QR: keys-only profile (no OperatorConfig), same encryption ──
     let do_show_qr = move |_: MouseEvent| {
         let did = did_input.get_untracked().trim().to_string();
         if did.is_empty() {
@@ -980,7 +980,7 @@ pub fn Landing() -> impl IntoView {
                         <label>{move || { let _ = lang.get(); t("label-or-file") }}</label>
                         <input
                             type="file"
-                            accept=".json,.zion.json"
+                            accept=".json,.operator.json"
                             style="color:var(--colour-text);font-family:var(--font-family)"
                             on:change=on_file_change
                         />

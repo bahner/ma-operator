@@ -8,7 +8,7 @@ mod identity;
 mod inbox;
 pub(crate) mod ma;
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::i18n::tf;
 use crate::state::{AppState, QrIntent};
 use crate::views::editor::EditorContext;
@@ -69,7 +69,7 @@ pub(crate) fn is_bare_ma_did(did: &str) -> bool {
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no
 /// fragment, no path). Accepts either an alias name or a literal DID.
-fn resolve_bare_did(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
+fn resolve_bare_did(arg: &str, cfg: &OperatorConfig) -> Result<String, String> {
     let raw = arg.trim_start_matches('@');
     let resolved = if raw.starts_with("did:") {
         raw.to_string()
@@ -90,7 +90,7 @@ pub fn dispatch_meta(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
@@ -99,7 +99,7 @@ pub fn dispatch_meta(
             return Err(tf("path-no-verb", &[("verb", verb), ("path", path)]));
         }
         let cfg = config.get_untracked();
-        if EgoConfig::is_read_only(path) {
+        if OperatorConfig::is_read_only(path) {
             return Err(tf("msg-read-only", &[("path", path)]));
         }
         if cfg.has_children(path) {
@@ -243,7 +243,7 @@ mod tests {
     #[test]
     fn z_scheme_save_is_not_a_special_verb() {
         let state = AppState::new();
-        let config = RwSignal::new(EgoConfig::default());
+        let config = RwSignal::new(OperatorConfig::default());
         let show_editor = RwSignal::new(None);
         let on_eval = Callback::new(|_: String| ());
 

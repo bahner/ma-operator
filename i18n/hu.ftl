@@ -1,4 +1,4 @@
-# zion — Magyar
+# operator — Magyar
 lang-name = Magyar
 label-nick = becenév
 new-identity-nick-help = Válassz becenevet a 間-space-hez. Ez csak egy becenév, és bármikor megváltoztathatod.
@@ -22,7 +22,7 @@ btn-new-endpoint = új végpont
 btn-import-profile = profil importálása
 btn-show-qr = QR megjelenítése
 btn-scan-qr = QR beolvasása
-qr-scan-hint = Irányítsa a kamerát egy zion profil QR-kódjára.
+qr-scan-hint = Irányítsa a kamerát egy operator profil QR-kódjára.
 qr-error-camera = a kamera nem elérhető: { $e }
 qr-error-too-large = a profil túl nagy egy QR-kódhoz
 passphrase-warning = Elveszett jelmondat = elveszett identitás. Helyreállítás nem lehetséges.
@@ -48,7 +48,7 @@ error-profile-no-username = a profil nem tartalmaz felhasználónevet
 error-profile-no-identity = az identitás '{ $name }' nem található — előbb importálja az identitást
 
 # ── Terminál rendszerüzenetek ─────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — bejelentkezve mint { $username }
+msg-logged-in = operator v{ $version } — bejelentkezve mint { $username }
 msg-type-help = Írja be a .help parancsot a parancsok listájához.
 msg-getting-started = Próbálja ki: say Hello world, look, .help vagy help.
 msg-connecting = csatlakozás az iroh-hoz...
@@ -167,7 +167,7 @@ doc-publish-failed = közzététel { $path }: { $e }
 doc-publish-ipld-failed = IPLD közzététel { $path }: { $e }
 doc-publish-error-detail = közzététel sikertelen [{ $code }]: { $err }
 doc-publish-error-hint = Tipp: { $hint }
-doc-publish-hint-session = jelentkezzen be újra, hogy az ego hozzáférhessen a személyazonossági kulcsaihoz
+doc-publish-hint-session = jelentkezzen be újra, hogy az operator hozzáférhessen a személyazonossági kulcsaihoz
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = ellenőrizze, hogy a kiadói DID-dokumentum megjelent-e, és tartalmaz-e elérhető végpontot
@@ -186,7 +186,7 @@ doc-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 path-no-verb = nincs `{ $verb }` ige a következőhöz: { $path }
 
 # ── Súgószöveg — fejlécek ─────────────────────────────────────────────────
-help-header-zion = ── zion parancsok ─────────────────────────────────────────────────────────
+help-header-operator = ── operator parancsok ─────────────────────────────────────────────────────────
 help-header-messaging = ── üzenetküldés ──────────────────────────────────────────────────────────
 help-header-config = ── helyi konfigurációs szintaxis ──────────────────────────────────────
 help-header-common = ── általános útvonalak ───────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<név>:              dokumentum törlése
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = A .my.i18n az Ön személyazonosságához kötött nyelvi beállításokat tárolja.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               listázza ki az elérhető nyelvkódokat
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) tartsa a 5 válaszokat a munkamenet környezetben
 
-help-topic-url =   .help/url                    zion megnyitása URL-linken keresztül
+help-topic-url =   .help/url                    operator megnyitása URL-linken keresztül
 help-topic-i18n = .help/i18n                   identitásod nyelvi preferenciája
 help-header-url = ── URL-paraméterek ──────────────────────────────────────────────────────────────
-help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a zion-t:
+help-url-intro =   Ossz meg egy linket, amely előre kitöltött címzettel nyitja meg a operator-t:
 help-url-msg =   ?msg=<did>                   előre kitölti: @<did>!msg (egyszerű üzenet)
 help-url-say =   ?say=<did>                   előre kitölti: @<did>!say (say ige)
 help-url-emote =   ?emote=<did>                 előre kitölti: @<did>!emote (emote ige)
@@ -392,7 +392,7 @@ help-url-note =   A beviteli mező előre ki van töltve, de nem lett elküldve 
 help-topic-publish =   .help/publish                azonosságod közzététele a hálózaton
 help-header-publish = ── azonosság közzététele ─────────────────────────────────────────────────────
 help-publish-intro = A közzététel megtalálhatóvá teszi az azonosságodat a hálózaton. Mások megkereshetik a DID-edet, hogy elérjenek.
-help-publish-ma = A közzétételhez szükséges a 間 (helyi futtatókörnyezet) telepítése. Összeköti az ego-t az IPFS/IPNS-sel a neveddel.
+help-publish-ma = A közzétételhez szükséges a 間 (helyi futtatókörnyezet) telepítése. Összeköti az operator-t az IPFS/IPNS-sel a neveddel.
 help-publish-steps = Lépések: futtasd '.ma: claim [port]' a helyi 間 megtalálásához, majd '.my.identity!publish @ma'.
 help-publish-without = Közzététel nélkül mások nem tudnak elérni — még ha ismerik is a DID-edet, nem tudják feloldani az endpointodat.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               használja a .z.*-ot nyilvános Sch
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = A zscheme kiértékeli a zion parancsokba ágyazott Scheme-kifejezéseket, és elküldés előtt beilleszti az eredményt a sorba.
+help-zscheme-intro = A zscheme kiértékeli a operator parancsokba ágyazott Scheme-kifejezéseket, és elküldés előtt beilleszti az eredményt a sorba.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    soron belüli példa; ezt küldi: "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             a definíciók megmaradnak az aktuális bejelentkezési munkamenetben
 help-zscheme-doc = Dokumentáció: https://github.com/bahner/rust-ma-zscheme

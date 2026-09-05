@@ -1,4 +1,4 @@
-# zion — Eesti
+# operator — Eesti
 lang-name = Eesti
 label-nick = hüüdnimi
 new-identity-nick-help = Vali 間-space'i jaoks hüüdnimi. See on ainult hüüdnimi ja seda saab igal ajal muuta.
@@ -22,7 +22,7 @@ btn-new-endpoint = uus lõpp-punkt
 btn-import-profile = impordi profiil
 btn-show-qr = näita QR-i
 btn-scan-qr = skanni QR
-qr-scan-hint = Suuna kaamera zioni profiili QR-koodile.
+qr-scan-hint = Suuna kaamera operatori profiili QR-koodile.
 qr-error-camera = kaamera pole saadaval: { $e }
 qr-error-too-large = profiil on QR-koodi jaoks liiga suur
 passphrase-warning = Kaotatud paroolilause = kaotatud identiteet. Taastamine pole võimalik.
@@ -48,7 +48,7 @@ error-profile-no-username = profiil ei sisalda kasutajanime
 error-profile-no-identity = identiteet '{ $name }' ei leitud — importige esmalt identiteet
 
 # ── Terminali süsteemiteated ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — sisse logitud kasutajana { $username }
+msg-logged-in = operator v{ $version } — sisse logitud kasutajana { $username }
 msg-type-help = Käskude loendi saamiseks kirjuta .help/
 msg-getting-started = Proovi: say Hello world, look, .help või help.
 msg-connecting = ühendatakse iroh-iga...
@@ -167,7 +167,7 @@ doc-publish-failed = avaldamine { $path }: { $e }
 doc-publish-ipld-failed = ipld-avaldamine { $path }: { $e }
 doc-publish-error-detail = avaldamine ebaõnnestus [{ $code }]: { $err }
 doc-publish-error-hint = Vihje: { $hint }
-doc-publish-hint-session = logige uuesti sisse, et ego pääseks teie identiteedivõtmetele juurde
+doc-publish-hint-session = logige uuesti sisse, et operator pääseks teie identiteedivõtmetele juurde
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = veenduge, et väljaandja DID-dokument on avaldatud ja sisaldab saavutatavat lõpp-punkti
@@ -186,7 +186,7 @@ doc-no-verb = { $path } jaoks pole verbi `{ $verb }`
 path-no-verb = { $path } jaoks pole verbi `{ $verb }`
 
 # ── Abiinfo — pealkirjad ──────────────────────────────────────────────────
-help-header-zion = ── zion-käsud ────────────────────────────────────────────────────────────
+help-header-operator = ── operator-käsud ────────────────────────────────────────────────────────────
 help-header-messaging = ── sõnumid ───────────────────────────────────────────────────────────────
 help-header-config = ── kohalik konfiguratsioonisüntaks ─────────────────────────────────────
 help-header-common = ── tavalised teed ────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nimi>:              kustuta dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n salvestab teie identiteediga seotud keele-eelistuse.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               saadaolevate keelekoodide loend
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) hoia 5 vastuseid seansikeskkonnas
 
-help-topic-url =   .help/url                    zion'i avamine URL-lingi kaudu
+help-topic-url =   .help/url                    operator'i avamine URL-lingi kaudu
 help-topic-i18n = .help/i18n                   keele eelistus teie identiteedile
 help-header-url = ── URL-parameetrid ──────────────────────────────────────────────────────────────
-help-url-intro =   Jaga linki, mis avab zion'i eeltäidetud saajaga:
+help-url-intro =   Jaga linki, mis avab operator'i eeltäidetud saajaga:
 help-url-msg =   ?msg=<did>                   eeltäidab: @<did>!msg (lihtteade)
 help-url-say =   ?say=<did>                   eeltäidab: @<did>!say (tegusõna say)
 help-url-emote =   ?emote=<did>                 eeltäidab: @<did>!emote (tegusõna emote)
@@ -392,7 +392,7 @@ help-url-note =   Sisend on eeltäidetud, kuid saatmata — vajuta Enter saatmis
 help-topic-publish =   .help/publish                identiteedi avaldamine võrgus
 help-header-publish = ── identiteedi avaldamine ───────────────────────────────────────────────────
 help-publish-intro = Avaldamine muudab su identiteedi võrgus leitavaks. Teised saavad sinu DID-i otsida, et sinuga ühendust võtta.
-help-publish-ma = Avaldamiseks vajad installitud 間-d (kohalik käituskeskkond). See ühendab ego IPFS/IPNS-iga sinu nimel.
+help-publish-ma = Avaldamiseks vajad installitud 間-d (kohalik käituskeskkond). See ühendab operator IPFS/IPNS-iga sinu nimel.
 help-publish-steps = Sammud: käivita '.ma: claim [port]' kohaliku ma tuvastamiseks, seejärel '.my.identity!publish @ma'.
 help-publish-without = Ilma avaldamiseta teised ei saa sulle jõuda — isegi kui nad teavad sinu DID-i, ei suuda nad sinu endpointi lahendada.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               kasutage .z.* avaliku Scheme jaoks 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme hindab zioni käskudesse põimitud Scheme-avaldisi ja lisab tulemuse reale enne saatmist.
+help-zscheme-intro = zscheme hindab operatori käskudesse põimitud Scheme-avaldisi ja lisab tulemuse reale enne saatmist.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    reasisesene näide; saadab "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitsioonid püsivad praeguse sisselogimisseansi ajal
 help-zscheme-doc = Dokumentatsioon: https://github.com/bahner/rust-ma-zscheme

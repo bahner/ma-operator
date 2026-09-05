@@ -1,4 +1,4 @@
-# zion — isiZulu
+# operator — isiZulu
 lang-name = isiZulu
 label-nick = isiteketiso
 new-identity-nick-help = Khetha isiteketiso se-間-space. Siyisiteketiso nje, futhi ungasishintsha noma nini.
@@ -22,7 +22,7 @@ btn-new-endpoint = indawo entsha
 btn-import-profile = ngenisa iphrofayela
 btn-show-qr = bonisa i-QR
 btn-scan-qr = skena i-QR
-qr-scan-hint = Qondisa ikhamera kukhodi ye-QR yephrofayela ye-zion.
+qr-scan-hint = Qondisa ikhamera kukhodi ye-QR yephrofayela ye-operator.
 qr-error-camera = ikhamera ayitholakali: { $e }
 qr-error-too-large = iphrofayela inkulu kakhulu kukhodi ye-QR
 passphrase-warning = Ukulahlekelwa igama elinzulazulu = ukulahlekelwa ubunikazi. Akukho okubuyiswayo.
@@ -48,7 +48,7 @@ error-profile-no-username = iphrofayela alinalo igama lomsebenzisi
 error-profile-no-identity = isazisi '{ $name }' asitholakananga — ngenisa isazisi kuqala
 
 # ── Imiyalezo yesistimu ye-terminal ──────────────────────────────────────
-msg-logged-in = zion v{ $version } — ungene njengo { $username }
+msg-logged-in = operator v{ $version } — ungene njengo { $username }
 msg-type-help = Thayipha .help ukuze uthole uhlu lwemiyalelo.
 msg-getting-started = Zama: say Hello world, look, .help, noma help.
 msg-connecting = ixhunywa ku-iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = ukushicilela u{ $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = ukushicilela kuhlulekile [{ $code }]: { $err }
 doc-publish-error-hint = Icebiso: { $hint }
-doc-publish-hint-session = ngena futhi ukuze i-ego ikwazi ukufinyelela okhiye bakho kamazisi
+doc-publish-hint-session = ngena futhi ukuze i-operator ikwazi ukufinyelela okhiye bakho kamazisi
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = qinisekisa ukuthi idokhumenti ye-DID yomshicileli ishicilelwe futhi iqukethe isiphetho esifinyelelekayo
@@ -186,7 +186,7 @@ doc-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 path-no-verb = akukho senzo `{ $verb }` saku-{ $path }
 
 # ── Usizo — izindlela ezikhulu ────────────────────────────────────────────
-help-header-zion = ── imiyalelo ye-zion ──────────────────────────────────────────────────────
+help-header-operator = ── imiyalelo ye-operator ──────────────────────────────────────────────────────
 help-header-messaging = ── ukuthumela ───────────────────────────────────────────────────────────
 help-header-config = ── uhlelo lwezintela zendawo ────────────────────────────────────────────
 help-header-common = ── izindlela ezisetshenziswa kakhulu ──────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── ingena 間-space ───────────────────────── ──────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Usizo — imiyalelo ye-zion ─────────────────────────────────────────────
+# ── Usizo — imiyalelo ye-operator ─────────────────────────────────────────────
 help-cmd-help =   .help                        lo mbhalo
 help-cmd-clear =   .clear                       sula i-terminal
 help-cmd-panic =   .panic                       indlela yokugcina — sebenzisa uma unenkinga
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              susa umbhalo
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = I-.my.i18n igcina izintandokazi zolimi eziboshelwe kubunikazi bakho.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               bhala amakhodi olimi atholakalayo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) gcina izimpendulo ze-5 endaweni yeseshini
 
-help-topic-url =   .help/url                    ukuvula zion ngesixhokelelwano se-URL
+help-topic-url =   .help/url                    ukuvula operator ngesixhokelelwano se-URL
 help-topic-i18n = .help/i18n                   ulimi oluncamelayo ngobuwena
 help-header-url = ── izinhlelo ze-URL ─────────────────────────────────────────────────────────────
-help-url-intro =   Yabelana ngesixhokelelwano esivula zion enomamukeli osegcwaliswe phambilini:
+help-url-intro =   Yabelana ngesixhokelelwano esivula operator enomamukeli osegcwaliswe phambilini:
 help-url-msg =   ?msg=<did>                   gcwalisa phambilini: @<did>!msg (umlayezo olula)
 help-url-say =   ?say=<did>                   gcwalisa phambilini: @<did>!say (isenzo say)
 help-url-emote =   ?emote=<did>                 gcwalisa phambilini: @<did>!emote (isenzo emote)
@@ -399,7 +399,7 @@ help-url-note =   Ukufakwa kugcwaliswe phambilini kodwa akuthunyiswanga — cind
 help-topic-publish =   .help/publish                shicilela ubunikazi bakho kwi-network
 help-header-publish = ── ukushicilela ubunikazi ────────────────────────────────────────────────────
 help-publish-intro = Ukushicilela kwenza ubunikazi bakho butholakale ku-network. Abanye bangafuna i-DID yakho ukukufinyelela.
-help-publish-ma = Ukushicilela, udinga u-間 (runtime yendawo) ofakiwe. Ixhuma i-ego ne-IPFS/IPNS egameni lakho.
+help-publish-ma = Ukushicilela, udinga u-間 (runtime yendawo) ofakiwe. Ixhuma i-operator ne-IPFS/IPNS egameni lakho.
 help-publish-steps = Izinyathelo: qhuba '.ma: claim [port]' ukuze uthole u-ma wendawo, bese '.my.identity!publish @ma'.
 help-publish-without = Ngaphandle kokushicilela, abanye abanakukufinyelela — ngisho noma bazi i-DID yakho, abanakuxazulula i-endpoint yakho.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               sebenzisa .z.* ye-Scheme yomphakath
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ihlola izisho ze-Scheme ezifakwe emiyalweni ye-zion bese ifaka umphumela emgqeni ngaphambi kokuthumela.
+help-zscheme-intro = zscheme ihlola izisho ze-Scheme ezifakwe emiyalweni ye-operator bese ifaka umphumela emgqeni ngaphambi kokuthumela.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    isibonelo emgqeni; ithumela "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             izincazelo zihlala ngesikhathi seseshini yokungena yamanje
 help-zscheme-doc = Amadokhumenti: https://github.com/bahner/rust-ma-zscheme

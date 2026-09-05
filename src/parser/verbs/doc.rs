@@ -1,5 +1,5 @@
 use super::resolve_bare_did;
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::core::CommandStatus;
 use crate::http::fetch_path_text;
 use crate::i18n::{t, tf};
@@ -15,7 +15,7 @@ pub(super) fn handle_doc(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
@@ -43,7 +43,7 @@ pub(super) fn handle_doc(
 fn z_tree_publish(
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     if args.len() != 1 {
         return Err(t("doc-publish-usage"));
@@ -83,7 +83,7 @@ fn z_tree_publish(
     Ok(())
 }
 
-pub(crate) fn z_tree_parts(cfg: &EgoConfig) -> BTreeMap<String, String> {
+pub(crate) fn z_tree_parts(cfg: &OperatorConfig) -> BTreeMap<String, String> {
     const PREFIX: &str = ".z.";
     cfg.list(PREFIX)
         .into_iter()
@@ -99,7 +99,7 @@ pub(crate) async fn publish_z_tree_and_select(
     publisher: &str,
     parts: BTreeMap<String, String>,
     username: &str,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<String, String> {
     let manifest_cid = publish_z_tree(publisher, parts).await?;
     let manifest_ref = format!("/ipfs/{manifest_cid}");
@@ -182,7 +182,7 @@ fn doc_edit(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
 ) -> Result<(), String> {
     let cfg = config.get_untracked();
@@ -213,7 +213,7 @@ fn doc_eval(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     if args.len() > 1 {
@@ -264,7 +264,7 @@ async fn fetch_to_path(
     source: &str,
     path: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let content = fetch_path_text(source)
         .await
@@ -282,7 +282,7 @@ async fn fetch_to_path(
 async fn eval_content(
     content: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     if needs_sequential_eval(content) {
@@ -313,7 +313,7 @@ fn first_document_source_line(content: &str) -> Option<&str> {
 async fn eval_document_content(
     content: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     on_eval: Callback<String>,
 ) -> Result<(), String> {
     let text = content;
@@ -372,7 +372,7 @@ fn read_publish_args(
     path: &str,
     args: &[String],
     usage_err_key: &str,
-    cfg: &EgoConfig,
+    cfg: &OperatorConfig,
 ) -> Result<(String, String), String> {
     if args.len() != 1 {
         return Err(t(usage_err_key));
@@ -390,7 +390,7 @@ fn doc_publish(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     doc_publish_plain(path, args, state, config, "publish")
 }
@@ -399,7 +399,7 @@ fn doc_publish_plain(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     verb: &str,
 ) -> Result<(), String> {
     let cfg = config.get_untracked();
@@ -432,7 +432,7 @@ fn doc_publish_ipld(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let cfg = config.get_untracked();
     let (publisher, content_str) = read_publish_args(path, args, "doc-publish-ipld-usage", &cfg)?;
@@ -467,7 +467,7 @@ fn doc_cid(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     doc_publish_plain(path, args, state, config, "cid")
 }
@@ -477,7 +477,7 @@ fn doc_fetch(
     path: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     if args.len() != 1 {
         return Err(t("doc-fetch-usage"));
@@ -563,7 +563,7 @@ mod tests {
 
     #[test]
     fn z_tree_parts_collects_direct_source_leaves_only() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".z.stdlib", "(define x 1)");
         cfg.set(
             ".z.runtime",

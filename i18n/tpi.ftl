@@ -1,4 +1,4 @@
-# zion — Tok Pisin
+# operator — Tok Pisin
 lang-name = Tok Pisin
 label-nick = kolnem
 new-identity-nick-help = Makim wanpela kolnem bilong 間-space. Em kolnem tasol, na yu ken senisim long wanem taim yu laik.
@@ -22,7 +22,7 @@ btn-new-endpoint = nupela hap
 btn-import-profile = kisim profail
 btn-show-qr = soim QR
 btn-scan-qr = skanim QR
-qr-scan-hint = Makim kamera long wanpela QR kod bilong profail zion.
+qr-scan-hint = Makim kamera long wanpela QR kod bilong profail operator.
 qr-error-camera = kamera i no stap: { $e }
 qr-error-too-large = profail i bikpela tumas long wanpela QR kod
 passphrase-warning = Lusim pasfreis = lusim identiti. I no gat wei bilong kisim bek.
@@ -48,7 +48,7 @@ error-profile-no-username = profail i no gat nem bilong yusa
 error-profile-no-identity = identiti '{ $name }' i no stap — kisim identiti pastaim
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — lagin olsem { $username }
+msg-logged-in = operator v{ $version } — lagin olsem { $username }
 msg-type-help = Raitim .help bilong lukim lis bilong komand.
 msg-getting-started = Traim: say Hello world, look, .help, o help.
 msg-connecting = i konek long iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publishim { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish i no wok [{ $code }]: { $err }
 doc-publish-error-hint = Toksave: { $hint }
-doc-publish-hint-session = log in gen bai ego i ken kisim ol aidentiti ki bilong yu
+doc-publish-hint-session = log in gen bai operator i ken kisim ol aidentiti ki bilong yu
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = sekim olsem pablisa DID pepa i pablisim pinis na i gat wanpela 'reachable endpoint'
@@ -190,7 +190,7 @@ lang-list-header = Tok ples i gat (.my.i18n: <code> bilong putim):
 
 err-lang-not-found = tok i no painim: { $lang }
 
-help-header-zion = ── tok bilong zion ────────────────────────────────────────────────────────
+help-header-operator = ── tok bilong operator ────────────────────────────────────────────────────────
 help-header-messaging = ── toktok ─────────────────────────────────────────────────────────────────
 help-header-config = ── lokal seting gramar ────────────────────────────────────────────────────
 help-header-common = ── rot bilong olgeta ──────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              rausim pepa
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n i save putim ol tokples yu laikim we i stap wantaim aidentiti bilong yu.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               listim ol tokples kod we i stap
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) holim 5 bekim insait long sesen envairomen
 
-help-topic-url =   .help/url                    opim zion long URL link
+help-topic-url =   .help/url                    opim operator long URL link
 help-topic-i18n = .help/i18n                   tokples yu laikim long aidentiti bilong yu
 help-header-url = ── URL paramita ─────────────────────────────────────────────────────────────────
-help-url-intro =   Serem wanpela link bilong opim zion wantaim man bilong kisim olgeta i stap pinis:
+help-url-intro =   Serem wanpela link bilong opim operator wantaim man bilong kisim olgeta i stap pinis:
 help-url-msg =   ?msg=<did>                   pulapim pastaim: @<did>!msg (simol meses)
 help-url-say =   ?say=<did>                   pulapim pastaim: @<did>!say (vep say)
 help-url-emote =   ?emote=<did>                 pulapim pastaim: @<did>!emote (vep emote)
@@ -385,7 +385,7 @@ help-url-note =   Tok i pulap pinis tasol i no salim yet — presim Enter bilong
 help-topic-publish =   .help/publish                putim nem bilong yu antap long net
 help-header-publish = ── putim nem antap ──────────────────────────────────────────────────────────
 help-publish-intro = Putim nem antap i mekim nem bilong yu i stap long net. Ol arapela man inap painim DID bilong yu bilong toktok wantaim yu.
-help-publish-ma = Bilong putim nem antap, yu nidim 間 (local runtime) istap long komputa. Em i joinim ego wantaim IPFS/IPNS bilong yu.
+help-publish-ma = Bilong putim nem antap, yu nidim 間 (local runtime) istap long komputa. Em i joinim operator wantaim IPFS/IPNS bilong yu.
 help-publish-steps = Ol hap: ran '.ma: claim [port]' bilong painim local 間, na '.my.identity!publish @ma'.
 help-publish-without = Sapos yu no putim nem antap, ol arapela man inap yet lusim yu — ol i no inap painim endpoint bilong yu, maski ol i save DID bilong yu.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               usim .z.* long Scheme bilong olgeta
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme i skelim Scheme tok i stap insait long zion koman, na putim bek risal long lain bipo em i salim.
+help-zscheme-intro = zscheme i skelim Scheme tok i stap insait long operator koman, na putim bek risal long lain bipo em i salim.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    eksampel insait long lain; salim "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ol definition i stap yet long dispela login session
 help-zscheme-doc = Dokumen: https://github.com/bahner/rust-ma-zscheme

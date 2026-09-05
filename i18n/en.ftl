@@ -1,4 +1,4 @@
-# zion — English
+# operator — English
 lang-name = English
 label-nick = nick
 new-identity-nick-help = Choose a nick for 間-space. It is only a nickname, and you can change it whenever you want.
@@ -25,12 +25,12 @@ btn-new-endpoint = new endpoint
 btn-import-profile = import profile
 btn-show-qr = show QR
 btn-scan-qr = scan QR
-qr-scan-hint = Point the camera at a zion profile QR code.
+qr-scan-hint = Point the camera at a operator profile QR code.
 qr-error-camera = camera unavailable: { $e }
 qr-error-too-large = profile too large for a QR code
 passphrase-warning = Lost passphrase = lost identity. There is no recovery.
 warning-remote-runtime = Warning: Your IPNS private key will be sent to this runtime for identity publishing. Only use a runtime you fully trust.
-import-profile-help = Import a .zion.json profile by CID or file. No passphrase needed for a fresh import. Passphrase only required to overwrite an existing identity.
+import-profile-help = Import a .operator.json profile by CID or file. No passphrase needed for a fresh import. Passphrase only required to overwrite an existing identity.
 import-profile-detected-user = Profile belongs to: { $name }
 status-unlocking = unlocking...
 status-generating = generating identity...
@@ -52,7 +52,7 @@ error-profile-no-username = profile does not contain a username
 error-profile-no-identity = identity '{ $name }' not found — import identity first
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — logged in as { $username }
+msg-logged-in = operator v{ $version } — logged in as { $username }
 msg-type-help = Type .help for a list of commands.
 msg-getting-started = Try: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
@@ -177,7 +177,7 @@ doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish failed [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-session = log in again so operator can access your identity keys
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
@@ -196,7 +196,7 @@ doc-no-verb = no verb `{ $verb }` for { $path }
 path-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Help text — headers ───────────────────────────────────────────────────
-help-header-zion = ── zion commands ─────────────────────────────────────────────────────────
+help-header-operator = ── operator commands ─────────────────────────────────────────────────────────
 help-header-messaging = ── messaging ────────────────────────────────────────────────────────────
 help-header-config = ── local config grammar ─────────────────────────────────────────────────
 help-header-common = ── common paths ─────────────────────────────────────────────────────────
@@ -208,7 +208,7 @@ help-header-ma-entry = ── entering 間-space ──────────�
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Help text — zion commands ─────────────────────────────────────────────
+# ── Help text — operator commands ─────────────────────────────────────────────
 help-cmd-help =   .help                        this text
 help-cmd-clear =   .clear                       clear terminal
 help-cmd-history =   .history [n]                 command history (consecutive duplicates merged); optional n shows only the last n lines
@@ -228,7 +228,7 @@ help-topic-doc =   .help/doc                    content verbs — !edit, !eval, 
 help-topic-actor =   .help/actor                  remote actor — CRUD, entities, CID ops
 help-topic-z =   .help/z                      public and private Scheme content
 help-topic-zscheme =   .help/zscheme               inline Scheme expressions and docs
-help-topic-url =   .help/url                    opening zion via a URL link
+help-topic-url =   .help/url                    opening operator via a URL link
 help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: unknown topic — try .help for a list
 
@@ -299,7 +299,7 @@ help-doc-del =   .my.doc.<name>:              delete document
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set =   .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set =   .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list =   .my.i18n!list               list available language codes
 
 # ── Help text — zscheme ──────────────────────────────────────────────────
@@ -309,14 +309,14 @@ help-z-scheme =   .z.scheme                  the Scheme script loaded and evalua
 help-z-control =   .z.scheme                 you control the contents of the startup script yourself
 help-z-private =   .my.*                     private local configuration; Scheme can be stored here too
 help-z-choice =   .z.* / .my.*               use .z.* for public Scheme and .my.* for private Scheme
-help-zscheme-intro = zscheme evaluates Scheme expressions embedded in zion commands and splices the result into the line before it is sent.
+help-zscheme-intro = zscheme evaluates Scheme expressions embedded in operator commands and splices the result into the line before it is sent.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; sends "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitions persist for the current login session
 help-zscheme-doc = Docs: https://github.com/bahner/rust-ma-zscheme
 
 # ── Help text — URL parameters ──────────────────────────────────────────────
 help-header-url = ── URL parameters ─────────────────────────────────────────────────────────
-help-url-intro =   Share a link to open zion with a pre-filled recipient:
+help-url-intro =   Share a link to open operator with a pre-filled recipient:
 help-url-msg =   ?msg=<did>                   pre-fill: @<did>!msg (plain message)
 help-url-say =   ?say=<did>                   pre-fill: @<did>!say (say verb)
 help-url-emote =   ?emote=<did>                 pre-fill: @<did>!emote (emote verb)
@@ -424,7 +424,7 @@ help-actor-wc =   (define x (@actor:verb arg))  keep replies in the session envi
 help-topic-publish =   .help/publish                publishing your identity to the network
 help-header-publish = ── publishing your identity ─────────────────────────────────────────────────
 help-publish-intro = Publishing makes your identity findable on the network. Others can look up your DID to reach you.
-help-publish-ma = To publish, you need 間 (local runtime) installed. It bridges ego to IPFS/IPNS on your behalf.
+help-publish-ma = To publish, you need 間 (local runtime) installed. It bridges operator to IPFS/IPNS on your behalf.
 help-publish-steps = Steps: run '.ma' (or '.ma <port>') to connect your local runtime, then '.my.identity!publish @ma'.
 help-publish-without = Without publishing, others cannot reach you — even if they know your DID, they cannot resolve your endpoint.
 

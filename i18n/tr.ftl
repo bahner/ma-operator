@@ -1,4 +1,4 @@
-# zion — Türkçe
+# operator — Türkçe
 lang-name = Türkçe
 label-nick = takma ad
 new-identity-nick-help = 間-space için bir takma ad seçin. Bu sadece bir takma addır ve istediğiniz zaman değiştirebilirsiniz.
@@ -22,7 +22,7 @@ btn-new-endpoint = yeni uç nokta
 btn-import-profile = profil içe aktar
 btn-show-qr = QR göster
 btn-scan-qr = QR tara
-qr-scan-hint = Kamerayı bir zion profil QR koduna doğrultun.
+qr-scan-hint = Kamerayı bir operator profil QR koduna doğrultun.
 qr-error-camera = kamera kullanılamıyor: { $e }
 qr-error-too-large = profil bir QR kod için çok büyük
 passphrase-warning = Parola kaybolursa kimlik de kaybolur. Kurtarma mümkün değildir.
@@ -48,7 +48,7 @@ error-profile-no-username = profil kullanıcı adı içermiyor
 error-profile-no-identity = kimlik '{ $name }' bulunamadı — önce kimliği içe aktarın
 
 # ── Terminal sistem mesajları ─────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username } olarak giriş yapıldı
+msg-logged-in = operator v{ $version } — { $username } olarak giriş yapıldı
 msg-type-help = Komut listesi için .help yazın.
 msg-getting-started = Deneyin: say Hello world, look, .help veya help.
 msg-connecting = iroh'a bağlanılıyor...
@@ -167,7 +167,7 @@ doc-publish-failed = yayım { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = yayınlama başarısız [{ $code }]: { $err }
 doc-publish-error-hint = İpucu: { $hint }
-doc-publish-hint-session = Ego'nun kimlik anahtarlarınıza erişebilmesi için tekrar giriş yapın
+doc-publish-hint-session = Operator'nun kimlik anahtarlarınıza erişebilmesi için tekrar giriş yapın
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = yayıncı DID belgesinin yayınlandığını ve ulaşılabilir bir uç nokta içerdiğini doğrulayın
@@ -186,7 +186,7 @@ doc-no-verb = { $path } için `{ $verb }` fiili yok
 path-no-verb = { $path } için `{ $verb }` fiili yok
 
 # ── Yardım — başlıklar ────────────────────────────────────────────────────
-help-header-zion = ── zion komutları ────────────────────────────────────────────────────────
+help-header-operator = ── operator komutları ────────────────────────────────────────────────────────
 help-header-messaging = ── mesajlaşma ───────────────────────────────────────────────────────────
 help-header-config = ── yerel yapılandırma sözdizimi ───────────────────────────────────────────
 help-header-common = ── yaygın yollar ─────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 間-boşluğa girme ────────────────────────── ───────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Yardım — zion komutları ───────────────────────────────────────────────
+# ── Yardım — operator komutları ───────────────────────────────────────────────
 help-cmd-help =   .help                        bu metin
 help-cmd-clear =   .clear                       terminali temizle
 help-cmd-panic =   .panic                       son çare — sorun çıkarsa kullan
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              belgeyi sil
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n, kimliğinize bağlı dil tercihini saklar.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               mevcut dil kodlarını listele
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -360,7 +360,7 @@ help-topic-doc =   .help/doc                    belgeler
 help-topic-actor =   .help/actor                  uzak actor
 help-topic-z =   .help/z                      genel ve özel Scheme içeriği
 help-topic-zscheme =   .help/zscheme               satır içi Scheme ifadeleri ve belgeler
-help-topic-url =   .help/url                    zion'u bir URL bağlantısıyla aç
+help-topic-url =   .help/url                    operator'u bir URL bağlantısıyla aç
 help-topic-i18n = .help/i18n                   kimliğiniz için dil tercihi
 help-unknown-topic =   .help/{ $topic }: bilinmeyen konu
 
@@ -386,7 +386,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) 5 yanıtlarını oturum ortamında tut
 help-header-url = ── URL parametreleri ───────────────────────────────────────────────────────
-help-url-intro =   Önceden doldurulmuş alıcıyla zion'u açan bir bağlantı paylaş:
+help-url-intro =   Önceden doldurulmuş alıcıyla operator'u açan bir bağlantı paylaş:
 help-url-msg =   ?msg=<did>                   önceden doldurur: @<did>!msg (metin mesajı)
 help-url-say =   ?say=<did>                   önceden doldurur: @<did>!say (say fiili)
 help-url-emote =   ?emote=<did>                 önceden doldurur: @<did>!emote (emote fiili)
@@ -398,7 +398,7 @@ help-url-note =   Alan doldurulur ama gönderilmez — göndermek için Enter'a 
 help-topic-publish =   .help/publish                kimliğini ağa yayımla
 help-header-publish = ── kimlik yayımlama ─────────────────────────────────────────────────────────
 help-publish-intro = Yayımlama, kimliğini ağda bulunabilir hale getirir. Diğerleri sana ulaşmak için DID'ini arayabilir.
-help-publish-ma = Yayımlamak için 間 (yerel çalışma zamanı) yüklü olmalı. Senin adına ego'yu IPFS/IPNS'e bağlar.
+help-publish-ma = Yayımlamak için 間 (yerel çalışma zamanı) yüklü olmalı. Senin adına operator'yu IPFS/IPNS'e bağlar.
 help-publish-steps = Adımlar: yerel ma'yı algılamak için '.ma: claim [port]' çalıştır, ardından '.my.identity!publish @ma'.
 help-publish-without = Yayımlamadan başkaları sana ulaşamaz — DID'ini bilseler bile endpoint'ini çözemezler.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -442,7 +442,7 @@ help-z-choice =   .z.* / .my.*               herkese açık Scheme için .z.* ve
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme, zion komutlarına gömülü Scheme ifadelerini değerlendirir ve gönderilmeden önce sonucu satıra ekler.
+help-zscheme-intro = zscheme, operator komutlarına gömülü Scheme ifadelerini değerlendirir ve gönderilmeden önce sonucu satıra ekler.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    satır içi örnek; "say 7 + 5 = 12" gönderir
 help-zscheme-define =   (define x 12)             tanımlar mevcut oturum açma süresince kalır
 help-zscheme-doc = Belgeler: https://github.com/bahner/rust-ma-zscheme

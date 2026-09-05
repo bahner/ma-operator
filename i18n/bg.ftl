@@ -1,4 +1,4 @@
-# zion — Български
+# operator — Български
 lang-name = Български
 label-nick = прякор
 new-identity-nick-help = Изберете прякор за 間-space. Това е само прякор и може да се промени по всяко време.
@@ -22,7 +22,7 @@ btn-new-endpoint = нова крайна точка
 btn-import-profile = импортиране на профил
 btn-show-qr = покажи QR
 btn-scan-qr = сканирай QR
-qr-scan-hint = Насочете камерата към QR код на zion профил.
+qr-scan-hint = Насочете камерата към QR код на operator профил.
 qr-error-camera = камерата не е достъпна: { $e }
 qr-error-too-large = профилът е твърде голям за QR код
 passphrase-warning = Изгубена парола-фраза = изгубена идентичност. Възстановяването не е възможно.
@@ -48,7 +48,7 @@ error-profile-no-username = профилът не съдържа потреби�
 error-profile-no-identity = самоличността '{ $name }' не е намерена — първо импортирайте самоличността
 
 # ── Системни съобщения на терминала ──────────────────────────────────────
-msg-logged-in = zion v{ $version } — влязохте като { $username }
+msg-logged-in = operator v{ $version } — влязохте като { $username }
 msg-type-help = Въведете .help за списък с команди.
 msg-getting-started = Опитайте: say Hello world, look, .help или help.
 msg-connecting = свързване с iroh...
@@ -186,7 +186,7 @@ doc-no-verb = няма глагол `{ $verb }` за { $path }
 path-no-verb = няма глагол `{ $verb }` за { $path }
 
 # ── Текст за помощ — заглавия ─────────────────────────────────────────────
-help-header-zion = ── команди на zion ────────────────────────────────────────────────────────
+help-header-operator = ── команди на operator ────────────────────────────────────────────────────────
 help-header-messaging = ── съобщения ─────────────────────────────────────────────────────────────
 help-header-config = ── локален синтаксис за конфигурация ──────────────────────────────────
 help-header-common = ── чести пътища ──────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<ime>:              изтрива документ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n съхранява езиковите предпочитания, свързани с вашата самоличност.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               избройте наличните езикови кодове
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) запазва 5 отговорите в средата на сесията
 
-help-topic-url =   .help/url                    отваряне на zion чрез URL връзка
+help-topic-url =   .help/url                    отваряне на operator чрез URL връзка
 help-topic-i18n = .help/i18n                   езикови предпочитания за вашата идентичност
 help-header-url = ── URL параметри ────────────────────────────────────────────────────────────────
-help-url-intro =   Сподели връзка, която отваря zion с предварително попълнен получател:
+help-url-intro =   Сподели връзка, която отваря operator с предварително попълнен получател:
 help-url-msg =   ?msg=<did>                   предварително попълва: @<did>!msg (обикновено съобщение)
 help-url-say =   ?say=<did>                   предварително попълва: @<did>!say (глагол say)
 help-url-emote =   ?emote=<did>                 предварително попълва: @<did>!emote (глагол emote)
@@ -392,7 +392,7 @@ help-url-note =   Полето е предварително попълнено,
 help-topic-publish =   .help/publish                публикуване на самоличността ти в мрежата
 help-header-publish = ── публикуване на самоличност ───────────────────────────────────────────────
 help-publish-intro = Публикуването прави самоличността ти намираема в мрежата. Другите могат да потърсят твоя DID, за да те достигнат.
-help-publish-ma = За публикуване е необходим инсталиран 間 (локален runtime). Той свързва ego с IPFS/IPNS от твое име.
+help-publish-ma = За публикуване е необходим инсталиран 間 (локален runtime). Той свързва operator с IPFS/IPNS от твое име.
 help-publish-steps = Стъпки: изпълни '.ma: claim [port]' за намиране на локалния ma, след което '.my.identity!publish @ma'.
 help-publish-without = Без публикуване другите не могат да те достигнат — дори да знаят твоя DID, не могат да разрешат твоя endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               използвайте .z.* за п
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme оценява Scheme изрази, вградени в zion команди, и вмъква резултата в реда, преди той да бъде изпратен.
+help-zscheme-intro = zscheme оценява Scheme изрази, вградени в operator команди, и вмъква резултата в реда, преди той да бъде изпратен.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    вграден пример; изпраща "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             дефинициите остават за текущата сесия
 help-zscheme-doc = Документация: https://github.com/bahner/rust-ma-zscheme

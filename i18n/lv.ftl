@@ -1,4 +1,4 @@
-# zion — Latviešu
+# operator — Latviešu
 lang-name = Latviešu
 label-nick = iesauka
 new-identity-nick-help = Izvēlieties iesauku 間-space. Tā ir tikai iesauka, un to var mainīt jebkurā laikā.
@@ -22,7 +22,7 @@ btn-new-endpoint = jauns galapunkts
 btn-import-profile = importēt profilu
 btn-show-qr = rādīt QR
 btn-scan-qr = skenēt QR
-qr-scan-hint = Pavērsiet kameru pret zion profila QR kodu.
+qr-scan-hint = Pavērsiet kameru pret operator profila QR kodu.
 qr-error-camera = kamera nav pieejama: { $e }
 qr-error-too-large = profils ir pārāk liels QR kodam
 passphrase-warning = Zaudēta paroles frāze = zaudēta identitāte. Atjaunošana nav iespējama.
@@ -48,7 +48,7 @@ error-profile-no-username = profilā nav lietotājvārda
 error-profile-no-identity = identitāte '{ $name }' nav atrasta — vispirms importējiet identitāti
 
 # ── Termināļa sistēmas ziņojumi ───────────────────────────────────────────
-msg-logged-in = zion v{ $version } — pierakstījies kā { $username }
+msg-logged-in = operator v{ $version } — pierakstījies kā { $username }
 msg-type-help = Ierakstiet .help, lai iegūtu komandu sarakstu.
 msg-getting-started = Izmēģiniet: say Hello world, look, .help vai help.
 msg-connecting = savienojas ar iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publicēšana { $path }: { $e }
 doc-publish-ipld-failed = ipld-publicēšana { $path }: { $e }
 doc-publish-error-detail = publicēšana neizdevās [{ $code }]: { $err }
 doc-publish-error-hint = Padoms: { $hint }
-doc-publish-hint-session = piesakieties vēlreiz, lai ego varētu piekļūt jūsu identitātes atslēgām
+doc-publish-hint-session = piesakieties vēlreiz, lai operator varētu piekļūt jūsu identitātes atslēgām
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = pārbaudiet, vai izdevēja DID dokuments ir publicēts un satur sasniedzamu galapunktu
@@ -186,7 +186,7 @@ doc-no-verb = { $path } nav darbības vārda `{ $verb }`
 path-no-verb = { $path } nav darbības vārda `{ $verb }`
 
 # ── Palīdzības teksts — virsraksti ────────────────────────────────────────
-help-header-zion = ── zion komandas ──────────────────────────────────────────────────────────
+help-header-operator = ── operator komandas ──────────────────────────────────────────────────────────
 help-header-messaging = ── ziņojumi ──────────────────────────────────────────────────────────────
 help-header-config = ── lokālā konfigurācijas gramatika ─────────────────────────────────────
 help-header-common = ── biežākie ceļi ─────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nosaukums>:              dzēst dokumentu
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n saglabā valodas preferences, kas saistītas ar jūsu identitāti.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               uzskaitiet pieejamos valodu kodus
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) saglabāt 5 atbildes sesijas vidē
 
-help-topic-url =   .help/url                    zion atvēršana, izmantojot URL saiti
+help-topic-url =   .help/url                    operator atvēršana, izmantojot URL saiti
 help-topic-i18n = .help/i18n                   valodas izvēle jūsu identitātei
 help-header-url = ── URL parametri ────────────────────────────────────────────────────────────────
-help-url-intro =   Dalies ar saiti, kas atver zion ar iepriekš aizpildītu saņēmēju:
+help-url-intro =   Dalies ar saiti, kas atver operator ar iepriekš aizpildītu saņēmēju:
 help-url-msg =   ?msg=<did>                   iepriekš aizpilda: @<did>!msg (parasta ziņa)
 help-url-say =   ?say=<did>                   iepriekš aizpilda: @<did>!say (darbības vārds say)
 help-url-emote =   ?emote=<did>                 iepriekš aizpilda: @<did>!emote (darbības vārds emote)
@@ -392,7 +392,7 @@ help-url-note =   Ievade ir iepriekš aizpildīta, bet nav nosūtīta — nospie
 help-topic-publish =   .help/publish                identitātes publicēšana tīklā
 help-header-publish = ── identitātes publicēšana ──────────────────────────────────────────────────
 help-publish-intro = Publicēšana padara tavu identitāti atrodamu tīklā. Citi var meklēt tavu DID, lai sazinātos ar tevi.
-help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts 間 (lokālā izpildes vide). Tas savieno ego ar IPFS/IPNS tavā vārdā.
+help-publish-ma = Lai publicētu, tev ir nepieciešams instalēts 間 (lokālā izpildes vide). Tas savieno operator ar IPFS/IPNS tavā vārdā.
 help-publish-steps = Soļi: izpildi '.ma: claim [port]', lai noteiktu vietējo ma, pēc tam '.my.identity!publish @ma'.
 help-publish-without = Bez publicēšanas citi nevar tevi sasniegt — pat zinot tavu DID, viņi nevar atrisināt tavu endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               izmantojiet .z.* publiskam Scheme u
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme izvērtē zion komandās iekļautas Scheme izteiksmes un pirms nosūtīšanas ievieto rezultātu rindā.
+help-zscheme-intro = zscheme izvērtē operator komandās iekļautas Scheme izteiksmes un pirms nosūtīšanas ievieto rezultātu rindā.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    iekļauts piemērs; nosūta "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definīcijas saglabājas pašreizējā pieteikšanās sesijā
 help-zscheme-doc = Dokumentācija: https://github.com/bahner/rust-ma-zscheme

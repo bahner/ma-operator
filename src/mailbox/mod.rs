@@ -1,10 +1,10 @@
-//! EgoConfig-backed inbox storage.
+//! OperatorConfig-backed inbox storage.
 //!
 //! Incoming `application/vnd.ma.message` messages are stored as flat leaves
-//! in `EgoConfig` under `.my.inbox.<N>.*`, where N is a stable non-negative
+//! in `OperatorConfig` under `.my.inbox.<N>.*`, where N is a stable non-negative
 //! integer.  Indices may have gaps after deletion — always list first.
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::messages::IncomingMessage;
 use ma_core::MESSAGE_TYPE_MESSAGE;
 use std::collections::BTreeSet;
@@ -14,7 +14,7 @@ const INBOX_PREFIX: &str = ".my.inbox.";
 // ── Index helpers ─────────────────────────────────────────────────────────
 
 /// Scan existing `.my.inbox.*` keys and return the next available index.
-pub fn next_inbox_index(cfg: &EgoConfig) -> usize {
+pub fn next_inbox_index(cfg: &OperatorConfig) -> usize {
     let entries = cfg.list(INBOX_PREFIX);
     let max = entries
         .iter()
@@ -27,7 +27,7 @@ pub fn next_inbox_index(cfg: &EgoConfig) -> usize {
 }
 
 /// Count distinct `.my.inbox.<N>` subtrees.
-pub fn inbox_count(cfg: &EgoConfig) -> usize {
+pub fn inbox_count(cfg: &OperatorConfig) -> usize {
     let entries = cfg.list(INBOX_PREFIX);
     let indices: BTreeSet<&str> = entries
         .iter()
@@ -45,7 +45,7 @@ pub fn inbox_count(cfg: &EgoConfig) -> usize {
 
 /// Write all leaves for one incoming message into `cfg`.
 /// Only `MESSAGE_TYPE_MESSAGE` messages are stored; others are ignored.
-pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut EgoConfig) {
+pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut OperatorConfig) {
     if incoming.message_type != MESSAGE_TYPE_MESSAGE {
         return;
     }
@@ -80,7 +80,7 @@ pub fn ingest_to_config(incoming: &IncomingMessage, cfg: &mut EgoConfig) {
 
 /// Remove inbox entries whose `expires_at` is in the past.
 /// Returns the number of keys removed (not the number of entries).
-pub fn prune_inbox_expired(cfg: &mut EgoConfig, now_secs: f64) -> usize {
+pub fn prune_inbox_expired(cfg: &mut OperatorConfig, now_secs: f64) -> usize {
     let expired: BTreeSet<String> = {
         cfg.list(INBOX_PREFIX)
             .into_iter()
@@ -123,8 +123,8 @@ pub fn is_link_value(value: &str) -> bool {
 mod tests {
     use super::*;
 
-    fn make_cfg() -> EgoConfig {
-        EgoConfig::default()
+    fn make_cfg() -> OperatorConfig {
+        OperatorConfig::default()
     }
 
     // ── is_link_value ─────────────────────────────────────────────────────

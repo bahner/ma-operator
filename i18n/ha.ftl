@@ -1,4 +1,4 @@
-# zion — Hausa
+# operator — Hausa
 lang-name = Hausa
 label-nick = lakabi
 new-identity-nick-help = Zaɓi lakabi don 間-space. Lakabi ne kawai, kuma za ka iya canza shi a kowane lokaci.
@@ -22,7 +22,7 @@ btn-new-endpoint = sabon ƙarshe
 btn-import-profile = shigo da bayanan martaba
 btn-show-qr = nuna QR
 btn-scan-qr = duba QR
-qr-scan-hint = Nuna kyamara zuwa lambar QR ta bayanan martaba na zion.
+qr-scan-hint = Nuna kyamara zuwa lambar QR ta bayanan martaba na operator.
 qr-error-camera = babu kyamara: { $e }
 qr-error-too-large = bayanan martaba sun yi girma da yawa ga lambar QR
 passphrase-warning = Rasa kalmar sirri = rasa asali. Babu dawo.
@@ -48,7 +48,7 @@ error-profile-no-username = martabar ba ta ƙunshi sunan mai amfani
 error-profile-no-identity = asali '{ $name }' ba a samu — fara shigo da asali
 
 # ── Saƙonnin tsarin terminal ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — an shiga a matsayin { $username }
+msg-logged-in = operator v{ $version } — an shiga a matsayin { $username }
 msg-type-help = Rubuta .help don jerin umarni.
 msg-getting-started = Gwada: say Hello world, look, .help, ko help.
 msg-connecting = ana haɗawa da iroh...
@@ -186,7 +186,7 @@ doc-no-verb = babu aikatau `{ $verb }` don { $path }
 path-no-verb = babu aikatau `{ $verb }` don { $path }
 
 # ── Rubutun taimako — taken ───────────────────────────────────────────────
-help-header-zion = ── umarnan zion ───────────────────────────────────────────────────────────
+help-header-operator = ── umarnan operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── aikawasiku ───────────────────────────────────────────────────────────
 help-header-config = ── nahawun saitunan gida ─────────────────────────────────────────────────
 help-header-common = ── hanyoyin gama gari ────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── shiga 間-sarari ───────────────── ──────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Rubutun taimako — umarnan zion ────────────────────────────────────────
+# ── Rubutun taimako — umarnan operator ────────────────────────────────────────
 help-cmd-help =   .help                        wannan rubutu
 help-cmd-clear =   .clear                       share terminal
 help-cmd-panic =   .panic                       mafita ta ƙarshe — yi amfani idan akwai matsala
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              goge takarda
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n yana adana zaɓin harshen da ke da alaƙa da ainihin ku.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               jera lambobin yare masu samuwa
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) kiyaye martanin 5 a cikin yanayin zama
 
-help-topic-url =   .help/url                    buɗe zion ta hanyar URL link
+help-topic-url =   .help/url                    buɗe operator ta hanyar URL link
 help-topic-i18n = .help/i18n                   zaɓin harshe don ainihin ku
 help-header-url = ── sharuɗɗan URL ─────────────────────────────────────────────────────────────────
-help-url-intro =   Raba hanyar haɗin zion tare da mai karɓa da aka shigar da shi a gaba:
+help-url-intro =   Raba hanyar haɗin operator tare da mai karɓa da aka shigar da shi a gaba:
 help-url-msg =   ?msg=<did>                   cika a gaba: @<did>!msg (saƙon rubutu)
 help-url-say =   ?say=<did>                   cika a gaba: @<did>!say (fi'ili say)
 help-url-emote =   ?emote=<did>                 cika a gaba: @<did>!emote (fi'ili emote)
@@ -399,7 +399,7 @@ help-url-note =   Shigarwar an cika a gaba amma ba a aika ba — danna Enter don
 help-topic-publish =   .help/publish                wallafa ainihinku a cikin hanyar sadarwa
 help-header-publish = ── wallafa ainihi ───────────────────────────────────────────────────────────
 help-publish-intro = Wallafawa yana sa ainihinku ya zama abin samu a cikin hanyar sadarwa. Wasu na iya neman DID ɗinku don tuntubarku.
-help-publish-ma = Don wallafawa, kuna buƙatar 間 (runtime na cikin gida) da aka shigar. Yana haɗa ego da IPFS/IPNS a madadin ku.
+help-publish-ma = Don wallafawa, kuna buƙatar 間 (runtime na cikin gida) da aka shigar. Yana haɗa operator da IPFS/IPNS a madadin ku.
 help-publish-steps = Matakan: gudanar da '.ma: claim [port]' don gano ma na cikin gida, sannan '.my.identity!publish @ma'.
 help-publish-without = Ba tare da wallafawa ba, wasu ba za su iya kaiwa gare ka ba — ko da sun san DID ɗinka, ba za su iya warware endpoint ɗinka ba.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               yi amfani da .z.* don Scheme na jam
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme yana kimanta maganganun Scheme da aka saka cikin umarnin zion, sannan ya saka sakamakon cikin layin kafin a aika.
+help-zscheme-intro = zscheme yana kimanta maganganun Scheme da aka saka cikin umarnin operator, sannan ya saka sakamakon cikin layin kafin a aika.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    misalin cikin layi; yana aika "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             ma’anoni suna ci gaba a zaman shiga na yanzu
 help-zscheme-doc = Takardu: https://github.com/bahner/rust-ma-zscheme

@@ -24,7 +24,7 @@ pub fn dispatch(subtopic: &str) -> Vec<String> {
 
 fn overview() -> Vec<String> {
     vec![
-        t("help-header-zion"),
+        t("help-header-operator"),
         t("help-cmd-help"),
         t("help-cmd-clear"),
         t("help-cmd-history"),

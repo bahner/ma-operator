@@ -1,4 +1,4 @@
-# zion — Esperanto
+# operator — Esperanto
 lang-name = Esperanto
 label-nick = kaŝnomo
 new-identity-nick-help = Elektu kaŝnomon por 間-space. Ĝi estas nur kaŝnomo kaj vi povas ŝanĝi ĝin iam ajn.
@@ -22,7 +22,7 @@ btn-new-endpoint = nova finpunkto
 btn-import-profile = importi profilon
 btn-show-qr = montri QR
 btn-scan-qr = skani QR
-qr-scan-hint = Direktu la kameraon al QR-kodo de zion-profilo.
+qr-scan-hint = Direktu la kameraon al QR-kodo de operator-profilo.
 qr-error-camera = kamerao ne disponebla: { $e }
 qr-error-too-large = profilo tro granda por QR-kodo
 passphrase-warning = Perdita pasfrazo = perdita identeco. Ne ekzistas reakiro.
@@ -48,7 +48,7 @@ error-profile-no-username = profilo ne enhavas uzantonomon
 error-profile-no-identity = identeco '{ $name }' ne trovita — unue importu identecon
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — ensalutita kiel { $username }
+msg-logged-in = operator v{ $version } — ensalutita kiel { $username }
 msg-type-help = Tajpu .help por listo de komandoj.
 msg-getting-started = Provu: say Hello world, look, .help aŭ help.
 msg-connecting = konektante al iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publikigi { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish failed [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = ensalutu denove por ke ego povu aliri viajn identajn ŝlosilojn
+doc-publish-hint-session = ensalutu denove por ke operator povu aliri viajn identajn ŝlosilojn
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = kontrolu, ke la eldonisto DID-dokumento estas publikigita kaj enhavas atingeblan finpunkton
@@ -190,7 +190,7 @@ lang-list-header = Disponeblaj lingvoj (agordu per .my.i18n: <code>):
 
 err-lang-not-found = lingvo ne trovita: { $lang }
 
-help-header-zion = ── zion-komandoj ──────────────────────────────────────────────────────────
+help-header-operator = ── operator-komandoj ──────────────────────────────────────────────────────────
 help-header-messaging = ── mesaĝado ───────────────────────────────────────────────────────────────
 help-header-config = ── loka agordo-gramatiko ──────────────────────────────────────────────────
 help-header-common = ── komunaj vojoj ──────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              forigi dokumenton
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n konservas la lingvopreferon ligitan al via identeco.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               listigu disponeblajn lingvokodojn
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -346,7 +346,7 @@ help-topic-doc =   .help/doc                    documentos
 help-topic-actor =   .help/actor                  actor remoto
 help-topic-z =   .help/z                      publika kaj privata Scheme-enhavo
 help-topic-zscheme =   .help/zscheme               enliniaj Scheme-esprimoj kaj dokumentaro
-help-topic-url =   .help/url                    malfermi zion per URL-ligilo
+help-topic-url =   .help/url                    malfermi operator per URL-ligilo
 help-topic-i18n = .help/i18n                   lingvoprefero por via identeco
 help-unknown-topic =   .help/{ $topic }: tema desconocido
 
@@ -372,7 +372,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) konservu 5 respondojn en la seanca medio
 help-header-url = ── URL-parametroj ──────────────────────────────────────────────────────────
-help-url-intro =   Kunhavigu ligilon kiu malfermas zion kun antaŭplenigita ricevonto:
+help-url-intro =   Kunhavigu ligilon kiu malfermas operator kun antaŭplenigita ricevonto:
 help-url-msg =   ?msg=<did>                   antaŭplenigas: @<did>!msg (teksta mesaĝo)
 help-url-say =   ?say=<did>                   antaŭplenigas: @<did>!say (verbo say)
 help-url-emote =   ?emote=<did>                 antaŭplenigas: @<did>!emote (verbo emote)
@@ -384,7 +384,7 @@ help-url-note =   La kampo estas antaŭplenita sed ne sendita — premu Enter po
 help-topic-publish =   .help/publish                publikigi vian identecon al la reto
 help-header-publish = ── publikigi identecon ──────────────────────────────────────────────────────
 help-publish-intro = Publikigo faras vian identecon trovebla en la reto. Aliaj povas serĉi vian DID por kontakti vin.
-help-publish-ma = Por publikigi, vi bezonas instalitan 間 (loka rultempo). Ĝi ligas egon al IPFS/IPNS nome de vi.
+help-publish-ma = Por publikigi, vi bezonas instalitan 間 (loka rultempo). Ĝi ligas operatoron al IPFS/IPNS nome de vi.
 help-publish-steps = Paŝoj: rulu '.ma: claim [port]' por detekti lokan ma, poste '.my.identity!publish @ma'.
 help-publish-without = Sen publikigo, aliaj ne povas atingi vin — eĉ konante vian DID, ili ne povas solvi vian endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -428,7 +428,7 @@ help-z-choice =   .z.* / .my.*               uzu .z.* por publika Scheme kaj .my
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme taksas Scheme-esprimojn enkorpigitajn en zion-komandoj kaj enmetas la rezulton en la linion antaŭ sendo.
+help-zscheme-intro = zscheme taksas Scheme-esprimojn enkorpigitajn en operator-komandoj kaj enmetas la rezulton en la linion antaŭ sendo.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    enlinia ekzemplo; sendas "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             difinoj restas dum la nuna ensaluta seanco
 help-zscheme-doc = Dokumentaro: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-# zion — Română
+# operator — Română
 lang-name = Română
 label-nick = poreclă
 new-identity-nick-help = Alegeți o poreclă pentru 間-space. Este doar o poreclă și o puteți schimba oricând.
@@ -22,7 +22,7 @@ btn-new-endpoint = punct nou de acces
 btn-import-profile = importare profil
 btn-show-qr = afișează QR
 btn-scan-qr = scanează QR
-qr-scan-hint = Îndreptați camera spre un cod QR de profil zion.
+qr-scan-hint = Îndreptați camera spre un cod QR de profil operator.
 qr-error-camera = camera nu este disponibilă: { $e }
 qr-error-too-large = profilul este prea mare pentru un cod QR
 passphrase-warning = Fraza de acces pierdută = identitate pierdută. Recuperarea nu este posibilă.
@@ -48,7 +48,7 @@ error-profile-no-username = profilul nu conține un nume de utilizator
 error-profile-no-identity = identitatea '{ $name }' nu a fost găsită — importați mai întâi identitatea
 
 # ── Mesaje de sistem ale terminalului ────────────────────────────────────
-msg-logged-in = zion v{ $version } — autentificat ca { $username }
+msg-logged-in = operator v{ $version } — autentificat ca { $username }
 msg-type-help = Tastați .help pentru o listă de comenzi.
 msg-getting-started = Încercați: say Hello world, look, .help sau help.
 msg-connecting = conectare la iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publicare { $path }: { $e }
 doc-publish-ipld-failed = publicare IPLD { $path }: { $e }
 doc-publish-error-detail = publicare eșuată [{ $code }]: { $err }
 doc-publish-error-hint = Indiciu: { $hint }
-doc-publish-hint-session = autentificați-vă din nou pentru ca ego să vă poată accesa cheile de identitate
+doc-publish-hint-session = autentificați-vă din nou pentru ca operator să vă poată accesa cheile de identitate
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verificați că documentul DID al editorului este publicat și conține un punct final accesibil
@@ -186,7 +186,7 @@ doc-no-verb = niciun verb `{ $verb }` pentru { $path }
 path-no-verb = niciun verb `{ $verb }` pentru { $path }
 
 # ── Text ajutor — anteturi ────────────────────────────────────────────────
-help-header-zion = ── comenzi zion ───────────────────────────────────────────────────────────
+help-header-operator = ── comenzi operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── mesagerie ─────────────────────────────────────────────────────────────
 help-header-config = ── gramatică de configurare locală ────────────────────────────────────
 help-header-common = ── căi comune ────────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nume>:              șterge document
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n stochează preferința de limbă legată de identitatea dvs.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               enumerați codurile de limbă disponibile
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) păstrați răspunsurile 5 în mediul de sesiune
 
-help-topic-url =   .help/url                    deschiderea zion printr-un link URL
+help-topic-url =   .help/url                    deschiderea operator printr-un link URL
 help-topic-i18n = .help/i18n                   preferința de limbă pentru identitatea dvs
 help-header-url = ── parametri URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Distribuie un link care deschide zion cu un destinatar precompletat:
+help-url-intro =   Distribuie un link care deschide operator cu un destinatar precompletat:
 help-url-msg =   ?msg=<did>                   precompletează: @<did>!msg (mesaj simplu)
 help-url-say =   ?say=<did>                   precompletează: @<did>!say (verb say)
 help-url-emote =   ?emote=<did>                 precompletează: @<did>!emote (verb emote)
@@ -392,7 +392,7 @@ help-url-note =   Câmpul este precompletat dar nu trimis — apasă Enter pentr
 help-topic-publish =   .help/publish                publicarea identității în rețea
 help-header-publish = ── publicarea identității ───────────────────────────────────────────────────
 help-publish-intro = Publicarea face identitatea ta găsibilă în rețea. Alții pot căuta DID-ul tău pentru a te contacta.
-help-publish-ma = Pentru a publica, ai nevoie de 間 (runtime local) instalat. Face legătura între ego și IPFS/IPNS în numele tău.
+help-publish-ma = Pentru a publica, ai nevoie de 間 (runtime local) instalat. Face legătura între operator și IPFS/IPNS în numele tău.
 help-publish-steps = Pași: rulează '.ma: claim [port]' pentru a detecta ma-ul local, apoi '.my.identity!publish @ma'.
 help-publish-without = Fără publicare, alții nu te pot contacta — chiar dacă îți cunosc DID-ul, nu pot rezolva endpoint-ul tău.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -434,7 +434,7 @@ help-z-control =   .z.scheme                 tu controlezi conținutul scriptulu
 help-z-private =   .my.*                     configurație locală privată; Scheme poate fi stocat și aici
 help-z-choice =   .z.* / .my.*               folosește .z.* pentru Scheme public și .my.* pentru Scheme privat
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme evaluează expresiile Scheme incluse în comenzile zion și inserează rezultatul în linie înainte de trimitere.
+help-zscheme-intro = zscheme evaluează expresiile Scheme incluse în comenzile operator și inserează rezultatul în linie înainte de trimitere.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemplu inline; trimite "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definițiile persistă în sesiunea curentă de autentificare
 help-zscheme-doc = Documentație: https://github.com/bahner/rust-ma-zscheme

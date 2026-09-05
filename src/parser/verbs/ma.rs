@@ -1,5 +1,5 @@
 use super::resolve_bare_did;
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::http::{fetch_url_text_timeout, post_json_text_timeout};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
@@ -21,7 +21,7 @@ const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
 const MA_CTX_DID: &str = ".ma.ctx.did";
 const MA_CTX_URL: &str = ".ma.ctx.url";
 
-pub(crate) fn active_ma_did(cfg: &EgoConfig) -> Option<String> {
+pub(crate) fn active_ma_did(cfg: &OperatorConfig) -> Option<String> {
     cfg.get(MA_CTX_DID)
         .filter(|did| did.starts_with("did:ma:"))
         .map(ToString::to_string)
@@ -49,7 +49,7 @@ pub(super) fn handle_ma(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     _show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
@@ -97,7 +97,7 @@ pub(super) fn handle_ma(
 
 async fn publish_with_trusted_ma(
     trusted_ma: String,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     state: &AppState,
 ) {
     let timeout_ms = ma_timeout_ms(&config.get_untracked());
@@ -109,21 +109,21 @@ async fn publish_with_trusted_ma(
     queue_profile_publish(trusted_ma, config, state, None, true, true, false).await;
 }
 
-pub(crate) fn ma_timeout_secs(cfg: &EgoConfig) -> u32 {
+pub(crate) fn ma_timeout_secs(cfg: &OperatorConfig) -> u32 {
     cfg.get(MA_TIMEOUT_CONFIG)
         .and_then(|value| value.parse::<u32>().ok())
         .filter(|seconds| *seconds > 0)
         .unwrap_or(DEFAULT_MA_TIMEOUT_SECS)
 }
 
-pub(crate) fn ma_timeout_ms(cfg: &EgoConfig) -> u32 {
+pub(crate) fn ma_timeout_ms(cfg: &OperatorConfig) -> u32 {
     ma_timeout_secs(cfg).saturating_mul(1_000)
 }
 
 fn set_trusted_runtime(
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let did = args
         .first()
@@ -154,7 +154,7 @@ fn set_trusted_runtime(
 fn handle_gateway_test(
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let did = if args.is_empty() {
         crate::transport::get_sender_did().ok_or_else(|| "not logged in".to_string())?
@@ -216,7 +216,7 @@ fn gateway_test_url(base: &str, key: &str) -> String {
 fn claim_trusted_runtime(
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<(), String> {
     let port = match args {
         [] => 5003,
@@ -304,7 +304,7 @@ fn conflict_contains_owner(body: &str, our_did: &str) -> bool {
 
 pub(crate) async fn claim_and_discover_local_ma(
     state: AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     username: String,
     our_did: String,
     ma_base: String,
@@ -353,7 +353,7 @@ pub(crate) async fn claim_and_discover_local_ma(
 
 pub(crate) async fn connect_trusted_ma_on_startup(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     username: &str,
     did: String,
     is_new: bool,
@@ -492,7 +492,7 @@ pub(crate) fn published_self_matches(doc: &ma_core::Document, own_did: &str) -> 
 /// Pass `cmd_id = Some(id)` to track the operation as a terminal command.
 pub(crate) async fn queue_profile_publish(
     publisher: String,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     state: &AppState,
     cmd_id: Option<u64>,
     reenter_saved_ctx: bool,
@@ -567,7 +567,7 @@ pub(crate) async fn queue_profile_publish(
 
 async fn build_encrypted_profile(
     username: &str,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Result<Vec<u8>, String> {
     let identity_json = load_identity(username)
         .await?
@@ -593,7 +593,7 @@ async fn build_encrypted_profile(
 
 fn fail_profile_publish(
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     cmd_id: Option<u64>,
     error: String,
     logout_after: bool,
@@ -616,7 +616,7 @@ fn fail_profile_publish(
 
 pub(crate) async fn rediscover_ma(
     ma_base: &str,
-    config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+    config: leptos::prelude::RwSignal<crate::config::OperatorConfig>,
 ) -> Result<String, String> {
     let status_url = format!("{ma_base}/status.json");
     let json_str = fetch_url_text_timeout(&status_url, LOCAL_MA_HTTP_TIMEOUT_MS).await?;
@@ -700,7 +700,7 @@ fn handle_ma_live(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     _show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
@@ -738,7 +738,7 @@ fn handle_ma_live(
     }
 }
 
-fn resolve_live_target(arg: &str, cfg: &EgoConfig) -> Result<String, String> {
+fn resolve_live_target(arg: &str, cfg: &OperatorConfig) -> Result<String, String> {
     let raw = arg.trim_start_matches('@');
     if raw.starts_with("did:") {
         return if raw.contains('/') {
@@ -785,12 +785,12 @@ mod tests {
 
     #[test]
     fn ma_timeout_defaults_to_two_minutes() {
-        assert_eq!(ma_timeout_secs(&EgoConfig::default()), 120);
+        assert_eq!(ma_timeout_secs(&OperatorConfig::default()), 120);
     }
 
     #[test]
     fn ma_timeout_reads_positive_seconds_from_config() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(MA_TIMEOUT_CONFIG, "180");
 
         assert_eq!(ma_timeout_secs(&cfg), 180);
@@ -799,7 +799,7 @@ mod tests {
 
     #[test]
     fn ma_timeout_rejects_invalid_values() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(MA_TIMEOUT_CONFIG, "0");
         assert_eq!(ma_timeout_secs(&cfg), 120);
 
@@ -884,7 +884,7 @@ mod tests {
 
     #[test]
     fn resolve_live_target_accepts_alias_and_bare_did() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.alice", "did:ma:alice");
 
         assert_eq!(resolve_live_target("@alice", &cfg).unwrap(), "did:ma:alice");
@@ -896,7 +896,7 @@ mod tests {
 
     #[test]
     fn resolve_live_target_rejects_path_targets() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
 
         assert!(resolve_live_target("did:ma:bob#room/path", &cfg).is_err());
         assert!(resolve_live_target("@missing", &cfg).is_err());

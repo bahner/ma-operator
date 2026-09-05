@@ -1,4 +1,4 @@
-# zion — Nederlands
+# operator — Nederlands
 lang-name = Nederlands
 label-nick = bijnaam
 new-identity-nick-help = Kies een bijnaam voor 間-ruimte. Het is alleen een bijnaam en je kunt die op elk moment wijzigen.
@@ -22,7 +22,7 @@ btn-new-endpoint = nieuw eindpunt
 btn-import-profile = profiel importeren
 btn-show-qr = QR tonen
 btn-scan-qr = QR scannen
-qr-scan-hint = Richt de camera op een QR-code van een zion-profiel.
+qr-scan-hint = Richt de camera op een QR-code van een operator-profiel.
 qr-error-camera = camera niet beschikbaar: { $e }
 qr-error-too-large = profiel te groot voor een QR-code
 passphrase-warning = Verloren wachtzin = verloren identiteit. Herstel is niet mogelijk.
@@ -48,7 +48,7 @@ error-profile-no-username = profiel bevat geen gebruikersnaam
 error-profile-no-identity = identiteit '{ $name }' niet gevonden — importeer eerst de identiteit
 
 # ── Terminaalsysteemberichten ─────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — aangemeld als { $username }
+msg-logged-in = operator v{ $version } — aangemeld als { $username }
 msg-type-help = Typ .help voor een lijst met opdrachten.
 msg-getting-started = Probeer: say Hello world, look, .help of help.
 msg-connecting = verbinding maken met iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publiceren { $path }: { $e }
 doc-publish-ipld-failed = IPLD publiceren { $path }: { $e }
 doc-publish-error-detail = publiceren mislukt [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = meld je opnieuw aan zodat ego toegang heeft tot je identiteitssleutels
+doc-publish-hint-session = meld je opnieuw aan zodat operator toegang heeft tot je identiteitssleutels
 doc-publish-hint-target = gebruik een geldige publisher-DID of alias die naar een kale did:ma:<ipns> verwijst
 doc-publish-hint-network = controleer dat 間-runtime en IPFS bereikbaar zijn en probeer opnieuw
 doc-publish-hint-resolve = controleer dat het DID-document van de publisher gepubliceerd is en een bereikbaar eindpunt bevat
@@ -186,7 +186,7 @@ doc-no-verb = geen werkwoord `{ $verb }` voor { $path }
 path-no-verb = geen werkwoord `{ $verb }` voor { $path }
 
 # ── Helptekst — koppen ────────────────────────────────────────────────────
-help-header-zion = ── zion-opdrachten ────────────────────────────────────────────────────────
+help-header-operator = ── operator-opdrachten ────────────────────────────────────────────────────────
 help-header-messaging = ── berichten ─────────────────────────────────────────────────────────────
 help-header-config = ── lokale configuratiegrammatica ──────────────────────────────────────
 help-header-common = ── veelgebruikte paden ───────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<naam>:              document verwijderen
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n slaat de taalvoorkeur op die verband houdt met uw identiteit.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lijst met beschikbare taalcodes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -353,7 +353,7 @@ help-topic-doc =   .help/doc                    documenten
 help-topic-actor =   .help/actor                  externe actor
 help-topic-z =   .help/z                      openbare en privé-Scheme-inhoud
 help-topic-zscheme =   .help/zscheme               inline Scheme-expressies en documentatie
-help-topic-url =   .help/url                    zion openen via een URL-link
+help-topic-url =   .help/url                    operator openen via een URL-link
 help-topic-i18n = .help/i18n                   taalvoorkeur voor uw identiteit
 help-unknown-topic =   .help/{ $topic }: onbekend onderwerp
 
@@ -379,7 +379,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) bewaar 5-antwoorden in de sessieomgeving
 help-header-url = ── URL-parameters ──────────────────────────────────────────────────────────
-help-url-intro =   Deel een link die zion opent met een vooraf ingevulde ontvanger:
+help-url-intro =   Deel een link die operator opent met een vooraf ingevulde ontvanger:
 help-url-msg =   ?msg=<did>                   vult in: @<did>!msg (tekstbericht)
 help-url-say =   ?say=<did>                   vult in: @<did>!say (say-werkwoord)
 help-url-emote =   ?emote=<did>                 vult in: @<did>!emote (emote-werkwoord)
@@ -391,7 +391,7 @@ help-url-note =   Het invoerveld wordt ingevuld maar niet verzonden — druk op 
 help-topic-publish =   .help/publish                je identiteit publiceren op het netwerk
 help-header-publish = ── identiteit publiceren ────────────────────────────────────────────────────
 help-publish-intro = Publiceren maakt je identiteit vindbaar op het netwerk. Anderen kunnen je DID opzoeken om je te bereiken.
-help-publish-ma = Om te publiceren heb je 間 (lokale runtime) nodig. Het koppelt ego aan IPFS/IPNS namens jou.
+help-publish-ma = Om te publiceren heb je 間 (lokale runtime) nodig. Het koppelt operator aan IPFS/IPNS namens jou.
 help-publish-steps = Stappen: voer '.ma: claim [port]' uit om je lokale 間 te detecteren, dan '.my.identity!publish @ma'.
 help-publish-without = Zonder publiceren kunnen anderen je niet bereiken — zelfs als ze je DID kennen, kunnen ze je endpoint niet oplossen.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -433,7 +433,7 @@ help-z-control =   .z.scheme                 jij bepaalt zelf de inhoud van het 
 help-z-private =   .my.*                     privé lokale configuratie; Scheme kan hier ook worden opgeslagen
 help-z-choice =   .z.* / .my.*               gebruik .z.* voor openbare Scheme en .my.* voor privé-Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme evalueert Scheme-expressies die in zion-opdrachten zijn ingebed en voegt het resultaat vóór verzending in de regel in.
+help-zscheme-intro = zscheme evalueert Scheme-expressies die in operator-opdrachten zijn ingebed en voegt het resultaat vóór verzending in de regel in.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline voorbeeld; verzendt "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definities blijven bewaard voor de huidige inlogsessie
 help-zscheme-doc = Documentatie: https://github.com/bahner/rust-ma-zscheme

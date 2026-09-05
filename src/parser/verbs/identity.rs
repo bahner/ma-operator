@@ -1,5 +1,5 @@
 use super::resolve_bare_did;
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::AppState;
@@ -13,7 +13,7 @@ pub(super) fn handle_identity(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     _show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
@@ -25,15 +25,15 @@ pub(super) fn handle_identity(
             .ok_or_else(|| t("msg-not-logged-in"))?;
         let username = session.username.clone();
         let state2 = state.clone();
-        let ego_cfg_json = config.get_untracked().for_export().to_json().ok();
+        let operator_cfg_json = config.get_untracked().for_export().to_json().ok();
         leptos::task::spawn_local(async move {
             match load_identity(&username).await {
                 Ok(Some(stored)) => {
-                    let filename = format!("{username}.zion.json");
+                    let filename = format!("{username}.operator.json");
                     let content = crate::identity::export_for_download(
                         &stored.export_json,
                         &username,
-                        ego_cfg_json.as_deref(),
+                        operator_cfg_json.as_deref(),
                     );
                     trigger_download(&filename, &content);
                     state2.push_command_ok(tf("identity-exported", &[("filename", &filename)]));

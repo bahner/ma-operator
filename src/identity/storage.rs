@@ -3,9 +3,9 @@ use futures::{
     pin_mut,
 };
 use gloo_timers::future::TimeoutFuture;
-/// `IndexedDB` storage for ego identities — implemented directly with web-sys.
+/// `IndexedDB` storage for operator identities — implemented directly with web-sys.
 ///
-/// Schema: db="ego" version=2  (keep name "ego" for backward compat with stored bundles)
+/// Schema: db="operator" version=2  (keep name "operator" for backward compat with stored bundles)
 ///   store "identities": out-of-line key (username string) -> JSON string
 ///   store "configs":    out-of-line key (username string) -> JSON string
 ///   store "histories":  out-of-line key (username string) -> JSON string
@@ -18,7 +18,7 @@ use web_sys::{IdbDatabase, IdbOpenDbRequest, IdbRequest, IdbTransactionMode};
 
 use crate::state::StoredIdentity;
 
-const DB_NAME: &str = "ego";
+const DB_NAME: &str = "operator";
 const DB_VERSION: u32 = 2;
 const STORE_IDENTITIES: &str = "identities";
 const STORE_CONFIGS: &str = "configs";

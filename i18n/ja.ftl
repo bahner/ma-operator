@@ -1,4 +1,4 @@
-# zion — 日本語
+# operator — 日本語
 lang-name = 日本語
 label-nick = ニックネーム
 new-identity-nick-help = 間-space で使うニックネームを選んでください。これはただのニックネームで、いつでも変更できます。
@@ -22,7 +22,7 @@ btn-new-endpoint = 新しいエンドポイント
 btn-import-profile = プロフィールをインポート
 btn-show-qr = QRを表示
 btn-scan-qr = QRをスキャン
-qr-scan-hint = カメラをzionプロフィールのQRコードに向けてください。
+qr-scan-hint = カメラをoperatorプロフィールのQRコードに向けてください。
 qr-error-camera = カメラを利用できません: { $e }
 qr-error-too-large = プロフィールが大きすぎてQRコードにできません
 passphrase-warning = パスフレーズを失うとアイデンティティも失います。回復はできません。
@@ -48,7 +48,7 @@ error-profile-no-username = プロフィールにユーザー名が含まれて�
 error-profile-no-identity = アイデンティティ '{ $name }' が見つかりません — まずアイデンティティをインポートしてください
 
 # ── ターミナルシステムメッセージ ──────────────────────────────────────────
-msg-logged-in = zion v{ $version } — { $username } としてログイン済み
+msg-logged-in = operator v{ $version } — { $username } としてログイン済み
 msg-type-help = .help と入力するとコマンド一覧が表示されます。
 msg-getting-started = まずは say Hello world、look、.help、help を試してください。
 msg-connecting = iroh に接続中...
@@ -167,7 +167,7 @@ doc-publish-failed = { $path } の公開エラー: { $e }
 doc-publish-ipld-failed = { $path } の IPLD 公開エラー: { $e }
 doc-publish-error-detail = 公開に失敗しました [{ $code }]: { $err }
 doc-publish-error-hint = ヒント: { $hint }
-doc-publish-hint-session = ego が識別キーにアクセスできるように再ログインしてください
+doc-publish-hint-session = operator が識別キーにアクセスできるように再ログインしてください
 doc-publish-hint-target = 有効な発行者 DID、または裸の did:ma:<ipns> に解決されるエイリアスを使用してください
 doc-publish-hint-network = 間 ランタイムと IPFS に到達できることを確認して再試行してください
 doc-publish-hint-resolve = 発行者の DID ドキュメントが公開され、到達可能なエンドポイントを含むことを確認してください
@@ -186,7 +186,7 @@ doc-no-verb = { $path } に動詞 `{ $verb }` がありません
 path-no-verb = { $path } に動詞 `{ $verb }` がありません
 
 # ── ヘルプテキスト — ヘッダー ─────────────────────────────────────────────
-help-header-zion = ── zion コマンド ──────────────────────────────────────────────────────────
+help-header-operator = ── operator コマンド ──────────────────────────────────────────────────────────
 help-header-messaging = ── メッセージ送受信 ────────────────────────────────────────────────────────
 help-header-config = ── ローカル設定文法 ─────────────────────────────────────────────────────────
 help-header-common = ── よく使うパス ─────────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<名前>:              ドキュメントを削除
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n には、ユーザーの ID に関連付けられた言語設定が保存されます。
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               利用可能な言語コードをリストする
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -353,7 +353,7 @@ help-topic-doc =   .help/doc                    文書
 help-topic-actor =   .help/actor                  リモート actor
 help-topic-z =   .help/z                      公開および非公開の Scheme コンテンツ
 help-topic-zscheme =   .help/zscheme               インライン Scheme 式とドキュメント
-help-topic-url =   .help/url                    URLリンクからzionを開く
+help-topic-url =   .help/url                    URLリンクからoperatorを開く
 help-topic-i18n = .help/i18n                   自分のアイデンティティに合わせた言語設定
 help-unknown-topic =   .help/{ $topic }: 不明なトピック
 
@@ -379,7 +379,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) 5 応答をセッション環境に保持する
 help-header-url = ── URLパラメータ ────────────────────────────────────────────────────────────
-help-url-intro =   受信者があらかじめ入力されたzionを開くリンクを共有する：
+help-url-intro =   受信者があらかじめ入力されたoperatorを開くリンクを共有する：
 help-url-msg =   ?msg=<did>                   事前入力: @<did>!msg（テキストメッセージ）
 help-url-say =   ?say=<did>                   事前入力: @<did>!say（say動詞）
 help-url-emote =   ?emote=<did>                 事前入力: @<did>!emote（emote動詞）
@@ -435,7 +435,7 @@ help-z-choice =   .z.* / .my.*               公開 Scheme には .z.* を、非
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme は zion コマンドに埋め込まれた Scheme 式を評価し、送信前に結果をその行へ差し込みます。
+help-zscheme-intro = zscheme は operator コマンドに埋め込まれた Scheme 式を評価し、送信前に結果をその行へ差し込みます。
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    インライン例。"say 7 + 5 = 12" を送信します
 help-zscheme-define =   (define x 12)             定義は現在のログインセッション中保持されます
 help-zscheme-doc = ドキュメント: https://github.com/bahner/rust-ma-zscheme

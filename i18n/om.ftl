@@ -1,4 +1,4 @@
-# zion — Afaan Oromoo
+# operator — Afaan Oromoo
 lang-name = Afaan Oromoo
 label-nick = maqaa masoo
 new-identity-nick-help = 間-space'f maqaa masoo filadhu. Maqaa masoo qofa, yeroo barbaadde jijjiiruu dandeessa.
@@ -22,7 +22,7 @@ btn-new-endpoint = dhibcaha haaraa
 btn-import-profile = profaayilii galchi
 btn-show-qr = QR agarsiisi
 btn-scan-qr = QR sakatta'i
-qr-scan-hint = Kaameraa gara koodii QR profaayilii zion qajeelchi.
+qr-scan-hint = Kaameraa gara koodii QR profaayilii operator qajeelchi.
 qr-error-camera = kaameraan hin argamne: { $e }
 qr-error-too-large = profaayiliin koodii QR tokkoof baay'ee guddaa dha
 passphrase-warning = Jecha icciitii dhabuu = eenyummaa dhabuu. Deebii hin jiru.
@@ -48,7 +48,7 @@ error-profile-no-username = profaayiliin maqaa fayyadamaa hin qabu
 error-profile-no-identity = eenummaa '{ $name }' argame hin jiru — duraan eenummaa galchi
 
 # ── Ergaalee sirna terminal ───────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — akka { $username }tti seenameera
+msg-logged-in = operator v{ $version } — akka { $username }tti seenameera
 msg-type-help = Tarree ajajootaaf .help barreessi.
 msg-getting-started = Yaali: say Hello world, look, .help, yookaan help.
 msg-connecting = iroh walitti hidhamaa...
@@ -167,7 +167,7 @@ doc-publish-failed = maxxansuu { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = maxxansiisu hin milkoofne [{ $code }]: { $err }
 doc-publish-error-hint = Yaadachiisa: { $hint }
-doc-publish-hint-session = ammas seena kanaaf ego furtuu eenyummaa keessan argachuu danda'a
+doc-publish-hint-session = ammas seena kanaaf operator furtuu eenyummaa keessan argachuu danda'a
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
@@ -186,7 +186,7 @@ doc-no-verb = gochan `{ $verb }` { $path }f hin jiru
 path-no-verb = gochan `{ $verb }` { $path }f hin jiru
 
 # ── Gargaarsa — mataa dureelee ────────────────────────────────────────────
-help-header-zion = ── ajajoota zion ──────────────────────────────────────────────────────────
+help-header-operator = ── ajajoota operator ──────────────────────────────────────────────────────────
 help-header-messaging = ── ergaa erguuf ──────────────────────────────────────────────────────────
 help-header-config = ── giiraama qindaa'ina naannoo ──────────────────────────────────────────
 help-header-common = ── karaalee waliigalaa ────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Gargaarsa — ajajoota zion ─────────────────────────────────────────────
+# ── Gargaarsa — ajajoota operator ─────────────────────────────────────────────
 help-cmd-help =   .help                        barruu kana
 help-cmd-clear =   .clear                       terminal qulqulleessi
 help-cmd-panic =   .panic                       karaa dhumaa — rakkoo yoo mudateef fayyadami
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              galmee haaqami
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n stores the language preference tied to your identity.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) keep replies in the session environment
 
-help-topic-url =   .help/url                    zion URL link tiin banuu
+help-topic-url =   .help/url                    operator URL link tiin banuu
 help-topic-i18n = .help/i18n                   language preference for your identity
 help-header-url = ── ulaagalee URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Fuullee itti sirraa'e wajjin zion banu link qoodi:
+help-url-intro =   Fuullee itti sirraa'e wajjin operator banu link qoodi:
 help-url-msg =   ?msg=<did>                   dursee guuti: @<did>!msg (ergaa salphaa)
 help-url-say =   ?say=<did>                   dursee guuti: @<did>!say (jechi say)
 help-url-emote =   ?emote=<did>                 dursee guuti: @<did>!emote (jechi emote)
@@ -399,7 +399,7 @@ help-url-note =   Galchi guutameera garuu hin ergamne — erguu Enter tuqi.
 help-topic-publish =   .help/publish                eenyummaa kee networki irratti maxxansi
 help-header-publish = ── eenyummaa maxxansuu ──────────────────────────────────────────────────────
 help-publish-intro = Maxxansuun eenyummaa kee networki irratti argamuu danda'u taasisa. Namoota biroo DID kee barbaaduun si argachuu danda'u.
-help-publish-ma = Maxxansuuf, 間 (runtime naannoo) fe'amuu qaba. Ego fi IPFS/IPNS si bakka buusee walitti hidha.
+help-publish-ma = Maxxansuuf, 間 (runtime naannoo) fe'amuu qaba. Operator fi IPFS/IPNS si bakka buusee walitti hidha.
 help-publish-steps = Tartiiba: ma naannoo argachuuf '.ma: claim [port]' oofaa, itti aansuun '.my.identity!publish @ma'.
 help-publish-without = Maxxansuu malee namooni biroon si dhaqqabuu hin danda'an — DID kee beekaniiyyuu endpoint kee furuuf dandeetii hin qaban.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               .z.* Scheme uummaataaf fi .my.* Sch
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ibsa Scheme ajajoota zion keessatti galfaman ni madaala, bu’aa isaas erguu dura sarara keessa ni galcha.
+help-zscheme-intro = zscheme ibsa Scheme ajajoota operator keessatti galfaman ni madaala, bu’aa isaas erguu dura sarara keessa ni galcha.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    fakkeenya sarara keessaa; "say 7 + 5 = 12" erga
 help-zscheme-define =   (define x 12)             hiikawwan yeroo seensa ammaa keessa ni turu
 help-zscheme-doc = Galmee: https://github.com/bahner/rust-ma-zscheme

@@ -3,24 +3,26 @@ use ma_core::{BrowserIdentityExport, Config, SecretBundle};
 use serde::{Deserialize, Serialize};
 use time::{format_description::well_known::Rfc3339, OffsetDateTime, UtcOffset};
 
-// ── ZionExport ─────────────────────────────────────────────────────────────
+// ── OperatorExport ─────────────────────────────────────────────────────────────
 
 /// Versioned wrapper that bundles a `BrowserIdentityExport` JSON together with
-/// an optional `EgoConfig` JSON snapshot for portable full-profile export.
+/// an optional `OperatorConfig` JSON snapshot for portable full-profile export.
 ///
 /// - `version: 1` — the only currently supported format.
 /// - `username` — the profile name (slug). Carried explicitly because
 ///   `Config::to_yaml_string` intentionally omits the slug field.
 /// - `identity` — the raw `BrowserIdentityExport` JSON string (encrypted keys + username).
-/// - `ego_config` — optional `EgoConfig` JSON (aliases, docs, settings, etc.).
+/// - `operator_config` — optional `OperatorConfig` JSON (aliases, docs, settings, etc.).
 ///   Absent in old exports; ignored on import when missing.
 #[derive(Serialize, Deserialize)]
-pub struct ZionExport {
+pub struct OperatorExport {
     pub version: u8,
     pub username: String,
     pub identity: String,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub ego_config: Option<String>,
+    // `rename` keeps the historical `"ego_config"` wire key so existing
+    // exported profiles keep importing after the Operator rename.
+    #[serde(skip_serializing_if = "Option::is_none", rename = "ego_config")]
+    pub operator_config: Option<String>,
 }
 
 /// Key material extracted from a decrypted [`SecretBundle`].
@@ -149,22 +151,22 @@ fn bundle_to_unlocked(bundle: &SecretBundle) -> Result<UnlockedIdentity, String>
     })
 }
 
-/// Bundle an identity export and optional `EgoConfig` snapshot into a `ZionExport`
+/// Bundle an identity export and optional `OperatorConfig` snapshot into a `OperatorExport`
 /// JSON string ready for file download.
 ///
 /// `username` is stored explicitly since `Config::to_yaml_string` omits the slug.
-/// `ego_config_json` should come from `EgoConfig::for_export().to_json()`.
+/// `operator_config_json` should come from `OperatorConfig::for_export().to_json()`.
 /// Pass `None` to produce a keys-only export (backward-compatible with old importers).
 pub fn export_for_download(
     identity_json: &str,
     username: &str,
-    ego_config_json: Option<&str>,
+    operator_config_json: Option<&str>,
 ) -> String {
-    let export = ZionExport {
+    let export = OperatorExport {
         version: 1,
         username: username.to_string(),
         identity: identity_json.to_string(),
-        ego_config: ego_config_json.map(std::string::ToString::to_string),
+        operator_config: operator_config_json.map(std::string::ToString::to_string),
     };
     serde_json::to_string(&export).unwrap_or_else(|_| identity_json.to_string())
 }
@@ -190,18 +192,23 @@ pub fn rekey_iroh(
     Ok((new_json, unlocked))
 }
 
-/// Parse an imported file's bytes as either a `ZionExport` (new format) or a
+/// Parse an imported file's bytes as either a `OperatorExport` (new format) or a
 /// bare `BrowserIdentityExport` JSON (old format, backward-compatible).
 ///
-/// Returns `(username, identity_json, Option<ego_config_json>)`.
+/// Returns `(username, identity_json, Option<operator_config_json>)`.
 pub fn import_from_bytes(bytes: &[u8]) -> Result<(String, String, Option<String>), String> {
     let json = std::str::from_utf8(bytes).map_err(|e| e.to_string())?;
 
-    // Try new ZionExport format first.
-    if let Ok(zion) = serde_json::from_str::<ZionExport>(json) {
+    // Try new OperatorExport format first.
+    if let Ok(operator) = serde_json::from_str::<OperatorExport>(json) {
         // Validate the embedded BrowserIdentityExport is well-formed.
-        let _ = BrowserIdentityExport::from_json_str(&zion.identity).map_err(|e| e.to_string())?;
-        return Ok((zion.username, zion.identity, zion.ego_config));
+        let _ =
+            BrowserIdentityExport::from_json_str(&operator.identity).map_err(|e| e.to_string())?;
+        return Ok((
+            operator.username,
+            operator.identity,
+            operator.operator_config,
+        ));
     }
 
     // Fallback: bare BrowserIdentityExport (old format).
@@ -426,9 +433,12 @@ mod tests {
     #[test]
     fn import_from_bytes_roundtrip() {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
-        let (_, identity_json, ego_config) =
+        let (_, identity_json, operator_config) =
             import_from_bytes(json.as_bytes()).expect("import failed");
-        assert!(ego_config.is_none(), "bare identity has no ego_config");
+        assert!(
+            operator_config.is_none(),
+            "bare identity has no operator_config"
+        );
         let _ = unlock_identity(&identity_json, PASS).expect("unlock after import failed");
     }
 
@@ -448,23 +458,26 @@ mod tests {
     fn import_from_bytes_new_format_roundtrip() {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
         let bundled = export_for_download(&json, "alice", Some(r#"{"tree":{"key":"val"}}"#));
-        let (username, identity_json, ego_config) =
+        let (username, identity_json, operator_config) =
             import_from_bytes(bundled.as_bytes()).expect("import new format failed");
         assert_eq!(username, "alice");
         let _ = unlock_identity(&identity_json, PASS).expect("unlock failed");
-        assert_eq!(ego_config.as_deref(), Some(r#"{"tree":{"key":"val"}}"#));
+        assert_eq!(
+            operator_config.as_deref(),
+            Some(r#"{"tree":{"key":"val"}}"#)
+        );
     }
 
     #[test]
     fn import_from_bytes_old_format_still_works() {
-        // A bare BrowserIdentityExport (no ZionExport wrapper) must still import cleanly.
+        // A bare BrowserIdentityExport (no OperatorExport wrapper) must still import cleanly.
         // Since ma-core 0.13.1 the config YAML carries the slug, so the username survives.
         let (json, _) = create_identity("alice", PASS).expect("create failed");
-        let (username, identity_json, ego_config) =
+        let (username, identity_json, operator_config) =
             import_from_bytes(json.as_bytes()).expect("import old format failed");
         assert_eq!(username, "alice", "slug from config YAML is preserved");
         let _ = unlock_identity(&identity_json, PASS).expect("unlock failed");
-        assert!(ego_config.is_none());
+        assert!(operator_config.is_none());
     }
 
     // ── export_for_download ───────────────────────────────────────────────
@@ -473,11 +486,12 @@ mod tests {
     fn export_for_download_without_config() {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
         let exported = export_for_download(&json, "alice", None);
-        let zion: ZionExport = serde_json::from_str(&exported).expect("must parse as ZionExport");
-        assert_eq!(zion.version, 1);
-        assert_eq!(zion.username, "alice");
-        assert_eq!(zion.identity, json);
-        assert!(zion.ego_config.is_none());
+        let operator: OperatorExport =
+            serde_json::from_str(&exported).expect("must parse as OperatorExport");
+        assert_eq!(operator.version, 1);
+        assert_eq!(operator.username, "alice");
+        assert_eq!(operator.identity, json);
+        assert!(operator.operator_config.is_none());
     }
 
     #[test]
@@ -485,9 +499,10 @@ mod tests {
         let (json, _) = create_identity("alice", PASS).expect("create failed");
         let cfg_json = r#"{"tree":{".my.i18n":"nb"}}"#;
         let exported = export_for_download(&json, "alice", Some(cfg_json));
-        let zion: ZionExport = serde_json::from_str(&exported).expect("must parse as ZionExport");
-        assert_eq!(zion.version, 1);
-        assert_eq!(zion.username, "alice");
-        assert_eq!(zion.ego_config.as_deref(), Some(cfg_json));
+        let operator: OperatorExport =
+            serde_json::from_str(&exported).expect("must parse as OperatorExport");
+        assert_eq!(operator.version, 1);
+        assert_eq!(operator.username, "alice");
+        assert_eq!(operator.operator_config.as_deref(), Some(cfg_json));
     }
 }

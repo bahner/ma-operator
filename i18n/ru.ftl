@@ -1,4 +1,4 @@
-# zion — Русский
+# operator — Русский
 lang-name = Русский
 label-nick = ник
 new-identity-nick-help = Выберите ник для 間-space. Это просто ник, его можно изменить в любое время.
@@ -22,7 +22,7 @@ btn-new-endpoint = новая конечная точка
 btn-import-profile = импортировать профиль
 btn-show-qr = показать QR
 btn-scan-qr = сканировать QR
-qr-scan-hint = Наведите камеру на QR-код профиля zion.
+qr-scan-hint = Наведите камеру на QR-код профиля operator.
 qr-error-camera = камера недоступна: { $e }
 qr-error-too-large = профиль слишком велик для QR-кода
 passphrase-warning = Потеря парольной фразы = потеря личности. Восстановление невозможно.
@@ -48,7 +48,7 @@ error-profile-no-username = профиль не содержит имени по
 error-profile-no-identity = личность '{ $name }' не найдена — сначала импортируйте личность
 
 # ── Системные сообщения терминала ─────────────────────────────────────────
-msg-logged-in = zion v{ $version } — вошли как { $username }
+msg-logged-in = operator v{ $version } — вошли как { $username }
 msg-type-help = Введите .help для списка команд.
 msg-getting-started = Попробуйте: say Hello world, look, .help или help.
 msg-connecting = подключение к iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = публикация { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = публикация не удалась [{ $code }]: { $err }
 doc-publish-error-hint = Подсказка: { $hint }
-doc-publish-hint-session = войдите в систему еще раз, чтобы ego могло получить доступ к вашим идентификационным ключам
+doc-publish-hint-session = войдите в систему еще раз, чтобы operator могло получить доступ к вашим идентификационным ключам
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = убедитесь, что документ DID издателя опубликован и содержит доступную конечную точку
@@ -186,7 +186,7 @@ doc-no-verb = нет команды `{ $verb }` для { $path }
 path-no-verb = нет команды `{ $verb }` для { $path }
 
 # ── Справка — заголовки ───────────────────────────────────────────────────
-help-header-zion = ── команды zion ──────────────────────────────────────────────────────────
+help-header-operator = ── команды operator ──────────────────────────────────────────────────────────
 help-header-messaging = ── сообщения ────────────────────────────────────────────────────────────
 help-header-config = ── синтаксис конфигурации ───────────────────────────────────────────────
 help-header-common = ── общие пути ───────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── входит в 間-пространство ───────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Справка — команды zion ────────────────────────────────────────────────
+# ── Справка — команды operator ────────────────────────────────────────────────
 help-cmd-help =   .help                        этот текст
 help-cmd-clear =   .clear                       очистить терминал
 help-cmd-panic =   .panic                       последний resort — использовать при проблемах
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              удалить документ
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n сохраняет языковые предпочтения, привязанные к вашей личности.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               список доступных языковых кодов
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -360,7 +360,7 @@ help-topic-doc =   .help/doc                    документы
 help-topic-actor =   .help/actor                  удалённый actor
 help-topic-z =   .help/z                      общедоступное и личное содержимое Scheme
 help-topic-zscheme =   .help/zscheme               встроенные выражения Scheme и документация
-help-topic-url =   .help/url                    открыть zion по URL-ссылке
+help-topic-url =   .help/url                    открыть operator по URL-ссылке
 help-topic-i18n = .help/i18n                   языковые предпочтения для вашей личности
 help-unknown-topic =   .help/{ $topic }: неизвестная тема
 
@@ -386,7 +386,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) сохранять ответы 5 в среде сеанса
 help-header-url = ── параметры URL ───────────────────────────────────────────────────────────
-help-url-intro =   Поделись ссылкой, открывающей zion с заранее заполненным получателем:
+help-url-intro =   Поделись ссылкой, открывающей operator с заранее заполненным получателем:
 help-url-msg =   ?msg=<did>                   предзаполняет: @<did>!msg (текстовое сообщение)
 help-url-say =   ?say=<did>                   предзаполняет: @<did>!say (глагол say)
 help-url-emote =   ?emote=<did>                 предзаполняет: @<did>!emote (глагол emote)
@@ -398,7 +398,7 @@ help-url-note =   Поле заполнено, но не отправлено �
 help-topic-publish =   .help/publish                публикация личности в сети
 help-header-publish = ── публикация личности ──────────────────────────────────────────────────────
 help-publish-intro = Публикация делает твою личность доступной для поиска в сети. Другие могут найти твой DID, чтобы связаться с тобой.
-help-publish-ma = Для публикации нужен установленный 間 (локальная среда выполнения). Он соединяет ego с IPFS/IPNS от твоего имени.
+help-publish-ma = Для публикации нужен установленный 間 (локальная среда выполнения). Он соединяет operator с IPFS/IPNS от твоего имени.
 help-publish-steps = Шаги: выполни '.ma: claim [port]' для обнаружения локального ma, затем '.my.identity!publish @ma'.
 help-publish-without = Без публикации другие не смогут тебя найти — даже зная твой DID, они не смогут определить твой endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -442,7 +442,7 @@ help-z-choice =   .z.* / .my.*               используйте .z.* для 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme вычисляет выражения Scheme, встроенные в команды zion, и подставляет результат в строку перед отправкой.
+help-zscheme-intro = zscheme вычисляет выражения Scheme, встроенные в команды operator, и подставляет результат в строку перед отправкой.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    встроенный пример; отправляет "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             определения сохраняются в текущем сеансе входа
 help-zscheme-doc = Документация: https://github.com/bahner/rust-ma-zscheme

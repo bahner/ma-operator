@@ -5,7 +5,7 @@ use wasm_bindgen_futures::spawn_local;
 use web_sys::MouseEvent;
 
 use crate::{
-    config::EgoConfig,
+    config::OperatorConfig,
     core::{CommandStatus, Entry, SystemKind},
     dispatch::run_dispatch_loop,
     inbox_poll::run_inbox_poll,
@@ -19,7 +19,7 @@ pub fn Terminal() -> impl IntoView {
     let state = use_context::<AppState>().expect("AppState missing");
 
     // Per-session reactive config — created at App level, shared via context
-    let config = use_context::<RwSignal<EgoConfig>>().expect("EgoConfig missing");
+    let config = use_context::<RwSignal<OperatorConfig>>().expect("OperatorConfig missing");
 
     // Editor modal signal — Some(EditorContext) opens the overlay
     let show_editor: RwSignal<Option<EditorContext>> = RwSignal::new(None);

@@ -1,4 +1,4 @@
-/// Path config tree for ego.
+/// Path config tree for operator.
 ///
 /// Keys follow a dot-notation hierarchy, e.g.:
 ///   .my.aliases.fjodor  → did:ma:<...>
@@ -22,11 +22,11 @@ use crate::identity::storage::{load_config, save_config};
 // ── Types ──────────────────────────────────────────────────────────────────
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
-pub struct EgoConfig {
+pub struct OperatorConfig {
     pub tree: HashMap<String, String>,
 }
 
-impl EgoConfig {
+impl OperatorConfig {
     pub fn new() -> Self {
         let mut cfg = Self::default();
         cfg.set_defaults();
@@ -504,9 +504,9 @@ impl EgoConfig {
 
 // ── DotRegistry impl ──────────────────────────────────────────────────────
 
-/// `EgoConfig` stores keys with a leading `.` (e.g. `.my.aliases.foo`).
+/// `OperatorConfig` stores keys with a leading `.` (e.g. `.my.aliases.foo`).
 /// `DotRegistry` paths may arrive without it; we normalise by adding it.
-fn ego_key(path: &str) -> String {
+fn operator_key(path: &str) -> String {
     if path.starts_with('.') || path.starts_with('/') {
         path.to_string()
     } else {
@@ -514,47 +514,47 @@ fn ego_key(path: &str) -> String {
     }
 }
 
-impl DotRegistry for EgoConfig {
+impl DotRegistry for OperatorConfig {
     fn get(&self, path: &str) -> Option<String> {
-        EgoConfig::get(self, &ego_key(path)).map(std::string::ToString::to_string)
+        OperatorConfig::get(self, &operator_key(path)).map(std::string::ToString::to_string)
     }
 
     fn set(&mut self, path: &str, value: &str) {
-        EgoConfig::set(self, ego_key(path), value);
+        OperatorConfig::set(self, operator_key(path), value);
     }
 
     fn delete_subtree(&mut self, path: &str) {
-        EgoConfig::delete_subtree(self, &ego_key(path));
+        OperatorConfig::delete_subtree(self, &operator_key(path));
     }
 
     fn list(&self, prefix: &str) -> Vec<(String, String)> {
-        EgoConfig::list(self, &ego_key(prefix))
+        OperatorConfig::list(self, &operator_key(prefix))
             .into_iter()
             .map(|(k, v)| (k.to_string(), v.to_string()))
             .collect()
     }
 
     fn resolve_alias(&self, name: &str) -> Option<String> {
-        EgoConfig::resolve_alias(self, name.trim_start_matches('@'))
+        OperatorConfig::resolve_alias(self, name.trim_start_matches('@'))
             .map(std::string::ToString::to_string)
     }
 
     fn is_read_only(&self, path: &str) -> bool {
-        EgoConfig::is_read_only(&ego_key(path))
+        OperatorConfig::is_read_only(&operator_key(path))
     }
 }
 
 // ── Persistence ────────────────────────────────────────────────────────────────
 
-pub async fn persist_config(username: &str, cfg: &EgoConfig) -> Result<(), String> {
+pub async fn persist_config(username: &str, cfg: &OperatorConfig) -> Result<(), String> {
     let json = cfg.for_persistence().to_json()?;
     save_config(username, &json).await
 }
 
-pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
+pub async fn restore_config(username: &str) -> Result<OperatorConfig, String> {
     match load_config(username).await? {
         Some(json) => {
-            let mut cfg = EgoConfig::from_json(&json)?;
+            let mut cfg = OperatorConfig::from_json(&json)?;
             cfg.migrate_slash_keys();
             cfg.tree
                 .retain(|k, _| k.starts_with(".my.") || k.starts_with(".z."));
@@ -564,7 +564,7 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
             save_config(username, &json).await?;
             Ok(cfg)
         }
-        None => Ok(EgoConfig::new()),
+        None => Ok(OperatorConfig::new()),
     }
 }
 
@@ -572,8 +572,8 @@ pub async fn restore_config(username: &str) -> Result<EgoConfig, String> {
 mod tests {
     use super::*;
 
-    fn bare() -> EgoConfig {
-        EgoConfig::default()
+    fn bare() -> OperatorConfig {
+        OperatorConfig::default()
     }
 
     // ── get / set ─────────────────────────────────────────────────────────
@@ -602,7 +602,7 @@ mod tests {
 
     #[test]
     fn new_has_colour_defaults() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         assert_eq!(cfg.get(".my.config.colour.text"), Some("#00ff41"));
         assert_eq!(cfg.get(".my.config.colour.alias"), Some("#ffd700"));
         assert_eq!(cfg.get(".my.config.screensaver.timeout"), Some("300"));
@@ -624,17 +624,17 @@ mod tests {
 
     #[test]
     fn protected_roots_are_read_only() {
-        assert!(EgoConfig::is_read_only(".my"));
-        assert!(EgoConfig::is_read_only(".my.identity"));
-        assert!(EgoConfig::is_read_only(".my.identity.did"));
-        assert!(EgoConfig::is_read_only(".my.identity.signing_key"));
+        assert!(OperatorConfig::is_read_only(".my"));
+        assert!(OperatorConfig::is_read_only(".my.identity"));
+        assert!(OperatorConfig::is_read_only(".my.identity.did"));
+        assert!(OperatorConfig::is_read_only(".my.identity.signing_key"));
     }
 
     #[test]
     fn other_keys_not_read_only() {
-        assert!(!EgoConfig::is_read_only(".my.aliases.alice"));
-        assert!(!EgoConfig::is_read_only(".my.i18n"));
-        assert!(!EgoConfig::is_read_only(".my.gossip.topic"));
+        assert!(!OperatorConfig::is_read_only(".my.aliases.alice"));
+        assert!(!OperatorConfig::is_read_only(".my.i18n"));
+        assert!(!OperatorConfig::is_read_only(".my.gossip.topic"));
     }
 
     // ── is_leaf / has_children / has_leaf_ancestor ────────────────────────
@@ -938,7 +938,7 @@ mod tests {
         cfg.set(".my.i18n", "nb");
         cfg.set(".my.aliases.alice", "did:ma:abc");
         let json = cfg.to_json().unwrap();
-        let restored = EgoConfig::from_json(&json).unwrap();
+        let restored = OperatorConfig::from_json(&json).unwrap();
         assert_eq!(restored.get(".my.i18n"), Some("nb"));
         assert_eq!(restored.get(".my.aliases.alice"), Some("did:ma:abc"));
     }
@@ -1064,6 +1064,6 @@ mod tests {
 
     #[test]
     fn from_json_invalid_fails() {
-        assert!(EgoConfig::from_json("not json").is_err());
+        assert!(OperatorConfig::from_json("not json").is_err());
     }
 }

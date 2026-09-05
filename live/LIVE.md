@@ -1,18 +1,18 @@
-# LIVE in zion
+# LIVE in operator
 
-This document explains the current live model in zion and how to use it safely.
+This document explains the current live model in operator and how to use it safely.
 
 The short version:
 - MA messaging is used for invitation and control.
 - `/ma/live/0.0.1` is the live signalling service surface.
-- Browser media (camera, microphone, rendering) stays in zion host code, not in zscheme.
+- Browser media (camera, microphone, rendering) stays in operator host code, not in zscheme.
 - User-friendly workflow functions live in `live.szcheme` and are imported by you.
 
 ## TL;DR quickstart (laptop + phone self-call)
 
 Use this when you want to test your next step quickly.
 
-1. Open zion on both devices.
+1. Open operator on both devices.
 - Laptop: one tab/session.
 - Phone: one tab/session.
 
@@ -70,7 +70,7 @@ Important for this phase:
 
 Live has two layers:
 
-1. Native primitives (Rust, zion host)
+1. Native primitives (Rust, operator host)
 - These are the parts that cannot be implemented from inside zscheme.
 - Transport registration for `/ma/live/0.0.1`.
 - Sending a live dial message to a target DID.
@@ -85,7 +85,7 @@ This split is intentional. zscheme should orchestrate flow, not own browser devi
 
 ## What is native today
 
-The current native live baseline in zion is:
+The current native live baseline in operator is:
 - `LIVE_PROTOCOL_ID = "/ma/live/0.0.1"`
 - `.ma.live!dial @peer [label]` sends a live dial message
 - incoming live-service messages are tagged as `[live]` in output
@@ -157,4 +157,4 @@ Those belong in host/UI/media integration layers.
 ## Status
 
 This is experimental and intentionally minimal.
-The goal is a stable primitive base in zion plus fast iteration in `live.szcheme`.
+The goal is a stable primitive base in operator plus fast iteration in `live.szcheme`.

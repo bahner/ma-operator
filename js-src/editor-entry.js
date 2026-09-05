@@ -43,9 +43,9 @@ import { yaml } from "@codemirror/legacy-modes/mode/yaml";
 import { zscheme } from "./zscheme-mode.js";
 
 // Matrix-terminal themed highlight style, driven by the same CSS custom
-// properties the rest of the UI uses (see style/zion.css / .my.config.colour.*)
+// properties the rest of the UI uses (see style/operator.css / .my.config.colour.*)
 // so syntax colours stay consistent with the user's chosen theme.
-const zionHighlightStyle = HighlightStyle.define([
+const operatorHighlightStyle = HighlightStyle.define([
     { tag: t.comment, color: "var(--colour-dimmed)", fontStyle: "italic" },
     { tag: t.keyword, color: "var(--colour-text)", fontWeight: "bold" },
     { tag: [t.string, t.special(t.string)], color: "var(--colour-cursor)" },
@@ -89,7 +89,7 @@ function _baseExtensions(lang) {
         lineNumbers(),
         highlightActiveLine(),
         drawSelection(),
-        syntaxHighlighting(zionHighlightStyle),
+        syntaxHighlighting(operatorHighlightStyle),
         EditorView.theme({ ".cm-content": { caretColor: "transparent" } }),
         EditorView.lineWrapping,
         ..._languageExtension(lang),

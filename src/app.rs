@@ -1,6 +1,6 @@
 use leptos::prelude::*;
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::state::AppState;
 use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
 
@@ -70,7 +70,7 @@ fn url_z() -> Option<String> {
 pub fn App() -> impl IntoView {
     let state = AppState::new();
     provide_context(state.clone());
-    let config: RwSignal<EgoConfig> = RwSignal::new(EgoConfig::new());
+    let config: RwSignal<OperatorConfig> = RwSignal::new(OperatorConfig::new());
     provide_context(config);
 
     // Parse URL params once at startup.

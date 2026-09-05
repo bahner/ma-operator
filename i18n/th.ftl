@@ -1,4 +1,4 @@
-# zion — ภาษาไทย
+# operator — ภาษาไทย
 lang-name = ภาษาไทย
 label-nick = ชื่อเล่น
 new-identity-nick-help = เลือกชื่อเล่นสำหรับ 間-space เป็นเพียงชื่อเล่นและเปลี่ยนได้ทุกเมื่อ
@@ -22,7 +22,7 @@ btn-new-endpoint = จุดเชื่อมต่อใหม่
 btn-import-profile = นำเข้าโปรไฟล์
 btn-show-qr = แสดง QR
 btn-scan-qr = สแกน QR
-qr-scan-hint = หันกล้องไปที่โค้ด QR ของโปรไฟล์ zion
+qr-scan-hint = หันกล้องไปที่โค้ด QR ของโปรไฟล์ operator
 qr-error-camera = กล้องไม่พร้อมใช้งาน: { $e }
 qr-error-too-large = โปรไฟล์ใหญ่เกินไปสำหรับโค้ด QR
 passphrase-warning = หากสูญหายวลีรหัสผ่าน ตัวตนของคุณจะสูญหายไปด้วย ไม่มีการกู้คืน
@@ -48,7 +48,7 @@ error-profile-no-username = โปรไฟล์ไม่มีชื่อผ�
 error-profile-no-identity = ไม่พบตัวตน '{ $name }' — นำเข้าตัวตนก่อน
 
 # ── ข้อความระบบ terminal ─────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — เข้าสู่ระบบในนาม { $username }
+msg-logged-in = operator v{ $version } — เข้าสู่ระบบในนาม { $username }
 msg-type-help = พิมพ์ .help เพื่อดูรายการคำสั่ง
 msg-getting-started = ลองพิมพ์: say Hello world, look, .help หรือ help
 msg-connecting = กำลังเชื่อมต่อ iroh...
@@ -186,7 +186,7 @@ doc-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $p
 path-no-verb = ไม่มีกริยา `{ $verb }` สำหรับ { $path }
 
 # ── ช่วยเหลือ — หัวข้อ ───────────────────────────────────────────────────
-help-header-zion = ── คำสั่ง zion ─────────────────────────────────────────────────────────────
+help-header-operator = ── คำสั่ง operator ─────────────────────────────────────────────────────────────
 help-header-messaging = ── การส่งข้อความ ──────────────────────────────────────────────────────────
 help-header-config = ── ไวยากรณ์การกำหนดค่าท้องถิ่น ─────────────────────────────────────────
 help-header-common = ── path ที่ใช้บ่อย ─────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── เข้าสู่ 間-พื้นที่ ──────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── ช่วยเหลือ — คำสั่ง zion ─────────────────────────────────────────────
+# ── ช่วยเหลือ — คำสั่ง operator ─────────────────────────────────────────────
 help-cmd-help =   .help                        ข้อความนี้
 help-cmd-clear =   .clear                       ล้าง terminal
 help-cmd-panic =   .panic                       ทางเลือกสุดท้าย — ใช้เมื่อมีปัญหา
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              ลบเอกสาร
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n จัดเก็บการตั้งค่าภาษาที่เชื่อมโยงกับข้อมูลประจำตัวของคุณ
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               แสดงรายการรหัสภาษาที่มีอยู่
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) ให้ 5 ตอบกลับในสภาพแวดล้อมเซสชัน
 
-help-topic-url =   .help/url                    เปิด zion ผ่านลิงก์ URL
+help-topic-url =   .help/url                    เปิด operator ผ่านลิงก์ URL
 help-topic-i18n = .help/i18n                   การตั้งค่าภาษาสำหรับตัวตนของคุณ
 help-header-url = ── พารามิเตอร์ URL ───────────────────────────────────────────────────────────────
-help-url-intro =   แบ่งปันลิงก์ที่เปิด zion พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
+help-url-intro =   แบ่งปันลิงก์ที่เปิด operator พร้อมผู้รับที่กรอกไว้ล่วงหน้า:
 help-url-msg =   ?msg=<did>                   กรอกล่วงหน้า: @<did>!msg (ข้อความธรรมดา)
 help-url-say =   ?say=<did>                   กรอกล่วงหน้า: @<did>!say (กริยา say)
 help-url-emote =   ?emote=<did>                 กรอกล่วงหน้า: @<did>!emote (กริยา emote)
@@ -399,7 +399,7 @@ help-url-note =   ช่องอินพุตถูกกรอกไว้�
 help-topic-publish =   .help/publish                เผยแพร่ตัวตนของคุณสู่เครือข่าย
 help-header-publish = ── การเผยแพร่ตัวตน ───────────────────────────────────────────────────────────
 help-publish-intro = การเผยแพร่ทำให้ตัวตนของคุณค้นหาได้บนเครือข่าย คนอื่นสามารถค้นหา DID ของคุณเพื่อติดต่อคุณได้
-help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง 間 (รันไทม์ท้องถิ่น) มันเชื่อมต่อ ego กับ IPFS/IPNS แทนคุณ
+help-publish-ma = หากต้องการเผยแพร่ คุณต้องติดตั้ง 間 (รันไทม์ท้องถิ่น) มันเชื่อมต่อ operator กับ IPFS/IPNS แทนคุณ
 help-publish-steps = ขั้นตอน: รัน '.ma: claim [port]' เพื่อตรวจหา ma ท้องถิ่น จากนั้น '.my.identity!publish @ma'
 help-publish-without = หากไม่เผยแพร่ คนอื่นไม่สามารถติดต่อคุณได้ — แม้จะรู้ DID ของคุณ ก็ไม่สามารถแก้ไข endpoint ของคุณได้
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               ใช้ .z.* สำหรับ S
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ประเมินนิพจน์ Scheme ที่ฝังอยู่ในคำสั่ง zion แล้วแทรกผลลัพธ์กลับเข้าไปในบรรทัดก่อนส่ง
+help-zscheme-intro = zscheme ประเมินนิพจน์ Scheme ที่ฝังอยู่ในคำสั่ง operator แล้วแทรกผลลัพธ์กลับเข้าไปในบรรทัดก่อนส่ง
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ตัวอย่างแบบแทรกในบรรทัด; ส่ง "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             คำนิยามจะคงอยู่ในเซสชันเข้าสู่ระบบปัจจุบัน
 help-zscheme-doc = เอกสาร: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-# zion — Suomi
+# operator — Suomi
 lang-name = Suomi
 label-nick = kutsumanimi
 new-identity-nick-help = Valitse kutsumanimi 間-spaceen. Se on vain kutsumanimi, ja voit muuttaa sen milloin tahansa.
@@ -22,7 +22,7 @@ btn-new-endpoint = uusi päätepiste
 btn-import-profile = tuo profiili
 btn-show-qr = näytä QR
 btn-scan-qr = skannaa QR
-qr-scan-hint = Suuntaa kamera zion-profiilin QR-koodiin.
+qr-scan-hint = Suuntaa kamera operator-profiilin QR-koodiin.
 qr-error-camera = kamera ei käytettävissä: { $e }
 qr-error-too-large = profiili on liian suuri QR-koodiin
 passphrase-warning = Kadotettu salasana = kadotettu identiteetti. Palautumista ei ole.
@@ -48,7 +48,7 @@ error-profile-no-username = profiili ei sisällä käyttäjänimeä
 error-profile-no-identity = identiteetti '{ $name }' ei löytynyt — tuo identiteetti ensin
 
 # ── Terminaalijärjestelmäviestit ──────────────────────────────────────────
-msg-logged-in = zion v{ $version } — kirjautunut sisään nimellä { $username }
+msg-logged-in = operator v{ $version } — kirjautunut sisään nimellä { $username }
 msg-type-help = Kirjoita .help saadaksesi luettelon komennoista.
 msg-getting-started = Kokeile: say Hello world, look, .help tai help.
 msg-connecting = yhdistetään iroh:iin...
@@ -167,7 +167,7 @@ doc-publish-failed = julkaisu { $path }: { $e }
 doc-publish-ipld-failed = ipld-julkaisu { $path }: { $e }
 doc-publish-error-detail = julkaisu epäonnistui [{ $code }]: { $err }
 doc-publish-error-hint = Vihje: { $hint }
-doc-publish-hint-session = kirjaudu uudelleen, jotta ego voi käyttää identiteettiavaimiasi
+doc-publish-hint-session = kirjaudu uudelleen, jotta operator voi käyttää identiteettiavaimiasi
 doc-publish-hint-target = käytä kelvollista julkaisijan DID:tä tai aliasta, joka ratkeaa paljaaksi did:ma:<ipns>
 doc-publish-hint-network = tarkista että 間-ajonaika ja IPFS ovat saavutettavissa ja yritä uudelleen
 doc-publish-hint-resolve = tarkista että julkaisijan DID-dokumentti on julkaistu ja sisältää saavutettavan päätepisteen
@@ -186,7 +186,7 @@ doc-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 path-no-verb = ei verbiä `{ $verb }` kohteelle { $path }
 
 # ── Ohjeteksti — otsikot ─────────────────────────────────────────────────
-help-header-zion = ── zion-komennot ──────────────────────────────────────────────────────────
+help-header-operator = ── operator-komennot ──────────────────────────────────────────────────────────
 help-header-messaging = ── viestit ───────────────────────────────────────────────────────────────
 help-header-config = ── paikallinen kokoonpanokielioppi ───────────────────────────────────────
 help-header-common = ── yleiset polut ─────────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nimi>:              poista asiakirja
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n tallentaa henkilöllisyytesi mukaiset kieliasetukset.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               luettelo käytettävissä olevista kielikoodeista
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) säilyttää 5-vastaukset istuntoympäristössä
 
-help-topic-url =   .help/url                    zionin avaaminen URL-linkin kautta
+help-topic-url =   .help/url                    operatorin avaaminen URL-linkin kautta
 help-topic-i18n = .help/i18n                   kieliasetus identiteettiäsi varten
 help-header-url = ── URL-parametrit ───────────────────────────────────────────────────────────────
-help-url-intro =   Jaa linkki, joka avaa zionin esitäytetyllä vastaanottajalla:
+help-url-intro =   Jaa linkki, joka avaa operatorin esitäytetyllä vastaanottajalla:
 help-url-msg =   ?msg=<did>                   esitäyttää: @<did>!msg (tekstiviesti)
 help-url-say =   ?say=<did>                   esitäyttää: @<did>!say (verbi say)
 help-url-emote =   ?emote=<did>                 esitäyttää: @<did>!emote (verbi emote)
@@ -392,7 +392,7 @@ help-url-note =   Syötekenttä on esitäytetty mutta ei lähetetty — paina En
 help-topic-publish =   .help/publish                henkilöllisyyden julkaiseminen verkossa
 help-header-publish = ── henkilöllisyyden julkaiseminen ───────────────────────────────────────────
 help-publish-intro = Julkaiseminen tekee henkilöllisyytesi löydettäväksi verkossa. Muut voivat hakea DID:äsi tavoittaakseen sinut.
-help-publish-ma = Julkaisemiseen tarvitset 間:n (paikallinen ajoympäristö) asennettuna. Se yhdistää egon IPFS/IPNS:ään puolestasi.
+help-publish-ma = Julkaisemiseen tarvitset 間:n (paikallinen ajoympäristö) asennettuna. Se yhdistää operatorin IPFS/IPNS:ään puolestasi.
 help-publish-steps = Vaiheet: aja '.ma: claim [port]' paikallisen ma:n havaitsemiseksi, sitten '.my.identity!publish @ma'.
 help-publish-without = Ilman julkaisemista muut eivät voi tavoittaa sinua — vaikka he tietäisivät DID:äsi, he eivät pysty selvittämään endpoint-osoitettasi.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -434,7 +434,7 @@ help-z-control =   .z.scheme                 sinä hallitset käynnistyskomentos
 help-z-private =   .my.*                     yksityinen paikallinen määritys; myös Schemea voi tallentaa tänne
 help-z-choice =   .z.* / .my.*               käytä .z.* julkiseen Schemeen ja .my.* yksityiseen Schemeen
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme arvioi zion-komentoihin upotetut Scheme-lausekkeet ja liittää tuloksen riville ennen lähettämistä.
+help-zscheme-intro = zscheme arvioi operator-komentoihin upotetut Scheme-lausekkeet ja liittää tuloksen riville ennen lähettämistä.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    rivinsisäinen esimerkki; lähettää "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             määrittelyt säilyvät nykyisen kirjautumisistunnon ajan
 help-zscheme-doc = Dokumentaatio: https://github.com/bahner/rust-ma-zscheme

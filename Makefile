@@ -1,4 +1,4 @@
-WASM		= target/wasm32-unknown-unknown/release/zion.wasm
+WASM		= target/wasm32-unknown-unknown/release/operator.wasm
 TRUNK_OPTS	= --release
 DIST_INDEX	= dist/index.html
 
@@ -30,14 +30,14 @@ clean:
 
 publish: dist
 	@echo "Adding to IPFS..."
-	@ipfs add -r dist 2>&1 | tee /tmp/zion-ipfs-add.txt
-	@tail -1 /tmp/zion-ipfs-add.txt | awk '{print $$2}' > .cid
+	@ipfs add -r dist 2>&1 | tee /tmp/operator-ipfs-add.txt
+	@tail -1 /tmp/operator-ipfs-add.txt | awk '{print $$2}' > .cid
 	@echo "CID: $$(cat .cid)"
-	@echo "Publishing Zion IPNS name..."
-	@ipfs name publish --key=zion "$$(cat .cid)"
-	@echo "Pinning Zion CID on Pinata..."
+	@echo "Publishing Operator IPNS name..."
+	@ipfs name publish --key=operator "$$(cat .cid)"
+	@echo "Pinning Operator CID on Pinata..."
 	@pinata_log=$$(mktemp); \
-	if ipfs pin remote add --background --service=pinata --name="zion-$$(date --iso-8601)" "$$(cat .cid)" >"$$pinata_log" 2>&1; then \
+	if ipfs pin remote add --background --service=pinata --name="operator-$$(date --iso-8601)" "$$(cat .cid)" >"$$pinata_log" 2>&1; then \
 		cat "$$pinata_log"; \
 	else \
 		cat "$$pinata_log"; \

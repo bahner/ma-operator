@@ -1,4 +1,4 @@
-# zion — Patwa
+# operator — Patwa
 lang-name = Patwa
 label-nick = nickname
 new-identity-nick-help = Pick a nickname fi 間-space. A jus nickname, an yu can change it anytime.
@@ -22,7 +22,7 @@ btn-new-endpoint = nyuu endpoint
 btn-import-profile = bring een profayl
 btn-show-qr = shou di QR
 btn-scan-qr = skyan di QR
-qr-scan-hint = Point di kyamra pan wan zion profayl QR kuod.
+qr-scan-hint = Point di kyamra pan wan operator profayl QR kuod.
 qr-error-camera = kyamra no de: { $e }
 qr-error-too-large = di profayl tuu big fi wan QR kuod
 passphrase-warning = Lase passphrase = lase identity. Nuh have no recovery.
@@ -48,7 +48,7 @@ error-profile-no-username = di profayl nuh have no username
 error-profile-no-identity = identity '{ $name }' nuh find — bring een identity firs
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — logged in as { $username }
+msg-logged-in = operator v{ $version } — logged in as { $username }
 msg-type-help = Type .help fi get a list of commands.
 msg-getting-started = Try dis: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish fail [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle idantite w yo
+doc-publish-hint-session = konekte ankò pou operator ka jwenn aksè nan kle idantite w yo
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifye dokiman DID piblikatè a pablish epi li gen yon pwen final ki ka jwenn
@@ -190,7 +190,7 @@ lang-list-header = Languages available (set with .my.i18n: <code>):
 
 err-lang-not-found = language nuh find: { $lang }
 
-help-header-zion = ── zion comand dem ────────────────────────────────────────────────────────
+help-header-operator = ── operator comand dem ────────────────────────────────────────────────────────
 help-header-messaging = ── messaging ──────────────────────────────────────────────────────────────
 help-header-config = ── local config ───────────────────────────────────────────────────────────
 help-header-common = ── common path dem ────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del = .my.doc.<name>:              efase dokiman an
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak idantite w.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) kenbe repons 5 nan anviwònman sesyon an
 
-help-topic-url =   .help/url                    open zion tru URL link
+help-topic-url =   .help/url                    open operator tru URL link
 help-topic-i18n = .help/i18n                   preferans lang pou idantite w
 help-header-url = ── URL parameter dem ────────────────────────────────────────────────────────────
-help-url-intro =   Share a link weh open zion wid di recipient already deh deh:
+help-url-intro =   Share a link weh open operator wid di recipient already deh deh:
 help-url-msg =   ?msg=<did>                   fill up: @<did>!msg (plain message)
 help-url-say =   ?say=<did>                   fill up: @<did>!say (say verb)
 help-url-emote =   ?emote=<did>                 fill up: @<did>!emote (emote verb)
@@ -385,7 +385,7 @@ help-url-note =   Di input fill up but nuh send yet — press Enter fi send.
 help-topic-publish =   .help/publish                publish yu identity pan di network
 help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
 help-publish-intro = Publishin mek yu identity findable pan di network. Odda people can search yu DID fi reach yu.
-help-publish-ma = Fi publish, yu need 間 (local runtime) install. It connect ego to IPFS/IPNS fi yu.
+help-publish-ma = Fi publish, yu need 間 (local runtime) install. It connect operator to IPFS/IPNS fi yu.
 help-publish-steps = Steps: run '.ma: claim [port]' fi find di local 間, den '.my.identity!publish @ma'.
 help-publish-without = Widout publishin, odda people kyaan reach yu — even if dem know yu DID, dem kyaan resolve yu endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               yuuz .z.* fi poblik Scheme an .my.*
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme luk pon Scheme ekspreshan weh deh ina zion command an splice di result ina di line before it send.
+help-zscheme-intro = zscheme luk pon Scheme ekspreshan weh deh ina operator command an splice di result ina di line before it send.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inline example; send "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definition dem stay fi dis login session
 help-zscheme-doc = Dakiment: https://github.com/bahner/rust-ma-zscheme

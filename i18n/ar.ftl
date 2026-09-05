@@ -1,4 +1,4 @@
-# zion — العربية
+# operator — العربية
 lang-name = العربية
 label-nick = الكنية
 new-identity-nick-help = اختر كنية لمساحة ma. إنها مجرد كنية ويمكن تغييرها في أي وقت.
@@ -22,7 +22,7 @@ btn-new-endpoint = نقطة وصول جديدة
 btn-import-profile = استيراد الملف الشخصي
 btn-show-qr = عرض رمز QR
 btn-scan-qr = مسح رمز QR
-qr-scan-hint = وجّه الكاميرا نحو رمز QR لملف zion الشخصي.
+qr-scan-hint = وجّه الكاميرا نحو رمز QR لملف operator الشخصي.
 qr-error-camera = الكاميرا غير متاحة: { $e }
 qr-error-too-large = الملف الشخصي أكبر من أن يُحوَّل إلى رمز QR
 passphrase-warning = فقدان عبارة المرور = فقدان الهوية. لا يوجد استرداد.
@@ -48,7 +48,7 @@ error-profile-no-username = الملف الشخصي لا يحتوي على اس�
 error-profile-no-identity = الهوية '{ $name }' غير موجودة — استورد الهوية أولاً
 
 # ── رسائل نظام الطرفية ────────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — مسجَّل دخول بوصفك { $username }
+msg-logged-in = operator v{ $version } — مسجَّل دخول بوصفك { $username }
 msg-type-help = اكتب .help للحصول على قائمة الأوامر.
 msg-getting-started = جرّب: say Hello world أو look أو .help أو help.
 msg-connecting = جارٍ الاتصال بـ iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = نشر { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = فشل النشر [{ $code }]: { $err }
 doc-publish-error-hint = تلميح: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-session = log in again so operator can access your identity keys
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
@@ -186,7 +186,7 @@ doc-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 path-no-verb = لا يوجد فعل `{ $verb }` لـ { $path }
 
 # ── المساعدة — العناوين ───────────────────────────────────────────────────
-help-header-zion = ── أوامر zion ───────────────────────────────────────────────────────────
+help-header-operator = ── أوامر operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── المراسلة ──────────────────────────────────────────────────────────────
 help-header-config = ── قواعد الضبط المحلي ───────────────────────────────────────────────────
 help-header-common = ── المسارات الشائعة ──────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── entering 間-space ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── المساعدة — أوامر zion ──────────────────────────────────────────────────
+# ── المساعدة — أوامر operator ──────────────────────────────────────────────────
 help-cmd-help =   .help                        هذا النص
 help-cmd-clear =   .clear                       مسح الطرفية
 help-cmd-panic =   .panic                       الملاذ الأخير — استخدم عند المشاكل
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              حذف المستند
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n stores the language preference tied to your identity.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list =   .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -360,7 +360,7 @@ help-topic-doc =   .help/doc                    المستندات
 help-topic-actor =   .help/actor                  ممثل بعيد
 help-topic-z =   .help/z                      محتوى Scheme العام والخاص
 help-topic-zscheme =   .help/zscheme               تعابير Scheme المضمنة والوثائق
-help-topic-url =   .help/url                    فتح zion عبر رابط URL
+help-topic-url =   .help/url                    فتح operator عبر رابط URL
 help-topic-i18n =   .help/i18n                   language preference for your identity
 help-unknown-topic =   .help/{ $topic }: موضوع غير معروف
 
@@ -386,7 +386,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) keep 5 replies in the session environment
 help-header-url = ── معاملات URL ─────────────────────────────────────────────────────────────
-help-url-intro =   شارك رابطاً يفتح zion مع مستلم مملوء مسبقاً:
+help-url-intro =   شارك رابطاً يفتح operator مع مستلم مملوء مسبقاً:
 help-url-msg =   ?msg=<did>                   يملأ مسبقاً: @<did>!msg (رسالة نصية)
 help-url-say =   ?say=<did>                   يملأ مسبقاً: @<did>!say (فعل say)
 help-url-emote =   ?emote=<did>                 يملأ مسبقاً: @<did>!emote (فعل emote)
@@ -398,7 +398,7 @@ help-url-note =   الحقل يُملأ مسبقاً لكنه لا يُرسل �
 help-topic-publish =   .help/publish                نشر هويتك على الشبكة
 help-header-publish = ── نشر الهوية ───────────────────────────────────────────────────────────────
 help-publish-intro = النشر يجعل هويتك قابلة للاكتشاف على الشبكة. يمكن للآخرين البحث عن DID الخاص بك للتواصل معك.
-help-publish-ma = للنشر تحتاج إلى تثبيت 間 (بيئة التشغيل المحلية). تربط ego بـ IPFS/IPNS نيابةً عنك.
+help-publish-ma = للنشر تحتاج إلى تثبيت 間 (بيئة التشغيل المحلية). تربط operator بـ IPFS/IPNS نيابةً عنك.
 help-publish-steps = الخطوات: شغّل '.ma: claim [port]' للكشف عن ma المحلي، ثم '.my.identity!publish @ma'.
 help-publish-without = بدون نشر، لا يستطيع الآخرون الوصول إليك — حتى لو عرفوا DID الخاص بك، لا يستطيعون تحليل نقطة النهاية الخاصة بك.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -442,7 +442,7 @@ help-z-choice =   .z.* / .my.*               استخدم .z.* لـ Scheme ال�
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = يقيم zscheme تعابير Scheme المضمنة داخل أوامر zion ويدمج النتيجة في السطر قبل إرساله.
+help-zscheme-intro = يقيم zscheme تعابير Scheme المضمنة داخل أوامر operator ويدمج النتيجة في السطر قبل إرساله.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    مثال مضمن؛ يرسل "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             تبقى التعريفات خلال جلسة تسجيل الدخول الحالية
 help-zscheme-doc = الوثائق: https://github.com/bahner/rust-ma-zscheme

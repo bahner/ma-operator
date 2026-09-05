@@ -1,6 +1,6 @@
 tenkepause:
 
-Vi har et problem med at nye brukere som tester på en mobil eller noe slikt og som ikke har satt opp ipfs lokalt vil ikke kunne bruke zion, slik det er nu. Så vi trenger å kunne sette ma. Jeg foreslår at man skal kunne sette den  sitt did dokument som ma.home og i zion som .my.home. Det kan da typisk være den samme runtime som .ctx.ma for mange forhåpentligvis. Men hvis man foretrekker en verden online, så kan man sette den til den felles runtime man foretrekker. Det skal ikke være noen automatisk oppdatering av .my.home. Den skal brukerne helt manuelt settes selv. Det er for å gjøre dem oppmerksom på at den finnes. Og vi an dokumentere i .help.home at dette har sikkerhetsimplikasjoner, siden ens hemmelig nøkkel blir sendt hit. SÅ
+Vi har et problem med at nye brukere som tester på en mobil eller noe slikt og som ikke har satt opp ipfs lokalt vil ikke kunne bruke operator, slik det er nu. Så vi trenger å kunne sette ma. Jeg foreslår at man skal kunne sette den  sitt did dokument som ma.home og i operator som .my.home. Det kan da typisk være den samme runtime som .ctx.ma for mange forhåpentligvis. Men hvis man foretrekker en verden online, så kan man sette den til den felles runtime man foretrekker. Det skal ikke være noen automatisk oppdatering av .my.home. Den skal brukerne helt manuelt settes selv. Det er for å gjøre dem oppmerksom på at den finnes. Og vi an dokumentere i .help.home at dette har sikkerhetsimplikasjoner, siden ens hemmelig nøkkel blir sendt hit. SÅ
 
 Så vi introdusrer et nytt felt over did:
 間 som populeres først fra url. Hvis den ikke er oppgitt, sjekker vi om det er en verden lokalt på 5003, feiler det, så bruker vi en hardkodet verdi, som jeg så må drifte.
@@ -12,7 +12,7 @@ Jeg vil snakke med deg litt om dette
 
 skal 間 i did dokumentet og ctx.ma lokalt være den samme? det betyr jo at folk oppfordres til å bruke og ha på en runtime kjørende lokalt. Men det er kanskje mere greit at man har en som er offentlig et sted og alltid bare kjører? Vi kunne kanskje tenke penger p åå drifte noe slitk :-)
 
-Jeg tenker at .ma i zion også kan settes eksplisitt istedetfor disover, med 
+Jeg tenker at .ma i operator også kan settes eksplisitt istedetfor disover, med 
 .ma did:ma:enruntimejegstolerpåomsomalltiderpå. Da kan jeg default til den. Om jeg vil sjekke om det er noe lokalt, kan jeg kjøre .ma!disover eller .ma!claim <- så vi reintroduserer dette som en manuell operasjon.
 
 Nu må jeg ha kaffe. Eller jeg må ikke, men jeg vil.

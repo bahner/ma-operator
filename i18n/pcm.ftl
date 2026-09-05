@@ -1,4 +1,4 @@
-# zion — Naijá
+# operator — Naijá
 lang-name = Naijá
 label-nick = niknem
 new-identity-nick-help = Chuz niknem for 間-space. Na only niknem, and yu fit change am any time.
@@ -22,7 +22,7 @@ btn-new-endpoint = new endpoint
 btn-import-profile = bring profil komot
 btn-show-qr = show di QR
 btn-scan-qr = skan di QR
-qr-scan-hint = Point di kamera to wan zion profil QR kod.
+qr-scan-hint = Point di kamera to wan operator profil QR kod.
 qr-error-camera = kamera no dey: { $e }
 qr-error-too-large = di profil too big for QR kod
 passphrase-warning = Lose passphrase = lose identity. E no get recovery.
@@ -48,7 +48,7 @@ error-profile-no-username = di profil no get username
 error-profile-no-identity = identity '{ $name }' no dey — first bring identity komot
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — logged in as { $username }
+msg-logged-in = operator v{ $version } — logged in as { $username }
 msg-type-help = Type .help fi see list of commands.
 msg-getting-started = Try: say Hello world, look, .help, or help.
 msg-connecting = e dey connect to iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publish { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publish fail [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = log in again so ego can access your identity keys
+doc-publish-hint-session = log in again so operator can access your identity keys
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verify the publisher DID document is published and contains a reachable endpoint
@@ -190,7 +190,7 @@ lang-list-header = Languages wey dey (set am with .my.i18n: <code>):
 
 err-lang-not-found = language nor dey: { $lang }
 
-help-header-zion = ── zion komand dem ────────────────────────────────────────────────────────
+help-header-operator = ── operator komand dem ────────────────────────────────────────────────────────
 help-header-messaging = ── mesej dem ──────────────────────────────────────────────────────────────
 help-header-config = ── lokal konfig gramma ────────────────────────────────────────────────────
 help-header-common = ── komon path dem ─────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              dilit dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n stores the language preference tied to your identity.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               list available language codes
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) keep replies in the session environment
 
-help-topic-url =   .help/url                    open zion through URL link
+help-topic-url =   .help/url                    open operator through URL link
 help-topic-i18n = .help/i18n                   language preference for your identity
 help-header-url = ── URL parameters dem ───────────────────────────────────────────────────────────
-help-url-intro =   Share link wey go open zion with di person wey don put inside:
+help-url-intro =   Share link wey go open operator with di person wey don put inside:
 help-url-msg =   ?msg=<did>                   put before: @<did>!msg (normal message)
 help-url-say =   ?say=<did>                   put before: @<did>!say (verb say)
 help-url-emote =   ?emote=<did>                 put before: @<did>!emote (verb emote)
@@ -385,7 +385,7 @@ help-url-note =   Di input don fill but dem no send am — press Enter make e se
 help-topic-publish =   .help/publish                publish your identity for the network
 help-header-publish = ── publish identity ─────────────────────────────────────────────────────────
 help-publish-intro = Publishing go make your identity findable for the network. Other people fit search your DID to reach you.
-help-publish-ma = To publish, you need 間 (local runtime) installed. E go connect ego to IPFS/IPNS for your side.
+help-publish-ma = To publish, you need 間 (local runtime) installed. E go connect operator to IPFS/IPNS for your side.
 help-publish-steps = Steps: run '.ma: claim [port]' to find your local 間, den '.my.identity!publish @ma'.
 help-publish-without = Without publishing, other people no fit reach you — even if dem sabi your DID, dem no fit resolve your endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               use .z.* for public Scheme and .my.
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme dey run Scheme expression we dey inside zion command, den put di result inside di line before e send am.
+help-zscheme-intro = zscheme dey run Scheme expression we dey inside operator command, den put di result inside di line before e send am.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    example inside line; e send "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definitions go stay for dis login session
 help-zscheme-doc = Dokument: https://github.com/bahner/rust-ma-zscheme

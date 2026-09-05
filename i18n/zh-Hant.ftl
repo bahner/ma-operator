@@ -1,4 +1,4 @@
-# zion — 繁體中文
+# operator — 繁體中文
 lang-name = 中文（繁體）
 label-nick = 暱稱
 new-identity-nick-help = 為 間-space 選擇一個暱稱。它只是暱稱，你可以隨時更改。
@@ -22,7 +22,7 @@ btn-new-endpoint = 新端點
 btn-import-profile = 匯入設定檔
 btn-show-qr = 顯示 QR 碼
 btn-scan-qr = 掃描 QR 碼
-qr-scan-hint = 將相機對準 zion 設定檔 QR 碼。
+qr-scan-hint = 將相機對準 operator 設定檔 QR 碼。
 qr-error-camera = 相機無法使用：{ $e }
 qr-error-too-large = 設定檔過大，無法產生 QR 碼
 passphrase-warning = 遺失密碼短語即遺失身分。無法復原。
@@ -48,7 +48,7 @@ error-profile-no-username = 設定檔不含使用者名稱
 error-profile-no-identity = 身分 '{ $name }' 未找到 — 請先匯入身分
 
 # ── 終端機系統訊息 ────────────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — 已以 { $username } 身分登入
+msg-logged-in = operator v{ $version } — 已以 { $username } 身分登入
 msg-type-help = 輸入 .help 查看指令清單。
 msg-getting-started = 試試：say Hello world、look、.help 或 help。
 msg-connecting = 正在連線到 iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = 發佈 { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = 發布失敗 [{ $code }]：{ $err }
 doc-publish-error-hint = 提示：{ $hint }
-doc-publish-hint-session = 請重新登入，讓 ego 可以存取你的身分金鑰
+doc-publish-hint-session = 請重新登入，讓 operator 可以存取你的身分金鑰
 doc-publish-hint-target = 使用有效的發布者 DID，或可解析為裸 did:ma:<ipns> 的別名
 doc-publish-hint-network = 確認 間 執行階段和 IPFS 可連線，然後重試
 doc-publish-hint-resolve = 確認發布者 DID 文件已發布，且包含可連線的端點
@@ -186,7 +186,7 @@ doc-no-verb = { $path } 沒有 `{ $verb }` 動詞
 path-no-verb = { $path } 沒有 `{ $verb }` 動詞
 
 # ── 說明文字 — 標題 ───────────────────────────────────────────────────────
-help-header-zion = ── zion 指令 ─────────────────────────────────────────────────────────────
+help-header-operator = ── operator 指令 ─────────────────────────────────────────────────────────────
 help-header-messaging = ── 訊息傳遞 ──────────────────────────────────────────────────────────
 help-header-config = ── 本地設定語法 ──────────────────────────────────────────────────────────
 help-header-common = ── 常用路徑 ──────────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── 進入間空間────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── 說明文字 — zion 指令 ──────────────────────────────────────────────────
+# ── 說明文字 — operator 指令 ──────────────────────────────────────────────────
 help-cmd-help =   .help                        此說明文字
 help-cmd-clear =   .clear                       清除終端機
 help-cmd-panic =   .panic                       最後手段 — 遇到問題時使用
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              刪除文件
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n 儲存與您的身分相關的語言偏好。
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               列出可用的語言程式碼
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -360,7 +360,7 @@ help-topic-doc =   .help/doc                    文件
 help-topic-actor =   .help/actor                  遠端 actor
 help-topic-z =   .help/z                      公開與私人的 Scheme 內容
 help-topic-zscheme =   .help/zscheme               內嵌 Scheme 表達式與文件
-help-topic-url =   .help/url                    透過 URL 連結開啟 zion
+help-topic-url =   .help/url                    透過 URL 連結開啟 operator
 help-topic-i18n = .help/i18n                   您身分的語言偏好
 help-unknown-topic =   .help/{ $topic }: 未知主題
 
@@ -386,7 +386,7 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) 在會話環境中保留 5 回复
 help-header-url = ── URL 參數 ─────────────────────────────────────────────────────────────────
-help-url-intro =   分享一個連結，開啟 zion 時自動填入收件人：
+help-url-intro =   分享一個連結，開啟 operator 時自動填入收件人：
 help-url-msg =   ?msg=<did>                   預填：@<did>!msg（文字訊息）
 help-url-say =   ?say=<did>                   預填：@<did>!say（say 動詞）
 help-url-emote =   ?emote=<did>                 預填：@<did>!emote（emote 動詞）
@@ -398,7 +398,7 @@ help-url-note =   輸入框被預填但不會傳送 — 按 Enter 鍵傳送。
 help-topic-publish =   .help/publish                將你的身份發布到網路
 help-header-publish = ── 發布身份 ──────────────────────────────────────────────────────────────────
 help-publish-intro = 發布使你的身份在網路上可被找到。其他人可以查找你的 DID 來聯繫你。
-help-publish-ma = 發布需要安裝 間（本地執行環境）。它代表你將 ego 連接到 IPFS/IPNS。
+help-publish-ma = 發布需要安裝 間（本地執行環境）。它代表你將 operator 連接到 IPFS/IPNS。
 help-publish-steps = 步驟：執行 '.ma: claim [port]' 偵測本地 ma，然後 '.my.identity!publish @ma'。
 help-publish-without = 未發布時，其他人無法聯繫你 — 即使知道你的 DID，也無法解析你的 endpoint。
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -442,7 +442,7 @@ help-z-choice =   .z.* / .my.*               公開 Scheme 使用 .z.*，私人 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme 會求值嵌入在 zion 指令中的 Scheme 表達式，並在送出前把結果接回該行。
+help-zscheme-intro = zscheme 會求值嵌入在 operator 指令中的 Scheme 表達式，並在送出前把結果接回該行。
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    內嵌範例；送出 "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             定義會在目前登入工作階段中保留
 help-zscheme-doc = 文件: https://github.com/bahner/rust-ma-zscheme

@@ -1,4 +1,4 @@
-# zion — Nynorsk
+# operator — Nynorsk
 lang-name = Nynorsk
 label-nick = kallenamn
 new-identity-nick-help = Vel eit kallenamn for 間-rom. Det er berre eit kallenamn, og du kan endre det når som helst.
@@ -22,7 +22,7 @@ btn-new-endpoint = nytt endepunkt
 btn-import-profile = importer profil
 btn-show-qr = vis QR
 btn-scan-qr = skann QR
-qr-scan-hint = Peik kameraet mot ein zion-profil-QR-kode.
+qr-scan-hint = Peik kameraet mot ein operator-profil-QR-kode.
 qr-error-camera = kamera utilgjengeleg: { $e }
 qr-error-too-large = profilen er for stor for ein QR-kode
 passphrase-warning = Mist passfrase = mist identitet. Det finst ingen atterhenting.
@@ -48,7 +48,7 @@ error-profile-no-username = profilen inneheld ikkje eit brukarnamn
 error-profile-no-identity = identiteten '{ $name }' ikkje funnen — importer identiteten fyrst
 
 # ── Terminalsystemmeldingar ───────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — logga inn som { $username }
+msg-logged-in = operator v{ $version } — logga inn som { $username }
 msg-type-help = Skriv .help for ei liste over kommandoar.
 msg-getting-started = Prøv: say Hello world, look, .help eller help.
 msg-connecting = koplar til iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publisering { $path }: { $e }
 doc-publish-ipld-failed = ipld-publisering { $path }: { $e }
 doc-publish-error-detail = publisering feila [{ $code }]: { $err }
 doc-publish-error-hint = Tips: { $hint }
-doc-publish-hint-session = logg inn på nytt så ego får tilgang til identitetsnøklane dine
+doc-publish-hint-session = logg inn på nytt så operator får tilgang til identitetsnøklane dine
 doc-publish-hint-target = bruk ein gyldig utgjevar-DID eller eit alias som peikar til ein rein did:ma:<ipns>
 doc-publish-hint-network = sjekk at 間-køyretida og IPFS kan nåast, og prøv igjen
 doc-publish-hint-resolve = sjekk at DID-dokumentet til utgjevaren er publisert og inneheld eit tilgjengeleg endepunkt
@@ -186,7 +186,7 @@ doc-no-verb = inkje verb `{ $verb }` for { $path }
 path-no-verb = inkje verb `{ $verb }` for { $path }
 
 # ── Hjelptekst — overskrifter ─────────────────────────────────────────────
-help-header-zion = ── zion-kommandoar ────────────────────────────────────────────────────────
+help-header-operator = ── operator-kommandoar ────────────────────────────────────────────────────────
 help-header-messaging = ── meldingar ────────────────────────────────────────────────────────────
 help-header-config = ── lokal konfigurasjonsgrammatikk ───────────────────────────────────────
 help-header-common = ── vanlege stiar ─────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-rom ────────────────
 help-header-ma-entry = ── inn i 間-rommet ─────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Hjelptekst — zion-kommandoar ──────────────────────────────────────────
+# ── Hjelptekst — operator-kommandoar ──────────────────────────────────────────
 help-cmd-help =   .help                        denne teksten
 help-cmd-clear =   .clear                       tøm terminalen
 help-cmd-panic =   .panic                       siste utveg — bruk om du er i trøbbel
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<namn>:              slett dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n lagrar språkvalet knytt til identiteten din.
-help-i18n-set =   .my.i18n: <code>             vel språket zion brukar for denne identiteten
+help-i18n-set =   .my.i18n: <code>             vel språket operator brukar for denne identiteten
 help-i18n-list =   .my.i18n!list               vis tilgjengelege språkkodar
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -358,7 +358,7 @@ help-topic-doc =   .help/doc                    dokument
 help-topic-actor =   .help/actor                  ekstern actor
 help-topic-z =   .help/z                      offentleg og privat Scheme-innhald
 help-topic-zscheme =   .help/zscheme               Scheme-uttrykk i kommandoar og dokumentasjon
-help-topic-url =   .help/url                    opne zion via ei URL-lenkje
+help-topic-url =   .help/url                    opne operator via ei URL-lenkje
 help-topic-i18n =   .help/i18n                   språkval for identiteten din
 help-unknown-topic =   .help/{ $topic }: ukjent emne
 
@@ -384,7 +384,7 @@ help-actor-head =   (@actor/path)                hent eksternt CRUD-innhald frå
 help-actor-tail =   (<bafy...>)                  inkluder og evaluer Scheme frå ein IPFS-CID
 help-actor-wc = (define x (@actor:verb arg)) hald -svar i sesjonsmiljøet
 help-header-url = ── URL-parametrar ──────────────────────────────────────────────────────────
-help-url-intro =   Del ei lenkje som opnar zion med ferdig utfylt mottakar:
+help-url-intro =   Del ei lenkje som opnar operator med ferdig utfylt mottakar:
 help-url-msg =   ?msg=<did>                   fyller inn: @<did>!msg (tekstmelding)
 help-url-say =   ?say=<did>                   fyller inn: @<did>!say (si-verb)
 help-url-emote =   ?emote=<did>                 fyller inn: @<did>!emote (emote-verb)
@@ -396,7 +396,7 @@ help-url-note =   Inputfeltet vert fylt ut, men vert ikkje sendt — trykk Enter
 help-topic-publish =   .help/publish                publisere identiteten din til nettverket
 help-header-publish = ── publisering av identitet ─────────────────────────────────────────────────
 help-publish-intro = Publisering gjer identiteten din synleg på nettverket. Andre kan slå opp din DID for å nå deg.
-help-publish-ma = For å publisere treng du 間 (lokal køyretid) installert. Han koplar ego til IPFS/IPNS på dine vegner.
+help-publish-ma = For å publisere treng du 間 (lokal køyretid) installert. Han koplar operator til IPFS/IPNS på dine vegner.
 help-publish-steps = Steg: køyr '.ma: claim [port]' for å oppdage din lokale 間, deretter '.my.identity!publish @ma'.
 help-publish-without = Utan publisering kan ikkje andre nå deg — sjølv om dei kjenner din DID, kan dei ikkje løyse opp endepunktet ditt.
 profile-fetch-did-resolve-failed = DID ikkje publisert endå — køyr '.my.identity!publish @ma' fyrst, deretter '!publish' profilen din
@@ -440,7 +440,7 @@ help-z-control =   .z.scheme                 du styrer sjølv innhaldet i oppsta
 help-z-private =   .my.*                     privat lokal konfigurasjon; Scheme kan òg lagrast her
 help-z-choice =   .z.* / .my.*               bruk .z.* for offentleg Scheme og .my.* for privat Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme evaluerer Scheme-uttrykk som er skrivne inn i zion-kommandoar, og flettar resultatet inn i linja før ho blir send.
+help-zscheme-intro = zscheme evaluerer Scheme-uttrykk som er skrivne inn i operator-kommandoar, og flettar resultatet inn i linja før ho blir send.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    døme i linja; sender "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definisjonar blir verande i gjeldande innloggingsøkt
 help-zscheme-doc = Dokumentasjon: https://github.com/bahner/rust-ma-zscheme

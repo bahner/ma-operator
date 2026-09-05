@@ -8,7 +8,7 @@ error-nick-required = call-name required
 error-nick-invalid = call-name cyan contain spaces or @
 
 # ── Landing page ──────────────────────────────────────────────────────────
-tab-login = enter Zion
+tab-login = enter Operator
 tab-new-identity = nouvo I-dentity
 tab-import-profile = bring in I-profile
 label-passphrase = pass phrase
@@ -24,7 +24,7 @@ btn-new-endpoint = new overstanding
 btn-import-profile = bring in I-profile
 btn-show-qr = show di QR
 btn-scan-qr = scan di QR
-qr-scan-hint = Point di camera pon a zion I-profile QR code.
+qr-scan-hint = Point di camera pon a operator I-profile QR code.
 qr-error-camera = camera nah reach: { $e }
 qr-error-too-large = I-profile too big fi one QR code
 passphrase-warning = Lose pass phrase = lose identity. There is no recovery in Babylon.
@@ -50,7 +50,7 @@ error-profile-no-username = I-profile nuh have InI-name
 error-profile-no-identity = I-dentity '{ $name }' nuh find — bring in I-dentity first
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — entered as { $username }
+msg-logged-in = operator v{ $version } — entered as { $username }
 msg-type-help = Type .help fi a list of livity commands.
 msg-getting-started = Try dis: say Hello world, look, .help, or help.
 msg-connecting = connecting to iroh...
@@ -72,7 +72,7 @@ msg-local-ma-claimed = local 間 claim done
 msg-local-ma-already-claimed = local 間 already claim
 msg-local-ma-claim-failed = local 間 claim fall down
 msg-identity-not-published = Ites not inna di web — if 間 install inna di machine, run '.ma: claim [port]' den '.my.identity!publish @ma'. Write '.help/publish' fi di details.
-msg-blocked = ⊗ blocked by Zion [{ $cap }]: { $from }
+msg-blocked = ⊗ blocked by Operator [{ $cap }]: { $from }
 msg-focus-cleared = konsantre klè
 msg-left = left
 msg-focusing = focusing { $did } as { $prompt }
@@ -169,7 +169,7 @@ doc-publish-failed = manifest { $path }: { $e }
 doc-publish-ipld-failed = manifest-ipld { $path }: { $e }
 doc-publish-error-detail = publish fall [{ $code }]: { $err }
 doc-publish-error-hint = Hint: { $hint }
-doc-publish-hint-session = konekte ankò pou ego ka jwenn aksè nan kle I-dentity w yo
+doc-publish-hint-session = konekte ankò pou operator ka jwenn aksè nan kle I-dentity w yo
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifye dokiman DID piblikatè a manifest epi li gen yon pwen final ki ka jwenn
@@ -188,11 +188,11 @@ doc-no-verb = no verb `{ $verb }` for { $path }
 path-no-verb = no verb `{ $verb }` for { $path }
 
 # ── Verbs — lang ─────────────────────────────────────────────────────────
-lang-list-header = Irie languages in Zion (set with .my.i18n: <code>):
+lang-list-header = Irie languages in Operator (set with .my.i18n: <code>):
 
 err-lang-not-found = I-language nuh find: { $lang }
 
-help-header-zion = ── zion commands — Irie ───────────────────────────────────────────────────
+help-header-operator = ── operator commands — Irie ───────────────────────────────────────────────────
 help-header-messaging = ── I-messages ─────────────────────────────────────────────────────────────
 help-header-config = ── I-config grammar ───────────────────────────────────────────────────────
 help-header-common = ── I-paths ────────────────────────────────────────────────────────────────
@@ -206,7 +206,7 @@ help-cmd-help =   .help                        dis I-text
 help-cmd-clear =   .clear                       clear di terminal
 help-cmd-panic =   .panic                       last resort — use if I-self find trouble in Babylon
 help-cmd-history =   .history [n]                 I-command history (consecutive repeats mash inna one); optional n show ongle di lickle n lines dem
-help-cmd-logout =   .logout                      depart from Zion
+help-cmd-logout =   .logout                      depart from Operator
 help-cmd-batch =   .batch                       eval scratch dakiment parallel
 help-cmd-batch-sync =   .batch!sync [timeout=60s] / .batch         eval scratch dakiment lain bai lain
 help-msg-echo = @alias                       show resolved DID/DID-URL (no message sent)
@@ -247,11 +247,11 @@ help-doc-publish = .my.doc.<name>!publish @pub   magazen kòm blob anvan tout ko
 help-doc-publish-ipld = .my.doc.<name>!publish-ipld @pub  store YAML as structured DAG-CBOR IPLD node
 help-doc-fetch =   .my.doc.<name>!fetch /ipfs/<cid>    bring in CID content (no execution)
 help-doc-cid =   .my.doc.<name>!cid            sight stored CID
-help-doc-del =   .my.doc.<name>:              remove I-writing from Zion
+help-doc-del =   .my.doc.<name>:              remove I-writing from Operator
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n estoke preferans lang ki asosye ak I-dentity w.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lis kòd lang ki disponib yo
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -372,10 +372,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) kenbe repons 5 nan anviwònman sesyon an
 
-help-topic-url =   .help/url                    open Zion tru a URL link
+help-topic-url =   .help/url                    open Operator tru a URL link
 help-topic-i18n = .help/i18n                   preferans lang pou I-dentity w
 help-header-url = ── URL I-parameters ─────────────────────────────────────────────────────────────
-help-url-intro =   Share a link fi open Zion wid a I-recipient ready fill:
+help-url-intro =   Share a link fi open Operator wid a I-recipient ready fill:
 help-url-msg =   ?msg=<did>                   fill up: @<did>!msg (I-message)
 help-url-say =   ?say=<did>                   fill up: @<did>!say (say verb)
 help-url-emote =   ?emote=<did>                 fill up: @<did>!emote (emote verb)
@@ -387,7 +387,7 @@ help-url-note =   Di I-input fill up but not send — press Enter fi send.
 help-topic-publish =   .help/publish                publish di ites pon di network
 help-header-publish = ── publish di ites ──────────────────────────────────────────────────────────
 help-publish-intro = Publishing mek di ites findable pon di network. Odda ones can search di DID fi reach.
-help-publish-ma = Fi publish, InI need 間 (local runtime) install. It bridge ego to IPFS/IPNS pon di behalf.
+help-publish-ma = Fi publish, InI need 間 (local runtime) install. It bridge operator to IPFS/IPNS pon di behalf.
 help-publish-steps = Steps: run '.ma: claim [port]' fi find di local 間, den '.my.identity!publish @ma'.
 help-publish-without = Without publishing, odda ones cannot reach — even knowing di DID, dem cannot resolve di endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -431,7 +431,7 @@ help-z-choice =   .z.* / .my.*               use .z.* fi public Scheme an .my.* 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme sight up Scheme speech inside zion command, an sew di answer ina di line before it send.
+help-zscheme-intro = zscheme sight up Scheme speech inside operator command, an sew di answer ina di line before it send.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    inna-line example; send "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definition dem stay fo dis login sitting
 help-zscheme-doc = Writings: https://github.com/bahner/rust-ma-zscheme

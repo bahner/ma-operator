@@ -11,7 +11,7 @@ use leptos::prelude::{GetUntracked, RwSignal, Update};
 use ma_zscheme::{SchemeCtx, SchemeErr, SchemeVal};
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{config::EgoConfig, parser::command, state::AppState};
+use crate::{config::OperatorConfig, parser::command, state::AppState};
 
 // Re-exports used by scheme/mod.rs and callers outside this module.
 pub use ma_zscheme::host::Ctx;
@@ -21,7 +21,7 @@ pub use ma_zscheme::host::Ctx;
 /// Host context threaded through every recursive eval call.
 pub struct EvalCtx {
     pub state: AppState,
-    pub config: RwSignal<EgoConfig>,
+    pub config: RwSignal<OperatorConfig>,
 }
 
 // ── SchemeCtx implementation ───────────────────────────────────────────────
@@ -279,7 +279,7 @@ mod tests {
 
     #[test]
     fn scheme_ctx_setter_updates_focus_prompt_location() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.nick", "avatar");
         cfg.set(".my.aliases.ma", "did:ma:k51runtime");
@@ -301,7 +301,7 @@ mod tests {
 
     #[test]
     fn scheme_ctx_delete_updates_focus_prompt_nick() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.ctx.runtime", "did:ma:k51runtime");
         cfg.set(".my.ctx.room", "did:ma:k51runtime#garden");
         cfg.set(".my.ctx.nick", "avatar");

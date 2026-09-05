@@ -1,4 +1,4 @@
-# zion — Polski
+# operator — Polski
 lang-name = Polski
 label-nick = pseudonim
 new-identity-nick-help = Wybierz pseudonim dla 間-space. To tylko pseudonim i możesz go zmienić w dowolnym momencie.
@@ -22,7 +22,7 @@ btn-new-endpoint = nowy punkt końcowy
 btn-import-profile = importuj profil
 btn-show-qr = pokaż QR
 btn-scan-qr = skanuj QR
-qr-scan-hint = Skieruj kamerę na kod QR profilu zion.
+qr-scan-hint = Skieruj kamerę na kod QR profilu operator.
 qr-error-camera = kamera niedostępna: { $e }
 qr-error-too-large = profil jest za duży na kod QR
 passphrase-warning = Utracone hasło = utracona tożsamość. Odzyskanie nie jest możliwe.
@@ -48,7 +48,7 @@ error-profile-no-username = profil nie zawiera nazwy użytkownika
 error-profile-no-identity = tożsamość '{ $name }' nie znaleziona — najpierw zaimportuj tożsamość
 
 # ── Komunikaty systemowe terminala ────────────────────────────────────────
-msg-logged-in = zion v{ $version } — zalogowano jako { $username }
+msg-logged-in = operator v{ $version } — zalogowano jako { $username }
 msg-type-help = Wpisz .help, aby uzyskać listę poleceń.
 msg-getting-started = Spróbuj: say Hello world, look, .help albo help.
 msg-connecting = łączenie z iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publikowanie { $path }: { $e }
 doc-publish-ipld-failed = publikowanie IPLD { $path }: { $e }
 doc-publish-error-detail = publikowanie nie powiodło się [{ $code }]: { $err }
 doc-publish-error-hint = Wskazówka: { $hint }
-doc-publish-hint-session = zaloguj się ponownie, aby ego miało dostęp do twoich kluczy tożsamości
+doc-publish-hint-session = zaloguj się ponownie, aby operator miało dostęp do twoich kluczy tożsamości
 doc-publish-hint-target = użyj poprawnego DID publikującego albo aliasu wskazującego na gołe did:ma:<ipns>
 doc-publish-hint-network = sprawdź, czy runtime 間 i IPFS są osiągalne, potem spróbuj ponownie
 doc-publish-hint-resolve = sprawdź, czy dokument DID publikującego jest opublikowany i zawiera osiągalny punkt końcowy
@@ -186,7 +186,7 @@ doc-no-verb = brak czasownika `{ $verb }` dla { $path }
 path-no-verb = brak czasownika `{ $verb }` dla { $path }
 
 # ── Tekst pomocy — nagłówki ───────────────────────────────────────────────
-help-header-zion = ── polecenia zion ─────────────────────────────────────────────────────────
+help-header-operator = ── polecenia operator ─────────────────────────────────────────────────────────
 help-header-messaging = ── wiadomości ────────────────────────────────────────────────────────────
 help-header-config = ── lokalna gramatyka konfiguracji ────────────────────────────────────
 help-header-common = ── popularne ścieżki ─────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<nazwa>:              usuń dokument
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n przechowuje preferencje językowe powiązane z Twoją tożsamością.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lista dostępnych kodów języków
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) przechowuj odpowiedzi 5 w środowisku sesji
 
-help-topic-url =   .help/url                    otwieranie ziona przez link URL
+help-topic-url =   .help/url                    otwieranie operatora przez link URL
 help-topic-i18n = .help/i18n                   preferencje językowe dla Twojej tożsamości
 help-header-url = ── parametry URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Udostępnij link, który otworzy zion z wstępnie wypełnionym odbiorcą:
+help-url-intro =   Udostępnij link, który otworzy operator z wstępnie wypełnionym odbiorcą:
 help-url-msg =   ?msg=<did>                   wstępnie wypełnia: @<did>!msg (zwykła wiadomość)
 help-url-say =   ?say=<did>                   wstępnie wypełnia: @<did>!say (czasownik say)
 help-url-emote =   ?emote=<did>                 wstępnie wypełnia: @<did>!emote (czasownik emote)
@@ -392,7 +392,7 @@ help-url-note =   Pole jest wstępnie wypełnione, ale nie wysłane — naciśni
 help-topic-publish =   .help/publish                publikowanie tożsamości w sieci
 help-header-publish = ── publikowanie tożsamości ──────────────────────────────────────────────────
 help-publish-intro = Publikacja sprawia, że twoja tożsamość jest widoczna w sieci. Inni mogą wyszukać twój DID, aby się z tobą skontaktować.
-help-publish-ma = Aby opublikować, potrzebujesz zainstalowanego 間 (lokalny runtime). Łączy ego z IPFS/IPNS w twoim imieniu.
+help-publish-ma = Aby opublikować, potrzebujesz zainstalowanego 間 (lokalny runtime). Łączy operator z IPFS/IPNS w twoim imieniu.
 help-publish-steps = Kroki: uruchom '.ma: claim [port]', aby wykryć lokalny ma, następnie '.my.identity!publish @ma'.
 help-publish-without = Bez publikacji inni nie mogą cię osiągnąć — nawet jeśli znają twój DID, nie są w stanie rozwiązać twojego endpointu.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -434,7 +434,7 @@ help-z-control =   .z.scheme                 samodzielnie kontrolujesz zawartoś
 help-z-private =   .my.*                     prywatna konfiguracja lokalna; Scheme można przechowywać także tutaj
 help-z-choice =   .z.* / .my.*               używaj .z.* dla publicznego Scheme i .my.* dla prywatnego Scheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme oblicza wyrażenia Scheme osadzone w poleceniach zion i wstawia wynik do wiersza przed wysłaniem.
+help-zscheme-intro = zscheme oblicza wyrażenia Scheme osadzone w poleceniach operator i wstawia wynik do wiersza przed wysłaniem.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    przykład w wierszu; wysyła "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definicje pozostają w bieżącej sesji logowania
 help-zscheme-doc = Dokumentacja: https://github.com/bahner/rust-ma-zscheme

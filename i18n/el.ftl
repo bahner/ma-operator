@@ -1,4 +1,4 @@
-# zion — Ελληνικά
+# operator — Ελληνικά
 lang-name = Ελληνικά
 label-nick = ψευδώνυμο
 new-identity-nick-help = Διαλέξτε ένα ψευδώνυμο για το 間-space. Είναι μόνο ψευδώνυμο και μπορεί να αλλάξει οποτεδήποτε.
@@ -22,7 +22,7 @@ btn-new-endpoint = νέο σημείο σύνδεσης
 btn-import-profile = εισαγωγή προφίλ
 btn-show-qr = εμφάνιση QR
 btn-scan-qr = σάρωση QR
-qr-scan-hint = Στρέψτε την κάμερα σε έναν κωδικό QR προφίλ zion.
+qr-scan-hint = Στρέψτε την κάμερα σε έναν κωδικό QR προφίλ operator.
 qr-error-camera = η κάμερα δεν είναι διαθέσιμη: { $e }
 qr-error-too-large = το προφίλ είναι πολύ μεγάλο για κωδικό QR
 passphrase-warning = Χαμένη φράση πρόσβασης = χαμένη ταυτότητα. Η ανάκτηση δεν είναι δυνατή.
@@ -48,7 +48,7 @@ error-profile-no-username = το προφίλ δεν περιέχει όνομα
 error-profile-no-identity = η ταυτότητα '{ $name }' δεν βρέθηκε — εισαγάγετε πρώτα την ταυτότητα
 
 # ── Μηνύματα συστήματος τερματικού ───────────────────────────────────────
-msg-logged-in = zion v{ $version } — συνδεδεμένοι ως { $username }
+msg-logged-in = operator v{ $version } — συνδεδεμένοι ως { $username }
 msg-type-help = Πληκτρολογήστε .help για λίστα εντολών.
 msg-getting-started = Δοκιμάστε: say Hello world, look, .help ή help.
 msg-connecting = σύνδεση στο iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = δημοσίευση { $path }: { $e }
 doc-publish-ipld-failed = δημοσίευση IPLD { $path }: { $e }
 doc-publish-error-detail = η δημοσίευση απέτυχε [{ $code }]: { $err }
 doc-publish-error-hint = Υπόδειξη: { $hint }
-doc-publish-hint-session = συνδεθείτε ξανά ώστε το ego να έχει πρόσβαση στα κλειδιά ταυτότητάς σας
+doc-publish-hint-session = συνδεθείτε ξανά ώστε το operator να έχει πρόσβαση στα κλειδιά ταυτότητάς σας
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = βεβαιωθείτε ότι το έγγραφο DID του εκδότη είναι δημοσιευμένο και περιέχει ένα προσβάσιμο τελικό σημείο
@@ -186,7 +186,7 @@ doc-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 path-no-verb = δεν υπάρχει ρήμα `{ $verb }` για { $path }
 
 # ── Κείμενο βοήθειας — κεφαλίδες ─────────────────────────────────────────
-help-header-zion = ── εντολές zion ───────────────────────────────────────────────────────────
+help-header-operator = ── εντολές operator ───────────────────────────────────────────────────────────
 help-header-messaging = ── ανταλλαγή μηνυμάτων ───────────────────────────────────────────────────
 help-header-config = ── τοπική γραμματική διαμόρφωσης ────────────────────────────────────
 help-header-common = ── συνήθεις διαδρομές ────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<όνομα>:              διαγραφή εγγρά�
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = Το .my.i18n αποθηκεύει την προτίμηση γλώσσας που συνδέεται με την ταυτότητά σας.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               λίστα των διαθέσιμων κωδικών γλώσσας
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) κρατήστε 5 απαντήσεις στο περιβάλλον περιόδου λειτουργίας
 
-help-topic-url =   .help/url                    άνοιγμα του zion μέσω συνδέσμου URL
+help-topic-url =   .help/url                    άνοιγμα του operator μέσω συνδέσμου URL
 help-topic-i18n = .help/i18n                   γλωσσική προτίμηση για την ταυτότητά σας
 help-header-url = ── παράμετροι URL ───────────────────────────────────────────────────────────────
-help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το zion με προσυμπληρωμένο παραλήπτη:
+help-url-intro =   Μοιράσου έναν σύνδεσμο που ανοίγει το operator με προσυμπληρωμένο παραλήπτη:
 help-url-msg =   ?msg=<did>                   προσυμπληρώνει: @<did>!msg (απλό μήνυμα)
 help-url-say =   ?say=<did>                   προσυμπληρώνει: @<did>!say (ρήμα say)
 help-url-emote =   ?emote=<did>                 προσυμπληρώνει: @<did>!emote (ρήμα emote)
@@ -392,7 +392,7 @@ help-url-note =   Η είσοδος είναι προσυμπληρωμένη α
 help-topic-publish =   .help/publish                δημοσίευση ταυτότητας στο δίκτυο
 help-header-publish = ── δημοσίευση ταυτότητας ────────────────────────────────────────────────────
 help-publish-intro = Η δημοσίευση κάνει την ταυτότητά σου εντοπίσιμη στο δίκτυο. Άλλοι μπορούν να αναζητήσουν το DID σου για να σε βρουν.
-help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το 間 (τοπικό runtime). Συνδέει το ego με το IPFS/IPNS εκ μέρους σου.
+help-publish-ma = Για να δημοσιεύσεις χρειάζεσαι εγκατεστημένο το 間 (τοπικό runtime). Συνδέει το operator με το IPFS/IPNS εκ μέρους σου.
 help-publish-steps = Βήματα: εκτέλεσε '.ma: claim [port]' για ανίχνευση του τοπικού ma, μετά '.my.identity!publish @ma'.
 help-publish-without = Χωρίς δημοσίευση, άλλοι δεν μπορούν να σε βρουν — ακόμα κι αν γνωρίζουν το DID σου, δεν μπορούν να αναλύσουν το endpoint σου.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               χρησιμοποιήστε .z.* �
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = Το zscheme αξιολογεί εκφράσεις Scheme μέσα σε εντολές zion και εισάγει το αποτέλεσμα στη γραμμή πριν σταλεί.
+help-zscheme-intro = Το zscheme αξιολογεί εκφράσεις Scheme μέσα σε εντολές operator και εισάγει το αποτέλεσμα στη γραμμή πριν σταλεί.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ενσωματωμένο παράδειγμα· στέλνει "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             οι ορισμοί παραμένουν για την τρέχουσα συνεδρία σύνδεσης
 help-zscheme-doc = Τεκμηρίωση: https://github.com/bahner/rust-ma-zscheme

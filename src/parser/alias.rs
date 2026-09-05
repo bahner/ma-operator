@@ -4,14 +4,14 @@
 ///   \@name  → literal "@name"  (no lookup)
 ///   @name   → looked up in .my.aliases, error if not found and not a DID
 ///   @did:ma:...  → passed through as-is (valid DID)
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 
 /// Scan `text` for @references and resolve them.
 /// Returns the text with all @aliases replaced by their DID strings,
 /// or an error if an alias is not found.
 ///
 /// Escaped \@ sequences are converted to literal @.
-pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
+pub fn resolve_targets(text: &str, cfg: &OperatorConfig) -> Result<String, String> {
     let mut result = String::with_capacity(text.len());
     let mut chars = text.chars().peekable();
 
@@ -84,10 +84,10 @@ pub fn resolve_targets(text: &str, cfg: &EgoConfig) -> Result<String, String> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::config::EgoConfig;
+    use crate::config::OperatorConfig;
 
-    fn cfg_with_alias(name: &str, did: &str) -> EgoConfig {
-        let mut cfg = EgoConfig::default();
+    fn cfg_with_alias(name: &str, did: &str) -> OperatorConfig {
+        let mut cfg = OperatorConfig::default();
         cfg.set(format!(".my.aliases.{name}"), did);
         cfg
     }
@@ -103,21 +103,21 @@ mod tests {
 
     #[test]
     fn resolve_unknown_alias_fails() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let result = resolve_targets("@nobody hello", &cfg);
         assert!(result.is_err());
     }
 
     #[test]
     fn escaped_at_becomes_literal() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let result = resolve_targets("\\@alice hello", &cfg).unwrap();
         assert_eq!(result, "@alice hello");
     }
 
     #[test]
     fn bare_did_passes_through() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let result = resolve_targets("@did:ma:abc123 hello", &cfg).unwrap();
         assert_eq!(result, "@did:ma:abc123 hello");
     }
@@ -145,7 +145,7 @@ mod tests {
 
     #[test]
     fn no_at_sign_returns_input_unchanged() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let result = resolve_targets("just plain text", &cfg).unwrap();
         assert_eq!(result, "just plain text");
     }
@@ -153,7 +153,7 @@ mod tests {
     #[test]
     fn lone_at_sign_is_preserved() {
         // A bare @ not followed by a token is kept as-is.
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         let result = resolve_targets("@ alone", &cfg).unwrap();
         assert_eq!(result, "@ alone");
     }

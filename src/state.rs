@@ -42,7 +42,7 @@ thread_local! {
         RefCell::new(HashMap::new());
 }
 
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
 use crate::views::editor::EditorMode;
 use leptos::prelude::ArcRwSignal;
@@ -216,9 +216,9 @@ pub enum OutboxTask {
         body: String,
         cmd_id: u64,
         cancel_epoch: u64,
-        config: leptos::prelude::RwSignal<crate::config::EgoConfig>,
+        config: leptos::prelude::RwSignal<crate::config::OperatorConfig>,
     },
-    /// A local zion command aimed at an actor, e.g. `@actor!msg text`.
+    /// A local operator command aimed at an actor, e.g. `@actor!msg text`.
     ActorLocal {
         target: String,
         command: String,
@@ -683,14 +683,14 @@ impl AppState {
 
     // ── Mailbox ───────────────────────────────────────────────────────────
 
-    /// Ingest a message into the `EgoConfig` inbox tree and return the new
+    /// Ingest a message into the `OperatorConfig` inbox tree and return the new
     /// entry count.  The caller is responsible for persisting `config`.
     ///
     /// Only `application/vnd.ma.message` messages are stored; others are ignored.
     pub fn ingest_mailbox_message(
         &self,
         incoming: &crate::messages::IncomingMessage,
-        config: RwSignal<EgoConfig>,
+        config: RwSignal<OperatorConfig>,
     ) -> usize {
         config.update(|cfg| {
             crate::mailbox::ingest_to_config(incoming, cfg);

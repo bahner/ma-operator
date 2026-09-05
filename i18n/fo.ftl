@@ -1,4 +1,4 @@
-# zion — Føroyskt
+# operator — Føroyskt
 lang-name = Føroyskt
 label-nick = kelinavn
 new-identity-nick-help = Vel eitt kelinavn til 間-pláss. Tað er bara eitt kelinavn og kann broytast nær sum helst.
@@ -22,7 +22,7 @@ btn-new-endpoint = nýggjur endapunktur
 btn-import-profile = innfør profil
 btn-show-qr = vís QR
 btn-scan-qr = skanna QR
-qr-scan-hint = Vend myndatólinum móti eini zion-profil QR-kotu.
+qr-scan-hint = Vend myndatólinum móti eini operator-profil QR-kotu.
 qr-error-camera = myndatólið er ikki tøkt: { $e }
 qr-error-too-large = profilurin er ov stórur til eina QR-kotu
 passphrase-warning = Gloymt loyniorð = gloymur samleika. Onki endurheimtan er møgulig.
@@ -48,7 +48,7 @@ error-profile-no-username = profil inniheldur inkje brúkaranavn
 error-profile-no-identity = kennsla '{ $name }' ikki funnin — innfør kennsla fyrst
 
 # ── Kervisboð frá terminali ───────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — ritaður inn sum { $username }
+msg-logged-in = operator v{ $version } — ritaður inn sum { $username }
 msg-type-help = Skriva .help fyri lista av skipanum.
 msg-getting-started = Royn: say Hello world, look, .help ella help.
 msg-connecting = tengist iroh...
@@ -186,7 +186,7 @@ doc-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 path-no-verb = einki sagnorð `{ $verb }` fyri { $path }
 
 # ── Hjálpitekstur — yvirskriftir ──────────────────────────────────────────
-help-header-zion = ── zion-skipanir ──────────────────────────────────────────────────────────
+help-header-operator = ── operator-skipanir ──────────────────────────────────────────────────────────
 help-header-messaging = ── boð ───────────────────────────────────────────────────────────────────
 help-header-config = ── lokal stillingar-mállæra ────────────────────────────────────────────
 help-header-common = ── vanligar slóðir ───────────────────────────────────────────────────────
@@ -252,7 +252,7 @@ help-doc-del =   .my.doc.<navn>:              strika skjal
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n goymir málvalið, sum er knýtt at tínum samleika.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lista tøkar málkotur
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -377,10 +377,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) Halt 5 svar í setuumhvørvinum
 
-help-topic-url =   .help/url                    opna zion í gegnum URL-tengil
+help-topic-url =   .help/url                    opna operator í gegnum URL-tengil
 help-topic-i18n = .help/i18n                   málval fyri tín samleika
 help-header-url = ── URL-broytar ──────────────────────────────────────────────────────────────────
-help-url-intro =   Del ein tengil sum opnar zion við fyritfuldum móttakara:
+help-url-intro =   Del ein tengil sum opnar operator við fyritfuldum móttakara:
 help-url-msg =   ?msg=<did>                   fyritfyllir: @<did>!msg (vanligt boð)
 help-url-say =   ?say=<did>                   fyritfyllir: @<did>!say (sagnorð say)
 help-url-emote =   ?emote=<did>                 fyritfyllir: @<did>!emote (sagnorð emote)
@@ -392,7 +392,7 @@ help-url-note =   Innritingin er fyritfyllt men ikki send — trýst á Enter fy
 help-topic-publish =   .help/publish                birta tín samleika í netinum
 help-header-publish = ── birting av samleika ──────────────────────────────────────────────────────
 help-publish-intro = Birting ger tín samleika funnarligan í netinum. Aðrir kunnu leita eftir tínum DID fyri at ná til tín.
-help-publish-ma = Fyri at birta trengt tú 間 (lokalt kørsluumhvørvi) installerað. Tað tengir ego við IPFS/IPNS fyri tín hønd.
+help-publish-ma = Fyri at birta trengt tú 間 (lokalt kørsluumhvørvi) installerað. Tað tengir operator við IPFS/IPNS fyri tín hønd.
 help-publish-steps = Steg: køyr '.ma: claim [port]' fyri at finna lokalt 間, síðan '.my.identity!publish @ma'.
 help-publish-without = Uttan birting kunnu aðrir ikki ná til tín — jafnvel um tey kennu tín DID, kunnu tey ikki greina endepunkt tín.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -436,7 +436,7 @@ help-z-choice =   .z.* / .my.*               nýt .z.* til álmánnan Scheme og 
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme metir Scheme-úttrykk, sum eru feld inn í zion-boð, og setur úrslitið inn í linjuna, áðrenn hon verður send.
+help-zscheme-intro = zscheme metir Scheme-úttrykk, sum eru feld inn í operator-boð, og setur úrslitið inn í linjuna, áðrenn hon verður send.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    innfelt dømi; sendir "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             allýsingar verða verandi í núverandi innritaðu setu
 help-zscheme-doc = Skjalfesting: https://github.com/bahner/rust-ma-zscheme

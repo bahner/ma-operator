@@ -1,10 +1,10 @@
-# zion — you're operator and this is your tool
+# operator — you're the Operator and this is your tool
 
 You are browsing the web right now with an identity that belongs to someone else.
 Your browser vendor, your platform, your search engine — they all know who you are,
 and you have no key to any of it.
 
-**ego** gives you your own cryptographic identity, right in your browser tab,
+**operator** gives you your own cryptographic identity, right in your browser tab,
 with no account, no server, and no one in the middle.
 Think of it as owning a small piece of the internet — one that is *yours*,
 that you can pack up and take with you, and that no one can take away.
@@ -13,7 +13,7 @@ that you can pack up and take with you, and that no one can take away.
 
 ## What is it, really?
 
-ego is a messaging workstation — a bit like those old text-based MUD games,
+operator is a messaging workstation — a bit like those old text-based MUD games,
 but instead of slaying dragons, you are talking to other identities on the
 [間 (ma) network](https://docs.rs/ma-core).
 
@@ -42,14 +42,16 @@ cd ma-agent
 make dev          # opens on http://localhost:8088
 ```
 
-Or just open [https://zion.bahner.com/](https://zion.bahner.com/) — a live build is hosted there.
-You can also open the latest IPFS build directly in a compatible browser (Brave works out of the box).
+Or just open [https://operator.bahner.com/](https://operator.bahner.com/)
+— a live build is hosted there.
+You can also open the latest IPFS build directly in a compatible browser
+(Brave works out of the box).
 
 ---
 
 ## Your first identity
 
-When you open ego for the first time you will see a landing page.
+When you open operator for the first time you will see a landing page.
 Pick a username — this is just a local label, not a handle visible to anyone else.
 Choose a strong passphrase. Click **Create**.
 
@@ -83,7 +85,7 @@ Your data lives under `.my.*`:
 .my.aliases               short names for long DIDs
 .my.inbox                 incoming messages
 .my.documents             your notes and drafts
-.config                   appearance and behaviour settings
+.my.config                appearance and behaviour settings
 ```
 
 ---
@@ -109,7 +111,8 @@ Now sending is simple:
 @alice Hello!
 ```
 
-That sends an encrypted message directly to Alice over a peer-to-peer connection —
+That sends an encrypted message directly to Alice over a
+peer-to-peer connection —
 no email server, no platform.
 
 To send an RPC (a verb, not just text):
@@ -153,7 +156,7 @@ someone whose DID document is published on IPFS, you can look up fields from it:
 
 ## Documents and notes
 
-ego has a built-in text editor (CodeMirror 6) for writing and storing notes.
+operator has a built-in text editor (CodeMirror 6) for writing and storing notes.
 Documents are stored in your local config tree and survive browser restarts:
 
 ```
@@ -171,7 +174,7 @@ at rest in IndexedDB. The private keys are decrypted only for the duration
 of your session and are never written back to storage in plaintext.
 
 All messages are end-to-end encrypted using X25519 key agreement.
-The ego app itself is static HTML + WebAssembly — there is no server that
+The operator app itself is static HTML + WebAssembly — there is no server that
 could log your traffic even if it wanted to.
 
 ---
@@ -190,7 +193,7 @@ You need access to two services:
    Download from [https://docs.ipfs.tech/install/ipfs-desktop/](https://docs.ipfs.tech/install/ipfs-desktop/).
    *(Brave no longer bundles Kubo, so this is the easiest path.)*
 
-2. **`ma`** — a trusted 間 runtime daemon that handles publish requests on
+1. **`ma`** — a trusted 間 runtime daemon that handles publish requests on
    your behalf. It may run locally or elsewhere.
    Source and releases: [github.com/bahner/ma-runtime](https://github.com/bahner/ma-runtime).
 
@@ -213,7 +216,7 @@ selected runtime with:
 .ma
 ```
 
-Zion stores the new `.z` manifest reference in `.my.z` before serialising the
+Operator stores the new `.z` manifest reference in `.my.z` before serialising the
 profile. The final DID document therefore links both the encrypted profile and
 the same z manifest. The selected runtime is included as `ma.ma`, so another
 browser can recover the correct per-identity runtime before login.
@@ -225,7 +228,7 @@ that sequence is reported instead of printing `間`.
 
 ### What is ma-space?
 
-ma-space is where your zion identity becomes reachable. The local `ma` daemon
+ma-space is where your operator identity becomes reachable. The local `ma` daemon
 is the bridge between your browser identity and the wider ma network. The name
 is the kanji for the project itself (間, *ma*, meaning interval or space).
 
@@ -240,24 +243,24 @@ changing your identity. Run `.enter` once more to return to the saved context.
 
 ## Scheme startup convention
 
-`.z.*` is Zion's explicitly publishable script collection. Do not store
+`.z.*` is Operator's explicitly publishable script collection. Do not store
 passwords, keys, or other secrets there. `.my.*` remains private profile state:
 the encrypted profile stores only `.my.z`, the selected z manifest reference,
 and identity publication repeats that selection as `ma.z` in the DID document.
 
 - `.z!publish <publisher>` publishes the direct `.z.*` source leaves and their
    DAG-CBOR manifest, then stores its reference in `.my.z`.
-- On login Zion restores the encrypted profile first. If `.my.z` is absent it
+- On login Operator restores the encrypted profile first. If `.my.z` is absent it
    uses `ma.z` from the DID document, then an explicit `?z=<manifest-cid>` as the
    final onboarding fallback.
-- Zion fetches the selected manifest and atomically replaces `.z.*` only after
+- Operator fetches the selected manifest and atomically replaces `.z.*` only after
    every entry is valid. The manifest must contain a non-empty `scheme` source.
-- Before room entry, Zion queues `.z.scheme!eval` once when that source exists.
+- Before room entry, Operator queues `.z.scheme!eval` once when that source exists.
 - There is no automatic `.z.avatar` execution and no special parser mode for
    `.z.scheme`; it uses the ordinary local-script `!eval` flow.
 
 A `z=` link author is asking a new user to execute code with access to that
-user's local Zion state. Only use bootstrap links from a source you trust. The
+user's local Operator state. Only use bootstrap links from a source you trust. The
 parameter may be combined with `ma=` and `enter=` for complete onboarding, but
 it can also be used independently. An invalid seed reports an error without
 blocking login, runtime connection, or room entry.
@@ -275,7 +278,7 @@ startup scripts, compose them directly in `.z.scheme`, for example:
 
 ## Status
 
-ego is early-stage but usable. These things work today:
+operator is early-stage but usable. These things work today:
 
 - Create, export, and import identities
 - Send and receive encrypted messages and RPC verbs
@@ -304,7 +307,7 @@ make cid        # print the last published CID
 
 ## Inbound ACL
 
-You can gate who is allowed to deliver messages to your ego session.
+You can gate who is allowed to deliver messages to your operator session.
 The ACL lives at `.my.acl` and is a standard `AclMap` YAML string
 (same format used everywhere in the ma protocol — see
 [ma-runtime-v1 §15](../ma-spec/runtime/ma-runtime-v1.md)).
@@ -346,10 +349,10 @@ Examples:
 
 ## Philosophy
 
-ego is deliberately small. It does not try to be a platform.
+operator is deliberately small. It does not try to be a platform.
 It is a tool for people who want to own their own digital identity and
 communicate without asking anyone's permission.
 
 The underlying protocol ([ma-core](https://docs.rs/ma-core),
 [ma-spec](../ma-spec)) is open and extensible.
-ego is just one workstation on top of it.
+operator is just one workstation on top of it.

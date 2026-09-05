@@ -1,7 +1,7 @@
 //! Actor message and remote CRUD evaluators.
 
 use crate::{
-    config::EgoConfig,
+    config::OperatorConfig,
     core::CommandStatus,
     i18n::{t, tf},
     parser::command::RemoteCrudOp,
@@ -20,7 +20,7 @@ pub(crate) fn eval_actor(
     body: String,
     raw: &str,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     let cmd_id = state.push_command(raw);
     if let Some(meta) = meta {
@@ -66,7 +66,7 @@ pub(crate) fn eval_actor_local(
 pub(crate) async fn execute_outbox_task(
     task: OutboxTask,
     state: &AppState,
-    _config: RwSignal<EgoConfig>,
+    _config: RwSignal<OperatorConfig>,
 ) {
     match task {
         OutboxTask::Actor {
@@ -110,7 +110,7 @@ async fn run_actor_task(
     cmd_id: u64,
     cancel_epoch: u64,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     log::debug!("[outbox] execute Actor cmd_id={cmd_id} target={target:?} verb={verb:?}");
     let result = match verb.as_deref() {
@@ -230,7 +230,7 @@ pub(crate) fn eval_remote_crud(
     raw: &str,
     state: &AppState,
     _show_editor: RwSignal<Option<crate::views::editor::EditorContext>>,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) {
     let cmd_id = state.push_command(raw);
     let target = match transport::actor_url(&target, "root") {
@@ -386,7 +386,7 @@ async fn dispatch_verb_to_transport(
     body: &str,
     cmd_id: u64,
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
 ) -> Option<Result<String, String>> {
     let cfg = config.get_untracked();
     match crate::parser::command::shell_split_with_config(body, &cfg) {
@@ -464,7 +464,7 @@ fn fail_cmd(e: String, cmd_id: u64, state: &AppState) {
 fn normalize_remote_crud_set_value(
     path: &str,
     value: &str,
-    config: &EgoConfig,
+    config: &OperatorConfig,
 ) -> Result<String, String> {
     if path != "/config/root" {
         return Ok(value.to_string());
@@ -485,12 +485,12 @@ fn normalize_remote_crud_set_value(
 #[cfg(test)]
 mod tests {
     use super::{editor_mode_for_path, normalize_remote_crud_set_value};
-    use crate::config::EgoConfig;
+    use crate::config::OperatorConfig;
     use crate::views::editor::EditorMode;
 
     #[test]
     fn config_root_set_expands_alias_fragment() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.sky", "did:ma:k51sky");
         let value = normalize_remote_crud_set_value("/config/root", "@sky#root", &cfg).unwrap();
         assert_eq!(value, "did:ma:k51sky#root");
@@ -498,14 +498,14 @@ mod tests {
 
     #[test]
     fn config_root_set_rejects_non_actor_value() {
-        let cfg = EgoConfig::default();
+        let cfg = OperatorConfig::default();
         assert!(normalize_remote_crud_set_value("/config/root", "@sky", &cfg).is_err());
         assert!(normalize_remote_crud_set_value("/config/root", "did:ma:k51sky", &cfg).is_err());
     }
 
     #[test]
     fn other_remote_crud_set_values_are_not_expanded() {
-        let mut cfg = EgoConfig::default();
+        let mut cfg = OperatorConfig::default();
         cfg.set(".my.aliases.sky", "did:ma:k51sky");
         let value = normalize_remote_crud_set_value("/config/name", "@sky#root", &cfg).unwrap();
         assert_eq!(value, "@sky#root");

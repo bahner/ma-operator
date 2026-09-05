@@ -1,4 +1,4 @@
-/// Command parser for ego terminal input.
+/// Command parser for operator terminal input.
 ///
 /// Grammar:
 ///   .cmd                 → `DotCommand`      (control command: .ma, .enter, .help, …)
@@ -14,7 +14,7 @@
 ///   @alias/path: value   → `RemoteCrud::Set(value)`
 ///   @alias/path:         → `RemoteCrud::Delete`
 ///   @alias/path!edit     → `RemoteCrud::Edit`
-///   @alias!msg [body]    → `ActorLocalCommand` (local zion text message command)
+///   @alias!msg [body]    → `ActorLocalCommand` (local operator text message command)
 ///   @alias#entity!edit   → `ActorMessage` `:behaviour!edit` meta workflow
 ///   @alias[:verb] [body] → `ActorMessage`  (remote method)
 ///   @did:ma:<id>[:verb]  → `ActorMessage`
@@ -22,7 +22,7 @@
 ///   \@literal text       → `PlainText`
 ///   \.literal text       → `PlainText`  (escape a leading control-command dot)
 use super::alias::resolve_targets;
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 
 // ── Command types ──────────────────────────────────────────────────────────
 
@@ -86,7 +86,7 @@ pub enum Command {
 
 // ── Public entry point ─────────────────────────────────────────────────────
 
-pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+pub fn parse(input: &str, cfg: &OperatorConfig) -> Result<Command, String> {
     let input = input.trim();
     match input {
         "" => Ok(Command::PlainText(String::new())),
@@ -105,7 +105,10 @@ pub fn parse(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
 /// `(path, DotOp, args)`. Shared between the `.` control-command grammar and
 /// the `/` local-path grammar — the two differ only in which prefix
 /// character dispatches here and in what the resulting `path` means.
-fn parse_path_op(input: &str, cfg: &EgoConfig) -> Result<(String, DotOp, Vec<String>), String> {
+fn parse_path_op(
+    input: &str,
+    cfg: &OperatorConfig,
+) -> Result<(String, DotOp, Vec<String>), String> {
     let (head, rest) = split_head_rest(input);
     // `!verb` — meta/side-effect operation; check before `:` split.
     if let Some(bang) = head.find('!') {
@@ -128,7 +131,7 @@ fn parse_path_op(input: &str, cfg: &EgoConfig) -> Result<(String, DotOp, Vec<Str
 
 // ── Dot control-command ─────────────────────────────────────────────────────
 
-fn parse_dot(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+fn parse_dot(input: &str, cfg: &OperatorConfig) -> Result<Command, String> {
     let (path, op, args) = parse_path_op(input, cfg)?;
     Ok(Command::DotCommand { path, op, args })
 }
@@ -147,7 +150,7 @@ fn has_local_root(input: &str, root: &str) -> bool {
             .is_some_and(|delimiter| matches!(delimiter, '.' | '!' | ':'))
 }
 
-fn parse_local(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+fn parse_local(input: &str, cfg: &OperatorConfig) -> Result<Command, String> {
     let (path, op, args) = parse_path_op(input, cfg)?;
     Ok(Command::LocalCrud { path, op, args })
 }
@@ -170,7 +173,7 @@ fn dot_path_and_op(head: &str, rest: &str) -> Result<(String, DotOp), String> {
 
 /// Handles both `@alias[!verb] [body]` and `did:ma:…[!verb] [body]`.
 /// Also handles `@alias/path` for remote CRUD (mirrors local `/path` grammar).
-fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
+fn parse_actor(input: &str, cfg: &OperatorConfig) -> Result<Command, String> {
     let (head, body_raw) = split_head_rest(input);
     let head_stripped = head.trim_start_matches('@');
 
@@ -197,7 +200,7 @@ fn parse_actor(input: &str, cfg: &EgoConfig) -> Result<Command, String> {
         });
     }
 
-    // Local actor command: `@actor!msg text` chooses a zion-side workflow.
+    // Local actor command: `@actor!msg text` chooses a operator-side workflow.
     // It is not a remote method call; `:` remains a remote method.
     if let Some((raw_target, command)) = split_local_actor_command(head_stripped) {
         if raw_target.is_empty() || command.is_empty() {
@@ -315,11 +318,14 @@ pub(crate) fn shell_split(s: &str) -> Result<Vec<String>, String> {
     shell_split_inner(s, None)
 }
 
-pub(crate) fn shell_split_with_config(s: &str, cfg: &EgoConfig) -> Result<Vec<String>, String> {
+pub(crate) fn shell_split_with_config(
+    s: &str,
+    cfg: &OperatorConfig,
+) -> Result<Vec<String>, String> {
     shell_split_inner(s, Some(cfg))
 }
 
-fn shell_split_inner(s: &str, cfg: Option<&EgoConfig>) -> Result<Vec<String>, String> {
+fn shell_split_inner(s: &str, cfg: Option<&OperatorConfig>) -> Result<Vec<String>, String> {
     let mut words = Vec::new();
     let mut current = String::new();
     let mut current_is_literal = false;
@@ -381,7 +387,7 @@ fn push_shell_word(
     words: &mut Vec<String>,
     word: String,
     is_literal: bool,
-    cfg: Option<&EgoConfig>,
+    cfg: Option<&OperatorConfig>,
 ) -> Result<(), String> {
     if !is_literal && word.starts_with("<.") {
         let path = &word[1..];
@@ -407,7 +413,7 @@ fn push_shell_word(
     Ok(())
 }
 
-pub fn resolve_target(raw: &str, cfg: &EgoConfig) -> Result<String, String> {
+pub fn resolve_target(raw: &str, cfg: &OperatorConfig) -> Result<String, String> {
     let raw = raw.trim_start_matches('@');
     if raw.starts_with("did:") {
         return Ok(raw.to_string());
@@ -483,7 +489,7 @@ mod tests {
 
     #[test]
     fn parses_dot_my_as_local_crud() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(".my.aliases.fjodor", &cfg).expect("command should parse");
 
         assert_eq!(
@@ -498,7 +504,7 @@ mod tests {
 
     #[test]
     fn parses_dot_ma_ctx_as_local_crud() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(".ma.ctx.url: http://localhost:5003", &cfg).expect("command should parse");
 
         assert_eq!(
@@ -513,7 +519,7 @@ mod tests {
 
     #[test]
     fn parses_z_document_verbs_as_local_crud() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.aliases.ma", "did:ma:runtime");
 
         assert_eq!(
@@ -560,7 +566,7 @@ mod tests {
 
     #[test]
     fn dot_ctx_is_not_local_crud_root() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(".ctx.ma.url: http://localhost:5003", &cfg).expect("command should parse");
 
         assert!(matches!(cmd, Command::DotCommand { .. }));
@@ -568,7 +574,7 @@ mod tests {
 
     #[test]
     fn bare_ipfs_path_is_plain_text() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let input = "/ipfs/bafybeigdyrzt";
 
         assert_eq!(
@@ -579,7 +585,7 @@ mod tests {
 
     #[test]
     fn local_crud_set_keeps_bare_ipfs_path_literal() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
 
         assert_eq!(
             parse(".my.notes: /ipfs/bafybeigdyrzt", &cfg),
@@ -593,7 +599,7 @@ mod tests {
 
     #[test]
     fn hash_ipfs_path_is_plain_text_outside_scheme() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let input = "#/ipfs/bafybeigdyrzt";
 
         assert_eq!(
@@ -620,7 +626,7 @@ mod tests {
 
     #[test]
     fn shell_split_inserts_local_leaf_as_one_argument() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         let init = "(begin\n  (set-prop! \"name\" \"Lamp\")\n  (ma-save-state!))";
         cfg.set(".my.things.lamp", init);
 
@@ -632,7 +638,7 @@ mod tests {
 
     #[test]
     fn shell_split_expands_unquoted_alias_arguments() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.aliases.ma", "did:ma:runtime");
 
         assert_eq!(
@@ -643,7 +649,7 @@ mod tests {
 
     #[test]
     fn enter_command_preserves_nick_at_target_syntax() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
 
         assert_eq!(
             parse(".enter Pondus@did:ma:runtime#concourse", &cfg),
@@ -657,7 +663,7 @@ mod tests {
 
     #[test]
     fn shell_split_keeps_escaped_alias_arguments_literal() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.aliases.ma", "did:ma:runtime");
 
         assert_eq!(
@@ -676,7 +682,7 @@ mod tests {
 
     #[test]
     fn shell_split_does_not_insert_quoted_local_leaf_token() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.things.lamp", "lamp init");
 
         assert_eq!(
@@ -687,7 +693,7 @@ mod tests {
 
     #[test]
     fn shell_split_rejects_missing_or_subtree_insert() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(".my.things.lamp.name", "Lamp");
 
         assert!(shell_split_with_config("make thing <.my.things.lamp", &cfg)
@@ -707,7 +713,7 @@ mod tests {
 
     #[test]
     fn keeps_dot_ma_as_control_command() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(".ma", &cfg).expect("command should parse");
 
         assert_eq!(
@@ -722,7 +728,7 @@ mod tests {
 
     #[test]
     fn parses_dot_ma_trusted_runtime_setter() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
 
         assert_eq!(
             parse(".ma: did:ma:trustedruntime", &cfg),
@@ -736,7 +742,7 @@ mod tests {
 
     #[test]
     fn parses_dot_ma_claim_with_optional_port() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
 
         assert_eq!(
             parse(".ma: claim", &cfg),
@@ -758,7 +764,7 @@ mod tests {
 
     #[test]
     fn parses_did_target_without_verb() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(
             "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
             &cfg,
@@ -779,7 +785,7 @@ mod tests {
 
     #[test]
     fn parses_did_target_with_verb() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(
             "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3:ping",
             &cfg,
@@ -800,7 +806,7 @@ mod tests {
 
     #[test]
     fn parses_did_target_with_compound_verb() {
-        let cfg = EgoConfig::new();
+        let cfg = OperatorConfig::new();
         let cmd = parse(
             "@did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3:entities.rms:edit",
             &cfg,
@@ -822,7 +828,7 @@ mod tests {
 
     #[test]
     fn parses_alias_target_with_verb() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -844,7 +850,7 @@ mod tests {
 
     #[test]
     fn parses_alias_target_with_fragment_and_verb() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.fjodor",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -867,7 +873,7 @@ mod tests {
 
     #[test]
     fn parses_alias_target_with_compound_verb() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -889,7 +895,7 @@ mod tests {
 
     #[test]
     fn parses_alias_target_with_nested_path_verb() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -911,7 +917,7 @@ mod tests {
 
     #[test]
     fn parses_alias_target_with_text_actor_command() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -932,7 +938,7 @@ mod tests {
 
     #[test]
     fn rejects_fragment_target_emote_bang_command() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -943,7 +949,7 @@ mod tests {
 
     #[test]
     fn keeps_colon_as_remote_actor_method() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -966,7 +972,7 @@ mod tests {
 
     #[test]
     fn parses_fragment_target_with_actor_meta() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",
@@ -989,7 +995,7 @@ mod tests {
 
     #[test]
     fn parses_fragment_target_edit_as_behaviour_meta() {
-        let mut cfg = EgoConfig::new();
+        let mut cfg = OperatorConfig::new();
         cfg.set(
             ".my.aliases.sky",
             "did:ma:k51qzi5uqu5dgauzpw8f1ecgsnt6gm6fpxxu3vkqaj9bcm6h8vmjttajijged3",

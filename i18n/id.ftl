@@ -1,4 +1,4 @@
-# zion — Bahasa Indonesia
+# operator — Bahasa Indonesia
 lang-name = Bahasa Indonesia
 label-nick = nama panggilan
 new-identity-nick-help = Pilih nama panggilan untuk 間-space. Ini hanya nama panggilan dan bisa diubah kapan saja.
@@ -22,7 +22,7 @@ btn-new-endpoint = titik akhir baru
 btn-import-profile = impor profil
 btn-show-qr = tampilkan QR
 btn-scan-qr = pindai QR
-qr-scan-hint = Arahkan kamera ke kode QR profil zion.
+qr-scan-hint = Arahkan kamera ke kode QR profil operator.
 qr-error-camera = kamera tidak tersedia: { $e }
 qr-error-too-large = profil terlalu besar untuk kode QR
 passphrase-warning = Frasa sandi hilang = identitas hilang. Tidak ada pemulihan.
@@ -48,7 +48,7 @@ error-profile-no-username = profil tidak memiliki nama pengguna
 error-profile-no-identity = identitas '{ $name }' tidak ditemukan — impor identitas terlebih dahulu
 
 # ── Pesan sistem terminal ─────────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — masuk sebagai { $username }
+msg-logged-in = operator v{ $version } — masuk sebagai { $username }
 msg-type-help = Ketik .help untuk daftar perintah.
 msg-getting-started = Coba: say Hello world, look, .help, atau help.
 msg-connecting = menghubungkan ke iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = penerbitan { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikasi gagal [{ $code }]: { $err }
 doc-publish-error-hint = Petunjuk: { $hint }
-doc-publish-hint-session = masuk lagi agar ego dapat mengakses kunci identitas Anda
+doc-publish-hint-session = masuk lagi agar operator dapat mengakses kunci identitas Anda
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifikasi dokumen DID penerbit diterbitkan dan berisi titik akhir yang dapat dijangkau
@@ -186,7 +186,7 @@ doc-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 path-no-verb = tidak ada kata kerja `{ $verb }` untuk { $path }
 
 # ── Bantuan — judul ───────────────────────────────────────────────────────
-help-header-zion = ── perintah zion ─────────────────────────────────────────────────────────
+help-header-operator = ── perintah operator ─────────────────────────────────────────────────────────
 help-header-messaging = ── pesan ────────────────────────────────────────────────────────────────
 help-header-config = ── sintaks konfigurasi lokal ─────────────────────────────────────────────
 help-header-common = ── jalur umum ───────────────────────────────────────────────────────────
@@ -197,7 +197,7 @@ help-header-ma = ── 間-space ───────────────�
 help-header-ma-entry = ── memasuki 間-ruang ─────────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── Bantuan — perintah zion ───────────────────────────────────────────────
+# ── Bantuan — perintah operator ───────────────────────────────────────────────
 help-cmd-help =   .help                        teks ini
 help-cmd-clear =   .clear                       bersihkan terminal
 help-cmd-panic =   .panic                       pilihan terakhir — gunakan saat bermasalah
@@ -259,7 +259,7 @@ help-doc-del =   .my.doc.<name>:              hapus dokumen
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n menyimpan preferensi bahasa yang terkait dengan identitas Anda.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               daftar kode bahasa yang tersedia
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -384,10 +384,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) simpan balasan 5 di lingkungan sesi
 
-help-topic-url =   .help/url                    membuka zion melalui tautan URL
+help-topic-url =   .help/url                    membuka operator melalui tautan URL
 help-topic-i18n = .help/i18n                   preferensi bahasa untuk identitas Anda
 help-header-url = ── parameter URL ────────────────────────────────────────────────────────────────
-help-url-intro =   Bagikan tautan yang membuka zion dengan penerima yang sudah diisi:
+help-url-intro =   Bagikan tautan yang membuka operator dengan penerima yang sudah diisi:
 help-url-msg =   ?msg=<did>                   isi otomatis: @<did>!msg (pesan biasa)
 help-url-say =   ?say=<did>                   isi otomatis: @<did>!say (kata kerja say)
 help-url-emote =   ?emote=<did>                 isi otomatis: @<did>!emote (kata kerja emote)
@@ -399,7 +399,7 @@ help-url-note =   Input diisi otomatis tapi belum dikirim — tekan Enter untuk 
 help-topic-publish =   .help/publish                publikasikan identitas Anda ke jaringan
 help-header-publish = ── publikasi identitas ──────────────────────────────────────────────────────
 help-publish-intro = Publikasi membuat identitas Anda dapat ditemukan di jaringan. Orang lain dapat mencari DID Anda untuk menghubungi Anda.
-help-publish-ma = Untuk mempublikasikan, Anda memerlukan 間 (runtime lokal) terpasang. Ini menghubungkan ego ke IPFS/IPNS atas nama Anda.
+help-publish-ma = Untuk mempublikasikan, Anda memerlukan 間 (runtime lokal) terpasang. Ini menghubungkan operator ke IPFS/IPNS atas nama Anda.
 help-publish-steps = Langkah: jalankan '.ma: claim [port]' untuk mendeteksi 間 lokal, lalu '.my.identity!publish @ma'.
 help-publish-without = Tanpa publikasi, orang lain tidak dapat menghubungi Anda — meskipun mereka mengetahui DID Anda, mereka tidak dapat menyelesaikan endpoint Anda.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -443,7 +443,7 @@ help-z-choice =   .z.* / .my.*               gunakan .z.* untuk Scheme publik da
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme mengevaluasi ekspresi Scheme yang disisipkan dalam perintah zion dan menyisipkan hasilnya ke baris sebelum dikirim.
+help-zscheme-intro = zscheme mengevaluasi ekspresi Scheme yang disisipkan dalam perintah operator dan menyisipkan hasilnya ke baris sebelum dikirim.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    contoh sebaris; mengirim "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definisi tetap ada selama sesi login saat ini
 help-zscheme-doc = Dokumentasi: https://github.com/bahner/rust-ma-zscheme

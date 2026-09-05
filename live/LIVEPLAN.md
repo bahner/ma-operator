@@ -1,12 +1,12 @@
 # LIVEPLAN
 
-This file is the current working plan for live support in zion.
+This file is the current working plan for live support in operator.
 It is written to be moved to another machine without needing conversation context.
 
 ## Goal
 
 The next practical goal is simple:
-- run zion on a laptop and a phone
+- run operator on a laptop and a phone
 - log in as two identities
 - dial yourself over the live signalling service
 - verify signalling and control flow before full media transport
@@ -15,11 +15,11 @@ This phase is about proving the control plane, not shipping camera/microphone tr
 
 ## Core decision
 
-Live in zion is split into two layers.
+Live in operator is split into two layers.
 
 1. Native primitives in Rust
 - These are the parts that cannot be implemented from inside zscheme.
-- They live in zion host/transport code.
+- They live in operator host/transport code.
 - They cover transport registration, sending live signalling messages, and receiving them.
 
 2. User workflow in `live.szcheme`
@@ -65,7 +65,7 @@ if it can be expressed as ordinary zscheme over existing primitives, it should n
 
 ## Current code status
 
-The current live baseline in zion is signalling-only.
+The current live baseline in operator is signalling-only.
 
 Implemented in Rust:
 - `LIVE_PROTOCOL_ID = "/ma/live/0.0.1"`
@@ -108,8 +108,8 @@ Use two devices to test signalling.
 
 ### Device setup
 
-1. Start zion on laptop.
-2. Start zion on phone.
+1. Start operator on laptop.
+2. Start operator on phone.
 3. Log in as two different local identities.
 4. Run `.ma` on both sides.
 5. Publish identities if needed with `.my.identity!publish @ma`.
@@ -197,7 +197,7 @@ Do not do these yet:
 ## Summary
 
 The current direction is:
-- zion-only live implementation
+- operator-only live implementation
 - MA messaging only for signalling/control
 - `/ma/live/0.0.1` as the local control surface
 - user sugar in `live.szcheme`

@@ -1,4 +1,4 @@
-# zion — Papiamentu
+# operator — Papiamentu
 lang-name = Papiamentu
 label-nick = sobrenòmber
 new-identity-nick-help = Skohe un sobrenòmber pa 間-space. Ta solamente un sobrenòmber, i bo por kambi'é ki ora ku bo ke.
@@ -22,7 +22,7 @@ btn-new-endpoint = nobo endpoint
 btn-import-profile = importa perfil
 btn-show-qr = mustra QR
 btn-scan-qr = skan QR
-qr-scan-hint = Pone e kamera riba un kódigo QR di perfil di zion.
+qr-scan-hint = Pone e kamera riba un kódigo QR di perfil di operator.
 qr-error-camera = kamera no ta disponibel: { $e }
 qr-error-too-large = e perfil ta muchu grandi pa un kódigo QR
 passphrase-warning = Pèrdé pasfrasa = pèrdé identidad. No tin rekuperashon.
@@ -48,7 +48,7 @@ error-profile-no-username = perfil no tin nomber di usuario
 error-profile-no-identity = identidad '{ $name }' no hayá — importa identidad prome
 
 # ── Terminal system messages ──────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — login komo { $username }
+msg-logged-in = operator v{ $version } — login komo { $username }
 msg-type-help = Tiki .help pa un lista di komando.
 msg-getting-started = Purba: say Hello world, look, .help, òf help.
 msg-connecting = konektando na iroh...
@@ -167,7 +167,7 @@ doc-publish-failed = publiká { $path }: { $e }
 doc-publish-ipld-failed = publish-ipld { $path }: { $e }
 doc-publish-error-detail = publikashon a fayá [{ $code }]: { $err }
 doc-publish-error-hint = Pista: { $hint }
-doc-publish-hint-session = log in atrobe pa asina ego por haña akseso na bo yabinan di identidat
+doc-publish-hint-session = log in atrobe pa asina operator por haña akseso na bo yabinan di identidat
 doc-publish-hint-target = use a valid publisher DID or alias that resolves to bare did:ma:<ipns>
 doc-publish-hint-network = verify 間 runtime and IPFS are reachable, then retry
 doc-publish-hint-resolve = verifiká ku e dokumento di DID di e publikadó ta publiká i ta kontené un punto final alkansabel
@@ -190,7 +190,7 @@ lang-list-header = Idiomanan disponibel (pone ku .my.i18n: <code>):
 
 err-lang-not-found = idioma no a haña: { $lang }
 
-help-header-zion = ── komando di zion ────────────────────────────────────────────────────────
+help-header-operator = ── komando di operator ────────────────────────────────────────────────────────
 help-header-messaging = ── mensaheria ─────────────────────────────────────────────────────────────
 help-header-config = ── gramátika di konfigurashon lokal ───────────────────────────────────────
 help-header-common = ── kaminon komun ──────────────────────────────────────────────────────────
@@ -249,7 +249,7 @@ help-doc-del =   .my.doc.<name>:              bòrá dokumento
 
 # ── Help text — language ──────────────────────────────────────────────────
 help-i18n-intro = .my.i18n ta warda e preferensia di idioma mará na bo identidat.
-help-i18n-set = .my.i18n: <code>             choose the language zion uses for this identity
+help-i18n-set = .my.i18n: <code>             choose the language operator uses for this identity
 help-i18n-list = .my.i18n!list               lista kódigonan di idioma disponibel
 
 # ── Help text — ma-space ──────────────────────────────────────────────────
@@ -370,10 +370,10 @@ help-actor-head = (@actor/path)                fetch remote CRUD content from Sc
 help-actor-tail = (<bafy...>)                  include and evaluate Scheme from an IPFS CID
 help-actor-wc = (define x (@actor:verb arg)) warda kontesta 5 den e ambiente di seshon
 
-help-topic-url =   .help/url                    habri zion via un link URL
+help-topic-url =   .help/url                    habri operator via un link URL
 help-topic-i18n = .help/i18n                   preferensia di idioma pa bo identidat
 help-header-url = ── parámetronan URL ─────────────────────────────────────────────────────────────
-help-url-intro =   Parti un link ku habri zion ku un destinatario ya yená:
+help-url-intro =   Parti un link ku habri operator ku un destinatario ya yená:
 help-url-msg =   ?msg=<did>                   yena di antemano: @<did>!msg (mensahe simpel)
 help-url-say =   ?say=<did>                   yena di antemano: @<did>!say (verbu say)
 help-url-emote =   ?emote=<did>                 yena di antemano: @<did>!emote (verbu emote)
@@ -385,7 +385,7 @@ help-url-note =   E input ta yená pero no mandá — preshoná Enter pa manda.
 help-topic-publish =   .help/publish                publiká bo identidad riba e red
 help-header-publish = ── publikashon di identidad ─────────────────────────────────────────────────
 help-publish-intro = Publikashon ta hasi bo identidad enkontrable riba e red. Otronan por buská bo DID pa kontakto.
-help-publish-ma = Pa publiká, bo mester tin 間 (runtime lokal) instalá. E ta konektá ego ku IPFS/IPNS na nòmber di bo.
+help-publish-ma = Pa publiká, bo mester tin 間 (runtime lokal) instalá. E ta konektá operator ku IPFS/IPNS na nòmber di bo.
 help-publish-steps = Pasónan: drenta '.ma: claim [port]' pa detektá e 間 lokal, despues '.my.identity!publish @ma'.
 help-publish-without = Sin publikashon, otronan no por alkanso bo — no importa si nan konosé bo DID, nan no por risòlbe bo endpoint.
 profile-fetch-did-resolve-failed = DID not published yet — run '.my.identity!publish @ma' first, then '!publish' your profile
@@ -429,7 +429,7 @@ help-z-choice =   .z.* / .my.*               usa .z.* pa Scheme públiko i .my.*
 
 # -- Help text -- zscheme
 help-header-zscheme-topic = ── zscheme ──────────────────────────────────────────────────────────────
-help-zscheme-intro = zscheme ta evaluá ekspreshonnan Scheme den komandanan zion i ta pone e resultado den e liña promé ku manda.
+help-zscheme-intro = zscheme ta evaluá ekspreshonnan Scheme den komandanan operator i ta pone e resultado den e liña promé ku manda.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ehèmpel den liña; ta manda "say 7 + 5 = 12"
 help-zscheme-define =   (define x 12)             definishonnan ta keda durante e seshon di login aktual
 help-zscheme-doc = Dokumentashon: https://github.com/bahner/rust-ma-zscheme

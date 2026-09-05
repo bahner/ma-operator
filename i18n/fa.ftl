@@ -1,4 +1,4 @@
-# zion — فارسی
+# operator — فارسی
 lang-name = فارسی
 label-nick = نام مستعار
 new-identity-nick-help = برای 間-space یک نام مستعار انتخاب کنید. این فقط یک لقب است و هر زمان بخواهید می‌توانید آن را تغییر دهید.
@@ -24,12 +24,12 @@ btn-new-endpoint = نقطه پایانی تازه
 btn-import-profile = وارد کردن پروفایل
 btn-show-qr = نمایش QR
 btn-scan-qr = اسکن QR
-qr-scan-hint = دوربین را به سمت کد QR پروفایل zion بگیرید.
+qr-scan-hint = دوربین را به سمت کد QR پروفایل operator بگیرید.
 qr-error-camera = دوربین در دسترس نیست: { $e }
 qr-error-too-large = پروفایل برای کد QR بیش از حد بزرگ است
 passphrase-warning = گم شدن عبارت عبور یعنی گم شدن هویت. راه بازیابی وجود ندارد.
 warning-remote-runtime = هشدار: کلید خصوصی IPNS شما برای انتشار هویت به این runtime فرستاده می‌شود. فقط از runtimeی استفاده کنید که کاملاً به آن اعتماد دارید.
-import-profile-help = یک پروفایل .zion.json را با CID یا فایل وارد کنید. برای وارد کردن تازه، عبارت عبور لازم نیست. عبارت عبور فقط برای بازنویسی هویت موجود لازم است.
+import-profile-help = یک پروفایل .operator.json را با CID یا فایل وارد کنید. برای وارد کردن تازه، عبارت عبور لازم نیست. عبارت عبور فقط برای بازنویسی هویت موجود لازم است.
 import-profile-detected-user = این پروفایل متعلق است به: { $name }
 status-unlocking = در حال باز کردن قفل...
 status-generating = در حال ساخت هویت...
@@ -51,7 +51,7 @@ error-profile-no-username = پروفایل نام کاربری ندارد
 error-profile-no-identity = هویت '{ $name }' پیدا نشد — ابتدا هویت را وارد کنید
 
 # ── پیام‌های سامانه ترمینال ───────────────────────────────────────────────
-msg-logged-in = zion v{ $version } — با نام { $username } وارد شده‌اید
+msg-logged-in = operator v{ $version } — با نام { $username } وارد شده‌اید
 msg-type-help = برای دیدن فهرست فرمان‌ها .help را تایپ کنید.
 msg-getting-started = امتحان کنید: say Hello world، look، .help، یا help.
 msg-connecting = در حال اتصال به iroh...
@@ -176,7 +176,7 @@ doc-publish-failed = انتشار { $path }: { $e }
 doc-publish-ipld-failed = انتشار publish-ipld برای { $path } ناموفق بود: { $e }
 doc-publish-error-detail = انتشار ناموفق بود [{ $code }]: { $err }
 doc-publish-error-hint = راهنما: { $hint }
-doc-publish-hint-session = دوباره وارد شوید تا ego بتواند به کلیدهای هویت شما دسترسی داشته باشد
+doc-publish-hint-session = دوباره وارد شوید تا operator بتواند به کلیدهای هویت شما دسترسی داشته باشد
 doc-publish-hint-target = از DID ناشر معتبر یا نام مستعاری استفاده کنید که به did:ma:<ipns> خام حل می‌شود
 doc-publish-hint-network = بررسی کنید runtime 間 و IPFS در دسترس هستند، سپس دوباره بکوشید
 doc-publish-hint-resolve = بررسی کنید سند DID ناشر منتشر شده و نقطه پایانی قابل دسترسی دارد
@@ -195,7 +195,7 @@ doc-no-verb = فعل `{ $verb }` برای { $path } وجود ندارد
 path-no-verb = فعل `{ $verb }` برای { $path } وجود ندارد
 
 # ── متن راهنما — سرآیندها ────────────────────────────────────────────────
-help-header-zion = ── فرمان‌های zion ─────────────────────────────────────────────────────────
+help-header-operator = ── فرمان‌های operator ─────────────────────────────────────────────────────────
 help-header-messaging = ── پیام‌رسانی ───────────────────────────────────────────────────────────
 help-header-config = ── دستور زبان پیکربندی محلی ───────────────────────────────────────────────
 help-header-common = ── مسیرهای رایج ───────────────────────────────────────────────────────────
@@ -217,7 +217,7 @@ help-z-choice =   .z.* / .my.*               از .z.* برای Scheme عموم�
 help-header-zscheme-topic = ── zscheme ───────────────────────────────────────────────────────
 help-footer = ─────────────────────────────────────────────────────────────────────────
 
-# ── متن راهنما — فرمان‌های zion ─────────────────────────────────────────
+# ── متن راهنما — فرمان‌های operator ─────────────────────────────────────────
 help-cmd-help =   .help                        این متن
 help-cmd-clear =   .clear                       پاک کردن ترمینال
 help-cmd-history =   .history [n]                 تاریخچه فرمان‌ها (تکرارهای پیاپی ادغام می‌شوند)؛ n اختیاری فقط n خط آخر را نشان می‌دهد
@@ -237,7 +237,7 @@ help-topic-doc =   .help/doc                    فعل‌های محتوا — !
 help-topic-actor =   .help/actor                  actor دوردست — CRUD، موجودیت‌ها، عملیات CID
 help-topic-z =   .help/z                      محتوای عمومی و خصوصی Scheme
 help-topic-zscheme =   .help/zscheme               عبارت‌های Scheme درون‌خطی و سندها
-help-topic-url =   .help/url                    باز کردن zion با پیوند URL
+help-topic-url =   .help/url                    باز کردن operator با پیوند URL
 help-topic-i18n =   .help/i18n                   ترجیح زبان برای هویت شما
 help-unknown-topic =   .help/{ $topic }: موضوع ناشناخته — برای فهرست .help را امتحان کنید
 
@@ -308,18 +308,18 @@ help-doc-del =   .my.doc.<name>:              حذف سند
 
 # ── متن راهنما — زبان ───────────────────────────────────────────────────
 help-i18n-intro =   .my.i18n ترجیح زبان پیوندخورده به هویت شما را نگه می‌دارد.
-help-i18n-set =   .my.i18n: <code>             زبانی را که zion برای این هویت به کار می‌برد انتخاب کن
+help-i18n-set =   .my.i18n: <code>             زبانی را که operator برای این هویت به کار می‌برد انتخاب کن
 help-i18n-list =   .my.i18n!list               فهرست کدهای زبان موجود
 
 # ── متن راهنما — zscheme ────────────────────────────────────────────────
-help-zscheme-intro = zscheme عبارت‌های Scheme جاسازی‌شده در فرمان‌های zion را ارزیابی می‌کند و نتیجه را پیش از ارسال در خط جای‌گذاری می‌کند.
+help-zscheme-intro = zscheme عبارت‌های Scheme جاسازی‌شده در فرمان‌های operator را ارزیابی می‌کند و نتیجه را پیش از ارسال در خط جای‌گذاری می‌کند.
 help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    نمونه درون‌خطی؛ "say 7 + 5 = 12" را می‌فرستد
 help-zscheme-define =   (define x 12)             تعریف‌ها برای نشست ورود فعلی باقی می‌مانند
 help-zscheme-doc = سندها: https://github.com/bahner/rust-ma-zscheme
 
 # ── متن راهنما — پارامترهای URL ─────────────────────────────────────────
 help-header-url = ── پارامترهای URL ─────────────────────────────────────────────────────────
-help-url-intro =   پیوندی را هم‌رسانی کنید تا zion با گیرنده از پیش پرشده باز شود:
+help-url-intro =   پیوندی را هم‌رسانی کنید تا operator با گیرنده از پیش پرشده باز شود:
 help-url-msg =   ?msg=<did>                   پر کردن از پیش: @<did>!msg (پیام ساده)
 help-url-say =   ?say=<did>                   پر کردن از پیش: @<did>!say (فعل say)
 help-url-emote =   ?emote=<did>                 پر کردن از پیش: @<did>!emote (فعل emote)
@@ -427,7 +427,7 @@ help-actor-wc = (define x (@actor:verb arg)) نگه داشتن پاسخ‌های
 help-topic-publish =   .help/publish                انتشار هویت شما در شبکه
 help-header-publish = ── انتشار هویت شما ────────────────────────────────────────────────────
 help-publish-intro = انتشار باعث می‌شود هویت شما در شبکه پیدا شود. دیگران می‌توانند DID شما را جست‌وجو کنند تا به شما برسند.
-help-publish-ma = برای انتشار، باید 間 (runtime محلی) نصب باشد. 間 از طرف شما ego را به IPFS/IPNS وصل می‌کند.
+help-publish-ma = برای انتشار، باید 間 (runtime محلی) نصب باشد. 間 از طرف شما operator را به IPFS/IPNS وصل می‌کند.
 help-publish-steps = گام‌ها: برای اتصال runtime محلی '.ma' (یا '.ma <port>') را اجرا کنید، سپس '.my.identity!publish @ma'.
 help-publish-without = بدون انتشار، دیگران نمی‌توانند به شما برسند — حتی اگر DID شما را بدانند، نقطه پایانی شما را نمی‌توانند حل کنند.
 

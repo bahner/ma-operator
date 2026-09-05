@@ -1,6 +1,6 @@
 use super::doc::lang_for_content_type;
 use super::resolve_bare_did;
-use crate::config::EgoConfig;
+use crate::config::OperatorConfig;
 use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
@@ -9,7 +9,7 @@ use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 
 /// Collect all distinct numeric inbox indices in sorted order.
-fn inbox_indices(cfg: &EgoConfig) -> std::collections::BTreeSet<usize> {
+fn inbox_indices(cfg: &OperatorConfig) -> std::collections::BTreeSet<usize> {
     cfg.list(".my.inbox.")
         .into_iter()
         .filter_map(|(k, _)| k[".my.inbox.".len()..].split('.').next()?.parse().ok())
@@ -21,7 +21,7 @@ pub(super) fn handle_inbox(
     verb: &str,
     args: &[String],
     state: &AppState,
-    config: RwSignal<EgoConfig>,
+    config: RwSignal<OperatorConfig>,
     show_editor: RwSignal<Option<EditorContext>>,
     _on_eval: Callback<String>,
 ) -> Result<(), String> {
