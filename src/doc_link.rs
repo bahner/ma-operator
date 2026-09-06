@@ -12,12 +12,15 @@ pub enum ResolvedDocContent {
     Manifest(BTreeMap<String, String>),
 }
 
-/// Strip an optional `/ipfs/` or `/ipld/` prefix and parse the remainder as a CID.
+/// Strip an optional `/ipfs/`, `ipfs/`, `/ipld/`, or `ipld/` prefix and parse the
+/// remainder as a CID.
 pub fn parse_link_cid(value: &str) -> Option<cid::Cid> {
     let trimmed = value.trim();
     let stripped = trimmed
         .strip_prefix("/ipfs/")
+        .or_else(|| trimmed.strip_prefix("ipfs/"))
         .or_else(|| trimmed.strip_prefix("/ipld/"))
+        .or_else(|| trimmed.strip_prefix("ipld/"))
         .unwrap_or(trimmed);
     stripped.parse::<cid::Cid>().ok()
 }
@@ -61,11 +64,27 @@ mod tests {
     }
 
     #[test]
+    fn parse_link_cid_ipfs_prefixed_without_leading_slash() {
+        assert!(
+            parse_link_cid("ipfs/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy")
+                .is_some()
+        );
+    }
+
+    #[test]
     fn parse_link_cid_ipld_prefixed() {
         assert!(parse_link_cid(
             "/ipld/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy"
         )
         .is_some());
+    }
+
+    #[test]
+    fn parse_link_cid_ipld_prefixed_without_leading_slash() {
+        assert!(
+            parse_link_cid("ipld/bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy")
+                .is_some()
+        );
     }
 
     #[test]

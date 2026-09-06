@@ -447,3 +447,12 @@ help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set a
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!
 error-passphrase-too-short = passphrase must be at least 20 characters
+
+# ── Topdown view ─────────────────────────────────────────────────────────
+topdown-switch-to-terminal = Text
+topdown-say = Řekni
+topdown-emote = Emote
+topdown-menu-say = Řekni
+topdown-menu-emote = Emote
+topdown-menu-look = Podívej se
+topdown-menu-go = Jdi

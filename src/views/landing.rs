@@ -35,13 +35,13 @@ fn load_last_did() -> Option<String> {
 }
 
 async fn verify_existing_identity(did: &str) -> Result<(), String> {
-    use ma_core::DidDocumentResolver;
-
-    let resolver = crate::transport::connection::session_resolver()?;
-    let document = resolver
-        .resolve(did)
-        .await
-        .map_err(|error| error.to_string())?;
+    let resolver = crate::transport::connection::ipns_resolver()?;
+    let document = crate::parser::verbs::ma::resolve_did_with_retry(
+        resolver.as_ref(),
+        did,
+        crate::http::STARTUP_FETCH_TIMEOUT_MS,
+    )
+    .await?;
     crate::parser::verbs::ma::published_self_matches(&document, did)
 }
 
@@ -74,15 +74,16 @@ async fn fetch_profile_from_ipfs(
     full_did: &str,
     pass: &str,
 ) -> Result<FetchedProfile, ProfileFetchError> {
-    use ma_core::DidDocumentResolver;
-
     let resolver =
-        crate::transport::connection::session_resolver().map_err(ProfileFetchError::Rejected)?;
+        crate::transport::connection::ipns_resolver().map_err(ProfileFetchError::Rejected)?;
 
-    let doc = resolver
-        .resolve(full_did)
-        .await
-        .map_err(|error| ProfileFetchError::Unavailable(error.to_string()))?;
+    let doc = crate::parser::verbs::ma::resolve_did_with_retry(
+        resolver.as_ref(),
+        full_did,
+        crate::http::STARTUP_FETCH_TIMEOUT_MS,
+    )
+    .await
+    .map_err(ProfileFetchError::Unavailable)?;
 
     crate::parser::verbs::ma::published_self_matches(&doc, full_did)
         .map_err(ProfileFetchError::Rejected)?;
@@ -98,7 +99,7 @@ async fn fetch_profile_from_ipfs(
     let profile_cid = crate::parser::verbs::doc_profile_cid(&doc)
         .ok_or_else(|| ProfileFetchError::Unavailable(t("profile-no-cid-in-doc")))?;
 
-    let cbor = crate::http::fetch_cid_bytes(&profile_cid)
+    let cbor = crate::http::fetch_cid_bytes_retrying(&profile_cid)
         .await
         .map_err(ProfileFetchError::Unavailable)?;
 
@@ -200,11 +201,10 @@ pub fn Landing() -> impl IntoView {
     let error = RwSignal::new(String::new());
     let initial_gateway_prefs = load_gateway_preferences();
     save_gateway_preferences(&initial_gateway_prefs);
-    let gateway_dweb_link = RwSignal::new(initial_gateway_prefs.dweb_link);
-    let gateway_four_everland = RwSignal::new(initial_gateway_prefs.four_everland);
     let gateway_localhost = RwSignal::new(initial_gateway_prefs.localhost);
     let gateway_custom_enabled = RwSignal::new(initial_gateway_prefs.custom_enabled);
     let gateway_custom_url = RwSignal::new(initial_gateway_prefs.custom_url.clone());
+    let gateway_public = RwSignal::new(initial_gateway_prefs.public_gateways.clone());
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
     // Export mode: rendered QR SVG of the encrypted profile.
@@ -228,11 +228,10 @@ pub fn Landing() -> impl IntoView {
 
     Effect::new(move |_| {
         let prefs = GatewayPreferences {
-            dweb_link: gateway_dweb_link.get(),
-            four_everland: gateway_four_everland.get(),
             localhost: gateway_localhost.get(),
             custom_enabled: gateway_custom_enabled.get(),
             custom_url: gateway_custom_url.get(),
+            public_gateways: gateway_public.get(),
         };
         save_gateway_preferences(&prefs);
     });
@@ -293,7 +292,7 @@ pub fn Landing() -> impl IntoView {
                 }
             }
             use ma_core::DidDocumentResolver;
-            let Ok(resolver) = crate::transport::connection::session_resolver() else {
+            let Ok(resolver) = crate::transport::connection::ipns_resolver() else {
                 return;
             };
             if let Ok(doc) = resolver.resolve(&did).await {
@@ -806,34 +805,31 @@ pub fn Landing() -> impl IntoView {
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-gateway") }}</label>
                         <div class="gateway-list">
-                            <label class="gateway-option">
-                                <input
-                                    type="checkbox"
-                                    prop:checked=move || gateway_dweb_link.get()
-                                    on:change=move |ev| {
-                                        if let Some(input) = ev.target()
-                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                        {
-                                            gateway_dweb_link.set(input.checked());
-                                        }
-                                    }
-                                />
-                                <span>{PUBLIC_GATEWAY_URLS[0]}</span>
-                            </label>
-                            <label class="gateway-option">
-                                <input
-                                    type="checkbox"
-                                    prop:checked=move || gateway_four_everland.get()
-                                    on:change=move |ev| {
-                                        if let Some(input) = ev.target()
-                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                        {
-                                            gateway_four_everland.set(input.checked());
-                                        }
-                                    }
-                                />
-                                <span>{PUBLIC_GATEWAY_URLS[1]}</span>
-                            </label>
+                            {PUBLIC_GATEWAY_URLS.iter().map(|url| {
+                                let url = *url;
+                                view! {
+                                    <label class="gateway-option">
+                                        <input
+                                            type="checkbox"
+                                            prop:checked=move || gateway_public.get().iter().any(|enabled| enabled.as_str() == url)
+                                            on:change=move |ev| {
+                                                if let Some(input) = ev.target()
+                                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                                {
+                                                    let checked = input.checked();
+                                                    gateway_public.update(|list| {
+                                                        list.retain(|enabled| enabled.as_str() != url);
+                                                        if checked {
+                                                            list.push(url.to_string());
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        />
+                                        <span>{url}</span>
+                                    </label>
+                                }
+                            }).collect_view()}
                             <label class="gateway-option">
                                 <input
                                     type="checkbox"

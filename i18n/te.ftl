@@ -456,3 +456,12 @@ help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set a
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!
 error-passphrase-too-short = passphrase must be at least 20 characters
+
+# ── Topdown view ─────────────────────────────────────────────────────────
+topdown-switch-to-terminal = వచనం
+topdown-say = చెప్పు
+topdown-emote = Emote
+topdown-menu-say = చెప్పు
+topdown-menu-emote = Emote
+topdown-menu-look = చూడు
+topdown-menu-go = వెళ్ళు

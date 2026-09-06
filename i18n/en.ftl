@@ -455,3 +455,12 @@ tab-config = settings
 label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 error-passphrase-too-short = passphrase must be at least 20 characters
+
+# ── Topdown view ─────────────────────────────────────────────────────────
+topdown-switch-to-terminal = Text
+topdown-say = Say
+topdown-emote = Emote
+topdown-menu-say = Say
+topdown-menu-emote = Emote
+topdown-menu-look = Look
+topdown-menu-go = Go

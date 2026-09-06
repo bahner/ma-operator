@@ -121,9 +121,11 @@ async fn resolve_and_traverse(
         v
     } else {
         let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
-            // Use the session resolver — it owns the gateway URL, has a
-            // positive cache, and falls back to public gateways automatically.
-            let Some(resolver) = crate::state::SESSION_RESOLVER.with(|r| r.borrow().clone()) else {
+            // DID links resolve through IPNS — use the shared DID/IPNS resolver,
+            // which owns the gateway URL, has a positive cache, and falls back
+            // to public gateways automatically.
+            let Some(resolver) = crate::state::SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone())
+            else {
                 state.push_error(t("msg-link-not-connected"));
                 return;
             };

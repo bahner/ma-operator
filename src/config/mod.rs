@@ -9,6 +9,8 @@
 ///   .my.config.colour.pending   → #004d00
 ///   .my.config.colour.replied   → #00ff41
 ///   .my.config.screensaver.timeout → 300
+///   .my.sprites.favicon         → /ipfs/<cid> (multi-size .ico: 16/32/48)
+///   .my.sprites.32x32           → /ipfs/<cid> (4x4 32x32 Godot sprite sheet)
 ///
 /// The tree is stored as a flat `HashMap`<String, String> in `IndexedDB`
 /// (per-user) and serialised as JSON.
@@ -136,6 +138,19 @@ impl OperatorConfig {
             .collect();
         entries.sort_by_key(|(k, _)| *k);
         entries
+    }
+
+    /// All `.my.sprites.<format>` leaves as an ordered `format → link` map.
+    pub fn sprite_links(&self) -> std::collections::BTreeMap<String, String> {
+        const PREFIX: &str = ".my.sprites.";
+        let mut links = std::collections::BTreeMap::new();
+        for (key, value) in self.list(PREFIX) {
+            let format = &key[PREFIX.len()..];
+            if !format.is_empty() && !value.is_empty() {
+                links.insert(format.to_string(), value.to_string());
+            }
+        }
+        links
     }
 
     // ── Aliases ────────────────────────────────────────────────────────────
@@ -596,6 +611,23 @@ mod tests {
         cfg.set(".my.i18n", "nb");
         cfg.set(".my.i18n", "sv");
         assert_eq!(cfg.get(".my.i18n"), Some("sv"));
+    }
+
+    #[test]
+    fn sprite_links_collects_nonempty_leaves() {
+        let mut cfg = bare();
+        cfg.set(".my.sprites.32x32", "/ipfs/bafy32");
+        cfg.set(".my.sprites.favicon", "/ipfs/bafyfav");
+        cfg.set(".my.sprites.empty", "");
+        cfg.set(".my.other.thing", "/ipfs/ignored");
+
+        let links = cfg.sprite_links();
+        assert_eq!(links.len(), 2);
+        assert_eq!(links.get("32x32").map(String::as_str), Some("/ipfs/bafy32"));
+        assert_eq!(
+            links.get("favicon").map(String::as_str),
+            Some("/ipfs/bafyfav")
+        );
     }
 
     // ── new() applies defaults ─────────────────────────────────────────────

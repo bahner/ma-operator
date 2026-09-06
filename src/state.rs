@@ -237,13 +237,6 @@ pub enum OutboxTask {
     },
     /// Auto-pong reply to an incoming `:ping`.
     Pong { target: String, reply_to_id: String },
-    /// On-demand reply to a `:favicon` / `:sprite` metadata query, carrying
-    /// the local `.my.config.*` link (`None` when unset).
-    TermReply {
-        target: String,
-        reply_to_id: String,
-        value: Option<String>,
-    },
 }
 
 // ── `.ma` operation queue ──────────────────────────────────────────────────

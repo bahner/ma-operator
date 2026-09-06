@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 use crate::config::OperatorConfig;
 use crate::state::AppState;
-use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
+use crate::views::{landing::Landing, screensaver::Screensaver, zion::terminal::Terminal};
 
 /// Read a suggested runtime DID from `?ma=`.
 fn url_ma() -> Option<String> {
@@ -66,6 +66,16 @@ fn url_z() -> Option<String> {
     (!val.is_empty()).then_some(val)
 }
 
+/// Read a view identifier from `?gui=` — used as a fallback when the profile
+/// has no explicit `.my.config.view` choice.
+fn url_gui() -> Option<String> {
+    let window = web_sys::window()?;
+    let search = window.location().search().ok()?;
+    let params = web_sys::UrlSearchParams::new_with_str(&search).ok()?;
+    let val = params.get("gui")?.trim().to_string();
+    (!val.is_empty()).then_some(val)
+}
+
 #[component]
 pub fn App() -> impl IntoView {
     let state = AppState::new();
@@ -88,6 +98,10 @@ pub fn App() -> impl IntoView {
     // ?z=<manifest-cid> — select z only when the restored profile has no choice.
     if let Some(z) = url_z() {
         state.startup_z.set(Some(z));
+    }
+    // ?gui=<view> — view fallback when the profile has no .my.config.view.
+    if let Some(gui) = url_gui() {
+        state.startup_gui.set(Some(gui));
     }
 
     view! {

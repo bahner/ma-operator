@@ -8,10 +8,17 @@ use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
+use std::collections::BTreeMap;
 use web_time::{Duration, Instant};
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
-pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
+/// How long a startup liveness ping waits for the runtime to answer.
+///
+/// This must exceed `transport::connection`'s per-send timeout so a first
+/// connection (iroh QUIC handshake, possibly via relay) is given a chance to
+/// finish before the ping gives up. A shorter value here made a reachable
+/// runtime report "runtime ping timed out" on cold start.
+pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 15_000;
 const DEFAULT_MA_TIMEOUT_SECS: u32 = 120;
 const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
 const MA_CTX_DID: &str = ".ma.ctx.did";
@@ -216,37 +223,13 @@ async fn gateway_test(did: &str, state: &AppState) {
         if urls.len() == 1 { "" } else { "s" }
     ));
     for base in urls {
-        let subdomain = gateway_test_url(&base, key);
-        state.push_system(format!("→ {subdomain}"));
-        let cors = crate::http::probe_fetch(&subdomain, false, 6_000).await;
+        let url = format!("{base}ipns/{key}");
+        state.push_system(format!("→ {url}"));
+        let cors = crate::http::probe_fetch(&url, false, 6_000).await;
         state.push_system(format!("  {cors}"));
-        let no_cors = crate::http::probe_fetch(&subdomain, true, 6_000).await;
+        let no_cors = crate::http::probe_fetch(&url, true, 6_000).await;
         state.push_system(format!("  {no_cors}"));
-        let path = format!("{base}ipns/{key}");
-        if path != subdomain {
-            let path_cors = crate::http::probe_fetch(&path, false, 6_000).await;
-            state.push_system(format!("  path {path} → {path_cors}"));
-        }
     }
-}
-
-/// Subdomain form for domain gateways (as ma-core's `gateway_url_for_path`
-/// does); path form for localhost/IP gateways. Diagnostic-only mirror.
-fn gateway_test_url(base: &str, key: &str) -> String {
-    let scheme = if base.starts_with("https://") {
-        "https"
-    } else {
-        "http"
-    };
-    let rest = base
-        .strip_prefix("https://")
-        .or_else(|| base.strip_prefix("http://"))
-        .unwrap_or(base);
-    let host = rest.split(['/', '?', '#']).next().unwrap_or(rest);
-    if host == "localhost" || host.parse::<std::net::IpAddr>().is_ok() {
-        return format!("{base}ipns/{key}");
-    }
-    format!("{scheme}://{key}.ipns.{host}/")
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -373,9 +356,17 @@ pub(crate) async fn connect_trusted_ma_on_startup(
             "msg-identity-first-publish",
             &[("seconds", &(timeout_ms / 1_000).to_string())],
         ));
-        let selected_z = config.get_untracked().get(".my.z").map(str::to_string);
-        if let Err(e) =
-            send_identity_publish_and_wait(&did, Some(did.clone()), selected_z, timeout_ms).await
+        let cfg = config.get_untracked();
+        let selected_z = cfg.get(".my.z").map(str::to_string);
+        let sprites = cfg.sprite_links();
+        if let Err(e) = send_identity_publish_and_wait(
+            &did,
+            Some(did.clone()),
+            selected_z,
+            &sprites,
+            timeout_ms,
+        )
+        .await
         {
             log::error!("[ma] identity publication failed before runtime ping: {e}");
             return ConnectMaOutcome::Unavailable { target: did };
@@ -462,6 +453,7 @@ pub(crate) async fn send_identity_publish_and_wait(
     publisher: &str,
     trusted_ma: Option<String>,
     selected_z: Option<String>,
+    sprites: &BTreeMap<String, String>,
     timeout_ms: u32,
 ) -> Result<(), String> {
     let mut rx = None;
@@ -470,6 +462,7 @@ pub(crate) async fn send_identity_publish_and_wait(
         publisher,
         trusted_ma.as_deref(),
         selected_z.as_deref(),
+        sprites,
         |msg_id| {
             registered_msg_id = Some(msg_id.clone());
             rx = Some(crate::state::AwaitingReply::register(msg_id));
@@ -522,9 +515,11 @@ pub(crate) async fn queue_profile_publish(
     let cfg = config.get_untracked();
     let trusted_ma = active_ma_did(&cfg);
     let selected_z = cfg.get(".my.z").map(str::to_string);
+    let sprites = cfg.sprite_links();
     let timeout_ms = ma_timeout_ms(&cfg);
     if let Err(error) =
-        send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, timeout_ms).await
+        send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, &sprites, timeout_ms)
+            .await
     {
         fail_profile_publish(state, config, cmd_id, error, logout_after);
         return;

@@ -784,6 +784,35 @@ Auto-seeded from `navigator.language` on first login if absent.
 Changing it (`.my.i18n: sv`) takes effect immediately and persists.
 Also included in the published DID document as `ma.lang`.
 
+`.my.sprites.<format>` — IPLD links (e.g. `/ipfs/<cid>`) published into the
+DID document as the `ma.sprites` map. Known formats include:
+
+- `favicon` — a multi-size `.ico` favicon containing 16x16, 32x32, and 48x48
+  avatar images.
+- `32x32` — a 4x4, 32x32-px Godot sprite sheet (128x128 PNG) used to render
+  the avatar in top-down views.
+
+Operator stores only the links, never the image data. On `.ma`/profile publish
+every non-empty `.my.sprites.*` leaf is embedded as an IPLD link under
+`ma.sprites`, so another client can fetch it directly with
+`ipfs dag get /ipns/<id>/ma/sprites/32x32`.
+
+**Sprite sheet spec** — the format a sprite at `.my.sprites.32x32` MUST
+follow:
+
+- Format: PNG with transparent background (alpha).
+- Frame size: exactly 32x32 pixels.
+- Grid: 4 columns x 4 rows.
+- Total image size: exactly 128x128 pixels.
+- Rows: `0` walk down, `1` walk left, `2` walk right, `3` walk up.
+- Columns: `0` standing/neutral, `1` first walking step,
+  `2` standing/neutral, `3` second walking step.
+- Requirements: the same character in every frame; the character centred in
+  every 32x32 cell; feet share one baseline; true pixel art (1 artwork pixel
+  = 1 PNG pixel); no anti-aliasing; no interpolation; no padding or margins
+  between cells; no text, labels, grid lines, or decorations outside the
+  character.
+
 Transfer commands use the actor-provided ctx and parent/child handshake; Operator
 does not store transfer state.
 

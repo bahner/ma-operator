@@ -113,7 +113,7 @@ impl SchemeCtx for EvalCtx {
     }
 
     fn resolve_ipns<'a>(&'a self, path: &'a str) -> LocalBoxFuture<'a, Result<String, String>> {
-        let resolver = crate::state::SESSION_RESOLVER.with(|slot| slot.borrow().clone());
+        let resolver = crate::state::SESSION_IPNS_RESOLVER.with(|slot| slot.borrow().clone());
         let path = path.to_string();
         Box::pin(async move {
             let resolver = resolver.ok_or_else(|| "IPFS resolver is not connected".to_string())?;

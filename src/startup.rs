@@ -2,6 +2,7 @@
 
 use leptos::prelude::*;
 use std::collections::BTreeMap;
+use web_time::{Duration, Instant};
 
 use crate::{
     config::{persist_config, OperatorConfig},
@@ -61,6 +62,16 @@ pub(crate) async fn startup_load_config(
     // Seed auto-publish with default "true" if not already set.
     if cfg.get(".my.identity.auto-publish").is_none() {
         cfg.set(".my.identity.auto-publish", "true");
+    }
+    // Seed the view from ?gui= only when the profile has no explicit choice.
+    if let Some(gui) = state
+        .startup_gui
+        .update_untracked(std::option::Option::take)
+    {
+        let gui = gui.trim().to_string();
+        if !gui.is_empty() && cfg.get(".my.config.view").is_none() {
+            cfg.set(".my.config.view", &gui);
+        }
     }
     // Prune inbox entries that expired since last session.
     let now = js_sys::Date::now() / 1000.0;
@@ -158,11 +169,31 @@ fn single_z_scheme_source(source: String) -> Result<Vec<(String, String)>, Strin
     )])
 }
 
+/// Resolve one `.z` seed CID, retrying transient gateway failures within the
+/// shared startup budget. Validation errors are permanent and are not retried.
+async fn resolve_z_doc_link(value: &str) -> Result<crate::doc_link::ResolvedDocContent, String> {
+    let deadline =
+        Instant::now() + Duration::from_millis(u64::from(crate::http::STARTUP_FETCH_TIMEOUT_MS));
+    let mut attempt = 0u32;
+    loop {
+        match crate::doc_link::resolve_doc_link(value).await {
+            Ok(content) => return Ok(content),
+            Err(error) if Instant::now() < deadline => {
+                log::warn!("[z] z-seed fetch failed, retrying: {error}");
+                gloo_timers::future::TimeoutFuture::new(crate::http::retry_backoff_ms(attempt))
+                    .await;
+                attempt = attempt.saturating_add(1);
+            }
+            Err(error) => return Err(error),
+        }
+    }
+}
+
 async fn load_z_tree(seed: &str) -> Result<Vec<(String, String)>, String> {
     if crate::doc_link::parse_link_cid(seed).is_none() {
         return Err("z URL parameter is not a CID".to_string());
     }
-    let manifest = match crate::doc_link::resolve_doc_link(seed).await? {
+    let manifest = match resolve_z_doc_link(seed).await? {
         crate::doc_link::ResolvedDocContent::Manifest(manifest) => manifest,
         crate::doc_link::ResolvedDocContent::Text(source) => {
             return single_z_scheme_source(source);
@@ -171,7 +202,7 @@ async fn load_z_tree(seed: &str) -> Result<Vec<(String, String)>, String> {
     let entries = validate_z_manifest(manifest)?;
     let mut sources = Vec::with_capacity(entries.len());
     for (path, cid) in entries {
-        match crate::doc_link::resolve_doc_link(&cid.to_string()).await? {
+        match resolve_z_doc_link(&cid.to_string()).await? {
             crate::doc_link::ResolvedDocContent::Text(source) => {
                 let source = validate_z_source(&path, source)?;
                 sources.push((path, source));
@@ -191,10 +222,14 @@ fn normalise_z_reference(value: &str) -> Option<String> {
 /// Resolve our own published DID `ma.z` manifest CID, if present. This is the
 /// last saved z selection; the live `.my.z` profile value always wins over it.
 async fn resolve_did_z(sender_did: &str) -> Option<String> {
-    let resolver = transport::session_resolver().ok()?;
-    let document = ma_core::DidDocumentResolver::resolve(resolver.as_ref(), sender_did)
-        .await
-        .ok()?;
+    let resolver = transport::ipns_resolver().ok()?;
+    let document = crate::parser::verbs::ma::resolve_did_with_retry(
+        resolver.as_ref(),
+        sender_did,
+        crate::http::STARTUP_FETCH_TIMEOUT_MS,
+    )
+    .await
+    .ok()?;
     crate::parser::verbs::doc_z_cid(&document)
 }
 
