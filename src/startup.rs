@@ -63,16 +63,6 @@ pub(crate) async fn startup_load_config(
     if cfg.get(".my.identity.auto-publish").is_none() {
         cfg.set(".my.identity.auto-publish", "true");
     }
-    // Seed the view from ?gui= only when the profile has no explicit choice.
-    if let Some(gui) = state
-        .startup_gui
-        .update_untracked(std::option::Option::take)
-    {
-        let gui = gui.trim().to_string();
-        if !gui.is_empty() && cfg.get(".my.config.view").is_none() {
-            cfg.set(".my.config.view", &gui);
-        }
-    }
     // Prune inbox entries that expired since last session.
     let now = js_sys::Date::now() / 1000.0;
     let pruned = crate::mailbox::prune_inbox_expired(&mut cfg, now);

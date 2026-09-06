@@ -3,7 +3,7 @@ use crate::config::OperatorConfig;
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::AppState;
-use crate::views::editor::EditorContext;
+use crate::editor::EditorContext;
 use js_sys;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;

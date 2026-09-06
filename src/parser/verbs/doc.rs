@@ -6,7 +6,7 @@ use crate::i18n::{t, tf};
 use crate::parser::command::{parse, Command, DotOp};
 use crate::state::{AppState, AwaitingReply};
 use crate::transport;
-use crate::views::editor::EditorContext;
+use crate::editor::EditorContext;
 use leptos::prelude::*;
 use std::collections::BTreeMap;
 

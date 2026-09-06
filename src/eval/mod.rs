@@ -21,7 +21,7 @@ use crate::{
     parser::verbs::dispatch_meta,
     state::{AppState, FocusMode, PendingKind},
     transport,
-    views::editor::EditorContext,
+    editor::EditorContext,
 };
 
 /// Clear the session and session-scoped config. Shared by the `.logout`

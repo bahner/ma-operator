@@ -21,23 +21,28 @@ mod config;
 mod core;
 mod dispatch;
 mod doc_link;
+mod editor;
 mod eval;
 mod help;
 mod http;
 mod i18n;
 mod identity;
 mod inbox_poll;
+mod input;
+mod landing;
 mod mailbox;
 mod messages;
 mod parser;
 mod profile_crypto;
+mod qr;
 mod reply_handlers;
 mod scheme;
+mod screensaver;
+mod secret;
 mod startup;
 mod state;
-mod topdown;
+mod terminal;
 mod transport;
-mod views;
 
 fn init_logging() {
     #[cfg(target_arch = "wasm32")]

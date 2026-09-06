@@ -1,14 +1,13 @@
 use super::resolve_bare_did;
 use crate::config::OperatorConfig;
+use crate::editor::EditorContext;
 use crate::http::{fetch_url_text_timeout, post_json_text_timeout};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::{AppState, MaOp, PendingKind};
 use crate::transport;
-use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
 use leptos::prelude::*;
-use std::collections::BTreeMap;
 use web_time::{Duration, Instant};
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
@@ -358,15 +357,8 @@ pub(crate) async fn connect_trusted_ma_on_startup(
         ));
         let cfg = config.get_untracked();
         let selected_z = cfg.get(".my.z").map(str::to_string);
-        let sprites = cfg.sprite_links();
-        if let Err(e) = send_identity_publish_and_wait(
-            &did,
-            Some(did.clone()),
-            selected_z,
-            &sprites,
-            timeout_ms,
-        )
-        .await
+        if let Err(e) =
+            send_identity_publish_and_wait(&did, Some(did.clone()), selected_z, timeout_ms).await
         {
             log::error!("[ma] identity publication failed before runtime ping: {e}");
             return ConnectMaOutcome::Unavailable { target: did };
@@ -453,7 +445,6 @@ pub(crate) async fn send_identity_publish_and_wait(
     publisher: &str,
     trusted_ma: Option<String>,
     selected_z: Option<String>,
-    sprites: &BTreeMap<String, String>,
     timeout_ms: u32,
 ) -> Result<(), String> {
     let mut rx = None;
@@ -462,7 +453,6 @@ pub(crate) async fn send_identity_publish_and_wait(
         publisher,
         trusted_ma.as_deref(),
         selected_z.as_deref(),
-        sprites,
         |msg_id| {
             registered_msg_id = Some(msg_id.clone());
             rx = Some(crate::state::AwaitingReply::register(msg_id));
@@ -515,11 +505,9 @@ pub(crate) async fn queue_profile_publish(
     let cfg = config.get_untracked();
     let trusted_ma = active_ma_did(&cfg);
     let selected_z = cfg.get(".my.z").map(str::to_string);
-    let sprites = cfg.sprite_links();
     let timeout_ms = ma_timeout_ms(&cfg);
     if let Err(error) =
-        send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, &sprites, timeout_ms)
-            .await
+        send_identity_publish_and_wait(&publisher, trusted_ma, selected_z, timeout_ms).await
     {
         fail_profile_publish(state, config, cmd_id, error, logout_after);
         return;

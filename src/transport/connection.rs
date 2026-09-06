@@ -17,7 +17,6 @@ use crate::state::{
     SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
-use std::collections::BTreeMap;
 use std::rc::Rc;
 use std::sync::Arc;
 use web_time::Duration;
@@ -39,8 +38,8 @@ pub const PUBLIC_GATEWAY_URLS: &[&str] = &[
     "https://gateway.pinata.cloud/", // Pinata
     "https://w3s.link/",             // web3.storage
 ];
-const IPFS_GATEWAYS_PREF_KEY: &str = "zion_ipfs_gateways";
-const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
+const IPFS_GATEWAYS_PREF_KEY: &str = "operator_ipfs_gateways";
+const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "operator_ipfs_gateway";
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GatewayPreferences {
@@ -510,7 +509,6 @@ pub async fn send_identity_publish_with_msg_id(
     publisher_did: &str,
     trusted_ma: Option<&str>,
     selected_z: Option<&str>,
-    sprites: &BTreeMap<String, String>,
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
@@ -567,7 +565,6 @@ pub async fn send_identity_publish_with_msg_id(
         }
         _ => ma_ext,
     };
-    let ma_ext = with_sprites(ma_ext, sprites);
     let document = bundle
         .build_document(ma_ext)
         .map_err(|e| format!("build document failed: {e}"))?;
@@ -601,25 +598,6 @@ fn with_selected_z(ma_ext: ma_core::MaExtension, selected_z: Option<&str>) -> ma
     match selected_z.and_then(crate::doc_link::parse_link_cid) {
         Some(cid) => ma_ext.extra("z", Ipld::Link(cid)),
         None => ma_ext,
-    }
-}
-
-/// Embed every `.my.sprites.<format>` link as an IPLD link under `ma.sprites`.
-/// Non-CID values are skipped; an empty set leaves the extension untouched.
-fn with_sprites(
-    ma_ext: ma_core::MaExtension,
-    sprites: &BTreeMap<String, String>,
-) -> ma_core::MaExtension {
-    let map: BTreeMap<String, Ipld> = sprites
-        .iter()
-        .filter_map(|(format, link)| {
-            crate::doc_link::parse_link_cid(link).map(|cid| (format.clone(), Ipld::Link(cid)))
-        })
-        .collect();
-    if map.is_empty() {
-        ma_ext
-    } else {
-        ma_ext.extra("sprites", Ipld::Map(map))
     }
 }
 
@@ -1110,25 +1088,6 @@ mod tests {
             ))
             .expect("document");
         assert_eq!(crate::parser::verbs::doc_z_cid(&document), None);
-    }
-
-    #[test]
-    fn sprites_are_published_only_when_valid_cids() {
-        let cid = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
-        let mut sprites = BTreeMap::new();
-        sprites.insert("32x32".to_string(), format!("/ipfs/{cid}"));
-        sprites.insert("favicon".to_string(), "not a cid".to_string());
-
-        let document = SecretBundle::generate()
-            .build_document(with_sprites(
-                ma_core::MaExtension::new().kind("agent"),
-                &sprites,
-            ))
-            .expect("document");
-
-        let links = crate::parser::verbs::doc_sprite_links(&document);
-        assert_eq!(links.len(), 1);
-        assert_eq!(links.get("32x32").map(String::as_str), Some(cid));
     }
 
     #[test]

@@ -5,7 +5,7 @@ use crate::core::CommandStatus;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::transport;
-use crate::views::editor::EditorContext;
+use crate::editor::EditorContext;
 use leptos::prelude::*;
 
 /// Collect all distinct numeric inbox indices in sorted order.
@@ -115,7 +115,7 @@ pub(super) fn handle_inbox(
                 if args.is_empty() {
                     // No body — open editor with Reply mode.
                     show_editor.set(Some(EditorContext::new(base, "").with_mode(
-                        crate::views::editor::EditorMode::Reply {
+                        crate::editor::EditorMode::Reply {
                             to: from,
                             reply_to_id,
                         },
@@ -153,7 +153,7 @@ pub(super) fn handle_inbox(
                 show_editor.set(Some(
                     EditorContext::new(base, content)
                         .with_language(lang)
-                        .with_mode(crate::views::editor::EditorMode::View),
+                        .with_mode(crate::editor::EditorMode::View),
                 ));
                 return Ok(());
             }

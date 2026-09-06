@@ -19,7 +19,7 @@ use crate::{
         ActiveBatch, AppState, AwaitingReply, BatchMode, OnError, PendingKind, DEFAULT_TIMEOUT_MS,
     },
     transport,
-    views::editor::{EditorContext, EditorMode},
+    editor::{EditorContext, EditorMode},
 };
 
 const TICK_MS: u32 = 50;

@@ -13,11 +13,11 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, OperatorConfig},
     core::CommandStatus,
+    editor::{EditorContext, EditorMode},
     http::fetch_path_bytes,
     i18n::tf,
     messages::{cid_bytes_to_editor_text, decode_crud_content, IncomingMessage},
     state::{AppState, OutboxTask},
-    views::editor::{EditorContext, EditorMode},
 };
 
 // ── IPFS CRUD ──────────────────────────────────────────────────────────────
@@ -221,7 +221,6 @@ pub(crate) fn handle_profile_publish_reply(
             let cfg_snap = config.get_untracked();
             let trusted_ma = crate::parser::verbs::ma::active_ma_did(&cfg_snap);
             let selected_z = cfg_snap.get(".my.z").map(str::to_string);
-            let sprites = cfg_snap.sprite_links();
             leptos::task::spawn_local(async move {
                 let publisher_did = request.publisher_did.clone();
                 let timeout_ms = request.timeout_ms;
@@ -231,7 +230,6 @@ pub(crate) fn handle_profile_publish_reply(
                         &publisher_did,
                         trusted_ma,
                         selected_z.clone(),
-                        &sprites,
                         timeout_ms,
                     )
                     .await

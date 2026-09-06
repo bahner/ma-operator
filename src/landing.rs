@@ -19,7 +19,7 @@ use crate::{
     },
 };
 
-const LAST_DID_KEY: &str = "zion_last_did";
+const LAST_DID_KEY: &str = "operator_last_did";
 
 fn save_last_did(did: &str) {
     let _ = web_sys::window()
@@ -637,15 +637,15 @@ pub fn Landing() -> impl IntoView {
         let uname = username_from_did(&did);
         spawn_local(async move {
             match load_identity(&uname).await {
-                Ok(Some(_)) => match crate::views::qr::generate_qr_svg(&did) {
+                Ok(Some(_)) => match crate::qr::generate_qr_svg(&did) {
                     Ok(svg) => {
                         error.set(String::new());
                         qr_svg.set(Some(svg));
                     }
-                    Err(crate::views::qr::QrGenError::TooLarge) => {
+                    Err(crate::qr::QrGenError::TooLarge) => {
                         error.set(t("qr-error-too-large"));
                     }
-                    Err(crate::views::qr::QrGenError::Encode(e)) => error.set(e),
+                    Err(crate::qr::QrGenError::Encode(e)) => error.set(e),
                 },
                 Ok(None) => error.set(tf("error-identity-not-found", &[("name", &uname)])),
                 Err(e) => error.set(e),
@@ -673,7 +673,7 @@ pub fn Landing() -> impl IntoView {
                 }
                 gloo_timers::future::TimeoutFuture::new(50).await;
             };
-            let stream = match crate::views::qr::open_camera(&video).await {
+            let stream = match crate::qr::open_camera(&video).await {
                 Ok(s) => s,
                 Err(e) => {
                     scanning.set(false);
@@ -681,7 +681,7 @@ pub fn Landing() -> impl IntoView {
                     return;
                 }
             };
-            let mut native_detector = crate::views::qr::NativeQrDetector::new();
+            let mut native_detector = crate::qr::NativeQrDetector::new();
             loop {
                 if !scanning.try_get_untracked().unwrap_or(false) {
                     break;
@@ -691,19 +691,19 @@ pub fn Landing() -> impl IntoView {
                         result
                     } else {
                         native_detector = None;
-                        crate::views::qr::try_decode_frame(&video)
+                        crate::qr::try_decode_frame(&video)
                     }
                 } else {
-                    crate::views::qr::try_decode_frame(&video)
+                    crate::qr::try_decode_frame(&video)
                 };
                 match scan_result {
-                    crate::views::qr::QrScanResult::WaitingForVideo => {
+                    crate::qr::QrScanResult::WaitingForVideo => {
                         scan_feedback.set("waiting");
                     }
-                    crate::views::qr::QrScanResult::CaptureError => {
+                    crate::qr::QrScanResult::CaptureError => {
                         scan_feedback.set("capture-error");
                     }
-                    crate::views::qr::QrScanResult::NoCode => {
+                    crate::qr::QrScanResult::NoCode => {
                         let frame = scan_frames.get_untracked().wrapping_add(1);
                         scan_frames.set(frame);
                         scan_feedback.set(if frame.is_multiple_of(2) {
@@ -712,14 +712,14 @@ pub fn Landing() -> impl IntoView {
                             "searching phase-b"
                         });
                     }
-                    crate::views::qr::QrScanResult::Unreadable => {
+                    crate::qr::QrScanResult::Unreadable => {
                         scan_frames.update(|frame| *frame = frame.wrapping_add(1));
                         scan_feedback.set("unreadable");
                     }
-                    crate::views::qr::QrScanResult::Decoded(bytes) => {
+                    crate::qr::QrScanResult::Decoded(bytes) => {
                         scan_frames.update(|frame| *frame = frame.wrapping_add(1));
                         scan_feedback.set("decoded");
-                        if let Some(scanned_did) = crate::views::qr::did_payload(&bytes) {
+                        if let Some(scanned_did) = crate::qr::did_payload(&bytes) {
                             gloo_timers::future::TimeoutFuture::new(250).await;
                             did_input.set(scanned_did);
                             parsed.set(None);
@@ -742,7 +742,7 @@ pub fn Landing() -> impl IntoView {
                 }
                 gloo_timers::future::TimeoutFuture::new(300).await;
             }
-            crate::views::qr::close_camera(&stream);
+            crate::qr::close_camera(&stream);
             video.set_src_object(None);
         });
     };

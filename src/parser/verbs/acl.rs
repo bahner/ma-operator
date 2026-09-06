@@ -1,7 +1,7 @@
 use crate::config::OperatorConfig;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
-use crate::views::editor::EditorContext;
+use crate::editor::EditorContext;
 use leptos::prelude::*;
 
 pub(super) fn handle_acl(
@@ -27,7 +27,7 @@ pub(super) fn handle_acl(
                 show_editor.set(Some(
                     EditorContext::new(".my.acl", current)
                         .with_language("yaml")
-                        .with_mode(crate::views::editor::EditorMode::ConfigEdit {
+                        .with_mode(crate::editor::EditorMode::ConfigEdit {
                             key: crate::acl::ACL_KEY.to_string(),
                         }),
                 ));

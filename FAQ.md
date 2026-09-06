@@ -114,36 +114,3 @@ binding with a Scheme expression such as `(begin foo)`.
 Yes. Any source executed via `!eval` should end with a trailing newline.
 Missing trailing newline is invalid source data, because line-oriented flows
 can otherwise drop or delay the last logical line.
-
-## How do I give my avatar a favicon and a sprite?
-
-Set config links under `.my.sprites` that point at IPFS objects:
-
-```text
-.my.sprites.favicon: /ipfs/<cid>   # a multi-size .ico (16/32/48)
-.my.sprites.32x32:   /ipfs/<cid>   # a 4x4 32x32 Godot sprite sheet
-```
-
-Both are plain object references — operator stores the link, not the image.
-On publish, every `.my.sprites.*` link is embedded in the DID document as an
-IPLD link under `ma.sprites`, so another client can fetch it directly with
-`ipfs dag get /ipns/<did>/ma/sprites/32x32`.
-The favicon is a `.ico` file containing 16x16, 32x32, and 48x48 avatar
-images. The sprite is a 128x128 PNG sprite sheet laid out as a 4x4 grid of
-32x32 frames:
-
-| Axis | Meaning |
-|------|---------|
-| Row 0 | walk down |
-| Row 1 | walk left |
-| Row 2 | walk right |
-| Row 3 | walk up |
-| Column 0 | standing / neutral |
-| Column 1 | first walking step |
-| Column 2 | standing / neutral |
-| Column 3 | second walking step |
-
-The sheet must be true pixel art (1 artwork pixel = 1 PNG pixel), have a
-transparent background, and contain no anti-aliasing, interpolation, padding,
-text, labels, or grid lines. See the avatar visual-assets spec in the ma-spec
-runtime documents for the full requirements.

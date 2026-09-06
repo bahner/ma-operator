@@ -12,7 +12,7 @@ use crate::{
     parser::verbs::ma::run_ma_queue,
     startup::{startup_connect, startup_load_config, startup_load_history},
     state::{AppState, QrIntent},
-    views::editor::{EditorContext, EditorModal},
+    editor::{EditorContext, EditorModal},
 };
 
 #[component]
@@ -108,25 +108,16 @@ pub fn Terminal() -> impl IntoView {
              class:placement-right=move || config.get().get(".my.config.editor.placement").unwrap_or("bottom") == "right"
         >
             <QrOverlay state=state.clone()/>
-            <crate::views::secret::SecretModal state=state.clone()/>
+            <crate::secret::SecretModal state=state.clone()/>
             <EditorModal show=show_editor config=config on_eval=eval_lines/>
-            {move || {
-                let id = config.get().get(".my.config.view").unwrap_or("zion").to_string();
-                if crate::views::resolve_view(&id) == Some("topdown") {
-                    view! { <crate::views::topdown::TopdownView/> }.into_any()
-                } else {
-                    view! {
-                        <OutputPane state=state.clone()/>
-                        <crate::views::zion::input::InputBar
-                            on_submit=handle_input.clone()
-                            focus_actor=state.focus_actor
-                            history=state.history
-                            eval_input=eval_input
-                            prefill_input=state.prefill_input
-                        />
-                    }.into_any()
-                }
-            }}
+            <OutputPane state=state.clone()/>
+            <crate::input::InputBar
+                on_submit=handle_input.clone()
+                focus_actor=state.focus_actor
+                history=state.history
+                eval_input=eval_input
+                prefill_input=state.prefill_input
+            />
         </div>
     }
 }
@@ -167,7 +158,7 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                 gloo_timers::future::TimeoutFuture::new(50).await;
             };
 
-            let stream = if let Ok(s) = crate::views::qr::open_camera(&video).await {
+            let stream = if let Ok(s) = crate::qr::open_camera(&video).await {
                 s
             } else {
                 scan_feedback.set("capture-error");
@@ -175,7 +166,7 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                 return;
             };
 
-            let mut native_detector = crate::views::qr::NativeQrDetector::new();
+            let mut native_detector = crate::qr::NativeQrDetector::new();
             loop {
                 if !matches!(
                     state2.qr_intent.get_untracked(),
@@ -189,20 +180,20 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                         result
                     } else {
                         native_detector = None;
-                        crate::views::qr::try_decode_frame(&video)
+                        crate::qr::try_decode_frame(&video)
                     }
                 } else {
-                    crate::views::qr::try_decode_frame(&video)
+                    crate::qr::try_decode_frame(&video)
                 };
 
                 match scan_result {
-                    crate::views::qr::QrScanResult::WaitingForVideo => {
+                    crate::qr::QrScanResult::WaitingForVideo => {
                         scan_feedback.set("waiting");
                     }
-                    crate::views::qr::QrScanResult::CaptureError => {
+                    crate::qr::QrScanResult::CaptureError => {
                         scan_feedback.set("capture-error");
                     }
-                    crate::views::qr::QrScanResult::NoCode => {
+                    crate::qr::QrScanResult::NoCode => {
                         let frame = scan_frames.get_untracked().wrapping_add(1);
                         scan_frames.set(frame);
                         scan_feedback.set(if frame.is_multiple_of(2) {
@@ -211,15 +202,15 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                             "searching phase-b"
                         });
                     }
-                    crate::views::qr::QrScanResult::Unreadable => {
+                    crate::qr::QrScanResult::Unreadable => {
                         scan_frames.update(|frame| *frame = frame.wrapping_add(1));
                         scan_feedback.set("unreadable");
                     }
-                    crate::views::qr::QrScanResult::Decoded(bytes) => {
+                    crate::qr::QrScanResult::Decoded(bytes) => {
                         scan_frames.update(|frame| *frame = frame.wrapping_add(1));
                         scan_feedback.set("decoded");
 
-                        if let Some(payload) = crate::views::qr::text_payload(&bytes) {
+                        if let Some(payload) = crate::qr::text_payload(&bytes) {
                             let payload = payload.replace(['\n', '\r'], " ");
                             if let Some(QrIntent::Capture { path }) =
                                 state2.qr_intent.get_untracked()
@@ -238,7 +229,7 @@ fn QrOverlay(state: AppState) -> impl IntoView {
                 gloo_timers::future::TimeoutFuture::new(300).await;
             }
 
-            crate::views::qr::close_camera(&stream);
+            crate::qr::close_camera(&stream);
             video.set_src_object(None);
             scanning.set(false);
         });

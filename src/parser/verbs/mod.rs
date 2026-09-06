@@ -9,9 +9,9 @@ mod inbox;
 pub(crate) mod ma;
 
 use crate::config::OperatorConfig;
+use crate::editor::EditorContext;
 use crate::i18n::tf;
 use crate::state::{AppState, QrIntent};
-use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 use ma_core::Ipld;
 
@@ -56,25 +56,6 @@ pub(crate) fn doc_trusted_ma(doc: &ma_core::Document) -> Option<String> {
 
 pub(crate) fn is_bare_ma_did(did: &str) -> bool {
     did.starts_with("did:ma:") && !did.contains('#') && !did.contains('/')
-}
-
-/// Extract the `ma.sprites` map from a resolved `Document` as `format → CID`.
-pub(crate) fn doc_sprite_links(
-    doc: &ma_core::Document,
-) -> std::collections::BTreeMap<String, String> {
-    let Some(Ipld::Map(ma)) = &doc.ma else {
-        return std::collections::BTreeMap::new();
-    };
-    let Some(Ipld::Map(sprites)) = ma.get("sprites") else {
-        return std::collections::BTreeMap::new();
-    };
-    let mut links = std::collections::BTreeMap::new();
-    for (format, value) in sprites {
-        if let Some(cid) = ipld_link_cid(value) {
-            links.insert(format.clone(), cid);
-        }
-    }
-    links
 }
 
 /// Normalise a link-shaped IPLD value (`Link`, CID string, or `{"/": cid}`) to
@@ -263,37 +244,6 @@ mod tests {
             doc_z_cid(&document_with_z(Ipld::String("private source".to_string()))),
             None
         );
-    }
-
-    #[test]
-    fn doc_sprite_links_extracts_link_and_prefixed_string_values() {
-        let cid = cid::Cid::try_from(RAW_CID).expect("CID");
-        let mut sprites = std::collections::BTreeMap::new();
-        sprites.insert("32x32".to_string(), Ipld::Link(cid));
-        sprites.insert(
-            "favicon".to_string(),
-            Ipld::String(format!("/ipfs/{RAW_CID}")),
-        );
-        sprites.insert("broken".to_string(), Ipld::String("not a cid".to_string()));
-
-        let doc = SecretBundle::generate()
-            .build_document(
-                MaExtension::new()
-                    .kind("agent")
-                    .extra("sprites", Ipld::Map(sprites)),
-            )
-            .expect("document");
-
-        let links = doc_sprite_links(&doc);
-        assert_eq!(links.len(), 2);
-        assert_eq!(links.get("32x32").map(String::as_str), Some(RAW_CID));
-        assert_eq!(links.get("favicon").map(String::as_str), Some(RAW_CID));
-    }
-
-    #[test]
-    fn doc_sprite_links_is_empty_without_sprites() {
-        let doc = document_with_ma(Ipld::String("did:ma:trusted".to_string()));
-        assert!(doc_sprite_links(&doc).is_empty());
     }
 
     #[test]

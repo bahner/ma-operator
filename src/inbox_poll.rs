@@ -20,7 +20,7 @@ use crate::{
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
-    views::editor::EditorContext,
+    editor::EditorContext,
 };
 
 // ── Public entry point ─────────────────────────────────────────────────────
@@ -55,7 +55,6 @@ fn route_incoming(
     if !acl_gate(&incoming, state, config) {
         return;
     }
-    crate::topdown::route_topdown_event(&incoming, state);
     if handle_inbox_message(&incoming, state, config) {
         return;
     }
