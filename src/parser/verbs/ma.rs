@@ -3,7 +3,7 @@ use crate::config::OperatorConfig;
 use crate::http::{fetch_url_text_timeout, post_json_text_timeout};
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
-use crate::state::{AppState, PendingKind};
+use crate::state::{AppState, MaOp, PendingKind};
 use crate::transport;
 use crate::views::editor::EditorContext;
 use futures::FutureExt as _;
@@ -12,10 +12,6 @@ use web_time::{Duration, Instant};
 
 pub(crate) const LOCAL_MA_HTTP_TIMEOUT_MS: u32 = 2_000;
 pub(crate) const RUNTIME_PING_TIMEOUT_MS: u32 = 5_000;
-/// Pause between trusted-MA lookup attempts while retrying within the
-/// configured publish-timeout budget. Short enough to make progress, long
-/// enough to let a cold public-gateway IPNS lookup warm up server-side.
-const TRUSTED_MA_RETRY_DELAY_MS: u32 = 2_000;
 const DEFAULT_MA_TIMEOUT_SECS: u32 = 120;
 const MA_TIMEOUT_CONFIG: &str = ".my.config.ma.timeout";
 const MA_CTX_DID: &str = ".ma.ctx.did";
@@ -64,35 +60,98 @@ pub(super) fn handle_ma(
         .get_untracked()
         .ok_or_else(|| t("msg-not-logged-in"))?;
 
-    match verb {
-        "set" => return set_trusted_runtime(args, state, config),
-        "claim" => return claim_trusted_runtime(args, state, config),
-        "gateway-test" => return handle_gateway_test(args, state, config),
-        "publish" => {}
+    let op = match verb {
+        "set" => {
+            let did = args
+                .first()
+                .filter(|_| args.len() == 1)
+                .ok_or_else(|| "usage: .ma: did:ma:trustedruntime".to_string())?;
+            let did = resolve_bare_did(did, &config.get_untracked())?;
+            MaOp::Set { did }
+        }
+        "claim" => {
+            let port = match args {
+                [] => 5003,
+                [port] => port
+                    .parse::<u16>()
+                    .map_err(|_| "usage: .ma: claim [port]".to_string())?,
+                _ => return Err("usage: .ma: claim [port]".to_string()),
+            };
+            MaOp::Claim { port }
+        }
+        "gateway-test" => {
+            let did = if args.is_empty() {
+                crate::transport::get_sender_did().ok_or_else(|| "not logged in".to_string())?
+            } else {
+                resolve_bare_did(&args[0], &config.get_untracked())?
+            };
+            MaOp::GatewayTest { did }
+        }
+        "publish" => {
+            let cfg = config.get_untracked();
+            let trusted_ma = active_ma_did(&cfg).ok_or_else(|| {
+                "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string()
+            })?;
+            MaOp::Publish { trusted_ma }
+        }
         _ => return Err(tf("runtime-no-verb", &[("verb", verb), ("path", path)])),
-    }
-
-    let cfg = config.get_untracked();
-    let trusted_ma = active_ma_did(&cfg)
-        .ok_or_else(|| "no trusted runtime; use .ma: did:ma:… or .ma: claim [port]".to_string())?;
-    let timeout_secs = ma_timeout_secs(&cfg);
-    state.push_system(tf("msg-trusted-ma-searching", &[("did", &trusted_ma)]));
-    state.push_system(tf(
-        "msg-trusted-ma-lookup-wait",
-        &[("seconds", &timeout_secs.to_string())],
-    ));
-    state.push_system(format!(
-        ".ma: {}",
-        tf(
-            "msg-identity-first-publish",
-            &[("seconds", &timeout_secs.to_string())],
-        )
-    ));
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        publish_with_trusted_ma(trusted_ma, config, &state2).await;
-    });
+    };
+    state.ma_queue.update(|queue| queue.push_back(op));
     Ok(())
+}
+
+/// Drain the `.ma` operation queue one operation at a time, on its own worker
+/// task. Runtime `.ma` commands only enqueue; they never run inline, so a long
+/// publish cannot block input or incoming-message processing.
+pub(crate) async fn run_ma_queue(state: AppState, config: RwSignal<OperatorConfig>) {
+    loop {
+        let op = state
+            .ma_queue
+            .update_untracked(std::collections::VecDeque::pop_front);
+        let Some(op) = op else {
+            gloo_timers::future::TimeoutFuture::new(50).await;
+            continue;
+        };
+        process_ma_op(op, &state, config).await;
+    }
+}
+
+async fn process_ma_op(op: MaOp, state: &AppState, config: RwSignal<OperatorConfig>) {
+    match op {
+        MaOp::Publish { trusted_ma } => {
+            let timeout_secs = ma_timeout_secs(&config.get_untracked());
+            state.push_system(tf("msg-trusted-ma-searching", &[("did", &trusted_ma)]));
+            state.push_system(tf(
+                "msg-trusted-ma-lookup-wait",
+                &[("seconds", &timeout_secs.to_string())],
+            ));
+            state.push_system(format!(
+                ".ma: {}",
+                tf(
+                    "msg-identity-first-publish",
+                    &[("seconds", &timeout_secs.to_string())],
+                )
+            ));
+            publish_with_trusted_ma(trusted_ma, config, state).await;
+        }
+        MaOp::Set { did } => set_trusted_runtime(&did, state, config),
+        MaOp::Claim { port } => {
+            let Some(session) = state.session.get_untracked() else {
+                return;
+            };
+            let username = session.username;
+            let our_did = session.sender_did;
+            claim_and_discover_local_ma(
+                state.clone(),
+                config,
+                username,
+                our_did,
+                format!("http://localhost:{port}"),
+            )
+            .await;
+        }
+        MaOp::GatewayTest { did } => gateway_test(&did, state).await,
+    }
 }
 
 async fn publish_with_trusted_ma(
@@ -120,78 +179,55 @@ pub(crate) fn ma_timeout_ms(cfg: &OperatorConfig) -> u32 {
     ma_timeout_secs(cfg).saturating_mul(1_000)
 }
 
-fn set_trusted_runtime(
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<OperatorConfig>,
-) -> Result<(), String> {
-    let did = args
-        .first()
-        .filter(|_| args.len() == 1)
-        .ok_or_else(|| "usage: .ma: did:ma:trustedruntime".to_string())?;
-    let did = resolve_bare_did(did, &config.get_untracked())?;
+fn set_trusted_runtime(did: &str, state: &AppState, config: RwSignal<OperatorConfig>) {
     config.update(|cfg| {
-        cfg.set(MA_CTX_DID, &did);
-        cfg.set(".my.aliases.ma", &did);
+        cfg.set(MA_CTX_DID, did);
+        cfg.set(".my.aliases.ma", did);
     });
-    let username = state
+    if let Some(username) = state
         .session
         .get_untracked()
-        .ok_or_else(|| t("msg-not-logged-in"))?
-        .username;
-    let cfg = config.get_untracked();
-    leptos::task::spawn_local(async move {
-        let _ = crate::config::persist_config(&username, &cfg).await;
-    });
+        .map(|session| session.username)
+    {
+        let cfg = config.get_untracked();
+        leptos::task::spawn_local(async move {
+            let _ = crate::config::persist_config(&username, &cfg).await;
+        });
+    }
     state.push_system(format!("ma: {did}"));
-    Ok(())
 }
 
 /// Diagnostic: probe each enabled gateway with a raw browser `fetch` in both
 /// cors and no-cors modes. Distinguishes CORS policy failures from network/
-/// DNS failures without needing `DevTools`. Arg: optional bare DID (or alias)
-/// to probe; defaults to the session's own DID.
-fn handle_gateway_test(
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<OperatorConfig>,
-) -> Result<(), String> {
-    let did = if args.is_empty() {
-        crate::transport::get_sender_did().ok_or_else(|| "not logged in".to_string())?
-    } else {
-        resolve_bare_did(&args[0], &config.get_untracked())?
+/// DNS failures without needing `DevTools`. `did` is a resolved bare DID.
+async fn gateway_test(did: &str, state: &AppState) {
+    let Some(key) = did.strip_prefix("did:ma:").filter(|key| !key.is_empty()) else {
+        state.push_error(format!("{did} is not a bare did:ma DID"));
+        return;
     };
-    let key = did
-        .strip_prefix("did:ma:")
-        .filter(|key| !key.is_empty())
-        .ok_or_else(|| format!("{did} is not a bare did:ma DID"))?
-        .to_string();
     let urls = crate::transport::connection::session_gateway_urls();
     if urls.is_empty() {
-        return Err("no gateways enabled".to_string());
+        state.push_error("no gateways enabled".to_string());
+        return;
     }
     state.push_system(format!(
         "gateway test for {did} — {} gateway{}",
         urls.len(),
         if urls.len() == 1 { "" } else { "s" }
     ));
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        for base in urls {
-            let subdomain = gateway_test_url(&base, &key);
-            state2.push_system(format!("→ {subdomain}"));
-            let cors = crate::http::probe_fetch(&subdomain, false, 6_000).await;
-            state2.push_system(format!("  {cors}"));
-            let no_cors = crate::http::probe_fetch(&subdomain, true, 6_000).await;
-            state2.push_system(format!("  {no_cors}"));
-            let path = format!("{base}ipns/{key}");
-            if path != subdomain {
-                let path_cors = crate::http::probe_fetch(&path, false, 6_000).await;
-                state2.push_system(format!("  path {path} → {path_cors}"));
-            }
+    for base in urls {
+        let subdomain = gateway_test_url(&base, key);
+        state.push_system(format!("→ {subdomain}"));
+        let cors = crate::http::probe_fetch(&subdomain, false, 6_000).await;
+        state.push_system(format!("  {cors}"));
+        let no_cors = crate::http::probe_fetch(&subdomain, true, 6_000).await;
+        state.push_system(format!("  {no_cors}"));
+        let path = format!("{base}ipns/{key}");
+        if path != subdomain {
+            let path_cors = crate::http::probe_fetch(&path, false, 6_000).await;
+            state.push_system(format!("  path {path} → {path_cors}"));
         }
-    });
-    Ok(())
+    }
 }
 
 /// Subdomain form for domain gateways (as ma-core's `gateway_url_for_path`
@@ -211,38 +247,6 @@ fn gateway_test_url(base: &str, key: &str) -> String {
         return format!("{base}ipns/{key}");
     }
     format!("{scheme}://{key}.ipns.{host}/")
-}
-
-fn claim_trusted_runtime(
-    args: &[String],
-    state: &AppState,
-    config: RwSignal<OperatorConfig>,
-) -> Result<(), String> {
-    let port = match args {
-        [] => 5003,
-        [port] => port
-            .parse::<u16>()
-            .map_err(|_| "usage: .ma: claim [port]".to_string())?,
-        _ => return Err("usage: .ma: claim [port]".to_string()),
-    };
-    let session = state
-        .session
-        .get_untracked()
-        .ok_or_else(|| t("msg-not-logged-in"))?;
-    let username = session.username;
-    let our_did = session.sender_did;
-    let state2 = state.clone();
-    leptos::task::spawn_local(async move {
-        claim_and_discover_local_ma(
-            state2,
-            config,
-            username,
-            our_did,
-            format!("http://localhost:{port}"),
-        )
-        .await;
-    });
-    Ok(())
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -390,23 +394,38 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     ConnectMaOutcome::Ready { did }
 }
 
+/// Resolve a DID document, retrying transient gateway failures within
+/// `timeout_ms`. Shared by every startup resolution path so a cold public-
+/// gateway IPNS lookup gets time to warm up.
+pub(crate) async fn resolve_did_with_retry(
+    resolver: &ma_core::IpfsGatewayResolver,
+    did: &str,
+    timeout_ms: u32,
+) -> Result<ma_core::Document, String> {
+    let deadline = Instant::now() + Duration::from_millis(u64::from(timeout_ms));
+    let mut attempt = 0u32;
+    loop {
+        match ma_core::DidDocumentResolver::resolve(resolver, did).await {
+            Ok(document) => return Ok(document),
+            Err(error) if Instant::now() < deadline => {
+                log::warn!("[ma] DID resolution for {did} failed, retrying: {error}");
+                gloo_timers::future::TimeoutFuture::new(crate::http::retry_backoff_ms(attempt))
+                    .await;
+                attempt = attempt.saturating_add(1);
+            }
+            Err(error) => return Err(error.to_string()),
+        }
+    }
+}
+
 /// Look up the trusted MA's DID document, retrying within `timeout_ms` so a
 /// cold public-gateway IPNS lookup gets time to warm up. Uses the shared
 /// session resolver so a successful lookup warms the cache the ping and
 /// identity-publish send paths resolve from.
 async fn resolve_trusted_ma(did: &str, timeout_ms: u32) -> Result<(), String> {
-    let resolver = transport::session_resolver()?;
-    let deadline = Instant::now() + Duration::from_millis(u64::from(timeout_ms));
-    loop {
-        match ma_core::DidDocumentResolver::resolve(resolver.as_ref(), did).await {
-            Ok(document) => return published_self_matches(&document, did),
-            Err(error) if Instant::now() < deadline => {
-                log::warn!("[ma] trusted MA lookup for {did} failed, retrying: {error}");
-                gloo_timers::future::TimeoutFuture::new(TRUSTED_MA_RETRY_DELAY_MS).await;
-            }
-            Err(error) => return Err(error.to_string()),
-        }
-    }
+    let resolver = transport::ipns_resolver()?;
+    let document = resolve_did_with_retry(resolver.as_ref(), did, timeout_ms).await?;
+    published_self_matches(&document, did)
 }
 
 async fn ping_runtime(state: &AppState, did: &str) -> Result<(), String> {
@@ -757,6 +776,7 @@ fn resolve_live_target(arg: &str, cfg: &OperatorConfig) -> Result<String, String
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::state::SessionState;
     use ma_core::{Ipld, MaExtension, SecretBundle};
 
     #[test]
@@ -909,5 +929,144 @@ mod tests {
         let doc = document_with_environment(Some("bafyprofile"), None);
 
         assert!(published_self_matches(&doc, "did:ma:other").is_err());
+    }
+
+    // ── `.ma` queue behaviour ──────────────────────────────────────────────
+
+    fn logged_in_state() -> AppState {
+        let state = AppState::new();
+        state.session.set(Some(SessionState {
+            username: "alice".to_string(),
+            is_new: false,
+            iroh_key: [1; 32],
+            ipns_secret_key: [2; 32],
+            did_signing_key: [3; 32],
+            did_encryption_key: [4; 32],
+            sender_did: "did:ma:alice".to_string(),
+            created_at: "2026-08-08T12:00:00Z".to_string(),
+        }));
+        state
+    }
+
+    fn drain_ma_queue(state: &AppState) -> Vec<MaOp> {
+        let drained: Vec<MaOp> = state.ma_queue.get_untracked().into_iter().collect();
+        state
+            .ma_queue
+            .update_untracked(std::collections::VecDeque::clear);
+        drained
+    }
+
+    #[test]
+    fn handle_ma_set_enqueues_without_touching_config() {
+        let state = logged_in_state();
+        let config = RwSignal::new(OperatorConfig::default());
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        let result = handle_ma(
+            ".ma",
+            "set",
+            &["did:ma:trusted".to_string()],
+            &state,
+            config,
+            show_editor,
+            on_eval,
+        );
+
+        assert!(result.is_ok());
+        assert_eq!(
+            drain_ma_queue(&state),
+            vec![MaOp::Set {
+                did: "did:ma:trusted".to_string()
+            }]
+        );
+        assert_eq!(config.get_untracked().get(MA_CTX_DID), None);
+    }
+
+    #[test]
+    fn handle_ma_publish_requires_trusted_runtime() {
+        let state = logged_in_state();
+        let config = RwSignal::new(OperatorConfig::default());
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        let result = handle_ma(".ma", "publish", &[], &state, config, show_editor, on_eval);
+
+        assert!(result.is_err());
+        assert!(drain_ma_queue(&state).is_empty());
+    }
+
+    #[test]
+    fn handle_ma_publish_enqueues_trusted_runtime() {
+        let state = logged_in_state();
+        let config = RwSignal::new(OperatorConfig::default());
+        config.update(|cfg| cfg.set(MA_CTX_DID, "did:ma:trusted"));
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        let result = handle_ma(".ma", "publish", &[], &state, config, show_editor, on_eval);
+
+        assert!(result.is_ok());
+        assert_eq!(
+            drain_ma_queue(&state),
+            vec![MaOp::Publish {
+                trusted_ma: "did:ma:trusted".to_string()
+            }]
+        );
+    }
+
+    #[test]
+    fn handle_ma_claim_enqueues_default_and_custom_port() {
+        let state = logged_in_state();
+        let config = RwSignal::new(OperatorConfig::default());
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        assert!(handle_ma(".ma", "claim", &[], &state, config, show_editor, on_eval).is_ok());
+        assert_eq!(drain_ma_queue(&state), vec![MaOp::Claim { port: 5003 }]);
+
+        assert!(handle_ma(
+            ".ma",
+            "claim",
+            &["6003".to_string()],
+            &state,
+            config,
+            show_editor,
+            on_eval,
+        )
+        .is_ok());
+        assert_eq!(drain_ma_queue(&state), vec![MaOp::Claim { port: 6003 }]);
+    }
+
+    #[test]
+    fn handle_ma_claim_rejects_invalid_port() {
+        let state = logged_in_state();
+        let config = RwSignal::new(OperatorConfig::default());
+        let show_editor = RwSignal::new(None);
+        let on_eval = Callback::new(|_: String| ());
+
+        assert!(handle_ma(
+            ".ma",
+            "claim",
+            &["not-a-port".to_string()],
+            &state,
+            config,
+            show_editor,
+            on_eval,
+        )
+        .is_err());
+        assert!(drain_ma_queue(&state).is_empty());
+    }
+
+    #[test]
+    fn set_trusted_runtime_writes_config_and_alias() {
+        let state = AppState::new();
+        let config = RwSignal::new(OperatorConfig::default());
+
+        set_trusted_runtime("did:ma:trusted", &state, config);
+
+        let cfg = config.get_untracked();
+        assert_eq!(cfg.get(MA_CTX_DID), Some("did:ma:trusted"));
+        assert_eq!(cfg.get(".my.aliases.ma"), Some("did:ma:trusted"));
     }
 }

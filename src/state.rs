@@ -1,6 +1,6 @@
 use futures::channel::oneshot;
 use leptos::prelude::*;
-use ma_core::{Inbox, IpfsGatewayResolver, Message};
+use ma_core::{GatewayPool, Inbox, IpfsGatewayResolver, Message};
 use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -237,6 +237,29 @@ pub enum OutboxTask {
     },
     /// Auto-pong reply to an incoming `:ping`.
     Pong { target: String, reply_to_id: String },
+    /// On-demand reply to a `:favicon` / `:sprite` metadata query, carrying
+    /// the local `.my.config.*` link (`None` when unset).
+    TermReply {
+        target: String,
+        reply_to_id: String,
+        value: Option<String>,
+    },
+}
+
+// ── `.ma` operation queue ──────────────────────────────────────────────────
+
+/// A queued `.ma` runtime operation. Enqueued by `handle_ma` and drained
+/// serially by the `.ma` worker loop so a long publish never blocks input.
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum MaOp {
+    /// Publish the profile and DID document to the trusted runtime.
+    Publish { trusted_ma: String },
+    /// Select a trusted runtime by bare DID.
+    Set { did: String },
+    /// Claim and discover a local runtime on the given port.
+    Claim { port: u16 },
+    /// Diagnostic gateway probe for a bare DID.
+    GatewayTest { did: String },
 }
 
 // ── App state (reactive) ───────────────────────────────────────────────────
@@ -246,6 +269,8 @@ pub struct AppState {
     pub session: RwSignal<Option<SessionState>>,
     /// Unified terminal buffer: commands, incoming messages and system lines.
     pub entries: RwSignal<Vec<Entry>>,
+    /// Ephemeral presentation events for the topdown view.
+    pub topdown_events: RwSignal<VecDeque<crate::topdown::TopdownEvent>>,
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
@@ -270,6 +295,8 @@ pub struct AppState {
     pub startup_ma: RwSignal<Option<String>>,
     /// Z tree manifest CID from `?z=`, consumed once while loading the profile.
     pub startup_z: RwSignal<Option<String>>,
+    /// View fallback from `?gui=`, consumed once while loading the profile.
+    pub startup_gui: RwSignal<Option<String>>,
     /// Terminal QR intent opened by `.my.*!qr`.
     pub qr_intent: RwSignal<Option<QrIntent>>,
     /// Whether the passphrase-change dialog is open.
@@ -286,6 +313,8 @@ pub struct AppState {
     pub cmd_to_batch: RwSignal<HashMap<u64, u64>>,
     /// Queue of all outgoing iroh sends, drained each dispatch tick.
     pub outbox_queue: RwSignal<VecDeque<OutboxTask>>,
+    /// FIFO queue of `.ma` operations, drained serially by the `.ma` worker.
+    pub ma_queue: RwSignal<VecDeque<MaOp>>,
     /// Monotonic cancellation generation for work already taken from queues.
     pub cancel_epoch: RwSignal<u64>,
 }
@@ -295,6 +324,7 @@ impl AppState {
         Self {
             session: RwSignal::new(None),
             entries: RwSignal::new(Vec::new()),
+            topdown_events: RwSignal::new(VecDeque::new()),
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
@@ -308,6 +338,7 @@ impl AppState {
             startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
             startup_z: RwSignal::new(None),
+            startup_gui: RwSignal::new(None),
             qr_intent: RwSignal::new(None),
             secret_dialog: RwSignal::new(false),
             input_queue: RwSignal::new(VecDeque::new()),
@@ -316,6 +347,7 @@ impl AppState {
             batch_id_counter: RwSignal::new(0),
             cmd_to_batch: RwSignal::new(HashMap::new()),
             outbox_queue: RwSignal::new(VecDeque::new()),
+            ma_queue: RwSignal::new(VecDeque::new()),
             cancel_epoch: RwSignal::new(0),
         }
     }
@@ -338,6 +370,7 @@ impl AppState {
         self.input_queue.update(std::collections::VecDeque::clear);
         self.multiline_input.set(String::new());
         self.outbox_queue.update(std::collections::VecDeque::clear);
+        self.ma_queue.update(std::collections::VecDeque::clear);
         self.pending_requests
             .update(std::collections::HashMap::clear);
         self.qr_intent.set(None);
@@ -746,10 +779,14 @@ thread_local! {
     /// Profile encryption key derived from the current login passphrase.
     /// Used to encrypt/decrypt the profile blob stored in IPFS.
     pub static SESSION_PROFILE_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
-    /// Shared DID resolver — created once at connect() so its cache is
+    /// Shared DID/IPNS resolver — created once at connect() so its cache is
     /// reused across all concurrent sends instead of each call fetching
     /// the same DID document from scratch.
-    pub static SESSION_RESOLVER: RefCell<Option<Arc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
+    pub static SESSION_IPNS_RESOLVER: RefCell<Option<Arc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
+    /// Shared content-fetch pool — fetches raw `/ipfs/<cid>` bytes. Kept
+    /// separate from IPNS/DID resolution so a gateway that rate-limits IPNS
+    /// lookups never poisons ordinary content fetches (and vice versa).
+    pub static SESSION_CONTENT_POOL: RefCell<Option<Arc<GatewayPool>>> = const { RefCell::new(None) };
     /// CID of the most recently stored encrypted profile blob.
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_identity_publish` to embed `ma.agent` in the DID document.
