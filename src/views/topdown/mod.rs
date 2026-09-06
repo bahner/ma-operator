@@ -157,9 +157,9 @@ fn data_url(bytes: &[u8], mime: &str) -> String {
 const PNG_MAGIC: &[u8] = b"\x89PNG\r\n\x1a\n";
 const ICO_MAGIC: &[u8] = &[0x00, 0x00, 0x01, 0x00];
 
-/// The playfield renders favicons at 32x32 CSS pixels (`.topdown-favicon`), so
+/// The playfield renders favicons at 48x48 CSS pixels (`.topdown-favicon`), so
 /// this is the target when picking a frame from a multi-size ICO.
-const FAVICON_TARGET_SIZE: u32 = 32;
+const FAVICON_TARGET_SIZE: u32 = 48;
 
 fn is_png(bytes: &[u8]) -> bool {
     bytes.starts_with(PNG_MAGIC)
@@ -874,8 +874,8 @@ mod tests {
     fn favicon_embeds_png_frame_directly() {
         let ico = build_ico(&[
             (16, 16, b"\x89PNG\r\n\x1a\nsmall"),
-            (32, 32, b"\x89PNG\r\n\x1a\nbest"),
-            (48, 48, b"\x89PNG\r\n\x1a\nbig"),
+            (32, 32, b"\x89PNG\r\n\x1a\nmedium"),
+            (48, 48, b"\x89PNG\r\n\x1a\nlarge"),
         ]);
         let url = favicon_data_url(&ico).unwrap();
         let encoded = url.strip_prefix("data:image/png;base64,").unwrap();
@@ -883,7 +883,7 @@ mod tests {
         let decoded = base64::engine::general_purpose::STANDARD
             .decode(encoded)
             .unwrap();
-        assert_eq!(decoded, b"\x89PNG\r\n\x1a\nbest");
+        assert_eq!(decoded, b"\x89PNG\r\n\x1a\nlarge");
     }
 
     #[test]
