@@ -34,9 +34,8 @@ use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
 pub const PUBLIC_GATEWAY_URLS: &[&str] = &[
-    "https://ipfs.io/",              // preferred (IPFS Foundation path gateway)
-    "https://gateway.pinata.cloud/", // Pinata
-    "https://w3s.link/",             // web3.storage
+    "https://ipfs.io/",          // IPFS Foundation path gateway (retiring 2026-09-21)
+    "https://ipfs.filebase.io/", // Filebase S3-backed path gateway
 ];
 const IPFS_GATEWAYS_PREF_KEY: &str = "operator_ipfs_gateways";
 const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "operator_ipfs_gateway";
@@ -1103,8 +1102,7 @@ mod tests {
             [
                 "http://127.0.0.1:8080/".to_string(),
                 "https://ipfs.io/".to_string(),
-                "https://gateway.pinata.cloud/".to_string(),
-                "https://w3s.link/".to_string(),
+                "https://ipfs.filebase.io/".to_string(),
             ]
         );
     }
@@ -1122,8 +1120,7 @@ mod tests {
             [
                 "http://localhost:8881/".to_string(),
                 "https://ipfs.io/".to_string(),
-                "https://gateway.pinata.cloud/".to_string(),
-                "https://w3s.link/".to_string(),
+                "https://ipfs.filebase.io/".to_string(),
             ]
         );
     }
@@ -1134,9 +1131,9 @@ mod tests {
             localhost: false,
             custom_enabled: false,
             custom_url: String::new(),
-            public_gateways: vec!["https://w3s.link/".to_string()],
+            public_gateways: vec!["https://ipfs.filebase.io/".to_string()],
         });
-        assert_eq!(urls, ["https://w3s.link/".to_string()]);
+        assert_eq!(urls, ["https://ipfs.filebase.io/".to_string()]);
     }
 
     #[test]
