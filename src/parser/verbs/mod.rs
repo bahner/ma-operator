@@ -9,13 +9,17 @@ mod inbox;
 pub(crate) mod ma;
 
 use crate::config::OperatorConfig;
+use crate::editor::EditorContext;
 use crate::i18n::tf;
 use crate::state::{AppState, QrIntent};
-use crate::views::editor::EditorContext;
 use leptos::prelude::*;
 use ma_core::Ipld;
 
 /// Extract the `ma.profile` CID string from a resolved `Document`, if present.
+///
+/// Preserves `Ipld::String` values verbatim (legacy profiles may store a
+/// non-CID reference), so it deliberately does not normalise via
+/// `ipld_link_cid` unlike `doc_z_cid`.
 pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
     match &doc.ma {
         Some(Ipld::Map(map)) => match map.get("profile") {
@@ -34,23 +38,10 @@ pub(crate) fn doc_profile_cid(doc: &ma_core::Document) -> Option<String> {
 
 /// Extract the `ma.z` manifest CID string from a resolved DID document.
 pub(crate) fn doc_z_cid(doc: &ma_core::Document) -> Option<String> {
-    match &doc.ma {
-        Some(Ipld::Map(map)) => match map.get("z") {
-            Some(Ipld::Link(cid)) => Some(cid.to_string()),
-            Some(Ipld::String(value)) => {
-                crate::doc_link::parse_link_cid(value).map(|cid| cid.to_string())
-            }
-            Some(Ipld::Map(link)) => match link.get("/") {
-                Some(Ipld::String(value)) => {
-                    crate::doc_link::parse_link_cid(value).map(|cid| cid.to_string())
-                }
-                Some(Ipld::Link(cid)) => Some(cid.to_string()),
-                _ => None,
-            },
-            _ => None,
-        },
-        _ => None,
-    }
+    let Some(Ipld::Map(map)) = &doc.ma else {
+        return None;
+    };
+    map.get("z").and_then(ipld_link_cid)
 }
 
 pub(crate) fn doc_trusted_ma(doc: &ma_core::Document) -> Option<String> {
@@ -65,6 +56,21 @@ pub(crate) fn doc_trusted_ma(doc: &ma_core::Document) -> Option<String> {
 
 pub(crate) fn is_bare_ma_did(did: &str) -> bool {
     did.starts_with("did:ma:") && !did.contains('#') && !did.contains('/')
+}
+
+/// Normalise a link-shaped IPLD value (`Link`, CID string, or `{"/": cid}`) to
+/// a bare CID string.
+fn ipld_link_cid(value: &Ipld) -> Option<String> {
+    match value {
+        Ipld::Link(cid) => Some(cid.to_string()),
+        Ipld::String(s) => crate::doc_link::parse_link_cid(s).map(|cid| cid.to_string()),
+        Ipld::Map(link) => match link.get("/") {
+            Some(Ipld::Link(cid)) => Some(cid.to_string()),
+            Some(Ipld::String(s)) => crate::doc_link::parse_link_cid(s).map(|cid| cid.to_string()),
+            _ => None,
+        },
+        _ => None,
+    }
 }
 
 /// Resolve an argument that should refer to a bare `did:ma:<ipns>` (no

@@ -20,7 +20,7 @@ use crate::{
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
-    views::editor::EditorContext,
+    editor::EditorContext,
 };
 
 // ── Public entry point ─────────────────────────────────────────────────────

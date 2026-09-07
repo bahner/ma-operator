@@ -11,10 +11,10 @@ use serde::{Deserialize, Serialize};
 use crate::i18n::tf;
 use crate::messages::{format_crud_reply, format_incoming, format_term_reply, IncomingMessage};
 use crate::state::{
-    ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
-    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IROH_KEY, SESSION_LANG, SESSION_LIVE_INBOX,
-    SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_RESOLVER, SESSION_SENDER_DID,
-    SESSION_SIGNING_KEY,
+    ENDPOINT, SESSION_AGENT_CID, SESSION_CONTENT_POOL, SESSION_CREATED_AT, SESSION_CRUD_INBOX,
+    SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IPNS_RESOLVER,
+    SESSION_IROH_KEY, SESSION_LANG, SESSION_LIVE_INBOX, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY,
+    SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -33,17 +33,31 @@ pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 use log::info;
 
 pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
-pub const PUBLIC_GATEWAY_URLS: [&str; 2] = ["https://dweb.link/", "https://4everland.io/"];
-const IPFS_GATEWAYS_PREF_KEY: &str = "zion_ipfs_gateways";
-const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "zion_ipfs_gateway";
+pub const PUBLIC_GATEWAY_URLS: &[&str] = &[
+    "https://ipfs.io/",              // preferred (IPFS Foundation path gateway)
+    "https://gateway.pinata.cloud/", // Pinata
+    "https://w3s.link/",             // web3.storage
+];
+const IPFS_GATEWAYS_PREF_KEY: &str = "operator_ipfs_gateways";
+const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "operator_ipfs_gateway";
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct GatewayPreferences {
-    pub dweb_link: bool,
-    pub four_everland: bool,
     pub localhost: bool,
     pub custom_enabled: bool,
     pub custom_url: String,
+    /// Enabled public gateways, expressed as a subset of
+    /// [`PUBLIC_GATEWAY_URLS`]. Defaults to every public gateway so stored
+    /// preferences written before per-gateway selection existed keep working.
+    #[serde(default = "all_public_gateways")]
+    pub public_gateways: Vec<String>,
+}
+
+fn all_public_gateways() -> Vec<String> {
+    PUBLIC_GATEWAY_URLS
+        .iter()
+        .map(|url| (*url).to_string())
+        .collect()
 }
 
 fn is_local_web_origin(origin: &str) -> bool {
@@ -80,11 +94,10 @@ pub(crate) fn is_local_gateway_url(url: &str) -> bool {
 fn default_gateway_preferences() -> GatewayPreferences {
     let local = current_origin_is_local();
     GatewayPreferences {
-        dweb_link: true,
-        four_everland: true,
         localhost: local,
         custom_enabled: false,
         custom_url: String::new(),
+        public_gateways: all_public_gateways(),
     }
 }
 
@@ -95,18 +108,18 @@ fn gateway_storage() -> Option<web_sys::Storage> {
 fn preference_from_legacy(url: &str) -> Option<GatewayPreferences> {
     let url = normalise_gateway_url(url)?;
     let mut prefs = GatewayPreferences {
-        dweb_link: false,
-        four_everland: false,
         localhost: false,
         custom_enabled: false,
         custom_url: String::new(),
+        public_gateways: Vec::new(),
     };
-    if url.eq_ignore_ascii_case(PUBLIC_GATEWAY_URLS[0]) {
-        prefs.dweb_link = true;
-    } else if url.eq_ignore_ascii_case(PUBLIC_GATEWAY_URLS[1]) {
-        prefs.four_everland = true;
-    } else if url.eq_ignore_ascii_case(LOCAL_GATEWAY_URL) {
+    if url.eq_ignore_ascii_case(LOCAL_GATEWAY_URL) {
         prefs.localhost = true;
+    } else if PUBLIC_GATEWAY_URLS
+        .iter()
+        .any(|g| g.eq_ignore_ascii_case(&url))
+    {
+        prefs.public_gateways.push(url);
     } else {
         prefs.custom_enabled = true;
         prefs.custom_url = url;
@@ -142,9 +155,10 @@ pub fn save_gateway_preferences(prefs: &GatewayPreferences) {
             .iter()
             .any(|url| is_local_gateway_url(url));
     });
-    // The gateway set changed — rebuild the shared resolver lazily so the
-    // next resolution uses the new preferences.
-    SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
+    // The gateway set changed — rebuild both resolvers lazily so the next
+    // content fetch and IPNS resolution use the new preferences.
+    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = None);
+    SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = None);
 }
 
 pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
@@ -162,11 +176,17 @@ pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
             }
         }
     }
-    if prefs.dweb_link {
-        urls.push(PUBLIC_GATEWAY_URLS[0].to_string());
-    }
-    if prefs.four_everland {
-        urls.push(PUBLIC_GATEWAY_URLS[1].to_string());
+    // Public gateways in canonical order; only include the ones the user
+    // enabled. Ordering here is independent of the stored `public_gateways`
+    // order so re-toggling checkboxes never changes resolution priority.
+    for url in PUBLIC_GATEWAY_URLS {
+        if prefs
+            .public_gateways
+            .iter()
+            .any(|enabled| enabled.eq_ignore_ascii_case(url))
+        {
+            urls.push((*url).to_string());
+        }
     }
     urls
 }
@@ -175,24 +195,37 @@ pub fn session_gateway_urls() -> Vec<String> {
     effective_gateway_urls(&load_gateway_preferences())
 }
 
-/// The single session-scoped gateway resolver, shared by every resolution
-/// path so DID document caches and per-gateway health are reused. Built
-/// lazily from the current gateway preferences on first use and invalidated
-/// by `save_gateway_preferences` when those preferences change. The
-/// per-request timeout is raised to the pool's total deadline (12 s) so a
-/// cold gateway gets the full window before the next one is raced.
-pub(crate) fn session_resolver() -> Result<Arc<IpfsGatewayResolver>, String> {
-    if let Some(resolver) = SESSION_RESOLVER.with(|r| r.borrow().clone()) {
+/// The session-scoped content-fetch pool, shared by every `/ipfs/<cid>`
+/// fetch. Built lazily from the current gateway preferences and invalidated by
+/// `save_gateway_preferences`. The per-request timeout matches `ma-core`'s
+/// 60 s total deadline so a cold block gets the full window before the next
+/// gateway is raced.
+pub(crate) fn content_pool() -> Result<Arc<ma_core::GatewayPool>, String> {
+    if let Some(pool) = SESSION_CONTENT_POOL.with(|r| r.borrow().clone()) {
+        return Ok(pool);
+    }
+    let pool = ma_core::GatewayPool::from_gateways(session_gateway_urls())
+        .map_err(|error| error.to_string())?
+        .with_request_timeout(Duration::from_mins(1));
+    let pool = Arc::new(pool);
+    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = Some(pool.clone()));
+    Ok(pool)
+}
+
+/// The session-scoped DID/IPNS resolver, shared by every name-resolution path
+/// so DID document caches and per-gateway health are reused. Built lazily from
+/// the current gateway preferences and invalidated by `save_gateway_preferences`.
+pub(crate) fn ipns_resolver() -> Result<Arc<IpfsGatewayResolver>, String> {
+    if let Some(resolver) = SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone()) {
         return Ok(resolver);
     }
     let pool = ma_core::GatewayPool::from_gateways(session_gateway_urls())
-        .map_err(|error| error.to_string())?;
+        .map_err(|error| error.to_string())?
+        .with_request_timeout(Duration::from_mins(1));
     let resolver = Arc::new(
-        IpfsGatewayResolver::from(pool)
-            .with_cache_ttls(Duration::from_hours(24), Duration::ZERO)
-            .with_request_timeout(Duration::from_secs(12)),
+        IpfsGatewayResolver::from(pool).with_cache_ttls(Duration::from_hours(24), Duration::ZERO),
     );
-    SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver.clone()));
+    SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver.clone()));
     Ok(resolver)
 }
 
@@ -210,7 +243,7 @@ pub async fn connect(
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {sender_did}");
     // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
-    let resolver = session_resolver()?;
+    let resolver = ipns_resolver()?;
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;
@@ -237,7 +270,7 @@ pub async fn connect(
     SESSION_ENCRYPTION_KEY.with(|k| *k.borrow_mut() = Some(did_encryption_key));
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = Some(sender_did));
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = Some(created_at));
-    SESSION_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
+    SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver));
     info!("Connection established.");
     Ok(())
 }
@@ -254,7 +287,8 @@ pub fn disconnect() {
     SESSION_SENDER_DID.with(|d| *d.borrow_mut() = None);
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
     SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
-    SESSION_RESOLVER.with(|r| *r.borrow_mut() = None);
+    SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = None);
+    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
     // A pending `.keymaker` rollback is moot after logout: the next login
     // overwrites the local cache from IPFS anyway.
@@ -833,7 +867,7 @@ async fn try_send_once(target_did: &str, protocol: &str, msg: &Message) -> Resul
     let ep = ENDPOINT
         .with(|e| e.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
-    let resolver = SESSION_RESOLVER
+    let resolver = SESSION_IPNS_RESOLVER
         .with(|r| r.borrow().clone())
         .ok_or_else(|| "not logged in".to_string())?;
 
@@ -1057,34 +1091,52 @@ mod tests {
     }
 
     #[test]
-    fn gateway_preferences_keep_public_fallbacks_with_localhost() {
+    fn gateway_preferences_localhost_precedes_public_fallbacks() {
         let urls = effective_gateway_urls(&GatewayPreferences {
-            dweb_link: true,
-            four_everland: true,
             localhost: true,
             custom_enabled: false,
             custom_url: String::new(),
+            public_gateways: all_public_gateways(),
         });
         assert_eq!(
             urls,
             [
                 "http://127.0.0.1:8080/".to_string(),
-                "https://dweb.link/".to_string(),
-                "https://4everland.io/".to_string(),
+                "https://ipfs.io/".to_string(),
+                "https://gateway.pinata.cloud/".to_string(),
+                "https://w3s.link/".to_string(),
             ]
         );
     }
 
     #[test]
-    fn gateway_preferences_include_only_enabled_custom_gateway() {
+    fn gateway_preferences_custom_precedes_public_fallbacks() {
         let urls = effective_gateway_urls(&GatewayPreferences {
-            dweb_link: false,
-            four_everland: false,
             localhost: false,
             custom_enabled: true,
             custom_url: " http://localhost:8881 ".to_string(),
+            public_gateways: all_public_gateways(),
         });
-        assert_eq!(urls, ["http://localhost:8881/".to_string()]);
+        assert_eq!(
+            urls,
+            [
+                "http://localhost:8881/".to_string(),
+                "https://ipfs.io/".to_string(),
+                "https://gateway.pinata.cloud/".to_string(),
+                "https://w3s.link/".to_string(),
+            ]
+        );
+    }
+
+    #[test]
+    fn gateway_preferences_respect_the_selected_public_subset() {
+        let urls = effective_gateway_urls(&GatewayPreferences {
+            localhost: false,
+            custom_enabled: false,
+            custom_url: String::new(),
+            public_gateways: vec!["https://w3s.link/".to_string()],
+        });
+        assert_eq!(urls, ["https://w3s.link/".to_string()]);
     }
 
     #[test]

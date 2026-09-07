@@ -2,7 +2,7 @@ use leptos::prelude::*;
 
 use crate::config::OperatorConfig;
 use crate::state::AppState;
-use crate::views::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
+use crate::{landing::Landing, screensaver::Screensaver, terminal::Terminal};
 
 /// Read a suggested runtime DID from `?ma=`.
 fn url_ma() -> Option<String> {
@@ -89,7 +89,6 @@ pub fn App() -> impl IntoView {
     if let Some(z) = url_z() {
         state.startup_z.set(Some(z));
     }
-
     view! {
         <div id="app">
             <Screensaver/>

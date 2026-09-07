@@ -7,7 +7,7 @@ use crate::{
     parser::command::RemoteCrudOp,
     state::{AppState, OutboxTask, PendingKind},
     transport,
-    views::editor::EditorMode,
+    editor::EditorMode,
 };
 use leptos::prelude::*;
 
@@ -229,7 +229,7 @@ pub(crate) fn eval_remote_crud(
     op: RemoteCrudOp,
     raw: &str,
     state: &AppState,
-    _show_editor: RwSignal<Option<crate::views::editor::EditorContext>>,
+    _show_editor: RwSignal<Option<crate::editor::EditorContext>>,
     config: RwSignal<OperatorConfig>,
 ) {
     let cmd_id = state.push_command(raw);
@@ -486,7 +486,7 @@ fn normalize_remote_crud_set_value(
 mod tests {
     use super::{editor_mode_for_path, normalize_remote_crud_set_value};
     use crate::config::OperatorConfig;
-    use crate::views::editor::EditorMode;
+    use crate::editor::EditorMode;
 
     #[test]
     fn config_root_set_expands_alias_fragment() {

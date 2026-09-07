@@ -13,11 +13,11 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, OperatorConfig},
     core::CommandStatus,
+    editor::{EditorContext, EditorMode},
     http::fetch_path_bytes,
     i18n::tf,
     messages::{cid_bytes_to_editor_text, decode_crud_content, IncomingMessage},
     state::{AppState, OutboxTask},
-    views::editor::{EditorContext, EditorMode},
 };
 
 // ── IPFS CRUD ──────────────────────────────────────────────────────────────

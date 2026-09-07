@@ -3,11 +3,28 @@
 //! These are the only HTTP primitives in the codebase. All other modules
 //! import from here rather than rolling their own fetch.
 
-use crate::transport::connection::session_resolver;
+use crate::transport::connection::content_pool;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
 use wasm_bindgen::JsCast;
 use wasm_bindgen_futures::JsFuture;
+use web_time::{Duration, Instant};
+
+/// How long startup/profile fetches keep retrying a transiently failing
+/// gateway fetch. A freshly published block is cold on the public gateways;
+/// the first request warms the block server-side, so the retry loop waits for
+/// that to land instead of giving up after one gateway deadline. The budget
+/// must exceed `ma-core`'s own per-fetch deadline so a fast `504` still leaves
+/// room to retry after the block has warmed up.
+pub const STARTUP_FETCH_TIMEOUT_MS: u32 = 120_000;
+
+/// Exponential backoff between startup/profile fetch retry attempts. Public
+/// gateways rate-limit repeated requests (`HTTP 429`), so the pause grows from
+/// 2 s to a 30 s cap instead of hammering one gateway every couple of seconds.
+pub fn retry_backoff_ms(attempt: u32) -> u32 {
+    let factor = 1u32 << attempt.min(4);
+    (2_000u32.saturating_mul(factor)).min(30_000)
+}
 
 pub struct HttpTextResponse {
     pub status: u16,
@@ -112,16 +129,31 @@ fn utf8_body(body: &[u8]) -> Result<String, String> {
 
 /// Fetch raw bytes for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    session_resolver()?
-        .pool()
-        .fetch_bytes(&format!("/ipfs/{cid}"), None)
-        .await
+    content_pool()?.fetch_bytes(&format!("/ipfs/{cid}"), None).await
+}
+
+/// Fetch raw bytes for a bare CID, retrying transient gateway failures within
+/// the startup budget. Used by profile loading, where the blob was just
+/// published and may not yet be available on the public gateways.
+pub async fn fetch_cid_bytes_retrying(cid: &str) -> Result<Vec<u8>, String> {
+    let deadline = Instant::now() + Duration::from_millis(u64::from(STARTUP_FETCH_TIMEOUT_MS));
+    let mut attempt = 0u32;
+    loop {
+        match fetch_cid_bytes(cid).await {
+            Ok(bytes) => return Ok(bytes),
+            Err(error) if Instant::now() < deadline => {
+                log::warn!("[http] CID fetch failed, retrying: {error}");
+                TimeoutFuture::new(retry_backoff_ms(attempt)).await;
+                attempt = attempt.saturating_add(1);
+            }
+            Err(error) => return Err(error),
+        }
+    }
 }
 
 /// Fetch text for a bare CID from the active IPFS gateway pool.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    session_resolver()?
-        .pool()
+    content_pool()?
         .fetch(&format!("/ipfs/{cid}"), None, utf8_body)
         .await
 }
@@ -130,10 +162,10 @@ pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
 /// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
 /// blocks so operator, not the gateway, owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let resolver = session_resolver()?;
+    let pool = content_pool()?;
     let mut errors = Vec::new();
     for arg in fetch_path_bytes_args(path) {
-        match resolver.pool().fetch_bytes(&arg, None).await {
+        match pool.fetch_bytes(&arg, None).await {
             Ok(bytes) => return Ok(bytes),
             Err(e) => errors.push(format!("{arg}: {e}")),
         }
@@ -145,10 +177,7 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    session_resolver()?
-        .pool()
-        .fetch(&arg, None, utf8_body)
-        .await
+    content_pool()?.fetch(&arg, None, utf8_body).await
 }
 
 fn fetch_path_bytes_args(path: &str) -> Vec<String> {
@@ -218,5 +247,15 @@ mod tests {
             fetch_path_bytes_args(&format!("/ipfs/{ipld_cid}/child")),
             vec![format!("ipfs/{ipld_cid}/child")]
         );
+    }
+
+    #[test]
+    fn retry_backoff_grows_and_caps() {
+        assert_eq!(retry_backoff_ms(0), 2_000);
+        assert_eq!(retry_backoff_ms(1), 4_000);
+        assert_eq!(retry_backoff_ms(2), 8_000);
+        assert_eq!(retry_backoff_ms(3), 16_000);
+        assert_eq!(retry_backoff_ms(4), 30_000);
+        assert_eq!(retry_backoff_ms(10), 30_000);
     }
 }

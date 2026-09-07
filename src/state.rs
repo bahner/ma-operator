@@ -44,7 +44,7 @@ thread_local! {
 
 use crate::config::OperatorConfig;
 use crate::core::{CommandRecord, CommandStatus, Entry, IncomingRecord, SystemKind, SystemRecord};
-use crate::views::editor::EditorMode;
+use crate::editor::EditorMode;
 use leptos::prelude::ArcRwSignal;
 
 // ── Session ────────────────────────────────────────────────────────────────
@@ -237,13 +237,6 @@ pub enum OutboxTask {
     },
     /// Auto-pong reply to an incoming `:ping`.
     Pong { target: String, reply_to_id: String },
-    /// On-demand reply to a `:favicon` / `:sprite` metadata query, carrying
-    /// the local `.my.config.*` link (`None` when unset).
-    TermReply {
-        target: String,
-        reply_to_id: String,
-        value: Option<String>,
-    },
 }
 
 // ── `.ma` operation queue ──────────────────────────────────────────────────
@@ -269,8 +262,6 @@ pub struct AppState {
     pub session: RwSignal<Option<SessionState>>,
     /// Unified terminal buffer: commands, incoming messages and system lines.
     pub entries: RwSignal<Vec<Entry>>,
-    /// Ephemeral presentation events for the topdown view.
-    pub topdown_events: RwSignal<VecDeque<crate::topdown::TopdownEvent>>,
     pub history: RwSignal<Vec<String>>,
     pub focus_actor: RwSignal<Option<FocusMode>>,
     pub pending_enter: RwSignal<Option<PendingEnter>>,
@@ -295,8 +286,6 @@ pub struct AppState {
     pub startup_ma: RwSignal<Option<String>>,
     /// Z tree manifest CID from `?z=`, consumed once while loading the profile.
     pub startup_z: RwSignal<Option<String>>,
-    /// View fallback from `?gui=`, consumed once while loading the profile.
-    pub startup_gui: RwSignal<Option<String>>,
     /// Terminal QR intent opened by `.my.*!qr`.
     pub qr_intent: RwSignal<Option<QrIntent>>,
     /// Whether the passphrase-change dialog is open.
@@ -324,7 +313,6 @@ impl AppState {
         Self {
             session: RwSignal::new(None),
             entries: RwSignal::new(Vec::new()),
-            topdown_events: RwSignal::new(VecDeque::new()),
             history: RwSignal::new(Vec::new()),
             focus_actor: RwSignal::new(None),
             pending_enter: RwSignal::new(None),
@@ -338,7 +326,6 @@ impl AppState {
             startup_enter: RwSignal::new(None),
             startup_ma: RwSignal::new(None),
             startup_z: RwSignal::new(None),
-            startup_gui: RwSignal::new(None),
             qr_intent: RwSignal::new(None),
             secret_dialog: RwSignal::new(false),
             input_queue: RwSignal::new(VecDeque::new()),
