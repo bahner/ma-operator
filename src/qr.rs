@@ -234,7 +234,9 @@ pub fn try_decode_frame(video: &HtmlVideoElement) -> QrScanResult {
     let rgba = image.data();
 
     let luma: Vec<u8> = rgba
-        .chunks_exact(4)
+        .as_chunks::<4>()
+        .0
+        .iter()
         .map(|p| ((u16::from(p[0]) + u16::from(p[1]) + u16::from(p[2])) / 3) as u8)
         .collect();
     decode_camera_frame(w as usize, h as usize, &luma)

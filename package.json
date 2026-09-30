@@ -1,9 +1,10 @@
 {
   "name": "operator-js-vendor",
   "private": true,
-  "description": "Build-time only. Bundles CodeMirror 6 into www/editor.js so it ships with no CDN runtime dependency. See ../js-src/editor-entry.js and `make js-bundle`. Uses bun (not npm/node) for install + bundling.",
+  "description": "Build-time only. Bundles CodeMirror 6 and @helia/verified-fetch into www/ so the app ships with no CDN runtime dependency. See ../js-src/ and `make js-bundle`. Uses bun (not npm/node) for install + bundling.",
   "scripts": {
-    "build:editor": "bun build js-src/editor-entry.js --outfile=www/editor.js --minify --format=esm"
+    "build:editor": "bun build js-src/editor-entry.js --outfile=www/editor.js --minify --format=esm",
+    "build:ipfs": "bun build js-src/ipfs-entry.js --outfile=www/ipfs.js --minify --format=esm --target=browser"
   },
   "devDependencies": {
     "@codemirror/commands": "^6.7.0",
@@ -12,6 +13,7 @@
     "@codemirror/legacy-modes": "^6.4.0",
     "@codemirror/state": "^6.5.0",
     "@codemirror/view": "^6.35.0",
+    "@helia/verified-fetch": "^8.1.2",
     "@lezer/highlight": "^1.2.0"
   }
 }

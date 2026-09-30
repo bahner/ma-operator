@@ -29,6 +29,7 @@ mod i18n;
 mod identity;
 mod inbox_poll;
 mod input;
+mod ipfs;
 mod landing;
 mod mailbox;
 mod messages;

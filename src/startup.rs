@@ -212,7 +212,7 @@ fn normalise_z_reference(value: &str) -> Option<String> {
 /// Resolve our own published DID `ma.z` manifest CID, if present. This is the
 /// last saved z selection; the live `.my.z` profile value always wins over it.
 async fn resolve_did_z(sender_did: &str) -> Option<String> {
-    let resolver = transport::ipns_resolver().ok()?;
+    let resolver = transport::ipns_resolver();
     let document = crate::parser::verbs::ma::resolve_did_with_retry(
         resolver.as_ref(),
         sender_did,

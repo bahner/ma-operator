@@ -1,25 +1,25 @@
 /// iroh transport layer — wraps `ma_core::MaEndpoint` for use in WASM.
 use ma_core::{
     generate_identity_publish_request, generate_ipfs_store_request, new_ma_endpoint, Did,
-    EncryptionKey, IpfsGatewayResolver, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM,
-    CRUD_PROTOCOL_ID, INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
+    EncryptionKey, Ipld, Message, SecretBundle, SigningKey, CONTENT_TYPE_TERM, CRUD_PROTOCOL_ID,
+    INBOX_PROTOCOL_ID, IPFS_PROTOCOL_ID, MESSAGE_TYPE_CHAT, MESSAGE_TYPE_EMOTE,
     MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
 };
 use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 
 use crate::i18n::tf;
+use crate::ipfs::JsVerifiedResolver;
 use crate::messages::{format_crud_reply, format_incoming, format_term_reply, IncomingMessage};
 use crate::state::{
-    ENDPOINT, SESSION_AGENT_CID, SESSION_CONTENT_POOL, SESSION_CREATED_AT, SESSION_CRUD_INBOX,
-    SESSION_ENCRYPTION_KEY, SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IPNS_RESOLVER,
-    SESSION_IROH_KEY, SESSION_LANG, SESSION_LIVE_INBOX, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY,
-    SESSION_SENDER_DID, SESSION_SIGNING_KEY,
+    ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
+    SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IPNS_RESOLVER, SESSION_IROH_KEY, SESSION_LANG,
+    SESSION_LIVE_INBOX, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_SENDER_DID,
+    SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
 use std::sync::Arc;
-use web_time::Duration;
 
 const CONTENT_TYPE_TEXT: &str = "text/plain";
 const SEND_TIMEOUT_MS: u32 = 10_000;
@@ -154,10 +154,6 @@ pub fn save_gateway_preferences(prefs: &GatewayPreferences) {
             .iter()
             .any(|url| is_local_gateway_url(url));
     });
-    // The gateway set changed — rebuild both resolvers lazily so the next
-    // content fetch and IPNS resolution use the new preferences.
-    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = None);
-    SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = None);
 }
 
 pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
@@ -194,38 +190,15 @@ pub fn session_gateway_urls() -> Vec<String> {
     effective_gateway_urls(&load_gateway_preferences())
 }
 
-/// The session-scoped content-fetch pool, shared by every `/ipfs/<cid>`
-/// fetch. Built lazily from the current gateway preferences and invalidated by
-/// `save_gateway_preferences`. The per-request timeout matches `ma-core`'s
-/// 60 s total deadline so a cold block gets the full window before the next
-/// gateway is raced.
-pub(crate) fn content_pool() -> Result<Arc<ma_core::GatewayPool>, String> {
-    if let Some(pool) = SESSION_CONTENT_POOL.with(|r| r.borrow().clone()) {
-        return Ok(pool);
-    }
-    let pool = ma_core::GatewayPool::from_gateways(session_gateway_urls())
-        .map_err(|error| error.to_string())?
-        .with_request_timeout(Duration::from_mins(1));
-    let pool = Arc::new(pool);
-    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = Some(pool.clone()));
-    Ok(pool)
-}
-
-/// The session-scoped DID/IPNS resolver, shared by every name-resolution path
-/// so DID document caches and per-gateway health are reused. Built lazily from
-/// the current gateway preferences and invalidated by `save_gateway_preferences`.
-pub(crate) fn ipns_resolver() -> Result<Arc<IpfsGatewayResolver>, String> {
+/// The session-scoped DID/IPNS resolver, shared by every name-resolution path.
+/// Backed by the verified-fetch JS shim; no gateway configuration is involved.
+pub(crate) fn ipns_resolver() -> Arc<JsVerifiedResolver> {
     if let Some(resolver) = SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone()) {
-        return Ok(resolver);
+        return resolver;
     }
-    let pool = ma_core::GatewayPool::from_gateways(session_gateway_urls())
-        .map_err(|error| error.to_string())?
-        .with_request_timeout(Duration::from_mins(1));
-    let resolver = Arc::new(
-        IpfsGatewayResolver::from(pool).with_cache_ttls(Duration::from_hours(24), Duration::ZERO),
-    );
+    let resolver = Arc::new(JsVerifiedResolver);
     SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver.clone()));
-    Ok(resolver)
+    resolver
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
@@ -241,8 +214,7 @@ pub async fn connect(
     created_at: String,
 ) -> Result<(), String> {
     info!("Connecting with sender DID: {sender_did}");
-    // No negative caching — gateway Fibonacci retry is the rate limiter for failed lookups.
-    let resolver = ipns_resolver()?;
+    let resolver = ipns_resolver();
     let encryption_did = Did::try_from(sender_did.as_str())
         .and_then(|did| did.with_fragment("enc"))
         .map_err(|error| error.to_string())?;
@@ -287,7 +259,6 @@ pub fn disconnect() {
     SESSION_CREATED_AT.with(|c| *c.borrow_mut() = None);
     SESSION_PROFILE_KEY.with(|k| *k.borrow_mut() = None);
     SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = None);
-    SESSION_CONTENT_POOL.with(|r| *r.borrow_mut() = None);
     SESSION_AGENT_CID.with(|c| *c.borrow_mut() = None);
     // A pending `.keymaker` rollback is moot after logout: the next login
     // overwrites the local cache from IPFS anyway.

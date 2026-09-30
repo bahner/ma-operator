@@ -1,6 +1,6 @@
 use futures::channel::oneshot;
 use leptos::prelude::*;
-use ma_core::{GatewayPool, Inbox, IpfsGatewayResolver, Message};
+use ma_core::{Inbox, Message};
 use ma_zscheme::SchemeVal;
 use serde::{Deserialize, Serialize};
 use std::cell::RefCell;
@@ -766,14 +766,10 @@ thread_local! {
     /// Profile encryption key derived from the current login passphrase.
     /// Used to encrypt/decrypt the profile blob stored in IPFS.
     pub static SESSION_PROFILE_KEY: RefCell<Option<[u8; 32]>> = const { RefCell::new(None) };
-    /// Shared DID/IPNS resolver — created once at connect() so its cache is
-    /// reused across all concurrent sends instead of each call fetching
-    /// the same DID document from scratch.
-    pub static SESSION_IPNS_RESOLVER: RefCell<Option<Arc<IpfsGatewayResolver>>> = const { RefCell::new(None) };
-    /// Shared content-fetch pool — fetches raw `/ipfs/<cid>` bytes. Kept
-    /// separate from IPNS/DID resolution so a gateway that rate-limits IPNS
-    /// lookups never poisons ordinary content fetches (and vice versa).
-    pub static SESSION_CONTENT_POOL: RefCell<Option<Arc<GatewayPool>>> = const { RefCell::new(None) };
+    /// Shared DID/IPNS resolver — created once at connect() and reused across
+    /// all concurrent sends. Backed by the verified-fetch JS shim.
+    pub static SESSION_IPNS_RESOLVER: RefCell<Option<Arc<crate::ipfs::JsVerifiedResolver>>> =
+        const { RefCell::new(None) };
     /// CID of the most recently stored encrypted profile blob.
     /// Set when an ipfs-store reply arrives for a profile-publish request.
     /// Read by `send_identity_publish` to embed `ma.agent` in the DID document.

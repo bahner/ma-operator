@@ -377,11 +377,11 @@ pub(crate) async fn connect_trusted_ma_on_startup(
     ConnectMaOutcome::Ready { did }
 }
 
-/// Resolve a DID document, retrying transient gateway failures within
-/// `timeout_ms`. Shared by every startup resolution path so a cold public-
-/// gateway IPNS lookup gets time to warm up.
+/// Resolve a DID document, retrying transient failures within `timeout_ms`.
+/// Shared by every startup resolution path so a cold IPNS lookup gets time to
+/// warm up.
 pub(crate) async fn resolve_did_with_retry(
-    resolver: &ma_core::IpfsGatewayResolver,
+    resolver: &dyn ma_core::DidDocumentResolver,
     did: &str,
     timeout_ms: u32,
 ) -> Result<ma_core::Document, String> {
@@ -406,7 +406,7 @@ pub(crate) async fn resolve_did_with_retry(
 /// session resolver so a successful lookup warms the cache the ping and
 /// identity-publish send paths resolve from.
 async fn resolve_trusted_ma(did: &str, timeout_ms: u32) -> Result<(), String> {
-    let resolver = transport::ipns_resolver()?;
+    let resolver = transport::ipns_resolver();
     let document = resolve_did_with_retry(resolver.as_ref(), did, timeout_ms).await?;
     published_self_matches(&document, did)
 }

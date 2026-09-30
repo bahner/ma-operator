@@ -35,7 +35,7 @@ fn load_last_did() -> Option<String> {
 }
 
 async fn verify_existing_identity(did: &str) -> Result<(), String> {
-    let resolver = crate::transport::connection::ipns_resolver()?;
+    let resolver = crate::transport::connection::ipns_resolver();
     let document = crate::parser::verbs::ma::resolve_did_with_retry(
         resolver.as_ref(),
         did,
@@ -74,8 +74,7 @@ async fn fetch_profile_from_ipfs(
     full_did: &str,
     pass: &str,
 ) -> Result<FetchedProfile, ProfileFetchError> {
-    let resolver =
-        crate::transport::connection::ipns_resolver().map_err(ProfileFetchError::Rejected)?;
+    let resolver = crate::transport::connection::ipns_resolver();
 
     let doc = crate::parser::verbs::ma::resolve_did_with_retry(
         resolver.as_ref(),
@@ -292,9 +291,7 @@ pub fn Landing() -> impl IntoView {
                 }
             }
             use ma_core::DidDocumentResolver;
-            let Ok(resolver) = crate::transport::connection::ipns_resolver() else {
-                return;
-            };
+            let resolver = crate::transport::connection::ipns_resolver();
             if let Ok(doc) = resolver.resolve(&did).await {
                 let Some(did_now) = did_input.try_get_untracked() else {
                     return;

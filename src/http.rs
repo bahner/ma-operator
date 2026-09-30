@@ -1,9 +1,9 @@
-//! Minimal WASM-safe HTTP fetch helpers.
+//! Raw HTTP fetch helpers for the local runtime (localhost status/ping).
 //!
-//! These are the only HTTP primitives in the codebase. All other modules
-//! import from here rather than rolling their own fetch.
+//! IPFS/IPNS content goes through [`crate::ipfs`] (verified-fetch), not here.
+//! These helpers only talk plain HTTP to localhost (the trusted runtime's
+//! status endpoint) and stay gateway-independent.
 
-use crate::transport::connection::content_pool;
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
 use wasm_bindgen::JsCast;
@@ -18,9 +18,10 @@ use web_time::{Duration, Instant};
 /// room to retry after the block has warmed up.
 pub const STARTUP_FETCH_TIMEOUT_MS: u32 = 120_000;
 
-/// Exponential backoff between startup/profile fetch retry attempts. Public
-/// gateways rate-limit repeated requests (`HTTP 429`), so the pause grows from
-/// 2 s to a 30 s cap instead of hammering one gateway every couple of seconds.
+/// Exponential backoff between startup/profile fetch retry attempts. A freshly
+/// published block can take time to propagate through delegated routing, so the
+/// pause grows from 2 s to a 30 s cap instead of hammering every couple of
+/// seconds.
 pub fn retry_backoff_ms(attempt: u32) -> u32 {
     let factor = 1u32 << attempt.min(4);
     (2_000u32.saturating_mul(factor)).min(30_000)
@@ -123,18 +124,14 @@ async fn response_text(resp: web_sys::Response) -> Result<String, String> {
         .ok_or_else(|| "response is not a string".to_string())
 }
 
-fn utf8_body(body: &[u8]) -> Result<String, String> {
-    String::from_utf8(body.to_vec()).map_err(|e| e.to_string())
-}
-
-/// Fetch raw bytes for a bare CID from the active IPFS gateway pool.
+/// Fetch raw bytes for a bare CID via verified-fetch.
 pub async fn fetch_cid_bytes(cid: &str) -> Result<Vec<u8>, String> {
-    content_pool()?.fetch_bytes(&format!("/ipfs/{cid}"), None).await
+    crate::ipfs::fetch_bytes(&format!("ipfs://{cid}")).await
 }
 
-/// Fetch raw bytes for a bare CID, retrying transient gateway failures within
-/// the startup budget. Used by profile loading, where the blob was just
-/// published and may not yet be available on the public gateways.
+/// Fetch raw bytes for a bare CID, retrying transient failures within the
+/// startup budget. Used by profile loading, where the blob was just published
+/// and may not yet be discoverable.
 pub async fn fetch_cid_bytes_retrying(cid: &str) -> Result<Vec<u8>, String> {
     let deadline = Instant::now() + Duration::from_millis(u64::from(STARTUP_FETCH_TIMEOUT_MS));
     let mut attempt = 0u32;
@@ -151,103 +148,27 @@ pub async fn fetch_cid_bytes_retrying(cid: &str) -> Result<Vec<u8>, String> {
     }
 }
 
-/// Fetch text for a bare CID from the active IPFS gateway pool.
+/// Fetch text for a bare CID via verified-fetch.
 pub async fn fetch_cid_text(cid: &str) -> Result<String, String> {
-    content_pool()?
-        .fetch(&format!("/ipfs/{cid}"), None, utf8_body)
-        .await
+    crate::ipfs::fetch_text(&format!("ipfs://{cid}")).await
 }
 
 /// Fetch raw bytes for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
-/// (user-facing path syntax). Root `/ipfs/<cid>` links are fetched as raw
-/// blocks so operator, not the gateway, owns decoding.
+/// (user-facing path syntax). Bytes are verified against the CID by
+/// verified-fetch, so operator owns decoding.
 pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
-    let pool = content_pool()?;
-    let mut errors = Vec::new();
-    for arg in fetch_path_bytes_args(path) {
-        match pool.fetch_bytes(&arg, None).await {
-            Ok(bytes) => return Ok(bytes),
-            Err(e) => errors.push(format!("{arg}: {e}")),
-        }
-    }
-    Err(errors.join("; "))
+    crate::ipfs::fetch_bytes(&crate::ipfs::to_verified_resource(path)).await
 }
 
 /// Fetch text for a `/ipfs/<cid>`, `/ipns/<key>`, or `/ipld/<cid>` path
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
-    let arg = path.trim_start_matches('/').replacen("ipld/", "ipfs/", 1);
-    content_pool()?.fetch(&arg, None, utf8_body).await
-}
-
-fn fetch_path_bytes_args(path: &str) -> Vec<String> {
-    let trimmed = path.trim_start_matches('/');
-    if let Some(root_cid) = root_cid_from_ipfs_path(path) {
-        if ipfs_path_has_no_subpath(path) {
-            return vec![format!("ipfs/{root_cid}?format=raw"), trimmed.to_string()];
-        }
-    }
-    vec![trimmed.to_string()]
-}
-
-fn root_cid_from_ipfs_path(path: &str) -> Option<&str> {
-    path.strip_prefix("/ipfs/")?
-        .split('/')
-        .next()
-        .filter(|cid| !cid.is_empty())
-}
-
-fn ipfs_path_has_no_subpath(path: &str) -> bool {
-    path.strip_prefix("/ipfs/")
-        .is_some_and(|rest| !rest.contains('/'))
+    crate::ipfs::fetch_text(&crate::ipfs::to_verified_resource(path)).await
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn fetch_path_bytes_uses_raw_gateway_format_for_root_cids() {
-        let cbor_cid = cid::Cid::new_v1(
-            ma_core::CODEC_DAG_CBOR,
-            cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
-        )
-        .to_string();
-        let raw_cid = cid::Cid::new_v1(
-            ma_core::CODEC_RAW,
-            cid::multihash::Multihash::wrap(0x12, &[99; 32]).unwrap(),
-        )
-        .to_string();
-
-        assert_eq!(
-            fetch_path_bytes_args(&format!("/ipfs/{cbor_cid}")),
-            vec![
-                format!("ipfs/{cbor_cid}?format=raw"),
-                format!("ipfs/{cbor_cid}"),
-            ]
-        );
-        assert_eq!(
-            fetch_path_bytes_args(&format!("/ipfs/{raw_cid}")),
-            vec![
-                format!("ipfs/{raw_cid}?format=raw"),
-                format!("ipfs/{raw_cid}")
-            ]
-        );
-    }
-
-    #[test]
-    fn fetch_path_bytes_keeps_subpaths_on_normal_gateway_path() {
-        let ipld_cid = cid::Cid::new_v1(
-            ma_core::CODEC_DAG_CBOR,
-            cid::multihash::Multihash::wrap(0x12, &[42; 32]).unwrap(),
-        )
-        .to_string();
-
-        assert_eq!(
-            fetch_path_bytes_args(&format!("/ipfs/{ipld_cid}/child")),
-            vec![format!("ipfs/{ipld_cid}/child")]
-        );
-    }
 
     #[test]
     fn retry_backoff_grows_and_caps() {

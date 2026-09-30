@@ -60,20 +60,23 @@ cid:
 check:
 	cargo check --target wasm32-unknown-unknown
 
-# Rebuild www/editor.js from js-src/ (vendored CodeMirror bundle).
+# Rebuild www/editor.js and www/ipfs.js from js-src/ (vendored bundles).
 # Requires bun (https://bun.sh) — not npm/node. Run this after editing
-# js-src/editor-entry.js or js-src/zscheme-mode.js; the output is committed.
+# js-src/*.js; the outputs are committed.
 #
-# editor.js is served under a stable filename (unlike trunk's hashed
-# rust/wasm/css outputs), so browsers/proxies can cache it indefinitely.
+# Both are served under stable filenames (unlike trunk's hashed
+# rust/wasm/css outputs), so browsers/proxies can cache them indefinitely.
 # We bust that cache by stamping a content-hash query string onto the
-# <script src="/editor.js?v=...">  reference in index.html.
+# <script src="..."> references in index.html.
 js-bundle:
 	bun install
 	bun run build:editor
-	@hash=$$(sha256sum www/editor.js | cut -c1-10); \
-	sed -i -E "s|(src=\"/editor\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$hash\"|" index.html; \
-	echo "editor.js hash: $$hash (index.html updated)"
+	bun run build:ipfs
+	@editor_hash=$$(sha256sum www/editor.js | cut -c1-10); \
+	ipfs_hash=$$(sha256sum www/ipfs.js | cut -c1-10); \
+	sed -i -E "s|(src=\"/editor\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$editor_hash\"|" index.html; \
+	sed -i -E "s|(src=\"/ipfs\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$ipfs_hash\"|" index.html; \
+	echo "editor.js hash: $$editor_hash, ipfs.js hash: $$ipfs_hash (index.html updated)"
 
 test:
 	cargo test
