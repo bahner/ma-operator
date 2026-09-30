@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    tusaale safka ku jira; wuxuu di
 help-zscheme-define =   (define x 12)             qeexitaannadu way sii jiraan inta lagu jiro fadhiga gelitaanka hadda
 help-zscheme-doc = Dukumenti: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Gateway IPFS maxalliga ah (u baahan oggolaanshaha browser)
 
-tab-config = Xaaladaha
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

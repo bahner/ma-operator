@@ -85,14 +85,6 @@ pub(super) fn handle_ma(
             };
             MaOp::Claim { port }
         }
-        "gateway-test" => {
-            let did = if args.is_empty() {
-                crate::transport::get_sender_did().ok_or_else(|| "not logged in".to_string())?
-            } else {
-                resolve_bare_did(&args[0], &config.get_untracked())?
-            };
-            MaOp::GatewayTest { did }
-        }
         "publish" => {
             let cfg = config.get_untracked();
             let trusted_ma = active_ma_did(&cfg).ok_or_else(|| {
@@ -156,7 +148,6 @@ async fn process_ma_op(op: MaOp, state: &AppState, config: RwSignal<OperatorConf
             )
             .await;
         }
-        MaOp::GatewayTest { did } => gateway_test(&did, state).await,
     }
 }
 
@@ -201,34 +192,6 @@ fn set_trusted_runtime(did: &str, state: &AppState, config: RwSignal<OperatorCon
         });
     }
     state.push_system(format!("ma: {did}"));
-}
-
-/// Diagnostic: probe each enabled gateway with a raw browser `fetch` in both
-/// cors and no-cors modes. Distinguishes CORS policy failures from network/
-/// DNS failures without needing `DevTools`. `did` is a resolved bare DID.
-async fn gateway_test(did: &str, state: &AppState) {
-    let Some(key) = did.strip_prefix("did:ma:").filter(|key| !key.is_empty()) else {
-        state.push_error(format!("{did} is not a bare did:ma DID"));
-        return;
-    };
-    let urls = crate::transport::connection::session_gateway_urls();
-    if urls.is_empty() {
-        state.push_error("no gateways enabled".to_string());
-        return;
-    }
-    state.push_system(format!(
-        "gateway test for {did} — {} gateway{}",
-        urls.len(),
-        if urls.len() == 1 { "" } else { "s" }
-    ));
-    for base in urls {
-        let url = format!("{base}ipns/{key}");
-        state.push_system(format!("→ {url}"));
-        let cors = crate::http::probe_fetch(&url, false, 6_000).await;
-        state.push_system(format!("  {cors}"));
-        let no_cors = crate::http::probe_fetch(&url, true, 6_000).await;
-        state.push_system(format!("  {no_cors}"));
-    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq)]
@@ -402,9 +365,9 @@ pub(crate) async fn resolve_did_with_retry(
 }
 
 /// Look up the trusted MA's DID document, retrying within `timeout_ms` so a
-/// cold public-gateway IPNS lookup gets time to warm up. Uses the shared
-/// session resolver so a successful lookup warms the cache the ping and
-/// identity-publish send paths resolve from.
+/// cold IPNS lookup gets time to warm up. Uses the shared session resolver so a
+/// successful lookup warms the cache the ping and identity-publish send paths
+/// resolve from.
 async fn resolve_trusted_ma(did: &str, timeout_ms: u32) -> Result<(), String> {
     let resolver = transport::ipns_resolver();
     let document = resolve_did_with_retry(resolver.as_ref(), did, timeout_ms).await?;

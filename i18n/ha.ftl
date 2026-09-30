@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    misalin cikin layi; yana aika "
 help-zscheme-define =   (define x 12)             ma’anoni suna ci gaba a zaman shiga na yanzu
 help-zscheme-doc = Takardu: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Gateway IPFS na gida (yana buƙatar izni na browser)
 
-tab-config = Saitin
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

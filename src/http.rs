@@ -11,11 +11,11 @@ use wasm_bindgen_futures::JsFuture;
 use web_time::{Duration, Instant};
 
 /// How long startup/profile fetches keep retrying a transiently failing
-/// gateway fetch. A freshly published block is cold on the public gateways;
-/// the first request warms the block server-side, so the retry loop waits for
-/// that to land instead of giving up after one gateway deadline. The budget
-/// must exceed `ma-core`'s own per-fetch deadline so a fast `504` still leaves
-/// room to retry after the block has warmed up.
+/// fetch. A freshly published block is cold on the network; the first request
+/// warms the block, so the retry loop waits for that to land instead of giving
+/// up after one deadline. The budget must exceed `ma-core`'s own per-fetch
+/// deadline so a fast failure still leaves room to retry after the block has
+/// warmed up.
 pub const STARTUP_FETCH_TIMEOUT_MS: u32 = 120_000;
 
 /// Exponential backoff between startup/profile fetch retry attempts. A freshly
@@ -61,30 +61,6 @@ pub async fn post_json_text_timeout(
         .map_err(|e| format!("{e:?}"))?;
     let body = text_val.as_string().unwrap_or_default();
     Ok(HttpTextResponse { status, body })
-}
-
-/// Probe a URL with a raw browser `fetch` and report how the browser treated
-/// it, bypassing ma-core/reqwest so the underlying rejection reason survives.
-///
-/// `no_cors` sets fetch mode `no-cors`: a resolved no-cors fetch (opaque
-/// response) means the network path works, so any cors-mode failure is CORS
-/// policy; a rejected no-cors fetch means the network/DNS path itself is
-/// broken. Used by `.ma!gateway-test`.
-pub async fn probe_fetch(url: &str, no_cors: bool, timeout_ms: u32) -> String {
-    let mode_label = if no_cors { "no-cors" } else { "cors" };
-    let opts = web_sys::RequestInit::new();
-    opts.set_method("GET");
-    if no_cors {
-        opts.set_mode(web_sys::RequestMode::NoCors);
-    }
-    match fetch_with_timeout(url, &opts, timeout_ms).await {
-        Ok(resp) => format!(
-            "{mode_label}: resolved status={} type={:?}",
-            resp.status(),
-            resp.type_()
-        ),
-        Err(e) => format!("{mode_label}: rejected: {e}"),
-    }
 }
 
 async fn fetch_with_timeout(

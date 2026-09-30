@@ -3,11 +3,11 @@
 use crate::{
     config::OperatorConfig,
     core::CommandStatus,
+    editor::EditorMode,
     i18n::{t, tf},
     parser::command::RemoteCrudOp,
     state::{AppState, OutboxTask, PendingKind},
     transport,
-    editor::EditorMode,
 };
 use leptos::prelude::*;
 

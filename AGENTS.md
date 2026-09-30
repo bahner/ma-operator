@@ -298,8 +298,10 @@ consumes them:
 Never make a bare path, parenthesised path, local setter, or command splice
 fetch content implicitly. Bytes must not be stringified or spliced. Preserve
 bytes as CBOR byte strings in actor traffic. Implement host I/O through
-`SchemeCtx`; IPNS resolution must call the shared
-`ma_core::IpfsGatewayResolver`, not duplicate gateway logic in Operator.
+`SchemeCtx`. All IPFS/IPNS/DID reads go through the bundled
+`@helia/verified-fetch` shim (`www/ipfs.js`, bridged via `src/ipfs.rs`'s
+`JsVerifiedResolver`). ma-core has no IPFS backend on wasm, so the browser
+supplies its own — never a raw HTTP gateway.
 
 Consumers keep published semver dependencies. During unreleased multi-repo
 development, validate with temporary Cargo `--config patch.crates-io...`
@@ -745,7 +747,8 @@ ancestor paths backward. If any ancestor leaf `is_link_value`, it calls
 
 `resolve_and_traverse`:
 1. Checks `doc_cache` (RwSignal<HashMap<String, serde_json::Value>>).
-2. If miss, fetches: DID → IPFS gateway `/ipfs/<did-doc-cid>`; CID → gateway `/ipfs/<cid>`.
+2. If miss, fetches: DID → resolved through the verified-fetch resolver (IPNS);
+   CID → fetched by CID through verified-fetch.
 3. Parses JSON, traverses sub-path, pushes result as terminal entry.
 4. Stores parsed JSON in `doc_cache` for subsequent lookups.
 

@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    umzekelo osemgceni; ithumela "s
 help-zscheme-define =   (define x 12)             iinkcazelo zihlala kwiseshoni yokungena yangoku
 help-zscheme-doc = Amaxwebhu: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = I-gateway ye-IPFS yasekhaya (idinga ukuphuma kwe-browser)
 
-tab-config = Iinqalelo
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

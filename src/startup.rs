@@ -159,7 +159,7 @@ fn single_z_scheme_source(source: String) -> Result<Vec<(String, String)>, Strin
     )])
 }
 
-/// Resolve one `.z` seed CID, retrying transient gateway failures within the
+/// Resolve one `.z` seed CID, retrying transient fetch failures within the
 /// shared startup budget. Validation errors are permanent and are not retried.
 async fn resolve_z_doc_link(value: &str) -> Result<crate::doc_link::ResolvedDocContent, String> {
     let deadline =

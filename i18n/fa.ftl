@@ -452,10 +452,7 @@ scheme-cid-fetch-error = واکشی CID { $cid } ناموفق بود: { $reason 
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = CID معتبر نیست: { $value }
 
-label-local-ipfs = دروازه IPFS محلی (نیازمند استثنا در مرورگر)
 
-tab-config = تنظیمات
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

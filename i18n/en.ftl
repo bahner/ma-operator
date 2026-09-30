@@ -449,9 +449,6 @@ scheme-cid-fetch-error = Failed to fetch CID { $cid }: { $reason }
 scheme-include-error = include: { $reason }
 scheme-not-a-cid = Not a valid CID: { $value }
 
-label-local-ipfs = Local IPFS gateway (requires browser exception)
 
-tab-config = settings
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 error-passphrase-too-short = passphrase must be at least 20 characters

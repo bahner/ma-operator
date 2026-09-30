@@ -441,10 +441,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    mfano ndani ya mstari; hutuma "
 help-zscheme-define =   (define x 12)             ufafanuzi hubaki kwa kipindi cha sasa cha kuingia
 help-zscheme-doc = Nyaraka: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Lango la IPFS la ndani (linahitaji ruhusa ya kivinjari)
 
-tab-config = Mipangilio
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

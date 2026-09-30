@@ -1,9 +1,9 @@
 use super::resolve_bare_did;
 use crate::config::OperatorConfig;
+use crate::editor::EditorContext;
 use crate::i18n::{t, tf};
 use crate::identity::load_identity;
 use crate::state::AppState;
-use crate::editor::EditorContext;
 use js_sys;
 use leptos::prelude::*;
 use wasm_bindgen::JsCast;

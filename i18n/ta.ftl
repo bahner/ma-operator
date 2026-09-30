@@ -449,10 +449,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    வரிக்குள் எ
 help-zscheme-define =   (define x 12)             வரையறைகள் தற்போதைய உள்நுழைவு அமர்வில் தொடரும்
 help-zscheme-doc = ஆவணங்கள்: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = உள்ளூர் IPFS நுழைவாயில் (உலாவி விதிவிலக்கு தேவை)
 
-tab-config = அமைப்புகள்
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

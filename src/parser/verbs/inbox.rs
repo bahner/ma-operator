@@ -2,10 +2,10 @@ use super::doc::lang_for_content_type;
 use super::resolve_bare_did;
 use crate::config::OperatorConfig;
 use crate::core::CommandStatus;
+use crate::editor::EditorContext;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
 use crate::transport;
-use crate::editor::EditorContext;
 use leptos::prelude::*;
 
 /// Collect all distinct numeric inbox indices in sorted order.

@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ví dụ nội tuyến; gửi "
 help-zscheme-define =   (define x 12)             các định nghĩa tồn tại trong phiên đăng nhập hiện tại
 help-zscheme-doc = Tài liệu: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Cổng IPFS cục bộ (cần ngoại lệ trình duyệt)
 
-tab-config = Cài đặt
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

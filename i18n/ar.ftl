@@ -447,10 +447,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    مثال مضمن؛ يرسل "s
 help-zscheme-define =   (define x 12)             تبقى التعريفات خلال جلسة تسجيل الدخول الحالية
 help-zscheme-doc = الوثائق: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = بوابة IPFS المحلية (تتطلب استثناءً في المتصفح)
 
-tab-config = الإعدادات
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

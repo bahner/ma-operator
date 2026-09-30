@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    fakkeenya sarara keessaa; "say 
 help-zscheme-define =   (define x 12)             hiikawwan yeroo seensa ammaa keessa ni turu
 help-zscheme-doc = Galmee: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Gateway IPFS naannoo (hayyama browser barbaada)
 
-tab-config = Qindaa'ina
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

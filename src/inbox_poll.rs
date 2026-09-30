@@ -10,6 +10,7 @@ use wasm_bindgen_futures::spawn_local;
 
 use crate::{
     config::{persist_config, OperatorConfig},
+    editor::EditorContext,
     i18n::tf,
     messages::IncomingMessage,
     reply_handlers::{
@@ -20,7 +21,6 @@ use crate::{
     },
     state::{AppState, OutboxTask, PendingKind},
     transport,
-    editor::EditorContext,
 };
 
 // ── Public entry point ─────────────────────────────────────────────────────

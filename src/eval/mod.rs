@@ -16,12 +16,12 @@ use wasm_bindgen_futures::spawn_local;
 use crate::{
     config::{persist_config, OperatorConfig},
     core::CommandStatus,
+    editor::EditorContext,
     i18n::{msg_jobs_cancelled, t, tf},
     parser::command::{Command, DotOp},
     parser::verbs::dispatch_meta,
     state::{AppState, FocusMode, PendingKind},
     transport,
-    editor::EditorContext,
 };
 
 /// Clear the session and session-scoped config. Shared by the `.logout`
@@ -121,9 +121,10 @@ async fn resolve_and_traverse(
         v
     } else {
         let val: Result<serde_json::Value, String> = if link.starts_with("did:ma:") {
-            // DID links resolve through IPNS — use the shared DID/IPNS resolver,
-            // which owns the gateway URL, has a positive cache, and falls back
-            // to public gateways automatically.
+            // DID links resolve through IPNS — the shared resolver verifies the
+            // signed DAG-CBOR document. Re-decode it as IPLD (rather than
+            // serialising the `Document`) so links render as plain CID strings,
+            // matching the bare-CID branch below.
             let Some(resolver) = crate::state::SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone())
             else {
                 state.push_error(t("msg-link-not-connected"));
@@ -133,11 +134,17 @@ async fn resolve_and_traverse(
                 .resolve(link)
                 .await
                 .map_err(|e| e.to_string())
-                .and_then(|doc| serde_json::to_value(&doc).map_err(|e| e.to_string()))
+                .and_then(|document| {
+                    document
+                        .encode()
+                        .map_err(|e| e.to_string())
+                        .and_then(|bytes| ipld_to_json_from_dag_cbor(&bytes))
+                })
         } else {
-            // Bare CID (IPLD link value) — fetch from local gateway.
-            match crate::http::fetch_cid_text(link).await {
-                Ok(t) => serde_json::from_str::<serde_json::Value>(&t).map_err(|e| e.to_string()),
+            // Bare CID (IPLD link value) — fetch the raw DAG-CBOR block
+            // trustlessly via verified-fetch and decode it as IPLD.
+            match crate::http::fetch_cid_bytes(link).await {
+                Ok(bytes) => ipld_to_json_from_dag_cbor(&bytes),
                 Err(e) => Err(e),
             }
         };
@@ -170,6 +177,47 @@ async fn resolve_and_traverse(
         other => other.to_string(),
     };
     state.push_output(format!("{link}/{subpath}: {display}"));
+}
+
+/// Decode a DAG-CBOR block as IPLD and render it as JSON for local traversal.
+fn ipld_to_json_from_dag_cbor(bytes: &[u8]) -> Result<serde_json::Value, String> {
+    let ipld: ma_core::Ipld = serde_ipld_dagcbor::from_slice(bytes).map_err(|e| e.to_string())?;
+    Ok(ipld_to_json(&ipld))
+}
+
+/// Render an IPLD node as [`serde_json::Value`].
+///
+/// Links become plain CID strings — never DAG-JSON `{"/":"<cid>"}` objects —
+/// so `is_link_value` recognises them and lazy traversal keeps working. The
+/// rendering is identical whether the node arrived through a `did:ma:` document
+/// or a bare CID.
+fn ipld_to_json(value: &ma_core::Ipld) -> serde_json::Value {
+    use ma_core::Ipld;
+    match value {
+        Ipld::Null => serde_json::Value::Null,
+        Ipld::Bool(flag) => serde_json::Value::Bool(*flag),
+        Ipld::Integer(integer) => json_number(serde_json::Number::from_i128(*integer)),
+        Ipld::Float(float) => json_number(serde_json::Number::from_f64(*float)),
+        Ipld::String(text) => serde_json::Value::String(text.clone()),
+        Ipld::Bytes(bytes) => serde_json::Value::Array(
+            bytes
+                .iter()
+                .map(|byte| serde_json::Value::from(*byte))
+                .collect(),
+        ),
+        Ipld::List(items) => serde_json::Value::Array(items.iter().map(ipld_to_json).collect()),
+        Ipld::Map(entries) => serde_json::Value::Object(
+            entries
+                .iter()
+                .map(|(key, entry)| (key.clone(), ipld_to_json(entry)))
+                .collect(),
+        ),
+        Ipld::Link(cid) => serde_json::Value::String(cid.to_string()),
+    }
+}
+
+fn json_number(number: Option<serde_json::Number>) -> serde_json::Value {
+    number.map_or(serde_json::Value::Null, serde_json::Value::Number)
 }
 
 pub(crate) fn eval(
@@ -961,7 +1009,7 @@ fn build_ctx_prompt(cfg: &OperatorConfig, runtime: &str) -> String {
 mod tests {
     use super::{
         apply_ctx_focus, build_enter_ctx, configured_inventory, did_enter_args, enter_ctx_kind,
-        enter_no_args, enter_target_display, handle_dot_get, parse_enter_target,
+        enter_no_args, enter_target_display, handle_dot_get, ipld_to_json, parse_enter_target,
         saved_enter_target, validate_alias_set,
     };
     use crate::{config::OperatorConfig, core::Entry, state::AppState};
@@ -971,6 +1019,28 @@ mod tests {
     #[test]
     fn validate_alias_set_accepts_did_url() {
         assert!(validate_alias_set(".my.aliases.home", "did:ma:k51example#room").is_ok());
+    }
+
+    #[test]
+    fn ipld_links_render_as_plain_cid_strings() {
+        use ma_core::Ipld;
+        use std::collections::BTreeMap;
+
+        const CID: &str = "bafkreigh2akiscaildcqabsyg3dfr6chu3fgpregiymsck7e7aqa4s52zy";
+        let link = || Ipld::Link(cid::Cid::try_from(CID).expect("valid cid"));
+
+        let value = Ipld::Map(BTreeMap::from([
+            ("runtime".to_string(), link()),
+            ("nested".to_string(), Ipld::List(vec![link()])),
+        ]));
+
+        let json = ipld_to_json(&value);
+
+        assert_eq!(json["runtime"], serde_json::Value::String(CID.to_string()));
+        assert_eq!(
+            json["nested"][0],
+            serde_json::Value::String(CID.to_string())
+        );
     }
 
     #[test]

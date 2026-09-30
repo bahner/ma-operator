@@ -441,10 +441,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    soron belüli példa; ezt küld
 help-zscheme-define =   (define x 12)             a definíciók megmaradnak az aktuális bejelentkezési munkamenetben
 help-zscheme-doc = Dokumentáció: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Helyi IPFS-átjáró (böngészőkivétel szükséges)
 
-tab-config = Beállítások
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

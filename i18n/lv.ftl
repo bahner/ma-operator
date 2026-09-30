@@ -441,10 +441,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    iekļauts piemērs; nosūta "sa
 help-zscheme-define =   (define x 12)             definīcijas saglabājas pašreizējā pieteikšanās sesijā
 help-zscheme-doc = Dokumentācija: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Lokālais IPFS vārtejas (nepieciešams pārlūka izņēmums)
 
-tab-config = Iestatījumi
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

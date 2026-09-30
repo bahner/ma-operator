@@ -6,7 +6,6 @@ use ma_core::{
     MESSAGE_TYPE_IDENTITY_PUBLISH_REQUEST, MESSAGE_TYPE_MESSAGE,
 };
 use ma_zscheme::SchemeVal;
-use serde::{Deserialize, Serialize};
 
 use crate::i18n::tf;
 use crate::ipfs::JsVerifiedResolver;
@@ -14,8 +13,7 @@ use crate::messages::{format_crud_reply, format_incoming, format_term_reply, Inc
 use crate::state::{
     ENDPOINT, SESSION_AGENT_CID, SESSION_CREATED_AT, SESSION_CRUD_INBOX, SESSION_ENCRYPTION_KEY,
     SESSION_INBOX, SESSION_IPNS_KEY, SESSION_IPNS_RESOLVER, SESSION_IROH_KEY, SESSION_LANG,
-    SESSION_LIVE_INBOX, SESSION_LOCAL_IPFS, SESSION_PROFILE_KEY, SESSION_SENDER_DID,
-    SESSION_SIGNING_KEY,
+    SESSION_LIVE_INBOX, SESSION_PROFILE_KEY, SESSION_SENDER_DID, SESSION_SIGNING_KEY,
 };
 use futures::FutureExt as _;
 use std::rc::Rc;
@@ -31,164 +29,6 @@ const SEND_TIMEOUT_MARKER: &str = "send-timeout";
 pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 
 use log::info;
-
-pub const LOCAL_GATEWAY_URL: &str = "http://127.0.0.1:8080/";
-pub const PUBLIC_GATEWAY_URLS: &[&str] = &[
-    "https://ipfs.io/",          // IPFS Foundation path gateway (retiring 2026-09-21)
-    "https://ipfs.filebase.io/", // Filebase S3-backed path gateway
-];
-const IPFS_GATEWAYS_PREF_KEY: &str = "operator_ipfs_gateways";
-const LEGACY_IPFS_GATEWAY_PREF_KEY: &str = "operator_ipfs_gateway";
-
-#[derive(Clone, Debug, Serialize, Deserialize)]
-pub struct GatewayPreferences {
-    pub localhost: bool,
-    pub custom_enabled: bool,
-    pub custom_url: String,
-    /// Enabled public gateways, expressed as a subset of
-    /// [`PUBLIC_GATEWAY_URLS`]. Defaults to every public gateway so stored
-    /// preferences written before per-gateway selection existed keep working.
-    #[serde(default = "all_public_gateways")]
-    pub public_gateways: Vec<String>,
-}
-
-fn all_public_gateways() -> Vec<String> {
-    PUBLIC_GATEWAY_URLS
-        .iter()
-        .map(|url| (*url).to_string())
-        .collect()
-}
-
-fn is_local_web_origin(origin: &str) -> bool {
-    origin.starts_with("http://localhost:")
-        || origin.starts_with("http://127.0.0.1:")
-        || origin.starts_with("http://[::1]:")
-}
-
-fn current_origin_is_local() -> bool {
-    let Some(window) = web_sys::window() else {
-        return false;
-    };
-    let origin = window.location().origin().unwrap_or_default();
-    is_local_web_origin(&origin)
-}
-
-pub(crate) fn normalise_gateway_url(input: &str) -> Option<String> {
-    let trimmed = input.trim();
-    if trimmed.is_empty() || !(trimmed.starts_with("http://") || trimmed.starts_with("https://")) {
-        return None;
-    }
-    let mut url = trimmed.to_string();
-    if !url.ends_with('/') {
-        url.push('/');
-    }
-    Some(url)
-}
-
-pub(crate) fn is_local_gateway_url(url: &str) -> bool {
-    let lower = url.to_ascii_lowercase();
-    lower.contains("localhost") || lower.contains("127.0.0.1") || lower.contains("[::1]")
-}
-
-fn default_gateway_preferences() -> GatewayPreferences {
-    let local = current_origin_is_local();
-    GatewayPreferences {
-        localhost: local,
-        custom_enabled: false,
-        custom_url: String::new(),
-        public_gateways: all_public_gateways(),
-    }
-}
-
-fn gateway_storage() -> Option<web_sys::Storage> {
-    web_sys::window().and_then(|w| w.local_storage().ok().flatten())
-}
-
-fn preference_from_legacy(url: &str) -> Option<GatewayPreferences> {
-    let url = normalise_gateway_url(url)?;
-    let mut prefs = GatewayPreferences {
-        localhost: false,
-        custom_enabled: false,
-        custom_url: String::new(),
-        public_gateways: Vec::new(),
-    };
-    if url.eq_ignore_ascii_case(LOCAL_GATEWAY_URL) {
-        prefs.localhost = true;
-    } else if PUBLIC_GATEWAY_URLS
-        .iter()
-        .any(|g| g.eq_ignore_ascii_case(&url))
-    {
-        prefs.public_gateways.push(url);
-    } else {
-        prefs.custom_enabled = true;
-        prefs.custom_url = url;
-    }
-    Some(prefs)
-}
-
-pub fn load_gateway_preferences() -> GatewayPreferences {
-    let Some(storage) = gateway_storage() else {
-        return default_gateway_preferences();
-    };
-    if let Ok(Some(json)) = storage.get_item(IPFS_GATEWAYS_PREF_KEY) {
-        if let Ok(prefs) = serde_json::from_str::<GatewayPreferences>(&json) {
-            return prefs;
-        }
-    }
-    if let Ok(Some(legacy)) = storage.get_item(LEGACY_IPFS_GATEWAY_PREF_KEY) {
-        if let Some(prefs) = preference_from_legacy(&legacy) {
-            return prefs;
-        }
-    }
-    default_gateway_preferences()
-}
-
-pub fn save_gateway_preferences(prefs: &GatewayPreferences) {
-    if let Some(storage) = gateway_storage() {
-        if let Ok(json) = serde_json::to_string(prefs) {
-            let _ = storage.set_item(IPFS_GATEWAYS_PREF_KEY, &json);
-        }
-    }
-    SESSION_LOCAL_IPFS.with(|flag| {
-        *flag.borrow_mut() = effective_gateway_urls(prefs)
-            .iter()
-            .any(|url| is_local_gateway_url(url));
-    });
-}
-
-pub fn effective_gateway_urls(prefs: &GatewayPreferences) -> Vec<String> {
-    let mut urls = Vec::new();
-    if prefs.localhost {
-        urls.push(LOCAL_GATEWAY_URL.to_string());
-    }
-    if prefs.custom_enabled {
-        if let Some(url) = normalise_gateway_url(&prefs.custom_url) {
-            if !urls
-                .iter()
-                .any(|existing| existing.eq_ignore_ascii_case(&url))
-            {
-                urls.push(url);
-            }
-        }
-    }
-    // Public gateways in canonical order; only include the ones the user
-    // enabled. Ordering here is independent of the stored `public_gateways`
-    // order so re-toggling checkboxes never changes resolution priority.
-    for url in PUBLIC_GATEWAY_URLS {
-        if prefs
-            .public_gateways
-            .iter()
-            .any(|enabled| enabled.eq_ignore_ascii_case(url))
-        {
-            urls.push((*url).to_string());
-        }
-    }
-    urls
-}
-
-pub fn session_gateway_urls() -> Vec<String> {
-    effective_gateway_urls(&load_gateway_preferences())
-}
 
 /// The session-scoped DID/IPNS resolver, shared by every name-resolution path.
 /// Backed by the verified-fetch JS shim; no gateway configuration is involved.
@@ -1058,53 +898,6 @@ mod tests {
             ))
             .expect("document");
         assert_eq!(crate::parser::verbs::doc_z_cid(&document), None);
-    }
-
-    #[test]
-    fn gateway_preferences_localhost_precedes_public_fallbacks() {
-        let urls = effective_gateway_urls(&GatewayPreferences {
-            localhost: true,
-            custom_enabled: false,
-            custom_url: String::new(),
-            public_gateways: all_public_gateways(),
-        });
-        assert_eq!(
-            urls,
-            [
-                "http://127.0.0.1:8080/".to_string(),
-                "https://ipfs.io/".to_string(),
-                "https://ipfs.filebase.io/".to_string(),
-            ]
-        );
-    }
-
-    #[test]
-    fn gateway_preferences_custom_precedes_public_fallbacks() {
-        let urls = effective_gateway_urls(&GatewayPreferences {
-            localhost: false,
-            custom_enabled: true,
-            custom_url: " http://localhost:8881 ".to_string(),
-            public_gateways: all_public_gateways(),
-        });
-        assert_eq!(
-            urls,
-            [
-                "http://localhost:8881/".to_string(),
-                "https://ipfs.io/".to_string(),
-                "https://ipfs.filebase.io/".to_string(),
-            ]
-        );
-    }
-
-    #[test]
-    fn gateway_preferences_respect_the_selected_public_subset() {
-        let urls = effective_gateway_urls(&GatewayPreferences {
-            localhost: false,
-            custom_enabled: false,
-            custom_url: String::new(),
-            public_gateways: vec!["https://ipfs.filebase.io/".to_string()],
-        });
-        assert_eq!(urls, ["https://ipfs.filebase.io/".to_string()]);
     }
 
     #[test]

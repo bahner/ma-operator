@@ -438,10 +438,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    exemple intégré ; envoie "say
 help-zscheme-define =   (define x 12)             les définitions persistent pendant la session de connexion actuelle
 help-zscheme-doc = Documentation : https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Passerelle IPFS locale (exception navigateur requise)
 
-tab-config = Paramètres
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

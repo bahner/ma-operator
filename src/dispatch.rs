@@ -10,6 +10,7 @@ use leptos::prelude::*;
 use crate::{
     config::OperatorConfig,
     core::CommandStatus,
+    editor::{EditorContext, EditorMode},
     eval::{actor_send::execute_outbox_task, eval},
     http::fetch_path_bytes,
     i18n::{t, tf},
@@ -19,7 +20,6 @@ use crate::{
         ActiveBatch, AppState, AwaitingReply, BatchMode, OnError, PendingKind, DEFAULT_TIMEOUT_MS,
     },
     transport,
-    editor::{EditorContext, EditorMode},
 };
 
 const TICK_MS: u32 = 50;

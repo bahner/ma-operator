@@ -1,7 +1,7 @@
 use crate::config::OperatorConfig;
+use crate::editor::EditorContext;
 use crate::i18n::{t, tf};
 use crate::state::AppState;
-use crate::editor::EditorContext;
 use leptos::prelude::*;
 
 pub(super) fn handle_acl(

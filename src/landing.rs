@@ -13,10 +13,6 @@ use crate::{
     },
     profile_crypto,
     state::{AppState, SessionState, SESSION_PROFILE_KEY},
-    transport::connection::{
-        load_gateway_preferences, save_gateway_preferences, GatewayPreferences, LOCAL_GATEWAY_URL,
-        PUBLIC_GATEWAY_URLS,
-    },
 };
 
 const LAST_DID_KEY: &str = "operator_last_did";
@@ -182,7 +178,6 @@ enum Mode {
     New,
     Import,
     Export,
-    Config,
 }
 
 #[component]
@@ -198,12 +193,6 @@ pub fn Landing() -> impl IntoView {
     let confirm_password = RwSignal::new(String::new());
     let status = RwSignal::new(String::new());
     let error = RwSignal::new(String::new());
-    let initial_gateway_prefs = load_gateway_preferences();
-    save_gateway_preferences(&initial_gateway_prefs);
-    let gateway_localhost = RwSignal::new(initial_gateway_prefs.localhost);
-    let gateway_custom_enabled = RwSignal::new(initial_gateway_prefs.custom_enabled);
-    let gateway_custom_url = RwSignal::new(initial_gateway_prefs.custom_url.clone());
-    let gateway_public = RwSignal::new(initial_gateway_prefs.public_gateways.clone());
     // For Import mode: pre-parsed (username, identity_json, config_json).
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
     // Export mode: rendered QR SVG of the encrypted profile.
@@ -224,16 +213,6 @@ pub fn Landing() -> impl IntoView {
         invited_ma.clone(),
     ));
     let ma_input_edited = RwSignal::new(false);
-
-    Effect::new(move |_| {
-        let prefs = GatewayPreferences {
-            localhost: gateway_localhost.get(),
-            custom_enabled: gateway_custom_enabled.get(),
-            custom_url: gateway_custom_url.get(),
-            public_gateways: gateway_public.get(),
-        };
-        save_gateway_preferences(&prefs);
-    });
 
     // Background music.
     Effect::new(move |_| {
@@ -545,9 +524,7 @@ pub fn Landing() -> impl IntoView {
                                     &[(
                                         "e",
                                         &format!(
-                                            "{cause} — and no usable local copy ({local_err}). \
-                                             If you run your own IPFS node, enable the local gateway \
-                                             in the Config tab."
+                                            "{cause} — and no usable local copy ({local_err})."
                                         ),
                                     )],
                                 ));
@@ -749,7 +726,6 @@ pub fn Landing() -> impl IntoView {
     let on_keydown = move |ev: KeyboardEvent| {
         if keyboard_event_key(&ev).as_deref() == Some("Enter")
             && mode.get_untracked() != Mode::Export
-            && mode.get_untracked() != Mode::Config
         {
             do_login_key();
         }
@@ -791,87 +767,7 @@ pub fn Landing() -> impl IntoView {
                         class=move || if mode.get() == Mode::Import { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| set_mode(Mode::Import)
                     >{move || { let _ = lang.get(); t("tab-import-profile") }}</button>
-                    <button
-                        class=move || if mode.get() == Mode::Config { "landing-tab active" } else { "landing-tab" }
-                        on:click=move |_| set_mode(Mode::Config)
-                    >{move || { let _ = lang.get(); t("tab-config") }}</button>
                 </div>
-
-                // ── Settings / Config mode ────────────────────────────────
-                <Show when=move || mode.get() == Mode::Config>
-                    <div class="form-row">
-                        <label>{move || { let _ = lang.get(); t("label-gateway") }}</label>
-                        <div class="gateway-list">
-                            {PUBLIC_GATEWAY_URLS.iter().map(|url| {
-                                let url = *url;
-                                view! {
-                                    <label class="gateway-option">
-                                        <input
-                                            type="checkbox"
-                                            prop:checked=move || gateway_public.get().iter().any(|enabled| enabled.as_str() == url)
-                                            on:change=move |ev| {
-                                                if let Some(input) = ev.target()
-                                                    .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                                {
-                                                    let checked = input.checked();
-                                                    gateway_public.update(|list| {
-                                                        list.retain(|enabled| enabled.as_str() != url);
-                                                        if checked {
-                                                            list.push(url.to_string());
-                                                        }
-                                                    });
-                                                }
-                                            }
-                                        />
-                                        <span>{url}</span>
-                                    </label>
-                                }
-                            }).collect_view()}
-                            <label class="gateway-option">
-                                <input
-                                    type="checkbox"
-                                    prop:checked=move || gateway_localhost.get()
-                                    on:change=move |ev| {
-                                        if let Some(input) = ev.target()
-                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                        {
-                                            gateway_localhost.set(input.checked());
-                                        }
-                                    }
-                                />
-                                <span>{LOCAL_GATEWAY_URL}</span>
-                            </label>
-                            <div class="gateway-option gateway-custom">
-                                <label>
-                                    <input
-                                        type="checkbox"
-                                        prop:checked=move || gateway_custom_enabled.get()
-                                        on:change=move |ev| {
-                                            if let Some(input) = ev.target()
-                                                .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                            {
-                                                gateway_custom_enabled.set(input.checked());
-                                            }
-                                        }
-                                    />
-                                    <span>{move || { let _ = lang.get(); t("label-gateway") }}</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    prop:value=move || gateway_custom_url.get()
-                                    placeholder="http://localhost:8881/"
-                                    on:input=move |ev| {
-                                        if let Some(input) = ev.target()
-                                            .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
-                                        {
-                                            gateway_custom_url.set(input.value());
-                                        }
-                                    }
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </Show>
 
                 // ── Always-present datalist (must be in DOM for list= attr) ──
                 <datalist id="ma-opts">
@@ -884,7 +780,7 @@ pub fn Landing() -> impl IntoView {
                 // alongside the passphrase on any browser. The change handler
                 // mirrors on:input because autofill engines may fire only
                 // `change`, and the reactive value must stay in sync.
-                <Show when=move || mode.get() != Mode::Config && (mode.get() != Mode::New || !did_input.get().trim().is_empty())>
+                <Show when=move || mode.get() != Mode::New || !did_input.get().trim().is_empty()>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); format!("{}:", t("label-did")) }}</label>
                         <input
@@ -1024,7 +920,7 @@ pub fn Landing() -> impl IntoView {
                 // ── Password field: all modes except Export, and not Import-before-file
                 <Show when=move || {
                     let m = mode.get();
-                    m != Mode::Export && m != Mode::Config && !(m == Mode::Import && parsed.get().is_none())
+                    m != Mode::Export && !(m == Mode::Import && parsed.get().is_none())
                 }>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
@@ -1063,10 +959,7 @@ pub fn Landing() -> impl IntoView {
                 </Show>
 
                 // ── Action button ─────────────────────────────────────────
-                <div
-                    class="btn-row"
-                    style=move || if mode.get() == Mode::Config { "display:none" } else { "" }
-                >
+                <div class="btn-row">
                     <button class="btn" on:click=do_action>
                         {move || {
                             let _ = lang.get();

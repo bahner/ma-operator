@@ -441,10 +441,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vstavljeni primer; pošlje "say
 help-zscheme-define =   (define x 12)             definicije ostanejo v trenutni prijavni seji
 help-zscheme-doc = Dokumentacija: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Lokalno prehodno mesto IPFS (zahteva izjemo v brskalniku)
 
-tab-config = Nastavitve
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

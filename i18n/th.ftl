@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    ตัวอย่างแบ�
 help-zscheme-define =   (define x 12)             คำนิยามจะคงอยู่ในเซสชันเข้าสู่ระบบปัจจุบัน
 help-zscheme-doc = เอกสาร: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = IPFS gateway ในเครื่อง (ต้องมีข้อยกเว้น browser)
 
-tab-config = การตั้งค่า
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

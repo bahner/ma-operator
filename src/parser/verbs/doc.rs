@@ -1,12 +1,12 @@
 use super::resolve_bare_did;
 use crate::config::OperatorConfig;
 use crate::core::CommandStatus;
+use crate::editor::EditorContext;
 use crate::http::fetch_path_text;
 use crate::i18n::{t, tf};
 use crate::parser::command::{parse, Command, DotOp};
 use crate::state::{AppState, AwaitingReply};
 use crate::transport;
-use crate::editor::EditorContext;
 use leptos::prelude::*;
 use std::collections::BTreeMap;
 
@@ -472,7 +472,7 @@ fn doc_cid(
     doc_publish_plain(path, args, state, config, "cid")
 }
 
-/// `:fetch <cid>` — import content from gateway; no editor, no execution.
+/// `:fetch <cid>` — import content from IPFS; no editor, no execution.
 fn doc_fetch(
     path: &str,
     args: &[String],

@@ -441,10 +441,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    innfellt dæmi; sendir "say 7 +
 help-zscheme-define =   (define x 12)             skilgreiningar haldast í núverandi innskráningarlotu
 help-zscheme-doc = Skjölun: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Staðbundinn IPFS-gátt (krefst undantekningar í vafra)
 
-tab-config = Stillingar
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

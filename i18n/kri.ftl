@@ -434,10 +434,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    insay-layn ɛgzampul; i sɛn "s
 help-zscheme-define =   (define x 12)             difinishɔn dem de stay fɔ dis login sɛshɔn
 help-zscheme-doc = Dɔkyumɛnt: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Lokal IPFS getwe (browser eksepshen dey need)
 
-tab-config = settings
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

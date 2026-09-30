@@ -439,10 +439,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    vložený příklad; odešle "s
 help-zscheme-define =   (define x 12)             definice zůstávají pro aktuální přihlášenou relaci
 help-zscheme-doc = Dokumentace: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = Místní IPFS brána (vyžaduje výjimku v prohlížeči)
 
-tab-config = Nastavení
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

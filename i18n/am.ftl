@@ -448,10 +448,7 @@ help-zscheme-inline =   > say 7 + 5 = (+ 7 5)    የመስመር ውስጥ ም�
 help-zscheme-define =   (define x 12)             መግለጫዎች ለአሁኑ የመግቢያ ክፍለ ጊዜ ይቆያሉ
 help-zscheme-doc = ሰነድ: https://github.com/bahner/rust-ma-zscheme
 
-label-local-ipfs = ቦታዊ IPFS gateway (የሳፕሩ ፈቃድ ያስፈልጋል)
 
-tab-config = ቅንብሮች
-label-gateway = gateway
 help-aliases-qr =   .my.aliases.<name>!qr         open camera QR input and set alias/value
 
 passphrase-placeholder = This password is your only defense against the Dark Arts!

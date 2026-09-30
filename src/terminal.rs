@@ -8,11 +8,11 @@ use crate::{
     config::OperatorConfig,
     core::{CommandStatus, Entry, SystemKind},
     dispatch::run_dispatch_loop,
+    editor::{EditorContext, EditorModal},
     inbox_poll::run_inbox_poll,
     parser::verbs::ma::run_ma_queue,
     startup::{startup_connect, startup_load_config, startup_load_history},
     state::{AppState, QrIntent},
-    editor::{EditorContext, EditorModal},
 };
 
 #[component]
