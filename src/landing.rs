@@ -70,7 +70,15 @@ async fn fetch_profile_from_ipfs(
     full_did: &str,
     pass: &str,
 ) -> Result<FetchedProfile, ProfileFetchError> {
-    let resolver = crate::transport::connection::ipns_resolver();
+    // Drop verified-fetch's persisted routing caches and resolve with a fresh
+    // (cache-bypassing) resolver. A DID document re-published by a recent `.ma`
+    // publish must not be shadowed by a cached IPNS record, or login would
+    // restore an out-of-date profile (stale aliases/ctx) and overwrite the
+    // newer local copy.
+    if let Err(error) = crate::ipfs::clear_caches().await {
+        log::warn!("[profile] could not clear routing caches: {error}");
+    }
+    let resolver = crate::transport::connection::fresh_ipns_resolver();
 
     let doc = crate::parser::verbs::ma::resolve_did_with_retry(
         resolver.as_ref(),

@@ -36,9 +36,18 @@ pub(crate) fn ipns_resolver() -> Arc<JsVerifiedResolver> {
     if let Some(resolver) = SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone()) {
         return resolver;
     }
-    let resolver = Arc::new(JsVerifiedResolver);
+    let resolver = Arc::new(JsVerifiedResolver::new());
     SESSION_IPNS_RESOLVER.with(|r| *r.borrow_mut() = Some(resolver.clone()));
     resolver
+}
+
+/// A resolver that forces fresh IPNS resolution for every lookup, bypassing
+/// verified-fetch's in-memory IPNS record cache. Not stored as the session
+/// resolver (so the shared, cache-friendly resolver is unaffected). Used on
+/// the login path after [`crate::ipfs::clear_caches`] so a freshly published
+/// DID document is not shadowed by a cached record.
+pub(crate) fn fresh_ipns_resolver() -> Arc<JsVerifiedResolver> {
+    Arc::new(JsVerifiedResolver::fresh())
 }
 
 // ── WASM iroh send serialiser ────────────────────────────────────────────────
