@@ -186,6 +186,7 @@ enum Mode {
     New,
     Import,
     Export,
+    Config,
 }
 
 #[component]
@@ -205,6 +206,11 @@ pub fn Landing() -> impl IntoView {
     let parsed: RwSignal<Option<(String, String, Option<String>)>> = RwSignal::new(None);
     // Export mode: rendered QR SVG of the encrypted profile.
     let qr_svg: RwSignal<Option<String>> = RwSignal::new(None);
+    // IPFS gateway choice (config tab). Seeded from the live gateway state;
+    // `apply_gateway` persists an explicit change.
+    let gw_local = RwSignal::new(crate::gateway::mode() == crate::gateway::Mode::Local);
+    let gw_url = RwSignal::new(crate::gateway::preferred_url());
+    let default_gateway_url = crate::gateway::DEFAULT_LOCAL_URL;
     // Import mode: camera scan in progress.
     let scanning = RwSignal::new(false);
     let scan_feedback = RwSignal::new("searching");
@@ -318,6 +324,22 @@ pub fn Landing() -> impl IntoView {
         scanning.set(false);
         if next == Mode::New {
             did_input.set(String::new());
+        }
+    };
+
+    // ── Apply and persist a gateway choice from the config tab ────────────
+    let apply_gateway = move |local: bool| {
+        crate::gateway::select(
+            if local {
+                crate::gateway::Mode::Local
+            } else {
+                crate::gateway::Mode::Public
+            },
+            &gw_url.get_untracked(),
+        );
+        gw_local.set(local);
+        if !local {
+            crate::ipfs::preload_public_shim();
         }
     };
 
@@ -734,6 +756,7 @@ pub fn Landing() -> impl IntoView {
     let on_keydown = move |ev: KeyboardEvent| {
         if keyboard_event_key(&ev).as_deref() == Some("Enter")
             && mode.get_untracked() != Mode::Export
+            && mode.get_untracked() != Mode::Config
         {
             do_login_key();
         }
@@ -775,7 +798,60 @@ pub fn Landing() -> impl IntoView {
                         class=move || if mode.get() == Mode::Import { "landing-tab active" } else { "landing-tab" }
                         on:click=move |_| set_mode(Mode::Import)
                     >{move || { let _ = lang.get(); t("tab-import-profile") }}</button>
+                    <button
+                        class=move || if mode.get() == Mode::Config { "landing-tab active" } else { "landing-tab" }
+                        on:click=move |_| set_mode(Mode::Config)
+                    >{move || { let _ = lang.get(); t("tab-config") }}</button>
                 </div>
+
+                // ── Config: IPFS gateway (radio group, always available) ──
+                <Show when=move || mode.get() == Mode::Config>
+                    <p class="landing-help">
+                        {move || { let _ = lang.get(); t("ipfs-config-help") }}
+                    </p>
+                    <div class="gateway-list">
+                        <div class="gateway-option">
+                            <label class="gateway-choice">
+                                <input
+                                    type="radio"
+                                    name="ipfs-mode"
+                                    prop:checked=move || !gw_local.get()
+                                    on:change=move |_| apply_gateway(false)
+                                />
+                                <span>{move || { let _ = lang.get(); t("ipfs-mode-public") }}</span>
+                            </label>
+                        </div>
+                        <div class="gateway-option">
+                            <label class="gateway-choice">
+                                <input
+                                    type="radio"
+                                    name="ipfs-mode"
+                                    prop:checked=move || gw_local.get()
+                                    on:change=move |_| apply_gateway(true)
+                                />
+                                <span>{move || { let _ = lang.get(); t("ipfs-mode-local") }}</span>
+                            </label>
+                            <input
+                                type="text"
+                                class="gateway-url"
+                                autocomplete="off"
+                                prop:value=move || gw_url.get()
+                                prop:disabled=move || !gw_local.get()
+                                placeholder=default_gateway_url
+                                on:change=move |ev| {
+                                    if let Some(input) = ev
+                                        .target()
+                                        .and_then(|target| target.dyn_into::<HtmlInputElement>().ok())
+                                    {
+                                        let value = input.value();
+                                        gw_url.set(value.clone());
+                                        crate::gateway::select(crate::gateway::Mode::Local, &value);
+                                    }
+                                }
+                            />
+                        </div>
+                    </div>
+                </Show>
 
                 // ── Always-present datalist (must be in DOM for list= attr) ──
                 <datalist id="ma-opts">
@@ -788,7 +864,7 @@ pub fn Landing() -> impl IntoView {
                 // alongside the passphrase on any browser. The change handler
                 // mirrors on:input because autofill engines may fire only
                 // `change`, and the reactive value must stay in sync.
-                <Show when=move || mode.get() != Mode::New || !did_input.get().trim().is_empty()>
+                <Show when=move || mode.get() != Mode::Config && (mode.get() != Mode::New || !did_input.get().trim().is_empty())>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); format!("{}:", t("label-did")) }}</label>
                         <input
@@ -928,7 +1004,7 @@ pub fn Landing() -> impl IntoView {
                 // ── Password field: all modes except Export, and not Import-before-file
                 <Show when=move || {
                     let m = mode.get();
-                    m != Mode::Export && !(m == Mode::Import && parsed.get().is_none())
+                    m != Mode::Export && m != Mode::Config && !(m == Mode::Import && parsed.get().is_none())
                 }>
                     <div class="form-row">
                         <label>{move || { let _ = lang.get(); t("label-passphrase") }}</label>
@@ -967,7 +1043,10 @@ pub fn Landing() -> impl IntoView {
                 </Show>
 
                 // ── Action button ─────────────────────────────────────────
-                <div class="btn-row">
+                <div
+                    class="btn-row"
+                    style=move || if mode.get() == Mode::Config { "display:none" } else { "" }
+                >
                     <button class="btn" on:click=do_action>
                         {move || {
                             let _ = lang.get();

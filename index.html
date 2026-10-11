@@ -12,7 +12,30 @@
     <link data-trunk rel="copy-file" href="www/hh.ogg"/>
     <link data-trunk rel="copy-dir" href="i18n"/>
     <script type="module" src="/editor.js?v=68a22bc85b"></script>
-    <script type="module" src="/ipfs.js?v=f0c58e44b2"></script>
+    <script>
+        // Lazily loads the @helia/verified-fetch shim (www/ipfs.js, ~1.3 MB).
+        // Only fetched when public gateway mode is actually used; local-gateway
+        // sessions never download it.
+        window.maIpfsLoad = function () {
+            if (window.maIpfs) return Promise.resolve();
+            if (!window._maIpfsLoading) {
+                window._maIpfsLoading = new Promise(function (resolve, reject) {
+                    var script = document.createElement("script");
+                    script.type = "module";
+                    script.src = "/ipfs.js?v=f0c58e44b2";
+                    script.onload = function () {
+                        if (window.maIpfs) resolve();
+                        else reject(new Error("ipfs.js loaded but window.maIpfs is missing"));
+                    };
+                    script.onerror = function () {
+                        reject(new Error("failed to load ipfs.js"));
+                    };
+                    document.head.appendChild(script);
+                });
+            }
+            return window._maIpfsLoading;
+        };
+    </script>
     <link data-trunk rel="rust" data-wasm-opt="z"/>
 </head>
 <body>

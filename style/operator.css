@@ -91,6 +91,7 @@ html, body {
 
 .landing-tabs {
     display: flex;
+    flex-wrap: wrap;
     gap: 0;
     margin-bottom: 1.5rem;
     border-bottom: 1px solid var(--colour-border);
@@ -187,6 +188,42 @@ html, body {
     font-size: 0.9rem;
     letter-spacing: 0;
     text-transform: none;
+}
+
+.gateway-option input[type="radio"] {
+    width: 1rem;
+    height: 1rem;
+    accent-color: var(--colour-text);
+    flex: 0 0 auto;
+}
+
+.gateway-choice {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    flex: 0 0 auto;
+}
+
+.gateway-url {
+    flex: 1 1 auto;
+    min-width: 0;
+    background: var(--colour-bg);
+    border: 1px solid var(--colour-dimmed);
+    color: var(--colour-text);
+    font-family: var(--font-family);
+    font-size: var(--font-size);
+    padding: 0.4rem 0.6rem;
+    outline: none;
+}
+
+.gateway-url:focus {
+    border-color: var(--colour-text);
+    box-shadow: 0 0 6px var(--colour-dimmed);
+}
+
+.gateway-url:disabled {
+    opacity: 0.4;
 }
 
 .form-row select.runtime-select {

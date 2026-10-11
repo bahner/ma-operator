@@ -71,7 +71,8 @@ parentage and ctx updates must continue to use the authoritative collection.
 | Language | Rust → `wasm32-unknown-unknown` |
 | Build tool | Trunk |
 | Persistent store | IndexedDB via `web-sys` (through `OperatorConfig`) |
-| Editor | CodeMirror 6 via CDN shim (`www/editor.js`) |
+| Editor | CodeMirror 6 via bundled shim (`www/editor.js`) |
+| IPFS reads | `@helia/verified-fetch` (public) or a local Kubo HTTP gateway (lazy, trusted) — see "IPFS gateway selection" |
 | Transport | iroh QUIC (`ma-core` feature `iroh`) |
 | Identity | `did:ma:` — IPNS-rooted DIDs via `ma-core` |
 | Crypto | Ed25519 signing, X25519 encryption (inside `SecretBundle`) |
@@ -85,6 +86,9 @@ src/
   main.rs               — WASM entry, panic hook, Leptos mount
   app.rs                — top-level component; routes Landing ↔ Terminal
   state.rs              — AppState (RwSignal tree), ingest_mailbox_message
+  gateway.rs            — IPFS gateway mode (public vs local Kubo); see below
+  http.rs               — raw HTTP helpers (runtime status/ping, local gateway)
+  ipfs.rs               — IPFS/DID/IPNS retrieval; lazy verified-fetch or gateway
   config/
     mod.rs              — OperatorConfig: flat HashMap<String,String>, IndexedDB CRUD
   identity/
@@ -110,14 +114,13 @@ src/
     mod.rs              — re-exports
     connection.rs       — connect/disconnect, inbox poll loop,
                           send_message, send_actor_message, send_text_reply
-  views/
-    mod.rs
-    landing.rs          — identity creation, bundle import/export, login
-    terminal.rs         — main REPL: input, output, DotOp dispatch,
+  input.rs              — readline input component
+  landing.rs            — identity creation, bundle import/export, login,
+                          IPFS gateway config tab
+  editor.rs             — CodeMirror 6 modal (Standard / View / Reply modes)
+  screensaver.rs        — idle screensaver
+  terminal.rs           — main REPL: input, output, DotOp dispatch,
                           lazy DID/CID traversal, HELP_TEXT
-    input.rs            — readline input component
-    editor.rs           — CodeMirror 6 modal (Standard / View / Reply modes)
-    screensaver.rs      — idle screensaver
   i18n.rs              — async FTL fetch, BCP-47 normalise, t()/tf() helpers
   core/
     commands.rs         — command constants
@@ -125,11 +128,12 @@ src/
     mod.rs
 www/
   editor.js             — CodeMirror 6 shim; exposes window.maEditor
+  ipfs.js               — vendored @helia/verified-fetch shim; exposes window.maIpfs (lazy)
 style/
   operator.css
-lang/                   — Fluent (FTL) translation files; one per BCP-47 tag
+i18n/                   — Fluent (FTL) translation files; one per BCP-47 tag
   en.ftl                — canonical source; defines all keys
-  lang/*.ftl            — all other supported locales
+  *.ftl                 — all other supported locales
 index.html
 Trunk.toml
 Makefile
@@ -169,6 +173,9 @@ Makefile
       to enter, defaulting to the configured `start` room; a runtime with no
       `start` room configured fails with an actionable message (there is no
       protocol-level default room)
+- [x] Selectable IPFS backend — public `@helia/verified-fetch` or a trusted
+      local Kubo gateway (default by serving host), with the vendored ~1.3 MB
+      shim loaded lazily and automatic fallback to public when local is down
 
 ## Pending / not yet implemented
 
@@ -216,8 +223,8 @@ colon is stripped only from the verb sent on the wire; it still controls
 routing.
 
 Avatar object verbs dispatch through zscheme's `(command object method .
-params)` boundary. It resolves against every room child category (`who`,
-`agents`, `things`, `exits`) and inventory contents; exactly one match is
+params)` boundary. It resolves against the room's children (`who`, `agents`,
+`things`) plus its `exits` map and inventory contents; exactly one match is
 required, while ambiguity lists all candidate addresses for the user to
 rephrase. `look <object>` uses that same candidate pool and renders the resolved
 ctx locally. Do not add per-verb object resolution in Operator.
@@ -298,10 +305,12 @@ consumes them:
 Never make a bare path, parenthesised path, local setter, or command splice
 fetch content implicitly. Bytes must not be stringified or spliced. Preserve
 bytes as CBOR byte strings in actor traffic. Implement host I/O through
-`SchemeCtx`. All IPFS/IPNS/DID reads go through the bundled
-`@helia/verified-fetch` shim (`www/ipfs.js`, bridged via `src/ipfs.rs`'s
-`JsVerifiedResolver`). ma-core has no IPFS backend on wasm, so the browser
-supplies its own — never a raw HTTP gateway.
+`SchemeCtx`. All IPFS/IPNS/DID reads funnel through `src/ipfs.rs`; ma-core has
+no IPFS backend on wasm, so the browser supplies its own. Two backends exist —
+the public `@helia/verified-fetch` shim (`www/ipfs.js`) or a local trusted Kubo
+gateway — selected as described in "IPFS gateway selection" below. The local
+gateway is the one sanctioned exception to trustless retrieval; add no other
+raw-gateway path.
 
 Consumers keep published semver dependencies. During unreleased multi-repo
 development, validate with temporary Cargo `--config patch.crates-io...`
@@ -586,7 +595,7 @@ Verbs:
 
 ---
 
-## Editor — `views/editor.rs`
+## Editor — `src/editor.rs`
 
 CodeMirror 6 loaded from CDN via `www/editor.js`.
 JS API on `window.maEditor`: `create(id, value, lang)`, `getValue(id)`,
@@ -630,7 +639,7 @@ on nested reactive closures).
 
 ---
 
-## Internationalisation — `src/i18n.rs` + `lang/`
+## Internationalisation — `src/i18n.rs` + `i18n/`
 
 Translation strings use a lightweight subset of Fluent (FTL): `key = value`
 lines, `{ $var }` substitutions, `#`-prefixed comments. No attributes or
@@ -690,25 +699,25 @@ let lang = state.lang;
 
 ### FTL file conventions
 
-- `lang/en.ftl` is the **canonical source** — it defines every key.
-- All other `lang/*.ftl` files mirror the same key set with translated values.
+- `i18n/en.ftl` is the **canonical source** — it defines every key.
+- All other `i18n/*.ftl` files mirror the same key set with translated values.
 - **When adding or changing any `t()` / `tf()` call**, update `en.ftl` first,
-  then add/update the same key in every other `lang/*.ftl` that exists.
+  then add/update the same key in every other `i18n/*.ftl` that exists.
   Missing keys silently fall back to the key name string — never leave gaps.
 - Do not add attributes or selectors — the parser only handles `key = value`.
 - Variable placeholders use Fluent syntax: `{ $varname }`.
 
 ### `lang-name` key
 
-Every `lang/*.ftl` file **must** contain a `lang-name` key whose value is the
+Every `i18n/*.ftl` file **must** contain a `lang-name` key whose value is the
 language's own name for itself (autonym), e.g. `lang-name = Norsk bokmål`.
 This is displayed by `.my.i18n:list` and by `t("lang-name")` in the UI.
 
 ### Adding a new language
 
-1. Create `lang/<code>.ftl` with all keys from `lang/en.ftl` translated,
+1. Create `i18n/<code>.ftl` with all keys from `i18n/en.ftl` translated,
    including `lang-name = <autonym>` and `lang-list-header = <translated>`.
-2. Rebuild (`trunk build` / `cargo check`). `build.rs` scans `lang/*.ftl`,
+2. Rebuild (`trunk build` / `cargo check`). `build.rs` scans `i18n/*.ftl`,
    reads the `lang-name` key from each file, and regenerates `SUPPORTED_LANGS`
    automatically — no manual code change required.
 
@@ -747,10 +756,80 @@ ancestor paths backward. If any ancestor leaf `is_link_value`, it calls
 
 `resolve_and_traverse`:
 1. Checks `doc_cache` (RwSignal<HashMap<String, serde_json::Value>>).
-2. If miss, fetches: DID → resolved through the verified-fetch resolver (IPNS);
-   CID → fetched by CID through verified-fetch.
+2. If miss, fetches: DID → resolved through the IPNS resolver (`src/ipfs.rs`);
+   CID → fetched by CID. Both follow the active gateway mode (public
+   verified-fetch or local Kubo gateway — see "IPFS gateway selection").
 3. Parses JSON, traverses sub-path, pushes result as terminal entry.
 4. Stores parsed JSON in `doc_cache` for subsequent lookups.
+
+---
+
+## IPFS gateway selection
+
+Operator reads IPFS/IPNS/DID content through one of two backends, chosen at
+runtime and held in `src/gateway.rs`:
+
+| Mode | Backend | Verification |
+|------|---------|--------------|
+| `public` | `@helia/verified-fetch` shim (`www/ipfs.js`) | every byte verified against its CID |
+| `local` | plain HTTP to a Kubo gateway (default `http://localhost:8080`) | none — the local node is trusted |
+
+### Rules
+
+- The choice is **per device, not per profile**. It lives in `localStorage`
+  (`operator_ipfs_mode`, `operator_ipfs_gateway`) because the profile blob is
+  itself fetched over IPFS, so the choice must exist before login.
+- The **default derives from the serving hostname**: `localhost`, `127.0.0.1`,
+  `::1` → `local`; anything else → `public`.
+- **Only an explicit choice is persisted.** The host-based default is never
+  written to `localStorage`, so a fresh browser still follows its host.
+- The landing-page **config tab is always visible**. Its two options are a
+  required, mutually exclusive radio group, in this order: **1. `public`**,
+  **2. local gateway** with a URL field (default `http://localhost:8080`).
+  Choosing a radio or editing the URL applies immediately and persists it.
+- Local reads are plain HTTP (`GET <url>/ipfs/<cid>` / `<url>/ipns/<name>`) and
+  are deliberately **not** CID-verified. DID documents are still
+  decoded/validated/verified in `src/ipfs.rs` after fetch.
+- **Fallback:** when the local gateway is *unreachable* (transport error or
+  timeout), `gateway::mark_local_unavailable()` disables local for the rest of
+  the session and the read falls back to public; the saved preference is
+  untouched, and re-selecting local retries it. A gateway that answers with a
+  non-success status (e.g. 404) falls back for that read only and does not
+  disable local.
+
+### Lazy verified-fetch bundle
+
+`www/ipfs.js` (~1.3 MB) is **not** loaded eagerly. An inline script in
+`index.html` defines `window.maIpfsLoad()`, which appends the module script on
+first use; `src/ipfs.rs`'s `ensure_public_shim()` awaits it before any
+`window.maIpfs` call, and `preload_public_shim()` warms it at startup only in
+public mode. A session that only uses a local gateway never downloads or
+instantiates the bundle. `make js-bundle` stamps the `?v=` cache-busting hash
+onto the loader's `.src` in `index.html` (there is no `<script src>` tag for
+`ipfs.js`).
+
+### Single funnel
+
+All content reads go through `src/ipfs.rs`'s `fetch_bytes[_with]`,
+`fetch_text[_with]`, and `JsVerifiedResolver::resolve_ipns_path`, which pick the
+backend. The thin wrappers (`fetch_cid_bytes[_retrying]`, `fetch_cid_text`,
+`fetch_path_bytes`, `fetch_path_text`) live in `src/http.rs`. Add new reads
+there — never call `window.maIpfs` or a gateway URL directly from elsewhere.
+
+### Adding or changing a backend
+
+1. Backend selection lives only in `src/gateway.rs`: add a `Mode` variant, its
+   `localStorage` key handling, and the serving-host default there.
+2. Implement the read: a plain-HTTP helper in `src/http.rs` returning
+   `Result<_, GatewayError>` (`Unreachable` = gateway gone, `Failed` = answered
+   but the read failed), or a shim function in `js-src/ipfs-entry.js` (rebuild
+   with `make js-bundle`).
+3. Wire it into `src/ipfs.rs`'s `fetch_bytes_with`, `fetch_text_with`, and
+   `resolve_ipns_path` — one branch each — keeping the public fallback and
+   `ensure_public_shim()` behaviour intact.
+4. Add the label strings to `i18n/en.ftl` first, then every `i18n/*.ftl`.
+5. Never bypass `src/ipfs.rs`: no direct `window.maIpfs` or gateway URL calls
+   from anywhere else.
 
 ---
 
@@ -795,27 +874,28 @@ does not store transfer state.
 ## Build & deploy
 
 ```sh
-make dev          # trunk serve --port 8088 (hot reload)
+make dev          # trunk serve --port 8000 (hot reload)
 make dist         # trunk build --release → dist/
 make serve        # dist + python3 http.server on :8000
-.my.doc.<name>       text body
+make js-bundle    # rebuild www/editor.js + www/ipfs.js from js-src/ (needs bun)
 ```
+
+`www/editor.js` and `www/ipfs.js` are **generated and committed**. Edit
+`js-src/*.js`, run `make js-bundle`, and commit the rebuilt bundle: the target
+also re-stamps the `?v=<hash>` cache-buster in `index.html` — for `editor.js`
+on its `<script src>`, and for `ipfs.js` on the inline `maIpfsLoad` loader's
+`.src` (there is no `<script src>` tag for `ipfs.js`; it is fetched on demand).
 
 ---
 
 ## Key constraints
-.my.doc.<name>!eval` — execute saved content line-by-line
-.my.doc.<name>!publish <publisher>` — send `text/plain` IPFS store request;
-  returned CID is printed as the reply, not stored locally
-.my.doc.<name>!cid <publisher>` — same as publish; returned CID is printed
-.my.doc.<name>!fetch <cid>` — import CID content directly to the path
-.my.doc.<name>:` — delete the document leaf
+
 - No backend. Everything is static files + IndexedDB + iroh P2P.
 - Do not duplicate logic already in `ma-core` or `ma-did`.
 - Keep modules small and single-purpose. No giant files.
 - **When adding or changing any user-visible string** (any `t()` / `tf()` call),
-  update `lang/en.ftl` first (canonical source), then propagate the key with a
-  translated value to **every** `lang/*.ftl` file that exists at that time.
+  update `i18n/en.ftl` first (canonical source), then propagate the key with a
+  translated value to **every** `i18n/*.ftl` file that exists at that time.
   Never leave a key missing from any locale file — missing keys fall back to
   the key name, not to English.
 
@@ -852,7 +932,7 @@ pub fn check_operator_acl(cfg: &OperatorConfig, from: &str, cap: &str) -> bool {
 
 ### Poll-loop gate
 
-In `views/terminal.rs`, before delivering an incoming message:
+In `src/terminal.rs`, before delivering an incoming message:
 
 ```rust
 if incoming.reply_to.is_none() {

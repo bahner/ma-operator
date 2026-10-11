@@ -65,6 +65,7 @@ web-sys = { version = "0.3", features = [
     "Headers",
     "Request",
     "RequestInit",
+    "RequestCache",
     "AbortController",
     "AbortSignal",
     "Storage",

@@ -75,7 +75,7 @@ js-bundle:
 	@editor_hash=$$(sha256sum www/editor.js | cut -c1-10); \
 	ipfs_hash=$$(sha256sum www/ipfs.js | cut -c1-10); \
 	sed -i -E "s|(src=\"/editor\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$editor_hash\"|" index.html; \
-	sed -i -E "s|(src=\"/ipfs\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$ipfs_hash\"|" index.html; \
+	sed -i -E "s|(\.src = \"/ipfs\.js)(\?v=[0-9a-f]+)?\"|\1?v=$$ipfs_hash\"|" index.html; \
 	echo "editor.js hash: $$editor_hash, ipfs.js hash: $$ipfs_hash (index.html updated)"
 
 test:

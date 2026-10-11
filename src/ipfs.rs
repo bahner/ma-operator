@@ -1,10 +1,13 @@
-//! Trustless IPFS retrieval via the `@helia/verified-fetch` JS shim
-//! (`www/ipfs.js`).
+//! IPFS content/DID/IPNS retrieval.
 //!
-//! All content/DID/IPNS reads go through `window.maIpfs`, which verifies every
-//! byte against its CID and falls back to trustless gateways + delegated
-//! routing. ma-core carries no IPFS backend on wasm, so the browser supplies
-//! its own here.
+//! Two backends: the public trustless path via the lazily-loaded
+//! `@helia/verified-fetch` shim (`www/ipfs.js`), which verifies every byte
+//! against its CID, or a local Kubo HTTP gateway (see [`crate::gateway`]),
+//! which is trusted and does not verify. ma-core carries no IPFS backend on
+//! wasm, so the browser supplies its own here.
+//!
+//! The heavy shim bundle (~1.3 MB) is loaded on demand only when the public
+//! path is actually used; a local-gateway session never fetches it.
 
 use ma_core::DidDocumentResolver;
 use wasm_bindgen::prelude::*;
@@ -23,6 +26,10 @@ extern "C" {
 
     #[wasm_bindgen(js_namespace = ["window", "maIpfs"], js_name = "clearCaches")]
     fn js_clear_caches() -> js_sys::Promise;
+
+    /// Lazily loads `www/ipfs.js` if it is not already present (see index.html).
+    #[wasm_bindgen(js_namespace = ["window"], js_name = "maIpfsLoad", catch)]
+    fn js_ma_ipfs_load() -> Result<js_sys::Promise, JsValue>;
 }
 
 /// Normalize a user-facing content path into a verified-fetch resource string.
@@ -53,6 +60,34 @@ async fn js_value(promise: js_sys::Promise) -> Result<JsValue, String> {
     JsFuture::from(promise).await.map_err(|e| format!("{e:?}"))
 }
 
+thread_local! {
+    /// Whether the public verified-fetch shim has finished loading.
+    static PUBLIC_SHIM_READY: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
+}
+
+/// Ensure the public verified-fetch shim (`www/ipfs.js`) is loaded before any
+/// `window.maIpfs` call. Idempotent; only used on the public path.
+async fn ensure_public_shim() -> Result<(), String> {
+    if PUBLIC_SHIM_READY.with(std::cell::Cell::get) {
+        return Ok(());
+    }
+    let promise = js_ma_ipfs_load().map_err(|error| format!("{error:?}"))?;
+    js_value(promise).await?;
+    PUBLIC_SHIM_READY.with(|ready| ready.set(true));
+    Ok(())
+}
+
+/// Start loading the public shim in the background when public mode is active,
+/// so the first public fetch does not wait for the ~1.3 MB bundle. No-op in
+/// local mode — the bundle is never fetched.
+pub fn preload_public_shim() {
+    if crate::gateway::mode() == crate::gateway::Mode::Public {
+        if let Err(error) = js_ma_ipfs_load() {
+            log::warn!("[ipfs] could not start loading the public shim: {error:?}");
+        }
+    }
+}
+
 /// Fetch raw bytes (no JSON round-tripping) for a content resource.
 pub async fn fetch_bytes(resource: &str) -> Result<Vec<u8>, String> {
     fetch_bytes_with(resource, false).await
@@ -60,6 +95,19 @@ pub async fn fetch_bytes(resource: &str) -> Result<Vec<u8>, String> {
 
 /// Fetch raw bytes, optionally forcing fresh IPNS resolution (`nocache`).
 pub async fn fetch_bytes_with(resource: &str, nocache: bool) -> Result<Vec<u8>, String> {
+    if let Some(gateway) = crate::gateway::active_local_url() {
+        match crate::http::fetch_gateway_bytes(&gateway, resource).await {
+            Ok(bytes) => return Ok(bytes),
+            Err(crate::http::GatewayError::Unreachable(detail)) => {
+                log::warn!("[ipfs] local gateway unreachable ({detail}); falling back to public");
+                crate::gateway::mark_local_unavailable();
+            }
+            Err(crate::http::GatewayError::Failed(detail)) => {
+                log::warn!("[ipfs] local gateway failed for {resource} ({detail}); trying public");
+            }
+        }
+    }
+    ensure_public_shim().await?;
     let value = js_value(js_fetch_bytes(resource, nocache)).await?;
     Ok(js_sys::Uint8Array::new(&value).to_vec())
 }
@@ -71,6 +119,19 @@ pub async fn fetch_text(resource: &str) -> Result<String, String> {
 
 /// Fetch UTF-8 text, optionally forcing fresh IPNS resolution (`nocache`).
 pub async fn fetch_text_with(resource: &str, nocache: bool) -> Result<String, String> {
+    if let Some(gateway) = crate::gateway::active_local_url() {
+        match crate::http::fetch_gateway_text(&gateway, resource).await {
+            Ok(text) => return Ok(text),
+            Err(crate::http::GatewayError::Unreachable(detail)) => {
+                log::warn!("[ipfs] local gateway unreachable ({detail}); falling back to public");
+                crate::gateway::mark_local_unavailable();
+            }
+            Err(crate::http::GatewayError::Failed(detail)) => {
+                log::warn!("[ipfs] local gateway failed for {resource} ({detail}); trying public");
+            }
+        }
+    }
+    ensure_public_shim().await?;
     let value = js_value(js_fetch_text(resource, nocache)).await?;
     value
         .as_string()
@@ -79,14 +140,19 @@ pub async fn fetch_text_with(resource: &str, nocache: bool) -> Result<String, St
 
 /// Drop verified-fetch's persisted delegated-routing caches so the next
 /// resolution fetches fresh routing/IPNS records. Best-effort: resolves to
-/// `Ok(())` when the Cache Storage API is unavailable.
+/// `Ok(())` when the Cache Storage API is unavailable. A no-op in local
+/// gateway mode, where there are no such caches (and the shim is not loaded).
 pub async fn clear_caches() -> Result<(), String> {
+    if crate::gateway::active_local_url().is_some() {
+        return Ok(());
+    }
+    ensure_public_shim().await?;
     js_value(js_clear_caches()).await.map(|_| ())
 }
 
-/// DID/IPNS resolver backed by the verified-fetch shim — the browser's
-/// [`DidDocumentResolver`]: DID documents are fetched trustlessly via IPNS and
-/// verified with `Document::decode` / `validate` / `verify`.
+/// DID/IPNS resolver — the browser's [`DidDocumentResolver`]: DID documents are
+/// fetched via IPNS (through the active gateway backend, see [`crate::gateway`])
+/// and verified with `Document::decode` / `validate` / `verify`.
 pub struct JsVerifiedResolver {
     /// When set, IPNS resolution bypasses verified-fetch's in-memory IPNS
     /// record cache and re-resolves from routing. Used on the login path so a
@@ -119,6 +185,28 @@ impl JsVerifiedResolver {
             });
         }
         let resource = to_verified_resource(path);
+        if let Some(gateway) = crate::gateway::active_local_url() {
+            match crate::http::gateway_resolve_ipns(&gateway, &resource).await {
+                Ok(resolved) => return Ok(resolved),
+                Err(crate::http::GatewayError::Unreachable(detail)) => {
+                    log::warn!(
+                        "[ipfs] local gateway unreachable ({detail}); falling back to public"
+                    );
+                    crate::gateway::mark_local_unavailable();
+                }
+                Err(crate::http::GatewayError::Failed(detail)) => {
+                    log::warn!(
+                        "[ipfs] local gateway IPNS resolve failed for {path} ({detail}); trying public"
+                    );
+                }
+            }
+        }
+        ensure_public_shim()
+            .await
+            .map_err(|detail| ma_core::Error::IpnsResolution {
+                path: path.to_string(),
+                detail,
+            })?;
         match js_value(js_resolve_ipns(&resource, self.fresh)).await {
             Ok(value) => value
                 .as_string()

@@ -31,7 +31,8 @@ pub const LIVE_PROTOCOL_ID: &str = "/ma/live/0.0.1";
 use log::info;
 
 /// The session-scoped DID/IPNS resolver, shared by every name-resolution path.
-/// Backed by the verified-fetch JS shim; no gateway configuration is involved.
+/// Backed by `src/ipfs.rs`, which follows the active gateway mode (public
+/// verified-fetch or a local Kubo gateway — see AGENTS.md "IPFS gateway selection").
 pub(crate) fn ipns_resolver() -> Arc<JsVerifiedResolver> {
     if let Some(resolver) = SESSION_IPNS_RESOLVER.with(|r| r.borrow().clone()) {
         return resolver;

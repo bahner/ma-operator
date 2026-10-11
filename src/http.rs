@@ -1,8 +1,9 @@
-//! Raw HTTP fetch helpers for the local runtime (localhost status/ping).
+//! Raw HTTP fetch helpers.
 //!
-//! IPFS/IPNS content goes through [`crate::ipfs`] (verified-fetch), not here.
-//! These helpers only talk plain HTTP to localhost (the trusted runtime's
-//! status endpoint) and stay gateway-independent.
+//! Two unrelated jobs live here: plain HTTP to the local runtime's status
+//! endpoint (localhost ping/claim), and plain HTTP reads against an optional
+//! local Kubo gateway when local gateway mode is active. Public IPFS/IPNS
+//! content otherwise goes through [`crate::ipfs`] (verified-fetch).
 
 use futures::{pin_mut, FutureExt as _};
 use gloo_timers::future::TimeoutFuture;
@@ -17,6 +18,10 @@ use web_time::{Duration, Instant};
 /// deadline so a fast failure still leaves room to retry after the block has
 /// warmed up.
 pub const STARTUP_FETCH_TIMEOUT_MS: u32 = 120_000;
+
+/// Local gateway read timeout. Kubo is on localhost, so a short deadline is
+/// plenty; a hung gateway must not stall the UI indefinitely.
+pub const GATEWAY_TIMEOUT_MS: u32 = 30_000;
 
 /// Exponential backoff between startup/profile fetch retry attempts. A freshly
 /// published block can take time to propagate through delegated routing, so the
@@ -63,7 +68,7 @@ pub async fn post_json_text_timeout(
     Ok(HttpTextResponse { status, body })
 }
 
-async fn fetch_with_timeout(
+pub(crate) async fn fetch_with_timeout(
     url: &str,
     opts: &web_sys::RequestInit,
     timeout_ms: u32,
@@ -140,6 +145,133 @@ pub async fn fetch_path_bytes(path: &str) -> Result<Vec<u8>, String> {
 /// (user-facing path syntax). See [`fetch_path_bytes`] for details.
 pub async fn fetch_path_text(path: &str) -> Result<String, String> {
     crate::ipfs::fetch_text(&crate::ipfs::to_verified_resource(path)).await
+}
+
+/// Why a local-gateway read failed.
+#[derive(Debug)]
+pub enum GatewayError {
+    /// The gateway could not be reached (transport error, timeout, DNS). It may
+    /// be absent, so the caller should disable local and fall back to public.
+    Unreachable(String),
+    /// The gateway answered but the read failed (non-success status, or a name
+    /// that could not be resolved). Not a reason to stop using it.
+    Failed(String),
+}
+
+/// Turn a normalised `ipfs://…` / `ipns://…` resource into a gateway URL.
+fn gateway_resource_url(gateway: &str, resource: &str) -> Result<String, String> {
+    let base = gateway.trim_end_matches('/');
+    let path = if let Some(rest) = resource.strip_prefix("ipfs://") {
+        format!("/ipfs/{rest}")
+    } else if let Some(rest) = resource.strip_prefix("ipns://") {
+        format!("/ipns/{rest}")
+    } else {
+        return Err(format!("not a gateway resource: {resource}"));
+    };
+    Ok(format!("{base}{path}"))
+}
+
+/// Build gateway request options. Mutable (`/ipns/…`) reads bypass the browser
+/// HTTP cache so a re-published DID document is never served stale — the local
+/// analogue of verified-fetch's `nocache`/cache-clearing on the public path.
+fn gateway_request(method: &str, mutable: bool) -> web_sys::RequestInit {
+    let opts = web_sys::RequestInit::new();
+    opts.set_method(method);
+    if mutable {
+        opts.set_cache(web_sys::RequestCache::NoStore);
+    }
+    opts
+}
+
+/// GET raw bytes from a local gateway for an `ipfs://`/`ipns://` resource.
+/// No CID verification: the local node is trusted.
+pub async fn fetch_gateway_bytes(gateway: &str, resource: &str) -> Result<Vec<u8>, GatewayError> {
+    let url = gateway_resource_url(gateway, resource).map_err(GatewayError::Unreachable)?;
+    let opts = gateway_request("GET", resource.starts_with("ipns://"));
+    let resp = fetch_with_timeout(&url, &opts, GATEWAY_TIMEOUT_MS)
+        .await
+        .map_err(GatewayError::Unreachable)?;
+    if !resp.ok() {
+        return Err(GatewayError::Failed(format!("HTTP {}", resp.status())));
+    }
+    let promise = resp
+        .array_buffer()
+        .map_err(|e| GatewayError::Unreachable(format!("{e:?}")))?;
+    let buffer = JsFuture::from(promise)
+        .await
+        .map_err(|e| GatewayError::Unreachable(format!("{e:?}")))?;
+    Ok(js_sys::Uint8Array::new(&buffer).to_vec())
+}
+
+/// GET UTF-8 text from a local gateway for an `ipfs://`/`ipns://` resource.
+pub async fn fetch_gateway_text(gateway: &str, resource: &str) -> Result<String, GatewayError> {
+    let url = gateway_resource_url(gateway, resource).map_err(GatewayError::Unreachable)?;
+    let opts = gateway_request("GET", resource.starts_with("ipns://"));
+    let resp = fetch_with_timeout(&url, &opts, GATEWAY_TIMEOUT_MS)
+        .await
+        .map_err(GatewayError::Unreachable)?;
+    if !resp.ok() {
+        return Err(GatewayError::Failed(format!("HTTP {}", resp.status())));
+    }
+    let promise = resp
+        .text()
+        .map_err(|e| GatewayError::Unreachable(format!("{e:?}")))?;
+    let text = JsFuture::from(promise)
+        .await
+        .map_err(|e| GatewayError::Unreachable(format!("{e:?}")))?;
+    text.as_string()
+        .ok_or_else(|| GatewayError::Unreachable("response is not a string".to_string()))
+}
+
+/// Resolve an `ipns://…` resource to its current `/ipfs/<cid>` path through a
+/// local gateway, without downloading the content.
+pub async fn gateway_resolve_ipns(gateway: &str, resource: &str) -> Result<String, GatewayError> {
+    let url = gateway_resource_url(gateway, resource).map_err(GatewayError::Unreachable)?;
+    let opts = gateway_request("HEAD", true);
+    let resp = fetch_with_timeout(&url, &opts, GATEWAY_TIMEOUT_MS)
+        .await
+        .map_err(GatewayError::Unreachable)?;
+    if !resp.ok() {
+        return Err(GatewayError::Failed(format!("HTTP {}", resp.status())));
+    }
+    // A gateway that redirects /ipns/<name> to /ipfs/<cid> exposes the target
+    // in the final response URL.
+    if let Some(path) = ipfs_path_from_url(&resp.url()) {
+        return Ok(path);
+    }
+    let headers = resp.headers();
+    if let Ok(Some(path)) = headers.get("X-Ipfs-Path") {
+        if path.starts_with("/ipfs/") {
+            return Ok(path);
+        }
+    }
+    if let Ok(Some(roots)) = headers.get("X-Ipfs-Roots") {
+        if let Some(first) = roots
+            .split(',')
+            .map(str::trim)
+            .find(|root| !root.is_empty())
+        {
+            return Ok(if first.starts_with('/') {
+                first.to_string()
+            } else {
+                format!("/ipfs/{first}")
+            });
+        }
+    }
+    Err(GatewayError::Failed(format!(
+        "no resolved /ipfs path for {resource}"
+    )))
+}
+
+/// Extract a `/ipfs/<cid>[/path]` suffix from a gateway response URL.
+fn ipfs_path_from_url(url: &str) -> Option<String> {
+    let (_, rest) = url.split_once("/ipfs/")?;
+    let rest = rest.split(['?', '#']).next().unwrap_or(rest);
+    if rest.is_empty() {
+        None
+    } else {
+        Some(format!("/ipfs/{rest}"))
+    }
 }
 
 #[cfg(test)]

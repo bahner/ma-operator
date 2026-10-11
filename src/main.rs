@@ -23,6 +23,7 @@ mod dispatch;
 mod doc_link;
 mod editor;
 mod eval;
+mod gateway;
 mod help;
 mod http;
 mod i18n;
@@ -78,6 +79,8 @@ fn main() {
     console_error_panic_hook::set_once();
     wasm_bindgen_futures::spawn_local(async {
         i18n::init_from_browser().await;
+        gateway::init_from_environment();
+        ipfs::preload_public_shim();
         leptos::mount::mount_to_body(app::App);
     });
 }
