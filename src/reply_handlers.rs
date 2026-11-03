@@ -711,6 +711,10 @@ pub(crate) fn cbor_to_scheme_val(v: &ciborium::Value) -> SchemeVal {
 /// Decode a raw CBOR reply payload into a `SchemeVal`, unwrapping the
 /// `[:ok, payload]` envelope. Used by `inbox_poll::dispatch_reply` for
 /// Scheme-initiated calls so the evaluator receives structured values.
+///
+/// A bare `:ok` ack (and its empty array form `[:ok]`) is preserved as the
+/// atom `":ok"`, matching `zscheme`'s CLI decoder, so `(ok? reply)` sees a
+/// successful ack instead of `Nil`.
 pub(crate) fn cbor_reply_to_scheme_val(
     content: &[u8],
     is_error: bool,
@@ -738,11 +742,12 @@ pub(crate) fn cbor_reply_to_scheme_val(
         Err(_) => return Ok(SchemeVal::Str(fallback.to_string())),
     };
     match &val {
-        V::Text(s) if s == ":ok" => Ok(SchemeVal::Nil),
+        V::Text(s) if s == ":ok" => Ok(SchemeVal::Str(s.clone())),
         V::Array(items) => match (items.first(), items.get(1)) {
             (Some(V::Text(verb)), _) if verb == ":ok" => match items.get(1) {
                 Some(v) => Ok(cbor_to_scheme_val(v)),
-                None => Ok(SchemeVal::Nil),
+                // [:ok] with no payload is the array form of the bare ack.
+                None => Ok(SchemeVal::Str(":ok".to_string())),
             },
             (Some(V::Text(verb)), _) if verb == ":error" => {
                 let reason = items
@@ -889,5 +894,44 @@ mod tests {
         };
 
         assert_eq!(bytes, vec![0x89, b'P', b'N', b'G']);
+    }
+
+    fn cbor_reply(value: CborValue) -> Vec<u8> {
+        let mut content = Vec::new();
+        ciborium::ser::into_writer(&value, &mut content).expect("encode test CBOR");
+        content
+    }
+
+    #[test]
+    fn bare_ok_ack_decodes_to_the_ok_atom_not_nil() {
+        let reply = cbor_reply(CborValue::Text(":ok".to_string()));
+
+        assert!(matches!(
+            cbor_reply_to_scheme_val(&reply, false, ":ok").unwrap(),
+            SchemeVal::Str(s) if s == ":ok"
+        ));
+    }
+
+    #[test]
+    fn empty_ok_array_decodes_to_the_ok_atom_not_nil() {
+        let reply = cbor_reply(CborValue::Array(vec![CborValue::Text(":ok".to_string())]));
+
+        assert!(matches!(
+            cbor_reply_to_scheme_val(&reply, false, ":ok").unwrap(),
+            SchemeVal::Str(s) if s == ":ok"
+        ));
+    }
+
+    #[test]
+    fn ok_payload_reply_is_still_unwrapped() {
+        let reply = cbor_reply(CborValue::Array(vec![
+            CborValue::Text(":ok".to_string()),
+            CborValue::Text("Exit up -> did:ma:world#passage-1".to_string()),
+        ]));
+
+        assert!(matches!(
+            cbor_reply_to_scheme_val(&reply, false, ":ok").unwrap(),
+            SchemeVal::Str(s) if s == "Exit up -> did:ma:world#passage-1"
+        ));
     }
 }
