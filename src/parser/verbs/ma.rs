@@ -939,7 +939,7 @@ mod tests {
         let result = handle_ma(".ma", "publish", &[], &state, config, show_editor, on_eval);
 
         assert!(result.is_err());
-        assert!(drain_ma_queue(&state).is_empty());
+        assert_eq!(drain_ma_queue(&state).len(), 0);
     }
 
     #[test]
@@ -1001,7 +1001,7 @@ mod tests {
             on_eval,
         )
         .is_err());
-        assert!(drain_ma_queue(&state).is_empty());
+        assert_eq!(drain_ma_queue(&state).len(), 0);
     }
 
     #[test]

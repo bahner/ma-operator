@@ -999,45 +999,39 @@ mod tests {
     }
 
     #[test]
-    fn root_enter_reply_extracts_parent_from_minimal_ctx() {
-        let ok = ciborium::Value::Array(vec![
-            ciborium::Value::Text(":ok".to_string()),
-            ciborium::Value::Map(vec![
-                (
-                    ciborium::Value::Text("parent".to_string()),
-                    ciborium::Value::Text("did:ma:k51runtime#concourse".to_string()),
-                ),
-                (
-                    ciborium::Value::Text("rev".to_string()),
-                    ciborium::Value::Integer(1.into()),
-                ),
-            ]),
+    fn root_enter_reply_extracts_room_from_entrance_redirect() {
+        let entrance = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":entrance".to_string()),
+            ciborium::Value::Text("did:ma:k51runtime#concourse".to_string()),
         ]);
         let mut content = Vec::new();
-        ciborium::ser::into_writer(&ok, &mut content).unwrap();
+        ciborium::ser::into_writer(&entrance, &mut content).unwrap();
         assert_eq!(
             root_enter_reply(&content).as_deref(),
             Some("did:ma:k51runtime#concourse")
         );
 
-        let error = ciborium::Value::Array(vec![
-            ciborium::Value::Text(":error".to_string()),
+        let deny = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":deny".to_string()),
             ciborium::Value::Text("root has no start room configured".to_string()),
         ]);
-        let mut error_content = Vec::new();
-        ciborium::ser::into_writer(&error, &mut error_content).unwrap();
-        assert!(root_enter_reply(&error_content).is_none());
+        let mut deny_content = Vec::new();
+        ciborium::ser::into_writer(&deny, &mut deny_content).unwrap();
+        assert!(root_enter_reply(&deny_content).is_none());
 
-        let bad_parent = ciborium::Value::Array(vec![
-            ciborium::Value::Text(":ok".to_string()),
-            ciborium::Value::Map(vec![(
-                ciborium::Value::Text("parent".to_string()),
-                ciborium::Value::Text("not-a-did-url".to_string()),
-            )]),
+        let bad_room = ciborium::Value::Array(vec![
+            ciborium::Value::Text(":entrance".to_string()),
+            ciborium::Value::Text("not-a-did-url".to_string()),
         ]);
-        let mut bad_parent_content = Vec::new();
-        ciborium::ser::into_writer(&bad_parent, &mut bad_parent_content).unwrap();
-        assert!(root_enter_reply(&bad_parent_content).is_none());
+        let mut bad_room_content = Vec::new();
+        ciborium::ser::into_writer(&bad_room, &mut bad_room_content).unwrap();
+        assert!(root_enter_reply(&bad_room_content).is_none());
+
+        let missing_room =
+            ciborium::Value::Array(vec![ciborium::Value::Text(":entrance".to_string())]);
+        let mut missing_room_content = Vec::new();
+        ciborium::ser::into_writer(&missing_room, &mut missing_room_content).unwrap();
+        assert!(root_enter_reply(&missing_room_content).is_none());
     }
 
     #[test]

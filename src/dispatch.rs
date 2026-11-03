@@ -941,7 +941,7 @@ mod tests {
             complete_scheme_input(&mut pending, "  (@(avatar):look))"),
             Some("(define (look)\n  (@(avatar):look))".to_string())
         );
-        assert!(pending.is_empty());
+        assert_eq!(pending.len(), 0);
     }
 
     #[test]
@@ -952,7 +952,7 @@ mod tests {
             complete_scheme_input(&mut pending, "say \"an (unclosed parenthesis\""),
             Some("say \"an (unclosed parenthesis\"".to_string())
         );
-        assert!(pending.is_empty());
+        assert_eq!(pending.len(), 0);
     }
 
     #[test]

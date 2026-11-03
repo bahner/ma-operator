@@ -270,7 +270,7 @@ mod tests {
         let (new_json, _) = rekey_iroh(&export_json, PASS).expect("rekey_iroh failed");
         // New export must be unlockable with the same passphrase.
         let unlocked = unlock_identity(&new_json, PASS).expect("unlock after rekey failed");
-        assert!(!unlocked.sender_did.is_empty());
+        assert_ne!(unlocked.sender_did.len(), 0);
     }
 
     #[test]
@@ -287,7 +287,7 @@ mod tests {
         // Original export must still be unlockable — rekey must not mutate the input.
         let unlocked =
             unlock_identity(&export_json, PASS).expect("original export should still be valid");
-        assert!(!unlocked.sender_did.is_empty());
+        assert_ne!(unlocked.sender_did.len(), 0);
     }
 
     // ── create_identity ───────────────────────────────────────────────────

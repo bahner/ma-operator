@@ -737,7 +737,7 @@ mod tests {
 
     #[test]
     fn list_empty_prefix() {
-        assert!(bare().list(".my.aliases.").is_empty());
+        assert_eq!(bare().list(".my.aliases.").len(), 0);
     }
 
     // ── resolve_alias / reverse_alias ─────────────────────────────────────
