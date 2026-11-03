@@ -144,6 +144,15 @@ pub(crate) fn actor_url(identity_did: &str, fragment: &str) -> Result<String, St
     }
 }
 
+/// Strip any actor fragment, yielding the runtime's base DID.
+///
+/// IPFS relay requests always address the runtime's `#ipfs` meta-service, so a
+/// publisher given as an actor address (e.g. `#root`, which is how CRUD
+/// traffic is addressed) is normalised here rather than at every call site.
+fn base_did(address: &str) -> &str {
+    address.split_once('#').map_or(address, |(did, _)| did)
+}
+
 pub(crate) fn get_session_info() -> Result<(String, SigningKey), String> {
     let signing_key_bytes = SESSION_SIGNING_KEY
         .with(|k| *k.borrow())
@@ -397,7 +406,7 @@ pub async fn send_identity_publish_with_msg_id(
 
     let payload = generate_identity_publish_request(&document, &ipns_key)
         .map_err(|e| format!("build ipfs request: {e}"))?;
-    let publisher_url = actor_url(publisher_did, "ipfs")?;
+    let publisher_url = actor_url(base_did(publisher_did), "ipfs")?;
 
     let msg = Message::new(
         &sender_did,
@@ -441,7 +450,7 @@ pub async fn send_ipfs_store_with_msg_id(
     on_msg_id: impl FnOnce(String),
 ) -> Result<String, String> {
     let (sender_did, signing_key) = get_session_info()?;
-    let publisher_url = actor_url(publisher_did, "ipfs")?;
+    let publisher_url = actor_url(base_did(publisher_did), "ipfs")?;
     let msg = generate_ipfs_store_request(
         &sender_did,
         &publisher_url,
@@ -922,6 +931,17 @@ mod tests {
     fn actor_url_rejects_a_conflicting_actor_fragment() {
         let did = format!("did:ma:{}", ma_core::ipns_from_secret([9; 32]).unwrap());
         assert!(actor_url(&format!("{did}#room"), "root").is_err());
+    }
+
+    #[test]
+    fn base_did_strips_actor_fragments() {
+        let did = format!("did:ma:{}", ma_core::ipns_from_secret([9; 32]).unwrap());
+        assert_eq!(base_did(&did), did);
+        assert_eq!(base_did(&format!("{did}#root")), did);
+        assert_eq!(
+            actor_url(base_did(&format!("{did}#root")), "ipfs"),
+            Ok(format!("{did}#ipfs"))
+        );
     }
 
     #[test]

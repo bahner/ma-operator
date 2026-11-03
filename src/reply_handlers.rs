@@ -128,11 +128,10 @@ fn crud_link_fetch_path(value: &str) -> Option<String> {
 
 // ── Room entry ─────────────────────────────────────────────────────────────
 
-/// Root `:enter?` reply for a bare-runtime `.enter`: resume direct room
-/// entry against the room root named. If root's reply cannot be parsed (e.g.
-/// an older root without this verb), fall back to the bootstrap default
-/// room, `#concourse` (every lambda-ma world creates it — see lambda-ma's
-/// README.md).
+/// Root `:enter` redirect for a bare-runtime `.enter`: resume direct room
+/// entry against the room root named. If the reply cannot be parsed, fall
+/// back to the bootstrap default room, `#concourse` (every lambda-ma world
+/// creates it — see lambda-ma's README.md).
 #[allow(clippy::too_many_arguments)]
 pub(crate) fn handle_root_enter_reply(
     entry_runtime: String,

@@ -169,9 +169,9 @@ Makefile
 - [x] actor transfer events — typed parent/child ctx messages are delivered to
   zscheme, which performs the protocol-specific acknowledgement
 - [x] `.enter @runtime` default-room discovery — a bare-runtime `.enter`
-      asks `#root`'s `:enter?`, which always replies with a ctx naming a room
-      to enter, defaulting to the configured `start` room; a runtime with no
-      `start` room configured fails with an actionable message (there is no
+      sends `#root` an `:enter`, which always replies `[:entrance, <room>]`
+      naming a room to enter, defaulting to the configured `start` room; a
+      runtime with no `start` room configured fails with an actionable message (there is no
       protocol-level default room)
 - [x] Selectable IPFS backend — public `@helia/verified-fetch` or a trusted
       local Kubo gateway (default by serving host), with the vendored ~1.3 MB

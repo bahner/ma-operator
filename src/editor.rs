@@ -921,8 +921,7 @@ async fn do_kind_publish(
             return;
         }
     };
-    let publisher = actor_runtime_did(&target).to_string();
-    match crate::transport::send_ipfs_store(&publisher, cbor_bytes, "application/vnd.ipld.dag-cbor")
+    match crate::transport::send_ipfs_store(&target, cbor_bytes, "application/vnd.ipld.dag-cbor")
         .await
     {
         Ok(msg_id) => {
@@ -948,18 +947,13 @@ async fn do_kind_publish(
     }
 }
 
-fn actor_runtime_did(target: &str) -> &str {
-    target.split_once('#').map_or(target, |(did, _)| did)
-}
-
 async fn do_actor_behaviour_publish(
     text: String,
     target: String,
     cmd_id: Option<u64>,
     state: AppState,
 ) {
-    let publisher = actor_runtime_did(&target).to_string();
-    match crate::transport::send_ipfs_store(&publisher, text.into_bytes(), "text/plain").await {
+    match crate::transport::send_ipfs_store(&target, text.into_bytes(), "text/plain").await {
         Ok(msg_id) => {
             if let Some(cid) = cmd_id {
                 state.resolve_command_by_id(cid, CommandStatus::Publishing);

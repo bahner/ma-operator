@@ -479,8 +479,8 @@ fn eval_enter(args: &[String], state: &AppState, config: RwSignal<OperatorConfig
         }
 
         // A bare runtime has no default room on the wire (lambda-ma
-        // REFERENCE.md "Entry and room API"): ask root's `:enter?`, which
-        // always names a room to enter.
+        // REFERENCE.md "Entry and room API"): root answers `:enter` with a
+        // redirect, `[:entrance, <room>]`.
         discover_and_enter_room(
             &state2,
             cmd_id,
@@ -538,11 +538,10 @@ pub(crate) async fn enter_room(
     }
 }
 
-/// Ask `#root` for a room to enter (`root.ma`'s `:enter?`). Root always
-/// replies with a ctx naming a room, defaulting to the configured `start`
-/// room; `handle_root_enter_reply` falls back to `#concourse` client-side
-/// only if root's reply cannot be parsed (e.g. an older root without this
-/// verb).
+/// Ask `#root` to redirect `.enter` (`root.ma`'s `:enter`). Root replies
+/// `[:entrance, <room>]`, defaulting to the configured `start` room;
+/// `handle_root_enter_reply` falls back to `#concourse` only if the reply
+/// cannot be parsed.
 async fn discover_and_enter_room(
     state: &AppState,
     cmd_id: u64,
@@ -557,20 +556,30 @@ async fn discover_and_enter_room(
         .cmd_to_batch
         .with_untracked(|m| m.get(&cmd_id).copied());
     let mut registered_msg_id: Option<String> = None;
-    let send_result = transport::send_actor_message_with_msg_id(&root, "enter?", &[], |msg_id| {
-        registered_msg_id = Some(msg_id.clone());
-        state.register_pending(
-            msg_id,
-            PendingKind::RootEnterDiscovery {
-                entry_runtime: entry_runtime.clone(),
-                cmd_id,
-                effective_nick: effective_nick.clone(),
-                enter_kind: enter_kind.clone(),
-                inventory: inventory.clone(),
-            },
-            batch_id,
-        );
-    })
+    let mut ctx = std::collections::BTreeMap::new();
+    ctx.insert(
+        "traverseId".to_string(),
+        SchemeVal::Str(format!("enter-{}", js_sys::Date::now() as u64)),
+    );
+    let send_result = transport::send_actor_message_vals_with_msg_id(
+        &root,
+        "enter",
+        &[SchemeVal::Map(ctx)],
+        |msg_id| {
+            registered_msg_id = Some(msg_id.clone());
+            state.register_pending(
+                msg_id,
+                PendingKind::RootEnterDiscovery {
+                    entry_runtime: entry_runtime.clone(),
+                    cmd_id,
+                    effective_nick: effective_nick.clone(),
+                    enter_kind: enter_kind.clone(),
+                    inventory: inventory.clone(),
+                },
+                batch_id,
+            );
+        },
+    )
     .await;
     if state.was_cancelled_since(cancel_epoch) {
         if let Some(msg_id) = registered_msg_id {

@@ -121,8 +121,8 @@ pub enum PendingKind {
         timeout_ms: u32,
         logout_after: bool,
     },
-    /// Root `:enter?` reply for a bare-runtime `.enter` should resume direct
-    /// room entry against the discovered `parent` room DID-URL.
+    /// Root `:enter` redirect for a bare-runtime `.enter` should resume direct
+    /// room entry against the discovered room DID-URL.
     RootEnterDiscovery {
         entry_runtime: String,
         cmd_id: u64,

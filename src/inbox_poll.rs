@@ -303,7 +303,7 @@ fn map_text<'a>(entries: &'a [(ciborium::Value, ciborium::Value)], key: &str) ->
     })
 }
 
-/// Parse root's `:enter?` reply, `[:ok, { parent, rev }]`, into the room
+/// Parse root's `:enter` redirect, `[:entrance, <room>]`, into the room
 /// DID-URL to enter next.
 pub(crate) fn root_enter_reply(content: &[u8]) -> Option<String> {
     let ciborium::Value::Array(items) =
@@ -311,14 +311,11 @@ pub(crate) fn root_enter_reply(content: &[u8]) -> Option<String> {
     else {
         return None;
     };
-    if term_head(&items) != Some(":ok") {
+    if term_head(&items) != Some(":entrance") {
         return None;
     }
-    let ciborium::Value::Map(entries) = items.get(1)? else {
-        return None;
-    };
-    let parent = map_text(entries, "parent")?;
-    (parent.starts_with("did:ma:") && parent.contains('#')).then(|| parent.to_string())
+    let room = cbor_text(items.get(1)?)?;
+    (room.starts_with("did:ma:") && room.contains('#')).then(|| room.to_string())
 }
 
 /// Forward unsolicited actor-authored client terms to zscheme. Returns true
