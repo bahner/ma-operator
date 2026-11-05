@@ -320,6 +320,27 @@ impl OperatorConfig {
     /// Restored into session state before DID document publishing.
     pub const PROFILE_CID_KEY: &'static str = ".my.profile.cid";
 
+    /// True when this local profile was published later than the DID document
+    /// we just resolved. That means IPNS is lagging (or the final DID publish
+    /// failed), so the remote profile blob is older than local state and must
+    /// not replace it on login.
+    pub fn profile_is_stale_against(&self, document_updated_at: &str) -> bool {
+        let Some(local) = self.get(Self::PROFILE_PUBLISHED_AT_KEY) else {
+            return false;
+        };
+        let parse = |value: &str| {
+            time::OffsetDateTime::parse(
+                value.trim(),
+                &time::format_description::well_known::Rfc3339,
+            )
+            .ok()
+        };
+        match (parse(local), parse(document_updated_at)) {
+            (Some(local), Some(document)) => local > document,
+            _ => false,
+        }
+    }
+
     /// Expand `.my.*` flat keys into a nested JSON map, stripping the `.my.` prefix.
     /// `.my.config.colour.bg = "#fff"` → `{"config": {"colour": {"bg": "#fff"}}}`.
     /// Used when building the IPFS profile blob.
@@ -958,6 +979,26 @@ mod tests {
         assert_eq!(persisted.get(".z.scheme"), Some("(define x 1)\n"));
         assert_eq!(persisted.get(".my.aliases.ma"), None);
         assert!(!persisted.has_children(".ma"));
+    }
+
+    #[test]
+    fn profile_is_stale_when_local_publish_is_newer_than_the_did_document() {
+        let mut cfg = bare();
+        cfg.set(
+            OperatorConfig::PROFILE_PUBLISHED_AT_KEY,
+            "2026-11-05T12:34:56.789Z",
+        );
+
+        assert!(cfg.profile_is_stale_against("2026-11-05T12:34:56Z"));
+        assert!(!cfg.profile_is_stale_against("2026-11-05T12:35:00Z"));
+        assert!(!cfg.profile_is_stale_against("not a timestamp"));
+    }
+
+    #[test]
+    fn profile_without_a_publish_timestamp_never_blocks_the_remote_copy() {
+        let cfg = bare();
+
+        assert!(!cfg.profile_is_stale_against("1970-01-01T00:00:00Z"));
     }
 
     #[test]

@@ -131,9 +131,41 @@ async fn fetch_profile_from_ipfs(
         }
     };
 
-    let mut cfg = OperatorConfig::new();
-    cfg.merge_from_nested_profile(&profile_val)
-        .map_err(ProfileFetchError::Rejected)?;
+    // Start from the local config so keys that are not part of the profile
+    // (`.z.*` sources) survive the merge. They are re-materialised from the
+    // selected manifest afterwards; until that succeeds, the local copy is the
+    // only copy.
+    let uname = username_from_did(full_did);
+    let local = restore_config(&uname).await.ok();
+    // A DID document whose `updatedAt` predates our last local publish means
+    // IPNS is lagging (or the final DID republish failed). In that case the
+    // remote profile is older than local state, so keep local state and skip
+    // the merge entirely.
+    let remote_is_stale = local
+        .as_ref()
+        .is_some_and(|cfg| cfg.profile_is_stale_against(&doc.updated_at));
+    let mut cfg = match local {
+        Some(local) if remote_is_stale => local,
+        Some(mut local) => {
+            local
+                .merge_from_nested_profile(&profile_val)
+                .map_err(ProfileFetchError::Rejected)?;
+            local
+        }
+        None => {
+            let mut cfg = OperatorConfig::new();
+            cfg.merge_from_nested_profile(&profile_val)
+                .map_err(ProfileFetchError::Rejected)?;
+            cfg
+        }
+    };
+    if !remote_is_stale {
+        // The blob embedded its own previous CID/timestamp when it was built.
+        // Record the values that actually describe the document we just read,
+        // so the next login can compare like with like.
+        cfg.set(OperatorConfig::PROFILE_CID_KEY, &profile_cid);
+        cfg.set(OperatorConfig::PROFILE_PUBLISHED_AT_KEY, &doc.updated_at);
+    }
 
     let (id, migrated) = unlock_identity_migrating(&id_json, pass).map_err(|error| {
         ProfileFetchError::Rejected(tf("error-wrong-passphrase", &[("e", &error)]))

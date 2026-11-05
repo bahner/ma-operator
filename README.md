@@ -250,9 +250,17 @@ and identity publication repeats that selection as `ma.z` in the DID document.
 
 - `.z!publish <publisher>` publishes the direct `.z.*` source leaves and their
    DAG-CBOR manifest, then stores its reference in `.my.z`.
-- On login Operator restores the encrypted profile first. If `.my.z` is absent it
-   uses `ma.z` from the DID document, then an explicit `?z=<manifest-cid>` as the
-   final onboarding fallback.
+- On login Operator restores the encrypted profile first. Local `.z.*` sources
+   survive that merge; they are only replaced once the selected manifest has
+   been fetched and validated.
+- If the resolved DID document's `updatedAt` predates the local
+   `.my.profile.published_at`, IPNS is lagging (or the final DID publish
+   failed): the local profile is kept instead of being overwritten by the older
+   remote copy.
+- If `.my.z` is absent it uses `ma.z` from the DID document, then an explicit
+   `?z=<manifest-cid>` as the final onboarding fallback. The manifest is fetched
+   whether or not the trusted runtime answers; only `.z.scheme!eval` waits for a
+   ready runtime.
 - Operator fetches the selected manifest and atomically replaces `.z.*` only after
    every entry is valid. The manifest must contain a non-empty `scheme` source.
 - Before room entry, Operator queues `.z.scheme!eval` once when that source exists.

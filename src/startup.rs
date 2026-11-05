@@ -231,7 +231,10 @@ async fn load_selected_z(
     startup_z: Option<String>,
 ) {
     let mut current = config.get_untracked();
-    if current.get(".my.z").is_none() {
+    if current
+        .get(".my.z")
+        .is_none_or(|value| value.trim().is_empty())
+    {
         // No live selection yet: fall back to the last published DID `ma.z`,
         // then to the one-time `?z=` onboarding seed.
         let seed = match resolve_did_z(sender_did).await {
@@ -485,8 +488,11 @@ pub(crate) async fn startup_connect(
                 startup_enter,
             )
             .await;
+            // Restore the selected z tree whether or not the runtime answered.
+            // The manifest lives in IPFS; only evaluating `.z.scheme` needs a
+            // live runtime, and that remains gated below.
+            load_selected_z(&state, config, &username, &sender_did, startup_z).await;
             if should_queue_startup_enter(&ma_outcome) {
-                load_selected_z(&state, config, &username, &sender_did, startup_z).await;
                 queue_startup_zscheme(&state, config);
             }
             if should_queue_startup_enter(&ma_outcome) {

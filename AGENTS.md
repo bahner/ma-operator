@@ -518,6 +518,13 @@ accepted as a plaintext blob. This is stricter than earlier releases, which
 briefly accepted un-encrypted blobs for migration. Do not reintroduce a
 plaintext fallback — un-encrypted profiles must never be treated as valid.
 
+The login merge is last-publish-wins, not simply remote-wins. A resolved DID
+document whose `updatedAt` predates the local `.my.profile.published_at` means
+IPNS is lagging or the final DID republish failed, so `fetch_profile_from_ipfs`
+keeps the local profile and skips the merge. When the remote profile does win,
+it is merged into the restored local config so local-only `.z.*` sources are
+never discarded before the selected z manifest has been fetched and validated.
+
 ---
 
 ## `.ma` — trusted runtime control
