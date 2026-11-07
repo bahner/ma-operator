@@ -173,6 +173,11 @@ Makefile
       naming a room to enter, defaulting to the configured `start` room; a
       runtime with no `start` room configured fails with an actionable message (there is no
       protocol-level default room)
+- [x] Courtesy departure — a successful `.enter` into a different room sends
+      the previous `.my.ctx.room` an argument-free `:leave`, best-effort and
+      idempotent, so the old room does not keep a ghost child. The profile's
+      house handoff is specified but not yet implemented; keep this client-side
+      goodbye until it is.
 - [x] Selectable IPFS backend — public `@helia/verified-fetch` or a trusted
       local Kubo gateway (default by serving host), with the vendored ~1.3 MB
       shim loaded lazily and automatic fallback to public when local is down
@@ -798,11 +803,19 @@ runtime and held in `src/gateway.rs`:
   are deliberately **not** CID-verified. DID documents are still
   decoded/validated/verified in `src/ipfs.rs` after fetch.
 - **Fallback:** when the local gateway is *unreachable* (transport error or
-  timeout), `gateway::mark_local_unavailable()` disables local for the rest of
-  the session and the read falls back to public; the saved preference is
-  untouched, and re-selecting local retries it. A gateway that answers with a
-  non-success status (e.g. 404) falls back for that read only and does not
-  disable local.
+  timeout), `gateway::mark_local_unavailable()` puts local reads on a short
+  cooldown (`LOCAL_RETRY_COOLDOWN_MS`, 30 s) and the read falls back to public;
+  the next read after the cooldown re-probes local. The cooldown deliberately
+  expires instead of lasting for the session, so one transient failure cannot
+  silently divert the whole session to upstream. The saved preference is
+  untouched, and re-selecting local resets the cooldown. A gateway that answers
+  with a non-success status (e.g. 404) falls back for that read only and does
+  not disable local.
+- **Errors name both attempts.** When local was tried and the public path then
+  fails too, the reported error includes the local-gateway failure
+  (`local gateway <url> failed (…); public verified-fetch failed: …`). A local
+  problem must never be surfaced only as an opaque upstream error.
+- The effective backend is logged once at startup (`[gateway] IPFS backend: …`).
 
 ### Lazy verified-fetch bundle
 
