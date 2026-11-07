@@ -242,6 +242,11 @@ fn handle_did_entry_reply(
         return false;
     };
 
+    // Entering a different room ends presence in the one we were focused on.
+    // A room only forgets a child when told, so capture the outgoing room here
+    // and say goodbye once this entry has committed.
+    let previous_room = previous_room_to_leave(&config.get_untracked(), &entry.parent);
+
     config.update(|cfg| {
         cfg.set(".my.ctx.runtime", runtime);
         cfg.set(".my.ctx.room", &entry.parent);
@@ -254,6 +259,17 @@ fn handle_did_entry_reply(
             cfg.delete(".my.ctx.alias");
         }
     });
+
+    if let Some(previous_room) = previous_room {
+        spawn_local(async move {
+            // Courteous goodbye: an argument-free `:leave` from the DID itself
+            // is the authenticated departure form. Best-effort — a stale or
+            // unreachable previous runtime must not fail an entry that already
+            // committed, and `:leave` is idempotent.
+            let _ = crate::transport::send_actor_message(&previous_room, "leave", &[]).await;
+        });
+    }
+
     state.resolve_command_by_id(cmd_id, crate::core::CommandStatus::Replied(String::new()));
     state.clear_pending_enter();
     state.ctx_recovery_runtime.set(None);
@@ -270,6 +286,16 @@ fn handle_did_entry_reply(
         });
     }
     true
+}
+
+/// The room to say goodbye to when an entry commits into `new_room`: the
+/// previously focused room, unless it is that same room. Only a full room
+/// DID-URL is a leave target; a bare runtime is not a place.
+fn previous_room_to_leave(cfg: &OperatorConfig, new_room: &str) -> Option<String> {
+    cfg.get(".my.ctx.room")
+        .filter(|room| *room != new_room)
+        .filter(|room| room.starts_with("did:ma:") && room.contains('#'))
+        .map(str::to_string)
 }
 
 pub(crate) fn did_entry_reply(content: &[u8]) -> Option<DidEntryReply> {
@@ -1032,6 +1058,33 @@ mod tests {
         let mut missing_room_content = Vec::new();
         ciborium::ser::into_writer(&missing_room, &mut missing_room_content).unwrap();
         assert!(root_enter_reply(&missing_room_content).is_none());
+    }
+
+    #[test]
+    fn entering_another_room_says_goodbye_to_the_previous_one() {
+        let mut cfg = OperatorConfig::default();
+        cfg.set(".my.ctx.room", "did:ma:k51runtime#garden");
+        assert_eq!(
+            previous_room_to_leave(&cfg, "did:ma:k51runtime#concourse"),
+            Some("did:ma:k51runtime#garden".to_string())
+        );
+        // Re-entering the same room is not a move.
+        assert_eq!(
+            previous_room_to_leave(&cfg, "did:ma:k51runtime#garden"),
+            None
+        );
+        // A bare runtime is not a place to leave.
+        cfg.set(".my.ctx.room", "did:ma:k51runtime");
+        assert_eq!(
+            previous_room_to_leave(&cfg, "did:ma:k51runtime#concourse"),
+            None
+        );
+        // No saved room at all is not a move either.
+        cfg.delete(".my.ctx.room");
+        assert_eq!(
+            previous_room_to_leave(&cfg, "did:ma:k51runtime#concourse"),
+            None
+        );
     }
 
     #[test]
