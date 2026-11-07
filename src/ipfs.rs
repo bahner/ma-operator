@@ -60,6 +60,16 @@ async fn js_value(promise: js_sys::Promise) -> Result<JsValue, String> {
     JsFuture::from(promise).await.map_err(|e| format!("{e:?}"))
 }
 
+/// Render a public-path failure, naming the local-gateway attempt when there was
+/// one. Without this a local problem (missing block, wrong gateway URL) is
+/// reported only as an opaque upstream error, which hides why local was skipped.
+fn public_failure(local: Option<&str>, public: &str) -> String {
+    local.map_or_else(
+        || public.to_string(),
+        |local| format!("{local}; public verified-fetch failed: {public}"),
+    )
+}
+
 thread_local! {
     /// Whether the public verified-fetch shim has finished loading.
     static PUBLIC_SHIM_READY: std::cell::Cell<bool> = const { std::cell::Cell::new(false) };
@@ -95,20 +105,27 @@ pub async fn fetch_bytes(resource: &str) -> Result<Vec<u8>, String> {
 
 /// Fetch raw bytes, optionally forcing fresh IPNS resolution (`nocache`).
 pub async fn fetch_bytes_with(resource: &str, nocache: bool) -> Result<Vec<u8>, String> {
+    let mut local_failure = None;
     if let Some(gateway) = crate::gateway::active_local_url() {
         match crate::http::fetch_gateway_bytes(&gateway, resource).await {
             Ok(bytes) => return Ok(bytes),
             Err(crate::http::GatewayError::Unreachable(detail)) => {
                 log::warn!("[ipfs] local gateway unreachable ({detail}); falling back to public");
                 crate::gateway::mark_local_unavailable();
+                local_failure = Some(format!("local gateway {gateway} unreachable ({detail})"));
             }
             Err(crate::http::GatewayError::Failed(detail)) => {
                 log::warn!("[ipfs] local gateway failed for {resource} ({detail}); trying public");
+                local_failure = Some(format!("local gateway {gateway} failed ({detail})"));
             }
         }
     }
-    ensure_public_shim().await?;
-    let value = js_value(js_fetch_bytes(resource, nocache)).await?;
+    ensure_public_shim()
+        .await
+        .map_err(|detail| public_failure(local_failure.as_deref(), &detail))?;
+    let value = js_value(js_fetch_bytes(resource, nocache))
+        .await
+        .map_err(|detail| public_failure(local_failure.as_deref(), &detail))?;
     Ok(js_sys::Uint8Array::new(&value).to_vec())
 }
 
@@ -119,23 +136,30 @@ pub async fn fetch_text(resource: &str) -> Result<String, String> {
 
 /// Fetch UTF-8 text, optionally forcing fresh IPNS resolution (`nocache`).
 pub async fn fetch_text_with(resource: &str, nocache: bool) -> Result<String, String> {
+    let mut local_failure = None;
     if let Some(gateway) = crate::gateway::active_local_url() {
         match crate::http::fetch_gateway_text(&gateway, resource).await {
             Ok(text) => return Ok(text),
             Err(crate::http::GatewayError::Unreachable(detail)) => {
                 log::warn!("[ipfs] local gateway unreachable ({detail}); falling back to public");
                 crate::gateway::mark_local_unavailable();
+                local_failure = Some(format!("local gateway {gateway} unreachable ({detail})"));
             }
             Err(crate::http::GatewayError::Failed(detail)) => {
                 log::warn!("[ipfs] local gateway failed for {resource} ({detail}); trying public");
+                local_failure = Some(format!("local gateway {gateway} failed ({detail})"));
             }
         }
     }
-    ensure_public_shim().await?;
-    let value = js_value(js_fetch_text(resource, nocache)).await?;
+    ensure_public_shim()
+        .await
+        .map_err(|detail| public_failure(local_failure.as_deref(), &detail))?;
+    let value = js_value(js_fetch_text(resource, nocache))
+        .await
+        .map_err(|detail| public_failure(local_failure.as_deref(), &detail))?;
     value
         .as_string()
-        .ok_or_else(|| "ipfs response is not a string".to_string())
+        .ok_or_else(|| public_failure(local_failure.as_deref(), "ipfs response is not a string"))
 }
 
 /// Drop verified-fetch's persisted delegated-routing caches so the next
@@ -185,6 +209,7 @@ impl JsVerifiedResolver {
             });
         }
         let resource = to_verified_resource(path);
+        let mut local_failure = None;
         if let Some(gateway) = crate::gateway::active_local_url() {
             match crate::http::gateway_resolve_ipns(&gateway, &resource).await {
                 Ok(resolved) => return Ok(resolved),
@@ -193,11 +218,13 @@ impl JsVerifiedResolver {
                         "[ipfs] local gateway unreachable ({detail}); falling back to public"
                     );
                     crate::gateway::mark_local_unavailable();
+                    local_failure = Some(format!("local gateway {gateway} unreachable ({detail})"));
                 }
                 Err(crate::http::GatewayError::Failed(detail)) => {
                     log::warn!(
                         "[ipfs] local gateway IPNS resolve failed for {path} ({detail}); trying public"
                     );
+                    local_failure = Some(format!("local gateway {gateway} failed ({detail})"));
                 }
             }
         }
@@ -205,18 +232,21 @@ impl JsVerifiedResolver {
             .await
             .map_err(|detail| ma_core::Error::IpnsResolution {
                 path: path.to_string(),
-                detail,
+                detail: public_failure(local_failure.as_deref(), &detail),
             })?;
         match js_value(js_resolve_ipns(&resource, self.fresh)).await {
             Ok(value) => value
                 .as_string()
                 .ok_or_else(|| ma_core::Error::IpnsResolution {
                     path: path.to_string(),
-                    detail: "resolved path is not a string".to_string(),
+                    detail: public_failure(
+                        local_failure.as_deref(),
+                        "resolved path is not a string",
+                    ),
                 }),
             Err(detail) => Err(ma_core::Error::IpnsResolution {
                 path: path.to_string(),
-                detail,
+                detail: public_failure(local_failure.as_deref(), &detail),
             }),
         }
     }
@@ -282,7 +312,7 @@ fn resolve_document(
 
 #[cfg(test)]
 mod tests {
-    use super::to_verified_resource;
+    use super::{public_failure, to_verified_resource};
 
     #[test]
     fn verified_resource_passthrough_and_conversion() {
@@ -296,5 +326,14 @@ mod tests {
         assert_eq!(to_verified_resource("/ipns/k51abc"), "ipns://k51abc");
         assert_eq!(to_verified_resource("/ipld/bafy"), "ipfs://bafy");
         assert_eq!(to_verified_resource("bafy"), "ipfs://bafy");
+    }
+
+    #[test]
+    fn public_failure_names_a_skipped_local_attempt() {
+        assert_eq!(public_failure(None, "public boom"), "public boom");
+        assert_eq!(
+            public_failure(Some("local boom"), "public boom"),
+            "local boom; public verified-fetch failed: public boom"
+        );
     }
 }
